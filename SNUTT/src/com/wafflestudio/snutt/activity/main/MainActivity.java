@@ -161,8 +161,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 						ArrayList<Lecture> searchLecture = new ArrayList<Lecture>();
 						for (int i=0;i<Lecture.lectures.size();i++){
 							Lecture lecture = Lecture.lectures.get(i);
-							if (increasingOrderInclusion(lecture.course_title, str)
-									|| lecture.instructor.contains(str)
+							if (increasingOrderInclusion(lecture.course_title.toLowerCase(), str.toLowerCase())
+									|| increasingOrderInclusion(lecture.department.toLowerCase(), str.toLowerCase())
+									|| lecture.instructor.toLowerCase().contains(str.toLowerCase())
 									|| lecture.course_number.toLowerCase().contains(str.toLowerCase())){
 								searchLecture.add(lecture);
 							}
