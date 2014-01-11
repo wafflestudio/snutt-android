@@ -3,6 +3,7 @@ package com.wafflestudio.snutt.activity.main;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,21 +42,19 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.activity.BaseActivity;
 import com.wafflestudio.snutt.activity.main.about.AboutFragment;
 import com.wafflestudio.snutt.activity.main.my_lecture.MyLectureFragment;
+import com.wafflestudio.snutt.activity.main.sugang.SugangSelectorDialog;
 import com.wafflestudio.snutt.activity.main.timetable.TimetableFragment;
 import com.wafflestudio.snutt.activity.main.timetable.TimetableView;
 import com.wafflestudio.snutt.api.ServerConnection;
 import com.wafflestudio.snutt.api.ServerConnection.ServerCallback;
 import com.wafflestudio.snutt.data.Lecture;
 import com.wafflestudio.snutt.util.App;
+import com.wafflestudio.snutt.util.SharedPrefUtil;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 	public static String ACTIVE_TAB = "activeTab";
-	public static int    CURRENT_YEAR = 2013;
-	public static String CURRENT_SEMESTER = "2";
 	
 	// instance variables
-	private MainActivity thisActivity;
-
 	boolean doubleBackToExitPressedOnce = false;
 
 	ActionBar actionBar;
@@ -78,10 +77,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	RelativeLayout buttonPanel;
 	ImageButton saveButton;
 	
+	//수강편람 선택
+	ImageButton sugangButton;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		thisActivity = this;
 
 		setContentView(R.layout.main_layout);
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -93,7 +94,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		actionBar.setDisplayShowHomeEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(false);
 		mTabs = new Tab[3];
-		mTabs[0] = actionBar.newTab().setText(getResources().getString(R.string.timetable) + " (" + CURRENT_YEAR + "-" + CURRENT_SEMESTER + ")").setIcon(R.drawable.ic_timetable);
+		mTabs[0] = actionBar.newTab().setIcon(R.drawable.ic_timetable);
 		mTabs[1] = actionBar.newTab().setText(getResources().getString(R.string.my_lecture) + " (0학점)").setIcon(R.drawable.ic_my_lecture);
 		mTabs[2] = actionBar.newTab().setText(getResources().getString(R.string.about)).setIcon(R.drawable.ic_about);
 		mTabsAdapter.addTab(mTabs[0], TimetableFragment.class, null);
@@ -107,14 +108,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		actionBar.getCustomView().findViewById(R.id.syllabus_btn).setOnClickListener(this);
 		actionBarIn = AnimationUtils.loadAnimation(this, R.anim.move_right_in);
 
-		loadData(CURRENT_YEAR, CURRENT_SEMESTER);
-
 		//검색창
 		buttonPanel = (RelativeLayout) findViewById(R.id.button_panel);
 		searchLayout = (RelativeLayout) findViewById(R.id.search);
 		saveButton = (ImageButton) findViewById(R.id.save);
+		sugangButton = (ImageButton) findViewById(R.id.sugang);
 		
 		saveButton.setOnClickListener(this);
+		sugangButton.setOnClickListener(this);
 		
 		searchIn = AnimationUtils.loadAnimation(this, R.anim.move_up_in);
 		searchOut = AnimationUtils.loadAnimation(this, R.anim.move_down_out);
@@ -179,6 +180,15 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		});
 		imm = (InputMethodManager)this.getSystemService(Service.INPUT_METHOD_SERVICE);
 
+		
+		//수강편람 로드
+		checkAppUpdate();
+		checkUpdate();
+
+		int currentYear = SharedPrefUtil.getInstance().getInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR);
+		String currentSemester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
+		loadData(currentYear, currentSemester);
+		
 		showSearch();
 	}
 
@@ -204,52 +214,47 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	//수강편람 데이터를 읽음
-	void loadData(int year, String semester){
-		for (File f : getFilesDir().listFiles()){
-			System.out.println("filesdir : " + f + " / " + f.length());
-		}
-		File sugangFolder = new File(getFilesDir() + "/sugang");
-		File[] files = sugangFolder.listFiles();
-		if (files != null){
-			System.out.println("sugang count : " + files.length);
-			for (File file : files){
-				System.out.println("file : " + file.toString());
-			}
-		} else {
-			System.out.println("sugang is null");
+	public void loadData(int year, String semester){
+		if (year == 0 || semester == null){
+			mTabs[0].setText(getResources().getString(R.string.timetable) + "\n(null)");
+			return;
 		}
 		
-		String filename = year + "_" + semester + ".txt";
+		mTabs[0].setText(getResources().getString(R.string.timetable) + "\n(" + year + "-" + semester + ")");
+		
+		String filePath = getFilesDir() + "/sugang/" + year + "_" + semester + ".txt";
 
-		Lecture.lectures = new ArrayList<Lecture>();
-		Lecture.myLectures = new ArrayList<Lecture>();
+		Lecture.lectures.clear();
+		Lecture.myLectures.clear();
 		
 		try {
 			BufferedReader reader = null;
-			File file = getFileStreamPath(filename);
+			File file = new File(filePath);
 			if (file.exists()){
-				InputStream inputStream = openFileInput(filename);
-				reader = new BufferedReader(new InputStreamReader(inputStream));				
-			} else {
-				reader = new BufferedReader(new InputStreamReader(getAssets().open(filename)));
+				InputStream inputStream = new FileInputStream(file);
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				
+				reader.readLine();
+				String updated_date = reader.readLine();
+				Lecture.updatedDate = updated_date.trim();
+				reader.readLine();
+				String mLine = reader.readLine();
+				while (mLine != null) {
+					addLecture(mLine);
+					mLine = reader.readLine();
+				}
+				reader.close();
 			}
-
-			reader.readLine();
-			String updated_date = reader.readLine();
-			Lecture.updatedDate = updated_date.trim();
-			reader.readLine();
-			String mLine = reader.readLine();
-			while (mLine != null) {
-				addLecture(mLine);
-				mLine = reader.readLine();
-			}
-			reader.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
+		mSearchAdapter.notifyDataSetChanged();
+		
+		SharedPrefUtil.getInstance().setInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR, year);
+		SharedPrefUtil.getInstance().setString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER, semester);
+		
 		Lecture.loadMyLectures();
-		checkAppUpdate();
-		checkUpdate();
 	}
 
 	public void confirmAppUpdate(){
@@ -415,6 +420,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			}
 		}, 2000);
 	} 
+	
+	public void openSugangSelector(){
+		new SugangSelectorDialog(this).show();
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -450,6 +459,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			    startActivity( browse );			
 			}
 			
+			break;
+		case R.id.sugang:
+			openSugangSelector();
 			break;
 		}
 	} 

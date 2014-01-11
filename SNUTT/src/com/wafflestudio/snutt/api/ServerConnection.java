@@ -8,7 +8,6 @@ import java.util.zip.ZipInputStream;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +15,8 @@ import android.content.DialogInterface;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.activity.main.MainActivity;
+import com.wafflestudio.snutt.activity.main.sugang.SugangSelectorDialog;
 import com.wafflestudio.snutt.util.App;
 import com.wafflestudio.snutt.util.Downloader;
 import com.wafflestudio.snutt.util.SharedPrefUtil;
@@ -36,7 +37,7 @@ public class ServerConnection {
 	}
 	
 	//수강편람 업데이트 체크
-	public static void sugangCheck(final Activity activity){
+	public static void sugangCheck(final MainActivity activity){
 		final String url = apiUrl + "/sugang.json";
 		get(url, new ServerCallback() {
 			public void onSuccess(JSONObject result) {
@@ -62,6 +63,7 @@ public class ServerConnection {
 											try {
 												unpackageSugang();
 												SharedPrefUtil.getInstance().setLong(SharedPrefUtil.PREF_KEY_SUGANG_TIMESTAMP, timestamp);
+												activity.openSugangSelector();
 											} catch (Exception e){
 												e.printStackTrace();
 											}

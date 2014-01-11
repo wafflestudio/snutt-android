@@ -10,7 +10,9 @@ public class SharedPrefUtil {
 	private final static String PREF_NAME_COMMON = "common_pref";
 	
 	public static String PREF_KEY_SUGANG_TIMESTAMP = "SUGANG_TIMESTAMP";
-	public static String PREF_KEY_MY_LECTURES = "MY_LECTURES";
+	
+	public static String PREF_KEY_CURRENT_YEAR = "CURRENT_YEAR";
+	public static String PREF_KEY_CURRENT_SEMESTER = "CURRENT_SEMESTER";
 	
 	private SharedPrefUtil(Context ctx, String name) {
 		super();

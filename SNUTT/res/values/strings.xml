@@ -10,7 +10,6 @@
     <string name="about">정보</string>
     <string name="about_text">만든이 : 이종민\n\nsecury@wafflestudio.com\nhttp://wafflestudio.com</string>
     <string name="bad_connection">서버와의 연결 상태가 좋지 않습니다. 잠시 후 다시 시도해보세요.</string>
-    <string name="sugang">수강편람</string>
     
     <string name="wday_mon">월요일</string>
     <string name="wday_tue">화요일</string>
@@ -36,12 +35,14 @@
     <string name="no">아니오</string>
     <string name="search">검색</string>
     <string name="save">저장</string>
+    <string name="sugang">수강편람</string>
+    <string name="no_sugang">수강편람이 존재하지 않습니다.</string>
     
     <string name="progress_dialog_title_downloading">수강편람 업데이트 중...</string>
     <string name="progress_dialog_title_connecting">연결 중...</string>
     <string name="progress_dialog_message_prefix_downloading">업데이트 : </string>
     <string name="progress_dialog_message_prefix_connecting">연결 중</string>
-    <string name="user_message_download_complete">수강편람 업데이트 완료! 다음 실행부터 적용됩니다.</string>
+    <string name="user_message_download_complete">수강편람 업데이트 완료!</string>
     <string name="user_message_download_canceled">업데이트 취소!!</string>
     <string name="error_message_bad_url">Error: Invalid URL!</string>
     <string name="error_message_file_not_found">Error: File not found!</string>

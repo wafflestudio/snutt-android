@@ -147,12 +147,12 @@ public class Lecture {
 			Lecture lecture = myLectures.get(i);
 			resultStr += lecture.course_number + " ; " + lecture.lecture_number + " ; " + lecture.colorIndex + " / ";
 		}
-		SharedPrefUtil.getInstance().setString(SharedPrefUtil.PREF_KEY_MY_LECTURES, resultStr);
+		SharedPrefUtil.getInstance().setString(TimetableUtil.getMyLecturesPrefKey(), resultStr);
 	}
 	
 	//저장된 내 강의를 불러옴
 	public static void loadMyLectures(){
-		String ttStr = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_MY_LECTURES);
+		String ttStr = SharedPrefUtil.getInstance().getString(TimetableUtil.getMyLecturesPrefKey());
 		if (ttStr == null) ttStr = "";
 		
 		String[] lecturesStr = ttStr.split("/");

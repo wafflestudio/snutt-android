@@ -15,4 +15,10 @@ public class TimetableUtil {
 		if (number < 10) return "0" + number;
 		return "" + number;
 	}
+	public static String getMyLecturesPrefKey(){
+		int year = SharedPrefUtil.getInstance().getInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR);
+		String semester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
+		
+		return "MY_LECTURES_" + year + "_" + semester;
+	}
 }
