@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 import org.json.JSONObject;
 
@@ -206,6 +205,20 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	//수강편람 데이터를 읽음
 	void loadData(int year, String semester){
+		for (File f : getFilesDir().listFiles()){
+			System.out.println("filesdir : " + f + " / " + f.length());
+		}
+		File sugangFolder = new File(getFilesDir() + "/sugang");
+		File[] files = sugangFolder.listFiles();
+		if (files != null){
+			System.out.println("sugang count : " + files.length);
+			for (File file : files){
+				System.out.println("file : " + file.toString());
+			}
+		} else {
+			System.out.println("sugang is null");
+		}
+		
 		String filename = year + "_" + semester + ".txt";
 
 		Lecture.lectures = new ArrayList<Lecture>();
@@ -236,28 +249,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 		Lecture.loadMyLectures();
 		checkAppUpdate();
-		checkUpdate(year, semester);
+		checkUpdate();
 	}
 
-	public void confirmSugangUpdate(final int year, final String semester){
-		MainActivity.this.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				new AlertDialog.Builder(MainActivity.this)
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setTitle(R.string.update_title)
-				.setMessage(R.string.update_body)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						downloadData(year, semester);
-					}
-
-				}).setNegativeButton(R.string.no, null).show();				
-			}
-		});
-	}
-	
 	public void confirmAppUpdate(){
 		MainActivity.this.runOnUiThread(new Runnable() {
 			@Override
@@ -298,15 +292,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		});
 	}
 	//업데이트 여부를 체크함
-	void checkUpdate(final int year, final String semester){
-		new UpdateCheckerThread(thisActivity, year, semester).start();
+	void checkUpdate(){
+		ServerConnection.sugangCheck(this);
 	}
-
-	//수강편람 업데이트
-	void downloadData(int year, String semester){
-		new DownloaderThread(thisActivity, year, semester).start();
-	}
-
+	
 	//오름차순으로 포함되어있으면 str1 > str2
 	boolean increasingOrderInclusion(String str1, String str2){
 		String a = str1.replace(" ", "");

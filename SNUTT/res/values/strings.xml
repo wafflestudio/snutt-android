@@ -10,6 +10,7 @@
     <string name="about">정보</string>
     <string name="about_text">만든이 : 이종민\n\nsecury@wafflestudio.com\nhttp://wafflestudio.com</string>
     <string name="bad_connection">서버와의 연결 상태가 좋지 않습니다. 잠시 후 다시 시도해보세요.</string>
+    <string name="sugang">수강편람</string>
     
     <string name="wday_mon">월요일</string>
     <string name="wday_tue">화요일</string>

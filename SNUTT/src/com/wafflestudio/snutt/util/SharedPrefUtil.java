@@ -9,6 +9,7 @@ public class SharedPrefUtil {
 	private String mName;
 	private final static String PREF_NAME_COMMON = "common_pref";
 	
+	public static String PREF_KEY_SUGANG_TIMESTAMP = "SUGANG_TIMESTAMP";
 	public static String PREF_KEY_MY_LECTURES = "MY_LECTURES";
 	
 	private SharedPrefUtil(Context ctx, String name) {
@@ -48,6 +49,12 @@ public class SharedPrefUtil {
 		return value;
 	}
 	
+	public long getLong(String key) {
+		SharedPreferences mSharedPref = getPref();
+		long value = mSharedPref.getLong(key, 0);
+		return value;
+	}
+	
 	public void setString(String key, String value) {
 		SharedPreferences mSharedPref = getPref();
 		SharedPreferences.Editor editor = mSharedPref.edit();
@@ -66,6 +73,13 @@ public class SharedPrefUtil {
 		SharedPreferences mSharedPref = getPref();
 		SharedPreferences.Editor editor = mSharedPref.edit();
 		editor.putInt(key, value);
+		editor.commit();
+	}
+	
+	public void setLong(String key, long value) {
+		SharedPreferences mSharedPref = getPref();
+		SharedPreferences.Editor editor = mSharedPref.edit();
+		editor.putLong(key, value);
 		editor.commit();
 	}
 	
