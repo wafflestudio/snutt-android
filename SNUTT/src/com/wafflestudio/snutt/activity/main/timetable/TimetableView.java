@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.activity.main.MainActivity;
 import com.wafflestudio.snutt.data.Lecture;
+import com.wafflestudio.snutt.dialog.CustomLectureDialog;
 import com.wafflestudio.snutt.util.App;
 import com.wafflestudio.snutt.util.TimetableUtil;
 
@@ -36,16 +39,22 @@ public class TimetableView extends View {
 	Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
 	Paint[] lecturePaint, lectureBorderPaint; 
 	Paint lectureTextPaint;
-	Context mContext;
+	MainActivity mContext;
 	String[] wdays;
 	float leftLabelWidth = App.dpTopx(60);
 	float topLabelHeight = App.dpTopx(30);
 	float unitWidth, unitHeight;
 	TextRect lectureTextRect;
+	
+	//사용자 정의 시간표 추가
+	int mCustomWday = -1;
+	float mCustomDuration = -1;
+	float mCustomStartTime = -1;
+	Paint mCustomPaint = new Paint();
 
 	public TimetableView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		mContext = context;
+		mContext = (MainActivity) context;
 		mInstance = this;
 		init();
 	}
@@ -135,8 +144,47 @@ public class TimetableView extends View {
 	public boolean onTouchEvent(MotionEvent event){
 		float x = event.getX();
 		float y = event.getY();
+		
+		if (event.getAction() == MotionEvent.ACTION_DOWN){
+			//x, y를 요일, 교시로 
+			int wday = (int) ((x - leftLabelWidth) / unitWidth);
+			float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
 
-		if (event.getAction() == MotionEvent.ACTION_UP){
+			boolean lectureClicked = false;
+			//터치한 게 selectedLecture이면
+			if (Lecture.selectedLecture != null && Lecture.selectedLecture.contains(wday, time)){
+				lectureClicked = true;
+			}
+			//터치한 게 내 강의 중 하나
+			for (int i=0;i<Lecture.myLectures.size();i++){
+				if (Lecture.myLectures.get(i).contains(wday, time)){
+					lectureClicked = true;
+				}
+			}
+			//빈 공간 클릭
+			if (lectureClicked == false && mContext.getCustomEditable()){
+				mCustomStartTime = time;
+				mCustomWday = wday;
+				mCustomDuration = 0.5f;
+			} else {
+				resetCustomVariables();
+			}
+			invalidate();
+
+		} else if (event.getAction() == MotionEvent.ACTION_MOVE){
+			//x, y를 교시로 
+			float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
+			
+			if (mCustomStartTime != -1 && mCustomWday != -1){
+				float duration = time - mCustomStartTime + 0.5f;
+				Lecture tmpLecture = new Lecture("", "", mCustomWday, mCustomStartTime, duration);
+				if (!tmpLecture.alreadyExistClassTime() && mContext.getCustomEditable()){
+					mCustomDuration = duration;
+				}
+			}
+			
+			invalidate();
+		} else if (event.getAction() == MotionEvent.ACTION_UP){
 			//x, y를 요일, 교시로 
 			int wday = (int) ((x - leftLabelWidth) / unitWidth);
 			float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
@@ -164,9 +212,23 @@ public class TimetableView extends View {
 				if (MainActivity.mSearchAdapter != null)
 					MainActivity.mSearchAdapter.notifyDataSetChanged();
 			}
+			
+			if (mCustomWday != -1 && mCustomStartTime != -1 && mCustomDuration > 0 ){
+				if (mContext.getCustomEditable()){
+					new CustomLectureDialog(mContext, mCustomWday, mCustomStartTime, mCustomDuration).show();
+				}
+			}
+			
+			resetCustomVariables();
+			invalidate();
 		}
 
 		return true;
+	}
+	
+	public void resetCustomVariables(){
+		mCustomStartTime = mCustomDuration = mCustomWday = -1;
+		invalidate();
 	}
 	
 	public Handler shareHandler = new Handler(){
@@ -273,6 +335,11 @@ public class TimetableView extends View {
 				drawLecture(canvas, canvasWidth, canvasHeight, Lecture.selectedLecture, 0);
 			}
 		}
+		
+		//사용자 정의 시간표 추가중..
+		if (mCustomStartTime != -1 && mCustomWday != -1 && mCustomDuration > 0){
+			drawCustomBox(canvas, canvasWidth, canvasHeight, mCustomWday, mCustomStartTime, mCustomDuration);
+		}
 	}
 
 	@Override
@@ -321,6 +388,29 @@ public class TimetableView extends View {
 		int height = (int)(bottom - top);
 		int strHeight = lectureTextRect.prepare(str, width, height);
 		lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width);
+	}
+	
+	//사용자 정의 시간표용..
+	void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
+		if (!mContext.getCustomEditable()) return;
+		
+		float unitHeight = (canvasHeight - topLabelHeight) / 26f;
+		float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+		
+		//startTime : 시작 교시
+		float left = leftLabelWidth + wday * unitWidth;
+		float right = leftLabelWidth + wday * unitWidth + unitWidth;
+		float top = topLabelHeight + startTime * unitHeight * 2;
+		float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
+		float borderWidth = App.dpTopx(3);
+		
+		mCustomPaint.setColor(Color.RED);
+		mCustomPaint.setStyle(Paint.Style.STROKE);
+		mCustomPaint.setStrokeWidth(borderWidth);
+		mCustomPaint.setPathEffect(new DashPathEffect(new float[] {App.dpTopx(6),App.dpTopx(3)}, 0));
+		
+//		canvas.drawRect(left, top, right, bottom, mCustomPaint);
+		canvas.drawRect(left+borderWidth/2, top+borderWidth/2, right-borderWidth/2, bottom-borderWidth/2, mCustomPaint);
 	}
 
 

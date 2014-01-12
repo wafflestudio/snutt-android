@@ -42,12 +42,12 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.activity.BaseActivity;
 import com.wafflestudio.snutt.activity.main.about.AboutFragment;
 import com.wafflestudio.snutt.activity.main.my_lecture.MyLectureFragment;
-import com.wafflestudio.snutt.activity.main.sugang.SugangSelectorDialog;
 import com.wafflestudio.snutt.activity.main.timetable.TimetableFragment;
 import com.wafflestudio.snutt.activity.main.timetable.TimetableView;
 import com.wafflestudio.snutt.api.ServerConnection;
 import com.wafflestudio.snutt.api.ServerConnection.ServerCallback;
 import com.wafflestudio.snutt.data.Lecture;
+import com.wafflestudio.snutt.dialog.SugangSelectorDialog;
 import com.wafflestudio.snutt.util.App;
 import com.wafflestudio.snutt.util.SharedPrefUtil;
 
@@ -79,6 +79,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	
 	//수강편람 선택
 	ImageButton sugangButton;
+	
+	//커스텀 시간표
+	boolean customEditable = false;
+	ImageButton customButton;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -113,9 +117,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		searchLayout = (RelativeLayout) findViewById(R.id.search);
 		saveButton = (ImageButton) findViewById(R.id.save);
 		sugangButton = (ImageButton) findViewById(R.id.sugang);
+		customButton = (ImageButton) findViewById(R.id.edit_custom);
 		
 		saveButton.setOnClickListener(this);
 		sugangButton.setOnClickListener(this);
+		customButton.setOnClickListener(this);
 		
 		searchIn = AnimationUtils.loadAnimation(this, R.anim.move_up_in);
 		searchOut = AnimationUtils.loadAnimation(this, R.anim.move_down_out);
@@ -425,6 +431,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	public void openSugangSelector(){
 		new SugangSelectorDialog(this).show();
 	}
+	
+	public boolean getCustomEditable(){
+		return customEditable;
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -480,6 +490,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.sugang:
 			openSugangSelector();
+			break;
+		case R.id.edit_custom:
+			if (customEditable){
+				customButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_event));
+				customButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.round_rect_white));
+				customEditable = false;
+			} else {
+				customButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
+				customButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.round_rect_blue));
+				customEditable = true;
+			}
+			TimetableView.mInstance.resetCustomVariables();
 			break;
 		}
 	} 

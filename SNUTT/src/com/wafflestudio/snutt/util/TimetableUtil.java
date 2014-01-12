@@ -11,6 +11,17 @@ public class TimetableUtil {
 		if (wday.equals("토")) return 5;
 		return -1;
 	}
+	public static String numberToWdayString(int wday){
+		switch (wday){
+		case 0: return "월";
+		case 1: return "화";
+		case 2: return "수";
+		case 3: return "목";
+		case 4: return "금";
+		case 5: return "토";
+		}
+		return null;
+	}
 	public static String zeroStr(int number){
 		if (number < 10) return "0" + number;
 		return "" + number;
@@ -20,5 +31,11 @@ public class TimetableUtil {
 		String semester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
 		
 		return "MY_LECTURES_" + year + "_" + semester;
+	}
+	public static String getCustomLecturesPrefKey(){
+		int year = SharedPrefUtil.getInstance().getInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR);
+		String semester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
+		
+		return "MY_LECTURES_CUSTOM_" + year + "_" + semester;
 	}
 }

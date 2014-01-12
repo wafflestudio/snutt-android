@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.activity.main.sugang;
+package com.wafflestudio.snutt.dialog;
 
 import java.io.File;
 import java.util.Arrays;

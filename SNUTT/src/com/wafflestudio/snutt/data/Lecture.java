@@ -33,6 +33,51 @@ public class Lecture {
 	
 	public int colorIndex; //색상
 	
+	public boolean isCustom = false;
+	
+	//사용자 정의 강의
+	public Lecture(String course_title, String location, int wday, float startTime, float duration){
+		this.classification = "사용자";
+		this.department = "사용자";
+		this.academic_year = "";
+		this.course_number = "999.999";
+		this.lecture_number = "";
+		this.credit = 0;
+		this.instructor = "";
+		this.quota = 0;
+		this.enrollment = 0;
+		this.remark = "";
+		this.category = "사용자";
+
+		
+		this.course_title = course_title;
+		this.location = location;
+		this.class_time = TimetableUtil.numberToWdayString(wday) + "(" + startTime + "-" + duration + ")";
+		
+		isCustom = true;
+	}
+	public Lecture(String course_title, String location, String classTime, int colorIndex){
+		this.classification = "사용자";
+		this.department = "사용자";
+		this.academic_year = "";
+		this.course_number = "999.999";
+		this.lecture_number = "";
+		this.credit = 0;
+		this.instructor = "";
+		this.quota = 0;
+		this.enrollment = 0;
+		this.remark = "";
+		this.category = "사용자";
+
+		
+		this.course_title = course_title;
+		this.location = location;
+		this.class_time = classTime;
+		this.colorIndex = colorIndex;
+		
+		isCustom = true;
+	}
+	
 	public Lecture(String classification, String department, String academic_year, String course_number, 
 			String lecture_number, String course_title, int credit, String class_time, 
 			String location, String instructor, int quota, int enrollment, String remark, String category){
@@ -143,38 +188,62 @@ public class Lecture {
 	//현재 내 강의를 저장 (강의번호 + 강좌번호 + colorIndex)
 	public static void saveMyLectures(){
 		String resultStr = "";
+		String customStr = "";
 		for (int i=0;i<myLectures.size();i++){
 			Lecture lecture = myLectures.get(i);
-			resultStr += lecture.course_number + " ; " + lecture.lecture_number + " ; " + lecture.colorIndex + " / ";
+			if (lecture.isCustom){
+				customStr += lecture.course_title + " ; " + lecture.location + " ; " + lecture.class_time + " ; " + lecture.colorIndex + " / ";
+			} else {
+				resultStr += lecture.course_number + " ; " + lecture.lecture_number + " ; " + lecture.colorIndex + " / ";
+			}
 		}
 		SharedPrefUtil.getInstance().setString(TimetableUtil.getMyLecturesPrefKey(), resultStr);
+		SharedPrefUtil.getInstance().setString(TimetableUtil.getCustomLecturesPrefKey(), customStr);
 	}
 	
 	//저장된 내 강의를 불러옴
 	public static void loadMyLectures(){
 		String ttStr = SharedPrefUtil.getInstance().getString(TimetableUtil.getMyLecturesPrefKey());
+		String customStr = SharedPrefUtil.getInstance().getString(TimetableUtil.getCustomLecturesPrefKey());
 		if (ttStr == null) ttStr = "";
+		if (customStr == null) customStr = "";
 		
 		String[] lecturesStr = ttStr.split("/");
 		if (Lecture.myLectures == null)
 			Lecture.myLectures = new ArrayList<Lecture>();
 		Lecture.myLectures.clear();
-		for (int k=0;k<Lecture.lectures.size();k++){
-			Lecture lecture = Lecture.lectures.get(k);
-			for (int i=0;i<lecturesStr.length;i++){
-				if (lecturesStr[i].trim().length() > 0){
-					String[] str = lecturesStr[i].split(";");
-					String courseNumber = str[0].trim();
-					String lectureNumber = str[1].trim();
-					int colorIndex = Integer.parseInt(str[2].trim());
-					if (lecture.course_number.trim().equals(courseNumber) &&
-							lecture.lecture_number.trim().equals(lectureNumber)){
-						lecture.colorIndex = colorIndex;
-						Lecture.myLectures.add(lecture);
+
+		try {
+			for (int k=0;k<Lecture.lectures.size();k++){
+				Lecture lecture = Lecture.lectures.get(k);
+				for (int i=0;i<lecturesStr.length;i++){
+					if (lecturesStr[i].trim().length() > 0){
+						String[] str = lecturesStr[i].split(";");
+						String courseNumber = str[0].trim();
+						String lectureNumber = str[1].trim();
+						int colorIndex = Integer.parseInt(str[2].trim());
+						if (lecture.course_number.trim().equals(courseNumber) &&
+								lecture.lecture_number.trim().equals(lectureNumber)){
+							lecture.colorIndex = colorIndex;
+							Lecture.myLectures.add(lecture);
+						}
 					}
 				}
 			}
+			String[] customs = customStr.split("/");
+			for (int i=0;i<customs.length-1;i++){
+				String[] str = customs[i].split(";");
+				String courseTitle = str[0].trim();
+				String location = str[1].trim();
+				String classTime = str[2].trim();
+				int colorIndex = Integer.parseInt(str[3].trim());
+
+				Lecture.myLectures.add(new Lecture(courseTitle, location, classTime, colorIndex));
+			}
+		} catch (Exception e){
+			e.printStackTrace();
 		}
+
 		MainActivity.myLectureChanged();
 	}
 	

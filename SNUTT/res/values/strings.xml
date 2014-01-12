@@ -38,6 +38,13 @@
     <string name="sugang">수강편람</string>
     <string name="no_sugang">수강편람이 존재하지 않습니다.</string>
     
+    <string name="custom_lecture">사용자 시간표 (1@ 2@)</string>
+    <string name="course_title">강의명</string>
+    <string name="location">강의실</string>
+    <string name="create">생성</string>
+    <string name="cancel">취소</string>
+    <string name="edit">편집</string>
+    
     <string name="progress_dialog_title_downloading">수강편람 업데이트 중...</string>
     <string name="progress_dialog_title_connecting">연결 중...</string>
     <string name="progress_dialog_message_prefix_downloading">업데이트 : </string>

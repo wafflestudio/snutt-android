@@ -16,7 +16,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.activity.main.MainActivity;
-import com.wafflestudio.snutt.activity.main.sugang.SugangSelectorDialog;
+import com.wafflestudio.snutt.dialog.SugangSelectorDialog;
 import com.wafflestudio.snutt.util.App;
 import com.wafflestudio.snutt.util.Downloader;
 import com.wafflestudio.snutt.util.SharedPrefUtil;
