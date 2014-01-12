@@ -453,9 +453,26 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				lecture = Lecture.selectedMyLecture;
 			}
 			if (lecture != null){
-				int year = 2013;
-				String semester = "2";
-				String url = "http://sugang.snu.ac.kr/sugang/JACC103.do?gaesulYear="+year+"&gaesulHakgi="+semester+"&gyoCode="+lecture.course_number+"&gangjwaCode="+lecture.lecture_number+"&sugangFlag=P";
+				int year = SharedPrefUtil.getInstance().getInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR);
+				String semester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
+
+				String openShtmFg = null, openDetaShtmFg = null;
+				if (semester.equals("1")){
+					openShtmFg = "U000200001";
+					openDetaShtmFg = "U000300001";
+				} else if (semester.equals("2")){
+					openShtmFg = "U000200002";
+					openDetaShtmFg = "U000300001";
+				} else if (semester.equals("S")){
+					openShtmFg = "U000200001";
+					openDetaShtmFg = "U000300002";	
+				} else if (semester.equals("W")){
+					openShtmFg = "U000200002";
+					openDetaShtmFg = "U000300002";
+				}
+				
+				String url = "http://sugang.snu.ac.kr/sugang/cc/cc103.action?openSchyy="+year+"&openShtmFg="+openShtmFg+"&openDetaShtmFg="+openDetaShtmFg+"&sbjtCd="+lecture.course_number+"&ltNo="+lecture.lecture_number+"&sbjtSubhCd=000";
+				
 			    Intent browse = new Intent(Intent.ACTION_VIEW , Uri.parse(url));
 			    startActivity( browse );			
 			}
