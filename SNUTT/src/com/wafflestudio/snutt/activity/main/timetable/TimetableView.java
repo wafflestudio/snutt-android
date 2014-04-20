@@ -16,12 +16,15 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.OnScanCompletedListener;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -235,17 +238,20 @@ public class TimetableView extends View {
 		public void handleMessage(Message msg) {
 			String path = (String) msg.obj;
 			Uri uri = Uri.parse("file://" + path);
-			//share
+			// share
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("image/png");
 			intent.putExtra(Intent.EXTRA_STREAM, uri);
 			mContext.startActivity(Intent.createChooser(intent, App.getAppContext().getResources().getString(R.string.share_image)));
-			// media scanning
-//			Uri uri = Uri.parse(path);
-//			Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE); 
-//			i.setData(uri);
-//			mContext.sendBroadcast(i);
-			mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+
+			// scan file
+			MediaScannerConnection.scanFile(mContext, new String[]{path}, null, new OnScanCompletedListener() {
+				@Override
+				public void onScanCompleted(String path, Uri uri) {
+					Log.i("ExternalStorage", "Scanned " + path + ":");
+					Log.i("ExternalStorage", "-> uri=" + uri);
+				}
+			});
 
 			Toast.makeText(mContext, path + " saved!", Toast.LENGTH_LONG).show();
 		}

@@ -16,7 +16,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.activity.main.MainActivity;
-import com.wafflestudio.snutt.dialog.SugangSelectorDialog;
 import com.wafflestudio.snutt.util.App;
 import com.wafflestudio.snutt.util.Downloader;
 import com.wafflestudio.snutt.util.SharedPrefUtil;
@@ -56,7 +55,7 @@ public class ServerConnection {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									// 수강편람 다운로드 받고 업데이트
-									String downloadUrl = "http://snutt.kr/data/data.zip";
+									String downloadUrl = ServerConnection.BASE_URL + "/data/data.zip";
 									Downloader.getInstance().download(activity, downloadUrl, activity.getString(R.string.sugang), "/sugang.zip", new Runnable() {
 										@Override
 										public void run() {
