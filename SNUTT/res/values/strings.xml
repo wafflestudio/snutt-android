@@ -45,6 +45,9 @@
     <string name="cancel">취소</string>
     <string name="edit">편집</string>
     
+    <string name="edit_custom_on">빈 공간을 드래그하시면 사용자정의 시간표를 추가할 수 있습니다.</string>
+    <string name="edit_custom_off">사용자정의 시간표 편집 완료!</string>
+
     <string name="progress_dialog_title_downloading">수강편람 업데이트 중...</string>
     <string name="progress_dialog_title_connecting">연결 중...</string>
     <string name="progress_dialog_message_prefix_downloading">업데이트 : </string>

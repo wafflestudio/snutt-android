@@ -496,10 +496,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				customButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_event));
 				customButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.round_rect_white));
 				customEditable = false;
+				Toast.makeText(this, getString(R.string.edit_custom_off), Toast.LENGTH_SHORT).show();
 			} else {
 				customButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
 				customButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.round_rect_blue));
 				customEditable = true;
+				Toast.makeText(this, getString(R.string.edit_custom_on), Toast.LENGTH_SHORT).show();
 			}
 			TimetableView.mInstance.resetCustomVariables();
 			break;
