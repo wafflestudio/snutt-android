@@ -19,7 +19,6 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     }
 
     public void startTableView(String id) {
-        // TODO:(Seongwon) make MainActivity create only one
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(INTENT_KEY_TABLE_ID, id);
         startActivity(intent);
