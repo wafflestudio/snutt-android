@@ -45,7 +45,6 @@ public class TableFragment extends SNUTTBaseFragment {
         return (MainActivity) activity;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
