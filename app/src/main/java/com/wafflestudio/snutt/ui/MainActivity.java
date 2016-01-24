@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt.ui;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.adapter.SectionsPagerAdapter;
+import com.wafflestudio.snutt.manager.TableManager;
+import com.wafflestudio.snutt.model.Table;
 
 public class MainActivity extends SNUTTBaseActivity {
 
@@ -57,6 +60,16 @@ public class MainActivity extends SNUTTBaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        Intent intent = getIntent();
+        String id = null;
+        if (intent.getExtras() != null) { // intent의 강의 id 받아오기
+            id = intent.getExtras().getString(SNUTTBaseActivity.INTENT_KEY_TABLE_ID);
+        } else { // PrefManager 에서 마지막에 본 강의 id 받아오기
+            id = "0";
+        }
+        Table table = TableManager.getInstance().getTableById(id);
+        getSupportActionBar().setTitle(table.getTitle());
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

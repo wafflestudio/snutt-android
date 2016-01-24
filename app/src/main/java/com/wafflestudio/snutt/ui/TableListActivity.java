@@ -3,11 +3,16 @@ package com.wafflestudio.snutt.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.adapter.ExpandableTableListAdapter;
 import com.wafflestudio.snutt.adapter.TableListAdapter;
 import com.wafflestudio.snutt.manager.TableManager;
+import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
 import java.util.ArrayList;
@@ -19,31 +24,70 @@ import java.util.List;
 public class TableListActivity extends SNUTTBaseActivity {
 
     private List<Table> tables;
-    private TableListAdapter adapter;
-    private RecyclerView tableView;
+    private ArrayList<String> mGroupList = null;
+    private ArrayList<ArrayList<Table>> mChildList = null;
+    private ArrayList<Table> mChildListContent = null;
+
+    private ExpandableListView mListView;
+    private ExpandableTableListAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_list);
-        tables = getTableList();
-        adapter = new TableListAdapter(tables);
-        tableView = (RecyclerView) findViewById(R.id.table_recyclerView);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        tableView.setLayoutManager(layoutManager);
+        tables = TableManager.getInstance().getTableList();
+        mListView = (ExpandableListView) findViewById(R.id.listView);
+        mAdapter = getAdapter();
+        mListView.setAdapter(mAdapter);
 
-        tableView.setAdapter(adapter);
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                Toast.makeText(getApplicationContext(), "c click = " + childPosition,
+                        Toast.LENGTH_SHORT).show();
+
+                String tableId = mChildList.get(groupPosition).get(childPosition).getId();
+                startTableView(tableId);
+                finish();
+                return false;
+            }
+        });
 
 
     }
 
-    private List<Table> getTableList() {
-        List<Table> tableList = new ArrayList<>(TableManager.getInstance().getTableList());
-        tableList.add(new Table(TableListAdapter.TABLE_SECTION_STRING,"2015-1"));
-        tableList.add(new Table(TableListAdapter.TABLE_SECTION_STRING,"2015-2"));
-        return tableList;
+    private ExpandableTableListAdapter getAdapter() {
+        mGroupList = new ArrayList<String>();
+        mChildList = new ArrayList<ArrayList<Table>>();
+
+        if (tables.size()>0) {
+            mGroupList.add(tables.get(0).getSemester());
+            mChildListContent = new ArrayList<Table>();
+            mChildListContent.add(tables.get(0));
+        }
+
+        for(int i=1;i<tables.size();i++) {
+            Table table = tables.get(i);
+            if( tables.get(i-1).getSemester().equals( table.getSemester() )) {
+                mChildListContent.add(table);
+            } else {
+                mChildList.add(mChildListContent);
+
+                mGroupList.add(table.getSemester());
+                mChildListContent = new ArrayList<>();
+                mChildListContent.add(table);
+            }
+        }
+        if (tables.size()>0) {
+            mChildList.add(mChildListContent);
+        }
+
+        return (ExpandableTableListAdapter) new ExpandableTableListAdapter(this, mGroupList, mChildList);
     }
+
+
 
 }
