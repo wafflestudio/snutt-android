@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 
 /**
@@ -17,6 +18,7 @@ public class SNUTTApplication extends Application {
     @Override
     public void onCreate() {
         context = getApplicationContext();
+        PrefManager.getInstance(context);
         super.onCreate();
     }
 
