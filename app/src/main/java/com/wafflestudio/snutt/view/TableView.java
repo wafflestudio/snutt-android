@@ -18,6 +18,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ScrollView;
@@ -435,7 +436,7 @@ public class TableView extends View {
         int h = dm.heightPixels;
 
         int desiredWidth = w;
-        int desiredHeight = h - getStatusBarHeight();
+        int desiredHeight = h - getStatusBarHeight() - getActionBarHeight();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -488,5 +489,12 @@ public class TableView extends View {
         }
 
         return statusHeight;
+    }
+
+    private int getActionBarHeight() {
+        TypedValue tv = new TypedValue();
+        mContext.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true);
+        int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
+        return actionBarHeight;
     }
 }
