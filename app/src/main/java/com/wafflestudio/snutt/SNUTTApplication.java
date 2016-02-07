@@ -8,6 +8,8 @@ import android.util.DisplayMetrics;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 
+import retrofit.RestAdapter;
+
 /**
  * Created by makesource on 2016. 1. 17..
  */
@@ -15,10 +17,16 @@ public class SNUTTApplication extends Application {
 
     private static Context context;
 
+    private RestAdapter restAdapter;
+    private SNUTTRestApi restService;
+    private String restUrl;
+
     @Override
     public void onCreate() {
         context = getApplicationContext();
         PrefManager.getInstance(context);
+        restUrl = "walnut.wafflestudio.com:3000/api";
+
         super.onCreate();
     }
 
@@ -46,5 +54,16 @@ public class SNUTTApplication extends Application {
     public static float pxTosp(float px) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return px/scaledDensity;
+    }
+
+    public SNUTTRestApi getRestService() {
+        if (restService == null) {
+            restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(restUrl)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+            restService = restAdapter.create(SNUTTRestApi.class);
+        }
+        return restService;
     }
 }
