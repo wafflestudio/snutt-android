@@ -44,6 +44,9 @@ public class MainActivity extends SNUTTBaseActivity {
      */
     private ViewPager mViewPager;
 
+    public String year;
+    public String semester;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,8 @@ public class MainActivity extends SNUTTBaseActivity {
             }
         }
         Table table = TableManager.getInstance().getTableById(id);
+        year = table.getYear();
+        semester = table.getSemester();
         getSupportActionBar().setTitle(table.getTitle());
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

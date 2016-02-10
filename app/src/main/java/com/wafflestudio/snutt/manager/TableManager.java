@@ -46,10 +46,12 @@ public class TableManager {
 
     private void getDefaultTable() {
         tables = new ArrayList<>();
-        tables.add(new Table("0","2015-2","후보 1",null));
-        tables.add(new Table("1","2015-2","후보 2",null));
-        tables.add(new Table("2","2015-1","최종안",null));
-        tables.add(new Table("3","2015-1","제 1안",null));
+        tables.add(new Table("0","2016","1","모니터 사고싶어 ㅜㅜ",null));
+        tables.add(new Table("1","2015","2","후보 1",null));
+        tables.add(new Table("2","2015","2","후보 2",null));
+        tables.add(new Table("3","2015","1","최종안",null));
+        tables.add(new Table("4","2015","1","제 1안",null));
+        tables.add(new Table("5","2014","S","후.. 개발하기힘들다",null));
 
         tableMap = new HashMap<>();
         for(int i=0;i<tables.size();i++) {

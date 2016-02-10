@@ -50,6 +50,9 @@ public class SearchFragment extends SNUTTBaseFragment { /**
     private LectureListAdapter mAdapter;
     private Map query;
 
+    private String year;
+    private String semester;
+
     public SearchFragment() {
     }
 
@@ -75,6 +78,9 @@ public class SearchFragment extends SNUTTBaseFragment { /**
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
         lectureList = new ArrayList<>();
 
+        year = getMainActivity().year;
+        semester = getMainActivity().semester;
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
         mAdapter = new LectureListAdapter(lectureList);
         recyclerView.setLayoutManager(layoutManager);
@@ -85,8 +91,8 @@ public class SearchFragment extends SNUTTBaseFragment { /**
             public void onClick(View v) {
                 query = new HashMap();
                 searchText = searchEditText.getText().toString();
-                query.put("year","2016");
-                query.put("semester","1");
+                query.put("year",year);
+                query.put("semester",semester);
                 query.put("title", searchText);
 
                 getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {

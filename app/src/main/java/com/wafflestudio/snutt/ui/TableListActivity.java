@@ -64,19 +64,19 @@ public class TableListActivity extends SNUTTBaseActivity {
         mChildList = new ArrayList<ArrayList<Table>>();
 
         if (tables.size()>0) {
-            mGroupList.add(tables.get(0).getSemester());
+            mGroupList.add(tables.get(0).getFullSemester());
             mChildListContent = new ArrayList<Table>();
             mChildListContent.add(tables.get(0));
         }
 
         for(int i=1;i<tables.size();i++) {
             Table table = tables.get(i);
-            if( tables.get(i-1).getSemester().equals( table.getSemester() )) {
+            if( tables.get(i-1).getFullSemester().equals( table.getFullSemester() )) {
                 mChildListContent.add(table);
             } else {
                 mChildList.add(mChildListContent);
 
-                mGroupList.add(table.getSemester());
+                mGroupList.add(table.getFullSemester());
                 mChildListContent = new ArrayList<>();
                 mChildListContent.add(table);
             }

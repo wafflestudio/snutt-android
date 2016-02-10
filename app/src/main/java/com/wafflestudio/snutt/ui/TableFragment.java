@@ -39,12 +39,6 @@ public class TableFragment extends SNUTTBaseFragment {
         return fragment;
     }
 
-    public MainActivity getMainActivity() {
-        Activity activity = getActivity();
-        Preconditions.checkState(activity instanceof MainActivity);
-        return (MainActivity) activity;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

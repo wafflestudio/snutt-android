@@ -8,12 +8,14 @@ import java.util.List;
 public class Table {
 
     private String id;
+    private String year;
     private String semester;
     private String title;
     private List<Lecture> lectures;
 
-    public Table(String id, String semester, String title, List<Lecture> lectures) {
+    public Table(String id, String year, String semester, String title, List<Lecture> lectures) {
         this.id = id;
+        this.year = year;
         this.semester = semester;
         this.title = title;
         this.lectures = lectures;
@@ -21,9 +23,18 @@ public class Table {
 
     public Table(String id,String title) {
         this.id = id;
+        this.year = null;
         this.semester = null;
         this.title = title;
         this.lectures = null;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public String getSemester() {
@@ -56,5 +67,9 @@ public class Table {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getFullSemester() {
+        return this.year + '-' + this.semester;
     }
 }
