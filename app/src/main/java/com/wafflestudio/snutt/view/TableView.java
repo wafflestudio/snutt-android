@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTUtils;
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.ui.MainActivity;
 
@@ -35,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by makesource on 2016. 1. 24..
@@ -340,16 +342,19 @@ public class TableView extends View {
             canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
             canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
         }
-       /* //내 강의 그리기
-        for (int i=0;i<Lecture.myLectures.size();i++){
-            drawLecture(canvas, canvasWidth, canvasHeight, Lecture.myLectures.get(i), Lecture.myLectures.get(i).colorIndex);
+        //내 강의 그리기
+        List<Lecture> lectures = LectureManager.getInstance().getLectures();
+        for (int i=0;i<lectures.size();i++){
+            drawLecture(canvas, canvasWidth, canvasHeight, lectures.get(i), lectures.get(i).getColorIndex());
         }
+
         if (!export){
             //현재 선택한 강의 그리기
-            if (Lecture.selectedLecture != null && Lecture.myLectures.indexOf(Lecture.selectedLecture) == -1){
-                drawLecture(canvas, canvasWidth, canvasHeight, Lecture.selectedLecture, 0);
+            Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
+            if (selectedLecture != null && lectures.indexOf(selectedLecture) == -1){
+                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, 0);
             }
-        }*/
+        }
 
         //사용자 정의 시간표 추가중..
         if (mCustomStartTime != -1 && mCustomWday != -1 && mCustomDuration > 0){

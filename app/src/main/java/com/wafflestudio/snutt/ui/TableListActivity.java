@@ -87,7 +87,4 @@ public class TableListActivity extends SNUTTBaseActivity {
 
         return (ExpandableTableListAdapter) new ExpandableTableListAdapter(this, mGroupList, mChildList);
     }
-
-
-
 }

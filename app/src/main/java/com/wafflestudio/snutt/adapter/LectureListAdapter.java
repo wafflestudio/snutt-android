@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
 
 import java.util.List;
@@ -18,13 +20,14 @@ import java.util.List;
  */
 public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.ViewHolder> {
 
+    private static final String TAG = "LECTURE_LIST_ADAPTER" ;
 
     private List<Lecture> lectures;
+    private int selectedPosition = -1;
 
     public LectureListAdapter(List<Lecture> lectures) {
         this.lectures = lectures;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,8 +42,8 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Lecture lecture = lectures.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final Lecture lecture = lectures.get(position);
 
         holder.courseTitle.setText(lecture.getCourse_title());
         holder.courseNumber.setText(lecture.getCourse_number());
@@ -51,8 +54,26 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         holder.location.setText(lecture.getLocation());
         holder.remark.setText(lecture.getRemark());
 
-        holder.add.setVisibility(View.VISIBLE);
-        holder.remove.setVisibility(View.GONE);
+        if (selectedPosition == position) {
+            holder.add.setVisibility(View.VISIBLE);
+            holder.remove.setVisibility(View.GONE);
+        } else {
+            holder.add.setVisibility(View.GONE);
+            holder.remove.setVisibility(View.GONE);
+        }
+
+        holder.setClickListener(new ViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
+                //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
+                Log.d(TAG, String.valueOf(position) + " item Clicked!!");
+                notifyItemChanged(selectedPosition);
+                notifyItemChanged(position);
+                selectedPosition = position;
+                LectureManager.getInstance().setSelectedLecture(lecture);
+            }
+        });
     }
 
     @Override
@@ -66,8 +87,9 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public View lectureLayout;
         public TextView courseTitle;
         public TextView courseNumber;
         public TextView lectureNumber;
@@ -80,10 +102,11 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         public Button add;
         public Button remove;
 
+        private ClickListener clickListener;
 
         public ViewHolder(View view) {
             super(view);
-
+            this.lectureLayout = view;
             this.courseTitle = (TextView) view.findViewById(R.id.course_title);
             this.courseNumber = (TextView) view.findViewById(R.id.course_number);
             this.lectureNumber = (TextView) view.findViewById(R.id.lecture_number);
@@ -95,6 +118,30 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
 
             this.add = (Button) view.findViewById(R.id.add);
             this.remove = (Button) view.findViewById(R.id.remove);
+
+            this.lectureLayout.setOnClickListener(this);
+        }
+
+        public interface ClickListener {
+            /**
+             * Called when the view is clicked.
+             *
+             * @param v view that is clicked
+             * @param position of the clicked item
+             */
+
+            public void onClick(View v, int position);
+        }
+
+        public void setClickListener(ClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null) {
+                clickListener.onClick(v,getPosition());
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.adapter.SectionsPagerAdapter;
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
@@ -77,9 +78,10 @@ public class MainActivity extends SNUTTBaseActivity {
             }
         }
         Table table = TableManager.getInstance().getTableById(id);
+        getSupportActionBar().setTitle(table.getTitle());
+        LectureManager.getInstance().setLectures(table.getLectures());
         year = table.getYear();
         semester = table.getSemester();
-        getSupportActionBar().setTitle(table.getTitle());
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +105,10 @@ public class MainActivity extends SNUTTBaseActivity {
             id = "0";
         }
         Table table = TableManager.getInstance().getTableById(id);
+        LectureManager.getInstance().setLectures(table.getLectures());
         getSupportActionBar().setTitle(table.getTitle());
+        year = table.getYear();
+        semester = table.getSemester();
     }
 
 

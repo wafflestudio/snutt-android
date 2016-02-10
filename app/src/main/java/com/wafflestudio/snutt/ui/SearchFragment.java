@@ -93,7 +93,8 @@ public class SearchFragment extends SNUTTBaseFragment { /**
                 searchText = searchEditText.getText().toString();
                 query.put("year",year);
                 query.put("semester",semester);
-                query.put("title", searchText);
+                //query.put("title", searchText);
+                query.put("title","컴개실");
 
                 getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
                     @Override
