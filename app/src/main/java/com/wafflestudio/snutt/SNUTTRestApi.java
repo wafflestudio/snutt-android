@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt;
 
+import com.wafflestudio.snutt.model.Lecture;
+
 import java.net.ResponseCache;
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -14,5 +17,5 @@ import retrofit.http.POST;
 public interface SNUTTRestApi {
 
     @POST("/search_query")
-    public void postSearchQuery(@Body Map query, Callback<Response> callback);
+    public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 }

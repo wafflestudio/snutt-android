@@ -17,4 +17,28 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Text -->
+    <style name="Text"></style>
+
+    <style name="Text.addRemoveButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Text.mainLabel">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.smallLabel">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Text.smallLabelRed">
+        <item name="android:textColor">#ffff0000</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
 </resources>

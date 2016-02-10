@@ -25,7 +25,7 @@ public class SNUTTApplication extends Application {
     public void onCreate() {
         context = getApplicationContext();
         PrefManager.getInstance(context);
-        restUrl = "walnut.wafflestudio.com:3000/api";
+        restUrl = "http://walnut.wafflestudio.com:3000/api";
 
         super.onCreate();
     }

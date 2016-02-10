@@ -436,7 +436,7 @@ public class TableView extends View {
         int h = dm.heightPixels;
 
         int desiredWidth = w;
-        int desiredHeight = h - getStatusBarHeight() - getActionBarHeight();
+        int desiredHeight = h - getTabBarHeight() - getStatusBarHeight();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -496,5 +496,11 @@ public class TableView extends View {
         mContext.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true);
         int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
         return actionBarHeight;
+    }
+
+    private int getTabBarHeight() {
+        int tabBarHeight = 0;
+        tabBarHeight = mContext.getResources().getDimensionPixelSize(R.dimen.tab_bar_height);
+        return tabBarHeight;
     }
 }

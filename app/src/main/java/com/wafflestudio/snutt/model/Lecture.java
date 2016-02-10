@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt.model;
 
-import org.json.JSONArray;
+import com.google.gson.JsonArray;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -14,7 +14,7 @@ public class Lecture {
     private String course_title;
     private int credit;
     private String class_time;
-    private JSONArray class_time_json;
+    private JsonArray class_time_json;
     private String location;
     private String instructor;
     private int quota;
@@ -80,11 +80,11 @@ public class Lecture {
         this.class_time = class_time;
     }
 
-    public JSONArray getClass_time_json() {
+    public JsonArray getClass_time_json() {
         return class_time_json;
     }
 
-    public void setClass_time_json(JSONArray class_time_json) {
+    public void setClass_time_json(JsonArray class_time_json) {
         this.class_time_json = class_time_json;
     }
 
