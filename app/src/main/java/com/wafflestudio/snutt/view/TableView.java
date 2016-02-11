@@ -24,6 +24,8 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTUtils;
@@ -56,6 +58,7 @@ public class TableView extends View {
     float topLabelHeight = SNUTTApplication.dpTopx(30);
     float unitWidth, unitHeight;
     TextRect lectureTextRect;
+    boolean export;
 
     //사용자 정의 시간표 추가
     int mCustomWday = -1;
@@ -68,6 +71,10 @@ public class TableView extends View {
         mContext = (MainActivity) context;
         mInstance = this;
         init();
+    }
+
+    public void setExport(boolean export) {
+        this.export = export;
     }
 
     @Override
@@ -137,6 +144,7 @@ public class TableView extends View {
         lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
 
         lectureTextRect = new TextRect(lectureTextPaint);
+        export = false;
     }
 
 
@@ -351,7 +359,7 @@ public class TableView extends View {
         if (!export){
             //현재 선택한 강의 그리기
             Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
-            if (selectedLecture != null && lectures.indexOf(selectedLecture) == -1){
+            if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){
                 drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, 0);
             }
         }
@@ -364,27 +372,18 @@ public class TableView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawTimetable(canvas, getWidth(), getHeight(), false);
+        drawTimetable(canvas, getWidth(), getHeight(), export);
     }
 
     void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
-        //class_time : 월(1.5-1.5)/수(1.5-1.5)
-        String[] classStr = lecture.getClass_time().split("/");
-        for (int i=0;i<classStr.length;i++){
-            String str = classStr[i];
-            //str : 월(1.5-1.5)
-            int wday;
-            float startTime, duration;
-            if (str.trim().length() == 0) continue;
-            String[] str1 = str.split("\\(");
-            String[] str2 = str1[1].split("\\)");
-            String[] str3 = str2[0].split("-");
-            wday = SNUTTUtils.wdayToNumber(str1[0]);
-            startTime = Float.parseFloat(str3[0]);
-            duration = Float.parseFloat(str3[1]);
+        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
+        for (JsonElement element : lecture.getClass_time_json()) {
+            JsonObject classTime = element.getAsJsonObject();
 
-            String[] locations = lecture.getLocation().split("/");
-            String location = locations[i];
+            int wday = classTime.get("day").getAsInt();
+            float startTime = classTime.get("start").getAsFloat();
+            float duration = classTime.get("len").getAsFloat();
+            String location = classTime.get("place").getAsString();
             drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, colorIndex);
         }
     }

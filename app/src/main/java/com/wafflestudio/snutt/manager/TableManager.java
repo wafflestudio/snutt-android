@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt.manager;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
@@ -63,11 +66,12 @@ public class TableManager {
         sample.setRemark("건설환경공학부만 수강가능");
         sample.setCategory("foundation_computer");
         sample.setColorIndex(1);
+
         List<Lecture> sampleList = new ArrayList<>();
         sampleList.add(sample);
 
         tables = new ArrayList<>();
-        tables.add(new Table("0","2016","1","모니터 ㅜㅜ",sampleList));
+        tables.add(new Table("0","2016","1","이번학기 좆된 시간표",new ArrayList<Lecture>()));
         tables.add(new Table("1","2015","2","후보 1",new ArrayList<Lecture>()));
         tables.add(new Table("2","2015","2","후보 2",new ArrayList<Lecture>()));
         tables.add(new Table("3","2015","1","최종안",new ArrayList<Lecture>()));

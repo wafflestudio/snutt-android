@@ -55,8 +55,14 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         holder.remark.setText(lecture.getRemark());
 
         if (selectedPosition == position) {
-            holder.add.setVisibility(View.VISIBLE);
-            holder.remove.setVisibility(View.GONE);
+            if (LectureManager.getInstance().alreadyOwned(lecture)) {
+                holder.add.setVisibility(View.GONE);
+                holder.remove.setVisibility(View.VISIBLE);
+            } else {
+                holder.add.setVisibility(View.VISIBLE);
+                holder.remove.setVisibility(View.GONE);
+            }
+
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);

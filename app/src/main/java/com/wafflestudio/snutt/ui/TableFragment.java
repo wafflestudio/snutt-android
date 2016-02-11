@@ -13,16 +13,19 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.manager.LectureManager;
+import com.wafflestudio.snutt.view.TableView;
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class TableFragment extends SNUTTBaseFragment {
+public class TableFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static TableView mInstance;
 
     public TableFragment() {
     }
@@ -43,9 +46,11 @@ public class TableFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_table, container, false);
-        setHasOptionsMenu(true);
+        mInstance = (TableView) rootView.findViewById(R.id.timetable);
+        mInstance.setExport(true);
         //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -53,7 +58,7 @@ public class TableFragment extends SNUTTBaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_table, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -72,4 +77,20 @@ public class TableFragment extends SNUTTBaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        LectureManager.getInstance().removeListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LectureManager.getInstance().addListener(this);
+    }
+
+    @Override
+    public void notifyLectureChanged() {
+        mInstance.invalidate();
+    }
 }

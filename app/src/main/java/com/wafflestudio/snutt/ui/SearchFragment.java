@@ -19,7 +19,9 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.adapter.LectureListAdapter;
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
+import com.wafflestudio.snutt.view.TableView;
 
 import org.json.JSONObject;
 
@@ -35,12 +37,13 @@ import retrofit.client.Response;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SearchFragment extends SNUTTBaseFragment { /**
+public class SearchFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener{ /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "search_fragment";
+    private static TableView mInstance;
 
     private Button searchButton;
     private EditText searchEditText;
@@ -76,6 +79,7 @@ public class SearchFragment extends SNUTTBaseFragment { /**
         searchButton = (Button) rootView.findViewById(R.id.search_button);
         searchEditText = (EditText) rootView.findViewById(R.id.search_editText);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
+        mInstance = (TableView) rootView.findViewById(R.id.timetable);
         lectureList = new ArrayList<>();
 
         year = getMainActivity().year;
@@ -94,7 +98,7 @@ public class SearchFragment extends SNUTTBaseFragment { /**
                 query.put("year",year);
                 query.put("semester",semester);
                 //query.put("title", searchText);
-                query.put("title","컴개실");
+                query.put("title",searchText);
 
                 getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
                     @Override
@@ -173,5 +177,22 @@ public class SearchFragment extends SNUTTBaseFragment { /**
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LectureManager.getInstance().removeListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LectureManager.getInstance().addListener(this);
+    }
+
+    @Override
+    public void notifyLectureChanged() {
+        mInstance.invalidate();
     }
 }
