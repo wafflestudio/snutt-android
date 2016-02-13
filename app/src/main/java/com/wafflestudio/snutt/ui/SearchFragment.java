@@ -257,7 +257,7 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         mode = DEFAULT_MODE;
 
         searchView.setQuery(last_query, false);
-        searchView.setQueryHint("#을 눌러보세요!");
+        searchView.setQueryHint("#으로 테그검색을!");
         searchView.setSuggestionsAdapter(null);
         editText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         clearButton.setOnClickListener(mDefaultListener);

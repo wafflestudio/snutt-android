@@ -41,6 +41,9 @@ public class TableListActivity extends SNUTTBaseActivity {
         mListView = (ExpandableListView) findViewById(R.id.listView);
         mAdapter = getAdapter();
         mListView.setAdapter(mAdapter);
+        if (mGroupList.size() > 0) {
+            mListView.expandGroup(0);
+        }
 
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
