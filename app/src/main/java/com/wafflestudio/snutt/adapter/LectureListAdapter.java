@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
 
         if (selectedPosition == position) {
             holder.lectureLayout.setEnabled(false);
+            holder.lectureLayout.setBackgroundColor(Color.GRAY);
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
                 holder.remove.setVisibility(View.VISIBLE);
@@ -68,6 +70,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
             holder.lectureLayout.setEnabled(true);
+            holder.lectureLayout.setBackgroundColor(Color.TRANSPARENT);
         }
 
         holder.setClickListener(new ViewHolder.ClickListener() {
@@ -84,11 +87,11 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
                 } else if (v.getId() == holder.add.getId()) {
                     Log.d(TAG, String.valueOf(position) + " add Clicked!!");
                     LectureManager.getInstance().addLecture(lecture);
-                    notifyDataSetChanged();
+                    notifyItemChanged(position);
                 } else {
                     Log.d(TAG, String.valueOf(position) + " remove Clicked!!");
                     LectureManager.getInstance().removeLecture(lecture);
-                    notifyDataSetChanged();
+                    notifyItemChanged(position);
                 }
             }
         });

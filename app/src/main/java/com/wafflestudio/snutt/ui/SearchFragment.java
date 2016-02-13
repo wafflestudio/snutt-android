@@ -88,6 +88,7 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
         mAdapter = new LectureListAdapter(lectureList);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(mAdapter);
 
         searchButton.setOnClickListener(new View.OnClickListener() {

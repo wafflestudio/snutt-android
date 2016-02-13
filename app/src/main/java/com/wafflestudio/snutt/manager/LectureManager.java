@@ -154,17 +154,19 @@ public class LectureManager {
             int day1 = class1.get("day").getAsInt();
             float start1 = class1.get("start").getAsFloat();
             float len1 = class1.get("len").getAsFloat();
+            float end1 = start1 + len1 - 0.001f;
             for (JsonElement element2 : lec2.getClass_time_json()) {
                 JsonObject class2 = element2.getAsJsonObject();
 
                 int day2 = class2.get("day").getAsInt();
                 float start2 = class2.get("start").getAsFloat();
                 float len2 = class2.get("len").getAsFloat();
+                float end2 = start2 + len2 - 0.001f;
 
                 if (day1 != day2) continue;
 
-                if (start1 <= start2 && start2 <= start1+len1) return true;
-                if (start1 <= start2+len2 && start2+len2 <= start1+len1) return true;
+                if (start1 <= start2 && start2 <= end1) return true;
+                if (start1 <= end2 && end2 <= end1) return true;
             }
         }
         return false;
