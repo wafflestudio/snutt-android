@@ -55,6 +55,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         holder.remark.setText(lecture.getRemark());
 
         if (selectedPosition == position) {
+            holder.lectureLayout.setEnabled(false);
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
                 holder.remove.setVisibility(View.VISIBLE);
@@ -66,6 +67,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
+            holder.lectureLayout.setEnabled(true);
         }
 
         holder.setClickListener(new ViewHolder.ClickListener() {
@@ -73,11 +75,21 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
             public void onClick(View v, int position) {
                 //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
                 //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
-                Log.d(TAG, String.valueOf(position) + " item Clicked!!");
-                notifyItemChanged(selectedPosition);
-                notifyItemChanged(position);
-                selectedPosition = position;
-                LectureManager.getInstance().setSelectedLecture(lecture);
+                if (v.getId() == holder.lectureLayout.getId()) {
+                    Log.d(TAG, String.valueOf(position) + " item Clicked!!");
+                    notifyItemChanged(selectedPosition);
+                    notifyItemChanged(position);
+                    selectedPosition = position;
+                    LectureManager.getInstance().setSelectedLecture(lecture);
+                } else if (v.getId() == holder.add.getId()) {
+                    Log.d(TAG, String.valueOf(position) + " add Clicked!!");
+                    LectureManager.getInstance().addLecture(lecture);
+                    notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, String.valueOf(position) + " remove Clicked!!");
+                    LectureManager.getInstance().removeLecture(lecture);
+                    notifyDataSetChanged();
+                }
             }
         });
     }
@@ -126,6 +138,8 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
             this.remove = (Button) view.findViewById(R.id.remove);
 
             this.lectureLayout.setOnClickListener(this);
+            this.add.setOnClickListener(this);
+            this.remove.setOnClickListener(this);
         }
 
         public interface ClickListener {

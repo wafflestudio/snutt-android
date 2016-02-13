@@ -114,66 +114,6 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
                         System.out.println(error);
                     }
                 });
-
-                /*getApp().getRestService().postSearchQuery(query, new Callback<Response>() {
-                    @Override
-                    public void success(Response response, Response response2) {
-                        String body = SNUTTUtils.getBodyString(response);
-                        JsonParser jsonParser = new JsonParser();
-                        JsonArray lectures = jsonParser.parse(body).getAsJsonArray();
-                        for (JsonElement element : lectures) {
-                            JsonObject lecture = element.getAsJsonObject();
-
-                        }
-
-                        /* JsonParser jsonParser = new JsonParser();
-                        JsonArray friends = jsonParser.parse(body).getAsJsonObject().get("friends").getAsJsonArray();
-                        for (JsonElement element : friends) {
-                            JsonObject friend = element.getAsJsonObject();
-                            if (friend.get("result").getAsString().equals("registered")) {
-                                User updateFriend = new User();
-                                updateFriend.setId(friend.get("id").getAsString());
-                                updateFriend.setName(friend.get("name").getAsString());
-                                updateFriend.setDesc(friend.get("desc").getAsString());
-                                updateFriend.setStatus("normal");
-                                if (friend.get("avatar") != null) {
-                                    updateFriend.setAvatar(friend.get("avatar").getAsString());
-                                }
-                                updateFriend.setTel(friend.get("tel").getAsString());
-                                // updateFriend.setStatus(friend.get("status").getAsString());
-                                friendList.add(updateFriend);
-
-                                Contact contact = getContactByTel(friend.get("tel").getAsString());
-                                if (contact != null) {
-                                    deleteContactDB(contact);
-                                }
-                            } else {
-                                LogUtils.d("UserManager", friend.toString());
-                                if (friend.get("result").getAsString().equals("not-exist")) {
-                                    Contact contact = getContactByTel(friend.get("tel").getAsString());
-                                    if (contact == null) {
-                                        contact = new Contact();
-                                        contact.setName(friend.get("name").getAsString());
-                                        contact.setAt(0l);
-                                        contact.setTel(friend.get("tel").getAsString());
-                                        contactList.add(contact);
-                                    } else {
-                                        contact.setName(friend.get("name").getAsString());
-                                        updateContactDB(contact);
-                                    }
-                                }
-                            }
-                        }
-
-                        System.out.println(response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.d(TAG, "post search query failed!!");
-                    }
-                });*/
-
             }
         });
         return rootView;

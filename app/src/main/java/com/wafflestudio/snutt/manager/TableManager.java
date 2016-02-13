@@ -71,7 +71,7 @@ public class TableManager {
         sampleList.add(sample);
 
         tables = new ArrayList<>();
-        tables.add(new Table("0","2016","1","이번학기 좆된 시간표",new ArrayList<Lecture>()));
+        tables.add(new Table("0","2016","1","이번학기 시간표",new ArrayList<Lecture>()));
         tables.add(new Table("1","2015","2","후보 1",new ArrayList<Lecture>()));
         tables.add(new Table("2","2015","2","후보 2",new ArrayList<Lecture>()));
         tables.add(new Table("3","2015","1","최종안",new ArrayList<Lecture>()));

@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
+import com.wafflestudio.snutt.model.Lecture;
 
 import retrofit.RestAdapter;
 
@@ -25,6 +27,7 @@ public class SNUTTApplication extends Application {
     public void onCreate() {
         context = getApplicationContext();
         PrefManager.getInstance(context);
+        LectureManager.getInstance(context);
         restUrl = "http://walnut.wafflestudio.com:3000/api";
 
         super.onCreate();
