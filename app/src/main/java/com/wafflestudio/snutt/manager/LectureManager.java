@@ -132,8 +132,7 @@ public class LectureManager {
     }
 
     //이미 내 강의에 존재하는 시간인지
-    public boolean alreadyExistClassTime(Lecture lec)
-    {
+    public boolean alreadyExistClassTime(Lecture lec) {
         for (Lecture lecture : lectures){
             if (isDuplicatedClassTime(lecture, lec)) return true;
         }

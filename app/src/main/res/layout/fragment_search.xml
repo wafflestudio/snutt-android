@@ -16,27 +16,6 @@
         android:alpha="0.6"
         android:background="#000000">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:weightSum="10">
-
-            <EditText
-                android:id="@+id/search_editText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="8"
-                android:textColor="@color/white"
-                android:hint="과목명을 입력해 주세요"/>
-
-            <Button
-                android:id="@+id/search_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="검색"/>
-        </LinearLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/search_recyclerView"
             android:layout_width="match_parent"

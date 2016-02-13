@@ -1,21 +1,33 @@
 package com.wafflestudio.snutt.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.database.AbstractCursor;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.common.base.Strings;
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.adapter.LectureListAdapter;
@@ -23,11 +35,11 @@ import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.view.TableView;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -37,7 +49,7 @@ import retrofit.client.Response;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SearchFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener{ /**
+public class SearchFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener { /**
      * The fragment argument representing the section number for this
      * fragment.
      */
@@ -45,9 +57,6 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     private static final String TAG = "search_fragment";
     private static TableView mInstance;
 
-    private Button searchButton;
-    private EditText searchEditText;
-    private String searchText;
     private List<Lecture> lectureList;
     private RecyclerView recyclerView;
     private LectureListAdapter mAdapter;
@@ -56,6 +65,20 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     private String year;
     private String semester;
 
+    /**
+     * This Variable is used for SearchView
+     */
+    private static final int DEFAULT_MODE = 1;
+    private static final int TAG_MODE = 2;
+
+    private int mode = DEFAULT_MODE;
+    private SearchView searchView;
+    private String last_query = "";
+    private SearchView.SearchAutoComplete editText;
+    private ImageView clearButton;
+    private SearchSuggestionsAdapter suggestionAdapter;
+
+
     public SearchFragment() {
     }
 
@@ -63,6 +86,7 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
      * Returns a new instance of this fragment for the given section
      * number.
      */
+
     public static SearchFragment newInstance(int sectionNumber) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -76,8 +100,6 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        searchButton = (Button) rootView.findViewById(R.id.search_button);
-        searchEditText = (EditText) rootView.findViewById(R.id.search_editText);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
         lectureList = new ArrayList<>();
@@ -91,33 +113,42 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(mAdapter);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        setHasOptionsMenu(true);
+        return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+        clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        editText = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        editText.setThreshold(0);
+        suggestionAdapter = new SearchSuggestionsAdapter(getContext());
+        searchView.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
+        searchView.setOnSuggestionListener(suggestionListener);
+        searchView.setOnQueryTextListener(queryTextListener);
+        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+        searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (searchManager!=null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
+        enableDefaultMode();
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
-            public void onClick(View v) {
-                query = new HashMap();
-                searchText = searchEditText.getText().toString();
-                query.put("year",year);
-                query.put("semester",semester);
-                //query.put("title", searchText);
-                query.put("title",searchText);
-
-                getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
-                    @Override
-                    public void success(List<Lecture> lectures, Response response) {
-                        Log.d(TAG, "post search query success!!");
-                        System.out.println(lectures);
-                        mAdapter.setLectures(lectures);;
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.d(TAG, "post search query failed!!");
-                        System.out.println(error);
-                    }
-                });
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                enableDefaultMode();
+                return true;
+            }
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return true;
             }
         });
-        return rootView;
     }
 
     @Override
@@ -136,4 +167,218 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     public void notifyLectureChanged() {
         mInstance.invalidate();
     }
+
+    private SearchView.OnSuggestionListener suggestionListener = new SearchView.OnSuggestionListener() {
+        @Override
+        public boolean onSuggestionClick(int position)
+        {
+            Toast.makeText(getContext(), "테그 입력!", Toast.LENGTH_SHORT).show();
+            enableDefaultMode();
+            return true;
+        }
+
+        @Override
+        public boolean onSuggestionSelect(int position)
+        {
+            return false;
+        }
+    };
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            if (mode == DEFAULT_MODE) {
+                searchView.clearFocus();
+                postQuery(query);
+                return false;
+            } else {
+                // TODO : (SeongWon) 테그가 유효한지 체크 한 후, 유효하면 등록 유요하지 않으면 toast
+                Toast.makeText(getContext(), "테그 입력!", Toast.LENGTH_SHORT).show();
+                enableDefaultMode();
+                return true;
+            }
+        }
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (Strings.isNullOrEmpty(newText) && mode == TAG_MODE) {
+                clearButton.setVisibility(View.VISIBLE);
+            }
+
+            if (newText.endsWith("#")) {
+                enableTagMode();
+            }
+
+            return true;
+        }
+    };
+
+    private void postQuery(String text) {
+        query = new HashMap();
+        query.put("year", year);
+        query.put("semester", semester);
+        query.put("title", text);
+
+        getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
+            @Override
+            public void success(List<Lecture> lectures, Response response) {
+                Log.d(TAG, "post search query success!!");
+                System.out.println(lectures);
+                mAdapter.setLectures(lectures);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "post search query failed!!");
+                System.out.println(error);
+            }
+        });
+    }
+
+    private void enableTagMode() {
+        mode = TAG_MODE;
+
+        int len = searchView.getQuery().length();
+        last_query = searchView.getQuery().toString().substring(0, len-1);
+        searchView.setQuery("", false);
+        searchView.setQueryHint("ex) 3학점, 컴공 등...");
+        searchView.setSuggestionsAdapter(suggestionAdapter);
+        SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        text.setCompoundDrawablesWithIntrinsicBounds(getActivity().getResources().getDrawable(R.drawable.hash),
+                null,
+                null,
+                null);
+        text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));
+
+        clearButton.setVisibility(View.VISIBLE);
+        clearButton.setOnClickListener(mTagListener);
+    }
+
+    private void enableDefaultMode() {
+        mode = DEFAULT_MODE;
+
+        searchView.setQuery(last_query, false);
+        searchView.setQueryHint("#을 눌러보세요!");
+        searchView.setSuggestionsAdapter(null);
+        editText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        clearButton.setOnClickListener(mDefaultListener);
+    }
+
+    private View.OnClickListener mDefaultListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            searchView.setQuery("",false);
+        }
+    };
+
+    private View.OnClickListener mTagListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            enableDefaultMode();
+        }
+    };
+
+    public static class SearchSuggestionsAdapter extends SimpleCursorAdapter
+    {
+        private static final String[] mFields  = { "_id" , "result" }; // _id field must exist
+        private static final String[] mVisible = { "result" }; // db field name
+        private static final int[]    mViewIds = { R.id.text1 };
+
+
+        public SearchSuggestionsAdapter(Context context)
+        {
+            super(context, R.layout.cell_suggestion, null, mVisible, mViewIds, 0);
+        }
+
+        @Override
+        public Cursor runQueryOnBackgroundThread(CharSequence constraint)
+        {
+            return new SuggestionsCursor(constraint);
+        }
+
+        private static class SuggestionsCursor extends AbstractCursor
+        {
+            private ArrayList<String> mResults;
+
+            public SuggestionsCursor(CharSequence constraint)
+            {
+                final int count = 100;
+                mResults = new ArrayList<String>(count);
+                for(int i = 0; i < count; i++){
+                    mResults.add("Result " + (i + 1));
+                }
+                if(!TextUtils.isEmpty(constraint)){
+                    String constraintString = constraint.toString().toLowerCase(Locale.ROOT);
+                    Iterator<String> iter = mResults.iterator();
+                    while(iter.hasNext()){
+                        if(!iter.next().toLowerCase(Locale.ROOT).startsWith(constraintString))
+                        {
+                            iter.remove();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public int getCount()
+            {
+                return mResults.size();
+            }
+
+            @Override
+            public String[] getColumnNames()
+            {
+                return mFields;
+            }
+
+            @Override
+            public long getLong(int column)
+            {
+                if(column == 0){
+                    return mPos;
+                }
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public String getString(int column)
+            {
+                if(column == 1){
+                    return mResults.get(mPos);
+                }
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public short getShort(int column)
+            {
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public int getInt(int column)
+            {
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public float getFloat(int column)
+            {
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public double getDouble(int column)
+            {
+                throw new UnsupportedOperationException("unimplemented");
+            }
+
+            @Override
+            public boolean isNull(int column)
+            {
+                return false;
+            }
+        }
+    }
+
+
 }
