@@ -31,8 +31,10 @@ import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.adapter.LectureListAdapter;
+import com.wafflestudio.snutt.adapter.TagListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
+import com.wafflestudio.snutt.model.Tag;
 import com.wafflestudio.snutt.view.TableView;
 
 import java.util.ArrayList;
@@ -57,8 +59,10 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     private static final String TAG = "search_fragment";
     private static TableView mInstance;
 
+    private List<Tag> tagList;
     private List<Lecture> lectureList;
-    private RecyclerView recyclerView;
+    private RecyclerView tagRecyclerView;
+    private RecyclerView lectureRecyclerView;
     private LectureListAdapter mAdapter;
     private Map query;
 
@@ -99,21 +103,37 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+        setHasOptionsMenu(true);
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
+        lectureRecyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
+        tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.tag_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
         lectureList = new ArrayList<>();
 
         year = getMainActivity().year;
         semester = getMainActivity().semester;
 
+
+        //LinearLayoutManager layoutManager
+        //        = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
         mAdapter = new LectureListAdapter(lectureList);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(null);
-        recyclerView.setAdapter(mAdapter);
+        lectureRecyclerView.setLayoutManager(layoutManager);
+        lectureRecyclerView.setItemAnimator(null);
+        lectureRecyclerView.setAdapter(mAdapter);
 
-        setHasOptionsMenu(true);
+        tagList = new ArrayList<>();
+        tagList.add(new Tag("1","컴공"));
+        tagList.add(new Tag("2","김명수 교수"));
+        tagList.add(new Tag("3","컴퓨터공학"));
+        tagList.add(new Tag("4","가나다라마바사아아아아"));
+        tagList.add(new Tag("5","이히히히히히가나다라다라나마바"));
+        tagList.add(new Tag("6","하나이라나대나이자아"));
+
+        LinearLayoutManager horizontalLayoutManager
+                = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
+        tagRecyclerView.setLayoutManager(horizontalLayoutManager);
+        tagRecyclerView.setAdapter(new TagListAdapter(tagList));
         return rootView;
     }
 
