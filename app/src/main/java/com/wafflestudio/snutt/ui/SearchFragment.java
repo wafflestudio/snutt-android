@@ -55,7 +55,7 @@ import retrofit.client.Response;
  * Created by makesource on 2016. 1. 16..
  */
 public class SearchFragment extends SNUTTBaseFragment
-        implements LectureManager.OnLectureChangedListener {
+        implements LectureManager.OnLectureChangedListener, TagManager.OnTagChangedListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -173,12 +173,15 @@ public class SearchFragment extends SNUTTBaseFragment
     public void onPause() {
         super.onPause();
         LectureManager.getInstance().removeListener(this);
+        TagManager.getInstance().unregisterListener();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         LectureManager.getInstance().addListener(this);
+        TagManager.getInstance().registerListener(this);
+
     }
 
     @Override
@@ -186,28 +189,31 @@ public class SearchFragment extends SNUTTBaseFragment
         mInstance.invalidate();
     }
 
+    @Override
+    public void notifyTagChanged() {
+        if (TagManager.getInstance().getMyTag().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
+            tagRecyclerView.setVisibility(View.GONE);
+            Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
+            tagRecyclerView.startAnimation(animation);
+        } else if (TagManager.getInstance().getMyTag().size() > 0 && tagRecyclerView.getVisibility() == View.GONE) {
+            tagRecyclerView.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
+            tagRecyclerView.startAnimation(animation);
+        }
+    }
+
+
     private SearchView.OnSuggestionListener suggestionListener = new SearchView.OnSuggestionListener() {
         @Override
-        public boolean onSuggestionClick(int position)
-        {
-            Toast.makeText(getContext(), "테그 입력!", Toast.LENGTH_SHORT).show();
-            enableDefaultMode();
-
-            if (tagRecyclerView.getVisibility() == View.GONE) {
-                tagRecyclerView.setVisibility(View.VISIBLE);
-                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
-                tagRecyclerView.startAnimation(animation);
-            } else {
-                tagRecyclerView.setVisibility(View.GONE);
-                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
-                tagRecyclerView.startAnimation(animation);
-            }
+        public boolean onSuggestionClick(int position) {
+            Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(position);
+            String query = cursor.getString(1);
+            searchView.setQuery(query, false);
             return true;
         }
 
         @Override
-        public boolean onSuggestionSelect(int position)
-        {
+        public boolean onSuggestionSelect(int position) {
             return false;
         }
     };
@@ -220,8 +226,10 @@ public class SearchFragment extends SNUTTBaseFragment
                 postQuery(query);
                 return false;
             } else {
-                // TODO : (SeongWon) 테그가 유효한지 체크 한 후, 유효하면 등록 유요하지 않으면 toast
-                Toast.makeText(getContext(), "테그 입력!", Toast.LENGTH_SHORT).show();
+                if (TagManager.getInstance().addTag(query)) {
+                    tagAdapter.notifyItemInserted(0);
+                    tagRecyclerView.scrollToPosition(0);
+                }
                 enableDefaultMode();
                 return true;
             }

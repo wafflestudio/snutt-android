@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.model.Tag;
 
 import java.util.List;
@@ -46,10 +47,9 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
         Tag tag = tags.get(position);
 
         holder.tagTitle.setText(tag.getName());
-
         holder.setClickListener(new ViewHolder.ClickListener() {
             @Override
-            public void onClick(View v, int position) {
+            public void onClick(View v, final int position) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
                 alertDialog.setMessage("해당 테그를 삭제하시겠습니까?");
@@ -57,7 +57,8 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
                 alertDialog.setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
+                                TagManager.getInstance().removeTag(position);
+                                notifyItemRemoved(position);
                             }
                         });
                 alertDialog.setNegativeButton("No",
