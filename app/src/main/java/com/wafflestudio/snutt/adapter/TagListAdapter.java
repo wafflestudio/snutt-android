@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt.adapter;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +22,11 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
 
     private static final String TAG = "TAG_LIST_ADAPTER" ;
 
+    private Context context;
     private List<Tag> tags;
 
-    public TagListAdapter(List<Tag> tags) {
+    public TagListAdapter(Context context, List<Tag> tags) {
+        this.context = context;
         this.tags = tags;
     }
 
@@ -41,6 +46,30 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
         Tag tag = tags.get(position);
 
         holder.tagTitle.setText(tag.getName());
+
+        holder.setClickListener(new ViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+                alertDialog.setMessage("해당 테그를 삭제하시겠습니까?");
+
+                alertDialog.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                alertDialog.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                alertDialog.show();
+            }
+        });
     }
 
     @Override

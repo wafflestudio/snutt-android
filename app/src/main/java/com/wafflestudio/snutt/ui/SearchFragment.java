@@ -21,6 +21,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.adapter.LectureListAdapter;
 import com.wafflestudio.snutt.adapter.TagListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
+import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Tag;
 import com.wafflestudio.snutt.view.TableView;
@@ -51,7 +54,9 @@ import retrofit.client.Response;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SearchFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener { /**
+public class SearchFragment extends SNUTTBaseFragment
+        implements LectureManager.OnLectureChangedListener {
+    /**
      * The fragment argument representing the section number for this
      * fragment.
      */
@@ -59,11 +64,11 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
     private static final String TAG = "search_fragment";
     private static TableView mInstance;
 
-    private List<Tag> tagList;
     private List<Lecture> lectureList;
     private RecyclerView tagRecyclerView;
     private RecyclerView lectureRecyclerView;
     private LectureListAdapter mAdapter;
+    private TagListAdapter tagAdapter;
     private Map query;
 
     private String year;
@@ -113,7 +118,6 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         year = getMainActivity().year;
         semester = getMainActivity().semester;
 
-
         //LinearLayoutManager layoutManager
         //        = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
@@ -122,18 +126,11 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(mAdapter);
 
-        tagList = new ArrayList<>();
-        tagList.add(new Tag("1","컴공"));
-        tagList.add(new Tag("2","김명수 교수"));
-        tagList.add(new Tag("3","컴퓨터공학"));
-        tagList.add(new Tag("4","가나다라마바사아아아아"));
-        tagList.add(new Tag("5","이히히히히히가나다라다라나마바"));
-        tagList.add(new Tag("6","하나이라나대나이자아"));
-
         LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
         tagRecyclerView.setLayoutManager(horizontalLayoutManager);
-        tagRecyclerView.setAdapter(new TagListAdapter(tagList));
+        tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTag());
+        tagRecyclerView.setAdapter(tagAdapter);
         return rootView;
     }
 
@@ -164,6 +161,7 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
                 enableDefaultMode();
                 return true;
             }
+
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 return true;
@@ -194,6 +192,16 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
         {
             Toast.makeText(getContext(), "테그 입력!", Toast.LENGTH_SHORT).show();
             enableDefaultMode();
+
+            if (tagRecyclerView.getVisibility() == View.GONE) {
+                tagRecyclerView.setVisibility(View.VISIBLE);
+                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
+                tagRecyclerView.startAnimation(animation);
+            } else {
+                tagRecyclerView.setVisibility(View.GONE);
+                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
+                tagRecyclerView.startAnimation(animation);
+            }
             return true;
         }
 
@@ -321,17 +329,22 @@ public class SearchFragment extends SNUTTBaseFragment implements LectureManager.
 
             public SuggestionsCursor(CharSequence constraint)
             {
-                final int count = 100;
+                /*final int count = 100;
                 mResults = new ArrayList<String>(count);
                 for(int i = 0; i < count; i++){
                     mResults.add("Result " + (i + 1));
+                }*/
+                mResults = new ArrayList<>();
+                List<Tag> tagList = TagManager.getInstance().getTagList();
+                for (Tag tag : tagList) {
+                    mResults.add(tag.getName());
                 }
+
                 if(!TextUtils.isEmpty(constraint)){
                     String constraintString = constraint.toString().toLowerCase(Locale.ROOT);
                     Iterator<String> iter = mResults.iterator();
-                    while(iter.hasNext()){
-                        if(!iter.next().toLowerCase(Locale.ROOT).startsWith(constraintString))
-                        {
+                    while(iter.hasNext()) {
+                        if(!iter.next().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                             iter.remove();
                         }
                     }
