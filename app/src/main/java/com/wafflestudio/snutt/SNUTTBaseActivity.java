@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.wafflestudio.snutt.ui.LectureDetailActivity;
 import com.wafflestudio.snutt.ui.MainActivity;
+import com.wafflestudio.snutt.ui.TableCreateActivity;
 import com.wafflestudio.snutt.ui.TableListActivity;
 
 /**
@@ -29,6 +30,11 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     public void startLectureDetail(int position) {
         Intent intent = new Intent(this, LectureDetailActivity.class);
         intent.putExtra(INTENT_KEY_LECTURE_POSITION, position);
+        startActivity(intent);
+    }
+
+    public void startTableCreate() {
+        Intent intent = new Intent(this, TableCreateActivity.class);
         startActivity(intent);
     }
 
