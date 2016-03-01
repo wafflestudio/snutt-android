@@ -100,7 +100,7 @@ public class MainActivity extends SNUTTBaseActivity {
         super.onNewIntent(intent);
         String id = null;
         if (intent.getExtras() != null) { // intent의 강의 id 받아오기
-            id = intent.getExtras().getString(SNUTTBaseActivity.INTENT_KEY_TABLE_ID);
+            id = intent.getExtras().getString(INTENT_KEY_TABLE_ID);
         } else { // PrefManager 에서 마지막에 본 강의 id 받아오기
             id = "0";
         }

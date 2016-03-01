@@ -3,6 +3,7 @@ package com.wafflestudio.snutt.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.adapter.MyLectureListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
+import com.wafflestudio.snutt.model.Lecture;
+
+import java.util.List;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -20,6 +24,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
  * The fragment argument representing the section number for this
  * fragment.
  */
+    private static final String TAG = "MY_LECTURE_FRAGMENT" ;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private RecyclerView recyclerView;
@@ -48,6 +53,13 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_lecture_recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
         mAdapter = new MyLectureListAdapter(LectureManager.getInstance().getLectures());
+        mAdapter.setOnItemClickListener(new MyLectureListAdapter.ViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                Log.d(TAG, String.valueOf(position) + "-th item clicked!");
+                getMainActivity().startLectureDetail(position);
+            }
+        });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
 

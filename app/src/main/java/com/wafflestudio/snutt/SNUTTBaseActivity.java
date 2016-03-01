@@ -3,6 +3,7 @@ package com.wafflestudio.snutt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
+import com.wafflestudio.snutt.ui.LectureDetailActivity;
 import com.wafflestudio.snutt.ui.MainActivity;
 import com.wafflestudio.snutt.ui.TableListActivity;
 
@@ -11,7 +12,8 @@ import com.wafflestudio.snutt.ui.TableListActivity;
  */
 public class SNUTTBaseActivity extends AppCompatActivity {
 
-    public static final String INTENT_KEY_TABLE_ID = "intent_key_table_key";
+    public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
+    public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
 
     public void startTableList() {
         Intent intent = new Intent(this, TableListActivity.class);
@@ -21,6 +23,12 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     public void startTableView(String id) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(INTENT_KEY_TABLE_ID, id);
+        startActivity(intent);
+    }
+
+    public void startLectureDetail(int position) {
+        Intent intent = new Intent(this, LectureDetailActivity.class);
+        intent.putExtra(INTENT_KEY_LECTURE_POSITION, position);
         startActivity(intent);
     }
 

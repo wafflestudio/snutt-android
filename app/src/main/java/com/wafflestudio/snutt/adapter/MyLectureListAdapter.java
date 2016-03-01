@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdapter.ViewHolder> {
 
+    private static ViewHolder.ClickListener clickListener;
     private List<Lecture> myLecture;
 
     public MyLectureListAdapter(List<Lecture> myLecture) {
@@ -51,14 +52,40 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public View view;
         public TextView courseTitle;
+
 
         public ViewHolder(View view) {
             super(view);
+            this.view = view;
             this.courseTitle = (TextView) view.findViewById(R.id.course_title);
+
+            this.view.setOnClickListener(this);
+        }
+
+        public interface ClickListener {
+            /**
+             * Called when the view is clicked.
+             *
+             * @param v view that is clicked
+             * @param position of the clicked item
+             */
+
+            public void onClick(View v, int position);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null) {
+                clickListener.onClick(v,getPosition());
+            }
         }
     }
 
+    public void setOnItemClickListener(ViewHolder.ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 }
