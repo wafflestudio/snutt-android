@@ -56,7 +56,6 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         holder.remark.setText(lecture.getRemark());
 
         if (selectedPosition == position) {
-            holder.lectureLayout.setEnabled(false);
             holder.lectureLayout.setBackgroundColor(Color.GRAY);
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
@@ -69,7 +68,6 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
-            holder.lectureLayout.setEnabled(true);
             holder.lectureLayout.setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -80,10 +78,17 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
                 //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
                 if (v.getId() == holder.lectureLayout.getId()) {
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");
-                    notifyItemChanged(selectedPosition);
-                    notifyItemChanged(position);
-                    selectedPosition = position;
-                    LectureManager.getInstance().setSelectedLecture(lecture);
+                    if (selectedPosition == position) {
+                        selectedPosition = -1;
+                        notifyItemChanged(position);
+                        LectureManager.getInstance().setSelectedLecture(null);
+                    } else {
+                        notifyItemChanged(selectedPosition);
+                        notifyItemChanged(position);
+                        selectedPosition = position;
+                        LectureManager.getInstance().setSelectedLecture(lecture);
+                    }
+
                 } else if (v.getId() == holder.add.getId()) {
                     Log.d(TAG, String.valueOf(position) + " add Clicked!!");
                     LectureManager.getInstance().addLecture(lecture);

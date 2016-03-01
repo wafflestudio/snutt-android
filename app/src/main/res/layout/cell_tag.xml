@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:background="@drawable/round_rect_green"
-    android:padding="2dp"
+    android:background="@drawable/round_rect_blue"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:layout_width="wrap_content"
     android:layout_margin="5dp"
-    android:layout_height="wrap_content">
+    android:layout_height="30dp"
+    android:gravity="center">
 
     <TextView
         android:id="@+id/tag_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:textColor="#ffffff"
         android:text="컴공"/>
 
     <Button
         android:id="@+id/remove"
-        android:layout_gravity="center"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@android:drawable/ic_menu_close_clear_cancel"/>

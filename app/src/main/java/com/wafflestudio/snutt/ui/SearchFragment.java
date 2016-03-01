@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.AbstractCursor;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -279,7 +280,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setQueryHint("ex) 3학점, 컴공 등...");
         searchView.setSuggestionsAdapter(suggestionAdapter);
         SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        text.setCompoundDrawablesWithIntrinsicBounds(getActivity().getResources().getDrawable(R.drawable.hash),
+        Drawable img = getActivity().getResources().getDrawable(R.drawable.hash);
+        text.setCompoundDrawablesWithIntrinsicBounds(img,
                 null,
                 null,
                 null);
@@ -293,7 +295,8 @@ public class SearchFragment extends SNUTTBaseFragment
         mode = DEFAULT_MODE;
 
         searchView.setQuery(last_query, false);
-        searchView.setQueryHint("#으로 테그검색을!");
+        searchView.setQueryHint("#으로 태그검색!");
+        suggestionAdapter.changeCursor(null);
         searchView.setSuggestionsAdapter(null);
         editText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         clearButton.setOnClickListener(mDefaultListener);
@@ -313,7 +316,7 @@ public class SearchFragment extends SNUTTBaseFragment
         }
     };
 
-    public static class SearchSuggestionsAdapter extends SimpleCursorAdapter
+    public static class  SearchSuggestionsAdapter extends SimpleCursorAdapter
     {
         private static final String[] mFields  = { "_id" , "result" }; // _id field must exist
         private static final String[] mVisible = { "result" }; // db field name
