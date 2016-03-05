@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.adapter;
+package com.wafflestudio.snutt.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

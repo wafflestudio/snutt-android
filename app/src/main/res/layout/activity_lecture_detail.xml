@@ -174,4 +174,11 @@
             android:text="ⓔ타과생 수강불허"/>
     </LinearLayout>
 
+    <ListView
+        android:id="@+id/time_listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
 </LinearLayout>

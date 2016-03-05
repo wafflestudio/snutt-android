@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,10 +9,8 @@ import android.widget.Toast;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
-import com.wafflestudio.snutt.adapter.ExpandableTableListAdapter;
-import com.wafflestudio.snutt.adapter.TableListAdapter;
+import com.wafflestudio.snutt.ui.adapter.ExpandableTableListAdapter;
 import com.wafflestudio.snutt.manager.TableManager;
-import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
 import java.util.ArrayList;

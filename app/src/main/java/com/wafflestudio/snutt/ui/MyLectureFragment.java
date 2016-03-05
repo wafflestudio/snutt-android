@@ -7,15 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
-import com.wafflestudio.snutt.adapter.MyLectureListAdapter;
+import com.wafflestudio.snutt.ui.adapter.MyLectureListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
-import com.wafflestudio.snutt.model.Lecture;
-
-import java.util.List;
 
 /**
  * Created by makesource on 2016. 1. 16..

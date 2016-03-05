@@ -21,7 +21,8 @@ public class SNUTTUtils {
         if (wday.equals("토")) return 5;
         return -1;
     }
-    public static String numberToWdayString(int wday){
+
+    public static String numberToWday(int wday){
         switch (wday){
             case 0: return "월";
             case 1: return "화";
@@ -32,6 +33,22 @@ public class SNUTTUtils {
         }
         return null;
     }
+
+    public static int numberToTime(String time) {
+        return 0;
+    }
+
+    public static String numberToTime(int num) {
+        int hour =  8 + num / 2;
+        String minute;
+
+        if (num%2==1) minute = "30";
+        else minute = "00";
+
+        String time = String.valueOf(hour) + ":" + minute;
+        return time;
+    }
+
     public static String zeroStr(int number){
         if (number < 10) return "0" + number;
         return "" + number;
