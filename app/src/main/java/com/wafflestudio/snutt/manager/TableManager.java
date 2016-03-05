@@ -48,6 +48,25 @@ public class TableManager {
         return tableMap.get(id);
     }
 
+    public void addTable(Table table) {
+        int position = -1;
+        for (int i=0;i<tables.size();i++) {
+            if (tables.get(i).getYear() > table.getYear()) {
+                position = i;
+            } else if (tables.get(i).getYear() == table.getYear()) {
+                if (tables.get(i).getSemester() >= table.getSemester()) {
+                    position = i;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        tables.add(position + 1, table);
+        tableMap.put(table.getId(), table);
+    }
+
     private void getDefaultTable() {
 
         Lecture sample = new Lecture();
@@ -71,12 +90,12 @@ public class TableManager {
         sampleList.add(sample);
 
         tables = new ArrayList<>();
-        tables.add(new Table("0","2016","1","이번학기 시간표",new ArrayList<Lecture>()));
-        tables.add(new Table("1","2015","2","후보 1",new ArrayList<Lecture>()));
-        tables.add(new Table("2","2015","2","후보 2",new ArrayList<Lecture>()));
-        tables.add(new Table("3","2015","1","최종안",new ArrayList<Lecture>()));
-        tables.add(new Table("4","2015","1","제 1안",new ArrayList<Lecture>()));
-        tables.add(new Table("5","2014","S","후.. 개발하기힘들다",new ArrayList<Lecture>()));
+        tables.add(new Table("0",2016,1,"이번학기 시간표",new ArrayList<Lecture>()));
+        tables.add(new Table("1",2015,3,"후보 1",new ArrayList<Lecture>()));
+        tables.add(new Table("2",2015,3,"후보 2",new ArrayList<Lecture>()));
+        tables.add(new Table("3",2015,1,"최종안",new ArrayList<Lecture>()));
+        tables.add(new Table("4",2015,1,"제 1안",new ArrayList<Lecture>()));
+        tables.add(new Table("5",2014,2,"후.. 개발하기힘들다",new ArrayList<Lecture>()));
 
         tableMap = new HashMap<>();
         for(int i=0;i<tables.size();i++) {

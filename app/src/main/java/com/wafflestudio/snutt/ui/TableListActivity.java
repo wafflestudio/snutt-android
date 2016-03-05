@@ -116,4 +116,8 @@ public class TableListActivity extends SNUTTBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

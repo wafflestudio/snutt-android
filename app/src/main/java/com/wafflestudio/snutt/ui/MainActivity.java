@@ -45,8 +45,8 @@ public class MainActivity extends SNUTTBaseActivity {
      */
     private ViewPager mViewPager;
 
-    public String year;
-    public String semester;
+    public int year;
+    public int semester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +110,6 @@ public class MainActivity extends SNUTTBaseActivity {
         year = table.getYear();
         semester = table.getSemester();
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

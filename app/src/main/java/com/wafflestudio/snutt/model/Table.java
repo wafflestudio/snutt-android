@@ -1,5 +1,9 @@
 package com.wafflestudio.snutt.model;
 
+import android.util.Log;
+
+import com.google.common.base.Preconditions;
+
 import java.util.List;
 
 /**
@@ -7,13 +11,15 @@ import java.util.List;
  */
 public class Table {
 
+    private static final String TAG = "MODEL_TABLE" ;
+
     private String id;
-    private String year;
-    private String semester;
+    private int year;
+    private int semester;
     private String title;
     private List<Lecture> lectures;
 
-    public Table(String id, String year, String semester, String title, List<Lecture> lectures) {
+    public Table(String id, int year, int semester, String title, List<Lecture> lectures) {
         this.id = id;
         this.year = year;
         this.semester = semester;
@@ -23,25 +29,25 @@ public class Table {
 
     public Table(String id,String title) {
         this.id = id;
-        this.year = null;
-        this.semester = null;
+        this.year = 0;
+        this.semester = 0;
         this.title = title;
         this.lectures = null;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
-    public String getSemester() {
+    public int getSemester() {
         return semester;
     }
 
-    public void setSemester(String semester) {
+    public void setSemester(int semester) {
         this.semester = semester;
     }
 
@@ -70,6 +76,28 @@ public class Table {
     }
 
     public String getFullSemester() {
-        return this.year + '-' + this.semester;
+        String yearString;
+        String semesterString;
+
+        yearString = String.valueOf(this.year);
+        switch (this.semester) {
+            case 1:
+                semesterString = "1";
+                break;
+            case 2:
+                semesterString = "S";
+                break;
+            case 3:
+                semesterString = "2";
+                break;
+            case 4:
+                semesterString = "W";
+                break;
+            default:
+                semesterString = "";
+                Log.e(TAG, "semester is out of range!!");
+                break;
+        }
+        return yearString + '-' + semesterString;
     }
 }

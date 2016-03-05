@@ -72,8 +72,8 @@ public class SearchFragment extends SNUTTBaseFragment
     private TagListAdapter tagAdapter;
     private Map query;
 
-    private String year;
-    private String semester;
+    private int year;
+    private int semester;
 
     /**
      * This Variable is used for SearchView
