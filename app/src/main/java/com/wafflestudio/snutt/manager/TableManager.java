@@ -7,6 +7,8 @@ import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,22 +51,14 @@ public class TableManager {
     }
 
     public void addTable(Table table) {
-        int position = -1;
-        for (int i=0;i<tables.size();i++) {
-            if (tables.get(i).getYear() > table.getYear()) {
-                position = i;
-            } else if (tables.get(i).getYear() == table.getYear()) {
-                if (tables.get(i).getSemester() >= table.getSemester()) {
-                    position = i;
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        tables.add(position + 1, table);
+        tables.add(table);
         tableMap.put(table.getId(), table);
+
+        Collections.sort(tables);
+    }
+
+    public void updateTables() {
+
     }
 
     private void getDefaultTable() {

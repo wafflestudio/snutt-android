@@ -4,12 +4,13 @@ import android.util.Log;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class Table {
+public class Table implements Comparable<Table> {
 
     private static final String TAG = "MODEL_TABLE" ;
 
@@ -33,6 +34,10 @@ public class Table {
         this.semester = 0;
         this.title = title;
         this.lectures = null;
+    }
+
+    public Table() {
+
     }
 
     public int getYear() {
@@ -99,5 +104,32 @@ public class Table {
                 break;
         }
         return yearString + '-' + semesterString;
+    }
+
+    /**
+     * Compares this object to the specified object to determine their relative
+     * order.
+     *
+     * @param another the object to compare to this instance.
+     * @return a negative integer if this instance is less than {@code another};
+     * a positive integer if this instance is greater than
+     * {@code another}; 0 if this instance has the same order as
+     * {@code another}.
+     * @throws ClassCastException if {@code another} cannot be converted into something
+     *                            comparable to {@code this} instance.
+     */
+    @Override
+    public int compareTo(Table another) {
+        if (getYear() > another.getYear()) return -1;
+        if (getYear() < another.getYear()) return 1;
+        if (getYear() == another.getYear()) {
+            if (getSemester() > another.getSemester()) return -1;
+            if (getSemester() < another.getSemester()) return 1;
+            if (getSemester() == another.getSemester()) {
+                // update time 기준으로 비교!
+                return 0;
+            }
+        }
+        return 0;
     }
 }
