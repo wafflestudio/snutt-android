@@ -46,12 +46,14 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <TextView
+        <EditText
             android:id="@+id/class_place"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
+            android:background="@android:color/transparent"
+            android:hint="301-203"
             android:text="301-203"/>
     </LinearLayout>
 

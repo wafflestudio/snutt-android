@@ -57,7 +57,9 @@ public class TableManager {
         Collections.sort(tables);
     }
 
-    public void updateTables() {
+    public void updateTables(Table table) {
+        // TODO : (SeongWon) server에 update 요청 날리기
+
 
     }
 

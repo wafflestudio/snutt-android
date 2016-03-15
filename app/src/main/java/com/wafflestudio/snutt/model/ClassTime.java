@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt.model;
 
+import com.google.gson.JsonObject;
+
 /**
  * Created by makesource on 2016. 2. 10..
  */
@@ -9,6 +11,13 @@ public class ClassTime {
     private int len;
     private String place;
     private String _id;
+
+    public ClassTime(JsonObject jsonObject) {
+        this.day = jsonObject.get("day").getAsInt();
+        this.start = jsonObject.get("start").getAsInt();
+        this.len = jsonObject.get("len").getAsInt();
+        this.place = jsonObject.get("place").getAsString();
+    }
 
     public int getStart() {
         return start;

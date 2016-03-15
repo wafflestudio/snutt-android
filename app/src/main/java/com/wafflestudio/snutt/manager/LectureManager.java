@@ -123,6 +123,10 @@ public class LectureManager {
         Log.w(TAG, "lecture is not exist!!");
     }
 
+    public void updateLecture(Lecture lec) {
+        // server에 update하기
+    }
+
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     public boolean alreadyOwned(Lecture lec){
         for (Lecture lecture : lectures){
