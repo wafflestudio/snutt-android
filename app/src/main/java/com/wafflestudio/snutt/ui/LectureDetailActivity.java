@@ -3,6 +3,8 @@ package com.wafflestudio.snutt.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,6 +70,7 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
         Preconditions.checkPositionIndex(position, myLectures.size());
 
         Lecture lecture = myLectures.get(position);
+        getSupportActionBar().setTitle("강의 상세보기");
 
         classification.setText(lecture.getClassification());
         department.setText(lecture.getDepartment());
@@ -91,5 +94,32 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
 
         adapter = new ClassTimeAdapter(this, classTimes);
         timeListView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_lecture_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_confirm) {
+            // 강의 상세정보 수정 요청 (server)
+            finish();
+            return true;
+        }  else if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

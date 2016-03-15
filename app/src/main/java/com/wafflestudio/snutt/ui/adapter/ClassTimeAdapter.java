@@ -69,7 +69,6 @@ public class ClassTimeAdapter extends BaseAdapter {
         return v;
     }
 
-
     class ViewHolder{
         public TextView tv_time;
         public EditText et_place;
