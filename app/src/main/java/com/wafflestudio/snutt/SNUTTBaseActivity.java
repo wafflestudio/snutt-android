@@ -7,6 +7,7 @@ import com.wafflestudio.snutt.ui.LectureDetailActivity;
 import com.wafflestudio.snutt.ui.MainActivity;
 import com.wafflestudio.snutt.ui.TableCreateActivity;
 import com.wafflestudio.snutt.ui.TableListActivity;
+import com.wafflestudio.snutt.ui.WelcomeActivity;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -35,6 +36,11 @@ public class SNUTTBaseActivity extends AppCompatActivity {
 
     public void startTableCreate() {
         Intent intent = new Intent(this, TableCreateActivity.class);
+        startActivity(intent);
+    }
+    
+    public void startWelcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);
     }
 
