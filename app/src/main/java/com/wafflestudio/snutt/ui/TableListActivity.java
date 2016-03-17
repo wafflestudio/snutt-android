@@ -57,7 +57,6 @@ public class TableListActivity extends SNUTTBaseActivity {
             }
         });
 
-
     }
 
     private ExpandableTableListAdapter getAdapter() {
