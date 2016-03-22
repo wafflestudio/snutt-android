@@ -12,7 +12,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="시간"/>
+            android:text="시간"
+            style="@style/Text.lectureDetail"/>
 
         <View
             android:layout_width="0dp"
@@ -25,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="9:00 ~ 9:30"/>
+            android:text="9:00 ~ 9:30"
+            style="@style/Text.lectureDetail"/>
 
 
     </LinearLayout>
@@ -39,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="장소"/>
+            android:text="장소"
+            style="@style/Text.lectureDetail"/>
 
         <View
             android:layout_width="0dp"
@@ -54,7 +57,8 @@
             android:gravity="center"
             android:background="@android:color/transparent"
             android:hint="301-203"
-            android:text="301-203"/>
+            android:text="301-203"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
 

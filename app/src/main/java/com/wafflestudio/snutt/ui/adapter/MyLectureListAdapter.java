@@ -39,7 +39,7 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         Lecture lecture = myLecture.get(position);
 
-        String text = new String();
+        String text = "" ;
         text += lecture.getCourse_title();
         text += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
         holder.courseTitle.setText(text);

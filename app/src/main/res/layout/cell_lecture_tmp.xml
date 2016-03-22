@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="전필, 컴퓨터공학부, 3학년"
-            style="@style/Text.lectureDetail"/>
+            style="@style/Text.lectureBody"/>
     </LinearLayout>
 
     <LinearLayout

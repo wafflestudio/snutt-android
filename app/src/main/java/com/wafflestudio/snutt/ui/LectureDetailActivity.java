@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.R;
@@ -45,6 +47,8 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
     private EditText instructor;
     private TextView remark;
 
+    private Lecture lecture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +73,7 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
         // throws exception when the list position is out of range
         Preconditions.checkPositionIndex(position, myLectures.size());
 
-        Lecture lecture = myLectures.get(position);
+        lecture = myLectures.get(position);
         getSupportActionBar().setTitle("강의 상세보기");
 
         classification.setText(lecture.getClassification());
@@ -113,6 +117,18 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
 
         if (id == R.id.action_confirm) {
             // 강의 상세정보 수정 요청 (server)
+            String title = lecture.getCourse_title();
+            String inst = lecture.getInstructor();
+            JsonArray timeJson = adapter.getClassTimeJson();
+
+            if (!Strings.isNullOrEmpty( course_title.getText().toString() )) {
+                title = course_title.getText().toString();
+            }
+            if (!Strings.isNullOrEmpty( instructor.getText().toString() )) {
+                inst = instructor.getText().toString();
+            }
+
+            LectureManager.getInstance().updateLecture(lecture, title, inst, timeJson);
             finish();
             return true;
         }  else if (id == android.R.id.home) {

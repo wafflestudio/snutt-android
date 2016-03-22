@@ -17,6 +17,7 @@ public class ClassTime {
         this.start = jsonObject.get("start").getAsInt();
         this.len = jsonObject.get("len").getAsInt();
         this.place = jsonObject.get("place").getAsString();
+        this._id = jsonObject.get("_id").getAsString();
     }
 
     public int getStart() {

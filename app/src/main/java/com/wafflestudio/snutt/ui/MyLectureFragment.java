@@ -64,6 +64,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
 
     @Override
     public void notifyLectureChanged() {
+        Log.d (TAG, "notify lecture changed called");
         mAdapter.notifyDataSetChanged();
     }
 
@@ -77,5 +78,8 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     public void onResume() {
         super.onResume();
         LectureManager.getInstance().addListener(this);
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

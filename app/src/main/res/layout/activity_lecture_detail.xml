@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -12,13 +14,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="classification : "/>
+            android:text="classification : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/classification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="전필"/>
+            android:text="전필"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -29,13 +33,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="department : "/>
+            android:text="department : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/department"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="치의학과(치의학전공)"/>
+            android:text="치의학과(치의학전공)"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -46,13 +52,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="academic year : "/>
+            android:text="academic year : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/academic_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="석사"/>
+            android:text="석사"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -63,13 +71,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="course number : "/>
+            android:text="course number : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/course_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="861.702"/>
+            android:text="861.702"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -80,13 +90,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lecture number : "/>
+            android:text="lecture number : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/lecture_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="001"/>
+            android:text="001"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -97,7 +109,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="course title : "/>
+            android:text="course title : "
+            style="@style/Text.lectureDetail"/>
 
         <EditText
             android:id="@+id/course_title"
@@ -105,7 +118,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="구강악안면영역의 질환"
-            android:text="구강악안면영역의 질환"/>
+            android:text="구강악안면영역의 질환"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -116,13 +130,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="credit : "/>
+            android:text="credit :"
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/credit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5"/>
+            android:text="5"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -133,13 +149,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="class time : "/>
+            android:text="class time : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/class_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="금(6-3)"/>
+            android:text="금(6-3)"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -150,7 +168,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="instructor : "/>
+            android:text="instructor : "
+            style="@style/Text.lectureDetail"/>
 
         <EditText
             android:id="@+id/instructor"
@@ -158,7 +177,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="황보영"
-            android:text="황보영"/>
+            android:text="황보영"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <LinearLayout
@@ -169,19 +189,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="remark : "/>
+            android:text="remark : "
+            style="@style/Text.lectureDetail"/>
 
         <TextView
             android:id="@+id/remark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ⓔ타과생 수강불허"/>
+            android:text="ⓔ타과생 수강불허"
+            style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
     <ListView
         android:id="@+id/time_listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants">
 
     </ListView>
 

@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt.ui.adapter;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,24 +11,36 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.model.ClassTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by makesource on 2016. 3. 6..
  */
 public class ClassTimeAdapter extends BaseAdapter {
+
+    private static final String TAG = "CLASS_TIME_ADAPTER" ;
+
     private Context context;
     private List<ClassTime> times;
-    private ViewHolder viewHolder;
+    private List<String> places;
+    private MyWatcher watcher;
 
 
     public ClassTimeAdapter(Context context, List<ClassTime> times) {
         this.context = context;
         this.times = times;
+        this.places = new ArrayList<>();
+        for (ClassTime time : times) {
+            this.places.add(time.getPlace());
+        }
     }
 
     @Override
@@ -51,26 +66,62 @@ public class ClassTimeAdapter extends BaseAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             v = inflater.inflate(R.layout.cell_time, null);
-            viewHolder = new ViewHolder();
-            viewHolder.tv_time = (TextView) v.findViewById(R.id.class_time);
-            viewHolder.et_place = (EditText) v.findViewById(R.id.class_place);
-            v.setTag(viewHolder);
-        }else {
-            viewHolder = (ViewHolder) v.getTag();
         }
 
         ClassTime classTime = times.get(position);
+        TextView tv_time = (TextView) v.findViewById(R.id.class_time);
+        EditText et_place = (EditText) v.findViewById(R.id.class_place);
 
         String time = SNUTTUtils.numberToWday(classTime.getDay()) + " " +
                 SNUTTUtils.numberToTime(classTime.getStart()) + "~" +
                 SNUTTUtils.numberToTime(classTime.getStart() + classTime.getLen());
-        viewHolder.tv_time.setText(time);
-        viewHolder.et_place.setText(classTime.getPlace());
+        tv_time.setText(time);
+
+        if (watcher != null) et_place.removeTextChangedListener(watcher);
+        et_place.setText(places.get(position));
+        et_place.setHint(places.get(position));
+        watcher = new MyWatcher(position);
+        et_place.addTextChangedListener(watcher);
         return v;
     }
 
-    class ViewHolder{
-        public TextView tv_time;
-        public EditText et_place;
+    public JsonArray getClassTimeJson() {
+        JsonArray ja = new JsonArray();
+        for (int i=0;i<times.size();i++) {
+            ClassTime time = times.get(i);
+            JsonObject object = new JsonObject();
+            object.addProperty("day", time.getDay());
+            object.addProperty("start", time.getStart());
+            object.addProperty("len", time.getLen());
+            object.addProperty("_id", time.get_id());
+            object.addProperty("place", places.get(i));
+
+            ja.add(object);
+        }
+        return ja;
+    }
+    private class MyWatcher implements TextWatcher {
+        private int position;
+        public MyWatcher(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String text = s.toString();
+            if (!Strings.isNullOrEmpty(text)) {
+                Log.d(TAG, String.valueOf(position) + " : " + text);
+                places.set (position, text);
+            }
+        }
     }
 }
+

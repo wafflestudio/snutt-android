@@ -38,7 +38,7 @@ public class SNUTTBaseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TableCreateActivity.class);
         startActivity(intent);
     }
-    
+
     public void startWelcome() {
         Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);

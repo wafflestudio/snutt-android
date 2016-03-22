@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.model.Lecture;
@@ -24,7 +25,6 @@ public class LectureManager {
     private Lecture selectedLecture;
     private Random random = new Random();
     private int colorIndex = -1;
-
 
     private static LectureManager singleton;
 
@@ -47,7 +47,6 @@ public class LectureManager {
         if (singleton == null) Log.e(TAG, "This method should not be called at this time!!");
         return singleton;
     }
-
 
     public interface OnLectureChangedListener {
         void notifyLectureChanged();
@@ -123,7 +122,12 @@ public class LectureManager {
         Log.w(TAG, "lecture is not exist!!");
     }
 
-    public void updateLecture(Lecture lec) {
+    public void updateLecture(Lecture lec, String title, String inst, JsonArray timeJson) {
+        lec.setCourse_title(title);
+        lec.setInstructor(inst);
+        lec.setClass_time_json(timeJson);
+        notifyLectureChanged();
+        Log.d(TAG, "lecture is updated!!");
         // server에 update하기
     }
 
