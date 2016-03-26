@@ -44,8 +44,7 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
                 UserManager.getInstance().postSignIn(id, password);
             }
         });
-
-
+        
         return rootView;
     }
 
@@ -62,7 +61,13 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
     }
 
     @Override
-    public void notifySignIn() {
-        Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
+    public void notifySignIn(boolean code) {
+        if (code) {
+            Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
+            getBaseActivity().startMain();
+            getActivity().finish();
+        } else {
+            Toast.makeText(getContext(), "로그인 실패..", Toast.LENGTH_SHORT).show();
+        }
     }
 }

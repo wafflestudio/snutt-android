@@ -47,7 +47,7 @@ public class UserManager {
     }
 
     public interface OnUserDataChangedListener {
-        void notifySignIn();
+        void notifySignIn(boolean code);
     }
 
     private List<OnUserDataChangedListener> listeners = new ArrayList<>();
@@ -84,20 +84,21 @@ public class UserManager {
             public void success(String s, Response response) {
                 Log.d(TAG, "post sign in success!!");
                 Log.d(TAG, "token : " + s);
-                notifySingIn();
+                notifySingIn(true);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "post sign in failed");
+                notifySingIn(false);
             }
         });
 
     }
 
-    private void notifySingIn() {
+    private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {
-            listener.notifySignIn();
+            listener.notifySignIn(code);
         }
     }
 

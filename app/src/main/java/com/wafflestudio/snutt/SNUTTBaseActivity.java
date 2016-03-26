@@ -17,6 +17,11 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
     public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
 
+    public void startMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
     public void startTableList() {
         Intent intent = new Intent(this, TableListActivity.class);
         startActivity(intent);

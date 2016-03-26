@@ -22,4 +22,10 @@ public class SNUTTBaseFragment extends Fragment {
         Preconditions.checkState(activity instanceof MainActivity);
         return (MainActivity) activity;
     }
+
+    public SNUTTBaseActivity getBaseActivity() {
+        Activity activity = getActivity();
+        Preconditions.checkState(activity instanceof SNUTTBaseActivity);
+        return (SNUTTBaseActivity) activity;
+    }
 }
