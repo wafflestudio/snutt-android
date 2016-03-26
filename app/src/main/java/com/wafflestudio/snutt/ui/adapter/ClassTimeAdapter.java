@@ -33,7 +33,6 @@ public class ClassTimeAdapter extends BaseAdapter {
     private List<String> places;
     private MyWatcher watcher;
 
-
     public ClassTimeAdapter(Context context, List<ClassTime> times) {
         this.context = context;
         this.times = times;
@@ -79,9 +78,11 @@ public class ClassTimeAdapter extends BaseAdapter {
 
         if (watcher != null) et_place.removeTextChangedListener(watcher);
         et_place.setText(places.get(position));
-        et_place.setHint(places.get(position));
+        et_place.setHint(classTime.getPlace());
         watcher = new MyWatcher(position);
         et_place.addTextChangedListener(watcher);
+
+        Log.d(TAG, "getView is called : " + String.valueOf(position));
         return v;
     }
 
@@ -94,7 +95,12 @@ public class ClassTimeAdapter extends BaseAdapter {
             object.addProperty("start", time.getStart());
             object.addProperty("len", time.getLen());
             object.addProperty("_id", time.get_id());
-            object.addProperty("place", places.get(i));
+
+            if (!Strings.isNullOrEmpty(places.get(i))) {
+                object.addProperty("place", places.get(i));
+            } else {
+                object.addProperty("place", time.getPlace());
+            }
 
             ja.add(object);
         }
@@ -117,10 +123,9 @@ public class ClassTimeAdapter extends BaseAdapter {
         @Override
         public void afterTextChanged(Editable s) {
             String text = s.toString();
-            if (!Strings.isNullOrEmpty(text)) {
-                Log.d(TAG, String.valueOf(position) + " : " + text);
-                places.set (position, text);
-            }
+
+            Log.d(TAG, String.valueOf(position) + " : " + text);
+            places.set (position, text);
         }
     }
 }

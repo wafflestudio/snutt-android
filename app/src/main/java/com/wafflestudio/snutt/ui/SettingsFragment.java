@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 
 /**
@@ -40,6 +41,12 @@ private static final String ARG_SECTION_NUMBER = "section_number";
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SNUTTBaseActivity)getActivity()).startWelcome();
+            }
+        });
         return rootView;
     }
 }

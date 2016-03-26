@@ -20,6 +20,9 @@ import retrofit.http.POST;
  */
 public interface SNUTTRestApi {
 
+    @POST("/auth/login_local")
+    public void postSignIn(@Body Map query, Callback<String> callback);
+
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 
