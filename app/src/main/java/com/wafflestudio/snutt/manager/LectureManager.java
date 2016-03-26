@@ -74,6 +74,8 @@ public class LectureManager {
         }
     }
 
+    ////////
+
     public List<Lecture> getLectures() {
         return lectures;
     }
