@@ -123,7 +123,7 @@ public class TableView extends View {
             lecturePaint[i] = new Paint();
             lectureBorderPaint[i] = new Paint();
         }
-        lecturePaint[0].setColor(0xffffffff);
+        /*lecturePaint[0].setColor(0xffffffff);
         lecturePaint[1].setColor(0xffffcccc);
         lecturePaint[2].setColor(0xffffffcc);
         lecturePaint[3].setColor(0xffccffcc);
@@ -136,7 +136,23 @@ public class TableView extends View {
         lectureBorderPaint[3].setColor(0xffaaffaa);
         lectureBorderPaint[4].setColor(0xffaaffff);
         lectureBorderPaint[5].setColor(0xffaaaaff);
-        lectureBorderPaint[6].setColor(0xffffaaff);
+        lectureBorderPaint[6].setColor(0xffffaaff);*/
+
+        lecturePaint[0].setColor(0xffffffff);
+        lecturePaint[1].setColor(0xffB6F9B2);
+        lecturePaint[2].setColor(0xffBFF7F8);
+        lecturePaint[3].setColor(0xff94E6FE);
+        lecturePaint[4].setColor(0xffF6B5F5);
+        lecturePaint[5].setColor(0xffFFF49A);
+        lecturePaint[6].setColor(0xffFFB2BC);
+        lectureBorderPaint[0].setColor(0xffcccccc);
+        lectureBorderPaint[1].setColor(0xff2B8728);
+        lectureBorderPaint[2].setColor(0xff45B2B8);
+        lectureBorderPaint[3].setColor(0xff1579C2);
+        lectureBorderPaint[4].setColor(0xffA337A1);
+        lectureBorderPaint[5].setColor(0xffB8991B);
+        lectureBorderPaint[6].setColor(0xffBA313B);
+
 
 
         lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

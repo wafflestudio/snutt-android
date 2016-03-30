@@ -44,7 +44,7 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
                 UserManager.getInstance().postSignIn(id, password);
             }
         });
-        
+
         return rootView;
     }
 

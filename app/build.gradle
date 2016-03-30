@@ -25,6 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.github.QuadFlask:colorpicker:0.0.10'
     compile 'com.google.guava:guava:18.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 }
