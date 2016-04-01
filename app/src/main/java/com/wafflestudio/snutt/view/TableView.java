@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -156,7 +157,7 @@ public class TableView extends View {
 
 
         lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        lectureTextPaint.setColor(0xff000000);
+        //lectureTextPaint.setColor(0xff000000);
         lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
 
         lectureTextRect = new TextRect(lectureTextPaint);
@@ -415,14 +416,16 @@ public class TableView extends View {
         float top = topLabelHeight + startTime * unitHeight * 2;
         float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
         float borderWidth = SNUTTApplication.dpTopx(3);
-        canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
-        canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, lecturePaint[colorIndex]);
+        RectF r = new RectF(left, top, right, bottom);
+        canvas.drawRoundRect(r, 20, 20, lecturePaint[colorIndex]);
+        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
+        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, lecturePaint[colorIndex]);
         //강의명, 강의실 기록
         String str = course_title + "\n" + location;
         int width = (int)(right - left);
         int height = (int)(bottom - top);
         int strHeight = lectureTextRect.prepare(str, width, height);
-        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width);
+        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
     }
 
     //사용자 정의 시간표용..

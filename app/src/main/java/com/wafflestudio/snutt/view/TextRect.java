@@ -18,6 +18,7 @@ public class TextRect {
     // GC too much
     private Paint.FontMetricsInt metrics = null;
     private Paint paint = null;
+    private int[] textColor;
     private int starts[] = new int[MAX_LINES];
     private int stops[] = new int[MAX_LINES];
     private int lines = 0;
@@ -37,6 +38,18 @@ public class TextRect {
         String temp = metrics.toString();
         System.out.println("metrics" + temp);
         this.paint = paint;
+        init();
+    }
+
+    void init(){
+        textColor = new int[7];
+        textColor[0] = (0xffcccccc);
+        textColor[1] = (0xff2B8728);
+        textColor[2] = (0xff45B2B8);
+        textColor[3] = (0xff1579C2);
+        textColor[4] = (0xffA337A1);
+        textColor[5] = (0xffB8991B);
+        textColor[6] = (0xffBA313B);
     }
 
     /**
@@ -176,7 +189,7 @@ public class TextRect {
      * @param left - left corner
      * @param top - top corner
      */
-    public void draw(final Canvas canvas, final int left, final int top, final int bubbleWidth )
+    public void draw(final Canvas canvas, final int left, final int top, final int bubbleWidth, final int colorIndex)
     {
         if( textHeight == 0 )
             return;
@@ -203,6 +216,7 @@ public class TextRect {
             int textWidth = bounds.right - bounds.left;
             leftResult += (bubbleWidth - textWidth) / 2;
             //
+            paint.setColor(textColor[colorIndex]);
             canvas.drawText(t, leftResult, y, paint );
 
             y += after;
