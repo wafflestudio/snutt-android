@@ -1,14 +1,22 @@
 package com.wafflestudio.snutt.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
@@ -46,6 +54,8 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
     private TextView class_time;
     private EditText instructor;
     private TextView remark;
+    private View bgColor;
+    private View fgColor;
 
     private Lecture lecture;
 
@@ -64,6 +74,8 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
         class_time = (TextView) findViewById(R.id.class_time);
         instructor = (EditText) findViewById(R.id.instructor);
         remark = (TextView) findViewById(R.id.remark);
+        bgColor = (View) findViewById(R.id.bgColor);
+        fgColor = (View) findViewById(R.id.fgColor);
 
         myLectures = LectureManager.getInstance().getLectures();
 
@@ -88,6 +100,8 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
         instructor.setHint(lecture.getInstructor());
         instructor.setText(lecture.getInstructor());
         remark.setText(lecture.getRemark());
+        bgColor.setBackgroundColor(lecture.getLectureColor());
+        fgColor.setBackgroundColor(lecture.getTextColor());
 
         classTimes = new ArrayList<>();
         for (JsonElement element : lecture.getClass_time_json()) {
@@ -98,6 +112,72 @@ public class LectureDetailActivity extends SNUTTBaseActivity {
 
         adapter = new ClassTimeAdapter(this, classTimes);
         timeListView.setAdapter(adapter);
+
+        bgColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(LectureDetailActivity.this, "bgColor clicked", Toast.LENGTH_SHORT).show();
+                ColorPickerDialogBuilder
+                        .with(LectureDetailActivity.this)
+                        .setTitle("Choose color")
+                        .initialColor(lecture.getLectureColor())
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setOnColorSelectedListener(new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(int selectedColor) {
+                                Toast.makeText(LectureDetailActivity.this, "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                                //changeBackgroundColor(selectedColor);
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .build()
+                        .show();
+
+            }
+        });
+        fgColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(LectureDetailActivity.this, "fgColor clicked", Toast.LENGTH_SHORT).show();
+                ColorPickerDialogBuilder
+                        .with(LectureDetailActivity.this)
+                        .setTitle("Choose color")
+                        .initialColor(lecture.getTextColor())
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setOnColorSelectedListener(new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(int selectedColor) {
+                                Toast.makeText(LectureDetailActivity.this, "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                                //changeBackgroundColor(selectedColor);
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .build()
+                        .show();
+
+
+            }
+        });
     }
 
     @Override

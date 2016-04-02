@@ -1,29 +1,17 @@
 package com.wafflestudio.snutt.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,11 +22,6 @@ import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.ui.MainActivity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,7 +34,6 @@ public class TableView extends View {
     public static TableView mInstance;
     Paint backgroundPaint;
     Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
-    Paint[] lecturePaint, lectureBorderPaint;
     Paint lectureTextPaint;
     MainActivity mContext;
     String[] wdays;
@@ -117,44 +99,6 @@ public class TableView extends View {
         wdays[3] = mContext.getResources().getString(R.string.wday_thu);
         wdays[4] = mContext.getResources().getString(R.string.wday_fri);
         wdays[5] = mContext.getResources().getString(R.string.wday_sat);
-
-        lecturePaint = new Paint[7];
-        lectureBorderPaint = new Paint[lecturePaint.length];
-        for (int i=0;i<lecturePaint.length;i++){
-            lecturePaint[i] = new Paint();
-            lectureBorderPaint[i] = new Paint();
-        }
-        /*lecturePaint[0].setColor(0xffffffff);
-        lecturePaint[1].setColor(0xffffcccc);
-        lecturePaint[2].setColor(0xffffffcc);
-        lecturePaint[3].setColor(0xffccffcc);
-        lecturePaint[4].setColor(0xffccffff);
-        lecturePaint[5].setColor(0xffccccff);
-        lecturePaint[6].setColor(0xffffccff);
-        lectureBorderPaint[0].setColor(0xffcccccc);
-        lectureBorderPaint[1].setColor(0xffffaaaa);
-        lectureBorderPaint[2].setColor(0xffffffaa);
-        lectureBorderPaint[3].setColor(0xffaaffaa);
-        lectureBorderPaint[4].setColor(0xffaaffff);
-        lectureBorderPaint[5].setColor(0xffaaaaff);
-        lectureBorderPaint[6].setColor(0xffffaaff);*/
-
-        lecturePaint[0].setColor(0xffffffff);
-        lecturePaint[1].setColor(0xffB6F9B2);
-        lecturePaint[2].setColor(0xffBFF7F8);
-        lecturePaint[3].setColor(0xff94E6FE);
-        lecturePaint[4].setColor(0xffF6B5F5);
-        lecturePaint[5].setColor(0xffFFF49A);
-        lecturePaint[6].setColor(0xffFFB2BC);
-        lectureBorderPaint[0].setColor(0xffcccccc);
-        lectureBorderPaint[1].setColor(0xff2B8728);
-        lectureBorderPaint[2].setColor(0xff45B2B8);
-        lectureBorderPaint[3].setColor(0xff1579C2);
-        lectureBorderPaint[4].setColor(0xffA337A1);
-        lectureBorderPaint[5].setColor(0xffB8991B);
-        lectureBorderPaint[6].setColor(0xffBA313B);
-
-
 
         lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //lectureTextPaint.setColor(0xff000000);
@@ -370,14 +314,15 @@ public class TableView extends View {
         //내 강의 그리기
         List<Lecture> lectures = LectureManager.getInstance().getLectures();
         for (int i=0;i<lectures.size();i++){
-            drawLecture(canvas, canvasWidth, canvasHeight, lectures.get(i), lectures.get(i).getColorIndex());
+            Lecture lecture = lectures.get(i);
+            drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getLectureColor(), lecture.getTextColor());
         }
 
         if (!export){
             //현재 선택한 강의 그리기
             Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
             if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){
-                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, 0);
+                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, SNUTTUtils.getLectureColorByIndex(0), SNUTTUtils.getTextColorByIndex(0));
             }
         }
 
@@ -392,7 +337,7 @@ public class TableView extends View {
         drawTimetable(canvas, getWidth(), getHeight(), export);
     }
 
-    void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
+    /*void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject classTime = element.getAsJsonObject();
@@ -403,7 +348,7 @@ public class TableView extends View {
             String location = classTime.get("place").getAsString();
             drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, colorIndex);
         }
-    }
+    }*/
 
     void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
@@ -414,12 +359,12 @@ public class TableView extends View {
             float startTime = classTime.get("start").getAsFloat();
             float duration = classTime.get("len").getAsFloat();
             String location = classTime.get("place").getAsString();
-            //drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
+            drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
         }
     }
 
     //사각형 하나를 그림
-    void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int colorIndex){
+    /*void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int colorIndex){
         float unitHeight = (canvasHeight - topLabelHeight) / 26f;
         float unitWidth = (canvasWidth - leftLabelWidth) / 6;
 
@@ -430,32 +375,9 @@ public class TableView extends View {
         float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
         float borderWidth = SNUTTApplication.dpTopx(3);
         RectF r = new RectF(left, top, right, bottom);
-        canvas.drawRoundRect(r, 20, 20, lecturePaint[colorIndex]);
+        canvas.drawRoundRect(r, 20, 20, paints[colorIndex]);
         //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
-        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, lecturePaint[colorIndex]);
-        //강의명, 강의실 기록
-        String str = course_title + "\n" + location;
-        int width = (int)(right - left);
-        int height = (int)(bottom - top);
-        int strHeight = lectureTextRect.prepare(str, width, height);
-        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
-    }
-
-    //사각형 하나를 그림
-   /* void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
-        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
-        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
-
-        //startTime : 시작 교시
-        float left = leftLabelWidth + wday * unitWidth;
-        float right = leftLabelWidth + wday * unitWidth + unitWidth;
-        float top = topLabelHeight + startTime * unitHeight * 2;
-        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
-        float borderWidth = SNUTTApplication.dpTopx(3);
-        RectF r = new RectF(left, top, right, bottom);
-        canvas.drawRoundRect(r, 20, 20, lecturePaint[colorIndex]);
-        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
-        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, lecturePaint[colorIndex]);
+        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, paints[colorIndex]);
         //강의명, 강의실 기록
         String str = course_title + "\n" + location;
         int width = (int)(right - left);
@@ -463,6 +385,31 @@ public class TableView extends View {
         int strHeight = lectureTextRect.prepare(str, width, height);
         lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
     }*/
+
+    //사각형 하나를 그림
+    void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
+        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
+        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+
+        //startTime : 시작 교시
+        float left = leftLabelWidth + wday * unitWidth;
+        float right = leftLabelWidth + wday * unitWidth + unitWidth;
+        float top = topLabelHeight + startTime * unitHeight * 2;
+        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
+        float borderWidth = SNUTTApplication.dpTopx(3);
+        RectF r = new RectF(left, top, right, bottom);
+        Paint p = new Paint();
+        p.setColor(bgColor);
+        canvas.drawRoundRect(r, 20, 20, p);
+        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
+        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, paints[colorIndex]);
+        //강의명, 강의실 기록
+        String str = course_title + "\n" + location;
+        int width = (int)(right - left);
+        int height = (int)(bottom - top);
+        int strHeight = lectureTextRect.prepare(str, width, height);
+        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, fgColor);
+    }
 
     //사용자 정의 시간표용..
    /* void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){

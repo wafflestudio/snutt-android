@@ -208,15 +208,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="색상 : "
+            android:text="Color : "
             style="@style/Text.lectureDetail"/>
 
-        <TextView
-            android:id="@+id/remark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ⓔ타과생 수강불허"
-            style="@style/Text.lectureDetail"/>
+        <View
+            android:id="@+id/bgColor"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
+
+        <View
+            android:id="@+id/fgColor"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_light"/>
     </LinearLayout>
 
     <ListView
