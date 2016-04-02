@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.model.Lecture;
 
 import java.util.ArrayList;
@@ -103,7 +104,10 @@ public class LectureManager {
             Toast.makeText(context, "강의시간이 겹칩니다", Toast.LENGTH_SHORT).show();
             return ;
         }
+        int random = getRandomColor();
         lec.setColorIndex(getRandomColor());
+        lec.setLectureColor(SNUTTUtils.getLectureColorByIndex(random));
+        lec.setTextColor(SNUTTUtils.getTextColorByIndex(random));
         lectures.add(lec);
         notifyLectureChanged();
     }
@@ -124,6 +128,7 @@ public class LectureManager {
         Log.w(TAG, "lecture is not exist!!");
     }
 
+    // TODO : (SeongWon) 배경색, 글자색 업데이트?
     public void updateLecture(Lecture lec, String title, String inst, JsonArray timeJson) {
         lec.setCourse_title(title);
         lec.setInstructor(inst);

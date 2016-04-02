@@ -405,6 +405,19 @@ public class TableView extends View {
         }
     }
 
+    void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
+        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
+        for (JsonElement element : lecture.getClass_time_json()) {
+            JsonObject classTime = element.getAsJsonObject();
+
+            int wday = classTime.get("day").getAsInt();
+            float startTime = classTime.get("start").getAsFloat();
+            float duration = classTime.get("len").getAsFloat();
+            String location = classTime.get("place").getAsString();
+            //drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
+        }
+    }
+
     //사각형 하나를 그림
     void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int colorIndex){
         float unitHeight = (canvasHeight - topLabelHeight) / 26f;
@@ -427,6 +440,29 @@ public class TableView extends View {
         int strHeight = lectureTextRect.prepare(str, width, height);
         lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
     }
+
+    //사각형 하나를 그림
+   /* void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
+        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
+        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+
+        //startTime : 시작 교시
+        float left = leftLabelWidth + wday * unitWidth;
+        float right = leftLabelWidth + wday * unitWidth + unitWidth;
+        float top = topLabelHeight + startTime * unitHeight * 2;
+        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
+        float borderWidth = SNUTTApplication.dpTopx(3);
+        RectF r = new RectF(left, top, right, bottom);
+        canvas.drawRoundRect(r, 20, 20, lecturePaint[colorIndex]);
+        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
+        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, lecturePaint[colorIndex]);
+        //강의명, 강의실 기록
+        String str = course_title + "\n" + location;
+        int width = (int)(right - left);
+        int height = (int)(bottom - top);
+        int strHeight = lectureTextRect.prepare(str, width, height);
+        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
+    }*/
 
     //사용자 정의 시간표용..
    /* void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){

@@ -200,6 +200,25 @@
             style="@style/Text.lectureDetail"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="색상 : "
+            style="@style/Text.lectureDetail"/>
+
+        <TextView
+            android:id="@+id/remark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ⓔ타과생 수강불허"
+            style="@style/Text.lectureDetail"/>
+    </LinearLayout>
+
     <ListView
         android:id="@+id/time_listView"
         android:layout_width="match_parent"

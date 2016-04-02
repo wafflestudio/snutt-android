@@ -22,6 +22,8 @@ public class Lecture {
     private String remark;
     private String category;
     private int colorIndex; //색상
+    private int lectureColor;
+    private int textColor;
     private boolean isCustom = false;
 
     public String getDepartment() {
@@ -158,5 +160,21 @@ public class Lecture {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public int getLectureColor() {
+        return lectureColor;
+    }
+
+    public void setLectureColor(int lectureColor) {
+        this.lectureColor = lectureColor;
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
     }
 }
