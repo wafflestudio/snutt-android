@@ -13,6 +13,9 @@ import com.wafflestudio.snutt.ui.MainActivity;
  */
 public class SNUTTBaseFragment extends Fragment {
 
+    public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
+    public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
+
     protected SNUTTApplication getApp() {
         return (SNUTTApplication) getActivity().getApplication();
     }
