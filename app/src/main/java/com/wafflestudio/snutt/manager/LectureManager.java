@@ -106,8 +106,8 @@ public class LectureManager {
         }
         int random = getRandomColor();
         lec.setColorIndex(getRandomColor());
-        lec.setLectureColor(SNUTTUtils.getLectureColorByIndex(random));
-        lec.setTextColor(SNUTTUtils.getTextColorByIndex(random));
+        lec.setBgColor(SNUTTUtils.getBgColorByIndex(random));
+        lec.setFgColor(SNUTTUtils.getFgColorByIndex(random));
         lectures.add(lec);
         notifyLectureChanged();
     }
@@ -137,6 +137,17 @@ public class LectureManager {
         Log.d(TAG, "lecture is updated!!");
         // server에 update하기
     }
+
+    // TODO : (SeongWon) 배경색, 글자색 업데이트?
+    public void updateLecture(Lecture lec, int bgColor, int fgColor) {
+        lec.setBgColor(bgColor);
+        lec.setFgColor(fgColor);
+        notifyLectureChanged();
+        Log.d(TAG, "lecture is updated!!");
+        // server에 update하기
+    }
+
+
 
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     public boolean alreadyOwned(Lecture lec){

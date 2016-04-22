@@ -315,14 +315,14 @@ public class TableView extends View {
         List<Lecture> lectures = LectureManager.getInstance().getLectures();
         for (int i=0;i<lectures.size();i++){
             Lecture lecture = lectures.get(i);
-            drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getLectureColor(), lecture.getTextColor());
+            drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
         }
 
         if (!export){
             //현재 선택한 강의 그리기
             Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
             if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){
-                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, SNUTTUtils.getLectureColorByIndex(0), SNUTTUtils.getTextColorByIndex(0));
+                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, SNUTTUtils.getBgColorByIndex(0), SNUTTUtils.getFgColorByIndex(0));
             }
         }
 

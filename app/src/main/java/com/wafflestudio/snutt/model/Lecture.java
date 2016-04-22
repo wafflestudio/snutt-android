@@ -22,9 +22,10 @@ public class Lecture {
     private String remark;
     private String category;
     private int colorIndex; //색상
-    private int lectureColor;
-    private int textColor;
+    private int bgColor;
+    private int fgColor;
     private boolean isCustom = false;
+
 
     public String getDepartment() {
         return department;
@@ -162,19 +163,19 @@ public class Lecture {
         this.remark = remark;
     }
 
-    public int getLectureColor() {
-        return lectureColor;
+    public int getBgColor() {
+        return bgColor;
     }
 
-    public void setLectureColor(int lectureColor) {
-        this.lectureColor = lectureColor;
+    public void setBgColor(int bgColor) {
+        this.bgColor = bgColor;
     }
 
-    public int getTextColor() {
-        return textColor;
+    public int getFgColor() {
+        return fgColor;
     }
 
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
+    public void setFgColor(int fgColor) {
+        this.fgColor = fgColor;
     }
 }

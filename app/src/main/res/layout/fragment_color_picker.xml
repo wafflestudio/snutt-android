@@ -7,7 +7,8 @@
         android:id="@+id/color1"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,16 +20,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor1"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -36,7 +37,8 @@
         android:id="@+id/color2"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,16 +50,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor2"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -65,7 +67,8 @@
         android:id="@+id/color3"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,16 +80,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor3"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -94,7 +97,8 @@
         android:id="@+id/color4"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -106,16 +110,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor4"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor4"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -123,7 +127,8 @@
         android:id="@+id/color5"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -135,16 +140,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor5"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -152,7 +157,8 @@
         android:id="@+id/color6"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -164,16 +170,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor6"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor6"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor6"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 
@@ -181,7 +187,8 @@
         android:id="@+id/color7"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:layout_width="wrap_content"
@@ -193,16 +200,16 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/fgColor7"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-        <View
             android:id="@+id/bgColor7"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+
+        <View
+            android:id="@+id/fgColor7"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
 
     </LinearLayout>
 

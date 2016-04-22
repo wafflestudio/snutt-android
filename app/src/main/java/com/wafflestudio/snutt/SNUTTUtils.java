@@ -12,15 +12,15 @@ import retrofit.mime.TypedInput;
  */
 public class SNUTTUtils {
 
-    private static final int[] lectureColor = {0xffe0e0e0, 0xffB6F9B2, 0xffBFF7F8, 0xff94E6FE, 0xffF6B5F5, 0xffFFF49A, 0xffFFB2BC} ;
-    private static final int[] textColor = {0xff333333, 0xff2B8728, 0xff45B2B8, 0xff1579C2, 0xffA337A1, 0xffB8991B, 0xffBA313B} ;
+    private static final int[] bgColor = {0xffe0e0e0, 0xffB6F9B2, 0xffBFF7F8, 0xff94E6FE, 0xffF6B5F5, 0xffFFF49A, 0xffFFB2BC} ;
+    private static final int[] fgColor = {0xff333333, 0xff2B8728, 0xff45B2B8, 0xff1579C2, 0xffA337A1, 0xffB8991B, 0xffBA313B} ;
 
-    public static int getLectureColorByIndex(int index) {
-        return lectureColor[index];
+    public static int getBgColorByIndex(int index) {
+        return bgColor[index];
     }
 
-    public static int getTextColorByIndex(int index) {
-        return textColor[index];
+    public static int getFgColorByIndex(int index) {
+        return fgColor[index];
     }
 
     public static int wdayToNumber(String wday){

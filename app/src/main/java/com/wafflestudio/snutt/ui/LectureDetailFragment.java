@@ -99,8 +99,8 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         instructor.setHint(lecture.getInstructor());
         instructor.setText(lecture.getInstructor());
         remark.setText(lecture.getRemark());
-        bgColor.setBackgroundColor(lecture.getLectureColor());
-        fgColor.setBackgroundColor(lecture.getTextColor());
+        bgColor.setBackgroundColor(lecture.getBgColor());
+        fgColor.setBackgroundColor(lecture.getFgColor());
 
         classTimes = new ArrayList<>();
         for (JsonElement element : lecture.getClass_time_json()) {
