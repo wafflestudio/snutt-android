@@ -30,7 +30,7 @@ public class SNUTTApplication extends Application {
         context = getApplicationContext();
         PrefManager.getInstance(context);
         LectureManager.getInstance(context);
-        TagManager.getInstance(context);
+        TagManager.getInstance(this);
         UserManager.getInstance(this);
         restUrl = "http://walnut.wafflestudio.com:3000/api";
 

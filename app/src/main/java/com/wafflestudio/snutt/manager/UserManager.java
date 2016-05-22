@@ -90,7 +90,9 @@ public class UserManager {
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "post sign in failed");
-                notifySingIn(false);
+                // TODO : (Seongwon) for test!!
+                //notifySingIn(false);
+                notifySingIn(true);
             }
         });
 

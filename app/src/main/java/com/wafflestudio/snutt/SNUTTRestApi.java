@@ -2,6 +2,7 @@ package com.wafflestudio.snutt;
 
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
+import com.wafflestudio.snutt.model.TagList;
 
 import java.net.ResponseCache;
 import java.util.List;
@@ -14,6 +15,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Path;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -28,4 +30,7 @@ public interface SNUTTRestApi {
 
     @GET("/tables")
     public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
+
+    @GET("/tags/{year}/{semester}")
+    public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);
 }

@@ -5,7 +5,6 @@ package com.wafflestudio.snutt.model;
  */
 public class Tag {
 
-
     private String name;
     private String category;
 

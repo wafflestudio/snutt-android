@@ -126,7 +126,7 @@ public class SearchFragment extends SNUTTBaseFragment
         LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
         tagRecyclerView.setLayoutManager(horizontalLayoutManager);
-        tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTag());
+        tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTags());
         tagRecyclerView.setAdapter(tagAdapter);
         return rootView;
     }
@@ -188,11 +188,11 @@ public class SearchFragment extends SNUTTBaseFragment
 
     @Override
     public void notifyTagChanged() {
-        if (TagManager.getInstance().getMyTag().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
+        if (TagManager.getInstance().getMyTags().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
             tagRecyclerView.setVisibility(View.GONE);
             Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
             tagRecyclerView.startAnimation(animation);
-        } else if (TagManager.getInstance().getMyTag().size() > 0 && tagRecyclerView.getVisibility() == View.GONE) {
+        } else if (TagManager.getInstance().getMyTags().size() > 0 && tagRecyclerView.getVisibility() == View.GONE) {
             tagRecyclerView.setVisibility(View.VISIBLE);
             Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
             tagRecyclerView.startAnimation(animation);
@@ -250,6 +250,13 @@ public class SearchFragment extends SNUTTBaseFragment
         query.put("year", year);
         query.put("semester", semester);
         query.put("title", text);
+        query.put("classification", TagManager.getInstance().getClassification());
+        query.put("credit", TagManager.getInstance().getCredit());
+        query.put("academic_year", TagManager.getInstance().getAcademic_year());
+        query.put("instructor", TagManager.getInstance().getInstructor());
+        query.put("department", TagManager.getInstance().getDepartment());
+        query.put("category", TagManager.getInstance().getCategory());
+        //query.put("time", TagManager.getInstance().getTime());
 
         getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
             @Override
@@ -312,7 +319,7 @@ public class SearchFragment extends SNUTTBaseFragment
         }
     };
 
-    public static class  SearchSuggestionsAdapter extends SimpleCursorAdapter
+    public static class SearchSuggestionsAdapter extends SimpleCursorAdapter
     {
         private static final String[] mFields  = { "_id" , "result" }; // _id field must exist
         private static final String[] mVisible = { "result" }; // db field name
@@ -342,9 +349,9 @@ public class SearchFragment extends SNUTTBaseFragment
                     mResults.add("Result " + (i + 1));
                 }*/
                 mResults = new ArrayList<>();
-                List<Tag> tagList = TagManager.getInstance().getTagList();
-                for (Tag tag : tagList) {
-                    mResults.add(tag.getName());
+                List<String> tags = TagManager.getInstance().getTags();
+                for (String tag : tags) {
+                    mResults.add(tag);
                 }
 
                 if(!TextUtils.isEmpty(constraint)){

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.ui.adapter.SectionsPagerAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.PrefManager;
@@ -72,6 +73,9 @@ public class MainActivity extends SNUTTBaseActivity {
         LectureManager.getInstance().setLectures(table.getLectures());
         year = table.getYear();
         semester = table.getSemester();
+        PrefManager.getInstance().setCurrentYear(year);
+        PrefManager.getInstance().setCurrentSemester(semester);
+        TagManager.getInstance().updateNewTag(year, semester);
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +102,9 @@ public class MainActivity extends SNUTTBaseActivity {
         getSupportActionBar().setTitle(table.getTitle());
         year = table.getYear();
         semester = table.getSemester();
+        PrefManager.getInstance().setCurrentYear(year);
+        PrefManager.getInstance().setCurrentSemester(semester);
+        TagManager.getInstance().updateNewTag(year, semester);
     }
 
     @Override
