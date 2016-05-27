@@ -3,6 +3,7 @@ package com.wafflestudio.snutt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
+import com.wafflestudio.snutt.ui.LectureCreateActivity;
 import com.wafflestudio.snutt.ui.LectureMainActivity;
 import com.wafflestudio.snutt.ui.MainActivity;
 import com.wafflestudio.snutt.ui.TableCreateActivity;
@@ -46,6 +47,11 @@ public class SNUTTBaseActivity extends AppCompatActivity {
 
     public void startWelcome() {
         Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+    }
+
+    public void startLectureCreate() {
+        Intent intent = new Intent(this, LectureCreateActivity.class);
         startActivity(intent);
     }
 

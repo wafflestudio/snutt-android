@@ -47,7 +47,7 @@ public class TableFragment extends SNUTTBaseFragment implements LectureManager.O
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_table, container, false);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
-        mInstance.setExport(true);
+        //mInstance.setExport(true);
         //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
         setHasOptionsMenu(true);

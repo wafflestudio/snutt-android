@@ -2,6 +2,7 @@ package com.wafflestudio.snutt.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -31,7 +32,6 @@ public class TableView extends View {
 
     private static String TAG = "VIEW_TAG_TABLE_VIEW";
 
-    public static TableView mInstance;
     Paint backgroundPaint;
     Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
     Paint lectureTextPaint;
@@ -41,7 +41,6 @@ public class TableView extends View {
     float topLabelHeight = SNUTTApplication.dpTopx(30);
     float unitWidth, unitHeight;
     TextRect lectureTextRect;
-    boolean export;
 
     //사용자 정의 시간표 추가
     int mCustomWday = -1;
@@ -49,15 +48,26 @@ public class TableView extends View {
     float mCustomStartTime = -1;
     Paint mCustomPaint = new Paint();
 
+    private List<Lecture> lectures ;
+    private boolean export;
+
+
     public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = (MainActivity) context;
-        mInstance = this;
-        init();
-    }
+        /*TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.TableView,
+                0, 0);
 
-    public void setExport(boolean export) {
-        this.export = export;
+        try {
+            export = a.getBoolean(R.styleable.TableView_export, true);
+        } finally {
+            a.recycle();
+        }*/
+
+        lectures = LectureManager.getInstance().getLectures();
+        mContext = (MainActivity) context;
+        init();
     }
 
     @Override
@@ -125,14 +135,33 @@ public class TableView extends View {
         float x = event.getX();
         float y = event.getY();
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             //x, y를 요일, 교시로
             int wday = (int) ((x - leftLabelWidth) / unitWidth);
             float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
 
-            Log.d(TAG,"day : " + String.valueOf(wday));
-            Log.d(TAG,"time : " + String.valueOf(time));
+            Log.d(TAG, "day : " + String.valueOf(wday));
+            Log.d(TAG, "time : " + String.valueOf(time));
 
+
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            //x, y를 요일, 교시로
+            int wday = (int) ((x - leftLabelWidth) / unitWidth);
+            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
+
+            Log.d(TAG, "day : " + String.valueOf(wday));
+            Log.d(TAG, "time : " + String.valueOf(time));
+
+
+            //터치한 게 내 강의 중 하나
+            for (int i = 0; i < lectures.size(); i++) {
+                Lecture lecture = lectures.get(i);
+                if (LectureManager.getInstance().contains(lecture, wday, time)) {
+                    LectureManager.getInstance().setNextColor(lecture);
+                    break;
+                }
+            }
+        }
 
         /*    boolean lectureClicked = false;
             //터치한 게 selectedLecture이면
@@ -205,7 +234,7 @@ public class TableView extends View {
 
             resetCustomVariables();
             invalidate();*/
-        }
+
         return true;
     }
 
@@ -312,7 +341,6 @@ public class TableView extends View {
             canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
         }
         //내 강의 그리기
-        List<Lecture> lectures = LectureManager.getInstance().getLectures();
         for (int i=0;i<lectures.size();i++){
             Lecture lecture = lectures.get(i);
             drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());

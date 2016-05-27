@@ -5,8 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
@@ -45,6 +49,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_my_lecture, container, false);
+        setHasOptionsMenu(true);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_lecture_recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
@@ -66,6 +71,30 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     public void notifyLectureChanged() {
         Log.d (TAG, "notify lecture changed called");
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_my_lecture, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_add) {
+            //getMainActivity().startTableList();
+            Toast.makeText(getContext(), "custom lecture add clicked!!", Toast.LENGTH_SHORT).show();
+            getMainActivity().startLectureCreate();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

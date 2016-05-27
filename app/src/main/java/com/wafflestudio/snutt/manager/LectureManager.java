@@ -147,6 +147,16 @@ public class LectureManager {
         // server에 update하기
     }
 
+    public void setNextColor(Lecture lec) {
+        Log.d(TAG, "setNextColor method called!!");
+        colorIndex = (colorIndex + 1) % 7;
+        if (colorIndex == 0) colorIndex++;
+        lec.setColorIndex(colorIndex);
+        lec.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
+        lec.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
+        notifyLectureChanged();
+    }
+
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     public boolean alreadyOwned(Lecture lec){
         for (Lecture lecture : lectures){
@@ -159,6 +169,22 @@ public class LectureManager {
     public boolean alreadyExistClassTime(Lecture lec) {
         for (Lecture lecture : lectures){
             if (isDuplicatedClassTime(lecture, lec)) return true;
+        }
+        return false;
+    }
+
+    //주어진 요일, 시각을 포함하고 있는지
+    public boolean contains(Lecture lec1, int given_day, float given_time) {
+        for (JsonElement element1 : lec1.getClass_time_json()) {
+            JsonObject class1 = element1.getAsJsonObject();
+
+            int day1 = class1.get("day").getAsInt();
+            float start1 = class1.get("start").getAsFloat();
+            float len1 = class1.get("len").getAsFloat();
+            float end1 = start1 + len1 - 0.001f;
+
+            if (day1 != given_day) continue;
+            if (start1 <= given_time && given_time <= end1) return true;
         }
         return false;
     }
