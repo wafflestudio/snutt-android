@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<declare-styleable name="TableView">-->
-        <!--<attr name="export" format="boolean" />-->
-        <!--<attr name="custom" foramt="boolean" />-->
-    <!--</declare-styleable>-->
+    <declare-styleable name="TimeTableView">
+        <attr name="export" format="boolean" />
+        <attr name="custom" format="boolean" />
+    </declare-styleable>
 </resources>

@@ -54,16 +54,9 @@ public class TableView extends View {
 
     public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        /*TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.TableView,
-                0, 0);
 
-        try {
-            export = a.getBoolean(R.styleable.TableView_export, true);
-        } finally {
-            a.recycle();
-        }*/
+        export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
+                R.styleable.TimeTableView_export, false);
 
         lectures = LectureManager.getInstance().getLectures();
         mContext = (MainActivity) context;
@@ -115,7 +108,7 @@ public class TableView extends View {
         lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
 
         lectureTextRect = new TextRect(lectureTextPaint);
-        export = false;
+        //export = false;
     }
 
 
