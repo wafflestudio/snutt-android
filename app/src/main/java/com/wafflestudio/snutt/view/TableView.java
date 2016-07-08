@@ -2,8 +2,9 @@ package com.wafflestudio.snutt.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -21,7 +22,6 @@ import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Lecture;
-import com.wafflestudio.snutt.ui.MainActivity;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class TableView extends View {
     Paint backgroundPaint;
     Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
     Paint lectureTextPaint;
-    MainActivity mContext;
+    Context mContext;
     String[] wdays;
     float leftLabelWidth = SNUTTApplication.dpTopx(60);
     float topLabelHeight = SNUTTApplication.dpTopx(30);
@@ -43,13 +43,11 @@ public class TableView extends View {
     TextRect lectureTextRect;
 
     //사용자 정의 시간표 추가
-    int mCustomWday = -1;
-    float mCustomDuration = -1;
-    float mCustomStartTime = -1;
     Paint mCustomPaint = new Paint();
 
     private List<Lecture> lectures ;
     private boolean export;
+    private boolean custom;
 
 
     public TableView(Context context, AttributeSet attrs) {
@@ -57,9 +55,11 @@ public class TableView extends View {
 
         export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
                 R.styleable.TimeTableView_export, false);
+        custom = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
+                R.styleable.TimeTableView_custom, false);
 
         lectures = LectureManager.getInstance().getLectures();
-        mContext = (MainActivity) context;
+        mContext = context;
         init();
     }
 
@@ -108,7 +108,6 @@ public class TableView extends View {
         lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
 
         lectureTextRect = new TextRect(lectureTextPaint);
-        //export = false;
     }
 
 
@@ -136,6 +135,20 @@ public class TableView extends View {
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
 
+            boolean lectureClicked = false;
+
+            //터치한 게 내 강의 중 하나
+            for (Lecture lecture : LectureManager.getInstance().getLectures()) {
+                if (LectureManager.getInstance().contains(lecture,wday, time)) {
+                    lectureClicked = true;
+                }
+            }
+            //빈 공간 클릭
+            if (!lectureClicked && custom){
+                LectureManager.getInstance().setCustomValue(wday, time, 0.5f);
+            } else {
+                LectureManager.getInstance().resetCustomLecture();
+            }
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             //x, y를 요일, 교시로
@@ -152,6 +165,21 @@ public class TableView extends View {
                 if (LectureManager.getInstance().contains(lecture, wday, time)) {
                     LectureManager.getInstance().setNextColor(lecture);
                     break;
+                }
+            }
+
+            //터치한 게 custom lecture
+            if (LectureManager.getInstance().existCustomLecture()) {
+                // 적절한 처리..
+            }
+        }  else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            //x, y를 교시로
+            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
+
+            if (LectureManager.getInstance().existCustomLecture()) {
+                float duration = time - LectureManager.getInstance().getCustomStartTime() + 0.5f;
+                if (!LectureManager.getInstance().alreadyExistClassTime(duration) && custom) {
+                    LectureManager.getInstance().setCustomDuration(duration);
                 }
             }
         }
@@ -229,11 +257,6 @@ public class TableView extends View {
             invalidate();*/
 
         return true;
-    }
-
-    public void resetCustomVariables(){
-        mCustomStartTime = mCustomDuration = mCustomWday = -1;
-        invalidate();
     }
 
     /*public Handler shareHandler = new Handler(){
@@ -348,8 +371,8 @@ public class TableView extends View {
         }
 
         //사용자 정의 시간표 추가중..
-        if (mCustomStartTime != -1 && mCustomWday != -1 && mCustomDuration > 0){
-            //drawCustomBox(canvas, canvasWidth, canvasHeight, mCustomWday, mCustomStartTime, mCustomDuration);
+        if (LectureManager.getInstance().existCustomLecture()){
+            drawCustomBox(canvas, canvasWidth, canvasHeight, LectureManager.getInstance().getCustomWday(), LectureManager.getInstance().getCustomStartTime(), LectureManager.getInstance().getCustomDuration());
         }
     }
 
@@ -433,8 +456,8 @@ public class TableView extends View {
     }
 
     //사용자 정의 시간표용..
-   /* void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
-        if (!mContext.getCustomEditable()) return;
+    void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
+        if (!custom) return;
 
         float unitHeight = (canvasHeight - topLabelHeight) / 26f;
         float unitWidth = (canvasWidth - leftLabelWidth) / 6;
@@ -447,13 +470,13 @@ public class TableView extends View {
         float borderWidth = SNUTTApplication.dpTopx(3);
 
         mCustomPaint.setColor(Color.RED);
-        mCustomPaint.setStyle(Paint.Style.STROKE);
+        mCustomPaint.setStyle(Paint.Style.STROKE);  // 테두리만
         mCustomPaint.setStrokeWidth(borderWidth);
         mCustomPaint.setPathEffect(new DashPathEffect(new float[] {SNUTTApplication.dpTopx(6),SNUTTApplication.dpTopx(3)}, 0));
 
 //		canvas.drawRect(left, top, right, bottom, mCustomPaint);
         canvas.drawRect(left+borderWidth/2, top+borderWidth/2, right-borderWidth/2, bottom-borderWidth/2, mCustomPaint);
-    }*/
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

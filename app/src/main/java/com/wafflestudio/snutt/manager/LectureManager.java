@@ -27,6 +27,10 @@ public class LectureManager {
     private Random random = new Random();
     private int colorIndex = -1;
 
+    // 사용자 정의 시간표
+    private int customWday = -1;
+    private float customDuration = -1;
+    private float customStartTime = -1;
     private static LectureManager singleton;
 
     /**
@@ -173,6 +177,14 @@ public class LectureManager {
         return false;
     }
 
+    //이미 내 강의에 존재하는 시간인지 (day, time, duration 으로 비교), custom lecture 생성시
+    public boolean alreadyExistClassTime(float duration) {
+        for (Lecture lecture : lectures) {
+            if (isDuplicatedClassTime(lecture, customWday, customStartTime, duration)) return true;
+        }
+        return false;
+    }
+
     //주어진 요일, 시각을 포함하고 있는지
     public boolean contains(Lecture lec1, int given_day, float given_time) {
         for (JsonElement element1 : lec1.getClass_time_json()) {
@@ -187,6 +199,42 @@ public class LectureManager {
             if (start1 <= given_time && given_time <= end1) return true;
         }
         return false;
+    }
+
+    //사용자 정의 시간표 초기화
+    public void resetCustomLecture() {
+        customStartTime = customDuration = customWday = -1;
+        notifyLectureChanged();
+    }
+
+    public void setCustomValue(int wday, float startTime, float duration) {
+        Log.d(TAG, "setting custom lecture values..");
+        customWday = wday;
+        customStartTime = startTime;
+        customDuration = duration;
+        notifyLectureChanged();
+    }
+
+    public int getCustomWday() {
+        return customWday;
+    }
+
+    public float getCustomStartTime() {
+        return customStartTime;
+    }
+
+    public float getCustomDuration() {
+        return customDuration;
+    }
+
+    public void setCustomDuration(float duration) {
+        customDuration = duration;
+        notifyLectureChanged();
+    }
+
+    //사용자 정의 시간표가 있는지
+    public boolean existCustomLecture() {
+        return (customWday != -1 && customStartTime != -1 && customDuration > 0);
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {
@@ -217,6 +265,25 @@ public class LectureManager {
                 if (start1 <= start2 && start2 <= end1) return true;
                 if (start1 <= end2 && end2 <= end1) return true;
             }
+        }
+        return false;
+    }
+
+    private boolean isDuplicatedClassTime(Lecture lec1,int day2,float start2, float len2) {
+        for (JsonElement element1 : lec1.getClass_time_json()) {
+            JsonObject class1= element1.getAsJsonObject();
+
+            int day1 = class1.get("day").getAsInt();
+            float start1 = class1.get("start").getAsFloat();
+            float len1 = class1.get("len").getAsFloat();
+            float end1 = start1 + len1 - 0.001f;
+
+            float end2 = start2 + len2 - 0.001f;
+
+            if (day1 != day2) continue;
+
+            if (start1 <= start2 && start2 <= end1) return true;
+            if (start1 <= end2 && end2 <= end1) return true;
         }
         return false;
     }

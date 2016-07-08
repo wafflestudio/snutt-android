@@ -26,7 +26,6 @@ public class Lecture {
     private int fgColor;
     private boolean isCustom = false;
 
-
     public String getDepartment() {
         return department;
     }
