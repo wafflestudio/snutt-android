@@ -3,6 +3,7 @@ package com.wafflestudio.snutt.manager;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
@@ -92,7 +93,7 @@ public class UserManager {
                 Log.w(TAG, "post sign in failed");
                 // TODO : (Seongwon) for test!!
                 //notifySingIn(false);
-                notifySingIn(true);
+                //notifySingIn(true);
             }
         });
 

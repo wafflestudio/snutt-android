@@ -12,6 +12,7 @@ import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.Lecture;
 
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 /**
@@ -65,9 +66,16 @@ public class SNUTTApplication extends Application {
 
     public SNUTTRestApi getRestService() {
         if (restService == null) {
+            RequestInterceptor requestInterceptor = new RequestInterceptor() {
+                @Override
+                public void intercept(RequestInterceptor.RequestFacade request) {
+                    request.addHeader("x-access-apikey", getResources().getString(R.string.api_key));
+                }
+            };
             restAdapter = new RestAdapter.Builder()
                     .setEndpoint(restUrl)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setRequestInterceptor(requestInterceptor)
                     .build();
             restService = restAdapter.create(SNUTTRestApi.class);
         }
