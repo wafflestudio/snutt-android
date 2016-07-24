@@ -179,6 +179,7 @@ public class TableView extends View {
             if (LectureManager.getInstance().existCustomLecture()) {
                 float duration = time - LectureManager.getInstance().getCustomStartTime() + 0.5f;
                 if (!LectureManager.getInstance().alreadyExistClassTime(duration) && custom) {
+                    Log.d(TAG, "update custom lecture duration");
                     LectureManager.getInstance().setCustomDuration(duration);
                 }
             }

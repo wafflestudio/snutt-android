@@ -251,19 +251,17 @@ public class LectureManager {
             int day1 = class1.get("day").getAsInt();
             float start1 = class1.get("start").getAsFloat();
             float len1 = class1.get("len").getAsFloat();
-            float end1 = start1 + len1 - 0.001f;
+            float end1 = start1 + len1;
             for (JsonElement element2 : lec2.getClass_time_json()) {
                 JsonObject class2 = element2.getAsJsonObject();
 
                 int day2 = class2.get("day").getAsInt();
                 float start2 = class2.get("start").getAsFloat();
                 float len2 = class2.get("len").getAsFloat();
-                float end2 = start2 + len2 - 0.001f;
+                float end2 = start2 + len2;
 
                 if (day1 != day2) continue;
-
-                if (start1 <= start2 && start2 <= end1) return true;
-                if (start1 <= end2 && end2 <= end1) return true;
+                if (!(end1 <= start2 || end2 <= start1)) return true;
             }
         }
         return false;
@@ -272,18 +270,14 @@ public class LectureManager {
     private boolean isDuplicatedClassTime(Lecture lec1,int day2,float start2, float len2) {
         for (JsonElement element1 : lec1.getClass_time_json()) {
             JsonObject class1= element1.getAsJsonObject();
-
             int day1 = class1.get("day").getAsInt();
             float start1 = class1.get("start").getAsFloat();
             float len1 = class1.get("len").getAsFloat();
-            float end1 = start1 + len1 - 0.001f;
-
-            float end2 = start2 + len2 - 0.001f;
+            float end1 = start1 + len1;
+            float end2 = start2 + len2;
 
             if (day1 != day2) continue;
-
-            if (start1 <= start2 && start2 <= end1) return true;
-            if (start1 <= end2 && end2 <= end1) return true;
+            if (!(end1 <= start2 || end2 <= start1)) return true;
         }
         return false;
     }
