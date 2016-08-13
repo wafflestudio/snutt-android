@@ -33,6 +33,7 @@ public class SNUTTApplication extends Application {
         LectureManager.getInstance(context);
         TagManager.getInstance(this);
         UserManager.getInstance(this);
+        TableManager.getInstance(this);
         restUrl = "http://walnut.wafflestudio.com:3000/api";
 
         super.onCreate();

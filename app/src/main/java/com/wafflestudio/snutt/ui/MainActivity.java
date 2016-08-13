@@ -19,6 +19,12 @@ import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
 
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class MainActivity extends SNUTTBaseActivity {
 
     /**
@@ -63,19 +69,37 @@ public class MainActivity extends SNUTTBaseActivity {
             id = intent.getExtras().getString(SNUTTBaseActivity.INTENT_KEY_TABLE_ID);
         } else { // PrefManager 에서 마지막에 본 강의 id 받아오기
             id = PrefManager.getInstance().getLastViewTableId();
-            if (id == null) {
-                // TODO : (Seongwon) 마지막으로 본것이 없을때? 어디로 이동해야 되지?
-                id = "0";
-            }
         }
-        Table table = TableManager.getInstance().getTableById(id);
-        getSupportActionBar().setTitle(table.getTitle());
-        LectureManager.getInstance().setLectures(table.getLectures());
-        year = table.getYear();
-        semester = table.getSemester();
-        PrefManager.getInstance().setCurrentYear(year);
-        PrefManager.getInstance().setCurrentSemester(semester);
-        TagManager.getInstance().updateNewTag(year, semester);
+
+        if (id == null) {
+            // TODO : (Seongwon) 마지막으로 본것이 없을때? 어디로 이동해야 되지?
+            // 가장 최근의 Table로 이동하기, 없을 경우 가장 최근의 시간표를 생성하기
+            TableManager.getInstance().getTableList(new Callback<List<Table>>() {
+                @Override
+                public void success(List<Table> tables, Response response) {
+                    Table table = TableManager.getInstance().getLastTable();
+                    getSupportActionBar().setTitle(table.getTitle());
+                    LectureManager.getInstance().setLectures(table.getLectures());
+                    year = table.getYear();
+                    semester = table.getSemester();
+                    PrefManager.getInstance().setCurrentYear(year);
+                    PrefManager.getInstance().setCurrentSemester(semester);
+                    TagManager.getInstance().updateNewTag(year, semester);
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                }
+            });
+        } else {
+            Table table = TableManager.getInstance().getTableById(id);
+            getSupportActionBar().setTitle(table.getTitle());
+            LectureManager.getInstance().setLectures(table.getLectures());
+            year = table.getYear();
+            semester = table.getSemester();
+            PrefManager.getInstance().setCurrentYear(year);
+            PrefManager.getInstance().setCurrentSemester(semester);
+            TagManager.getInstance().updateNewTag(year, semester);
+        }
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

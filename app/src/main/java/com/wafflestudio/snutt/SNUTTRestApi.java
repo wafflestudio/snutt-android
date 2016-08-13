@@ -3,6 +3,7 @@ package com.wafflestudio.snutt;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.model.TagList;
+import com.wafflestudio.snutt.model.Token;
 
 import java.net.ResponseCache;
 import java.util.List;
@@ -23,7 +24,7 @@ import retrofit.http.Path;
 public interface SNUTTRestApi {
 
     @POST("/auth/login_local")
-    public void postSignIn(@Body Map query, Callback<String> callback);
+    public void postSignIn(@Body Map query, Callback<Token> callback);
 
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);

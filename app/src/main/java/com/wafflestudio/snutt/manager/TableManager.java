@@ -1,8 +1,11 @@
 package com.wafflestudio.snutt.manager;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
@@ -13,13 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by makesource on 2016. 1. 16..
  */
 public class TableManager {
 
+    private static final String TAG = "TABLE_MANAGER" ;
+
     private List<Table> tables;
     private Map<String, Table> tableMap;
+    private SNUTTApplication app;
 
     private static TableManager singleton;
 
@@ -27,18 +37,41 @@ public class TableManager {
      * TableManager 싱글톤
      */
 
-    private TableManager() {
+    private TableManager(SNUTTApplication app) {
+        this.app = app;
         getDefaultTable();
     }
 
-    public static TableManager getInstance() {
+    public static TableManager getInstance(SNUTTApplication app) {
         if(singleton == null) {
-            singleton = new TableManager();
+            singleton = new TableManager(app);
         }
         return singleton;
     }
 
-    public List<Table> getTableList() {
+    public static TableManager getInstance() {
+        if (singleton == null) Log.e(TAG, "This method should not be called at this time!!");
+        return singleton;
+    }
+
+    public List<Table> getTableList(final Callback callback) {
+        tables = new ArrayList<>();
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getTableList(token, new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> tables, Response response) {
+                Log.d(TAG, "get table list request success!");
+                for (Table table : tables) {
+                    addTable(table);
+                }
+                if (callback != null) callback.success(tables, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "get table list request failed..!");
+                if (callback != null) callback.failure(error);
+            }
+        });
         return tables;
     }
 
@@ -50,16 +83,18 @@ public class TableManager {
         return tableMap.get(id);
     }
 
+    public Table getLastTable() {
+        return (Table) tables.get(0);
+    }
+
     public void addTable(Table table) {
         tables.add(table);
         tableMap.put(table.getId(), table);
-
         Collections.sort(tables);
     }
 
     public void updateTables(Table table) {
         // TODO : (SeongWon) server에 update 요청 날리기
-
 
     }
 

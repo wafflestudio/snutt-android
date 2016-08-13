@@ -35,7 +35,7 @@ public class TableListActivity extends SNUTTBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_list);
 
-        tables = TableManager.getInstance().getTableList();
+        tables = TableManager.getInstance().getTableList(null);
         mListView = (ExpandableListView) findViewById(R.id.listView);
         mAdapter = getAdapter();
         mListView.setAdapter(mAdapter);

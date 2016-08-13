@@ -5,8 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.model.Token;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +18,13 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
 public class UserManager {
-    private static final String TAG = "LECTURE_MANAGER" ;
+    private static final String TAG = "USER_MANAGER" ;
 
     private SNUTTApplication app;
 
@@ -80,23 +83,24 @@ public class UserManager {
         Map query = new HashMap();
         query.put("id", id);
         query.put("password", password);
-        app.getRestService().postSignIn(query, new Callback<String>() {
+        app.getRestService().postSignIn(query, new Callback<Token>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(Token token, Response response) {
                 Log.d(TAG, "post sign in success!!");
-                Log.d(TAG, "token : " + s);
+                Log.d(TAG, "token : " + token.getToken());
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
                 notifySingIn(true);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "post sign in failed");
+                System.out.println(error);
                 // TODO : (Seongwon) for test!!
                 //notifySingIn(false);
                 //notifySingIn(true);
             }
         });
-
     }
 
     private void notifySingIn(boolean code) {
