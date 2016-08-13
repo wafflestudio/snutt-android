@@ -47,7 +47,10 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
 
     @Override
     public int getItemCount() {
-        return myLecture.size();
+        if (myLecture != null) {
+            return myLecture.size();
+        }
+        return 0;
     }
 
     // inner class to hold a reference to each item of RecyclerView

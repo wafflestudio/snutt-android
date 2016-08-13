@@ -358,9 +358,11 @@ public class TableView extends View {
             canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
         }
         //내 강의 그리기
-        for (int i=0;i<lectures.size();i++){
-            Lecture lecture = lectures.get(i);
-            drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
+        if (lectures != null) {
+            for (int i = 0; i < lectures.size(); i++) {
+                Lecture lecture = lectures.get(i);
+                drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
+            }
         }
 
         if (!export){

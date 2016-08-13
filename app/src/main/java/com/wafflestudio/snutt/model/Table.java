@@ -14,14 +14,14 @@ public class Table implements Comparable<Table> {
 
     private static final String TAG = "MODEL_TABLE" ;
 
-    private String id;
+    private String _id;
     private int year;
     private int semester;
     private String title;
     private List<Lecture> lectures;
 
     public Table(String id, int year, int semester, String title, List<Lecture> lectures) {
-        this.id = id;
+        this._id = id;
         this.year = year;
         this.semester = semester;
         this.title = title;
@@ -29,7 +29,7 @@ public class Table implements Comparable<Table> {
     }
 
     public Table(String id,String title) {
-        this.id = id;
+        this._id = id;
         this.year = 0;
         this.semester = 0;
         this.title = title;
@@ -37,7 +37,6 @@ public class Table implements Comparable<Table> {
     }
 
     public Table() {
-
     }
 
     public int getYear() {
@@ -57,11 +56,11 @@ public class Table implements Comparable<Table> {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public List<Lecture> getLectures() {

@@ -54,8 +54,9 @@ public class TableManager {
         return singleton;
     }
 
-    public List<Table> getTableList(final Callback callback) {
-        tables = new ArrayList<>();
+    public void updateTableList(final Callback callback) {
+        tables.clear();
+        tableMap.clear();
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableList(token, new Callback<List<Table>>() {
             @Override
@@ -72,7 +73,6 @@ public class TableManager {
                 if (callback != null) callback.failure(error);
             }
         });
-        return tables;
     }
 
     public void setTableList(List<Table> tables) {

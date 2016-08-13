@@ -74,16 +74,15 @@ public class MainActivity extends SNUTTBaseActivity {
         if (id == null) {
             // TODO : (Seongwon) 마지막으로 본것이 없을때? 어디로 이동해야 되지?
             // 가장 최근의 Table로 이동하기, 없을 경우 가장 최근의 시간표를 생성하기
-            TableManager.getInstance().getTableList(new Callback<List<Table>>() {
+            TableManager.getInstance().updateTableList(new Callback<List<Table>>() {
                 @Override
                 public void success(List<Table> tables, Response response) {
                     Table table = TableManager.getInstance().getLastTable();
                     getSupportActionBar().setTitle(table.getTitle());
                     LectureManager.getInstance().setLectures(table.getLectures());
-                    year = table.getYear();
-                    semester = table.getSemester();
-                    PrefManager.getInstance().setCurrentYear(year);
-                    PrefManager.getInstance().setCurrentSemester(semester);
+                    year = table.getYear(); semester = table.getSemester();
+                    PrefManager.getInstance().setLastViewTableId(table.getId());
+                    PrefManager.getInstance().updateNewTable(year, semester);
                     TagManager.getInstance().updateNewTag(year, semester);
                 }
                 @Override
@@ -96,20 +95,9 @@ public class MainActivity extends SNUTTBaseActivity {
             LectureManager.getInstance().setLectures(table.getLectures());
             year = table.getYear();
             semester = table.getSemester();
-            PrefManager.getInstance().setCurrentYear(year);
-            PrefManager.getInstance().setCurrentSemester(semester);
+            PrefManager.getInstance().updateNewTable(year, semester);
             TagManager.getInstance().updateNewTag(year, semester);
         }
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
     }
 
 

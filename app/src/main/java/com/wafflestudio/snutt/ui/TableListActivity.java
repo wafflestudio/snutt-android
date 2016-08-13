@@ -16,12 +16,15 @@ import com.wafflestudio.snutt.model.Table;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by makesource on 2016. 1. 17..
  */
 public class TableListActivity extends SNUTTBaseActivity {
 
-    private List<Table> tables;
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<Table>> mChildList = null;
     private ArrayList<Table> mChildListContent = null;
@@ -34,15 +37,7 @@ public class TableListActivity extends SNUTTBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_list);
-
-        tables = TableManager.getInstance().getTableList(null);
         mListView = (ExpandableListView) findViewById(R.id.listView);
-        mAdapter = getAdapter();
-        mListView.setAdapter(mAdapter);
-        if (mGroupList.size() > 0) {
-            mListView.expandGroup(0);
-        }
-
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -57,9 +52,22 @@ public class TableListActivity extends SNUTTBaseActivity {
             }
         });
 
+        TableManager.getInstance().updateTableList(new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> tables, Response response) {
+                mAdapter = getAdapter(tables);
+                mListView.setAdapter(mAdapter);
+                if (mGroupList.size() > 0) {
+                    mListView.expandGroup(0);
+                }
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 
-    private ExpandableTableListAdapter getAdapter() {
+    private ExpandableTableListAdapter getAdapter(List<Table> tables) {
         mGroupList = new ArrayList<String>();
         mChildList = new ArrayList<ArrayList<Table>>();
 

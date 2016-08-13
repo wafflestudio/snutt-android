@@ -39,6 +39,11 @@ public class PrefManager {
         return singletonInstance;
     }
 
+    public void updateNewTable(int year, int semester) {
+        PrefManager.getInstance().setCurrentYear(year);
+        PrefManager.getInstance().setCurrentSemester(semester);
+    }
+
     public void setLastViewTableId(String id) {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(PREF_KEY_LAST_VIEW_TABLE_ID, id);
