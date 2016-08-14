@@ -61,7 +61,6 @@ public class MainActivity extends SNUTTBaseActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         Intent intent = getIntent();
-        String id = null;
 
         // 1. token 의 유무 검사
         if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
@@ -71,8 +70,12 @@ public class MainActivity extends SNUTTBaseActivity {
         }
 
         // 2. 앱 내부에 저장된 시간표 뛰어주기
+        // TODO : 저장된 정보를 불러와 보여주기
 
-        // 3. 서버에서 시간표 정보 얻오기
+        // 3. 서버에서 시간표 정보 얻어오기
+
+        // TODO : 서버에서
+        String id = null;
 
         if (intent.getExtras() != null) { // intent의 강의 id 받아오기
             id = intent.getExtras().getString(SNUTTBaseActivity.INTENT_KEY_TABLE_ID);
