@@ -55,16 +55,25 @@ public class MainActivity extends SNUTTBaseActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
         Intent intent = getIntent();
         String id = null;
+
+        // 1. token 의 유무 검사
+        if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
+            // 로그인 창으로 이동
+            startWelcome();
+            finish();
+        }
+
+        // 2. 앱 내부에 저장된 시간표 뛰어주기
+
+        // 3. 서버에서 시간표 정보 얻오기
+
         if (intent.getExtras() != null) { // intent의 강의 id 받아오기
             id = intent.getExtras().getString(SNUTTBaseActivity.INTENT_KEY_TABLE_ID);
         } else { // PrefManager 에서 마지막에 본 강의 id 받아오기
