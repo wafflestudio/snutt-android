@@ -143,14 +143,20 @@ public class MainActivity extends SNUTTBaseActivity {
             return ;
         }
         // 서버에서 받아와서 다시 그리기
-        /*Table table = TableManager.getInstance().getTableById(id);
-        LectureManager.getInstance().setLectures(table.getLecture_list());
-        getSupportActionBar().setTitle(table.getTitle());
-        year = table.getYear();
-        semester = table.getSemester();
-        PrefManager.getInstance().setCurrentYear(year);
-        PrefManager.getInstance().setCurrentSemester(semester);
-        TagManager.getInstance().updateNewTag(year, semester);*/
+        TableManager.getInstance().getTableById(id, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                getSupportActionBar().setTitle(table.getTitle());
+                LectureManager.getInstance().setLectures(table.getLecture_list());
+                year = table.getYear(); semester = table.getSemester();
+                PrefManager.getInstance().updateNewTable(year, semester);
+                TagManager.getInstance().updateNewTag(year, semester);
+                PrefManager.getInstance().setLastViewTableId(table.getId());
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 
     @Override
