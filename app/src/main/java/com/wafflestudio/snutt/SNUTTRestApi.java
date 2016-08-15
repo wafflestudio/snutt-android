@@ -23,6 +23,11 @@ import retrofit.http.Path;
  */
 public interface SNUTTRestApi {
 
+    // API Basics and Auth
+
+    @POST("/auth/register_local")
+    public void postSignUp(@Body Map query, Callback<Response> callback);
+
     @POST("/auth/login_local")
     public void postSignIn(@Body Map query, Callback<Token> callback);
 

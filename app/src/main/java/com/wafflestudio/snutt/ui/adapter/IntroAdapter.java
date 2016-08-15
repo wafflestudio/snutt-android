@@ -16,6 +16,9 @@ public class IntroAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = "INTRO_ADAPTER";
     private static final int NUM_ITEMS = 2;
 
+    private static SignInFragment signInFragment;
+    private static SignUpFragment signUpFragment;
+
     public IntroAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -29,9 +32,11 @@ public class IntroAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return SignInFragment.newInstance();
+                if (signInFragment == null) signInFragment = SignInFragment.newInstance();
+                return signInFragment;
             case 1:
-                return SignUpFragment.newInstance();
+                if (signUpFragment == null) signUpFragment = signUpFragment.newInstance();
+                return signUpFragment;
             default:
                 Log.e (TAG, "intro fragment position is out of index!");
                 return null;

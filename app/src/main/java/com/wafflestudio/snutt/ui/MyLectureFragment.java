@@ -20,10 +20,11 @@ import com.wafflestudio.snutt.manager.LectureManager;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class MyLectureFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener{ /**
- * The fragment argument representing the section number for this
- * fragment.
- */
+public class MyLectureFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener{
+    /**
+    * The fragment argument representing the section number for this
+    * fragment.
+    */
     private static final String TAG = "MY_LECTURE_FRAGMENT" ;
     private static final String ARG_SECTION_NUMBER = "section_number";
 

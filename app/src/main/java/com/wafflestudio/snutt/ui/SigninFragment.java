@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
         return new SignInFragment();
     }
 
+    private static final String TAG = "SIGN_IN_FRAGMENT";
     private EditText et_id;
     private EditText et_password;
     private Button sign_in;
@@ -44,7 +47,7 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
                 UserManager.getInstance().postSignIn(id, password);
             }
         });
-
+        Log.d(TAG, "on create view finished");
         return rootView;
     }
 
@@ -69,5 +72,11 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
         } else {
             Toast.makeText(getContext(), "로그인 실패..", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setInfo(String id, String password) {
+        Log.d(TAG, "set info method called");
+        et_id.setText(id);
+        et_password.setText(password);
     }
 }

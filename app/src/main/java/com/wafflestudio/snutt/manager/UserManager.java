@@ -103,6 +103,23 @@ public class UserManager {
         });
     }
 
+    public void postSingUp(String id, String password, final Callback callback) {
+        // id, password -> regex check!
+        Map query = new HashMap();
+        query.put("id", id);
+        query.put("password", password);
+        app.getRestService().postSignUp(query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                if (callback != null) callback.success(response, response2);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {
             listener.notifySignIn(code);
