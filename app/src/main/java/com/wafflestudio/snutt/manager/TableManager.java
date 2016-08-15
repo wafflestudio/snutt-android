@@ -55,17 +55,17 @@ public class TableManager {
     }
 
     public void updateTableList(final Callback callback) {
-        tables.clear();
-        tableMap.clear();
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableList(token, new Callback<List<Table>>() {
             @Override
-            public void success(List<Table> tables, Response response) {
+            public void success(List<Table> table_list, Response response) {
                 Log.d(TAG, "get table list request success!");
-                for (Table table : tables) {
+                tables.clear();
+                tableMap.clear();
+                for (Table table : table_list) {
                     addTable(table);
                 }
-                if (callback != null) callback.success(tables, response);
+                if (callback != null) callback.success(table_list, response);
             }
             @Override
             public void failure(RetrofitError error) {

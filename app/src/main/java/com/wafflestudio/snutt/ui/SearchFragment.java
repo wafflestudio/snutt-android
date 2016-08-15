@@ -29,6 +29,7 @@ import com.google.common.base.Strings;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.ui.adapter.LectureListAdapter;
 import com.wafflestudio.snutt.ui.adapter.TagListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
@@ -67,9 +68,6 @@ public class SearchFragment extends SNUTTBaseFragment
     private LectureListAdapter mAdapter;
     private TagListAdapter tagAdapter;
     private Map query;
-
-    private int year;
-    private int semester;
 
     /**
      * This Variable is used for SearchView
@@ -111,9 +109,6 @@ public class SearchFragment extends SNUTTBaseFragment
         tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.tag_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
         lectureList = new ArrayList<>();
-
-        year = getMainActivity().year;
-        semester = getMainActivity().semester;
 
         //LinearLayoutManager layoutManager
         //        = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
@@ -247,8 +242,8 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private void postQuery(String text) {
         query = new HashMap();
-        query.put("year", year);
-        query.put("semester", semester);
+        query.put("year", PrefManager.getInstance().getCurrentYear());
+        query.put("semester", PrefManager.getInstance().getCurrentSemester());
         query.put("title", text);
         query.put("classification", TagManager.getInstance().getClassification());
         query.put("credit", TagManager.getInstance().getCredit());

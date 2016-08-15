@@ -43,8 +43,8 @@ public class MainActivity extends SNUTTBaseActivity {
      */
     private ViewPager mViewPager;
 
-    public int year;
-    public int semester;
+    private int year;
+    private int semester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

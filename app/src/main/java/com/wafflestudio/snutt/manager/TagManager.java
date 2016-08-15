@@ -161,9 +161,9 @@ public class TagManager {
             @Override
             public void success(TagList tagList, Response response) {
                 Log.d(TAG, "update new tags Success!!");
-                tags = new ArrayList<String>();
-                myTags = new ArrayList<Tag>();
-                field = new HashMap<String, String>();
+                tags.clear();
+                myTags.clear();
+                field.clear();
 
                 for (String tag : tagList.getClassification()) {
                     field.put(tag, "classification");
