@@ -77,16 +77,25 @@ public class MainActivity extends SNUTTBaseActivity {
         String id = PrefManager.getInstance().getLastViewTableId();
         if (id == null) {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
-            // ~~~~
-
-            // default 값이 없는 경우 empty 상태를 보여준다.
-            if (id == null) {
-                getSupportActionBar().setTitle("empty table");
-            } else { // default 값이 있는 경우 default 값에 따른 table 을 보여준다.
-
-            }
+            TableManager.getInstance().getDefaultTable(new Callback<Table>() {
+                @Override
+                public void success(Table table, Response response) {
+                    // default 가 존재하는 경우
+                    getSupportActionBar().setTitle(table.getTitle());
+                    LectureManager.getInstance().setLectures(table.getLecture_list());
+                    year = table.getYear(); semester = table.getSemester();
+                    PrefManager.getInstance().updateNewTable(year, semester);
+                    TagManager.getInstance().updateNewTag(year, semester);
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                    // default가 존재하지 않거나, network error 인 경우
+                    getSupportActionBar().setTitle("empty table");
+                }
+            });
             return;
         }
+
         TableManager.getInstance().getTableById(id, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
@@ -100,33 +109,6 @@ public class MainActivity extends SNUTTBaseActivity {
             public void failure(RetrofitError error) {
             }
         });
-
-        /*if (id == null) {
-            // TODO : (Seongwon) 마지막으로 본것이 없을때? 어디로 이동해야 되지?
-            // 가장 최근의 Table로 이동하기, 없을 경우 가장 최근의 시간표를 생성하기
-            TableManager.getInstance().updateTableList(new Callback<List<Table>>() {
-                @Override
-                public void success(List<Table> tables, Response response) {
-                    Table table = TableManager.getInstance().getLastTable();
-                    getSupportActionBar().setTitle(table.getTitle());
-                    LectureManager.getInstance().setLecture_list(table.getLecture_list());
-                    year = table.getYear(); semester = table.getSemester();
-                    PrefManager.getInstance().setLastViewTableId(table.getId());
-                    PrefManager.getInstance().updateNewTable(year, semester);
-                    TagManager.getInstance().updateNewTag(year, semester);
-                }
-                @Override
-                public void failure(RetrofitError error) {
-                }
-            });
-        }
-        Table table = TableManager.getInstance().getTableById(id);
-        getSupportActionBar().setTitle(table.getTitle());
-        LectureManager.getInstance().setLecture_list(table.getLecture_list());
-        year = table.getYear();
-        semester = table.getSemester();
-        PrefManager.getInstance().updateNewTable(year, semester);
-        TagManager.getInstance().updateNewTag(year, semester);*/
     }
 
 

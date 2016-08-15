@@ -39,7 +39,8 @@ public class TableManager {
 
     private TableManager(SNUTTApplication app) {
         this.app = app;
-        getDefaultTable();
+        this.tables = new ArrayList<>();
+        this.tableMap = new HashMap<>();
     }
 
     public static TableManager getInstance(SNUTTApplication app) {
@@ -84,6 +85,7 @@ public class TableManager {
         app.getRestService().getTableById(token, id, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
+                Log.d(TAG, "get table by id success");
                 if (callback != null) callback.success(table, response);
             }
             @Override
@@ -94,8 +96,21 @@ public class TableManager {
         });
     }
 
-    public Table getLastTable() {
-        return (Table) tables.get(0);
+    public void getDefaultTable(final Callback<Table> callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getRecentTable(token, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "get recent table request success");
+                if (callback != null) callback.success(table, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "get recent table request failed!");
+                if (callback != null) callback.failure(error);
+            }
+        });
+
     }
 
     public void addTable(Table table) {
@@ -109,7 +124,7 @@ public class TableManager {
 
     }
 
-    private void getDefaultTable() {
+    /*private void getDefaultTable() {
 
         Lecture sample = new Lecture();
         sample.setClassification("교양");
@@ -143,5 +158,5 @@ public class TableManager {
         for(int i=0;i<tables.size();i++) {
             tableMap.put( String.valueOf(i) , tables.get(i));
         }
-    }
+    }*/
 }

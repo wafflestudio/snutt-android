@@ -29,11 +29,17 @@ public interface SNUTTRestApi {
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 
+
+    // API Timetable
+
     @GET("/tables")
     public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
 
     @GET("/tables/{id}")
     public void getTableById(@Header("x-access-token") String token, @Path("id") String id, Callback<Table> callback);
+
+    @GET("/tables/recent")
+    public void getRecentTable(@Header("x-access-token") String token, Callback<Table> callback);
 
     @GET("/tags/{year}/{semester}")
     public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);
