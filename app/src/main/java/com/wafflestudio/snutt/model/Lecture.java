@@ -22,8 +22,7 @@ public class Lecture {
     private String remark;
     private String category;
     private int colorIndex; //색상
-    private int bgColor;
-    private int fgColor;
+    private Color color;
     private boolean isCustom = false;
 
     public String getDepartment() {
@@ -162,19 +161,31 @@ public class Lecture {
         this.remark = remark;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     public int getBgColor() {
+        int bgColor = android.graphics.Color.parseColor(color.getBg());
         return bgColor;
     }
 
     public void setBgColor(int bgColor) {
-        this.bgColor = bgColor;
+        String bg = String.format("#%06X", (0xFFFFFF & bgColor));
+        color.setBg(bg);
     }
 
     public int getFgColor() {
+        int fgColor = android.graphics.Color.parseColor(color.getFg());
         return fgColor;
     }
 
     public void setFgColor(int fgColor) {
-        this.fgColor = fgColor;
+        String fg = String.format("#%06X", (0xFFFFFF & fgColor));
+        color.setFg(fg);
     }
 }

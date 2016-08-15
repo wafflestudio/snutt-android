@@ -2,9 +2,6 @@ package com.wafflestudio.snutt.model;
 
 import android.util.Log;
 
-import com.google.common.base.Preconditions;
-
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,14 +15,14 @@ public class Table implements Comparable<Table> {
     private int year;
     private int semester;
     private String title;
-    private List<Lecture> lectures;
+    private List<Lecture> lecture_list;
 
-    public Table(String id, int year, int semester, String title, List<Lecture> lectures) {
+    public Table(String id, int year, int semester, String title, List<Lecture> lecture_list) {
         this._id = id;
         this.year = year;
         this.semester = semester;
         this.title = title;
-        this.lectures = lectures;
+        this.lecture_list = lecture_list;
     }
 
     public Table(String id,String title) {
@@ -33,7 +30,7 @@ public class Table implements Comparable<Table> {
         this.year = 0;
         this.semester = 0;
         this.title = title;
-        this.lectures = null;
+        this.lecture_list = null;
     }
 
     public Table() {
@@ -63,12 +60,12 @@ public class Table implements Comparable<Table> {
         this._id = id;
     }
 
-    public List<Lecture> getLectures() {
-        return lectures;
+    public List<Lecture> getLecture_list() {
+        return lecture_list;
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
+    public void setLecture_list(List<Lecture> lecture_list) {
+        this.lecture_list = lecture_list;
     }
 
     public String getTitle() {

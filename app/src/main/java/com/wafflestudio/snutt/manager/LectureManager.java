@@ -39,6 +39,7 @@ public class LectureManager {
 
     private LectureManager(Context context) {
         this.context = context;
+        this.lectures = new ArrayList<>();
     }
 
     public static LectureManager getInstance(Context context) {
@@ -85,8 +86,12 @@ public class LectureManager {
         return lectures;
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
+    public void setLectures(List<Lecture> lecture_list) {
+        lectures.clear();
+        for (Lecture lecture : lecture_list) {
+            lectures.add(lecture);
+        }
+        notifyLectureChanged();
     }
 
     public Lecture getSelectedLecture() {

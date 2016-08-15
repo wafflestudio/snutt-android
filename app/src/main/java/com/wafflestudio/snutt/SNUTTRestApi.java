@@ -32,6 +32,9 @@ public interface SNUTTRestApi {
     @GET("/tables")
     public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
 
+    @GET("/tables/{id}")
+    public void getTableById(@Header("x-access-token") String token, @Path("id") String id, Callback<Table> callback);
+
     @GET("/tags/{year}/{semester}")
     public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);
 }

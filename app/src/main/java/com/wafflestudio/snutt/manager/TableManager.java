@@ -79,8 +79,19 @@ public class TableManager {
         this.tables = tables;
     }
 
-    public Table getTableById(String id) {
-        return tableMap.get(id);
+    public void getTableById(String id, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getTableById(token, id, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                if (callback != null) callback.success(table, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "get table by id is failed!");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     public Table getLastTable() {
