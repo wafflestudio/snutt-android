@@ -86,6 +86,9 @@ public class TableManager {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "get table by id success");
+                LectureManager.getInstance().setLectures(table.getLecture_list());
+                PrefManager.getInstance().updateNewTable(table);
+                TagManager.getInstance().updateNewTag(table.getYear(), table.getSemester());
                 if (callback != null) callback.success(table, response);
             }
             @Override
@@ -102,6 +105,9 @@ public class TableManager {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "get recent table request success");
+                LectureManager.getInstance().setLectures(table.getLecture_list());
+                PrefManager.getInstance().updateNewTable(table);
+                TagManager.getInstance().updateNewTag(table.getYear(), table.getSemester());
                 if (callback != null) callback.success(table, response);
             }
             @Override

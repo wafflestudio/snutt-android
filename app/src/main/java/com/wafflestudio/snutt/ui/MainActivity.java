@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.manager.TagManager;
@@ -20,6 +21,7 @@ import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
 
+import dalvik.annotation.TestTarget;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -42,9 +44,6 @@ public class MainActivity extends SNUTTBaseActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private int year;
-    private int semester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,46 +70,43 @@ public class MainActivity extends SNUTTBaseActivity {
 
         // 2. 앱 내부에 저장된 시간표 뛰어주기
         // TODO : 저장된 정보를 불러와 보여주기, 없으면 empty상태로 띄어준다.
+        String json = PrefManager.getInstance().getCurrentTable();
+        if (json != null) {
+            Table table = new Gson().fromJson(json, Table.class);
+            getSupportActionBar().setTitle(table.getTitle());
+            LectureManager.getInstance().setLectures(table.getLecture_list());
+        }
 
         // 3. 서버에서 시간표 정보 얻어오기
         // TODO : 서버에서 마지막에 본 시간표 정보 받아오기
         String id = PrefManager.getInstance().getLastViewTableId();
-        if (id == null) {
+        if (id != null) {
+            TableManager.getInstance().getTableById(id, new Callback<Table>() {
+                @Override
+                public void success(Table table, Response response) {
+                    getSupportActionBar().setTitle(table.getTitle());
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                }
+            });
+        } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
             TableManager.getInstance().getDefaultTable(new Callback<Table>() {
                 @Override
                 public void success(Table table, Response response) {
                     // default 가 존재하는 경우
                     getSupportActionBar().setTitle(table.getTitle());
-                    LectureManager.getInstance().setLectures(table.getLecture_list());
-                    year = table.getYear(); semester = table.getSemester();
-                    PrefManager.getInstance().updateNewTable(year, semester);
-                    TagManager.getInstance().updateNewTag(year, semester);
                 }
+
                 @Override
                 public void failure(RetrofitError error) {
                     // default가 존재하지 않거나, network error 인 경우
                     getSupportActionBar().setTitle("empty table");
                 }
             });
-            return;
         }
-
-        TableManager.getInstance().getTableById(id, new Callback<Table>() {
-            @Override
-            public void success(Table table, Response response) {
-                getSupportActionBar().setTitle(table.getTitle());
-                LectureManager.getInstance().setLectures(table.getLecture_list());
-                year = table.getYear(); semester = table.getSemester();
-                PrefManager.getInstance().updateNewTable(year, semester);
-                TagManager.getInstance().updateNewTag(year, semester);
-            }
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
     }
-
 
     @Override
     public void onNewIntent(Intent intent) {
@@ -129,11 +125,6 @@ public class MainActivity extends SNUTTBaseActivity {
             @Override
             public void success(Table table, Response response) {
                 getSupportActionBar().setTitle(table.getTitle());
-                LectureManager.getInstance().setLectures(table.getLecture_list());
-                year = table.getYear(); semester = table.getSemester();
-                PrefManager.getInstance().updateNewTable(year, semester);
-                TagManager.getInstance().updateNewTag(year, semester);
-                PrefManager.getInstance().setLastViewTableId(table.getId());
             }
             @Override
             public void failure(RetrofitError error) {
