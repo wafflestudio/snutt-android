@@ -27,6 +27,7 @@ public class TableManager {
 
     private static final String TAG = "TABLE_MANAGER" ;
 
+    private Table current;
     private List<Table> tables;
     private Map<String, Table> tableMap;
     private SNUTTApplication app;
@@ -55,7 +56,7 @@ public class TableManager {
         return singleton;
     }
 
-    public void updateTableList(final Callback callback) {
+    public void getTableList(final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableList(token, new Callback<List<Table>>() {
             @Override
@@ -63,9 +64,7 @@ public class TableManager {
                 Log.d(TAG, "get table list request success!");
                 tables.clear();
                 tableMap.clear();
-                for (Table table : table_list) {
-                    addTable(table);
-                }
+                for (Table table : table_list) addTable(table);
                 if (callback != null) callback.success(table_list, response);
             }
             @Override
@@ -76,9 +75,28 @@ public class TableManager {
         });
     }
 
-    public void setTableList(List<Table> tables) {
-        this.tables = tables;
+    public void postTable(int year, int semester, String title, final Callback<List<Table>> callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().postTable(token, new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> table_list, Response response) {
+                Log.d(TAG, "post new table request success!!");
+                tables.clear();
+                tableMap.clear();
+                for (Table table : table_list) addTable(table);
+                if (callback != null) callback.success(table_list, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "post new table request failed..!");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
+
+    /*public void setTableList(List<Table> tables) {
+        this.tables = tables;
+    }*/
 
     public void getTableById(String id, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();

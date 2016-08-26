@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
  * Created by makesource on 2016. 1. 16..
  */
 public class Lecture {
+    private String _id;
     private String classification;
     private String department;
     private String academic_year;
@@ -24,6 +25,37 @@ public class Lecture {
     private int colorIndex; //색상
     private Color color;
     private boolean isCustom = false;
+
+    public Lecture() {}
+
+    public Lecture(Lecture lec) {
+        this._id = lec._id;
+        this.classification = lec.classification;
+        this.department = lec.department;
+        this.academic_year = lec.academic_year;
+        this.course_number = lec.course_number;
+        this.lecture_number = lec.lecture_number;
+        this.course_title = lec.course_title;
+        this.credit = lec.credit;
+        this.class_time = lec.class_time;
+        this.class_time_json = lec.class_time_json;
+        this.location = lec.location;
+        this.instructor = lec.instructor;
+        this.quota = lec.quota;
+        this.enrollment = lec.enrollment;
+        this.remark = lec.remark;
+        this.category = lec.category;
+        this.colorIndex = 0;
+        this.color = new Color();
+    }
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String id) {
+        this._id = id;
+    }
 
     public String getDepartment() {
         return department;

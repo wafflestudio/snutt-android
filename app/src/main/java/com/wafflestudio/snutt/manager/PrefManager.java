@@ -44,7 +44,6 @@ public class PrefManager {
     }
 
     public void updateNewTable(Table table) {
-        // do something
         String json = new Gson().toJson(table);
         setLastViewTableId(table.getId());
         setCurrentTable(json);

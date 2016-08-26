@@ -52,7 +52,7 @@ public class TableListActivity extends SNUTTBaseActivity {
             }
         });
 
-        TableManager.getInstance().updateTableList(new Callback<List<Table>>() {
+        TableManager.getInstance().getTableList(new Callback<List<Table>>() {
             @Override
             public void success(List<Table> tables, Response response) {
                 mAdapter = getAdapter(tables);

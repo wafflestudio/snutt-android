@@ -13,6 +13,11 @@ import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by makesource on 2016. 3. 1..
@@ -61,15 +66,19 @@ public class TableCreateActivity extends SNUTTBaseActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO : (SeongWon) server에 새로운 table생성 요청 보내기, MainActivity가 들고있는 방식 다시 생각해보기
-                // 나중에는 server callback에서 화면 전환하는 방식으로 바꾸기
-                // 없는 수강편람일수도, 그리고 인터넷 연결이 되지 않았을 때도 넘어가면 안되기 때문
                 String title = titleText.getText().toString();
-                String id = String.valueOf(year) + String.valueOf(semester) + title ;
-                Table table = new Table(id,year,semester,title,new ArrayList<Lecture>());
-                TableManager.getInstance().addTable(table);
-                startTableView(id);
-                finish();
+                TableManager.getInstance().postTable(year, semester, title, new Callback<List<Table>>() {
+                    @Override
+                    public void success(List<Table> tables, Response response) {
+                        // 보고있는 테이블 정보 변경하기
+                        //startTableView(id);
+                        //finish();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+
             }
         });
 

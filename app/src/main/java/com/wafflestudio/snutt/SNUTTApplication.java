@@ -11,9 +11,13 @@ import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.Lecture;
+import com.wafflestudio.snutt.model.Table;
 
+import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by makesource on 2016. 1. 17..
@@ -30,12 +34,11 @@ public class SNUTTApplication extends Application {
     public void onCreate() {
         context = getApplicationContext();
         PrefManager.getInstance(context);
-        LectureManager.getInstance(context);
+        LectureManager.getInstance(this);
         TagManager.getInstance(this);
         UserManager.getInstance(this);
         TableManager.getInstance(this);
         restUrl = "http://walnut.wafflestudio.com:3000/api";
-
         super.onCreate();
     }
 

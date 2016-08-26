@@ -15,6 +15,10 @@ import com.wafflestudio.snutt.model.Lecture;
 
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by makesource on 2016. 2. 10..
  */
@@ -72,7 +76,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
 
         holder.setClickListener(new ViewHolder.ClickListener() {
             @Override
-            public void onClick(View v, int position) {
+            public void onClick(View v, final int position) {
                 //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
                 //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
                 if (v.getId() == holder.lectureLayout.getId()) {
@@ -90,12 +94,26 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
 
                 } else if (v.getId() == holder.add.getId()) {
                     Log.d(TAG, String.valueOf(position) + " add Clicked!!");
-                    LectureManager.getInstance().addLecture(lecture);
-                    notifyItemChanged(position);
+                    LectureManager.getInstance().addLecture(lecture, new Callback() {
+                        @Override
+                        public void success(Object o, Response response) {
+                            notifyItemChanged(position);
+                        }
+                        @Override
+                        public void failure(RetrofitError error) {
+                        }
+                    });
                 } else {
                     Log.d(TAG, String.valueOf(position) + " remove Clicked!!");
-                    LectureManager.getInstance().removeLecture(lecture);
-                    notifyItemChanged(position);
+                    LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                        @Override
+                        public void success(Object o, Response response) {
+                            notifyItemChanged(position);
+                        }
+                        @Override
+                        public void failure(RetrofitError error) {
+                        }
+                    });
                 }
             }
         });

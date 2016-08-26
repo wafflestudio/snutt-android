@@ -12,6 +12,7 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
@@ -40,11 +41,20 @@ public interface SNUTTRestApi {
     @GET("/tables")
     public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
 
+    @POST("/tables")
+    public void postTable(@Header("x-access-token") String token, Callback<List<Table>> callback);
+
     @GET("/tables/{id}")
     public void getTableById(@Header("x-access-token") String token, @Path("id") String id, Callback<Table> callback);
 
     @GET("/tables/recent")
     public void getRecentTable(@Header("x-access-token") String token, Callback<Table> callback);
+
+    @POST("/tables/{id}/lecture")
+    public void postLecture(@Header("x-access-token") String token, @Path("id") String id, @Body Lecture lecture, Callback<Table> callback);
+
+    @DELETE("/tables/{id}/lecture/{lecture_id}")
+    public void deleteLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, Callback<Table> callback);
 
     @GET("/tags/{year}/{semester}")
     public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);

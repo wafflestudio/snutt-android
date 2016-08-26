@@ -1,18 +1,28 @@
 package com.wafflestudio.snutt.manager;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.model.Lecture;
+import com.wafflestudio.snutt.model.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by makesource on 2016. 2. 7..
@@ -21,7 +31,7 @@ public class LectureManager {
 
     private static final String TAG = "LECTURE_MANAGER" ;
 
-    private Context context;
+    private SNUTTApplication app;
     private List<Lecture> lectures;
     private Lecture selectedLecture;
     private Random random = new Random();
@@ -37,14 +47,14 @@ public class LectureManager {
      * LectureManager 싱글톤
      */
 
-    private LectureManager(Context context) {
-        this.context = context;
+    private LectureManager(SNUTTApplication app) {
+        this.app = app;
         this.lectures = new ArrayList<>();
     }
 
-    public static LectureManager getInstance(Context context) {
+    public static LectureManager getInstance(SNUTTApplication app) {
         if (singleton == null) {
-            singleton = new LectureManager(context);
+            singleton = new LectureManager(app);
         }
         return singleton;
     }
@@ -79,7 +89,6 @@ public class LectureManager {
             }
         }
     }
-
     ////////
 
     public List<Lecture> getLectures() {
@@ -103,36 +112,63 @@ public class LectureManager {
         notifyLectureChanged();
     }
 
-    public void addLecture(Lecture lec) {
+    public void addLecture(final Lecture lec, final Callback callback) {
         if (alreadyOwned(lec)) {
             Log.w(TAG, "lecture is duplicated!! ");
             return ;
         }
         if (alreadyExistClassTime(lec)) {
             Log.d(TAG, "lecture is duplicated!! ");
-            Toast.makeText(context, "강의시간이 겹칩니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(app, "강의시간이 겹칩니다", Toast.LENGTH_SHORT).show();
             return ;
         }
+        final Lecture target = new Lecture(lec);
         int random = getRandomColor();
-        lec.setColorIndex(getRandomColor());
-        lec.setBgColor(SNUTTUtils.getBgColorByIndex(random));
-        lec.setFgColor(SNUTTUtils.getFgColorByIndex(random));
-        lectures.add(lec);
-        notifyLectureChanged();
+        target.setColorIndex(getRandomColor());
+        target.setBgColor(SNUTTUtils.getBgColorByIndex(random));
+        target.setFgColor(SNUTTUtils.getFgColorByIndex(random));
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        app.getRestService().postLecture(token, id, target, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "post lecture request success!!");
+                setLectures(table.getLecture_list());
+                notifyLectureChanged();
+                if (callback != null) callback.success(table, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "post lecture request failed ...");
+                if (callback != null) callback.failure(error);
+            }
+        });
+
     }
 
-    public void removeLecture(Lecture lec) {
-        Lecture target = null;
+    public void removeLecture(Lecture lec, final Callback callback) {
         for (Lecture lecture : lectures) {
             if (isEqualLecture(lecture, lec)) {
-                target = lecture;
-                break;
+                final Lecture target = lecture;
+                String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+                String id = PrefManager.getInstance().getLastViewTableId();
+                String lecture_id = target.getId();
+                app.getRestService().deleteLecture(token, id, lecture_id, new Callback<Table>() {
+                    @Override
+                    public void success(Table table, Response response) {
+                        Log.d(TAG, "remove lecture request success!!");
+                        setLectures(table.getLecture_list());
+                        notifyLectureChanged();
+                        if (callback != null) callback.success(table, response);
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "post lecture request failed ...");
+                        if (callback != null) callback.failure(error);
+                    }
+                });
+                return;
             }
-        }
-        if (target != null) {
-            lectures.remove(target);
-            notifyLectureChanged();
-            return ;
         }
         Log.w(TAG, "lecture is not exist!!");
     }
