@@ -32,7 +32,6 @@ public class TableListActivity extends SNUTTBaseActivity {
     private ExpandableListView mListView;
     private ExpandableTableListAdapter mAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +92,7 @@ public class TableListActivity extends SNUTTBaseActivity {
             mChildList.add(mChildListContent);
         }
 
-        return (ExpandableTableListAdapter) new ExpandableTableListAdapter(this, mGroupList, mChildList);
+        return new ExpandableTableListAdapter(this, mGroupList, mChildList);
     }
 
     @Override
@@ -120,7 +119,20 @@ public class TableListActivity extends SNUTTBaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onRestart() {
+        super.onRestart();
+        TableManager.getInstance().getTableList(new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> tables, Response response) {
+                mAdapter = getAdapter(tables);
+                mListView.setAdapter(mAdapter);
+                if (mGroupList.size() > 0) {
+                    mListView.expandGroup(0);
+                }
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 }

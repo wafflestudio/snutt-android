@@ -42,7 +42,7 @@ public interface SNUTTRestApi {
     public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
 
     @POST("/tables")
-    public void postTable(@Header("x-access-token") String token, Callback<List<Table>> callback);
+    public void postTable(@Header("x-access-token") String token, @Body Map query, Callback<List<Table>> callback);
 
     @GET("/tables/{id}")
     public void getTableById(@Header("x-access-token") String token, @Path("id") String id, Callback<Table> callback);

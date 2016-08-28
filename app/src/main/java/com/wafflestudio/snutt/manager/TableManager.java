@@ -65,7 +65,7 @@ public class TableManager {
                 tables.clear();
                 tableMap.clear();
                 for (Table table : table_list) addTable(table);
-                if (callback != null) callback.success(table_list, response);
+                if (callback != null) callback.success(tables, response);
             }
             @Override
             public void failure(RetrofitError error) {
@@ -77,14 +77,18 @@ public class TableManager {
 
     public void postTable(int year, int semester, String title, final Callback<List<Table>> callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        app.getRestService().postTable(token, new Callback<List<Table>>() {
+        Map query = new HashMap();
+        query.put("year", year);
+        query.put("semester", semester);
+        query.put("title", title);
+        app.getRestService().postTable(token, query, new Callback<List<Table>>() {
             @Override
             public void success(List<Table> table_list, Response response) {
                 Log.d(TAG, "post new table request success!!");
                 tables.clear();
                 tableMap.clear();
                 for (Table table : table_list) addTable(table);
-                if (callback != null) callback.success(table_list, response);
+                if (callback != null) callback.success(tables, response);
             }
             @Override
             public void failure(RetrofitError error) {
