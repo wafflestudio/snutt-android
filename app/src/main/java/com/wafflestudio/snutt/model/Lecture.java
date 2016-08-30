@@ -6,6 +6,11 @@ import com.google.gson.JsonArray;
  * Created by makesource on 2016. 1. 16..
  */
 public class Lecture {
+    /*
+     * 주의 !
+     * 검색시 날아오는 lecture id 와
+     * 내 시간표에 추가된 lecture id 는 서로 다른 값
+     */
     private String _id;
     private String classification;
     private String department;
@@ -26,7 +31,9 @@ public class Lecture {
     private Color color;
     private boolean isCustom = false;
 
-    public Lecture() {}
+    public Lecture() {
+        this.color = new Color();
+    }
 
     public Lecture(Lecture lec) {
         this._id = lec._id;

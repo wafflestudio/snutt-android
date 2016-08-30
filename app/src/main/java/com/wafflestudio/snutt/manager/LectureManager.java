@@ -184,22 +184,57 @@ public class LectureManager {
     }
 
     // TODO : (SeongWon) 배경색, 글자색 업데이트?
-    public void updateLecture(Lecture lec, int bgColor, int fgColor) {
-        lec.setBgColor(bgColor);
-        lec.setFgColor(fgColor);
-        notifyLectureChanged();
-        Log.d(TAG, "lecture is updated!!");
-        // server에 update하기
+    public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
+        Log.d(TAG, "update Lecture method (color) called!!");
+        Lecture target = new Lecture();
+        target.setBgColor(bgColor);
+        target.setFgColor(fgColor);
+
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        String lecture_id = lec.getId();
+        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "put lecture request success.");
+                lec.setBgColor(bgColor);
+                lec.setFgColor(fgColor);
+                notifyLectureChanged();
+                notifyLectureChanged();
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "put lecture request failed..");
+            }
+        });
     }
 
-    public void setNextColor(Lecture lec) {
+    public void setNextColor(final Lecture lec) {
         Log.d(TAG, "setNextColor method called!!");
         colorIndex = (colorIndex + 1) % 7;
         if (colorIndex == 0) colorIndex++;
-        lec.setColorIndex(colorIndex);
-        lec.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
-        lec.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
-        notifyLectureChanged();
+        Lecture target = new Lecture();
+        target.setColorIndex(colorIndex);
+        target.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
+        target.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
+
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        String lecture_id = lec.getId();
+        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "put lecture request success..");
+                lec.setColorIndex(colorIndex);
+                lec.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
+                lec.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
+                notifyLectureChanged();
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "put lecture request failed..");
+            }
+        });
     }
 
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
@@ -331,27 +366,6 @@ public class LectureManager {
                 return colorIndex;
             }
         }
-    }
-
-    private void setDefaultLecture() {
-        lectures = new ArrayList<>();
-        Lecture sample = new Lecture();
-        sample.setClassification("교양");
-        sample.setDepartment("건설환경공학부");
-        sample.setAcademic_year("2학년");
-        sample.setCourse_number("035.001");
-        sample.setCourse_title("컴퓨터의 개념 및 실습");
-        sample.setLecture_number("001");
-        sample.setLocation("301-1/301-2");
-        sample.setCredit(3);
-        sample.setClass_time("월(6-2)/수(6-2)");
-        sample.setInstructor("몰라아직 ㅜㅜ");
-        sample.setQuota(60);
-        sample.setEnrollment(0);
-        sample.setRemark("건설환경공학부만 수강가능");
-        sample.setCategory("foundation_computer");
-        sample.setColorIndex(1);
-        lectures.add(sample);
     }
 
     private void notifyLectureChanged() {

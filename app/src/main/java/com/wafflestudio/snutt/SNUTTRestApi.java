@@ -17,6 +17,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 /**
@@ -55,6 +56,9 @@ public interface SNUTTRestApi {
 
     @DELETE("/tables/{id}/lecture/{lecture_id}")
     public void deleteLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, Callback<Table> callback);
+
+    @PUT("/tables/{id}/lecture/{lecture_id}")
+    public void putLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, @Body Lecture lecture, Callback<Table> callback);
 
     @GET("/tags/{year}/{semester}")
     public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);

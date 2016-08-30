@@ -46,8 +46,8 @@ public class TableView extends View {
     Paint mCustomPaint = new Paint();
 
     private List<Lecture> lectures ;
-    private boolean export;
-    private boolean custom;
+    private boolean export; // 현재 선택한 강의를 보여줄지 말지?
+    private boolean custom; // custom lecture 생성시 보여주는 view
 
 
     public TableView(Context context, AttributeSet attrs) {
@@ -159,12 +159,14 @@ public class TableView extends View {
             Log.d(TAG, "time : " + String.valueOf(time));
 
 
-            //터치한 게 내 강의 중 하나
-            for (int i = 0; i < lectures.size(); i++) {
-                Lecture lecture = lectures.get(i);
-                if (LectureManager.getInstance().contains(lecture, wday, time)) {
-                    LectureManager.getInstance().setNextColor(lecture);
-                    break;
+            if (!custom) {
+                //터치한 게 내 강의 중 하나
+                for (int i = 0; i < lectures.size(); i++) {
+                    Lecture lecture = lectures.get(i);
+                    if (LectureManager.getInstance().contains(lecture, wday, time)) {
+                        LectureManager.getInstance().setNextColor(lecture);
+                        break;
+                    }
                 }
             }
 
