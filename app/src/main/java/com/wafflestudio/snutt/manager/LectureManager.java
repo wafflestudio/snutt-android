@@ -183,7 +183,7 @@ public class LectureManager {
         // server에 update하기
     }
 
-    // TODO : (SeongWon) 배경색, 글자색 업데이트?
+    // 배경색, 글자색 업데이트
     public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
         Log.d(TAG, "update Lecture method (color) called!!");
         Lecture target = new Lecture();
@@ -209,6 +209,7 @@ public class LectureManager {
         });
     }
 
+    // 배경색, 글자색 업데이트
     public void setNextColor(final Lecture lec) {
         Log.d(TAG, "setNextColor method called!!");
         colorIndex = (colorIndex + 1) % 7;
