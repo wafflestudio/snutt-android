@@ -4,6 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -62,6 +65,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
+        setHasOptionsMenu(true);
 
         timeListView = (ListView) rootView.findViewById(R.id.time_listView);
         classification = (TextView) rootView.findViewById(R.id.classification);
@@ -122,4 +126,20 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_lecture_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_edit :
+                String message = "lecture edit is selected";
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

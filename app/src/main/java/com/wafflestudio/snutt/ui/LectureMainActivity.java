@@ -5,8 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
@@ -126,8 +128,7 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_lecture_detail, menu);
         return true;
-    }
-
+    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -136,27 +137,10 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
 
         int id = item.getItemId();
 
-        if (id == R.id.action_confirm) {
-            // 강의 상세정보 수정 요청 (server)
-            String title = lecture.getCourse_title();
-            String inst = lecture.getInstructor();
-            JsonArray timeJson = adapter.getClassTimeJson();
-
-            if (!Strings.isNullOrEmpty( course_title.getText().toString() )) {
-                title = course_title.getText().toString();
-            }
-            if (!Strings.isNullOrEmpty( instructor.getText().toString() )) {
-                inst = instructor.getText().toString();
-            }
-
-            LectureManager.getInstance().updateLecture(lecture, title, inst, timeJson);
-            finish();
-            return true;
-        }  else if (id == android.R.id.home) {
+        if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 }
