@@ -24,16 +24,20 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
 
     public final static String TAG_FRAGMENT_LECTURE_DETAIL = "TAG_FRAGMENT_LECTURE_DETAIL";
     public final static String TAG_FRAGMENT_COLOR_PICKER = "TAG_FRAGMENT_COLOR_PICKER";
+    public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
+
 
     private final static String[] FRAGMENT_TAGS = {
             TAG_FRAGMENT_LECTURE_DETAIL,
-            TAG_FRAGMENT_COLOR_PICKER
+            TAG_FRAGMENT_COLOR_PICKER,
+            TAG_FRAGMENT_TEST
     };
 
     public final static int FRAGMENT_ERROR = -1;
     public final static int FRAGMENT_LECTURE_DETAIL = 0;
     public final static int FRAGMENT_COLOR_PICKER = 1;
-    public final static int FRAGMENT_ROOM_NUM = 2;  // Number of fragments
+    public final static int FRAGMENT_TEST = 2;
+    public final static int FRAGMENT_ROOM_NUM = 3;  // Number of fragments
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,10 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
 
     public void setColorPickerFragment() {
         showFragment(FRAGMENT_COLOR_PICKER, true);
+    }
+
+    public void setTestFragment() {
+        showFragment(FRAGMENT_TEST, true);
     }
 
     private void setMainFragment() {
@@ -87,6 +95,8 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
             case FRAGMENT_COLOR_PICKER:
                 getSupportActionBar().setTitle("강의 색상 변경");
                 break;
+            case FRAGMENT_TEST:
+                getSupportActionBar().setTitle("테스트!");
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;
@@ -99,6 +109,8 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
                 return LectureDetailFragment.newInstance();
             case FRAGMENT_COLOR_PICKER:
                 return ColorPickerFragment.newInstance();
+            case FRAGMENT_TEST:
+                return LectureDetailTemp.newInstance();
             default:
                 Log.e(TAG, "Fragment index is out of range!!!");
                 return null;

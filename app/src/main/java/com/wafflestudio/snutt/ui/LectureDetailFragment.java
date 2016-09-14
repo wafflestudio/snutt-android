@@ -35,8 +35,6 @@ import java.util.List;
  * Created by makesource on 2016. 4. 5..
  */
 public class LectureDetailFragment extends SNUTTBaseFragment {
-
-
     private List<Lecture> myLectures;
     private List<ClassTime> classTimes;
     private ClassTimeAdapter adapter;
@@ -138,6 +136,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
             case R.id.action_edit :
                 String message = "lecture edit is selected";
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                ((LectureMainActivity)getActivity()).setTestFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);
