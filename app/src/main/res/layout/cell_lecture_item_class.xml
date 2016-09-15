@@ -17,6 +17,7 @@
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="시간"/>
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
@@ -28,6 +29,7 @@
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="장소"/>
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

@@ -3,9 +3,13 @@ package com.wafflestudio.snutt.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -25,6 +29,10 @@ import java.util.ArrayList;
  */
 public class LectureDetailTemp extends SNUTTBaseFragment {
     private ListView lectureList;
+    private ArrayList<LectureItem> lists;
+    private LectureAdapter adapter;
+    private boolean editable = false;
+
 
     public static LectureDetailTemp newInstance() {
         return new LectureDetailTemp();
@@ -34,6 +42,7 @@ public class LectureDetailTemp extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_lecture_detail_temp, container, false);
+        setHasOptionsMenu(true);
         lectureList = (ListView) rootView.findViewById(R.id.lecture_list);
 
         Intent intent = getActivity().getIntent();
@@ -43,7 +52,7 @@ public class LectureDetailTemp extends SNUTTBaseFragment {
         Preconditions.checkPositionIndex(position,  LectureManager.getInstance().getLectures().size());
         Lecture lecture = LectureManager.getInstance().getLectures().get(position);
 
-        ArrayList<LectureItem> lists = new ArrayList<>();
+        lists = new ArrayList<>();
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.ItemTitle));
         lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.ItemTitle));
@@ -67,8 +76,39 @@ public class LectureDetailTemp extends SNUTTBaseFragment {
         }
         lists.add(new LectureItem(LectureItem.Type.ItemButton));
 
-        lectureList.setAdapter(new LectureAdapter(getContext(), lists));
+        adapter = new LectureAdapter(getContext(), lists);
+        lectureList.setAdapter(adapter);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_lecture_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_edit :
+                if (editable) {
+                    item.setTitle("편집");
+                    editable = false;
+                    for (LectureItem it : lists) {
+                        it.setEditable(false);
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    item.setTitle("완료");
+                    editable = true;
+                    for (LectureItem it : lists) {
+                        it.setEditable(true);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

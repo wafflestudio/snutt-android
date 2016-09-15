@@ -30,6 +30,7 @@ public class LectureItem {
     private Color color;
     private ClassTime classTime;
     private Type type;
+    private boolean editable;
 
     public LectureItem(String title1, String value1, String title2, String value2, Type type) {
         this.title1 = title1;
@@ -37,18 +38,21 @@ public class LectureItem {
         this.title2 = title2;
         this.value2 = value2;
         this.type = type;
+        this.editable = false;
     }
 
     public LectureItem(String title1, String value1, Type type) {
         this.title1 = title1;
         this.value1 = value1;
         this.type = type;
+        this.editable = false;
     }
 
     public LectureItem(String title1, Color color, Type type) {
         this.title1 = title1;
         this.color = color;
         this.type = type;
+        this.editable = false;
     }
 
     public LectureItem(ClassTime classTime, Type type) {
@@ -59,6 +63,7 @@ public class LectureItem {
                 SNUTTUtils.numberToTime(classTime.getStart()) + "~" +
                 SNUTTUtils.numberToTime(classTime.getStart() + classTime.getLen());
         this.value2 = classTime.getPlace();
+        this.editable = false;
     }
 
     public LectureItem(Type type) {
@@ -120,4 +125,13 @@ public class LectureItem {
     public void setClassTime(ClassTime classTime) {
         this.classTime = classTime;
     }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
 }
