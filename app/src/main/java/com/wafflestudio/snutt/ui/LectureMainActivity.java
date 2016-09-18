@@ -14,11 +14,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.model.Color;
 
 /**
  * Created by makesource on 2016. 3. 1..
  */
-public class LectureMainActivity extends SNUTTBaseActivity implements FragmentManager.OnBackStackChangedListener {
+public class LectureMainActivity extends SNUTTBaseActivity
+        implements FragmentManager.OnBackStackChangedListener, ColorPickerFragment.ColorChangedListener {
 
     private static final String TAG = "LECTURE_MAIN_ACTIVITY" ;
 
@@ -97,6 +99,7 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
                 break;
             case FRAGMENT_TEST:
                 getSupportActionBar().setTitle("테스트!");
+                break;
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;
@@ -154,5 +157,11 @@ public class LectureMainActivity extends SNUTTBaseActivity implements FragmentMa
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onColorChanged(Color color) {
+        LectureDetailTemp fragment = (LectureDetailTemp) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_TEST);
+        fragment.setLectureColor(color);
     }
 }

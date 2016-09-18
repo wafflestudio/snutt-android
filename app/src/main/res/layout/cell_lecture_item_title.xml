@@ -16,7 +16,7 @@
         android:singleLine="true"
         android:hint="제목"/>
 
-    <TextView
+    <EditText
         android:id="@+id/text_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -1,25 +1,50 @@
 package com.wafflestudio.snutt.model;
 
+import android.util.Log;
+
+import com.wafflestudio.snutt.SNUTTUtils;
+
 /**
  * Created by makesource on 2016. 8. 15..
  */
 public class Color {
-    private String fg;
     private String bg;
+    private String fg;
 
-    public String getFg() {
-        return fg;
+    public Color() {
+
     }
 
-    public void setFg(String fg) {
+    public Color(int bgColor, int fgColor) {
+        setBg(bgColor);
+        setFg(fgColor);
+    }
+
+    public int getFg() {
+        if (fg == null) {
+            Log.e("Color.java", "foreground color is null object!");
+            return SNUTTUtils.getFgColorByIndex(0);
+        }
+        int fgColor = android.graphics.Color.parseColor(fg);
+        return fgColor;
+    }
+
+    public void setFg(int fgColor) {
+        String fg = String.format("#%06X", (0xFFFFFF & fgColor));
         this.fg = fg;
     }
 
-    public String getBg() {
-        return bg;
+    public int getBg() {
+        if (bg == null) {
+            Log.e("Color.java", "background color is null object!");
+            return SNUTTUtils.getBgColorByIndex(0);
+        }
+        int bgColor = android.graphics.Color.parseColor(bg);
+        return bgColor;
     }
 
-    public void setBg(String bg) {
+    public void setBg(int bgColor) {
+        String bg = String.format("#%06X", (0xFFFFFF & bgColor));
         this.bg = bg;
     }
 }

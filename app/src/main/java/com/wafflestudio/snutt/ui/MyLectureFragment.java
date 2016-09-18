@@ -109,6 +109,8 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         super.onResume();
         LectureManager.getInstance().addListener(this);
         if (mAdapter != null) {
+            // 강의 색상 변경시 fragment 이동 발생!
+
             mAdapter.notifyDataSetChanged();
         }
     }

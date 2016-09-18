@@ -12,12 +12,19 @@ public class ClassTime {
     private String place;
     private String _id;
 
+    public ClassTime(int day, int start, int len, String place) {
+        this.day = day;
+        this.start = start;
+        this.len = len;
+        this.place = place;
+    }
+
     public ClassTime(JsonObject jsonObject) {
         this.day = jsonObject.get("day").getAsInt();
         this.start = jsonObject.get("start").getAsInt();
         this.len = jsonObject.get("len").getAsInt();
         this.place = jsonObject.get("place").getAsString();
-        this._id = jsonObject.get("_id").getAsString();
+        //this._id = jsonObject.get("_id").getAsString();
     }
 
     public int getStart() {

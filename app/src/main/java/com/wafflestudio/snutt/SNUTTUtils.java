@@ -60,6 +60,12 @@ public class SNUTTUtils {
         return time;
     }
 
+    public static String[] getTimeList(int from, int to) {
+        String[] list = new String[to-from+1];
+        for (int i=from;i<=to;i++) list[i-from] = numberToTime(i);
+        return list;
+    }
+
     public static String zeroStr(int number){
         if (number < 10) return "0" + number;
         return "" + number;

@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt.model;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
+import com.wafflestudio.snutt.SNUTTUtils;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -19,7 +22,7 @@ public class Lecture {
     private String lecture_number;
     private String course_title;
     private int credit;
-    private String class_time;
+    private String class_time; // lecture 검색시 띄어주는 class time
     private JsonArray class_time_json;
     private String location;
     private String instructor;
@@ -209,22 +212,18 @@ public class Lecture {
     }
 
     public int getBgColor() {
-        int bgColor = android.graphics.Color.parseColor(color.getBg());
-        return bgColor;
+        return color.getBg();
     }
 
     public void setBgColor(int bgColor) {
-        String bg = String.format("#%06X", (0xFFFFFF & bgColor));
-        color.setBg(bg);
+        color.setBg(bgColor);
     }
 
     public int getFgColor() {
-        int fgColor = android.graphics.Color.parseColor(color.getFg());
-        return fgColor;
+        return color.getFg();
     }
 
     public void setFgColor(int fgColor) {
-        String fg = String.format("#%06X", (0xFFFFFF & fgColor));
-        color.setFg(fg);
+        color.setFg(fgColor);
     }
 }

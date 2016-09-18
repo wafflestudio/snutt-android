@@ -14,7 +14,6 @@
         android:layout_weight="1">
         <EditText
             android:id="@+id/input_time"
-            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -26,7 +25,6 @@
         android:layout_weight="1">
         <EditText
             android:id="@+id/input_location"
-            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"

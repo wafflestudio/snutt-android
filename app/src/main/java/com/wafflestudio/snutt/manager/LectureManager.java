@@ -173,16 +173,6 @@ public class LectureManager {
         Log.w(TAG, "lecture is not exist!!");
     }
 
-    // TODO : (SeongWon) 배경색, 글자색 업데이트?
-    public void updateLecture(Lecture lec, String title, String inst, JsonArray timeJson) {
-        lec.setCourse_title(title);
-        lec.setInstructor(inst);
-        lec.setClass_time_json(timeJson);
-        notifyLectureChanged();
-        Log.d(TAG, "lecture is updated!!");
-        // server에 update하기
-    }
-
     // 배경색, 글자색 업데이트
     public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
         Log.d(TAG, "update Lecture method (color) called!!");
@@ -199,7 +189,6 @@ public class LectureManager {
                 Log.d(TAG, "put lecture request success.");
                 lec.setBgColor(bgColor);
                 lec.setFgColor(fgColor);
-                notifyLectureChanged();
                 notifyLectureChanged();
             }
             @Override
@@ -238,6 +227,50 @@ public class LectureManager {
         });
     }
 
+    public void updateLecture(final Lecture lecture, final Lecture target, final Callback<Table> callback) {
+        Log.d(TAG, "update lecture method called!!");
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        String lecture_id = lecture.getId();
+        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                updateLectures(table.getLecture_list());
+                notifyLectureChanged();
+                if (callback != null) callback.success(table, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
+                Log.e(TAG, "put lecture request failed..");
+            }
+        });
+    }
+
+    public void updateLectures(List<Lecture> lecture_list) {
+        for (Lecture lec1 : lecture_list) {
+            for (Lecture lec2 : lectures) {
+                if (lec1.getId().equals(lec2.getId())) {
+                    copyLecture(lec2, lec1);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void copyLecture(Lecture origin, Lecture copy) {
+        origin.setCourse_title(copy.getCourse_title());
+        origin.setInstructor(copy.getInstructor());
+        origin.setColor(copy.getColor());
+        origin.setDepartment(copy.getDepartment());
+        origin.setAcademic_year(copy.getAcademic_year());
+        origin.setCredit(copy.getCredit());
+        origin.setClassification(copy.getClassification());
+        origin.setCategory(copy.getCategory());
+        origin.setClass_time_json(copy.getClass_time_json());
+    }
+
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     public boolean alreadyOwned(Lecture lec){
         for (Lecture lecture : lectures){
@@ -270,10 +303,10 @@ public class LectureManager {
             int day1 = class1.get("day").getAsInt();
             float start1 = class1.get("start").getAsFloat();
             float len1 = class1.get("len").getAsFloat();
-            float end1 = start1 + len1 - 0.001f;
+            float end1 = start1 + len1;
 
             if (day1 != given_day) continue;
-            if (start1 <= given_time && given_time <= end1) return true;
+            if (!(end1 <= given_time || given_time <= end1)) return true;
         }
         return false;
     }

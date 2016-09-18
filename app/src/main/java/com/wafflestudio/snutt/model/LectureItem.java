@@ -58,11 +58,6 @@ public class LectureItem {
     public LectureItem(ClassTime classTime, Type type) {
         this.classTime = classTime;
         this.type = type;
-
-        this.value1 = SNUTTUtils.numberToWday(classTime.getDay()) + " " +
-                SNUTTUtils.numberToTime(classTime.getStart()) + "~" +
-                SNUTTUtils.numberToTime(classTime.getStart() + classTime.getLen());
-        this.value2 = classTime.getPlace();
         this.editable = false;
     }
 
