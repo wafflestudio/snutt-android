@@ -6,9 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
@@ -26,20 +23,20 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     public final static String TAG_FRAGMENT_LECTURE_DETAIL = "TAG_FRAGMENT_LECTURE_DETAIL";
     public final static String TAG_FRAGMENT_COLOR_PICKER = "TAG_FRAGMENT_COLOR_PICKER";
-    public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
+    //public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
 
 
     private final static String[] FRAGMENT_TAGS = {
             TAG_FRAGMENT_LECTURE_DETAIL,
             TAG_FRAGMENT_COLOR_PICKER,
-            TAG_FRAGMENT_TEST
+            //TAG_FRAGMENT_TEST
     };
 
     public final static int FRAGMENT_ERROR = -1;
     public final static int FRAGMENT_LECTURE_DETAIL = 0;
     public final static int FRAGMENT_COLOR_PICKER = 1;
-    public final static int FRAGMENT_TEST = 2;
-    public final static int FRAGMENT_ROOM_NUM = 3;  // Number of fragments
+    //public final static int FRAGMENT_TEST = 2;
+    public final static int FRAGMENT_ROOM_NUM = 2;  // Number of fragments
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +48,6 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     public void setColorPickerFragment() {
         showFragment(FRAGMENT_COLOR_PICKER, true);
-    }
-
-    public void setTestFragment() {
-        showFragment(FRAGMENT_TEST, true);
     }
 
     private void setMainFragment() {
@@ -97,9 +90,6 @@ public class LectureMainActivity extends SNUTTBaseActivity
             case FRAGMENT_COLOR_PICKER:
                 getSupportActionBar().setTitle("강의 색상 변경");
                 break;
-            case FRAGMENT_TEST:
-                getSupportActionBar().setTitle("테스트!");
-                break;
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;
@@ -112,8 +102,6 @@ public class LectureMainActivity extends SNUTTBaseActivity
                 return LectureDetailFragment.newInstance();
             case FRAGMENT_COLOR_PICKER:
                 return ColorPickerFragment.newInstance();
-            case FRAGMENT_TEST:
-                return LectureDetailTemp.newInstance();
             default:
                 Log.e(TAG, "Fragment index is out of range!!!");
                 return null;
@@ -125,7 +113,6 @@ public class LectureMainActivity extends SNUTTBaseActivity
         Preconditions.checkArgument(fragmentIdx < FRAGMENT_ROOM_NUM);
 
         String fragmentTag = FRAGMENT_TAGS[fragmentIdx];
-
         Fragment fragment = newFragment(fragmentIdx);
 
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -161,7 +148,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     @Override
     public void onColorChanged(Color color) {
-        LectureDetailTemp fragment = (LectureDetailTemp) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_TEST);
+        LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL);
         fragment.setLectureColor(color);
     }
 }

@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wafflestudio.snutt.view.TableView
-        android:id="@+id/timetable"
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        custom:custom="true"
-        custom:export="true"/>
+        android:layout_height="match_parent"
+        android:id="@+id/lecture_detail_list"/>
 </LinearLayout>

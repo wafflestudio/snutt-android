@@ -41,7 +41,7 @@ import retrofit.Callback;
 /**
  * Created by makesource on 2016. 9. 4..
  */
-public class LectureAdapter extends BaseAdapter {
+public class LectureDetailAdapter extends BaseAdapter {
     private ArrayList<LectureItem> lists;
     private LayoutInflater inflater;
     private Activity activity;
@@ -58,7 +58,7 @@ public class LectureAdapter extends BaseAdapter {
     private final static int TYPE_ITEM_COLOR = 4;
     private final static int TYPE_ITEM_CLASS = 5;
 
-    public LectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
+    public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
         this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -162,7 +162,6 @@ public class LectureAdapter extends BaseAdapter {
                 editText1.setFocusable(item.isEditable());
                 editText2.setClickable(item.isEditable());
                 editText2.setFocusable(item.isEditable());
-
                 if (position == 6) { // 학점
                     editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
@@ -203,7 +202,9 @@ public class LectureAdapter extends BaseAdapter {
                 editText1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showDialog(item);
+                        if (item.isEditable()) {
+                            showDialog(item);
+                        }
                     }
                 });
                 EditText editText2 = (EditText) view.findViewById(R.id.input_location);
