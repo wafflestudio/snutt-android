@@ -35,7 +35,7 @@ import retrofit.client.Response;
  */
 public class LectureDetailFragment extends SNUTTBaseFragment {
     private Lecture lecture;
-    private ListView lectureList;
+    private ListView detailList;
     private ArrayList<LectureItem> lists;
     private LectureDetailAdapter adapter;
     private boolean editable = false;
@@ -86,8 +86,8 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
-        lectureList = (ListView) rootView.findViewById(R.id.lecture_detail_list);
-        lectureList.setAdapter(adapter);
+        detailList = (ListView) rootView.findViewById(R.id.lecture_detail_list);
+        detailList.setAdapter(adapter);
         return rootView;
     }
 

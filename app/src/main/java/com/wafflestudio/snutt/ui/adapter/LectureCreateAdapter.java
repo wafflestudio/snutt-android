@@ -1,67 +1,166 @@
 package com.wafflestudio.snutt.ui.adapter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.model.LectureItem;
+
+import java.util.ArrayList;
 
 /**
  * Created by makesource on 2016. 9. 18..
  */
 public class LectureCreateAdapter extends BaseAdapter {
-    /**
-     * How many items are in the data set represented by this Adapter.
-     *
-     * @return Count of items.
-     */
+
+    private Activity activity;
+    private ArrayList<LectureItem> lists;
+    private LayoutInflater inflater;
+
+    private final static String TAG = "LECTURE_CREATE_ADAPTER";
+    private final static int TYPE_HEADER = 0;
+    private final static int TYPE_ITEM_TITLE = 1;
+    private final static int TYPE_ITEM_DETAIL = 2;
+    private final static int TYPE_ITEM_BUTTON = 3;
+    private final static int TYPE_ITEM_COLOR = 4;
+    private final static int TYPE_ITEM_CLASS = 5;
+
+    public LectureCreateAdapter(Activity activity, ArrayList<LectureItem> lists) {
+        this.activity = activity;
+        this.lists = lists;
+        this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        LectureItem item = getItem(position);
+        return item.getType().getValue();
+    }
+
     @Override
     public int getCount() {
-        return 0;
+        return lists.size();
     }
 
-    /**
-     * Get the data item associated with the specified position in the data set.
-     *
-     * @param position Position of the item whose data we want within the adapter's
-     *                 data set.
-     * @return The data at the specified position.
-     */
     @Override
-    public Object getItem(int position) {
-        return null;
+    public LectureItem getItem(int position) {
+        return lists.get(position);
     }
 
-    /**
-     * Get the row id associated with the specified position in the list.
-     *
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return The id of the item at the specified position.
-     */
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
-    /**
-     * Get a View that displays the data at the specified position in the data set. You can either
-     * create a View manually or inflate it from an XML layout file. When the View is inflated, the
-     * parent View (GridView, ListView...) will apply default layout parameters unless you use
-     * {@link LayoutInflater#inflate(int, ViewGroup, boolean)}
-     * to specify a root view and to prevent attachment to the root.
-     *
-     * @param position    The position of the item within the adapter's data set of the item whose view
-     *                    we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *                    is non-null and of an appropriate type before using. If it is not possible to convert
-     *                    this view to display the correct data, this method can create a new view.
-     *                    Heterogeneous lists can specify their number of view types, so that this View is
-     *                    always of the right type (see {@link #getViewTypeCount()} and
-     *                    {@link #getItemViewType(int)}).
-     * @param parent      The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
-     */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        final LectureItem item = getItem(position);
+        int type = getItemViewType(position);
+        switch (type) {
+            case TYPE_HEADER:
+                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
+                break;
+            case TYPE_ITEM_TITLE:
+                view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);
+                break;
+            case TYPE_ITEM_DETAIL:
+                view = inflater.inflate(R.layout.cell_lecture_item_detail, viewGroup, false);
+                break;
+            case TYPE_ITEM_BUTTON:
+                view = inflater.inflate(R.layout.cell_lecture_item_button, viewGroup, false);
+                break;
+            case TYPE_ITEM_COLOR:
+                view = inflater.inflate(R.layout.cell_lecture_item_color, viewGroup, false);
+                break;
+            case TYPE_ITEM_CLASS:
+                view = inflater.inflate(R.layout.cell_lecture_item_class, viewGroup, false);
+                break;
+        }
+        switch (type) {
+            case TYPE_ITEM_TITLE: {
+                TextView title = (TextView) view.findViewById(R.id.text_title);
+                EditText value = (EditText) view.findViewById(R.id.text_value);
+                title.setText(item.getTitle1());
+                value.setText(item.getValue1());
+                value.setClickable(item.isEditable());
+                value.setFocusable(item.isEditable());
+                value.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        item.setValue1(s.toString());
+                    }
+                });
+                break;
+            }
+            case TYPE_ITEM_DETAIL: {
+                TextInputLayout title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+                EditText editText1 = (EditText) view.findViewById(R.id.input_detail1);
+                title1.setHint(item.getTitle1());
+                editText1.setText(item.getValue1());
+                editText1.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        item.setValue1(s.toString());
+                    }
+                });
+                TextInputLayout title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
+                EditText editText2 = (EditText) view.findViewById(R.id.input_detail2);
+                title2.setHint(item.getTitle2());
+                editText2.setText(item.getValue2());
+                editText2.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        item.setValue2(s.toString());
+                    }
+                });
+                editText1.setClickable(item.isEditable());
+                editText1.setFocusable(item.isEditable());
+                editText2.setClickable(item.isEditable());
+                editText2.setFocusable(item.isEditable());
+                if (position == 6) { // 학점
+                    editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
+                }
+                break;
+            }
+            case TYPE_ITEM_BUTTON: {
+                TextView textView = (TextView) view.findViewById(R.id.text_button);
+                textView.setText("Add");
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                break;
+            }
+        }
+
+        return view;
     }
 }

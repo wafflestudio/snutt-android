@@ -50,7 +50,7 @@ public class LectureDetailAdapter extends BaseAdapter {
     private int fromTime;
     private int toTime;
 
-    private final static String TAG = "LECTURE_ADAPTER";
+    private final static String TAG = "LECTURE_DETAIL_ADAPTER";
     private final static int TYPE_HEADER = 0;
     private final static int TYPE_ITEM_TITLE = 1;
     private final static int TYPE_ITEM_DETAIL = 2;

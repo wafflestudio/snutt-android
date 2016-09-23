@@ -8,6 +8,7 @@ import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Color;
 import com.wafflestudio.snutt.model.LectureItem;
+import com.wafflestudio.snutt.ui.adapter.LectureCreateAdapter;
 import com.wafflestudio.snutt.view.TableView;
 
 import java.util.ArrayList;
@@ -17,15 +18,16 @@ import java.util.ArrayList;
  */
 public class LectureCreateActivity extends SNUTTBaseActivity {
 
-    private ListView lectureList;
+    private ListView detailList;
     private ArrayList<LectureItem> lists;
+    private LectureCreateAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_create);
         setTitle("커스텀 강의 추가");
-        lectureList = (ListView) findViewById(R.id.lecture_detail_list);
+        detailList = (ListView) findViewById(R.id.lecture_detail_list);
 
         lists = new ArrayList<>();
         lists.add(new LectureItem(LectureItem.Type.Header));
@@ -34,11 +36,10 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
         lists.add(new LectureItem("색상", new Color(), LectureItem.Type.ItemColor));
         lists.add(new LectureItem("학점", "0", LectureItem.Type.ItemTitle));
         lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ItemButton));
+        adapter = new LectureCreateAdapter(this, lists);
 
-
-
-
-
+        detailList.setAdapter(adapter);
     }
 
 
