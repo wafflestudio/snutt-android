@@ -7,12 +7,12 @@ import com.google.gson.JsonObject;
  */
 public class ClassTime {
     private int day;
-    private int start;
-    private int len;
+    private float start;
+    private float len;
     private String place;
     private String _id;
 
-    public ClassTime(int day, int start, int len, String place) {
+    public ClassTime(int day, float start, float len, String place) {
         this.day = day;
         this.start = start;
         this.len = len;
@@ -21,17 +21,17 @@ public class ClassTime {
 
     public ClassTime(JsonObject jsonObject) {
         this.day = jsonObject.get("day").getAsInt();
-        this.start = jsonObject.get("start").getAsInt();
-        this.len = jsonObject.get("len").getAsInt();
+        this.start = jsonObject.get("start").getAsFloat();
+        this.len = jsonObject.get("len").getAsFloat();
         this.place = jsonObject.get("place").getAsString();
         //this._id = jsonObject.get("_id").getAsString();
     }
 
-    public int getStart() {
+    public float getStart() {
         return start;
     }
 
-    public void setStart(int start) {
+    public void setStart(float start) {
         this.start = start;
     }
 
@@ -51,11 +51,11 @@ public class ClassTime {
         this.place = place;
     }
 
-    public int getLen() {
+    public float getLen() {
         return len;
     }
 
-    public void setLen(int len) {
+    public void setLen(float len) {
         this.len = len;
     }
 

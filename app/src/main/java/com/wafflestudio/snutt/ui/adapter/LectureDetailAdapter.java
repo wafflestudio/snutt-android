@@ -234,7 +234,7 @@ public class LectureDetailAdapter extends BaseAdapter {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // item's class time update
-                ClassTime t = new ClassTime(day, fromTime, toTime-fromTime, item.getClassTime().getPlace());
+                ClassTime t = new ClassTime(day, fromTime / 2f, (toTime-fromTime) / 2f, item.getClassTime().getPlace());
                 item.setClassTime(t);
                 notifyDataSetChanged();
                 dialog.dismiss();
@@ -267,7 +267,8 @@ public class LectureDetailAdapter extends BaseAdapter {
             }
         });
 
-        fromTime = item.getClassTime().getStart();
+        // used integer interval (origin value * 2) to use number picker
+        fromTime = (int) (item.getClassTime().getStart() * 2);
         String[] from = SNUTTUtils.getTimeList(0, 27);
         fromPicker.setMinValue(0);
         fromPicker.setMaxValue(27);
@@ -290,9 +291,9 @@ public class LectureDetailAdapter extends BaseAdapter {
             }
         });
 
-        toTime = item.getClassTime().getStart()+item.getClassTime().getLen();
-        String[] to = SNUTTUtils.getTimeList(1, 28);
-        toPicker.setMinValue(1);
+        toTime = (int) (item.getClassTime().getStart()+item.getClassTime().getLen())*2;
+        String[] to = SNUTTUtils.getTimeList(fromTime+1, 28);
+        toPicker.setMinValue(fromTime+1);
         toPicker.setMaxValue(28);
         toPicker.setDisplayedValues(to);
         toPicker.setValue(toTime);

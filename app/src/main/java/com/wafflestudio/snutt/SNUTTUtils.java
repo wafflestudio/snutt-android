@@ -45,16 +45,13 @@ public class SNUTTUtils {
         return null;
     }
 
-    public static int numberToTime(String time) {
-        return 0;
-    }
+    public static String numberToTime(float num) {
 
-    public static String numberToTime(int num) {
-        int hour =  8 + num / 2;
+        int hour =  8 + (int) num;
         String minute;
 
-        if (num%2==1) minute = "30";
-        else minute = "00";
+        if ( Math.floor(num) == num ) minute = "00";
+        else minute = "30";
 
         String time = String.valueOf(hour) + ":" + minute;
         return time;
@@ -62,7 +59,7 @@ public class SNUTTUtils {
 
     public static String[] getTimeList(int from, int to) {
         String[] list = new String[to-from+1];
-        for (int i=from;i<=to;i++) list[i-from] = numberToTime(i);
+        for (int i=from;i<=to;i++) list[i-from] = numberToTime(i / 2f);
         return list;
     }
 
