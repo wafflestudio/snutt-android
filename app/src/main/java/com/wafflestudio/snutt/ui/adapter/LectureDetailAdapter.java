@@ -278,9 +278,15 @@ public class LectureDetailAdapter extends BaseAdapter {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 fromTime = newVal;
-                toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
-                toPicker.setMinValue(fromTime + 1);
-                toPicker.setMaxValue(28);
+                if (oldVal < newVal) {
+                    toPicker.setMinValue(fromTime + 1);
+                    toPicker.setMaxValue(28);
+                    toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
+                } else {
+                    toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
+                    toPicker.setMinValue(fromTime + 1);
+                    toPicker.setMaxValue(28);
+                }
             }
         });
 
