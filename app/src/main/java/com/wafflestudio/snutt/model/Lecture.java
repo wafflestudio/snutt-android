@@ -2,6 +2,7 @@ package com.wafflestudio.snutt.model;
 
 import android.util.Log;
 
+import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
 import com.wafflestudio.snutt.SNUTTUtils;
 
@@ -32,7 +33,6 @@ public class Lecture {
     private String category;
     private int colorIndex; //색상
     private Color color;
-    private boolean isCustom = false;
 
     public Lecture() {
         this.color = new Color();
@@ -172,11 +172,9 @@ public class Lecture {
     }
 
     public boolean isCustom() {
-        return isCustom;
-    }
-
-    public void setIsCustom(boolean isCustom) {
-        this.isCustom = isCustom;
+        if (Strings.isNullOrEmpty(course_number) &&
+                Strings.isNullOrEmpty(lecture_number)) return true;
+        return false;
     }
 
     public int getColorIndex() {

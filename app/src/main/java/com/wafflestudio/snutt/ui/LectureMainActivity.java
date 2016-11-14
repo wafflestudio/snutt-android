@@ -11,7 +11,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Color;
+import com.wafflestudio.snutt.model.Lecture;
 
 /**
  * Created by makesource on 2016. 3. 1..
@@ -23,31 +25,39 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     public final static String TAG_FRAGMENT_LECTURE_DETAIL = "TAG_FRAGMENT_LECTURE_DETAIL";
     public final static String TAG_FRAGMENT_COLOR_PICKER = "TAG_FRAGMENT_COLOR_PICKER";
+    public final static String TAG_FRAGMENT_CUSTOM_DETAIL = "TAG_FRAGMENT_CUSTOM_DETAIL";
     //public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
 
 
     private final static String[] FRAGMENT_TAGS = {
             TAG_FRAGMENT_LECTURE_DETAIL,
             TAG_FRAGMENT_COLOR_PICKER,
+            TAG_FRAGMENT_CUSTOM_DETAIL
             //TAG_FRAGMENT_TEST
     };
 
     public final static int FRAGMENT_ERROR = -1;
     public final static int FRAGMENT_LECTURE_DETAIL = 0;
     public final static int FRAGMENT_COLOR_PICKER = 1;
+    public final static int FRAGMENT_CUSTOM_DETAIL = 2;
     //public final static int FRAGMENT_TEST = 2;
-    public final static int FRAGMENT_ROOM_NUM = 2;  // Number of fragments
+    public final static int FRAGMENT_ROOM_NUM = 3;  // Number of fragments
+
+    public Lecture lecture = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_main);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        setMainFragment();
-    }
-
-    public void setColorPickerFragment() {
-        showFragment(FRAGMENT_COLOR_PICKER, true);
+        int position = getIntent().getIntExtra(INTENT_KEY_LECTURE_POSITION, -1);
+        if (position == -1) { // create custom lecture
+            setCustomDetailFragment();
+        } else {
+            lecture = LectureManager.getInstance().getLectures().get(position);
+            if (lecture.isCustom()) setCustomDetailFragment();
+            else setMainFragment();
+        }
     }
 
     private void setMainFragment() {
@@ -57,6 +67,20 @@ public class LectureMainActivity extends SNUTTBaseActivity
         transaction.commit();
         getSupportActionBar().setTitle("강의 상세 보기");
     }
+
+    public void setColorPickerFragment() {
+        showFragment(FRAGMENT_COLOR_PICKER, true);
+    }
+
+    public void setCustomDetailFragment() {
+        Fragment fragment = CustomDetailFragment.newInstance();
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_lecture_main, fragment, TAG_FRAGMENT_CUSTOM_DETAIL);
+        transaction.commit();
+        if (lecture == null) getSupportActionBar().setTitle("커스텀 강의 추가");
+        else getSupportActionBar().setTitle("강의 상세 보기");
+    }
+
 
     /**
      * Called whenever the contents of the back stack change.
@@ -90,6 +114,8 @@ public class LectureMainActivity extends SNUTTBaseActivity
             case FRAGMENT_COLOR_PICKER:
                 getSupportActionBar().setTitle("강의 색상 변경");
                 break;
+            case FRAGMENT_CUSTOM_DETAIL:
+                getSupportActionBar().setTitle("커스텀 강의 추가");
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;
@@ -102,6 +128,8 @@ public class LectureMainActivity extends SNUTTBaseActivity
                 return LectureDetailFragment.newInstance();
             case FRAGMENT_COLOR_PICKER:
                 return ColorPickerFragment.newInstance();
+            case FRAGMENT_CUSTOM_DETAIL:
+                return CustomDetailFragment.newInstance();
             default:
                 Log.e(TAG, "Fragment index is out of range!!!");
                 return null;

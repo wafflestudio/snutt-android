@@ -1,23 +1,27 @@
 package com.wafflestudio.snutt.ui.adapter;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -31,26 +35,24 @@ import com.wafflestudio.snutt.model.LectureItem;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.ui.LectureMainActivity;
 
-import org.json.JSONArray;
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import retrofit.Callback;
 
 /**
- * Created by makesource on 2016. 9. 4..
+ * Created by makesource on 2016. 9. 18..
  */
-public class LectureDetailAdapter extends BaseAdapter {
+public class CustomLectureAdapter extends BaseAdapter {
+    private Activity activity;
     private ArrayList<LectureItem> lists;
     private LayoutInflater inflater;
-    private Activity activity;
+    private boolean isAnimated = true;
 
     private int day;
     private int fromTime;
     private int toTime;
 
-    private final static String TAG = "LECTURE_DETAIL_ADAPTER";
+    private final static String TAG = "LECTURE_CREATE_ADAPTER";
     private final static int TYPE_HEADER = 0;
     private final static int TYPE_ITEM_TITLE = 1;
     private final static int TYPE_ITEM_DETAIL = 2;
@@ -58,10 +60,16 @@ public class LectureDetailAdapter extends BaseAdapter {
     private final static int TYPE_ITEM_COLOR = 4;
     private final static int TYPE_ITEM_CLASS = 5;
 
-    public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists) {
+    public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
-        this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        LectureItem item = getItem(position);
+        return item.getType().getValue();
     }
 
     @Override
@@ -80,12 +88,6 @@ public class LectureDetailAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        LectureItem item = getItem(position);
-        return item.getType().getValue();
-    }
-
-    @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         final LectureItem item = getItem(position);
         int type = getItemViewType(position);
@@ -95,9 +97,6 @@ public class LectureDetailAdapter extends BaseAdapter {
                 break;
             case TYPE_ITEM_TITLE:
                 view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);
-                break;
-            case TYPE_ITEM_DETAIL:
-                view = inflater.inflate(R.layout.cell_lecture_item_detail, viewGroup, false);
                 break;
             case TYPE_ITEM_BUTTON:
                 view = inflater.inflate(R.layout.cell_lecture_item_button, viewGroup, false);
@@ -119,57 +118,34 @@ public class LectureDetailAdapter extends BaseAdapter {
                 value.setFocusable(item.isEditable());
                 value.addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
                     @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
                     @Override
                     public void afterTextChanged(Editable s) {
                         item.setValue1(s.toString());
                     }
                 });
-                break;
-            }
-            case TYPE_ITEM_DETAIL: {
-                TextInputLayout title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
-                EditText editText1 = (EditText) view.findViewById(R.id.input_detail1);
-                title1.setHint(item.getTitle1());
-                editText1.setText(item.getValue1());
-                editText1.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.setValue1(s.toString());
-                    }
-                });
-                TextInputLayout title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
-                EditText editText2 = (EditText) view.findViewById(R.id.input_detail2);
-                title2.setHint(item.getTitle2());
-                editText2.setText(item.getValue2());
-                editText2.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.setValue2(s.toString());
-                    }
-                });
-                editText1.setClickable(item.isEditable());
-                editText1.setFocusable(item.isEditable());
-                editText2.setClickable(item.isEditable());
-                editText2.setFocusable(item.isEditable());
-                if (position == 6) { // 학점
-                    editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
+                if (position == 4) { // 학점
+                    value.setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
                 break;
             }
             case TYPE_ITEM_BUTTON: {
                 TextView textView = (TextView) view.findViewById(R.id.text_button);
-                textView.setText("Syllabus");
+                textView.setText("Add");
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addClassItem();
+                        isAnimated = false;
+                        notifyDataSetChanged();
+                    }
+                });
                 break;
             }
             case TYPE_ITEM_COLOR: {
@@ -181,9 +157,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 layout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (item.isEditable()) {
-                            ((LectureMainActivity) activity).setColorPickerFragment();
-                        }
+                        ((LectureMainActivity) activity).setColorPickerFragment();
                     }
                 });
                 bgColor.setBackgroundColor(item.getColor().getBg());
@@ -191,7 +165,31 @@ public class LectureDetailAdapter extends BaseAdapter {
                 break;
             }
             case TYPE_ITEM_CLASS: {
-                EditText editText1 = (EditText) view.findViewById(R.id.input_time);
+                final EditText editText1 = (EditText) view.findViewById(R.id.input_time);
+                final EditText editText2 = (EditText) view.findViewById(R.id.input_location);
+                if (position == getCount() - 2) {
+                    if (!isAnimated) {
+                        editText1.setVisibility(View.GONE);
+                        editText2.setVisibility(View.GONE);
+                        final DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+                        ValueAnimator va = ValueAnimator.ofInt(0, (int)(60 * dm.density));
+                        final View finalView = view;
+                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int value = (Integer) animation.getAnimatedValue();
+                                finalView.getLayoutParams().height = value;
+                                finalView.requestLayout();
+                                if (value == (int) (60 * dm.density)) {
+                                    editText1.setVisibility(View.VISIBLE);
+                                    editText2.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+                        va.setDuration(400);
+                        va.start();
+                        isAnimated = true;
+                    }
+                }
                 editText1.setHint("시간");
                 String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
                         SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
@@ -207,7 +205,6 @@ public class LectureDetailAdapter extends BaseAdapter {
                         }
                     }
                 });
-                EditText editText2 = (EditText) view.findViewById(R.id.input_location);
                 editText2.setHint("장소");
                 editText2.setText(item.getClassTime().getPlace());
                 editText2.addTextChangedListener(new TextWatcher() {
@@ -224,6 +221,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 editText2.setFocusable(item.isEditable());
                 break;
             }
+
         }
         return view;
     }
@@ -303,6 +301,11 @@ public class LectureDetailAdapter extends BaseAdapter {
         });
     }
 
+    private void addClassItem() {
+        int pos = getCount() - 1;
+        lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ItemClass, true));
+    }
+
     public void updateLecture(Lecture lecture, Callback<Table> callback) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.");
@@ -351,5 +354,9 @@ public class LectureDetailAdapter extends BaseAdapter {
         }
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
+    }
+
+    public void createLecture(Callback<Table> callback) {
+
     }
 }

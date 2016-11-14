@@ -48,7 +48,6 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         public void onColorChanged(Color color);
     }
 
-
     public static ColorPickerFragment newInstance() {
         return new ColorPickerFragment();
     }

@@ -59,7 +59,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
-                getMainActivity().startLectureDetail(position);
+                getMainActivity().startLectureMain(position);
             }
         });
         recyclerView.setLayoutManager(layoutManager);
@@ -91,7 +91,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         if (id == R.id.action_add) {
             //getMainActivity().startTableList();
             Toast.makeText(getContext(), "custom lecture add clicked!!", Toast.LENGTH_SHORT).show();
-            getMainActivity().startLectureCreate();
+            getMainActivity().startLectureMain();
             return true;
         }
 

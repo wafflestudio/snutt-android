@@ -5,11 +5,9 @@ import android.widget.ListView;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
-import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.Color;
 import com.wafflestudio.snutt.model.LectureItem;
-import com.wafflestudio.snutt.ui.adapter.LectureCreateAdapter;
-import com.wafflestudio.snutt.view.TableView;
+import com.wafflestudio.snutt.ui.adapter.CustomLectureAdapter;
 
 import java.util.ArrayList;
 
@@ -20,7 +18,7 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
 
     private ListView detailList;
     private ArrayList<LectureItem> lists;
-    private LectureCreateAdapter adapter;
+    private CustomLectureAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +35,7 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
         lists.add(new LectureItem("학점", "0", LectureItem.Type.ItemTitle));
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem(LectureItem.Type.ItemButton));
-        adapter = new LectureCreateAdapter(this, lists);
+        adapter = new CustomLectureAdapter(this, lists);
 
         detailList.setAdapter(adapter);
     }

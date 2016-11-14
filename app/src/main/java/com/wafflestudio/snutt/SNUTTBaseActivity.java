@@ -34,7 +34,13 @@ public class SNUTTBaseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void startLectureDetail(int position) {
+    // This method is for create custom lecture
+    public void startLectureMain() {
+        Intent intent = new Intent(this, LectureMainActivity.class);
+        startActivity(intent);
+    }
+
+    public void startLectureMain(int position) {
         Intent intent = new Intent(this, LectureMainActivity.class);
         intent.putExtra(INTENT_KEY_LECTURE_POSITION, position);
         startActivity(intent);
