@@ -12,13 +12,17 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.model.ClassTime;
 import com.wafflestudio.snutt.model.Color;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.LectureItem;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.ui.adapter.CustomLectureAdapter;
+import com.wafflestudio.snutt.ui.adapter.LectureDetailAdapter;
 
 import java.util.ArrayList;
 
@@ -55,6 +59,14 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("색상", add ? new Color() : lecture.getColor(), LectureItem.Type.ItemColor));
         lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.ItemTitle));
         lists.add(new LectureItem(LectureItem.Type.Header));
+
+        if (!add) {
+            for (JsonElement element : lecture.getClass_time_json()) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                ClassTime classTime = new ClassTime(jsonObject);
+                lists.add(new LectureItem(classTime, LectureItem.Type.ItemClass));
+            }
+        }
         lists.add(new LectureItem(LectureItem.Type.ItemButton));
         for (LectureItem it : lists) {
             it.setEditable(add);
@@ -95,6 +107,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                         }
                         @Override
                         public void failure(RetrofitError error) {
+                            getLectureMainActivity().finish();
                             Toast.makeText(getContext(), "강의 추가를 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -124,6 +137,11 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                 }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setLectureColor(Color color) {
+        lists.get(3).setColor(color); // 색상
+        adapter.notifyDataSetChanged();
     }
 
     private LectureMainActivity getLectureMainActivity() {

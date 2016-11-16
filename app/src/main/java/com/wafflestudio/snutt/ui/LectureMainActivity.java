@@ -52,6 +52,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         int position = getIntent().getIntExtra(INTENT_KEY_LECTURE_POSITION, -1);
         if (position == -1) { // create custom lecture
+            lecture = null;
             setCustomDetailFragment();
         } else {
             lecture = LectureManager.getInstance().getLectures().get(position);
@@ -115,7 +116,8 @@ public class LectureMainActivity extends SNUTTBaseActivity
                 getSupportActionBar().setTitle("강의 색상 변경");
                 break;
             case FRAGMENT_CUSTOM_DETAIL:
-                getSupportActionBar().setTitle("커스텀 강의 추가");
+                if (lecture == null) getSupportActionBar().setTitle("커스텀 강의 추가");
+                else getSupportActionBar().setTitle("강의 상세 보기");
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;
@@ -176,7 +178,13 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     @Override
     public void onColorChanged(Color color) {
-        LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL);
-        fragment.setLectureColor(color);
+        if (lecture == null || lecture.isCustom()) {
+            CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL);
+            fragment.setLectureColor(color);
+        } else {
+            LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL);
+            fragment.setLectureColor(color);
+        }
+
     }
 }

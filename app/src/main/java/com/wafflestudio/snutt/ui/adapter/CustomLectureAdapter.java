@@ -157,7 +157,9 @@ public class CustomLectureAdapter extends BaseAdapter {
                 layout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((LectureMainActivity) activity).setColorPickerFragment();
+                        if (item.isEditable()) {
+                            ((LectureMainActivity) activity).setColorPickerFragment();
+                        }
                     }
                 });
                 bgColor.setBackgroundColor(item.getColor().getBg());
@@ -277,6 +279,7 @@ public class CustomLectureAdapter extends BaseAdapter {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 fromTime = newVal;
+                toPicker.setValue(0);
                 toPicker.setMinValue(fromTime + 1);
                 toPicker.setMaxValue(28);
                 toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
@@ -329,22 +332,8 @@ public class CustomLectureAdapter extends BaseAdapter {
                     target.setBgColor(item.getColor().getBg());
                     target.setFgColor(item.getColor().getFg());
                     break;
-                case 4: // header
-                    break;
-                case 5: // 학과
-                    target.setDepartment(item.getValue1());
-                    break;
-                case 6: // 학년, 학점
-                    target.setAcademic_year(item.getValue1());
-                    target.setCredit(Integer.parseInt(item.getValue2()));
-                    break;
-                case 7: // 분류, 구분
-                    target.setClassification(item.getValue1());
-                    target.setCategory(item.getValue2());
-                    break;
-                case 8: // 강좌번호, 분반번호
-                    break;
-                case 9: // header
+                case 4: // 학점
+                    target.setCredit(Integer.parseInt(item.getValue1()));
                     break;
                 default: // 강의 시간
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
@@ -357,6 +346,37 @@ public class CustomLectureAdapter extends BaseAdapter {
     }
 
     public void createLecture(Callback<Table> callback) {
+        Log.d(TAG, "update lecture called.");
+        Lecture lecture = new Lecture();
+        JsonArray ja = new JsonArray();
+        for (int i=0;i<lists.size();i++) {
+            LectureItem item = lists.get(i);
+            if (item.getType() == LectureItem.Type.Header) continue;
+            if (item.getType() == LectureItem.Type.ItemButton) continue;
 
+            switch (i) {
+                case 0: // header
+                    break;
+                case 1: // 강의명
+                    lecture.setCourse_title(item.getValue1());
+                    break;
+                case 2: // 교수
+                    lecture.setInstructor(item.getValue1());
+                    break;
+                case 3: // 색상
+                    lecture.setBgColor(item.getColor().getBg());
+                    lecture.setFgColor(item.getColor().getFg());
+                    break;
+                case 4: // 학점
+                    lecture.setCredit(Integer.parseInt(item.getValue1()));
+                    break;
+                default: // 강의 시간
+                    JsonElement je = new Gson().toJsonTree(item.getClassTime());
+                    ja.add(je);
+                    break;
+            }
+        }
+        lecture.setClass_time_json(ja);
+        LectureManager.getInstance().createLecture(lecture, callback);
     }
 }

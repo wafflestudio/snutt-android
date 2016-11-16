@@ -235,7 +235,7 @@ public class LectureManager {
         app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
-                updateLectures(table.getLecture_list());
+                setLectures(table.getLecture_list());
                 notifyLectureChanged();
                 if (callback != null) callback.success(table, response);
             }
@@ -248,27 +248,23 @@ public class LectureManager {
         });
     }
 
-    public void updateLectures(List<Lecture> lecture_list) {
-        for (Lecture lec1 : lecture_list) {
-            for (Lecture lec2 : lectures) {
-                if (lec1.getId().equals(lec2.getId())) {
-                    copyLecture(lec2, lec1);
-                    break;
-                }
+    public void createLecture(final Lecture lecture, final Callback<Table> callback) {
+        Log.d(TAG, "create lecture method called!!");
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        app.getRestService().postLecture(token, id, lecture, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                setLectures(table.getLecture_list());
+                notifyLectureChanged();
+                if (callback != null) callback.success(table, response);
             }
-        }
-    }
-
-    public void copyLecture(Lecture origin, Lecture copy) {
-        origin.setCourse_title(copy.getCourse_title());
-        origin.setInstructor(copy.getInstructor());
-        origin.setColor(copy.getColor());
-        origin.setDepartment(copy.getDepartment());
-        origin.setAcademic_year(copy.getAcademic_year());
-        origin.setCredit(copy.getCredit());
-        origin.setClassification(copy.getClassification());
-        origin.setCategory(copy.getCategory());
-        origin.setClass_time_json(copy.getClass_time_json());
+            @Override
+            public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
+                Log.e(TAG, "post lecture request failed..");
+            }
+        });
     }
 
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
@@ -348,6 +344,7 @@ public class LectureManager {
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {
+        if (lec1.isCustom()) return false;
         if (lec1.getCourse_number().equals(lec2.getCourse_number()) &&
                 lec1.getLecture_number().equals(lec2.getLecture_number())) return true;
 
