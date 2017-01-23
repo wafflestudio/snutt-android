@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt;
 
+import android.telecom.Call;
+
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.model.TagList;
 import com.wafflestudio.snutt.model.Token;
+import com.wafflestudio.snutt.model.User;
 
 import java.net.ResponseCache;
 import java.util.List;
@@ -36,7 +39,6 @@ public interface SNUTTRestApi {
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 
-
     // API Timetable
 
     @GET("/tables")
@@ -62,4 +64,45 @@ public interface SNUTTRestApi {
 
     @GET("/tags/{year}/{semester}")
     public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);
+
+    // API for User
+
+    @GET("/user/info")
+    public void getUserInfo(@Header("x-access-token") String token, Callback<User> callback);
+
+    @PUT("/user/info")
+    public void putUserInfo(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @PUT("/user/password")
+    public void putUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @POST("/user/password")
+    public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @POST("/user/facebook")
+    public void postUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @DELETE("/user/facebook")
+    public void deleteUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @GET("/user/facebook")
+    public void getUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @POST("/user/device")
+    public void registerToken(@Header("x-access-token") String token, @Body String fToken, Callback<Response> callback);
+
+    @DELETE("/user/device")
+    public void deleteToken(@Header("x-access-token") String token, @Body String fToken, Callback<Response> callback);
+
+    @DELETE("/user/account")
+    public void deleteUserAccount(@Header("x-access-token") String token, Callback<Response> callback);
+
+    // API for Notification
+
+    @GET("/notification")
+    public void getNotification(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    @GET("/notification/count")
+    public void getNotificationCount(@Header("x-access-token") String token, Callback<Response> callback);
+
 }

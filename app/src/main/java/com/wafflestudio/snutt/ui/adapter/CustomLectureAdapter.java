@@ -4,8 +4,6 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
@@ -15,8 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -93,7 +89,7 @@ public class CustomLectureAdapter extends BaseAdapter {
         int type = getItemViewType(position);
         switch (type) {
             case TYPE_HEADER:
-                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
+                view = inflater.inflate(R.layout.cell_header, viewGroup, false);
                 break;
             case TYPE_ITEM_TITLE:
                 view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);

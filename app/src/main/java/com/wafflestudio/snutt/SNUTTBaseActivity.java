@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.wafflestudio.snutt.ui.LectureCreateActivity;
 import com.wafflestudio.snutt.ui.LectureMainActivity;
 import com.wafflestudio.snutt.ui.MainActivity;
+import com.wafflestudio.snutt.ui.SettingsMainActivity;
 import com.wafflestudio.snutt.ui.TableCreateActivity;
 import com.wafflestudio.snutt.ui.TableListActivity;
 import com.wafflestudio.snutt.ui.WelcomeActivity;
@@ -17,6 +18,7 @@ public class SNUTTBaseActivity extends AppCompatActivity {
 
     public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
     public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
+    public static final String INTENT_KEY_SETTINGS_TYPE = "INTENT_KEY_SETTINGS_TYPE";
 
     public void startMain() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -58,6 +60,12 @@ public class SNUTTBaseActivity extends AppCompatActivity {
 
     public void startLectureCreate() {
         Intent intent = new Intent(this, LectureCreateActivity.class);
+        startActivity(intent);
+    }
+
+    public void startSettingsMain(int type) {
+        Intent intent = new Intent(this, SettingsMainActivity.class);
+        intent.putExtra(INTENT_KEY_SETTINGS_TYPE, type);
         startActivity(intent);
     }
 

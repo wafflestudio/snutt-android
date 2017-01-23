@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
@@ -118,6 +119,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
             case FRAGMENT_CUSTOM_DETAIL:
                 if (lecture == null) getSupportActionBar().setTitle("커스텀 강의 추가");
                 else getSupportActionBar().setTitle("강의 상세 보기");
+                break;
             default:
                 Log.e(TAG, "Fragment error!!!!");
                 break;

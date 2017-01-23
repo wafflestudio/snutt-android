@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -30,9 +29,6 @@ import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.LectureItem;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.ui.LectureMainActivity;
-
-import org.json.JSONArray;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -91,7 +87,7 @@ public class LectureDetailAdapter extends BaseAdapter {
         int type = getItemViewType(position);
         switch (type) {
             case TYPE_HEADER:
-                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
+                view = inflater.inflate(R.layout.cell_header, viewGroup, false);
                 break;
             case TYPE_ITEM_TITLE:
                 view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);

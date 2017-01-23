@@ -1,21 +1,23 @@
 package com.wafflestudio.snutt.ui;
 
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.wafflestudio.snutt.R;
-import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.model.SettingsItem;
+import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
+import com.wafflestudio.snutt.ui.adapter.SettingsAdapter2;
+import com.wafflestudio.snutt.view.DividerItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -24,7 +26,11 @@ public class SettingsFragment extends SNUTTBaseFragment { /**
  * The fragment argument representing the section number for this
  * fragment.
  */
-private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String TAG = "SETTINGS_FRAGMENT";
+    private List<SettingsItem> lists;
+    private SettingsAdapter adapter;
+    private SettingsAdapter2 adapter2;
 
     public SettingsFragment() {
     }
@@ -41,43 +47,45 @@ private static final String ARG_SECTION_NUMBER = "section_number";
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        lists = new ArrayList<>();
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem("계정관리", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("시간표 설정", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem("버전 정보", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem("개발자 정보", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("개발자 괴롭히기", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem("라이센스 정보", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("약관 보기", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem("로그아웃", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
+
+        //adapter = new SettingsAdapter(getActivity(), lists);
+        adapter2 = new SettingsAdapter2(getActivity(), lists);
+        adapter2.setOnItemClickListener(new SettingsAdapter2.TitleViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                Log.d(TAG, String.valueOf(position) + "-th item clicked!");
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorPickerDialogBuilder
-                        .with(getContext())
-                        .setTitle("Choose color")
-                        .initialColor(Color.RED)
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setOnColorSelectedListener(new OnColorSelectedListener() {
-                            @Override
-                            public void onColorSelected(int selectedColor) {
-                                Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setPositiveButton("ok", new ColorPickerClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                //changeBackgroundColor(selectedColor);
-                            }
-                        })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .build()
-                        .show();
-            }
-        });
+        //ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
+        //listView.setAdapter(adapter);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.settings_recyclerView);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter2);
         return rootView;
     }
 }
