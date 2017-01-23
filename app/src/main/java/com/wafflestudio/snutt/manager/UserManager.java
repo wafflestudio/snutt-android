@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.model.Token;
+import com.wafflestudio.snutt.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,6 +114,21 @@ public class UserManager {
             public void success(Response response, Response response2) {
                 if (callback != null) callback.success(response, response2);
             }
+            @Override
+            public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void getUserInfo(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getUserInfo(token, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                if (callback != null) callback.success(user, response);
+            }
+
             @Override
             public void failure(RetrofitError error) {
                 if (callback != null) callback.failure(error);

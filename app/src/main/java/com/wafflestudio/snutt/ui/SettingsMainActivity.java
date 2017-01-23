@@ -3,6 +3,8 @@ package com.wafflestudio.snutt.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 
 import com.google.common.base.Preconditions;
@@ -34,13 +36,13 @@ public class SettingsMainActivity extends SNUTTBaseActivity
             TAG_FRAGMENT_TERMS
     };
 
-    private final static int FRAGMENT_ERROR = -1;
-    private final static int FRAGMENT_ACCOUNT = 0;
-    private final static int FRAGMENT_TIMETABLE = 1;
-    private final static int FRAGMENT_DEVELOPER = 2;
-    private final static int FRAGMENT_REPORT = 3;
-    private final static int FRAGMENT_LICENSE = 4;
-    private final static int FRAGMENT_TERMS = 5;
+    public final static int FRAGMENT_ERROR = -1;
+    public final static int FRAGMENT_ACCOUNT = 0;
+    public final static int FRAGMENT_TIMETABLE = 1;
+    public final static int FRAGMENT_DEVELOPER = 2;
+    public final static int FRAGMENT_REPORT = 3;
+    public final static int FRAGMENT_LICENSE = 4;
+    public final static int FRAGMENT_TERMS = 5;
     private final static int FRAGMENT_NUMS = 6;
 
     private int getCurrentFragmentIndex() {
@@ -84,28 +86,70 @@ public class SettingsMainActivity extends SNUTTBaseActivity
     }
 
     private void setAccountFragment() {
-
+        showFragment(FRAGMENT_ACCOUNT, false);
+        getSupportActionBar().setTitle("계정관리");
     }
 
     private void setTimetableFragment() {
-
+        showFragment(FRAGMENT_TIMETABLE, false);
+        getSupportActionBar().setTitle("시간표 설정");
     }
 
     private void setDeveloperFragment() {
-
+        showFragment(FRAGMENT_DEVELOPER, false);
+        getSupportActionBar().setTitle("개발자 정보");
     }
 
     private void setReportFragment() {
-
+        showFragment(FRAGMENT_REPORT, false);
+        getSupportActionBar().setTitle("개발자 괴롭히기");
     }
 
     private void setLicenseFragment() {
-
+        showFragment(FRAGMENT_LICENSE, false);
+        getSupportActionBar().setTitle("라이센스 정보");
     }
 
     private void setTermsFragment() {
-
+        showFragment(FRAGMENT_TERMS, false);
+        getSupportActionBar().setTitle("약관 보기");
     }
+
+    private Fragment newFragment(int fragmentIdx) {
+        switch (fragmentIdx) {
+            case FRAGMENT_ACCOUNT:
+                return new AccountFragment();
+            case FRAGMENT_TIMETABLE:
+                return new TimetableFragment();
+            case FRAGMENT_DEVELOPER:
+                return new DeveloperFragment();
+            case FRAGMENT_REPORT:
+                return new ReportFragment();
+            case FRAGMENT_LICENSE:
+                return new LicenseFragment();
+            case FRAGMENT_TERMS:
+                return new TermsFragment();
+            default:
+                Log.e(TAG, "Fragment index is out of range!!!");
+                return null;
+        }
+    }
+
+    private void showFragment(int fragmentIdx, boolean withBackStackPush) {
+        Preconditions.checkArgument(fragmentIdx >= 0);
+        Preconditions.checkArgument(fragmentIdx < FRAGMENT_NUMS);
+
+        String fragmentTag = FRAGMENT_TAGS[fragmentIdx];
+        Fragment fragment = newFragment(fragmentIdx);
+
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.settings_main_layout, fragment, fragmentTag);
+        if (withBackStackPush) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +157,28 @@ public class SettingsMainActivity extends SNUTTBaseActivity
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         int type = getIntent().getIntExtra(INTENT_KEY_SETTINGS_TYPE, -1);
         Preconditions.checkArgument(type != -1);
+        switch (type) {
+            case FRAGMENT_ACCOUNT:
+                setAccountFragment();
+                break;
+            case FRAGMENT_TIMETABLE:
+                setTimetableFragment();
+                break;
+            case FRAGMENT_DEVELOPER:
+                setDeveloperFragment();
+                break;
+            case FRAGMENT_REPORT:
+                setReportFragment();
+                break;
+            case FRAGMENT_LICENSE:
+                setLicenseFragment();
+                break;
+            case FRAGMENT_TERMS:
+                setTermsFragment();
+                break;
+            default:
+                break;
+        }
 
        /* if (position == -1) { // c
             lecture = null;

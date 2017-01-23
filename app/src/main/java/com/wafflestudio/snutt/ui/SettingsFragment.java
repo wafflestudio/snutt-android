@@ -19,6 +19,13 @@ import com.wafflestudio.snutt.view.DividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_ACCOUNT;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_DEVELOPER;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_LICENSE;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_REPORT;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_TERMS;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_TIMETABLE;
+
 /**
  * Created by makesource on 2016. 1. 16..
  */
@@ -72,6 +79,28 @@ public class SettingsFragment extends SNUTTBaseFragment { /**
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
+                switch (position) {
+                    case 1: // account setting
+                        getMainActivity().startSettingsMain(FRAGMENT_ACCOUNT);
+                        break;
+                    case 2: // timetable setting
+                        getMainActivity().startSettingsMain(FRAGMENT_TIMETABLE);
+                        break;
+                    case 6: // developer
+                        getMainActivity().startSettingsMain(FRAGMENT_DEVELOPER);
+                        break;
+                    case 7: // bug report
+                        getMainActivity().startSettingsMain(FRAGMENT_REPORT);
+                        break;
+                    case 9: // license
+                        getMainActivity().startSettingsMain(FRAGMENT_LICENSE);
+                        break;
+                    case 10: // terms
+                        getMainActivity().startSettingsMain(FRAGMENT_TERMS);
+                        break;
+                    default:
+                        break;
+                }
             }
         });
     }
