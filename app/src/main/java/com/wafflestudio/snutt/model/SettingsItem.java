@@ -18,6 +18,7 @@ public class SettingsItem {
     }
 
     private String title;
+    private String detail;
 
     private Type type;
 
@@ -25,8 +26,15 @@ public class SettingsItem {
         this.type = type;
     }
 
+    public SettingsItem(String title, String detail, Type type) {
+        this.title = title;
+        this.detail = detail;
+        this.type = type;
+    }
+
     public SettingsItem(String title, Type type) {
         this.title = title;
+        this.detail = "";
         this.type = type;
     }
 
@@ -36,6 +44,14 @@ public class SettingsItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public Type getType() {

@@ -233,7 +233,6 @@ public class LectureDetailAdapter extends BaseAdapter {
                 ClassTime t = new ClassTime(day, fromTime / 2f, (toTime-fromTime) / 2f, item.getClassTime().getPlace());
                 item.setClassTime(t);
                 notifyDataSetChanged();
-                dialog.dismiss();
             }
         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override

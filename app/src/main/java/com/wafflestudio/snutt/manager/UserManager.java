@@ -126,11 +126,30 @@ public class UserManager {
         app.getRestService().getUserInfo(token, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                Log.d(TAG, "get user info success");
                 if (callback != null) callback.success(user, response);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Log.d(TAG, "get user info failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void deleteUserAccount(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().deleteUserAccount(token, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "delete user account success");
+                if (callback != null) callback.success(response, response2);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "get delete user account failed");
                 if (callback != null) callback.failure(error);
             }
         });

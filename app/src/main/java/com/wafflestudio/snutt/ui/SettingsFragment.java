@@ -7,13 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
-import com.wafflestudio.snutt.ui.adapter.SettingsAdapter2;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -29,15 +27,16 @@ import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_TIMETABLE;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SettingsFragment extends SNUTTBaseFragment { /**
- * The fragment argument representing the section number for this
- * fragment.
- */
+public class SettingsFragment extends SNUTTBaseFragment {
+    /**
+      * The fragment argument representing the section number for this
+      * fragment.
+      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "SETTINGS_FRAGMENT";
     private List<SettingsItem> lists;
     private SettingsAdapter adapter;
-    private SettingsAdapter2 adapter2;
+    private SettingsAdapter.ClickListener clickListener;
 
     public SettingsFragment() {
     }
@@ -73,9 +72,8 @@ public class SettingsFragment extends SNUTTBaseFragment { /**
         lists.add(new SettingsItem("로그아웃", SettingsItem.Type.ItemTitle));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
 
-        //adapter = new SettingsAdapter(getActivity(), lists);
-        adapter2 = new SettingsAdapter2(getActivity(), lists);
-        adapter2.setOnItemClickListener(new SettingsAdapter2.TitleViewHolder.ClickListener() {
+        adapter = new SettingsAdapter(getActivity(), lists);
+        clickListener = new SettingsAdapter.ClickListener() {
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
@@ -102,7 +100,7 @@ public class SettingsFragment extends SNUTTBaseFragment { /**
                         break;
                 }
             }
-        });
+        };
     }
 
     @Override
@@ -114,7 +112,14 @@ public class SettingsFragment extends SNUTTBaseFragment { /**
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.settings_recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter2);
+        recyclerView.setAdapter(adapter);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "on resume called!");
+        super.onResume();
+        adapter.setOnItemClickListener(clickListener);
     }
 }

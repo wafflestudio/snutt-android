@@ -17,11 +17,27 @@
 
         <TextView
             android:id="@+id/settings_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:text = "시간표 제목"
+            android:layout_weight="9"
+            android:layout_gravity="center_vertical"
+            android:text = "text"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/settings_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
+            android:text = "detail"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
