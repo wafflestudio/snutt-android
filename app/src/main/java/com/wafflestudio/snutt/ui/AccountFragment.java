@@ -15,8 +15,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Strings;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.model.User;
@@ -72,15 +74,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                         alert.setView(layout);
                         alert.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                String oldPassword = ((EditText)layout.findViewById(R.id.now_password)).getText().toString();
-                                String newPassword = ((EditText)layout.findViewById(R.id.new_password)).getText().toString();
-                                String newPasswordConfirm = ((EditText)layout.findViewById(R.id.new_password_confirm)).getText().toString();
-
-                                if (!newPassword.equals(newPasswordConfirm)) {
-                                    Toast.makeText(getContext(), "새 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT).show();
-                                }
-                                // Do something with value!
-
+                               // do nothing in here. because we override this button listener later
                             }
                         }).setNegativeButton("취소",
                                 new DialogInterface.OnClickListener() {
@@ -88,8 +82,26 @@ public class AccountFragment extends SNUTTBaseFragment {
                                         dialog.cancel();
                                     }
                                 });
+                        final AlertDialog dialog = alert.create();
+                        dialog.show();
+                        // change default button handler after dialog show.
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String oldPassword = ((EditText) layout.findViewById(R.id.now_password)).getText().toString();
+                                String newPassword = ((EditText) layout.findViewById(R.id.new_password)).getText().toString();
+                                String newPasswordConfirm = ((EditText) layout.findViewById(R.id.new_password_confirm)).getText().toString();
 
-                        alert.show();
+                                if (!newPassword.equals(newPasswordConfirm)) {
+                                    Toast.makeText(getContext(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                } else if (!SNUTTUtils.checkPassword(newPassword)) {
+                                    Toast.makeText(getContext(), "비밀번호는 6자 이상 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // 비밀번호 번경 요청
+                                dialog.dismiss();
+                            }
+                        });
                         break;
                     case 7:
                         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -99,11 +111,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                         alert2.setView(layout2);
                         alert2.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                String email = ((EditText)layout2.findViewById(R.id.email)).getText().toString();
-
-
-                                // Do something with value!
-
+                                // do nothing in here. because we override this button listener later
                             }
                         }).setNegativeButton("취소",
                                 new DialogInterface.OnClickListener() {
@@ -111,8 +119,32 @@ public class AccountFragment extends SNUTTBaseFragment {
                                         dialog.cancel();
                                     }
                                 });
+                        final AlertDialog dialog2 = alert2.create();
+                        dialog2.show();
+                        dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final String email = ((EditText)layout2.findViewById(R.id.email)).getText().toString();
+                                if (!Strings.isNullOrEmpty(email)) {
+                                    UserManager.getInstance().putUserInfo(email, new Callback() {
+                                        @Override
+                                        public void success(Object o, Response response) {
+                                            Toast.makeText(getContext(), "이메일 변경에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+                                            lists.get(6).setDetail(email);
+                                            adapter.notifyDataSetChanged();
+                                        }
 
-                        alert2.show();
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            Toast.makeText(getContext(), "이메일 변경에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    dialog2.dismiss();
+                                } else {
+                                    Toast.makeText(getContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     default:
                         break;
                 }

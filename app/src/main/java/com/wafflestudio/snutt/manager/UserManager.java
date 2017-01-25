@@ -138,6 +138,25 @@ public class UserManager {
         });
     }
 
+    public void putUserInfo(String email, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("email", email);
+        app.getRestService().putUserInfo(token, query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "put user info success");
+                if (callback != null) callback.success(response, response2);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "put user info failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     public void deleteUserAccount(final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().deleteUserAccount(token, new Callback<Response>() {

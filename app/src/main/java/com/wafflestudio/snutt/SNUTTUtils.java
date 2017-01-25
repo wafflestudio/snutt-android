@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import retrofit.client.Response;
 import retrofit.mime.MimeUtil;
@@ -74,5 +75,13 @@ public class SNUTTUtils {
             return bodyString;
         }
         return null;
+    }
+
+    public static boolean checkId(String id) {
+        return Pattern.matches("^[a-z0-9]{4,32}$", id);
+    }
+
+    public static boolean checkPassword(String password) {
+        return Pattern.matches("^(?=.*\\d)(?=.*[a-z])\\S{6,20}$", password);
     }
 }
