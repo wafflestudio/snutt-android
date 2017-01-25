@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
+import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
@@ -95,6 +96,11 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         break;
                     case 10: // terms
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
+                        break;
+                    case 12: // logout
+                        PrefManager.getInstance().setPrefKeyXAccessToken(null);
+                        getMainActivity().startWelcome();
+                        getMainActivity().finish();
                         break;
                     default:
                         break;
