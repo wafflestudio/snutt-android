@@ -25,6 +25,11 @@ public class PrefManager {
     private static final String PREF_KEY_CURRENT_YEAR = "pref_key_current_year" ;
     private static final String PREF_KEY_CURRENT_SEMESTER = "pref_key_current_semester" ;
     private static final String PREF_KEY_CURRENT_TABLE = "pref_key_current_table" ;
+    private static final String PREF_KEY_TRIM_WIDTH_START = "pref_key_trim_width_start";
+    private static final String PREF_KEY_TRIM_WIDTH_NUM = "pref_key_trim_width_num";
+    private static final String PREF_KEY_TRIM_HEIGHT_START = "pref_key_trim_height_start";
+    private static final String PREF_KEY_TRIM_HEIGHT_NUM = "pref_key_trim_height_num";
+    private static final String PREF_KEY_AUTO_TRIM = "pref_key_auto_trim";
     //private String defToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiZ2V0dGVycyI6eyJsb2NhbCI6eyJwYXNzd29yZCI6IiQyYSQwNCRZNVZjczd1WERLemIuWkdXOVFjZkV1TFRucUhhd1VRLm52VXk2Wk9WRjM3TUpRaXNPcE8vUyIsImlkIjoic251dHQifX0sIndhc1BvcHVsYXRlZCI6ZmFsc2UsInNjb3BlIjp7Il9pZCI6IjU2OTVlYTg5YzNlMjU0ODYwOTcwZWY2YyIsIl9fdiI6MCwicmVnRGF0ZSI6IjIwMTYtMDEtMTNUMDY6MTE6MDcuMjM1WiIsImlzQWRtaW4iOmZhbHNlLCJsb2NhbCI6eyJpZCI6InNudXR0IiwicGFzc3dvcmQiOiIkMmEkMDQkWTVWY3M3dVhES3piLlpHVzlRY2ZFdUxUbnFIYXdVUS5udlV5NlpPVkYzN01KUWlzT3BPL1MifX0sImFjdGl2ZVBhdGhzIjp7InBhdGhzIjp7ImlzQWRtaW4iOiJpbml0IiwicmVnRGF0ZSI6ImluaXQiLCJfX3YiOiJpbml0IiwibG9jYWwucGFzc3dvcmQiOiJpbml0IiwibG9jYWwuaWQiOiJpbml0IiwiX2lkIjoiaW5pdCJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnsiX192Ijp0cnVlLCJsb2NhbC5wYXNzd29yZCI6dHJ1ZSwibG9jYWwuaWQiOnRydWUsImlzQWRtaW4iOnRydWUsInJlZ0RhdGUiOnRydWUsIl9pZCI6dHJ1ZX0sIm1vZGlmeSI6e30sInJlcXVpcmUiOnt9fSwic3RhdGVOYW1lcyI6WyJyZXF1aXJlIiwibW9kaWZ5IiwiaW5pdCIsImRlZmF1bHQiLCJpZ25vcmUiXX0sImVtaXR0ZXIiOnsiZG9tYWluIjpudWxsLCJfZXZlbnRzIjp7fSwiX2V2ZW50c0NvdW50IjowLCJfbWF4TGlzdGVuZXJzIjowfX0sImlzTmV3IjpmYWxzZSwiX2RvYyI6eyJsb2NhbCI6eyJwYXNzd29yZCI6IiQyYSQwNCRZNVZjczd1WERLemIuWkdXOVFjZkV1TFRucUhhd1VRLm52VXk2Wk9WRjM3TUpRaXNPcE8vUyIsImlkIjoic251dHQifSwiZmFjZWJvb2siOnt9LCJpc0FkbWluIjpmYWxzZSwicmVnRGF0ZSI6IjIwMTYtMDEtMTNUMDY6MTE6MDcuMjM1WiIsIl9fdiI6MCwiX2lkIjoiNTY5NWVhODljM2UyNTQ4NjA5NzBlZjZjIn0sIl9wcmVzIjp7IiRfX29yaWdpbmFsX3NhdmUiOltudWxsLG51bGwsbnVsbF19LCJfcG9zdHMiOnsiJF9fb3JpZ2luYWxfc2F2ZSI6W119LCJpYXQiOjE0NTMyOTU2NzcsImV4cCI6MTQ2ODg0NzY3N30.Pb4OgIxZIKTwoCOwhJiAX0Tv6L2lJa7Ivkn5-QGl5EA" ;
 
 
@@ -44,11 +49,7 @@ public class PrefManager {
     }
 
     public void resetPrefValue() {
-        setLastViewTableId(null);
-        setPrefKeyXAccessToken(null);
-        setCurrentSemester(0);
-        setCurrentYear(0);
-        setCurrentTable(null);
+        sp.edit().clear().commit();
     }
 
     public void updateNewTable(Table table) {
@@ -107,6 +108,56 @@ public class PrefManager {
 
     public String getCurrentTable() {
         return sp.getString(PREF_KEY_CURRENT_TABLE, null);
+    }
+
+    public void setTrimWidthStart(int start) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(PREF_KEY_TRIM_WIDTH_START, start);
+        editor.apply();
+    }
+
+    public int getTrimWidthStart() {
+        return sp.getInt(PREF_KEY_TRIM_WIDTH_START, 0);
+    }
+
+    public void setTrimWidthNum(int num) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(PREF_KEY_TRIM_WIDTH_NUM, num);
+        editor.apply();
+    }
+
+    public int getTrimWidthNum() {
+        return sp.getInt(PREF_KEY_TRIM_WIDTH_NUM, 7);
+    }
+
+    public void setTrimHeightStart(int start) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(PREF_KEY_TRIM_HEIGHT_START, start);
+        editor.apply();
+    }
+
+    public int getTrimHeightStart() {
+        return sp.getInt(PREF_KEY_TRIM_HEIGHT_START, 0);
+    }
+
+    public void setTrimHeightNum(int num) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(PREF_KEY_TRIM_HEIGHT_NUM, num);
+        editor.apply();
+    }
+
+    public int getTrimHeightNum() {
+        return sp.getInt(PREF_KEY_TRIM_HEIGHT_NUM, 13);
+    }
+
+    public void setAutoTrim(boolean autoTrim) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(PREF_KEY_AUTO_TRIM, autoTrim);
+        editor.apply();
+    }
+
+    public boolean getAutoTrim() {
+        return sp.getBoolean(PREF_KEY_AUTO_TRIM, true);
     }
 
 }

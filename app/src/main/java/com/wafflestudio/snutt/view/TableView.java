@@ -14,6 +14,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.manager.LectureManager;
+import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.model.Lecture;
 
 import java.util.List;
@@ -49,6 +51,12 @@ public class TableView extends View {
     private boolean export; // 현재 선택한 강의를 보여줄지 말지?
     private boolean custom; // custom lecture 생성시 보여주는 view
 
+    // 시간표 trim 용
+    private int numWidth;
+    private int startWidth;
+    private int numHeight;
+    private int startHeight;
+
 
     public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,8 +73,8 @@ public class TableView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        unitHeight = (getHeight() - topLabelHeight) / 26f;
-        unitWidth = (getWidth() - leftLabelWidth) / 6;
+        unitHeight = (getHeight() - topLabelHeight) / (float) (numHeight * 2);
+        unitWidth = (getWidth() - leftLabelWidth) / (float) numWidth;
         invalidate();
     }
 
@@ -95,21 +103,26 @@ public class TableView extends View {
         leftLabelTextPaint2.setTextSize(SNUTTApplication.spTopx(10));
         leftLabelTextPaint2.setTextAlign(Paint.Align.CENTER);
 
-        wdays = new String[6];
+        wdays = new String[7];
         wdays[0] = mContext.getResources().getString(R.string.wday_mon);
         wdays[1] = mContext.getResources().getString(R.string.wday_tue);
         wdays[2] = mContext.getResources().getString(R.string.wday_wed);
         wdays[3] = mContext.getResources().getString(R.string.wday_thu);
         wdays[4] = mContext.getResources().getString(R.string.wday_fri);
         wdays[5] = mContext.getResources().getString(R.string.wday_sat);
+        wdays[6] = "일요일";
 
         lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //lectureTextPaint.setColor(0xff000000);
         lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
 
         lectureTextRect = new TextRect(lectureTextPaint);
-    }
 
+        numWidth = 7;
+        startWidth = 0;
+        numHeight = 13;
+        startHeight = 0;
+    }
 
     float getTextWidth(String text, Paint paint){
         Rect bounds = new Rect();
@@ -126,14 +139,14 @@ public class TableView extends View {
     public boolean onTouchEvent(MotionEvent event){
         float x = event.getX();
         float y = event.getY();
+        int wday = (int) ((x - leftLabelWidth) / unitWidth) + startWidth;
+        float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f + (float) startHeight;
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            //x, y를 요일, 교시로
-            int wday = (int) ((x - leftLabelWidth) / unitWidth);
-            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
 
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
+            //Toast.makeText(getContext(), wday + " " + time, Toast.LENGTH_SHORT).show();
 
             boolean lectureClicked = false;
 
@@ -151,13 +164,8 @@ public class TableView extends View {
             }
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            //x, y를 요일, 교시로
-            int wday = (int) ((x - leftLabelWidth) / unitWidth);
-            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
-
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
-
 
             if (!custom) {
                 //터치한 게 내 강의 중 하나
@@ -176,7 +184,6 @@ public class TableView extends View {
             }
         }  else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             //x, y를 교시로
-            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
 
             if (LectureManager.getInstance().existCustomLecture()) {
                 float duration = time - LectureManager.getInstance().getCustomStartTime() + 0.5f;
@@ -262,76 +269,46 @@ public class TableView extends View {
         return true;
     }
 
-    /*public Handler shareHandler = new Handler(){
-        public void handleMessage(Message msg) {
-            String path = (String) msg.obj;
-            Uri uri = Uri.parse("file://" + path);
-            // share
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("image/png");
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            mContext.startActivity(Intent.createChooser(intent, SNUTTApplication.context.getResources().getString(R.string.share_image)));
-
-            // scan file
-            MediaScannerConnection.scanFile(mContext, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
-                    Log.i("ExternalStorage", "Scanned " + path + ":");
-                    Log.i("ExternalStorage", "-> uri=" + uri);
-                }
-            });
-
-            Toast.makeText(mContext, path + " saved!", Toast.LENGTH_LONG).show();
-        }
-    };
-
-    //이미지 저장
-    public void saveImage(){
-        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        final int bitmapWidth = metrics.widthPixels;
-        final int bitmapHeight = metrics.heightPixels;
-
-        new Thread(){
-            @SuppressLint("SimpleDateFormat")
-            @Override
-            public void run(){
-                try {
-                    Bitmap resultBitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-                    Canvas canvas = new Canvas(resultBitmap);
-                    canvas.drawRect(0, 0, bitmapWidth, bitmapHeight, backgroundPaint);
-                    drawTimetable(canvas, bitmapWidth, bitmapHeight, true);
-
-                    //폴더 생성
-                    File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/snutt/");
-                    dir.mkdirs();
-                    //파일 이름 결정
-                    SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                    String filename = s.format(new Date());
-                    File file = new File(dir.getPath() + "/" + filename + ".png");
-                    //저장
-                    resultBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(file));
-
-                    Message msg = new Message();
-                    msg.obj = file.getPath();
-                    shareHandler.sendMessage(msg);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-        //이미지 저장
-    }*/
-
     //주어진 canvas에 시간표를 그림
     public void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export){
-        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
-        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+
+        if (export) {
+            if (PrefManager.getInstance().getAutoTrim()) {
+                int startWday = 7;
+                int endWday = 0;
+                int startTime = 13;
+                int endTime = 0;
+                for (Lecture lecture : lectures) {
+                    for (JsonElement element : lecture.getClass_time_json()) {
+                        JsonObject classTime = element.getAsJsonObject();
+                        int wday = classTime.get("day").getAsInt();
+                        float start = classTime.get("start").getAsFloat();
+                        float duration = classTime.get("len").getAsFloat();
+                        startWday = Math.min(startWday, wday);
+                        endWday = Math.max(endWday, wday);
+                        startTime = Math.min(startTime, (int) start); // 버림
+                        endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
+                    }
+                }
+                startWidth = Math.min(0, startWday);
+                numWidth = Math.max(5, endWday - startWidth + 1);
+                startHeight = Math.min(1, startTime);
+                numHeight = Math.max(10, endTime - startHeight);
+            } else {
+                startWidth = PrefManager.getInstance().getTrimWidthStart();
+                numWidth = PrefManager.getInstance().getTrimWidthNum();
+                startHeight = PrefManager.getInstance().getTrimHeightStart();
+                numHeight = PrefManager.getInstance().getTrimHeightNum();
+            }
+        }
+
+        unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
+        unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
 
         //가로 줄 28개
         canvas.drawLine(0, 0, canvasWidth, 0, linePaint);
         canvas.drawLine(0, canvasHeight, canvasWidth, canvasHeight, linePaint);
-        for (int i=0;i<26;i++){
+        for (int i=0;i<numHeight*2;i++){
             float height = topLabelHeight + unitHeight * i;
             if (i%2 == 1)
                 canvas.drawLine(leftLabelWidth, height, canvasWidth, height, linePaint);
@@ -339,18 +316,18 @@ public class TableView extends View {
                 canvas.drawLine(0, height, canvasWidth, height, linePaint);
         }
         //세로 줄 그리기
-        for (int i=0;i<6;i++){
+        for (int i=0;i<numWidth;i++){
             float width = leftLabelWidth + unitWidth * i;
             float textHeight = getTextHeight(wdays[0], topLabelTextPaint);
             canvas.drawLine(width, 0, width, canvasHeight, linePaint);
-            canvas.drawText(wdays[i], (leftLabelWidth + unitWidth * (i+0.5f)), (topLabelHeight+textHeight)/2f, topLabelTextPaint);
+            canvas.drawText(wdays[i + startWidth], (leftLabelWidth + unitWidth * (i+0.5f)), (topLabelHeight+textHeight)/2f, topLabelTextPaint);
         }
         canvas.drawLine(0, 0, 0, canvasHeight, linePaint);
         canvas.drawLine(canvasWidth, 0, canvasWidth, canvasHeight, linePaint);
         //교시 텍스트 그리기
-        for (int i=0;i<13;i++){
-            String str1 = i + "교시";
-            String str2 = SNUTTUtils.zeroStr(i+8) + ":00~" + SNUTTUtils.zeroStr(i+9) + ":00";
+        for (int i=0;i<numHeight;i++){
+            String str1 = i + startHeight + "교시";
+            String str2 = SNUTTUtils.zeroStr(i+startHeight+8) + ":00~" + SNUTTUtils.zeroStr(i+startHeight+9) + ":00";
             float textHeight = getTextHeight(str1, leftLabelTextPaint);
             float textHeight2 = getTextHeight(str2, leftLabelTextPaint2);
             float padding = SNUTTApplication.dpTopx(5);
@@ -413,38 +390,17 @@ public class TableView extends View {
     }
 
     //사각형 하나를 그림
-    /*void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int colorIndex){
-        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
-        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
-
-        //startTime : 시작 교시
-        float left = leftLabelWidth + wday * unitWidth;
-        float right = leftLabelWidth + wday * unitWidth + unitWidth;
-        float top = topLabelHeight + startTime * unitHeight * 2;
-        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
-        float borderWidth = SNUTTApplication.dpTopx(3);
-        RectF r = new RectF(left, top, right, bottom);
-        canvas.drawRoundRect(r, 20, 20, paints[colorIndex]);
-        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
-        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, paints[colorIndex]);
-        //강의명, 강의실 기록
-        String str = course_title + "\n" + location;
-        int width = (int)(right - left);
-        int height = (int)(bottom - top);
-        int strHeight = lectureTextRect.prepare(str, width, height);
-        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, colorIndex);
-    }*/
-
-    //사각형 하나를 그림
     void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
-        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
-        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+        float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
+        float unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
+        if (wday - startWidth < 0) return; // 날자가 잘리는 경우
+        if ((startTime - startHeight) * unitHeight * 2 + (unitHeight * duration * 2) < 0) return; // 교시가 잘리는 경우
 
         //startTime : 시작 교시
-        float left = leftLabelWidth + wday * unitWidth;
-        float right = leftLabelWidth + wday * unitWidth + unitWidth;
-        float top = topLabelHeight + startTime * unitHeight * 2;
-        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
+        float left = leftLabelWidth + (wday - startWidth) * unitWidth;
+        float right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth;
+        float top = topLabelHeight + Math.max(0, (startTime - startHeight)) * unitHeight * 2;
+        float bottom = topLabelHeight + (startTime - startHeight) * unitHeight * 2 + (unitHeight * duration * 2);
         float borderWidth = SNUTTApplication.dpTopx(3);
         RectF r = new RectF(left, top, right, bottom);
         Paint p = new Paint();
@@ -464,8 +420,8 @@ public class TableView extends View {
     void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
         if (!custom) return;
 
-        float unitHeight = (canvasHeight - topLabelHeight) / 26f;
-        float unitWidth = (canvasWidth - leftLabelWidth) / 6;
+        float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
+        float unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
 
         //startTime : 시작 교시
         float left = leftLabelWidth + wday * unitWidth;
