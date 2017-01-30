@@ -60,7 +60,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
         SettingsItem item = getItem(position);
-        return item.getType().getValue();
+        return item.getViewType().getValue();
     }
 
     public SettingsItem getItem(int position) {
@@ -75,7 +75,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 30));
         }
     }
-
 
     private static class TitleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         private View view;

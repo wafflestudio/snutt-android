@@ -48,15 +48,15 @@ public class AccountFragment extends SNUTTBaseFragment {
         super.onCreate(savedInstanceState);
         lists = new ArrayList<SettingsItem>();
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("아이디", "test", SettingsItem.Type.ItemTitle));
-        lists.add(new SettingsItem("비밀번호 변경", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("아이디", "test", SettingsItem.Type.Id));
+        lists.add(new SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("페이스북 연동", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("페이스북 연동", SettingsItem.Type.Facebook));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("이메일", "test@gmail.com", SettingsItem.Type.ItemTitle));
-        lists.add(new SettingsItem("이메일 변경", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("이메일", "test@gmail.com", SettingsItem.Type.Email));
+        lists.add(new SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
 
         inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,8 +65,9 @@ public class AccountFragment extends SNUTTBaseFragment {
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
-                switch (position) {
-                    case 2: // change password
+                SettingsItem.Type type = lists.get(position).getType();
+                switch (type) {
+                    case ChangePassword: // change password
                         final View layout = inflater.inflate(R.layout.dialog_change_password, null);
 
                         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -113,7 +114,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                             }
                         });
                         break;
-                    case 7:
+                    case ChangeEmail:
                         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View layout2 = inflater.inflate(R.layout.dialog_change_email, null);
                         AlertDialog.Builder alert2 = new AlertDialog.Builder(getContext());
@@ -140,7 +141,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                                         @Override
                                         public void success(Object o, Response response) {
                                             Toast.makeText(getContext(), "이메일 변경에 성공하였습니다.", Toast.LENGTH_SHORT).show();
-                                            lists.get(6).setDetail(email);
+                                            getEmailItem().setDetail(email);
                                             adapter.notifyDataSetChanged();
                                         }
 
@@ -164,8 +165,8 @@ public class AccountFragment extends SNUTTBaseFragment {
         UserManager.getInstance().getUserInfo(new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                lists.get(1).setDetail(user.getLocal_id());
-                lists.get(6).setDetail(user.getEmail());
+                getIdItem().setDetail(user.getLocal_id());
+                getEmailItem().setDetail(user.getEmail());
                 adapter.notifyDataSetChanged();
             }
 
@@ -175,6 +176,22 @@ public class AccountFragment extends SNUTTBaseFragment {
         });
 
 
+    }
+
+    private SettingsItem getIdItem() {
+        for (SettingsItem item : lists) {
+            if (item.getType() == SettingsItem.Type.Id) return item;
+        }
+        Log.e(TAG, "id row does not exists!!");
+        return null;
+    }
+
+    private SettingsItem getEmailItem() {
+        for (SettingsItem item : lists) {
+            if (item.getType() == SettingsItem.Type.Email) return item;
+        }
+        Log.e(TAG, "email row does not exists!!");
+        return null;
     }
 
     @Override

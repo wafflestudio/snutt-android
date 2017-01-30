@@ -59,18 +59,18 @@ public class SettingsFragment extends SNUTTBaseFragment {
         super.onCreate(savedInstanceState);
         lists = new ArrayList<>();
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("계정관리", SettingsItem.Type.ItemTitle));
-        lists.add(new SettingsItem("시간표 설정", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("계정관리", SettingsItem.Type.Account));
+        lists.add(new SettingsItem("시간표 설정",  SettingsItem.Type.Timetable));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("버전 정보", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("버전 정보", SettingsItem.Type.Version));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("개발자 정보", SettingsItem.Type.ItemTitle));
-        lists.add(new SettingsItem("개발자 괴롭히기", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("개발자 정보", SettingsItem.Type.Developer));
+        lists.add(new SettingsItem("개발자 괴롭히기", SettingsItem.Type.BugReport));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("라이센스 정보", SettingsItem.Type.ItemTitle));
-        lists.add(new SettingsItem("약관 보기", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("라이센스 정보", SettingsItem.Type.License));
+        lists.add(new SettingsItem("약관 보기", SettingsItem.Type.Terms));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("로그아웃", SettingsItem.Type.ItemTitle));
+        lists.add(new SettingsItem("로그아웃", SettingsItem.Type.Logout));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
 
         adapter = new SettingsAdapter(getActivity(), lists);
@@ -78,26 +78,27 @@ public class SettingsFragment extends SNUTTBaseFragment {
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
-                switch (position) {
-                    case 1: // account setting
+                SettingsItem.Type type = lists.get(position).getType();
+                switch (type) {
+                    case Account: // account setting
                         getMainActivity().startSettingsMain(FRAGMENT_ACCOUNT);
                         break;
-                    case 2: // timetable setting
+                    case Timetable: // timetable setting
                         getMainActivity().startSettingsMain(FRAGMENT_TIMETABLE);
                         break;
-                    case 6: // developer
+                    case Developer: // developer
                         getMainActivity().startSettingsMain(FRAGMENT_DEVELOPER);
                         break;
-                    case 7: // bug report
+                    case BugReport: // bug report
                         getMainActivity().startSettingsMain(FRAGMENT_REPORT);
                         break;
-                    case 9: // license
+                    case License: // license
                         getMainActivity().startSettingsMain(FRAGMENT_LICENSE);
                         break;
-                    case 10: // terms
+                    case Terms: // terms
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
                         break;
-                    case 12: // logout
+                    case Logout: // logout
                         PrefManager.getInstance().resetPrefValue();
                         getMainActivity().startWelcome();
                         getMainActivity().finish();

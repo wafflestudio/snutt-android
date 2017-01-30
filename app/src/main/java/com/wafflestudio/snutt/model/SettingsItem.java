@@ -5,11 +5,37 @@ package com.wafflestudio.snutt.model;
  */
 
 public class SettingsItem {
+
     public enum Type {
+        Account(0),
+        Timetable(1),
+        Developer(2),
+        BugReport(3),
+        License(4),
+        Terms(5),
+        Logout(6),
+        Version(7),
+        Header(8),
+        Id(9),
+        ChangePassword(10),
+        Facebook(11),
+        Email(12),
+        ChangeEmail(13),
+        Leave(14);
+        private final int value;
+        Type(int value) {
+            this.value = value;
+        }
+        public final int getValue() {
+            return value;
+        }
+    }
+
+    public enum ViewType {
         Header(0),
         ItemTitle(1);
         private final int value;
-        Type(int value) {
+        ViewType(int value) {
             this.value = value;
         }
         public final int getValue() {
@@ -53,6 +79,15 @@ public class SettingsItem {
     public void setDetail(String detail) {
         this.detail = detail;
     }
+
+    public ViewType getViewType() {
+        if (type == Type.Header) return ViewType.Header;
+        return ViewType.ItemTitle;
+    }
+
+    /*public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+    }*/
 
     public Type getType() {
         return type;
