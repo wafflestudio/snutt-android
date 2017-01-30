@@ -98,7 +98,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
                         break;
                     case 12: // logout
-                        PrefManager.getInstance().setPrefKeyXAccessToken(null);
+                        PrefManager.getInstance().resetPrefValue();
                         getMainActivity().startWelcome();
                         getMainActivity().finish();
                         break;

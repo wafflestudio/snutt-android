@@ -174,6 +174,27 @@ public class UserManager {
         });
     }
 
+    public void putUserPassword(String oldPassword, String newPassword, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("old_password", oldPassword);
+        query.put("new_password", newPassword);
+        app.getRestService().putUserPassword(token, query, new Callback<Token>() {
+            @Override
+            public void success(Token token, Response response) {
+                Log.d(TAG, "put user password success");
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                if (callback != null) callback.success(token, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "put user password failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {
             listener.notifySignIn(code);

@@ -97,7 +97,17 @@ public class AccountFragment extends SNUTTBaseFragment {
                                 } else if (!SNUTTUtils.checkPassword(newPassword)) {
                                     Toast.makeText(getContext(), "비밀번호는 6자 이상 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
                                 }
+                                UserManager.getInstance().putUserPassword(oldPassword, newPassword, new Callback() {
+                                    @Override
+                                    public void success(Object o, Response response) {
+                                        Toast.makeText(getContext(), "비밀번호를 변경하였습니다.", Toast.LENGTH_SHORT).show();
+                                    }
 
+                                    @Override
+                                    public void failure(RetrofitError error) {
+
+                                    }
+                                });
                                 // 비밀번호 번경 요청
                                 dialog.dismiss();
                             }

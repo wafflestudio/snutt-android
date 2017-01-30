@@ -43,6 +43,14 @@ public class PrefManager {
         return singletonInstance;
     }
 
+    public void resetPrefValue() {
+        setLastViewTableId(null);
+        setPrefKeyXAccessToken(null);
+        setCurrentSemester(0);
+        setCurrentYear(0);
+        setCurrentTable(null);
+    }
+
     public void updateNewTable(Table table) {
         String json = new Gson().toJson(table);
         setLastViewTableId(table.getId());

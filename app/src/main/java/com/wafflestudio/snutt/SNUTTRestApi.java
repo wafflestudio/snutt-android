@@ -74,7 +74,7 @@ public interface SNUTTRestApi {
     public void putUserInfo(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
 
     @PUT("/user/password")
-    public void putUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void putUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
 
     @POST("/user/password")
     public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
