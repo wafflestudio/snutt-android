@@ -20,6 +20,7 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.manager.UserManager;
+import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.model.User;
 import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
@@ -175,6 +176,20 @@ public class AccountFragment extends SNUTTBaseFragment {
             }
         });
 
+        UserManager.getInstance().getUserFacebook(new Callback<Facebook>() {
+            @Override
+            public void success(Facebook facebook, Response response) {
+                if (facebook.isAttached()) {
+                    getFacebookItem().setDetail(facebook.getName());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
 
     }
 
@@ -191,6 +206,14 @@ public class AccountFragment extends SNUTTBaseFragment {
             if (item.getType() == SettingsItem.Type.Email) return item;
         }
         Log.e(TAG, "email row does not exists!!");
+        return null;
+    }
+
+    private SettingsItem getFacebookItem() {
+        for (SettingsItem item : lists) {
+            if (item.getType() == SettingsItem.Type.Facebook) return item;
+        }
+        Log.e(TAG, "facebook row does not exists!!");
         return null;
     }
 

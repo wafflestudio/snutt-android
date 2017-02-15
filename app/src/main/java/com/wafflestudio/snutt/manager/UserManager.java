@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.Token;
 import com.wafflestudio.snutt.model.User;
 
@@ -194,6 +195,24 @@ public class UserManager {
             }
         });
     }
+
+    public void getUserFacebook(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getUserFacebook(token, new Callback<Facebook>() {
+            @Override
+            public void success(Facebook facebook, Response response) {
+                Log.d(TAG, "get user facebook success!");
+                if (callback != null) callback.success(facebook, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "get user facebook failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
 
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {

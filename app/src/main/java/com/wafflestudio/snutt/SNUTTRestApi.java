@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt;
 
+import android.hardware.camera2.params.Face;
 import android.telecom.Call;
 
+import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.model.TagList;
@@ -86,7 +88,7 @@ public interface SNUTTRestApi {
     public void deleteUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
 
     @GET("/user/facebook")
-    public void getUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void getUserFacebook(@Header("x-access-token") String token, Callback<Facebook> callback);
 
     @POST("/user/device")
     public void registerToken(@Header("x-access-token") String token, @Body String fToken, Callback<Response> callback);
