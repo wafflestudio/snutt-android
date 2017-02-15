@@ -4,10 +4,11 @@
     android:layout_height="50dp"
     android:background="?attr/selectableItemBackground">
 
-
-    <Switch
-        android:text="Switch"
+    <com.appyvet.rangebar.RangeBar
+        android:id="@+id/rangebar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/switch1" />
+        android:layout_height="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+
 </LinearLayout>

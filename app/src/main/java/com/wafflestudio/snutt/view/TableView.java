@@ -120,7 +120,7 @@ public class TableView extends View {
 
         numWidth = 7;
         startWidth = 0;
-        numHeight = 13;
+        numHeight = 14;
         startHeight = 0;
     }
 
@@ -276,7 +276,7 @@ public class TableView extends View {
             if (PrefManager.getInstance().getAutoTrim()) {
                 int startWday = 7;
                 int endWday = 0;
-                int startTime = 13;
+                int startTime = 14;
                 int endTime = 0;
                 for (Lecture lecture : lectures) {
                     for (JsonElement element : lecture.getClass_time_json()) {

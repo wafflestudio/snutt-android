@@ -48,12 +48,12 @@ public class AccountFragment extends SNUTTBaseFragment {
         super.onCreate(savedInstanceState);
         lists = new ArrayList<SettingsItem>();
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("아이디", "test", SettingsItem.Type.Id));
+        lists.add(new SettingsItem("아이디", "", SettingsItem.Type.Id));
         lists.add(new SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("페이스북 연동", SettingsItem.Type.Facebook));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("이메일", "test@gmail.com", SettingsItem.Type.Email));
+        lists.add(new SettingsItem("이메일", "", SettingsItem.Type.Email));
         lists.add(new SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
