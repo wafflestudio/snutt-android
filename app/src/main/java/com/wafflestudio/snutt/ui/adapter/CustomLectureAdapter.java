@@ -275,12 +275,13 @@ public class CustomLectureAdapter extends BaseAdapter {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 fromTime = newVal;
-                toPicker.setValue(0);
+                /* set DisplayedValues as null to avoid out of bound index error */
+                toPicker.setDisplayedValues(null);
+                toPicker.setValue(fromTime + 1);
                 toPicker.setMinValue(fromTime + 1);
                 toPicker.setMaxValue(28);
                 toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
                 /* setValue method does not call listener, so we have to change the value manually */
-                toPicker.setValue(fromTime + 1);
                 toTime = fromTime + 1;
             }
         });

@@ -290,8 +290,10 @@ public class TableView extends View {
                         endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
                     }
                 }
-                startWidth = Math.min(0, startWday);
-                numWidth = Math.max(5, endWday - startWidth + 1);
+                // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
+                startWidth = 0;
+                numWidth = Math.max(5, endWday + 1);
+                //
                 startHeight = Math.min(1, startTime);
                 numHeight = Math.max(10, endTime - startHeight);
             } else {
