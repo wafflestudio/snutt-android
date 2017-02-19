@@ -105,6 +105,29 @@ public class UserManager {
         });
     }
 
+    //
+
+    public void postLoginFacebook(String facebookId, String facebookToken, final Callback callback) {
+        Map query = new HashMap();
+        query.put("fb_id", facebookId);
+        query.put("fb_token", facebookToken);
+            app.getRestService().postLoginFacebook(query, new Callback<Token>() {
+                @Override
+                public void success(Token token, Response response) {
+                    Log.d(TAG, "post user facebook success!");
+                    PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                    notifySingIn(true);
+                    if (callback != null) callback.success(token, response);
+                }
+
+                @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "post user facebook failed!");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     public void postSingUp(String id, String password, final Callback callback) {
         // id, password -> regex check!
         Map query = new HashMap();
@@ -212,7 +235,6 @@ public class UserManager {
             }
         });
     }
-
 
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {

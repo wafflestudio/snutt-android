@@ -38,6 +38,9 @@ public interface SNUTTRestApi {
     @POST("/auth/login_local")
     public void postSignIn(@Body Map query, Callback<Token> callback);
 
+    @POST("/auth/login_fb")
+    public void postLoginFacebook(@Body Map query, Callback<Token> callback);
+
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 
@@ -82,7 +85,7 @@ public interface SNUTTRestApi {
     public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
 
     @POST("/user/facebook")
-    public void postUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void postUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
 
     @DELETE("/user/facebook")
     public void deleteUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);

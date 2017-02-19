@@ -2,8 +2,11 @@ package com.wafflestudio.snutt.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
+import com.facebook.CallbackManager;
+import com.facebook.login.widget.LoginButton;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.ui.adapter.IntroAdapter;
@@ -27,6 +30,7 @@ public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
     }
 
     @Override
@@ -35,4 +39,5 @@ public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment
         SignInFragment fragment = (SignInFragment) adapter.getItem(0);
         fragment.setInfo(id, password);
     }
+
 }

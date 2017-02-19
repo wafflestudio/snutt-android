@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.facebook.FacebookSdk;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
@@ -38,6 +39,8 @@ public class SNUTTApplication extends Application {
         TagManager.getInstance(this);
         UserManager.getInstance(this);
         TableManager.getInstance(this);
+        FacebookSdk.sdkInitialize(context);
+
         restUrl = "http://walnut.wafflestudio.com:3000/api";
         super.onCreate();
     }
