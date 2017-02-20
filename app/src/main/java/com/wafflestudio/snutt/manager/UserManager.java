@@ -12,6 +12,7 @@ import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.Token;
 import com.wafflestudio.snutt.model.User;
+import com.wafflestudio.snutt.model.Version;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -292,6 +293,22 @@ public class UserManager {
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "post user facebook failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void getAppVersion(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getAppVersion(new Callback<Version>() {
+            @Override
+            public void success(Version version, Response response) {
+                Log.d(TAG, "get app version success!");
+                if (callback != null) callback.success(version, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "get app version failed");
                 if (callback != null) callback.failure(error);
             }
         });

@@ -9,6 +9,7 @@ import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.model.TagList;
 import com.wafflestudio.snutt.model.Token;
 import com.wafflestudio.snutt.model.User;
+import com.wafflestudio.snutt.model.Version;
 
 import java.net.ResponseCache;
 import java.util.List;
@@ -43,6 +44,9 @@ public interface SNUTTRestApi {
 
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
+
+    @GET("/app_version")
+    public void getAppVersion(Callback<Version> callback);
 
     // API Timetable
 

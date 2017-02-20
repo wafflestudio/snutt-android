@@ -14,11 +14,16 @@ import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.SettingsItem;
+import com.wafflestudio.snutt.model.Version;
 import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_ACCOUNT;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_DEVELOPER;
@@ -110,6 +115,18 @@ public class SettingsFragment extends SNUTTBaseFragment {
                 }
             }
         };
+
+        UserManager.getInstance().getAppVersion(new Callback<Version>() {
+            @Override
+            public void success(Version version, Response response) {
+                updateVersion(version.getVersion());
+            }
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
     }
 
     @Override
@@ -130,5 +147,18 @@ public class SettingsFragment extends SNUTTBaseFragment {
         Log.d(TAG, "on resume called!");
         super.onResume();
         adapter.setOnItemClickListener(clickListener);
+    }
+
+    private void updateVersion(String version) {
+        int position = -1;
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == SettingsItem.Type.Version) position = i;
+        }
+        if (position == -1) {
+            Log.e(TAG, "Version item does not exists!");
+            return;
+        }
+        lists.get(position).setDetail(version);
+        adapter.notifyItemChanged(position);
     }
 }
