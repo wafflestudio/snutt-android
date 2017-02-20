@@ -23,6 +23,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.SNUTTUtils;
 import com.wafflestudio.snutt.manager.UserManager;
@@ -86,6 +87,10 @@ public class AccountFragment extends SNUTTBaseFragment {
 
                     case DeleteFacebook:
                         performDeleteFacebook();
+                        break;
+
+                    case Leave:
+                        performLeave();
                         break;
 
                     default: {
@@ -297,6 +302,34 @@ public class AccountFragment extends SNUTTBaseFragment {
         dialog.show();
     }
 
+    private void performLeave() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("회원탈퇴");
+        alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?");
+        alert.setPositiveButton("회원탈퇴", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                UserManager.getInstance().deleteUserAccount(new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        UserManager.getInstance().performLogout();
+                        getSNUTTBaseActivity().finishAll();
+                        getSNUTTBaseActivity().startWelcome();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
     private void updateNewId(String id) {
         int position = -1;
         for (int i = 0;i < lists.size(); i++) {
@@ -449,5 +482,9 @@ public class AccountFragment extends SNUTTBaseFragment {
             lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
         }
+    }
+
+    private SNUTTBaseActivity getSNUTTBaseActivity() {
+        return (SNUTTBaseActivity) getActivity();
     }
 }

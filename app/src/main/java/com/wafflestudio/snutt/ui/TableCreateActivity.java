@@ -35,6 +35,7 @@ public class TableCreateActivity extends SNUTTBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityList.add(this);
         setContentView(R.layout.activity_table_create);
 
         yearPicker = (NumberPicker) findViewById(R.id.yearPicker);
@@ -82,5 +83,11 @@ public class TableCreateActivity extends SNUTTBaseActivity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activityList.remove(this);
     }
 }

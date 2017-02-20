@@ -102,8 +102,8 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         break;
                     case Logout: // logout
                         UserManager.getInstance().performLogout();
+                        getMainActivity().finishAll();
                         getMainActivity().startWelcome();
-                        getMainActivity().finish();
                         break;
                     default:
                         break;

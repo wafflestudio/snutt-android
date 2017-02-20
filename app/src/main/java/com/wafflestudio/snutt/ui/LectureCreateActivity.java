@@ -23,6 +23,7 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityList.add(this);
         setContentView(R.layout.activity_lecture_create);
         setTitle("커스텀 강의 추가");
         detailList = (ListView) findViewById(R.id.lecture_detail_list);
@@ -40,5 +41,10 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
         detailList.setAdapter(adapter);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activityList.remove(this);
+    }
 
 }

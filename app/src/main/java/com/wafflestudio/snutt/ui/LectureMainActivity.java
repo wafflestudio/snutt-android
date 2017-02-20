@@ -49,6 +49,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityList.add(this);
         setContentView(R.layout.activity_lecture_main);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         int position = getIntent().getIntExtra(INTENT_KEY_LECTURE_POSITION, -1);
@@ -188,5 +189,11 @@ public class LectureMainActivity extends SNUTTBaseActivity
             fragment.setLectureColor(color);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activityList.remove(this);
     }
 }

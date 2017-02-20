@@ -153,6 +153,7 @@ public class SettingsMainActivity extends SNUTTBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityList.add(this);
         setContentView(R.layout.activity_settings_main);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         int type = getIntent().getIntExtra(INTENT_KEY_SETTINGS_TYPE, -1);
@@ -199,5 +200,9 @@ public class SettingsMainActivity extends SNUTTBaseActivity
         setTitle();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activityList.remove(this);
+    }
 }

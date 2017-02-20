@@ -35,6 +35,7 @@ public class TableListActivity extends SNUTTBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityList.add(this);
         setContentView(R.layout.activity_table_list);
         mListView = (ExpandableListView) findViewById(R.id.listView);
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -134,5 +135,11 @@ public class TableListActivity extends SNUTTBaseActivity {
             public void failure(RetrofitError error) {
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activityList.remove(this);
     }
 }

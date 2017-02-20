@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
@@ -11,6 +12,8 @@ import com.wafflestudio.snutt.ui.TableCreateActivity;
 import com.wafflestudio.snutt.ui.TableListActivity;
 import com.wafflestudio.snutt.ui.WelcomeActivity;
 
+import java.util.ArrayList;
+
 /**
  * Created by makesource on 2016. 1. 16..
  */
@@ -19,6 +22,7 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
     public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
     public static final String INTENT_KEY_SETTINGS_TYPE = "INTENT_KEY_SETTINGS_TYPE";
+    public static ArrayList<Activity> activityList = new ArrayList<Activity>();
 
     public void startMain() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -67,6 +71,12 @@ public class SNUTTBaseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingsMainActivity.class);
         intent.putExtra(INTENT_KEY_SETTINGS_TYPE, type);
         startActivity(intent);
+    }
+
+    public void finishAll() {
+        for (Activity activity : activityList) {
+            activity.finish();
+        }
     }
 
     public SNUTTApplication getApp() {
