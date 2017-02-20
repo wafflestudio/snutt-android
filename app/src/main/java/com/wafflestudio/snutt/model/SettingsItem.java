@@ -18,10 +18,13 @@ public class SettingsItem {
         Header(8),
         Id(9),
         ChangePassword(10),
-        Facebook(11),
+        LinkFacebook(11),
         Email(12),
         ChangeEmail(13),
-        Leave(14);
+        Leave(14),
+        AddIdPassword(15),
+        FacebookName(16),
+        DeleteFacebook(17);
         private final int value;
         Type(int value) {
             this.value = value;

@@ -35,12 +35,11 @@ public class SNUTTApplication extends Application {
     public void onCreate() {
         context = getApplicationContext();
         PrefManager.getInstance(context);
+        FacebookSdk.sdkInitialize(context);
         LectureManager.getInstance(this);
         TagManager.getInstance(this);
         UserManager.getInstance(this);
         TableManager.getInstance(this);
-        FacebookSdk.sdkInitialize(context);
-
         restUrl = "http://walnut.wafflestudio.com:3000/api";
         super.onCreate();
     }

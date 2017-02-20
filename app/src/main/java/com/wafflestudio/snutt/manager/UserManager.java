@@ -236,6 +236,67 @@ public class UserManager {
         });
     }
 
+    // 새로운 local_id 추가
+    public void postUserPassword(String id, String password, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("id", id);
+        query.put("password", password);
+        app.getRestService().postUserPassword(token, query, new Callback<Token>() {
+            @Override
+            public void success(Token token, Response response) {
+                Log.d(TAG, "post user password success!");
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                if (callback != null) callback.success(token, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "post user password failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void deleteUserFacebook(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().deleteUserFacebook(token, new Callback<Token>() {
+            @Override
+            public void success(Token token, Response response) {
+                Log.d(TAG, "delete user facebook success!");
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                if (callback != null) callback.success(token, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "delete user facebook failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    // facebook 계정 연동
+    public void postUserFacebook(String facebookId, String facebookToken, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("fb_id", facebookId);
+        query.put("fb_token", facebookToken);
+        app.getRestService().postUserFacebook(token, query, new Callback<Token>() {
+            @Override
+            public void success(Token token, Response response) {
+                Log.d(TAG, "post user facebook success!");
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                if (callback != null) callback.success(token, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "post user facebook failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+
+    }
+
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {
             listener.notifySignIn(code);

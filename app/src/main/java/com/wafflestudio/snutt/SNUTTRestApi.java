@@ -82,13 +82,13 @@ public interface SNUTTRestApi {
     public void putUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
 
     @POST("/user/password")
-    public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
 
     @POST("/user/facebook")
     public void postUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
 
     @DELETE("/user/facebook")
-    public void deleteUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void deleteUserFacebook(@Header("x-access-token") String token, Callback<Token> callback);
 
     @GET("/user/facebook")
     public void getUserFacebook(@Header("x-access-token") String token, Callback<Facebook> callback);

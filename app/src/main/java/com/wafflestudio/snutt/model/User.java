@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt.model;
 
+import com.google.common.base.Strings;
+
 /**
  * Created by makesource on 2017. 1. 23..
  */
@@ -27,6 +29,7 @@ public class User {
     }
 
     public String getEmail() {
+        if (Strings.isNullOrEmpty(email)) return "(없음)";
         return email;
     }
 

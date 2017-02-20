@@ -279,10 +279,7 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setSuggestionsAdapter(suggestionAdapter);
         SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         Drawable img = getActivity().getResources().getDrawable(R.drawable.hash);
-        text.setCompoundDrawablesWithIntrinsicBounds(img,
-                null,
-                null,
-                null);
+        text.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));
 
         clearButton.setVisibility(View.VISIBLE);

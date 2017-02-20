@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.login.LoginManager;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.manager.PrefManager;
@@ -100,6 +101,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         break;
                     case Logout: // logout
                         PrefManager.getInstance().resetPrefValue();
+                        LoginManager.getInstance().logOut();
                         getMainActivity().startWelcome();
                         getMainActivity().finish();
                         break;
