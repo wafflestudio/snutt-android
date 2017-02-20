@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 
 import com.google.common.base.Preconditions;
@@ -26,6 +25,7 @@ public class SettingsMainActivity extends SNUTTBaseActivity
     private final static String TAG_FRAGMENT_REPORT = "TAG_FRAGMENT_REPORT";
     private final static String TAG_FRAGMENT_LICENSE = "TAG_FRAGMENT_LICENSE";
     private final static String TAG_FRAGMENT_TERMS = "TAG_FRAGMENT_TERMS";
+    private final static String TAG_FRAGMENT_PRIVACY = "TAG_FRAGMENT_PRIVACY";
 
     private final static String[] FRAGMENT_TAGS = {
             TAG_FRAGMENT_ACCOUNT,
@@ -33,17 +33,19 @@ public class SettingsMainActivity extends SNUTTBaseActivity
             TAG_FRAGMENT_DEVELOPER,
             TAG_FRAGMENT_REPORT,
             TAG_FRAGMENT_LICENSE,
-            TAG_FRAGMENT_TERMS
+            TAG_FRAGMENT_TERMS,
+            TAG_FRAGMENT_PRIVACY
     };
 
-    public final static int FRAGMENT_ERROR = -1;
-    public final static int FRAGMENT_ACCOUNT = 0;
-    public final static int FRAGMENT_TIMETABLE = 1;
-    public final static int FRAGMENT_DEVELOPER = 2;
-    public final static int FRAGMENT_REPORT = 3;
-    public final static int FRAGMENT_LICENSE = 4;
-    public final static int FRAGMENT_TERMS = 5;
-    private final static int FRAGMENT_NUMS = 6;
+    protected final static int FRAGMENT_ERROR = -1;
+    protected final static int FRAGMENT_ACCOUNT = 0;
+    protected final static int FRAGMENT_TIMETABLE = 1;
+    protected final static int FRAGMENT_DEVELOPER = 2;
+    protected final static int FRAGMENT_REPORT = 3;
+    protected final static int FRAGMENT_LICENSE = 4;
+    protected final static int FRAGMENT_TERMS = 5;
+    protected final static int FRAGMENT_PRIVACY = 6;
+    private final static int FRAGMENT_NUMS = 7;
 
     private int getCurrentFragmentIndex() {
         Fragment fragment;
@@ -77,7 +79,10 @@ public class SettingsMainActivity extends SNUTTBaseActivity
                 getSupportActionBar().setTitle("라이센스 정보");
                 break;
             case FRAGMENT_TERMS:
-                getSupportActionBar().setTitle("약관 보기");
+                getSupportActionBar().setTitle("서비스 약관");
+                break;
+            case FRAGMENT_PRIVACY:
+                getSupportActionBar().setTitle("개인정보처리방침");
                 break;
             default:
                 Log.e(TAG, "Fragment error!!!!");
@@ -112,7 +117,12 @@ public class SettingsMainActivity extends SNUTTBaseActivity
 
     private void setTermsFragment() {
         showFragment(FRAGMENT_TERMS, false);
-        getSupportActionBar().setTitle("약관 보기");
+        getSupportActionBar().setTitle("서비스 약관");
+    }
+
+    private void setPrivacyFragment() {
+        showFragment(FRAGMENT_PRIVACY, false);
+        getSupportActionBar().setTitle("개인정보처리방침");
     }
 
     private Fragment newFragment(int fragmentIdx) {
@@ -129,6 +139,8 @@ public class SettingsMainActivity extends SNUTTBaseActivity
                 return new LicenseFragment();
             case FRAGMENT_TERMS:
                 return new TermsFragment();
+            case FRAGMENT_PRIVACY:
+                return new PrivacyFragment();
             default:
                 Log.e(TAG, "Fragment index is out of range!!!");
                 return null;
@@ -176,6 +188,9 @@ public class SettingsMainActivity extends SNUTTBaseActivity
                 break;
             case FRAGMENT_TERMS:
                 setTermsFragment();
+                break;
+            case FRAGMENT_PRIVACY:
+                setPrivacyFragment();
                 break;
             default:
                 break;

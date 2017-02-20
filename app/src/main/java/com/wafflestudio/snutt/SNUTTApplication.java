@@ -40,7 +40,7 @@ public class SNUTTApplication extends Application {
         TagManager.getInstance(this);
         UserManager.getInstance(this);
         TableManager.getInstance(this);
-        restUrl = "http://walnut.wafflestudio.com:3000/api";
+        restUrl = getString(R.string.api_server);
         super.onCreate();
     }
 

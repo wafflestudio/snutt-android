@@ -24,7 +24,8 @@ public class SettingsItem {
         Leave(14),
         AddIdPassword(15),
         FacebookName(16),
-        DeleteFacebook(17);
+        DeleteFacebook(17),
+        Private(18);
         private final int value;
         Type(int value) {
             this.value = value;

@@ -28,6 +28,7 @@ import retrofit.client.Response;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_ACCOUNT;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_DEVELOPER;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_LICENSE;
+import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_PRIVACY;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_REPORT;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_TERMS;
 import static com.wafflestudio.snutt.ui.SettingsMainActivity.FRAGMENT_TIMETABLE;
@@ -75,7 +76,8 @@ public class SettingsFragment extends SNUTTBaseFragment {
         lists.add(new SettingsItem("개발자 괴롭히기", SettingsItem.Type.BugReport));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("라이센스 정보", SettingsItem.Type.License));
-        lists.add(new SettingsItem("약관 보기", SettingsItem.Type.Terms));
+        lists.add(new SettingsItem("서비스 약관", SettingsItem.Type.Terms));
+        lists.add(new SettingsItem("개인정보처리방침", SettingsItem.Type.Private));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("로그아웃", SettingsItem.Type.Logout));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
@@ -104,6 +106,9 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         break;
                     case Terms: // terms
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
+                        break;
+                    case Private: // private
+                        getMainActivity().startSettingsMain(FRAGMENT_PRIVACY);
                         break;
                     case Logout: // logout
                         UserManager.getInstance().performLogout();
