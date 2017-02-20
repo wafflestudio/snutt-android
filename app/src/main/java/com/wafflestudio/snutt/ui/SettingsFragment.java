@@ -12,6 +12,7 @@ import com.facebook.login.LoginManager;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.manager.PrefManager;
+import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
@@ -100,8 +101,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
                         break;
                     case Logout: // logout
-                        PrefManager.getInstance().resetPrefValue();
-                        LoginManager.getInstance().logOut();
+                        UserManager.getInstance().performLogout();
                         getMainActivity().startWelcome();
                         getMainActivity().finish();
                         break;

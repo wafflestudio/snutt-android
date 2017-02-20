@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
@@ -294,7 +295,11 @@ public class UserManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
 
+    public void performLogout() {
+        PrefManager.getInstance().resetPrefValue();
+        LoginManager.getInstance().logOut();
     }
 
     private void notifySingIn(boolean code) {
