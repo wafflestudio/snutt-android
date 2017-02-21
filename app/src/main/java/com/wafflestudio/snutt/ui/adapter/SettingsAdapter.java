@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.appyvet.rangebar.RangeBar;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.model.SettingsItem;
 
@@ -24,9 +25,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<SettingsItem> lists;
     private LayoutInflater inflater;
 
-    private final static int TYPE_HEADER = 0;
-    private final static int TYPE_TITLE = 1;
-
     public SettingsAdapter(Activity activity, List<SettingsItem> lists) {
         this.lists = lists;
         this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -34,7 +32,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_HEADER) {
+        if (viewType == SettingsItem.ViewType.Header.getValue()) {
             View view = inflater.inflate(R.layout.cell_header, null);
             return new HeaderViewHolder(view);
         } else {
@@ -47,7 +45,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final int itemType = getItemViewType(position);
 
-        if (itemType == TYPE_TITLE) {
+        if (itemType == SettingsItem.ViewType.ItemTitle.getValue()) {
             ((TitleViewHolder)holder).bindData(getItem(position));
         }
     }
@@ -97,7 +95,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public void onClick(View v) {
             if (clickListener != null) {
-                clickListener.onClick(v,getPosition());
+                clickListener.onClick(v, getPosition());
             }
         }
     }

@@ -31,6 +31,7 @@ public class SNUTTUtils {
         if (wday.equals("목")) return 3;
         if (wday.equals("금")) return 4;
         if (wday.equals("토")) return 5;
+        if (wday.equals("일")) return 6;
         return -1;
     }
 
@@ -42,6 +43,7 @@ public class SNUTTUtils {
             case 3: return "목";
             case 4: return "금";
             case 5: return "토";
+            case 6: return "일";
         }
         return null;
     }

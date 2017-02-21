@@ -3,4 +3,27 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        layout="@layout/cell_header"/>
+
+    <include
+        layout="@layout/cell_switch"/>
+
+
+    <include
+        layout="@layout/cell_header"/>
+
+    <include
+        layout="@layout/cell_day_range_bar"/>
+
+    <include
+        layout="@layout/cell_header"/>
+
+    <include
+        layout="@layout/cell_class_range_bar"/>
+
+    <include
+        layout="@layout/cell_header"/>
+
+
 </LinearLayout>

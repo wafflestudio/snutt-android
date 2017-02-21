@@ -11,12 +11,18 @@
         android:layout_weight="1"/>
 
     <Switch
-        android:text="Switch"
+        android:text="자동 맞춤"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="19"
+        android:layout_weight="18"
         android:layout_gravity="center"
         android:id="@+id/switch1"
         android:textSize="16sp" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
 
 </LinearLayout>

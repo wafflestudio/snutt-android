@@ -147,7 +147,7 @@ public class PrefManager {
     }
 
     public int getTrimHeightNum() {
-        return sp.getInt(PREF_KEY_TRIM_HEIGHT_NUM, 13);
+        return sp.getInt(PREF_KEY_TRIM_HEIGHT_NUM, 14);
     }
 
     public void setAutoTrim(boolean autoTrim) {
