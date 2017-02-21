@@ -112,6 +112,7 @@ public class LectureManager {
         notifyLectureChanged();
     }
 
+    // this is for searched lecture
     public void addLecture(final Lecture lec, final Callback callback) {
         if (alreadyOwned(lec)) {
             Log.w(TAG, "lecture is duplicated!! ");
@@ -122,14 +123,15 @@ public class LectureManager {
             Toast.makeText(app, "강의시간이 겹칩니다", Toast.LENGTH_SHORT).show();
             return ;
         }
-        final Lecture target = new Lecture(lec);
+        /*final Lecture target = new Lecture(lec);
         int random = getRandomColor();
         target.setColorIndex(getRandomColor());
         target.setBgColor(SNUTTUtils.getBgColorByIndex(random));
-        target.setFgColor(SNUTTUtils.getFgColorByIndex(random));
+        target.setFgColor(SNUTTUtils.getFgColorByIndex(random));*/
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         String id = PrefManager.getInstance().getLastViewTableId();
-        app.getRestService().postLecture(token, id, target, new Callback<Table>() {
+        String lecture_id = lec.getId();
+        app.getRestService().postLecture(token, id, lecture_id, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "post lecture request success!!");
@@ -143,7 +145,26 @@ public class LectureManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
 
+    // this is for custom lecture
+    public void createLecture(final Lecture lecture, final Callback<Table> callback) {
+        Log.d(TAG, "create lecture method called!!");
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        app.getRestService().postLecture(token, id, lecture, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                setLectures(table.getLecture_list());
+                notifyLectureChanged();
+                if (callback != null) callback.success(table, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
+                Log.e(TAG, "post lecture request failed..");
+            }
+        });
     }
 
     public void removeLecture(Lecture lec, final Callback callback) {
@@ -244,25 +265,6 @@ public class LectureManager {
             public void failure(RetrofitError error) {
                 if (callback != null) callback.failure(error);
                 Log.e(TAG, "put lecture request failed..");
-            }
-        });
-    }
-
-    public void createLecture(final Lecture lecture, final Callback<Table> callback) {
-        Log.d(TAG, "create lecture method called!!");
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String id = PrefManager.getInstance().getLastViewTableId();
-        app.getRestService().postLecture(token, id, lecture, new Callback<Table>() {
-            @Override
-            public void success(Table table, Response response) {
-                setLectures(table.getLecture_list());
-                notifyLectureChanged();
-                if (callback != null) callback.success(table, response);
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                if (callback != null) callback.failure(error);
-                Log.e(TAG, "post lecture request failed..");
             }
         });
     }
