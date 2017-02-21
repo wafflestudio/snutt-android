@@ -48,6 +48,11 @@ public interface SNUTTRestApi {
     @GET("/app_version")
     public void getAppVersion(Callback<Version> callback);
 
+    // API Feedback
+
+    @POST("/feedback")
+    public void postFeedback(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
     // API Timetable
 
     @GET("/tables")

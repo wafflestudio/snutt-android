@@ -3,4 +3,20 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="이메일 (옵션)"
+        android:ems="10"
+        android:id="@+id/email_editText" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:hint="불편한 점이나 버그를 적어주세요."
+        android:ems="10"
+        android:id="@+id/detail_editText" />
 </LinearLayout>

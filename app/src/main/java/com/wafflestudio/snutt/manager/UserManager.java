@@ -299,7 +299,6 @@ public class UserManager {
     }
 
     public void getAppVersion(final Callback callback) {
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getAppVersion(new Callback<Version>() {
             @Override
             public void success(Version version, Response response) {
@@ -309,6 +308,26 @@ public class UserManager {
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "get app version failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void postFeedback(String email, String detail, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("email", email);
+        query.put("message", detail);
+        app.getRestService().postFeedback(token, query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "post feedback success!");
+                if (callback != null) callback.success(response, response2);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "post feedback failed");
                 if (callback != null) callback.failure(error);
             }
         });
