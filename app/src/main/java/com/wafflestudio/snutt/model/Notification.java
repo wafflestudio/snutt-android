@@ -7,5 +7,6 @@ package com.wafflestudio.snutt.model;
 public class Notification {
     private String _id;
     private String message;
+    private int type;
 
 }

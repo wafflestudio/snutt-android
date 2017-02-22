@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
@@ -26,9 +30,15 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.google.android.gms.common.ConnectionResult.SERVICE_DISABLED;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_MISSING;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
+import static com.google.android.gms.common.ConnectionResult.SUCCESS;
+
 public class MainActivity extends SNUTTBaseActivity {
 
     private static final String TAG = "MainActivity" ;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 2017;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -159,5 +169,31 @@ public class MainActivity extends SNUTTBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         activityList.remove(this);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        checkGoogleServiceVersion();
+    }
+
+    private boolean checkGoogleServiceVersion() {
+        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
+        if (resultCode == SUCCESS) {
+            Log.d(TAG, "google play service is available.");
+            return true;
+        }
+        if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)) {
+            Log.d(TAG, "google play service is user resolvable error.");
+            GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST, new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    checkGoogleServiceVersion();
+                }
+            }).show();
+        } else {
+            Log.e(TAG, "google play service is not supported in this device.");
+        }
+        return false;
     }
 }
