@@ -2,10 +2,12 @@ package com.wafflestudio.snutt.manager;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
@@ -14,6 +16,7 @@ import com.wafflestudio.snutt.model.Token;
 import com.wafflestudio.snutt.model.User;
 import com.wafflestudio.snutt.model.Version;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +86,7 @@ public class UserManager {
     ///////
 
 
+    // login with local id
     public void postSignIn(String id, String password) {
         Map query = new HashMap();
         query.put("id", id);
@@ -107,13 +111,13 @@ public class UserManager {
         });
     }
 
-    //
 
+    // login with facebook id
     public void postLoginFacebook(String facebookId, String facebookToken, final Callback callback) {
         Map query = new HashMap();
         query.put("fb_id", facebookId);
         query.put("fb_token", facebookToken);
-            app.getRestService().postLoginFacebook(query, new Callback<Token>() {
+        app.getRestService().postLoginFacebook(query, new Callback<Token>() {
                 @Override
                 public void success(Token token, Response response) {
                     Log.d(TAG, "post user facebook success!");
@@ -333,9 +337,67 @@ public class UserManager {
         });
     }
 
+    public void registerFirebaseToken(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Map query = new HashMap();
+        query.put("registration_id", firebaseToken);
+        app.getRestService().registerFirebaseToken(token, query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "register firebase token success!");
+                if (callback != null) callback.success(response, response2);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "register firebase token failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void deleteFirebaseToken(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Map query = new HashMap();
+        query.put("registration_id", firebaseToken);
+        app.getRestService().deleteFirebaseToken(token, query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "delete firebase token success!");
+                if (callback != null) callback.success(response, response2);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "delete firebase token failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     public void performLogout() {
+        //UserManager.getInstance().deleteFirebaseToken(null);
         PrefManager.getInstance().resetPrefValue();
-        LoginManager.getInstance().logOut();
+        LoginManager.getInstance().logOut(); // for facebook sdk
+        deleteFirebaseInstanceId();
+    }
+
+    public void deleteFirebaseInstanceId() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                Log.d(TAG, msg);
+                try {
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                    msg = "Device unRegistered";
+                    Log.d(TAG, msg);
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+        }.execute(null, null, null);
     }
 
     private void notifySingIn(boolean code) {

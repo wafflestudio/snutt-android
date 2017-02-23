@@ -99,6 +99,8 @@ public class MainActivity extends SNUTTBaseActivity {
                 }
                 @Override
                 public void failure(RetrofitError error) {
+                    // invalid token -> 로그인 화면으로
+                    // invalid id -> 없어진 테이블
                 }
             });
         } else {

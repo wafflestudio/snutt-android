@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import java.io.IOException;
+
 /**
  * Created by makesource on 2016. 11. 19..
  */
@@ -17,18 +19,25 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
-     */
+    */
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
+        /*
+            앱에서 토큰이 revoke 될 수 있는 상황
+            1. 앱에서 인스턴스 ID 삭제
+            2. 새 기기에서 앱 복원
+            3. 사용자가 앱 삭제/재설치
+            4. 사용자가 앱 데이터 소거
+        */
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "token: " + refreshedToken);
+        Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
+        // sendRegistrationToServer(refreshedToken);
     }
 
     /**

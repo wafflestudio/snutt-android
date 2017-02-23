@@ -106,10 +106,10 @@ public interface SNUTTRestApi {
     public void getUserFacebook(@Header("x-access-token") String token, Callback<Facebook> callback);
 
     @POST("/user/device")
-    public void registerToken(@Header("x-access-token") String token, @Body String fToken, Callback<Response> callback);
+    public void registerFirebaseToken(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
 
     @DELETE("/user/device")
-    public void deleteToken(@Header("x-access-token") String token, @Body String fToken, Callback<Response> callback);
+    public void deleteFirebaseToken(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
 
     @DELETE("/user/account")
     public void deleteUserAccount(@Header("x-access-token") String token, Callback<Response> callback);

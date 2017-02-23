@@ -7,8 +7,10 @@ import android.support.v4.view.ViewPager;
 
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
+import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.ui.adapter.IntroAdapter;
 
 /**
@@ -31,7 +33,6 @@ public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
 
     @Override

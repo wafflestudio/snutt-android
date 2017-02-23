@@ -116,6 +116,7 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
     public void notifySignIn(boolean code) {
         if (code) {
             Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
+            UserManager.getInstance().registerFirebaseToken(null);
             getBaseActivity().startMain();
             getActivity().finish();
         } else {
