@@ -250,9 +250,9 @@ public class CustomLectureAdapter extends BaseAdapter {
         final NumberPicker toPicker = (NumberPicker) layout.findViewById(R.id.timeTo);
 
         day = item.getClassTime().getDay();
-        String[] days = {"월", "화", "수", "목", "금", "토"};
+        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
         dayPicker.setMinValue(0);
-        dayPicker.setMaxValue(5);
+        dayPicker.setMaxValue(6);
         dayPicker.setDisplayedValues(days);
         dayPicker.setValue(day);
         dayPicker.setWrapSelectorWheel(false);

@@ -233,6 +233,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 ClassTime t = new ClassTime(day, fromTime / 2f, (toTime-fromTime) / 2f, item.getClassTime().getPlace());
                 item.setClassTime(t);
                 notifyDataSetChanged();
+                dialog.dismiss();
             }
         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
@@ -249,9 +250,9 @@ public class LectureDetailAdapter extends BaseAdapter {
         final NumberPicker toPicker = (NumberPicker) layout.findViewById(R.id.timeTo);
 
         day = item.getClassTime().getDay();
-        String[] days = {"월", "화", "수", "목", "금", "토"};
+        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
         dayPicker.setMinValue(0);
-        dayPicker.setMaxValue(5);
+        dayPicker.setMaxValue(6);
         dayPicker.setDisplayedValues(days);
         dayPicker.setValue(day);
         dayPicker.setWrapSelectorWheel(false);
@@ -274,11 +275,13 @@ public class LectureDetailAdapter extends BaseAdapter {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 fromTime = newVal;
+                /* set DisplayedValues as null to avoid out of bound index error */
+                toPicker.setDisplayedValues(null);
+                toPicker.setValue(fromTime + 1);
                 toPicker.setMinValue(fromTime + 1);
                 toPicker.setMaxValue(28);
                 toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
                 /* setValue method does not call listener, so we have to change the value manually */
-                toPicker.setValue(fromTime + 1);
                 toTime = fromTime + 1;
             }
         });
