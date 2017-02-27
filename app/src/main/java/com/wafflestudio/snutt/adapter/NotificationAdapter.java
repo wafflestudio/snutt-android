@@ -1,18 +1,14 @@
 package com.wafflestudio.snutt.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.model.Notification;
-import com.wafflestudio.snutt.model.SettingsItem;
 
 import java.util.List;
 
@@ -22,8 +18,20 @@ import java.util.List;
 
 public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public enum VIEW_TYPE {
+        Notification(0),
+        ProgressBar(1);
+        private final int value;
+        VIEW_TYPE(int value) {
+            this.value = value;
+        }
+        public final int getValue() {
+            return value;
+        }
+    }
     private static final String TAG = "NOTIFICATION_ADAPTER";
     private List<Notification> lists;
+
 
     public NotificationAdapter(List<Notification> lists) {
         this.lists = lists;
@@ -31,17 +39,23 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cell_notification, parent, false);
-        //View view = inflater.inflate(R.layout.cell_notification, null);
-        return new NotificationViewHolder(view);
+        if (viewType == VIEW_TYPE.Notification.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_notification, parent, false);
+            return new NotificationViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_progressbar, parent, false);
+            return new ProgressBarViewHolder(view);
+        }
     }
-
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        //final int itemType = getItemViewType(position);
-        ((NotificationViewHolder)holder).bindData(getItem(position));
+        int itemType = getItemViewType(position);
+        if (itemType == VIEW_TYPE.Notification.getValue()) {
+            ((NotificationViewHolder) holder).bindData(getItem(position));
+        }
     }
 
     public Notification getItem(int position) {
@@ -50,13 +64,13 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-        //SettingsItem item = getItem(position);
-        return 0;
+        Notification item = lists.get(position);
+        return (item == null) ? VIEW_TYPE.ProgressBar.getValue() : VIEW_TYPE.Notification.getValue();
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "notification list size : " + lists.size());
+        //Log.d(TAG, "notification list size : " + lists.size());
         return lists.size();
     }
 
@@ -70,8 +84,17 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
         }
 
         private void bindData(Notification notification) {
-            Log.d(TAG, "notification message : " + notification.getMessage());
+           // Log.d(TAG, "notification message : " + notification.getMessage());
             message.setText(notification.getMessage());
+        }
+    }
+
+    private static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar progressBar;
+
+        private ProgressBarViewHolder(View view) {
+            super(view);
+            progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         }
     }
 }

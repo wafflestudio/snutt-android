@@ -5,6 +5,7 @@ import android.telecom.Call;
 
 import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.Lecture;
+import com.wafflestudio.snutt.model.Notification;
 import com.wafflestudio.snutt.model.Table;
 import com.wafflestudio.snutt.model.TagList;
 import com.wafflestudio.snutt.model.Token;
@@ -118,7 +119,7 @@ public interface SNUTTRestApi {
     // API for Notification
 
     @GET("/notification")
-    public void getNotification(@Header("x-access-token") String token, @QueryMap Map query, Callback<Response> callback);
+    public void getNotification(@Header("x-access-token") String token, @QueryMap Map query, Callback<List<Notification>> callback);
 
     @GET("/notification/count")
     public void getNotificationCount(@Header("x-access-token") String token, Callback<Response> callback);

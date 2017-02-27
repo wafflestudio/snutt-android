@@ -17,6 +17,11 @@
         android:text="notification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="19"/>
+        android:layout_weight="18"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
 </LinearLayout>

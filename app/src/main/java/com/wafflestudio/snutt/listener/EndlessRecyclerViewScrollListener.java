@@ -73,11 +73,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
             if (isUseFooterView()) {
                 if (!isFooterView(adapter)) {
-
-                    if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change listsize ,reset pageindex
+                    if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change list size ,reset page index
                         this.currentPage = this.startingPageIndex;
 //                            Log.i(mTag, "****totalItemCount:" + totalItemCount + ",previousTotalItemCount:" + previousTotalItemCount + ",currentpage=startingPageIndex");
-                    } else if (totalItemCount == previousTotalItemCount) {//if load failure or load empty data , we rollback  pageindex
+                    } else if (totalItemCount == previousTotalItemCount) { //if load failure or load empty data , we rollback  page index
                         currentPage = currentPage == startingPageIndex ? startingPageIndex : --currentPage;
 //                            Log.i(mTag, "!!!!currentpage:" + currentPage);
                     }
@@ -104,7 +103,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             }
         }
     }
-
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
