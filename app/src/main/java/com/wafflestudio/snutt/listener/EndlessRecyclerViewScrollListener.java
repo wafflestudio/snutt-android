@@ -70,7 +70,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         boolean isAllowLoadMore = (lastVisibleItemPosition + visibleThreshold) > totalItemCount;
 
         if (isAllowLoadMore) {
-
             if (isUseFooterView()) {
                 if (!isFooterView(adapter)) {
                     if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change list size ,reset page index
@@ -131,7 +130,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             //  check the lastview is footview
             isFooterView = lastViewType == footerViewType;
         }
-//        Log.i(mTag, "isFooterView:" + isFooterView);
+        Log.i(mTag, "isFooterView:" + isFooterView);
+
 
         return isFooterView;
     }

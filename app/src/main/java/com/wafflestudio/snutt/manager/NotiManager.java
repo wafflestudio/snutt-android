@@ -27,11 +27,13 @@ public class NotiManager {
     private static NotiManager singleton;
     private SNUTTApplication app;
     private List<Notification> notifications;
+    private boolean fetched;
 
     private NotiManager(SNUTTApplication app) {
         Preconditions.checkNotNull(app);
         this.app = app;
         this.notifications = new ArrayList<>();
+        this.fetched = false;
     }
 
     public static NotiManager getInstance(SNUTTApplication app) {
@@ -50,6 +52,7 @@ public class NotiManager {
     public void loadData(int offset, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         Map query = new HashMap();
+
         query.put("limit", 20);
         query.put("offset", offset);
         app.getRestService().getNotification(token, query, new Callback<List<Notification>>() {
@@ -77,6 +80,14 @@ public class NotiManager {
 
     public void removeProgressBar() {
         notifications.remove(notifications.size() - 1);
+    }
+
+    public boolean getFetched() {
+        return fetched;
+    }
+
+    public void setFetched(boolean fetched) {
+        this.fetched = fetched;
     }
 
     public void refreshNotification(final Callback callback) {

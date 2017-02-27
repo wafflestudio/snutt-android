@@ -70,11 +70,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                NotiManager.getInstance().addProgressBar();
                 loadNextDataFromApi(page, totalItemsCount);
-                adapter.notifyDataSetChanged();
                 Log.d(TAG, "on Load More called. page : " + page + ", totalItemsCount : " + totalItemsCount);
             }
         };
@@ -82,7 +78,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         recyclerView.addOnScrollListener(scrollListener);
 
         final SwipeRefreshLayout layout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
-        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        final SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "swipe refreshed called.");
@@ -91,13 +87,25 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                     public void success(Object o, Response response) {
                         layout.setRefreshing(false);
                         adapter.notifyDataSetChanged();
+                        NotiManager.getInstance().setFetched(true);
                     }
                     @Override
                     public void failure(RetrofitError error) {
                     }
                 });
             }
-        });
+        };
+        layout.setOnRefreshListener(refreshListener);
+        
+        if (!NotiManager.getInstance().getFetched()) {
+            layout.post(new Runnable() {
+                @Override
+                public void run() {
+                    layout.setRefreshing(true);
+                    refreshListener.onRefresh();
+                }
+            });
+        }
         return rootView;
     }
 
@@ -109,6 +117,8 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        NotiManager.getInstance().addProgressBar();
+        adapter.notifyDataSetChanged();
         NotiManager.getInstance().loadData(totalItemsCount, new Callback<List<Notification>>(){
             @Override
             public void success(List<Notification> notifications, Response response) {
@@ -116,7 +126,6 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
             @Override
             public void failure(RetrofitError error) {
-
             }
         });
     }
