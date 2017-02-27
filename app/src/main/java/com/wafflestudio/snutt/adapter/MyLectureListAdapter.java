@@ -18,6 +18,7 @@ import java.util.List;
 public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static ClickListener clickListener;
+    private static LongClickListener longClickListener;
     private List<Lecture> myLecture;
 
     public MyLectureListAdapter(List<Lecture> myLecture) {
@@ -55,7 +56,7 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private View view;
         private TextView courseTitle;
@@ -66,6 +67,7 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
             this.courseTitle = (TextView) view.findViewById(R.id.course_title);
 
             this.view.setOnClickListener(this);
+            this.view.setOnLongClickListener(this);
         }
 
         @Override
@@ -74,13 +76,29 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 clickListener.onClick(v,getPosition());
             }
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (longClickListener != null) {
+                longClickListener.onLongClick(v, getPosition());
+            }
+            return true;
+        }
     }
 
     public interface ClickListener {
         public void onClick(View v, int position);
     }
 
+    public interface LongClickListener {
+        public void onLongClick(View v, int position);
+    }
+
     public void setOnItemClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setOnItemLongClickListener(LongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 }

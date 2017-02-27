@@ -78,7 +78,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         recyclerView.addOnScrollListener(scrollListener);
 
         final SwipeRefreshLayout layout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
-        final SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "swipe refreshed called.");
@@ -96,15 +96,9 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
         };
         layout.setOnRefreshListener(refreshListener);
-        
+
         if (!NotiManager.getInstance().getFetched()) {
-            layout.post(new Runnable() {
-                @Override
-                public void run() {
-                    layout.setRefreshing(true);
-                    refreshListener.onRefresh();
-                }
-            });
+            autoFetch(layout, refreshListener);
         }
         return rootView;
     }
@@ -126,6 +120,16 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
             @Override
             public void failure(RetrofitError error) {
+            }
+        });
+    }
+
+    private void autoFetch(final SwipeRefreshLayout layout, final SwipeRefreshLayout.OnRefreshListener refreshListener) {
+        layout.post(new Runnable() {
+            @Override
+            public void run() {
+                layout.setRefreshing(true);
+                refreshListener.onRefresh();
             }
         });
     }

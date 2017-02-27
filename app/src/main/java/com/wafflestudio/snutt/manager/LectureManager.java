@@ -346,10 +346,12 @@ public class LectureManager {
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {
-        if (lec1.isCustom()) return false;
-        if (lec1.getCourse_number().equals(lec2.getCourse_number()) &&
+        if (lec1.isCustom()) { // custom lecture 면 id 로 비교
+            if (lec1.getId().equals(lec2.getId())) return true;
+            return false;
+        }
+        if (lec1.getCourse_number().equals(lec2.getCourse_number()) && // custom lecture 가 아니면 강좌번호, 분반번호로 비교
                 lec1.getLecture_number().equals(lec2.getLecture_number())) return true;
-
         return false;
     }
 
