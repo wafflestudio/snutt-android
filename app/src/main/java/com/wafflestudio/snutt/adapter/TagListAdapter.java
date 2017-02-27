@@ -50,25 +50,8 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
         holder.setClickListener(new ViewHolder.ClickListener() {
             @Override
             public void onClick(View v, final int position) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-
-                alertDialog.setMessage("해당 테그를 삭제하시겠습니까?");
-
-                alertDialog.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                TagManager.getInstance().removeTag(position);
-                                notifyItemRemoved(position);
-                            }
-                        });
-                alertDialog.setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                alertDialog.show();
+                TagManager.getInstance().removeTag(position);
+                notifyItemRemoved(position);
             }
         });
     }
