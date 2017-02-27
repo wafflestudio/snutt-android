@@ -25,6 +25,7 @@ import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.QueryMap;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -117,7 +118,7 @@ public interface SNUTTRestApi {
     // API for Notification
 
     @GET("/notification")
-    public void getNotification(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    public void getNotification(@Header("x-access-token") String token, @QueryMap Map query, Callback<Response> callback);
 
     @GET("/notification/count")
     public void getNotificationCount(@Header("x-access-token") String token, Callback<Response> callback);

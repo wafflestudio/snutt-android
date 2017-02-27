@@ -7,7 +7,7 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
 import com.wafflestudio.snutt.model.Color;
 import com.wafflestudio.snutt.model.LectureItem;
-import com.wafflestudio.snutt.ui.adapter.CustomLectureAdapter;
+import com.wafflestudio.snutt.adapter.CustomLectureAdapter;
 
 import java.util.ArrayList;
 

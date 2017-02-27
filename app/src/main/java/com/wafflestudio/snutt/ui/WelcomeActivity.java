@@ -2,16 +2,11 @@ package com.wafflestudio.snutt.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
-import com.facebook.CallbackManager;
-import com.facebook.login.widget.LoginButton;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
-import com.wafflestudio.snutt.manager.UserManager;
-import com.wafflestudio.snutt.ui.adapter.IntroAdapter;
+import com.wafflestudio.snutt.adapter.IntroAdapter;
 
 /**
  * Created by makesource on 2016. 3. 18..

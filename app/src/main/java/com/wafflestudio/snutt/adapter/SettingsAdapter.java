@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.appyvet.rangebar.RangeBar;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.model.SettingsItem;
 
@@ -23,15 +22,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static ClickListener clickListener;
     private List<SettingsItem> lists;
-    private LayoutInflater inflater;
 
-    public SettingsAdapter(Activity activity, List<SettingsItem> lists) {
+    public SettingsAdapter(List<SettingsItem> lists) {
         this.lists = lists;
-        this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == SettingsItem.ViewType.Header.getValue()) {
             View view = inflater.inflate(R.layout.cell_header, null);
             return new HeaderViewHolder(view);
@@ -79,7 +77,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView title;
         private TextView detail;
 
-        public TitleViewHolder(View view) {
+        private TitleViewHolder(View view) {
             super(view);
             this.view = view;
             this.title = (TextView) view.findViewById(R.id.settings_text);
@@ -87,7 +85,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.view.setOnClickListener(this);
         }
 
-        public void bindData(SettingsItem item) {
+        private void bindData(SettingsItem item) {
             title.setText(item.getTitle());
             detail.setText(item.getDetail());
         }

@@ -9,6 +9,12 @@ public class Notification {
     private String message;
     private int type;
 
+    public Notification(String _id, String message, int type) {
+        this._id = _id;
+        this.message = message;
+        this.type = type;
+    }
+
     public String getMessage() {
         return message;
     }

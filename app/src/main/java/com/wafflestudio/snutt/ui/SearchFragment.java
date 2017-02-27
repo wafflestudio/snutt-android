@@ -30,12 +30,11 @@ import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTApplication;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.manager.PrefManager;
-import com.wafflestudio.snutt.ui.adapter.LectureListAdapter;
-import com.wafflestudio.snutt.ui.adapter.TagListAdapter;
+import com.wafflestudio.snutt.adapter.LectureListAdapter;
+import com.wafflestudio.snutt.adapter.TagListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.TagManager;
 import com.wafflestudio.snutt.model.Lecture;
-import com.wafflestudio.snutt.model.Tag;
 import com.wafflestudio.snutt.view.TableView;
 
 import java.util.ArrayList;

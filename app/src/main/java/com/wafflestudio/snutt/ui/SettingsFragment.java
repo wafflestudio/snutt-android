@@ -8,14 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.login.LoginManager;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
-import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.model.Version;
-import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
+import com.wafflestudio.snutt.adapter.SettingsAdapter;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -82,7 +80,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
         lists.add(new SettingsItem("로그아웃", SettingsItem.Type.Logout));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
 
-        adapter = new SettingsAdapter(getActivity(), lists);
+        adapter = new SettingsAdapter(lists);
         clickListener = new SettingsAdapter.ClickListener() {
             @Override
             public void onClick(View v, int position) {

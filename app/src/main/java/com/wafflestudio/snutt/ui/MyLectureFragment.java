@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
-import com.wafflestudio.snutt.ui.adapter.MyLectureListAdapter;
+import com.wafflestudio.snutt.adapter.MyLectureListAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
 
@@ -56,7 +55,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_lecture_recyclerView);
         mAdapter = new MyLectureListAdapter(LectureManager.getInstance().getLectures());
-        mAdapter.setOnItemClickListener(new MyLectureListAdapter.ViewHolder.ClickListener() {
+        mAdapter.setOnItemClickListener(new MyLectureListAdapter.ClickListener() {
             @Override
             public void onClick(View v, int position) {
                 Log.d(TAG, String.valueOf(position) + "-th item clicked!");
@@ -66,7 +65,6 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
-
         return rootView;
     }
 

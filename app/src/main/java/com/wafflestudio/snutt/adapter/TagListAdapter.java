@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;

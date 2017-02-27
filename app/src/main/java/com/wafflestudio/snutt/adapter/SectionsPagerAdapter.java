@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

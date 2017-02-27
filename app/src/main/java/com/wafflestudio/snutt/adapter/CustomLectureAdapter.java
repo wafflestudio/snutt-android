@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -41,7 +41,6 @@ import retrofit.Callback;
 public class CustomLectureAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList<LectureItem> lists;
-    private LayoutInflater inflater;
     private boolean isAnimated = true;
 
     private int day;
@@ -59,7 +58,6 @@ public class CustomLectureAdapter extends BaseAdapter {
     public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
-        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -84,8 +82,9 @@ public class CustomLectureAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, final ViewGroup viewGroup) {
         final LectureItem item = getItem(position);
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         int type = getItemViewType(position);
         switch (type) {
             case TYPE_HEADER:
@@ -199,7 +198,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
                         if (item.isEditable()) {
-                            showDialog(item);
+                            showDialog(viewGroup, item);
                         }
                     }
                 });
@@ -224,7 +223,7 @@ public class CustomLectureAdapter extends BaseAdapter {
         return view;
     }
 
-    private void showDialog(final LectureItem item) {
+    private void showDialog(ViewGroup viewGroup, final LectureItem item) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
@@ -241,6 +240,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                 dialog.dismiss();
             }
         });
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View layout = inflater.inflate(R.layout.dialog_time_picker, null);
         alert.setView(layout);
         alert.show();

@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
-import com.wafflestudio.snutt.ui.adapter.ExpandableTableListAdapter;
+import com.wafflestudio.snutt.adapter.ExpandableTableListAdapter;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
 

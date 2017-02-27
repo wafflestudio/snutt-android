@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.content.Context;
 import android.text.Editable;

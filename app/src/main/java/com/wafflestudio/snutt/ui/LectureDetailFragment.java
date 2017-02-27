@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +16,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
-import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.model.ClassTime;
 import com.wafflestudio.snutt.model.Color;
 import com.wafflestudio.snutt.model.Lecture;
 import com.wafflestudio.snutt.model.LectureItem;
 import com.wafflestudio.snutt.model.Table;
-import com.wafflestudio.snutt.ui.adapter.LectureDetailAdapter;
+import com.wafflestudio.snutt.adapter.LectureDetailAdapter;
 
 import java.util.ArrayList;
 

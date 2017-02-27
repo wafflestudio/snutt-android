@@ -1,9 +1,10 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt.R;
@@ -14,9 +15,9 @@ import java.util.List;
 /**
  * Created by makesource on 2016. 2. 23..
  */
-public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdapter.ViewHolder> {
+public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static ViewHolder.ClickListener clickListener;
+    private static ClickListener clickListener;
     private List<Lecture> myLecture;
 
     public MyLectureListAdapter(List<Lecture> myLecture) {
@@ -36,13 +37,13 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Lecture lecture = myLecture.get(position);
 
         String text = "" ;
         text += lecture.getCourse_title();
         text += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
-        holder.courseTitle.setText(text);
+        ((ViewHolder)holder).courseTitle.setText(text);
     }
 
     @Override
@@ -54,29 +55,17 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public View view;
-        public TextView courseTitle;
+        private View view;
+        private TextView courseTitle;
 
-
-        public ViewHolder(View view) {
+        private ViewHolder(View view) {
             super(view);
             this.view = view;
             this.courseTitle = (TextView) view.findViewById(R.id.course_title);
 
             this.view.setOnClickListener(this);
-        }
-
-        public interface ClickListener {
-            /**
-             * Called when the view is clicked.
-             *
-             * @param v view that is clicked
-             * @param position of the clicked item
-             */
-
-            public void onClick(View v, int position);
         }
 
         @Override
@@ -87,7 +76,11 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<MyLectureListAdap
         }
     }
 
-    public void setOnItemClickListener(ViewHolder.ClickListener clickListener) {
+    public interface ClickListener {
+        public void onClick(View v, int position);
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 }

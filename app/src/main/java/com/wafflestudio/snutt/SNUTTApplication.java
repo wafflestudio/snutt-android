@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 
 import com.facebook.FacebookSdk;
 import com.wafflestudio.snutt.manager.LectureManager;
+import com.wafflestudio.snutt.manager.NotiManager;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.manager.TagManager;
@@ -40,6 +41,7 @@ public class SNUTTApplication extends Application {
         TagManager.getInstance(this);
         UserManager.getInstance(this);
         TableManager.getInstance(this);
+        NotiManager.getInstance(this);
         restUrl = getString(R.string.api_server);
         super.onCreate();
     }

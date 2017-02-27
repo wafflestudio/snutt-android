@@ -13,26 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseActivity;
-import com.wafflestudio.snutt.manager.TagManager;
-import com.wafflestudio.snutt.ui.adapter.SectionsPagerAdapter;
+import com.wafflestudio.snutt.adapter.SectionsPagerAdapter;
 import com.wafflestudio.snutt.manager.LectureManager;
 import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
 
-import dalvik.annotation.TestTarget;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static com.google.android.gms.common.ConnectionResult.SERVICE_DISABLED;
-import static com.google.android.gms.common.ConnectionResult.SERVICE_MISSING;
-import static com.google.android.gms.common.ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
 public class MainActivity extends SNUTTBaseActivity {

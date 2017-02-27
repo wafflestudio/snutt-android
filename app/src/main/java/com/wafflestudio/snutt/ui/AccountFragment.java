@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.common.base.Strings;
@@ -30,19 +28,15 @@ import com.wafflestudio.snutt.manager.UserManager;
 import com.wafflestudio.snutt.model.Facebook;
 import com.wafflestudio.snutt.model.SettingsItem;
 import com.wafflestudio.snutt.model.User;
-import com.wafflestudio.snutt.ui.adapter.SettingsAdapter;
+import com.wafflestudio.snutt.adapter.SettingsAdapter;
 import com.wafflestudio.snutt.view.DividerItemDecoration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.http.GET;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by makesource on 2017. 1. 24..
@@ -61,8 +55,7 @@ public class AccountFragment extends SNUTTBaseFragment {
         registerFacebookCallback();
 
         lists = new ArrayList<>();
-        inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new SettingsAdapter(getActivity(), lists);
+        adapter = new SettingsAdapter(lists);
         adapter.setOnItemClickListener(new SettingsAdapter.ClickListener() {
             @Override
             public void onClick(View v, int position) {
@@ -122,6 +115,7 @@ public class AccountFragment extends SNUTTBaseFragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        this.inflater = inflater;
         return rootView;
     }
 

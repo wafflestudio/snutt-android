@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt.ui.adapter;
+package com.wafflestudio.snutt.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +17,13 @@ import java.util.ArrayList;
  */
 public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
 
-
     private ArrayList<String> groupList = null;
     private ArrayList<ArrayList<Table>> childList = null;
-    private LayoutInflater inflater = null;
     private ViewHolder viewHolder = null;
 
     public ExpandableTableListAdapter(TableListActivity c, ArrayList<String> groupList,
                                  ArrayList<ArrayList<Table>> childList){
         super();
-        this.inflater = LayoutInflater.from(c);
         this.groupList = groupList;
         this.childList = childList;
     }
@@ -53,7 +50,7 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = convertView;
 
         if(v == null){
@@ -99,6 +96,7 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = convertView;
 
         if(v == null){
