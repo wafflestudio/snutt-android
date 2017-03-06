@@ -3,7 +3,7 @@
 android:orientation="vertical" android:layout_width="match_parent"
 android:layout_height="match_parent">
 
-<com.wafflestudio.snutt.view.TableView
+<com.wafflestudio.snutt_staging.view.TableView
     android:id="@+id/timetable"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

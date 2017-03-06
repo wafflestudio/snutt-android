@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wafflestudio.snutt">
+    package="com.wafflestudio.snutt_staging">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="SNUTTApplication"
+        android:name="com.wafflestudio.snutt_staging.SNUTTApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
@@ -30,53 +30,53 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name=".ui.TableListActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.TableListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.LectureMainActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.LectureMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value="com.wafflestudio.snutt_staging.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.SettingsMainActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.SettingsMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value="com.wafflestudio.snutt_staging.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.TableCreateActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.TableCreateActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.WelcomeActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.WelcomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ui.LectureCreateActivity"
+            android:name="com.wafflestudio.snutt_staging.ui.LectureCreateActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value="com.wafflestudio.snutt_staging.ui.MainActivity" />
         </activity>
         <service
-            android:name=".service.MyFirebaseMessagingService">
+            android:name="com.wafflestudio.snutt_staging.service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <service
-            android:name=".service.MyFirebaseInstanceIDService">
+            android:name="com.wafflestudio.snutt_staging.service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
