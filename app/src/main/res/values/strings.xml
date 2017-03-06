@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SNUTT</string>
+    <string name="app_name">SNUTT-Staging</string>
     <string name="facebook_app_id">1635364463444351</string>
 
     <string name="api_server">http://walnut.wafflestudio.com:3000</string>
