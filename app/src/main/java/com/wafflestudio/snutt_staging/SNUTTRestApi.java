@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging;
 
+import com.wafflestudio.snutt_staging.model.Coursebook;
 import com.wafflestudio.snutt_staging.model.Facebook;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Notification;
@@ -49,6 +50,10 @@ public interface SNUTTRestApi {
 
     @POST("/feedback")
     public void postFeedback(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+
+    // API Coursebook
+    @GET("/course_books")
+    public void getCoursebook(@Header("x-access-token") String token, Callback<List<Coursebook>> callback);
 
     // API Timetable
 

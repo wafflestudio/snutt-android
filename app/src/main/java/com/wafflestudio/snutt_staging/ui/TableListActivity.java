@@ -37,6 +37,8 @@ public class TableListActivity extends SNUTTBaseActivity {
         super.onCreate(savedInstanceState);
         activityList.add(this);
         setContentView(R.layout.activity_table_list);
+        setTitle("시간표 목록");
+        
         mListView = (ExpandableListView) findViewById(R.id.listView);
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -57,8 +59,8 @@ public class TableListActivity extends SNUTTBaseActivity {
             public void success(List<Table> tables, Response response) {
                 mAdapter = getAdapter(tables);
                 mListView.setAdapter(mAdapter);
-                if (mGroupList.size() > 0) {
-                    mListView.expandGroup(0);
+                for (int i = 0;i < mGroupList.size();i ++) {
+                    mListView.expandGroup(i);
                 }
             }
             @Override
@@ -127,8 +129,8 @@ public class TableListActivity extends SNUTTBaseActivity {
             public void success(List<Table> tables, Response response) {
                 mAdapter = getAdapter(tables);
                 mListView.setAdapter(mAdapter);
-                if (mGroupList.size() > 0) {
-                    mListView.expandGroup(0);
+                for (int i = 0;i < mGroupList.size();i ++) {
+                    mListView.expandGroup(i);
                 }
             }
             @Override

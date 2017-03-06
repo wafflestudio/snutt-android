@@ -3,6 +3,7 @@ package com.wafflestudio.snutt_staging.manager;
 import android.util.Log;
 
 import com.wafflestudio.snutt_staging.SNUTTApplication;
+import com.wafflestudio.snutt_staging.model.Coursebook;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.ArrayList;
@@ -133,7 +134,23 @@ public class TableManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
 
+    public void getCoursebook(final Callback<List<Coursebook>> callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getCoursebook(token, new Callback<List<Coursebook>>() {
+            @Override
+            public void success(List<Coursebook> coursebooks, Response response) {
+                Log.d(TAG, "get coursebook request success.");
+                if (callback != null) callback.success(coursebooks, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "get coursebook request failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     public void addTable(Table table) {

@@ -5,6 +5,7 @@
     <string name="api_server">http://walnut.wafflestudio.com:3000</string>
     <string name="terms">/terms_of_service</string>
     <string name="privacy">/privacy_policy</string>
+    <string name="member">/member</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_add">Add</string>

@@ -6,42 +6,43 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <NumberPicker
-            android:id="@+id/yearPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="0dp"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="10">
 
         <NumberPicker
             android:id="@+id/semesterPicker"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="8"
             android:descendantFocusability="blocksDescendants"/>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:gravity="center"
+        android:weightSum="10">
 
         <EditText
             android:id="@+id/tableName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_weight="8"
             android:hint="시간표 제목을 입력해 주세요."/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <Button
             android:id="@+id/submit"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
             android:text="생성"/>
 
     </LinearLayout>

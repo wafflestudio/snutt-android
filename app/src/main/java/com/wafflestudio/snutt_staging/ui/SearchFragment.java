@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -137,6 +138,7 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
         searchView.setOnSuggestionListener(suggestionListener);
         searchView.setOnQueryTextListener(queryTextListener);
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
         searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
 
@@ -277,7 +279,7 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setQueryHint("ex) 3학점, 컴공 등...");
         searchView.setSuggestionsAdapter(suggestionAdapter);
         SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        Drawable img = getActivity().getResources().getDrawable(R.drawable.hash);
+        Drawable img = getActivity().getResources().getDrawable(R.drawable.tag_dark);
         text.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));
 

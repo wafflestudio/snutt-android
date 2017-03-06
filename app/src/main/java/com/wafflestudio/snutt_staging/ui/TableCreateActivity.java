@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.manager.TableManager;
+import com.wafflestudio.snutt_staging.model.Coursebook;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.List;
@@ -23,10 +24,9 @@ import retrofit.client.Response;
  */
 public class TableCreateActivity extends SNUTTBaseActivity {
 
-    private int year = 2014;
-    private int semester = 1;
+    private int year = -1;
+    private int semester = -1;
     private EditText titleText;
-    private NumberPicker yearPicker;
     private NumberPicker semesterPicker;
     private Button submitButton;
 
@@ -35,30 +35,33 @@ public class TableCreateActivity extends SNUTTBaseActivity {
         super.onCreate(savedInstanceState);
         activityList.add(this);
         setContentView(R.layout.activity_table_create);
+        setTitle("새로운 시간표");
 
-        yearPicker = (NumberPicker) findViewById(R.id.yearPicker);
         semesterPicker = (NumberPicker) findViewById(R.id.semesterPicker);
         titleText = (EditText) findViewById(R.id.tableName);
 
-        String[] years = { "2014 년", "2015 년", "2016 년" };
-        yearPicker.setMinValue(2014);
-        yearPicker.setMaxValue(2016);
-        yearPicker.setDisplayedValues(years);
-        yearPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        TableManager.getInstance().getCoursebook(new Callback<List<Coursebook>>() {
             @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                year = newVal;
+            public void success(List<Coursebook> coursebooks, Response response) {
+                String[] displays = getDisplayList(coursebooks);
+                final int[] years = getYearList(coursebooks);
+                final int[] semesters = getSemesterList(coursebooks);
+                int size = coursebooks.size();
+                year = years[0];
+                semester = semesters[0];
+                semesterPicker.setMinValue(0);
+                semesterPicker.setMaxValue(size - 1);
+                semesterPicker.setDisplayedValues(displays);
+                semesterPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        year = years[newVal];
+                        semester = semesters[newVal];
+                    }
+                });
             }
-        });
-
-        final String[] semesters = { "1학기", "여름학기", "2학기", "겨울학기" };
-        semesterPicker.setMinValue(1);
-        semesterPicker.setMaxValue(4);
-        semesterPicker.setDisplayedValues(semesters);
-        semesterPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                semester = newVal;
+            public void failure(RetrofitError error) {
             }
         });
 
@@ -88,4 +91,49 @@ public class TableCreateActivity extends SNUTTBaseActivity {
         super.onDestroy();
         activityList.remove(this);
     }
+
+    private String[] getDisplayList(List<Coursebook> coursebooks) {
+        int size = coursebooks.size();
+        String[] list = new String[size];
+        for (int i = 0;i < size;i ++) {
+            String year = coursebooks.get(i).getYear() + " 년";
+            String semester = getSemester(coursebooks.get(i).getSemester());
+            list[i] = year + " " + semester;
+        }
+        return list;
+    }
+
+    private String getSemester(int semester) {
+        switch (semester) {
+            case 1:
+                return "1학기";
+            case 2:
+                return "여름학기";
+            case 3:
+                return "2학기";
+            case 4:
+                return "겨울학기";
+            default:
+                return "(null)";
+        }
+    }
+
+    private int[] getYearList(List<Coursebook> coursebooks) {
+        int size = coursebooks.size();
+        int[] list = new int[size];
+        for (int i = 0;i < size;i ++) {
+            list[i] = coursebooks.get(i).getYear();
+        }
+        return list;
+    }
+
+    private int[] getSemesterList(List<Coursebook> coursebooks) {
+        int size = coursebooks.size();
+        int[] list = new int[size];
+        for (int i = 0;i < size;i ++) {
+            list[i] = coursebooks.get(i).getSemester();
+        }
+        return list;
+    }
+
 }
