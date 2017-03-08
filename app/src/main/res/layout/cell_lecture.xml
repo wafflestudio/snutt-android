@@ -3,16 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:weightSum="10">
+    android:padding="5dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:paddingLeft="10dp">
+        android:paddingLeft="5dp"
+        android:layout_weight="8">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -91,9 +89,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="45dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
         android:gravity="center">
 
         <Button
