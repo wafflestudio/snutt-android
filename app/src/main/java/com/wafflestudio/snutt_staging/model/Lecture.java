@@ -2,6 +2,11 @@ package com.wafflestudio.snutt_staging.model;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.wafflestudio.snutt_staging.SNUTTUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -220,5 +225,41 @@ public class Lecture {
 
     public void setFgColor(int fgColor) {
         color.setFg(fgColor);
+    }
+
+
+    //간소화된 강의 시간
+    public String getSimplifiedClassTime() {
+        String text = "";
+        for (int i = 0;i < getClass_time_json().size();i ++) {
+            JsonObject class1 = getClass_time_json().get(i).getAsJsonObject();
+
+            int day = class1.get("day").getAsInt();
+            float start = class1.get("start").getAsFloat();
+            float len = class1.get("len").getAsFloat();
+            String place = class1.get("place").getAsString();
+
+            text += SNUTTUtils.numberToWday(day) + start;
+            if (i != getClass_time_json().size() - 1) text += "/";
+        }
+        if (Strings.isNullOrEmpty(text)) text = "(없음)";
+        return text;
+    }
+
+    public String getSimplifiedLocation(){
+        String text = "";
+        for (int i = 0;i < getClass_time_json().size();i ++) {
+            JsonObject class1 = getClass_time_json().get(i).getAsJsonObject();
+
+            int day = class1.get("day").getAsInt();
+            float start = class1.get("start").getAsFloat();
+            float len = class1.get("len").getAsFloat();
+            String place = class1.get("place").getAsString();
+
+            text += place;
+            if (i != getClass_time_json().size() - 1) text += "/";
+        }
+        if (Strings.isNullOrEmpty(text)) text = "(없음)";
+        return text;
     }
 }

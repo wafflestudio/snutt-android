@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
@@ -20,11 +21,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by makesource on 2016. 2. 10..
+ * Created by makesource on 2017. 3. 7..
  */
-public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.ViewHolder> {
+
+public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "LECTURE_LIST_ADAPTER" ;
+    private static ClickListener clickListener;
 
     private List<Lecture> lectures;
     private int selectedPosition = -1;
@@ -46,20 +49,12 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final Lecture lecture = lectures.get(position);
-
-        holder.courseTitle.setText(lecture.getCourse_title());
-        holder.courseNumber.setText(lecture.getCourse_number());
-        holder.lectureNumber.setText(lecture.getLecture_number());
-        holder.classification.setText(lecture.getClassification());
-        holder.department.setText(lecture.getDepartment());
-        holder.classTime.setText(lecture.getClass_time());
-        holder.location.setText(lecture.getLocation());
-        holder.remark.setText(lecture.getRemark());
-
+        final ViewHolder holder = (ViewHolder) viewHolder;
+        holder.bindData(lecture);
         if (selectedPosition == position) {
-            holder.lectureLayout.setBackgroundColor(Color.GRAY);
+            holder.layout.setBackgroundColor(Color.DKGRAY);
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
                 holder.remove.setVisibility(View.VISIBLE);
@@ -71,15 +66,15 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
-            holder.lectureLayout.setBackgroundColor(Color.TRANSPARENT);
+            holder.layout.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        holder.setClickListener(new ViewHolder.ClickListener() {
+        setOnItemClickListener(new ClickListener() {
             @Override
             public void onClick(View v, final int position) {
                 //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
                 //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
-                if (v.getId() == holder.lectureLayout.getId()) {
+                if (v.getId() == holder.layout.getId()) {
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");
                     if (selectedPosition == position) {
                         selectedPosition = -1;
@@ -117,6 +112,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
                 }
             }
         });
+
     }
 
     @Override
@@ -129,65 +125,61 @@ public class LectureListAdapter extends RecyclerView.Adapter<LectureListAdapter.
         notifyDataSetChanged();
     }
 
-    // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        protected View layout;
+        protected TextView title;
+        protected TextView tag;
+        protected TextView classTime;
+        protected TextView location;
+        protected Button add;
+        protected Button remove;
 
-        public View lectureLayout;
-        public TextView courseTitle;
-        public TextView courseNumber;
-        public TextView lectureNumber;
-        public TextView classification;
-        public TextView department;
-        public TextView classTime;
-        public TextView location;
-        public TextView remark;
-
-        public Button add;
-        public Button remove;
-
-        private ClickListener clickListener;
-
-        public ViewHolder(View view) {
-            super(view);
-            this.lectureLayout = view;
-            this.courseTitle = (TextView) view.findViewById(R.id.course_title);
-            this.courseNumber = (TextView) view.findViewById(R.id.course_number);
-            this.lectureNumber = (TextView) view.findViewById(R.id.lecture_number);
-            this.classification = (TextView) view.findViewById(R.id.classification);
-            this.department = (TextView) view.findViewById(R.id.department);
-            this.classTime = (TextView) view.findViewById(R.id.class_time);
-            this.location = (TextView) view.findViewById(R.id.location);
-            this.remark = (TextView) view.findViewById(R.id.remark);
-
-            this.add = (Button) view.findViewById(R.id.add);
-            this.remove = (Button) view.findViewById(R.id.remove);
-
-            this.lectureLayout.setOnClickListener(this);
+        private ViewHolder(View itemView) {
+            super(itemView);
+            layout = itemView;
+            title = (TextView) itemView.findViewById(R.id.title);
+            tag = (TextView) itemView.findViewById(R.id.tag);
+            classTime = (TextView) itemView.findViewById(R.id.time);
+            location = (TextView) itemView.findViewById(R.id.location);
+            add = (Button) itemView.findViewById(R.id.add);
+            remove = (Button) itemView.findViewById(R.id.remove);
+            this.layout.setOnClickListener(this);
             this.add.setOnClickListener(this);
             this.remove.setOnClickListener(this);
         }
 
-        public interface ClickListener {
-            /**
-             * Called when the view is clicked.
-             *
-             * @param v view that is clicked
-             * @param position of the clicked item
-             */
+        private void bindData(Lecture lecture) {
+            String titleText = "" ;
+            titleText += lecture.getCourse_title();
+            titleText += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
+            title.setText(titleText);
 
-            public void onClick(View v, int position);
-        }
+            String tagText = lecture.getCategory() + ", " + lecture.getDepartment() + ", "
+                    + lecture.getAcademic_year();
+            tag.setText(tagText);
 
-        public void setClickListener(ClickListener clickListener) {
-            this.clickListener = clickListener;
+            String classTimeText = lecture.getSimplifiedClassTime();
+            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)";
+            classTime.setText(classTimeText);
+
+            String locationText = lecture.getSimplifiedLocation();
+            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)";
+            location.setText(locationText);
         }
 
         @Override
         public void onClick(View v) {
             if (clickListener != null) {
-                clickListener.onClick(v,getPosition());
+                clickListener.onClick(v, getPosition());
             }
         }
     }
 
+    private interface ClickListener {
+        public void onClick(View v, int position);
+    }
+
+    private void setOnItemClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 }
