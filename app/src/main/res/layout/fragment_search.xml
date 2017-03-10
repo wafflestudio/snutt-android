@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:scrollbars="vertical"/>
-
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@drawable/recyclerview_scrollbar"/>
     </LinearLayout>
-
 </FrameLayout>

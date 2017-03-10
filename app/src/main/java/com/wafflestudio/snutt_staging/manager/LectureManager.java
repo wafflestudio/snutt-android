@@ -11,7 +11,9 @@ import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import retrofit.Callback;
@@ -30,6 +32,10 @@ public class LectureManager {
     private Lecture selectedLecture;
     private Random random = new Random();
     private int colorIndex = -1;
+    private String searchedQuery;
+
+    // Search query
+    private List<Lecture> searchedLectures;
 
     // 사용자 정의 시간표
     private int customWday = -1;
@@ -44,6 +50,7 @@ public class LectureManager {
     private LectureManager(SNUTTApplication app) {
         this.app = app;
         this.lectures = new ArrayList<>();
+        this.searchedLectures = new ArrayList<>();
     }
 
     public static LectureManager getInstance(SNUTTApplication app) {
@@ -89,12 +96,23 @@ public class LectureManager {
         return lectures;
     }
 
+    public List<Lecture> getSearchedLectures() {
+        return searchedLectures;
+    }
+
     public void setLectures(List<Lecture> lecture_list) {
         lectures.clear();
         for (Lecture lecture : lecture_list) {
             lectures.add(lecture);
         }
         notifyLectureChanged();
+    }
+
+    public void setSearchedLectures(List<Lecture> lecture_list) {
+        searchedLectures.clear();
+        for (Lecture lecture : lecture_list) {
+            searchedLectures.add(lecture);
+        }
     }
 
     public Lecture getSelectedLecture() {
@@ -337,6 +355,73 @@ public class LectureManager {
     //사용자 정의 시간표가 있는지
     public boolean existCustomLecture() {
         return (customWday != -1 && customStartTime != -1 && customDuration > 0);
+    }
+
+    public void postSearchQuery(String text, final Callback callback) {
+        Map query = new HashMap();
+        query.put("year", PrefManager.getInstance().getCurrentYear());
+        query.put("semester", PrefManager.getInstance().getCurrentSemester());
+        query.put("title", text);
+        query.put("classification", TagManager.getInstance().getClassification());
+        query.put("credit", TagManager.getInstance().getCredit());
+        query.put("academic_year", TagManager.getInstance().getAcademic_year());
+        query.put("instructor", TagManager.getInstance().getInstructor());
+        query.put("department", TagManager.getInstance().getDepartment());
+        query.put("category", TagManager.getInstance().getCategory());
+        searchedQuery = text;
+
+        app.getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
+            @Override
+            public void success(List<Lecture> lectures, Response response) {
+                Log.d(TAG, "post search query success!!");
+                setSearchedLectures(lectures);
+                if (callback != null) callback.success(lectures, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "post search query failed!!");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void addProgressBar() {
+        searchedLectures.add(null);
+    }
+
+    public void removeProgressBar() {
+        searchedLectures.remove(searchedLectures.size() - 1);
+    }
+
+    public void loadData(int offset, final Callback callback) {
+        Map query = new HashMap();
+        query.put("year", PrefManager.getInstance().getCurrentYear());
+        query.put("semester", PrefManager.getInstance().getCurrentSemester());
+        query.put("title", searchedQuery);
+        query.put("classification", TagManager.getInstance().getClassification());
+        query.put("credit", TagManager.getInstance().getCredit());
+        query.put("academic_year", TagManager.getInstance().getAcademic_year());
+        query.put("instructor", TagManager.getInstance().getInstructor());
+        query.put("department", TagManager.getInstance().getDepartment());
+        query.put("category", TagManager.getInstance().getCategory());
+        query.put("offset", offset);
+        query.put("limit", 20);
+        app.getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
+            @Override
+            public void success(List<Lecture> lectureList, Response response) {
+                Log.d(TAG, "post search query success!!");
+                removeProgressBar();
+                for (Lecture lecture : lectureList) {
+                    searchedLectures.add(lecture);
+                }
+                if (callback != null) callback.success(lectureList, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "post search query failed!!");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

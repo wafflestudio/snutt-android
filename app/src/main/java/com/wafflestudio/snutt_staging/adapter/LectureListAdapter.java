@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.common.base.Strings;
@@ -26,6 +27,18 @@ import retrofit.client.Response;
 
 public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public enum VIEW_TYPE {
+        Lecture(0),
+        ProgressBar(1);
+        private final int value;
+        VIEW_TYPE(int value) {
+            this.value = value;
+        }
+        public final int getValue() {
+            return value;
+        }
+    }
+
     private static final String TAG = "LECTURE_LIST_ADAPTER" ;
     private static ClickListener clickListener;
 
@@ -37,21 +50,26 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View cellLayoutView;
-        ViewHolder viewHolder;
-
-        cellLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cell_lecture, parent, false);
-        // create ViewHolder
-        viewHolder = new ViewHolder(cellLayoutView);
-        return viewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE.Lecture.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture, parent, false);
+            // create ViewHolder
+            return new LectureViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_progressbar, parent, false);
+            return new ProgressBarViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        int itemType = getItemViewType(position);
+        if (itemType == VIEW_TYPE.ProgressBar.getValue()) return;
+
         final Lecture lecture = lectures.get(position);
-        final ViewHolder holder = (ViewHolder) viewHolder;
+        final LectureViewHolder holder = (LectureViewHolder) viewHolder;
         holder.bindData(lecture);
         if (selectedPosition == position) {
             holder.layout.setBackgroundColor(Color.DKGRAY);
@@ -116,16 +134,17 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
+    public int getItemViewType(int position) {
+        Lecture item = lectures.get(position);
+        return (item == null) ? VIEW_TYPE.ProgressBar.getValue() : VIEW_TYPE.Lecture.getValue();
+    }
+
+    @Override
     public int getItemCount() {
         return lectures.size();
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-        notifyDataSetChanged();
-    }
-
-    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class LectureViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected View layout;
         protected TextView title;
         protected TextView tag;
@@ -134,7 +153,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         protected Button add;
         protected Button remove;
 
-        private ViewHolder(View itemView) {
+        private LectureViewHolder(View itemView) {
             super(itemView);
             layout = itemView;
             title = (TextView) itemView.findViewById(R.id.title);
@@ -172,6 +191,15 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (clickListener != null) {
                 clickListener.onClick(v, getPosition());
             }
+        }
+    }
+
+    private static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar progressBar;
+
+        private ProgressBarViewHolder(View view) {
+            super(view);
+            progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         }
     }
 

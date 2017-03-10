@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.common.base.Preconditions;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
+import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Notification;
 
 import java.util.ArrayList;

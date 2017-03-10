@@ -31,7 +31,7 @@ import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.adapter.LectureListAdapter;
-import com.wafflestudio.snutt_staging.manager.PrefManager;
+import com.wafflestudio.snutt_staging.listener.EndlessRecyclerViewScrollListener;
 import com.wafflestudio.snutt_staging.adapter.TagListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.TagManager;
@@ -39,7 +39,6 @@ import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.view.TableView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +61,6 @@ public class SearchFragment extends SNUTTBaseFragment
     private static final String TAG = "search_fragment";
     private static TableView mInstance;
 
-    private List<Lecture> lectureList;
     private RecyclerView tagRecyclerView;
     private RecyclerView lectureRecyclerView;
     private LectureListAdapter mAdapter;
@@ -81,7 +79,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
     private SearchSuggestionsAdapter suggestionAdapter;
-
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public SearchFragment() {
     }
@@ -108,15 +106,23 @@ public class SearchFragment extends SNUTTBaseFragment
         lectureRecyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
         tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.tag_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
-        lectureList = new ArrayList<>();
 
-        //LinearLayoutManager layoutManager
-        //        = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApp());
-        mAdapter = new LectureListAdapter(lectureList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
         lectureRecyclerView.setLayoutManager(layoutManager);
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(mAdapter);
+        lectureRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+                return LectureListAdapter.VIEW_TYPE.ProgressBar.getValue();
+            }
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadNextDataFromApi(page, totalItemsCount);
+                Log.d(TAG, "on Load More called. page : " + page + ", totalItemsCount : " + totalItemsCount);
+            }
+        });
 
         LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
@@ -124,6 +130,19 @@ public class SearchFragment extends SNUTTBaseFragment
         tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTags());
         tagRecyclerView.setAdapter(tagAdapter);
         return rootView;
+    }
+
+    private void loadNextDataFromApi(int page, final int totalItemsCount) {
+        LectureManager.getInstance().addProgressBar();
+        mAdapter.notifyDataSetChanged();
+        LectureManager.getInstance().loadData(totalItemsCount, new Callback<List<Lecture>>() {
+            @Override
+            public void success(List<Lecture> searchedLectureList, Response response) {
+                mAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void failure(RetrofitError error) { }
+        });
     }
 
     @Override
@@ -242,31 +261,13 @@ public class SearchFragment extends SNUTTBaseFragment
     };
 
     private void postQuery(String text) {
-        query = new HashMap();
-        query.put("year", PrefManager.getInstance().getCurrentYear());
-        query.put("semester", PrefManager.getInstance().getCurrentSemester());
-        query.put("title", text);
-        query.put("classification", TagManager.getInstance().getClassification());
-        query.put("credit", TagManager.getInstance().getCredit());
-        query.put("academic_year", TagManager.getInstance().getAcademic_year());
-        query.put("instructor", TagManager.getInstance().getInstructor());
-        query.put("department", TagManager.getInstance().getDepartment());
-        query.put("category", TagManager.getInstance().getCategory());
-        //query.put("time", TagManager.getInstance().getTime());
-
-        getApp().getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
+        LectureManager.getInstance().postSearchQuery(text, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectures, Response response) {
-                Log.d(TAG, "post search query success!!");
-                System.out.println(lectures);
-                mAdapter.setLectures(lectures);
+                mAdapter.notifyDataSetChanged();
             }
-
             @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "post search query failed!!");
-                System.out.println(error);
-            }
+            public void failure(RetrofitError error) { }
         });
     }
 
