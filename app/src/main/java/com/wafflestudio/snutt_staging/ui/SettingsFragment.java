@@ -64,7 +64,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lists = new ArrayList<>();
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        //lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("계정관리", SettingsItem.Type.Account));
         lists.add(new SettingsItem("시간표 설정",  SettingsItem.Type.Timetable));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
@@ -78,7 +78,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
         lists.add(new SettingsItem("개인정보처리방침", SettingsItem.Type.Private));
         lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("로그아웃", SettingsItem.Type.Logout));
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
+        //lists.add(new SettingsItem(SettingsItem.Type.Header));
 
         adapter = new SettingsAdapter(lists);
         clickListener = new SettingsAdapter.ClickListener() {
@@ -139,7 +139,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
         //ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
         //listView.setAdapter(adapter);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.settings_recyclerView);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         return rootView;

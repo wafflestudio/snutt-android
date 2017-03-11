@@ -9,7 +9,6 @@
     <include
         layout="@layout/cell_switch"/>
 
-
     <include
         layout="@layout/cell_header"/>
 

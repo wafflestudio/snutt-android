@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.SNUTTUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,7 @@ public class Lecture {
      * 검색시 날아오는 lecture id 와
      * 내 시간표에 추가된 lecture id 는 서로 다른 값
      */
+    private static DecimalFormat decimalFormat = new DecimalFormat();
     private String _id;
     private String classification;
     private String department;
@@ -239,7 +241,7 @@ public class Lecture {
             float len = class1.get("len").getAsFloat();
             String place = class1.get("place").getAsString();
 
-            text += SNUTTUtils.numberToWday(day) + start;
+            text += SNUTTUtils.numberToWday(day) + decimalFormat.format(start);
             if (i != getClass_time_json().size() - 1) text += "/";
         }
         if (Strings.isNullOrEmpty(text)) text = "(없음)";

@@ -180,8 +180,15 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             titleText += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
             title.setText(titleText);
 
-            String tagText = lecture.getCategory() + ", " + lecture.getDepartment() + ", "
-                    + lecture.getAcademic_year();
+            String tagText = "";
+            if (!Strings.isNullOrEmpty(lecture.getCategory())) {
+                tagText += lecture.getCategory() + ", ";
+            }
+            if (!Strings.isNullOrEmpty(lecture.getDepartment())) {
+                tagText += lecture.getDepartment() + ", ";
+            }
+            tagText += lecture.getAcademic_year();
+            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
             tag.setText(tagText);
 
             String classTimeText = lecture.getSimplifiedClassTime();

@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.model.Lecture;
 
@@ -39,11 +41,8 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Lecture lecture = myLecture.get(position);
-
-        String text = "" ;
-        text += lecture.getCourse_title();
-        text += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
-        ((ViewHolder)holder).courseTitle.setText(text);
+        ViewHolder viewHolder = (ViewHolder) holder;
+        viewHolder.bindData(lecture);
     }
 
     @Override
@@ -56,17 +55,47 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     // inner class to hold a reference to each item of RecyclerView
     private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        protected View layout;
+        protected TextView title;
+        protected TextView tag;
+        protected TextView classTime;
+        protected TextView location;
 
-        private View view;
-        private TextView courseTitle;
+        private ViewHolder(View itemView) {
+            super(itemView);
+            layout = itemView;
+            title = (TextView) itemView.findViewById(R.id.title);
+            tag = (TextView) itemView.findViewById(R.id.tag);
+            classTime = (TextView) itemView.findViewById(R.id.time);
+            location = (TextView) itemView.findViewById(R.id.location);
+            this.layout.setOnClickListener(this);
+            this.layout.setOnLongClickListener(this);
+        }
 
-        private ViewHolder(View view) {
-            super(view);
-            this.view = view;
-            this.courseTitle = (TextView) view.findViewById(R.id.course_title);
+        private void bindData(Lecture lecture) {
+            String titleText = "" ;
+            titleText += lecture.getCourse_title();
+            titleText += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
+            title.setText(titleText);
 
-            this.view.setOnClickListener(this);
-            this.view.setOnLongClickListener(this);
+            String tagText = "";
+            if (!Strings.isNullOrEmpty(lecture.getCategory())) {
+                tagText += lecture.getCategory() + ", ";
+            }
+            if (!Strings.isNullOrEmpty(lecture.getDepartment())) {
+                tagText += lecture.getDepartment() + ", ";
+            }
+            tagText += lecture.getAcademic_year();
+            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
+            tag.setText(tagText);
+
+            String classTimeText = lecture.getSimplifiedClassTime();
+            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)";
+            classTime.setText(classTimeText);
+
+            String locationText = lecture.getSimplifiedLocation();
+            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)";
+            location.setText(locationText);
         }
 
         @Override

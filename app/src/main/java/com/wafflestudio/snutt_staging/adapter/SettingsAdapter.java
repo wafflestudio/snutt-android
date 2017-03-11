@@ -29,10 +29,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == SettingsItem.ViewType.Header.getValue()) {
-            View view = inflater.inflate(R.layout.cell_header, null);
+            View view = inflater.inflate(R.layout.cell_header, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = inflater.inflate(R.layout.cell_settings, null);
+            View view = inflater.inflate(R.layout.cell_settings, parent, false);
             return new TitleViewHolder(view); // view holder for header items
         }
     }
@@ -66,7 +66,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public HeaderViewHolder(View view) {
             super(view);
             layout = (LinearLayout) view.findViewById(R.id.cell_header);
-            layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 30));
+            layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
         }
     }
 

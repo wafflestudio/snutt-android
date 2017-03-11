@@ -112,7 +112,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.account_recyclerView);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         this.inflater = inflater;
@@ -443,7 +443,7 @@ public class AccountFragment extends SNUTTBaseFragment {
 
     private void addSettingsList(User user) {
         if (Strings.isNullOrEmpty(user.getLocal_id())) {
-            lists.add(new SettingsItem(SettingsItem.Type.Header));
+            //lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("아이디 비번 추가", user.getLocal_id(), SettingsItem.Type.AddIdPassword));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
             if (Strings.isNullOrEmpty(user.getFb_name())) { // 연동 x
@@ -457,9 +457,9 @@ public class AccountFragment extends SNUTTBaseFragment {
             lists.add(new SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
-            lists.add(new SettingsItem(SettingsItem.Type.Header));
+            //lists.add(new SettingsItem(SettingsItem.Type.Header));
         } else {
-            lists.add(new SettingsItem(SettingsItem.Type.Header));
+            //lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("아이디", user.getLocal_id(), SettingsItem.Type.Id));
             lists.add(new SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
@@ -474,7 +474,7 @@ public class AccountFragment extends SNUTTBaseFragment {
             lists.add(new SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
-            lists.add(new SettingsItem(SettingsItem.Type.Header));
+            //lists.add(new SettingsItem(SettingsItem.Type.Header));
         }
     }
 

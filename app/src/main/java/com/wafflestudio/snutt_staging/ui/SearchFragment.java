@@ -109,7 +109,6 @@ public class SearchFragment extends SNUTTBaseFragment
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
-
         lectureRecyclerView.setLayoutManager(layoutManager);
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(mAdapter);
@@ -282,7 +281,7 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setQueryHint("ex) 3학점, 컴공 등...");
         searchView.setSuggestionsAdapter(suggestionAdapter);
         SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        Drawable img = getActivity().getResources().getDrawable(R.drawable.tag_dark);
+        Drawable img = getActivity().getResources().getDrawable(R.drawable.search_tag);
         text.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));
 
