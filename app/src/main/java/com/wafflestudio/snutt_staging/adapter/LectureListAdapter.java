@@ -64,15 +64,16 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         int itemType = getItemViewType(position);
         if (itemType == VIEW_TYPE.ProgressBar.getValue()) return;
 
         final Lecture lecture = lectures.get(position);
         final LectureViewHolder holder = (LectureViewHolder) viewHolder;
         holder.bindData(lecture);
+
         if (selectedPosition == position) {
-            holder.layout.setBackgroundColor(Color.DKGRAY);
+            holder.layout.setBackgroundColor(Color.parseColor("#33000000"));
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
                 holder.remove.setVisibility(View.VISIBLE);
@@ -80,19 +81,20 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 holder.add.setVisibility(View.VISIBLE);
                 holder.remove.setVisibility(View.GONE);
             }
-
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
             holder.layout.setBackgroundColor(Color.TRANSPARENT);
         }
 
+        // 3개의 서로 다른 클릭을 구분하기 위해 onBindViewHolder 에서 view Id 를 비교함.
         setOnItemClickListener(new ClickListener() {
             @Override
             public void onClick(View v, final int position) {
                 //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
                 //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
                 if (v.getId() == holder.layout.getId()) {
+                    Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");
                     if (selectedPosition == position) {
                         selectedPosition = -1;
@@ -102,12 +104,13 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         notifyItemChanged(selectedPosition);
                         notifyItemChanged(position);
                         selectedPosition = position;
-                        LectureManager.getInstance().setSelectedLecture(lecture);
+                        LectureManager.getInstance().setSelectedLecture(getItem(position));
                     }
 
                 } else if (v.getId() == holder.add.getId()) {
+                    Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " add Clicked!!");
-                    LectureManager.getInstance().addLecture(lecture, new Callback() {
+                    LectureManager.getInstance().addLecture(getItem(position), new Callback() {
                         @Override
                         public void success(Object o, Response response) {
                             notifyItemChanged(position);
@@ -117,8 +120,9 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         }
                     });
                 } else {
+                    Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " remove Clicked!!");
-                    LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                    LectureManager.getInstance().removeLecture(getItem(position), new Callback() {
                         @Override
                         public void success(Object o, Response response) {
                             notifyItemChanged(position);
@@ -130,7 +134,6 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             }
         });
-
     }
 
     @Override
@@ -142,6 +145,10 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         return lectures.size();
+    }
+
+    public Lecture getItem(int position) {
+        return lectures.get(position);
     }
 
     private static class LectureViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -345,7 +345,7 @@ public class TableView extends View {
             }
         }
 
-        if (!export){
+        if (!export) {
             //현재 선택한 강의 그리기
             Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
             if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){

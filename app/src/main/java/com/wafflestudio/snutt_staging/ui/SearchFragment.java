@@ -109,6 +109,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
+
         lectureRecyclerView.setLayoutManager(layoutManager);
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(mAdapter);
@@ -123,6 +124,7 @@ public class SearchFragment extends SNUTTBaseFragment
                 Log.d(TAG, "on Load More called. page : " + page + ", totalItemsCount : " + totalItemsCount);
             }
         });
+
 
         LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
