@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="Computer Architecture"
                 android:singleLine="true"
-                style="@style/Text.myLectureTitle" />
+                style="@style/Text.MyLectureTitle" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="전필, 컴퓨터공학부, 3학년"
                 android:singleLine="true"
-                style="@style/Text.myLectureBody"/>
+                style="@style/Text.MyLectureBody"/>
         </LinearLayout>
 
         <LinearLayout
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:text="화3/목3/목11"
                     android:singleLine="true"
-                    style="@style/Text.myLectureBody"/>
+                    style="@style/Text.MyLectureBody"/>
             </LinearLayout>
 
             <LinearLayout
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="302-208/302-310-2"
                     android:singleLine="true"
-                    style="@style/Text.myLectureBody"/>
+                    style="@style/Text.MyLectureBody"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

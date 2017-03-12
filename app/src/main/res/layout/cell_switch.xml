@@ -17,7 +17,7 @@
         android:layout_weight="18"
         android:layout_gravity="center"
         android:id="@+id/switch1"
-        android:textSize="16sp" />
+        style="@style/Text.SettingsTitle"/>
 
     <View
         android:layout_width="0dp"

@@ -22,7 +22,7 @@
             android:layout_weight="9"
             android:layout_gravity="center_vertical"
             android:text = "text"
-            style="@style/Text.settingsTitle"/>
+            style="@style/Text.SettingsTitle"/>
 
         <TextView
             android:id="@+id/settings_detail"
@@ -32,7 +32,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="right"
             android:text = "detail"
-            style="@style/Text.settingsDetail"/>
+            style="@style/Text.SettingsDetail"/>
 
         <View
             android:layout_height="match_parent"

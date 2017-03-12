@@ -17,7 +17,7 @@
 
             <TextView
                 android:id="@+id/course_title"
-                style="@style/Text.mainLabel"
+                style="@style/Text.MainLabel"
                 android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -34,7 +34,7 @@
 
                 <TextView
                     android:id="@+id/course_number"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/lecture_number"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -56,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/classification"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -68,7 +68,7 @@
 
                 <TextView
                     android:id="@+id/department"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -79,7 +79,7 @@
 
                 <TextView
                     android:id="@+id/class_time"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:id="@+id/location"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -101,7 +101,7 @@
 
                 <TextView
                     android:id="@+id/remark"
-                    style="@style/Text.smallLabel"
+                    style="@style/Text.SmallLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -114,7 +114,7 @@
 
         <Button
             android:id="@+id/add"
-            style="@style/Text.addRemoveButton"
+            style="@style/Text.AddRemoveButton"
             android:layout_width="45dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -125,7 +125,7 @@
 
         <Button
             android:id="@+id/remove"
-            style="@style/Text.addRemoveButton"
+            style="@style/Text.AddRemoveButton"
             android:layout_width="45dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"

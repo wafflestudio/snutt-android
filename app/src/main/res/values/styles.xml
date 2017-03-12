@@ -6,9 +6,29 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+        <!--<item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <!--<item name="android:actionBarTabTextStyle">@style/Text.ActionBarTitle</item>-->
+
         <!--
                 <item name="colorControlHighlight">#40ffffff</item> // this is for click event
         -->
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="elevation">1dp</item>
+        <item name="titleTextStyle">@style/Text.ActionBarTitle</item>
+        <item name="android:titleTextStyle">@style/Text.ActionBarTitle</item>
+    </style>
+
+    <style name="Text.ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.TabLayout" parent="TextAppearance.Design.Tab">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -28,61 +48,61 @@
     <!-- Text -->
     <style name="Text"></style>
 
-    <style name="Text.addRemoveButton">
+    <style name="Text.AddRemoveButton">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:textSize">13sp</item>
     </style>
 
-    <style name="Text.mainLabel">
+    <style name="Text.MainLabel">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.smallLabel">
+    <style name="Text.SmallLabel">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="Text.smallLabelRed">
+    <style name="Text.SmallLabelRed">
         <item name="android:textColor">#ffff0000</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="Text.lectureTitle">
+    <style name="Text.LectureTitle">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.lectureBody">
+    <style name="Text.LectureBody">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="Text.lectureDetail">
+    <style name="Text.LectureDetail">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="Text.myLectureTitle">
+    <style name="Text.MyLectureTitle">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.myLectureBody">
+    <style name="Text.MyLectureBody">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="Text.settingsTitle">
+    <style name="Text.SettingsTitle">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.settingsDetail">
+    <style name="Text.SettingsDetail">
         <item name="android:textColor">#b3b3b3</item>
         <item name="android:textSize">14sp</item>
     </style>

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="Computer Architecture"
                 android:singleLine="true"
-                style="@style/Text.lectureTitle" />
+                style="@style/Text.LectureTitle" />
         </LinearLayout>
 
         <LinearLayout
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="전필, 컴퓨터공학부, 3학년"
                 android:singleLine="true"
-                style="@style/Text.lectureBody"/>
+                style="@style/Text.LectureBody"/>
         </LinearLayout>
 
         <LinearLayout
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:text="화3/목3/목11"
                     android:singleLine="true"
-                    style="@style/Text.lectureBody"/>
+                    style="@style/Text.LectureBody"/>
             </LinearLayout>
 
             <LinearLayout
@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:text="302-208/302-310-2"
                     android:singleLine="true"
-                    style="@style/Text.lectureBody"/>
+                    style="@style/Text.LectureBody"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -98,7 +98,7 @@
 
         <Button
             android:id="@+id/add"
-            style="@style/Text.addRemoveButton"
+            style="@style/Text.AddRemoveButton"
             android:layout_width="45dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -109,7 +109,7 @@
 
         <Button
             android:id="@+id/remove"
-            style="@style/Text.addRemoveButton"
+            style="@style/Text.AddRemoveButton"
             android:layout_width="45dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
