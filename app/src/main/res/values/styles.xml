@@ -102,7 +102,7 @@
     </style>
 
     <style name="Text.SettingsDetail">
-        <item name="android:textColor">#b3b3b3</item>
+        <item name="android:textColor">#a6a6a6</item>
         <item name="android:textSize">14sp</item>
     </style>
 
