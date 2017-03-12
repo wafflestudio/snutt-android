@@ -30,15 +30,6 @@ public class LectureItem {
     private Type type;
     private boolean editable;
 
-    public LectureItem(String title1, String value1, String title2, String value2, Type type, boolean editable) {
-        this.title1 = title1;
-        this.value1 = value1;
-        this.title2 = title2;
-        this.value2 = value2;
-        this.type = type;
-        this.editable = false;
-    }
-
     public LectureItem(String title1, String value1, String title2, String value2, Type type) {
         this.title1 = title1;
         this.value1 = value1;

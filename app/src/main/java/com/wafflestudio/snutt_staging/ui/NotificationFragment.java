@@ -60,7 +60,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         adapter = new NotificationAdapter(NotiManager.getInstance().getNotifications());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override

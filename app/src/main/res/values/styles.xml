@@ -10,7 +10,6 @@
         <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
         <!--<item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
         <!--<item name="android:actionBarTabTextStyle">@style/Text.ActionBarTitle</item>-->
-
         <!--
                 <item name="colorControlHighlight">#40ffffff</item> // this is for click event
         -->
@@ -105,6 +104,16 @@
     <style name="Text.SettingsDetail">
         <item name="android:textColor">#b3b3b3</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.NotificationTitle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">13.5sp</item>
+    </style>
+
+    <style name="Text.NotificationDetail">
+        <item name="android:textColor">#b3b3b3</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
 </resources>
