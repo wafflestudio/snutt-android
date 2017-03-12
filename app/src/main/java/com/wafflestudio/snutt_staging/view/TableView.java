@@ -448,7 +448,7 @@ public class TableView extends View {
         int h = dm.heightPixels;
 
         int desiredWidth = w;
-        int desiredHeight = h - getTabBarHeight() - getStatusBarHeight();
+        int desiredHeight = h - getTabBarHeight() - getStatusBarHeight() - getActionBarHeight();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
