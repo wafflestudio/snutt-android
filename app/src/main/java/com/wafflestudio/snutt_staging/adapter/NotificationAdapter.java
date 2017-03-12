@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt_staging.adapter;
 
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -19,8 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 /**
  * Created by makesource on 2017. 2. 27..
@@ -51,7 +48,7 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE.Notification.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_notification2, parent, false);
+                    .inflate(R.layout.cell_notification, parent, false);
             return new NotificationViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext())
