@@ -109,7 +109,7 @@ public class TableView extends View {
         wdays[3] = mContext.getResources().getString(R.string.wday_thu);
         wdays[4] = mContext.getResources().getString(R.string.wday_fri);
         wdays[5] = mContext.getResources().getString(R.string.wday_sat);
-        wdays[6] = "일요일";
+        wdays[6] = mContext.getResources().getString(R.string.wday_sun);
 
         lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //lectureTextPaint.setColor(0xff000000);
@@ -442,7 +442,7 @@ public class TableView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
+        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
         int w = dm.widthPixels;
         int h = dm.heightPixels;
@@ -481,7 +481,6 @@ public class TableView extends View {
             //Be whatever you want
             height = desiredHeight;
         }
-
         //MUST CALL THIS
         setMeasuredDimension(width, height);
     }

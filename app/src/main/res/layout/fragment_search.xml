@@ -2,45 +2,47 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <FrameLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-
-        <com.wafflestudio.snutt_staging.view.TableView
-            android:id="@+id/timetable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:background="#80000000">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/tag_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:visibility="gone"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/search_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:scrollbars="vertical"
-                android:scrollbarThumbVertical="@drawable/recyclerview_scrollbar"/>
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#cccccc"
-        android:layout_alignParentBottom="true"/>
+        android:layout_height="match_parent">
 
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <com.wafflestudio.snutt_staging.view.TableView
+                android:id="@+id/timetable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="#80000000">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tag_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:visibility="gone"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/search_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:scrollbars="vertical"
+                    android:scrollbarThumbVertical="@drawable/recyclerview_scrollbar"/>
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/tag_suggestion"
+        layout="@layout/cell_tag_suggestion" />
 </RelativeLayout>
