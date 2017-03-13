@@ -3,11 +3,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tag_suggestion"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:background="#cccccc"
+    android:layout_height="35dp"
+    android:background="#d9d9d9"
     android:layout_alignParentBottom="true"
     android:orientation="horizontal"
     android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/hash"
+            android:paddingLeft="10dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="빈 시간대 검색"
+            android:paddingRight="10dp"/>
+
+    </LinearLayout>
 
 
 </LinearLayout>
