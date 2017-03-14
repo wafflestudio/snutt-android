@@ -93,6 +93,8 @@ public class AccountFragment extends SNUTTBaseFragment {
             }
         });
 
+        addSettingsList(UserManager.getInstance().getUser());
+        adapter.notifyDataSetChanged();
         UserManager.getInstance().getUserInfo(new Callback<User>() {
             @Override
             public void success(final User user, Response response) {
@@ -442,6 +444,7 @@ public class AccountFragment extends SNUTTBaseFragment {
     }
 
     private void addSettingsList(User user) {
+        lists.clear();
         if (Strings.isNullOrEmpty(user.getLocal_id())) {
             //lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("아이디 비번 추가", user.getLocal_id(), SettingsItem.Type.AddIdPassword));

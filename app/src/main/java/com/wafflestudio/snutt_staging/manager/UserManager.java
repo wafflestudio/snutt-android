@@ -30,6 +30,7 @@ public class UserManager {
     private SNUTTApplication app;
 
     private static UserManager singleton;
+    private User me;
 
     /**
      * UserManager 싱글톤
@@ -37,6 +38,7 @@ public class UserManager {
 
     private UserManager(SNUTTApplication app) {
         this.app = app;
+        this.me = new User();
     }
 
     public static UserManager getInstance(SNUTTApplication app) {
@@ -79,6 +81,9 @@ public class UserManager {
 
     ///////
 
+    public User getUser() {
+        return me;
+    }
 
     // login with local id
     public void postSignIn(String id, String password) {
@@ -104,7 +109,6 @@ public class UserManager {
             }
         });
     }
-
 
     // login with facebook id
     public void postLoginFacebook(String facebookId, String facebookToken, final Callback callback) {
@@ -151,6 +155,7 @@ public class UserManager {
             @Override
             public void success(User user, Response response) {
                 Log.d(TAG, "get user info success");
+                me = user;
                 if (callback != null) callback.success(user, response);
             }
 
@@ -162,7 +167,7 @@ public class UserManager {
         });
     }
 
-    public void putUserInfo(String email, final Callback callback) {
+    public void putUserInfo(final String email, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         Map query = new HashMap();
         query.put("email", email);
@@ -170,6 +175,7 @@ public class UserManager {
             @Override
             public void success(Response response, Response response2) {
                 Log.d(TAG, "put user info success");
+                me.setEmail(email);
                 if (callback != null) callback.success(response, response2);
             }
 
@@ -374,6 +380,7 @@ public class UserManager {
         PrefManager.getInstance().resetPrefValue();
         LoginManager.getInstance().logOut(); // for facebook sdk
         deleteFirebaseInstanceId();
+        me = null;
     }
 
     public void deleteFirebaseInstanceId() {
