@@ -12,12 +12,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:src="@drawable/hash"
+            android:src="@drawable/hash_black"
             android:paddingLeft="10dp"/>
 
         <View
@@ -30,6 +31,53 @@
             android:layout_height="wrap_content"
             android:text="빈 시간대 검색"
             android:paddingRight="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="취소" />
+
+        <TextView
+            android:id="@+id/academic_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학년" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="교양분류" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="분류" />
+
+        <TextView
+            android:id="@+id/credit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학점" />
+
+        <TextView
+            android:id="@+id/department"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학과" />
+
+        <TextView
+            android:id="@+id/instructor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="교수" />
 
     </LinearLayout>
 

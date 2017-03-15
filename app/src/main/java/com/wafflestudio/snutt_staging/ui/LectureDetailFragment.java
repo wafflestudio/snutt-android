@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import retrofit.client.Response;
  * Created by makesource on 2016. 9. 4..
  */
 public class LectureDetailFragment extends SNUTTBaseFragment {
+    private static final String TAG = "LECTURE_DETAIL_FRAGMENT";
     private Lecture lecture;
     private ListView detailList;
     private ArrayList<LectureItem> lists;
@@ -48,6 +50,10 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         lecture = getLectureMainActivity().lecture;
+        if (lecture == null) {
+            Log.e(TAG, "lecture refers to null point!!");
+            return;
+        }
 
         lists = new ArrayList<>();
         lists.add(new LectureItem(LectureItem.Type.Header));

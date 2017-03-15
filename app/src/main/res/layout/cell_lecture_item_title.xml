@@ -4,24 +4,33 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="40dp"
     android:gravity="center"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:weightSum="20">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
+
     <TextView
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="5.5"
         android:singleLine="true"
-        android:hint="제목"/>
+        android:hint="Title"
+        style="@style/Text.LectureDetailTitle1"/>
 
     <EditText
         android:id="@+id/text_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="7"
+        android:layout_weight="14"
         android:singleLine="true"
-        android:text="내용"/>
+        android:text="value"
+        android:background="@android:color/transparent"
+        style="@style/Text.LectureDetailContent1"/>
 
 </LinearLayout>

@@ -4,31 +4,51 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="50dp"
     android:gravity="center"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:weightSum="20">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_title1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="제목">
+        android:layout_weight="9.5"
+        android:hint="Title"
+        style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_detail1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"/>
+            android:background="@drawable/empty_edit_text"
+            android:singleLine="true"
+            style="@style/Text.LectureDetailContent2"/>
     </android.support.design.widget.TextInputLayout>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_title2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="9.5"
+        style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_detail2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true" />
+            android:background="@drawable/empty_edit_text"
+            android:singleLine="true"
+            style="@style/Text.LectureDetailContent2"/>
     </android.support.design.widget.TextInputLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
+
 </LinearLayout>

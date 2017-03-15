@@ -55,6 +55,8 @@ public interface SNUTTRestApi {
     @GET("/course_books")
     public void getCoursebook(@Header("x-access-token") String token, Callback<List<Coursebook>> callback);
 
+
+
     // API Timetable
 
     @GET("/tables")

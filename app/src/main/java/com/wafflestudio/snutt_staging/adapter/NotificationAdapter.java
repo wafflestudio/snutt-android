@@ -123,15 +123,15 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
                 text += " ";
 
                 if (years > 0) {
-                    text += "<font color='#a6a6a6'>" + years + "년 전</font>";
+                    text += "<font color='#808080'>" + years + "년 전</font>";
                 } else if (months > 0) {
-                    text += "<font color='#a6a6a6'>" + months + "달 전</font>";
+                    text += "<font color='#808080'>" + months + "달 전</font>";
                 } else if (days > 0) {
-                    text += "<font color='#a6a6a6'>" + days + "일 전</font>";
+                    text += "<font color='#808080'>" + days + "일 전</font>";
                 } else if (hours > 0) {
-                    text += "<font color='#a6a6a6'>" + hours + "시간 전</font>";
+                    text += "<font color='#808080'>" + hours + "시간 전</font>";
                 } else {
-                    text += "<font color='#a6a6a6'>방금</font>";
+                    text += "<font color='#808080'>방금</font>";
                 }
             } catch (ParseException e) {
                 Log.e(TAG, "notification created time parse error!");

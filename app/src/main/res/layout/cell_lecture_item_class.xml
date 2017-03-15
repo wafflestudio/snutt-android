@@ -4,30 +4,50 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="50dp"
     android:gravity="center"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:weightSum="20">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5" />
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="9.5"
+        style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/empty_edit_text"
             android:singleLine="true"
-            android:hint="시간"/>
+            android:hint="시간"
+            style="@style/Text.LectureDetailContent2"/>
     </android.support.design.widget.TextInputLayout>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="9.5"
+        style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/empty_edit_text"
             android:singleLine="true"
-            android:hint="장소"/>
+            android:hint="장소"
+            style="@style/Text.LectureDetailContent2"/>
     </android.support.design.widget.TextInputLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5" />
+
 </LinearLayout>

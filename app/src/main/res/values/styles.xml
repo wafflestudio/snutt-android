@@ -68,6 +68,8 @@
         <item name="android:textSize">11sp</item>
     </style>
 
+    <!-- For searched lecture list -->
+
     <style name="Text.LectureTitle">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">13sp</item>
@@ -83,6 +85,8 @@
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">15sp</item>
     </style>
+
+    <!-- For my lecture list-->
 
     <style name="Text.MyLectureTitle">
         <item name="android:textColor">#000000</item>
@@ -102,18 +106,41 @@
     </style>
 
     <style name="Text.SettingsDetail">
-        <item name="android:textColor">#a6a6a6</item>
+        <item name="android:textColor">#808080</item>
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!--For notification-->
+
     <style name="Text.NotificationTitle">
         <item name="android:textColor">#000000</item>
-        <item name="android:textSize">13.5sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Text.NotificationDetail">
-        <item name="android:textColor">#b3b3b3</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#808080</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
+    <!--For lecture detail-->
+
+    <style name="Text.LectureDetailTitle1">
+        <item name="android:textColor">#808080</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.LectureDetailContent1">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.LectureDetailTitle2">
+        <item name="android:textColorHint">#808080</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.LectureDetailContent2">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>
