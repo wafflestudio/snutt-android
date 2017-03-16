@@ -131,7 +131,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
             //getMainActivity().startTableList();
-            Toast.makeText(getContext(), "custom lecture add clicked!!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "custom lecture add clicked!!", Toast.LENGTH_SHORT).show();
             getMainActivity().startLectureMain();
             return true;
         }

@@ -170,7 +170,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                             case Syllabus:
                                 startSyllabus();
                                 break;
-                            case Remove:
+                            case RemoveLecture:
                                 startAlertView();
                                 break;
                             default:
@@ -183,7 +183,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                         textView.setText("강의계획서");
                         textView.setTextColor(Color.parseColor("#000000"));
                         break;
-                    case Remove:
+                    case RemoveLecture:
                         textView.setText("삭제");
                         textView.setTextColor(Color.parseColor("#FF0000"));
                         break;

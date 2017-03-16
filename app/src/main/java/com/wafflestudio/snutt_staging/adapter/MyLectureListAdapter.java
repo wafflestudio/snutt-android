@@ -85,7 +85,9 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (!Strings.isNullOrEmpty(lecture.getDepartment())) {
                 tagText += lecture.getDepartment() + ", ";
             }
-            tagText += lecture.getAcademic_year();
+            if (!Strings.isNullOrEmpty(lecture.getAcademic_year())) {
+                tagText += lecture.getAcademic_year();
+            }
             if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
             tag.setText(tagText);
 

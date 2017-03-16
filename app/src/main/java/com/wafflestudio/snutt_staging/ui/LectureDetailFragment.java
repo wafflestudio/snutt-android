@@ -81,7 +81,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
         lists.add(new LectureItem(LectureItem.Type.Syllabus));
         lists.add(new LectureItem(LectureItem.Type.Header));
-        lists.add(new LectureItem(LectureItem.Type.Remove));
+        lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
         lists.add(new LectureItem(LectureItem.Type.Header));
         adapter = new LectureDetailAdapter(getActivity(), lists, lecture);
     }
@@ -142,8 +142,16 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     public void setLectureColor(Color color) {
-        lists.get(3).setColor(color); // 색상
+        getColorItem().setColor(color); // 색상
         adapter.notifyDataSetChanged();
+    }
+
+    public LectureItem getColorItem() {
+        for (LectureItem item : lists) {
+            if (item.getType() == LectureItem.Type.Color) return item;
+        }
+        Log.e(TAG, "can't find color item");
+        return null;
     }
 
     private boolean isEditable(LectureItem item) {

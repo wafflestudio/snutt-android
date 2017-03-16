@@ -3,6 +3,8 @@ package com.wafflestudio.snutt_staging.adapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
@@ -50,22 +52,10 @@ public class CustomLectureAdapter extends BaseAdapter {
     private int toTime;
 
     private final static String TAG = "LECTURE_CREATE_ADAPTER";
-    private final static int TYPE_HEADER = 0;
-    private final static int TYPE_ITEM_TITLE = 1;
-    private final static int TYPE_ITEM_DETAIL = 2;
-    private final static int TYPE_ITEM_BUTTON = 3;
-    private final static int TYPE_ITEM_COLOR = 4;
-    private final static int TYPE_ITEM_CLASS = 5;
 
     public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        LectureItem item = getItem(position);
-        return item.getType().getValue();
     }
 
     @Override
@@ -85,28 +75,31 @@ public class CustomLectureAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, final ViewGroup viewGroup) {
-        final LectureItem item = getItem(position);
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        int type = getItemViewType(position);
+        final LectureItem item = getItem(position);
+        LectureItem.ViewType type = lists.get(position).getViewType();
+
         switch (type) {
-            case TYPE_HEADER:
-                view = inflater.inflate(R.layout.cell_header, viewGroup, false);
+            case ItemHeader:
+                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
                 break;
-            case TYPE_ITEM_TITLE:
+            case ItemTitle:
                 view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);
                 break;
-            case TYPE_ITEM_BUTTON:
+            case ItemButton:
                 view = inflater.inflate(R.layout.cell_lecture_item_button, viewGroup, false);
                 break;
-            case TYPE_ITEM_COLOR:
+            case ItemColor:
                 view = inflater.inflate(R.layout.cell_lecture_item_color, viewGroup, false);
                 break;
-            case TYPE_ITEM_CLASS:
+            case ItemClass:
                 view = inflater.inflate(R.layout.cell_lecture_item_class, viewGroup, false);
+                break;
+            default:
                 break;
         }
         switch (type) {
-            case TYPE_ITEM_TITLE: {
+            case ItemTitle: {
                 TextView title = (TextView) view.findViewById(R.id.text_title);
                 EditText value = (EditText) view.findViewById(R.id.text_value);
                 title.setText(item.getTitle1());
@@ -117,35 +110,36 @@ public class CustomLectureAdapter extends BaseAdapter {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
-
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                     }
-
                     @Override
                     public void afterTextChanged(Editable s) {
                         item.setValue1(s.toString());
                     }
                 });
-                if (position == 4) { // 학점
+                if (item.getType() == LectureItem.Type.Credit) { // 학점
                     value.setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
                 break;
             }
-            case TYPE_ITEM_BUTTON: {
+            case ItemButton: { // add
+                LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
                 TextView textView = (TextView) view.findViewById(R.id.text_button);
-                textView.setText("Add");
-                textView.setOnClickListener(new View.OnClickListener() {
+                textView.setText("시간 추가");
+                layout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         addClassItem();
                         isAnimated = false;
                         notifyDataSetChanged();
+
+
                     }
                 });
                 break;
             }
-            case TYPE_ITEM_COLOR: {
+            case ItemColor: {
                 LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
                 TextView title = (TextView) view.findViewById(R.id.text_title);
                 View fgColor = (View) view.findViewById(R.id.fgColor);
@@ -163,33 +157,35 @@ public class CustomLectureAdapter extends BaseAdapter {
                 fgColor.setBackgroundColor(item.getColor().getFg());
                 break;
             }
-            case TYPE_ITEM_CLASS: {
+            case ItemClass: {
+                TextInputLayout title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+                TextInputLayout title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
                 final EditText editText1 = (EditText) view.findViewById(R.id.input_time);
                 final EditText editText2 = (EditText) view.findViewById(R.id.input_location);
-                if (position == getCount() - 2) {
+                if (position == getCount() - 3) {
                     if (!isAnimated) {
                         editText1.setVisibility(View.GONE);
                         editText2.setVisibility(View.GONE);
                         final DisplayMetrics dm = activity.getResources().getDisplayMetrics();
-                        ValueAnimator va = ValueAnimator.ofInt(0, (int)(60 * dm.density));
+                        ValueAnimator va = ValueAnimator.ofInt(0, (int)(45 * dm.density));
                         final View finalView = view;
                         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                             public void onAnimationUpdate(ValueAnimator animation) {
                                 int value = (Integer) animation.getAnimatedValue();
                                 finalView.getLayoutParams().height = value;
                                 finalView.requestLayout();
-                                if (value == (int) (60 * dm.density)) {
+                                if (value == (int) (45 * dm.density)) {
                                     editText1.setVisibility(View.VISIBLE);
                                     editText2.setVisibility(View.VISIBLE);
                                 }
                             }
                         });
-                        va.setDuration(400);
+                        va.setDuration(200);
                         va.start();
                         isAnimated = true;
                     }
                 }
-                editText1.setHint("시간");
+                title1.setHint("시간");
                 String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
                         SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
                         SNUTTUtils.numberToTime(item.getClassTime().getStart() + item.getClassTime().getLen());
@@ -204,7 +200,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                         }
                     }
                 });
-                editText2.setHint("장소");
+                title2.setHint("장소");
                 editText2.setText(item.getClassTime().getPlace());
                 editText2.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -304,7 +300,7 @@ public class CustomLectureAdapter extends BaseAdapter {
     }
 
     private void addClassItem() {
-        int pos = getCount() - 1;
+        int pos = getCount() - 2;
         lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ClassTime, true));
     }
 
@@ -313,24 +309,21 @@ public class CustomLectureAdapter extends BaseAdapter {
         Log.d(TAG, "update lecture called.");
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
-        /*for (LectureItem item : lists) {
-            if (item.getViewType() == ItemHeader) continue;
-            if (item.getViewType() == ItemButton) continue;
+        for (LectureItem item : lists) {
+            if (item.getViewType() == ItemHeader || item.getViewType() == ItemButton) continue;
             LectureItem.Type type = item.getType();
             switch (type) {
-                case 0: // header
-                    break;
-                case 1: // 강의명
+                case Title: // 강의명
                     target.setCourse_title(item.getValue1());
                     break;
-                case 2: // 교수
+                case Instructor: // 교수
                     target.setInstructor(item.getValue1());
                     break;
-                case 3: // 색상
+                case Color: // 색상
                     target.setBgColor(item.getColor().getBg());
                     target.setFgColor(item.getColor().getFg());
                     break;
-                case 4: // 학점
+                case Credit: // 학점
                     target.setCredit(Integer.parseInt(item.getValue1()));
                     break;
                 default: // 강의 시간
@@ -338,7 +331,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                     ja.add(je);
                     break;
             }
-        }*/
+        }
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
     }
@@ -347,25 +340,22 @@ public class CustomLectureAdapter extends BaseAdapter {
         Log.d(TAG, "update lecture called.");
         Lecture lecture = new Lecture();
         JsonArray ja = new JsonArray();
-       /* for (int i=0;i<lists.size();i++) {
+        for (int i=0;i<lists.size();i++) {
             LectureItem item = lists.get(i);
-            if (item.getType() == LectureItem.Type.LectureHeader) continue;
-            if (item.getType() == LectureItem.Type.ItemButton) continue;
-
-            switch (i) {
-                case 0: // header
-                    break;
-                case 1: // 강의명
+            if (item.getViewType() == ItemHeader || item.getViewType() == ItemButton) continue;
+            LectureItem.Type type = item.getType();
+            switch (type) {
+                case Title: // 강의명
                     lecture.setCourse_title(item.getValue1());
                     break;
-                case 2: // 교수
+                case Instructor: // 교수
                     lecture.setInstructor(item.getValue1());
                     break;
-                case 3: // 색상
+                case Color: // 색상
                     lecture.setBgColor(item.getColor().getBg());
                     lecture.setFgColor(item.getColor().getFg());
                     break;
-                case 4: // 학점
+                case Credit: // 학점
                     lecture.setCredit(Integer.parseInt(item.getValue1()));
                     break;
                 default: // 강의 시간
@@ -374,7 +364,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                     break;
             }
         }
-        lecture.setClass_time_json(ja);*/
+        lecture.setClass_time_json(ja);
         LectureManager.getInstance().createLecture(lecture, callback);
     }
 }

@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,8 @@ import retrofit.client.Response;
  * Created by makesource on 2016. 11. 10..
  */
 public class CustomDetailFragment extends SNUTTBaseFragment {
+    private static final String TAG = "CUSTOM_DETAIL_FRAGMENT";
+
     private Lecture lecture;
     private ListView detailList;
     private ArrayList<LectureItem> lists;
@@ -52,24 +55,25 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         if (lecture == null) add = true;
 
         lists = new ArrayList<>();
-        /*lists.add(new LectureItem(LectureItem.Type.LectureHeader));
-        lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem("교수", add ? "" : lecture.getInstructor(), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem("색상", add ? new Color() : lecture.getColor(), LectureItem.Type.ItemColor));
-        lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem(LectureItem.Type.LectureHeader));
+        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.Title));
+        lists.add(new LectureItem("교수", add ? "" : lecture.getInstructor(), LectureItem.Type.Instructor));
+        lists.add(new LectureItem("색상", add ? new Color() : lecture.getColor(), LectureItem.Type.Color));
+        lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
+        lists.add(new LectureItem(LectureItem.Type.Header));
 
         if (!add) {
             for (JsonElement element : lecture.getClass_time_json()) {
                 JsonObject jsonObject = element.getAsJsonObject();
                 ClassTime classTime = new ClassTime(jsonObject);
-                lists.add(new LectureItem(classTime, LectureItem.Type.ItemClass));
+                lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
             }
         }
-        lists.add(new LectureItem(LectureItem.Type.ItemButton));
+        lists.add(new LectureItem(LectureItem.Type.AddClassTime));
+        lists.add(new LectureItem(LectureItem.Type.Header));
         for (LectureItem it : lists) {
             it.setEditable(add);
-        }*/
+        }
         adapter = new CustomLectureAdapter(getActivity(), lists);
     }
 
@@ -139,9 +143,18 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     }
 
     public void setLectureColor(Color color) {
-        lists.get(3).setColor(color); // 색상
+        getColorItem().setColor(color); // 색상
         adapter.notifyDataSetChanged();
     }
+
+    public LectureItem getColorItem() {
+        for (LectureItem item : lists) {
+            if (item.getType() == LectureItem.Type.Color) return item;
+        }
+        Log.e(TAG, "can't find color item");
+        return null;
+    }
+
 
     private LectureMainActivity getLectureMainActivity() {
         Activity activity = getActivity();

@@ -16,7 +16,9 @@ public class LectureItem {
         CourseNumberLectureNumber(7),
         ClassTime(8),
         Syllabus(9),
-        Remove(10);
+        RemoveLecture(10),
+        Credit(11),
+        AddClassTime(12);
         private final int value;
         Type(int value) {
             this.value = value;
@@ -88,7 +90,7 @@ public class LectureItem {
 
     public ViewType getViewType() {
         if (type == Type.Header) return ViewType.ItemHeader;
-        else if (type == Type.Title || type == Type.Instructor) return ViewType.ItemTitle;
+        else if (type == Type.Title || type == Type.Instructor || type == Type.Credit) return ViewType.ItemTitle;
         else if (type == Type.Color) return ViewType.ItemColor;
         else if (type == Type.Department || type == Type.AcademicYearCredit || type == Type.ClassificationCategory || type == Type.CourseNumberLectureNumber) return ViewType.ItemDetail;
         else if (type == Type.ClassTime) return ViewType.ItemClass;
