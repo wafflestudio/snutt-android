@@ -2,6 +2,9 @@ package com.wafflestudio.snutt_staging.adapter;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -30,8 +33,14 @@ import com.wafflestudio.snutt_staging.model.Table;
 import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHeader;
 
 /**
  * Created by makesource on 2016. 9. 4..
@@ -45,12 +54,6 @@ public class LectureDetailAdapter extends BaseAdapter {
     private int toTime;
 
     private final static String TAG = "LECTURE_DETAIL_ADAPTER";
-    private final static int TYPE_HEADER = 0;
-    private final static int TYPE_ITEM_TITLE = 1;
-    private final static int TYPE_ITEM_DETAIL = 2;
-    private final static int TYPE_ITEM_BUTTON = 3;
-    private final static int TYPE_ITEM_COLOR = 4;
-    private final static int TYPE_ITEM_CLASS = 5;
 
     public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
@@ -73,38 +76,32 @@ public class LectureDetailAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        LectureItem item = getItem(position);
-        return item.getType().getValue();
-    }
-
-    @Override
     public View getView(int position, View view, final ViewGroup viewGroup) {
         final LectureItem item = getItem(position);
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        int type = getItemViewType(position);
+        LectureItem.ViewType type = lists.get(position).getViewType();
         switch (type) {
-            case TYPE_HEADER:
-                view = inflater.inflate(R.layout.cell_header, viewGroup, false);
+            case ItemHeader:
+                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
                 break;
-            case TYPE_ITEM_TITLE:
+            case ItemTitle:
                 view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);
                 break;
-            case TYPE_ITEM_DETAIL:
+            case ItemDetail:
                 view = inflater.inflate(R.layout.cell_lecture_item_detail, viewGroup, false);
                 break;
-            case TYPE_ITEM_BUTTON:
+            case ItemButton:
                 view = inflater.inflate(R.layout.cell_lecture_item_button, viewGroup, false);
                 break;
-            case TYPE_ITEM_COLOR:
+            case ItemColor:
                 view = inflater.inflate(R.layout.cell_lecture_item_color, viewGroup, false);
                 break;
-            case TYPE_ITEM_CLASS:
+            case ItemClass:
                 view = inflater.inflate(R.layout.cell_lecture_item_class, viewGroup, false);
                 break;
         }
         switch (type) {
-            case TYPE_ITEM_TITLE: {
+            case ItemTitle: {
                 TextView title = (TextView) view.findViewById(R.id.text_title);
                 EditText value = (EditText) view.findViewById(R.id.text_value);
                 title.setText(item.getTitle1());
@@ -123,7 +120,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 });
                 break;
             }
-            case TYPE_ITEM_DETAIL: {
+            case ItemDetail: {
                 TextInputLayout title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
                 EditText editText1 = (EditText) view.findViewById(R.id.input_detail1);
                 title1.setHint(item.getTitle1());
@@ -156,17 +153,53 @@ public class LectureDetailAdapter extends BaseAdapter {
                 editText1.setFocusable(item.isEditable());
                 editText2.setClickable(item.isEditable());
                 editText2.setFocusable(item.isEditable());
-                if (position == 6) { // 학점
+                if (item.getType() == LectureItem.Type.AcademicYearCredit) { // 학점
                     editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
                 break;
             }
-            case TYPE_ITEM_BUTTON: {
+            case ItemButton: {
+                LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
                 TextView textView = (TextView) view.findViewById(R.id.text_button);
-                textView.setText("Syllabus");
+                layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (item.getType()) {
+                            case Syllabus:
+                                LectureManager.getInstance().getCoursebookUrl(getCourseNumber(), getLectureNumber(), new Callback<Map>() {
+                                    public void success(Map map, Response response) {
+                                        String url = (String) map.get("url");
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                        activity.startActivity(intent);
+                                    }
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                    }
+                                });
+                                break;
+                            case Remove:
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+                switch (item.getType()) {
+                    case Syllabus:
+                        textView.setText("강의계획서");
+                        textView.setTextColor(Color.parseColor("#000000"));
+                        break;
+                    case Remove:
+                        textView.setText("삭제");
+                        textView.setTextColor(Color.parseColor("#FF0000"));
+                        break;
+                    default:
+                        break;
+                }
                 break;
             }
-            case TYPE_ITEM_COLOR: {
+            case ItemColor: {
                 LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
                 TextView title = (TextView) view.findViewById(R.id.text_title);
                 View fgColor = (View) view.findViewById(R.id.fgColor);
@@ -184,7 +217,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 fgColor.setBackgroundColor(item.getColor().getFg());
                 break;
             }
-            case TYPE_ITEM_CLASS: {
+            case ItemClass: {
                 EditText editText1 = (EditText) view.findViewById(R.id.input_time);
                 editText1.setHint("시간");
                 String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
@@ -220,6 +253,26 @@ public class LectureDetailAdapter extends BaseAdapter {
             }
         }
         return view;
+    }
+
+    private String getCourseNumber() {
+        for (LectureItem item : lists) {
+            if (item.getType() == LectureItem.Type.CourseNumberLectureNumber) {
+                return item.getValue1();
+            }
+        }
+        Log.e(TAG, "can't find course number");
+        return null;
+    }
+
+    private String getLectureNumber() {
+        for (LectureItem item : lists) {
+            if (item.getType() == LectureItem.Type.CourseNumberLectureNumber) {
+                return item.getValue2();
+            }
+        }
+        Log.e(TAG, "can't find lecture number");
+        return null;
     }
 
     private void showDialog(ViewGroup viewGroup, final LectureItem item) {
@@ -305,44 +358,40 @@ public class LectureDetailAdapter extends BaseAdapter {
         Log.d(TAG, "update lecture called.");
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
-        for (int i=0;i<lists.size();i++) {
-            LectureItem item = lists.get(i);
-            if (item.getType() == LectureItem.Type.Header) continue;
-            if (item.getType() == LectureItem.Type.ItemButton) continue;
+        for (LectureItem item : lists) {
+            if (item.getViewType() == ItemHeader) continue;
+            if (item.getViewType() == ItemButton) continue;
+            LectureItem.Type type = item.getType();
 
-            switch (i) {
-                case 0: // header
-                    break;
-                case 1: // 강의명
+            switch (type) {
+                case Title: // 강의명
                     target.setCourse_title(item.getValue1());
                     break;
-                case 2: // 교수
+                case Instructor: // 교수
                     target.setInstructor(item.getValue1());
                     break;
-                case 3: // 색상
+                case Color: // 색상
                     target.setBgColor(item.getColor().getBg());
                     target.setFgColor(item.getColor().getFg());
                     break;
-                case 4: // header
-                    break;
-                case 5: // 학과
+                case Department: // 학과
                     target.setDepartment(item.getValue1());
                     break;
-                case 6: // 학년, 학점
+                case AcademicYearCredit: // 학년, 학점
                     target.setAcademic_year(item.getValue1());
                     target.setCredit(Integer.parseInt(item.getValue2()));
                     break;
-                case 7: // 분류, 구분
+                case ClassificationCategory: // 분류, 구분
                     target.setClassification(item.getValue1());
                     target.setCategory(item.getValue2());
                     break;
-                case 8: // 강좌번호, 분반번호
+                case CourseNumberLectureNumber: // 강좌번호, 분반번호
                     break;
-                case 9: // header
-                    break;
-                default: // 강의 시간
+                case ClassTime:
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
                     ja.add(je);
+                    break;
+                default:
                     break;
             }
         }

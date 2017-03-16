@@ -30,6 +30,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemDetail;
+
 /**
  * Created by makesource on 2016. 9. 4..
  */
@@ -57,27 +59,30 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
 
         lists = new ArrayList<>();
         lists.add(new LectureItem(LectureItem.Type.Header));
-        lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem("색상", lecture.getColor(), LectureItem.Type.ItemColor));
+        lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.Title));
+        lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.Instructor));
+        lists.add(new LectureItem("색상", lecture.getColor(), LectureItem.Type.Color));
         lists.add(new LectureItem(LectureItem.Type.Header));
-        lists.add(new LectureItem("학과", lecture.getDepartment(), LectureItem.Type.ItemDetail));
-        lists.add(new LectureItem("학년", lecture.getAcademic_year(), "학점", String.valueOf(lecture.getCredit()), LectureItem.Type.ItemDetail));
-        lists.add(new LectureItem("분류", lecture.getClassification(), "구분", lecture.getCategory(), LectureItem.Type.ItemDetail));
-        lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), "분반번호", lecture.getLecture_number(), LectureItem.Type.ItemDetail));
+        lists.add(new LectureItem("학과", lecture.getDepartment(), LectureItem.Type.Department));
+        lists.add(new LectureItem("학년", lecture.getAcademic_year(), "학점", String.valueOf(lecture.getCredit()), LectureItem.Type.AcademicYearCredit));
+        lists.add(new LectureItem("분류", lecture.getClassification(), "구분", lecture.getCategory(), LectureItem.Type.ClassificationCategory));
+        lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), "분반번호", lecture.getLecture_number(), LectureItem.Type.CourseNumberLectureNumber));
         lists.add(new LectureItem(LectureItem.Type.Header));
 
         int count = 0;
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject jsonObject = element.getAsJsonObject();
             ClassTime classTime = new ClassTime(jsonObject);
-            lists.add(new LectureItem(classTime, LectureItem.Type.ItemClass));
+            lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
             count ++;
         }
         if (count > 0) {
             lists.add(new LectureItem(LectureItem.Type.Header));
         }
-        lists.add(new LectureItem(LectureItem.Type.ItemButton));
+        lists.add(new LectureItem(LectureItem.Type.Syllabus));
+        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.Remove));
+        lists.add(new LectureItem(LectureItem.Type.Header));
         adapter = new LectureDetailAdapter(getActivity(), lists);
     }
 
@@ -142,8 +147,8 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     private boolean isEditable(LectureItem item) {
-        if (item.getType() != LectureItem.Type.ItemDetail) return true;
-        if (!item.getTitle1().equals("강좌번호")) return true;
+        if (item.getViewType() != ItemDetail) return true;
+        if (item.getType() != LectureItem.Type.CourseNumberLectureNumber) return true;
         return false;
     }
 

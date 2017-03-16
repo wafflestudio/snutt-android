@@ -7,13 +7,34 @@ public class LectureItem {
 
     public enum Type {
         Header(0),
+        Title(1),
+        Instructor(2),
+        Color(3),
+        Department(4),
+        AcademicYearCredit(5),
+        ClassificationCategory(6),
+        CourseNumberLectureNumber(7),
+        ClassTime(8),
+        Syllabus(9),
+        Remove(10);
+        private final int value;
+        Type(int value) {
+            this.value = value;
+        }
+        public final int getValue() {
+            return value;
+        }
+    }
+
+    public enum ViewType {
+        ItemHeader(0),
         ItemTitle(1),
         ItemDetail(2),
         ItemButton(3),
         ItemColor(4),
         ItemClass(5);
         private final int value;
-        Type(int value) {
+        ViewType(int value) {
             this.value = value;
         }
         public final int getValue() {
@@ -63,6 +84,15 @@ public class LectureItem {
         this.classTime = classTime;
         this.type = type;
         this.editable = false;
+    }
+
+    public ViewType getViewType() {
+        if (type == Type.Header) return ViewType.ItemHeader;
+        else if (type == Type.Title || type == Type.Instructor) return ViewType.ItemTitle;
+        else if (type == Type.Color) return ViewType.ItemColor;
+        else if (type == Type.Department || type == Type.AcademicYearCredit || type == Type.ClassificationCategory || type == Type.CourseNumberLectureNumber) return ViewType.ItemDetail;
+        else if (type == Type.ClassTime) return ViewType.ItemClass;
+        else return ViewType.ItemButton;
     }
 
     public LectureItem(Type type) {

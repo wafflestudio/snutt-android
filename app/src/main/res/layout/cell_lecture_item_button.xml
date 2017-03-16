@@ -4,15 +4,16 @@
     android:id="@+id/layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="40dp"
     android:gravity="center"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="?selectableItemBackground">
 
     <TextView
         android:id="@+id/text_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Syllabus"/>
+        style="@style/Text.LectureDetailButton"/>
 
 </LinearLayout>

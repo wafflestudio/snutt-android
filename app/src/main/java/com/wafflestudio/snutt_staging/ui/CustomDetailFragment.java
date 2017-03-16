@@ -52,12 +52,12 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         if (lecture == null) add = true;
 
         lists = new ArrayList<>();
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        /*lists.add(new LectureItem(LectureItem.Type.LectureHeader));
         lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.ItemTitle));
         lists.add(new LectureItem("교수", add ? "" : lecture.getInstructor(), LectureItem.Type.ItemTitle));
         lists.add(new LectureItem("색상", add ? new Color() : lecture.getColor(), LectureItem.Type.ItemColor));
         lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.LectureHeader));
 
         if (!add) {
             for (JsonElement element : lecture.getClass_time_json()) {
@@ -69,7 +69,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.ItemButton));
         for (LectureItem it : lists) {
             it.setEditable(add);
-        }
+        }*/
         adapter = new CustomLectureAdapter(getActivity(), lists);
     }
 

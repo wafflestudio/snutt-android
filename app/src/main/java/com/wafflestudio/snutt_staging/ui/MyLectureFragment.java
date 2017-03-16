@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,11 @@ import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 
 import java.util.List;
+import java.util.Map;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -86,7 +93,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
                                 if (items[index].equals(DIALOG_DETAIL)) {
                                     getMainActivity().startLectureMain(position);
                                 } else if (items[index].equals(DIALOG_SYLLABUS)) {
-                                     Toast.makeText(getContext(), "강의계획서!", Toast.LENGTH_SHORT).show();
+                                    startSyllabus(lecture.getCourse_number(), lecture.getLecture_number());
                                 } else {
                                     LectureManager.getInstance().removeLecture(lecture, null);
                                 }
@@ -146,5 +153,18 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
             // 강의 색상 변경시 fragment 이동 발생!
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void startSyllabus(String courseNumber, String lectureNumber) {
+        LectureManager.getInstance().getCoursebookUrl(courseNumber, lectureNumber, new Callback<Map>() {
+            public void success(Map map, Response response) {
+                String url = (String) map.get("url");
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 }

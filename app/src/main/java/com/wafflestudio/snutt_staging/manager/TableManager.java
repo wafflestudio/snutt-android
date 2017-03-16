@@ -137,8 +137,8 @@ public class TableManager {
     }
 
     public void getCoursebook(final Callback<List<Coursebook>> callback) {
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        app.getRestService().getCoursebook(token, new Callback<List<Coursebook>>() {
+        //String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getCoursebook(new Callback<List<Coursebook>>() {
             @Override
             public void success(List<Coursebook> coursebooks, Response response) {
                 Log.d(TAG, "get coursebook request success.");

@@ -34,6 +34,9 @@ import java.util.ArrayList;
 
 import retrofit.Callback;
 
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHeader;
+
 /**
  * Created by makesource on 2016. 9. 18..
  */
@@ -302,7 +305,7 @@ public class CustomLectureAdapter extends BaseAdapter {
 
     private void addClassItem() {
         int pos = getCount() - 1;
-        lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ItemClass, true));
+        lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ClassTime, true));
     }
 
     public void updateLecture(Lecture lecture, Callback<Table> callback) {
@@ -310,12 +313,11 @@ public class CustomLectureAdapter extends BaseAdapter {
         Log.d(TAG, "update lecture called.");
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
-        for (int i=0;i<lists.size();i++) {
-            LectureItem item = lists.get(i);
-            if (item.getType() == LectureItem.Type.Header) continue;
-            if (item.getType() == LectureItem.Type.ItemButton) continue;
-
-            switch (i) {
+        /*for (LectureItem item : lists) {
+            if (item.getViewType() == ItemHeader) continue;
+            if (item.getViewType() == ItemButton) continue;
+            LectureItem.Type type = item.getType();
+            switch (type) {
                 case 0: // header
                     break;
                 case 1: // 강의명
@@ -336,7 +338,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                     ja.add(je);
                     break;
             }
-        }
+        }*/
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
     }
@@ -345,9 +347,9 @@ public class CustomLectureAdapter extends BaseAdapter {
         Log.d(TAG, "update lecture called.");
         Lecture lecture = new Lecture();
         JsonArray ja = new JsonArray();
-        for (int i=0;i<lists.size();i++) {
+       /* for (int i=0;i<lists.size();i++) {
             LectureItem item = lists.get(i);
-            if (item.getType() == LectureItem.Type.Header) continue;
+            if (item.getType() == LectureItem.Type.LectureHeader) continue;
             if (item.getType() == LectureItem.Type.ItemButton) continue;
 
             switch (i) {
@@ -372,7 +374,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                     break;
             }
         }
-        lecture.setClass_time_json(ja);
+        lecture.setClass_time_json(ja);*/
         LectureManager.getInstance().createLecture(lecture, callback);
     }
 }

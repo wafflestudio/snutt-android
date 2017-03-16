@@ -29,14 +29,14 @@ public class LectureCreateActivity extends SNUTTBaseActivity {
         detailList = (ListView) findViewById(R.id.lecture_detail_list);
 
         lists = new ArrayList<>();
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        /*lists.add(new LectureItem(LectureItem.Type.LectureHeader));
         lists.add(new LectureItem("강의명", "", LectureItem.Type.ItemTitle));
         lists.add(new LectureItem("교수", "", LectureItem.Type.ItemTitle));
         lists.add(new LectureItem("색상", new Color(), LectureItem.Type.ItemColor));
         lists.add(new LectureItem("학점", "0", LectureItem.Type.ItemTitle));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.LectureHeader));
         lists.add(new LectureItem(LectureItem.Type.ItemButton));
-        adapter = new CustomLectureAdapter(this, lists);
+        adapter = new CustomLectureAdapter(this, lists);*/
 
         detailList.setAdapter(adapter);
     }

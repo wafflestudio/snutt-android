@@ -281,6 +281,29 @@ public class LectureManager {
         });
     }
 
+    public void getCoursebookUrl(String courseNumber, String lectureNumber, final Callback callback) {
+        int year = PrefManager.getInstance().getCurrentYear();
+        int semester = PrefManager.getInstance().getCurrentSemester();
+        Map query = new HashMap();
+        query.put("year", year);
+        query.put("semester", semester);
+        query.put("course_number", courseNumber);
+        query.put("lecture_number", lectureNumber);
+        app.getRestService().getCoursebooksOfficial(query, new Callback<Map>() {
+            @Override
+            public void success(Map map, Response response) {
+                Log.d(TAG, "get coursebook official request success!");
+                if (callback != null) callback.success(map, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "get coursebook official request failed..");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     public boolean alreadyOwned(Lecture lec){
         for (Lecture lecture : lectures){
