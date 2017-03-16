@@ -4,7 +4,7 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="35dp"
     android:gravity="center"
     android:focusable="true"
     android:clickable="true"
@@ -26,16 +26,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="14">
-        <View
-            android:id="@+id/bgColor"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
+
         <View
             android:id="@+id/fgColor"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@android:color/holo_green_light"/>
+        <View
+            android:id="@+id/bgColor"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_dark"/>
+
     </LinearLayout>
 
 

@@ -4,7 +4,7 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="45dp"
     android:gravity="center"
     android:focusable="true"
     android:clickable="true"

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
@@ -32,6 +33,10 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
     private View fgColor5, bgColor5, layout5;
     private View fgColor6, bgColor6, layout6;
     private View fgColor7, bgColor7, layout7;
+    private View fgColor8, bgColor8, layout8;
+    private View fgColor9, bgColor9, layout9;
+    private View fgColor10, bgColor10, layout10;
+    private TextView textView1, textView2, textView3, textView4, textView5, textView6, textView7, textView8, textView9, textView10;
 
     // Activity 로 데이터를 전달할 커스텀 리스너
     private ColorChangedListener mCallback;
@@ -57,6 +62,9 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         fgColor5 = (View) rootView.findViewById(R.id.fgColor5);
         fgColor6 = (View) rootView.findViewById(R.id.fgColor6);
         fgColor7 = (View) rootView.findViewById(R.id.fgColor7);
+        fgColor8 = (View) rootView.findViewById(R.id.fgColor8);
+        fgColor9 = (View) rootView.findViewById(R.id.fgColor9);
+        fgColor10 = (View) rootView.findViewById(R.id.fgColor10);
         bgColor1 = (View) rootView.findViewById(R.id.bgColor1);
         bgColor2 = (View) rootView.findViewById(R.id.bgColor2);
         bgColor3 = (View) rootView.findViewById(R.id.bgColor3);
@@ -64,6 +72,9 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         bgColor5 = (View) rootView.findViewById(R.id.bgColor5);
         bgColor6 = (View) rootView.findViewById(R.id.bgColor6);
         bgColor7 = (View) rootView.findViewById(R.id.bgColor7);
+        bgColor8 = (View) rootView.findViewById(R.id.bgColor8);
+        bgColor9 = (View) rootView.findViewById(R.id.bgColor9);
+        bgColor10 = (View) rootView.findViewById(R.id.bgColor10);
         layout1 = (LinearLayout) rootView.findViewById(R.id.color1);
         layout2 = (LinearLayout) rootView.findViewById(R.id.color2);
         layout3 = (LinearLayout) rootView.findViewById(R.id.color3);
@@ -71,6 +82,19 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout5 = (LinearLayout) rootView.findViewById(R.id.color5);
         layout6 = (LinearLayout) rootView.findViewById(R.id.color6);
         layout7 = (LinearLayout) rootView.findViewById(R.id.color7);
+        layout8 = (LinearLayout) rootView.findViewById(R.id.color8);
+        layout9 = (LinearLayout) rootView.findViewById(R.id.color9);
+        layout10 = (LinearLayout) rootView.findViewById(R.id.color10);
+        textView1 = (TextView) rootView.findViewById(R.id.name1);
+        textView2 = (TextView) rootView.findViewById(R.id.name2);
+        textView3 = (TextView) rootView.findViewById(R.id.name3);
+        textView4 = (TextView) rootView.findViewById(R.id.name4);
+        textView5 = (TextView) rootView.findViewById(R.id.name5);
+        textView6 = (TextView) rootView.findViewById(R.id.name6);
+        textView7 = (TextView) rootView.findViewById(R.id.name7);
+        textView8 = (TextView) rootView.findViewById(R.id.name8);
+        textView9 = (TextView) rootView.findViewById(R.id.name9);
+        textView10 = (TextView) rootView.findViewById(R.id.name10);
 
         setDefaultColor();
         setListener();
@@ -91,14 +115,30 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         bgColor4.setBackgroundColor(SNUTTUtils.getBgColorByIndex(4));
         bgColor5.setBackgroundColor(SNUTTUtils.getBgColorByIndex(5));
         bgColor6.setBackgroundColor(SNUTTUtils.getBgColorByIndex(6));
-        bgColor7.setBackgroundColor(SNUTTUtils.getBgColorByIndex(0));
+        bgColor7.setBackgroundColor(SNUTTUtils.getBgColorByIndex(7));
+        bgColor8.setBackgroundColor(SNUTTUtils.getBgColorByIndex(8));
+        bgColor9.setBackgroundColor(SNUTTUtils.getBgColorByIndex(9));
+        bgColor10.setBackgroundColor(SNUTTUtils.getBgColorByIndex(0));
         fgColor1.setBackgroundColor(SNUTTUtils.getFgColorByIndex(1));
         fgColor2.setBackgroundColor(SNUTTUtils.getFgColorByIndex(2));
         fgColor3.setBackgroundColor(SNUTTUtils.getFgColorByIndex(3));
         fgColor4.setBackgroundColor(SNUTTUtils.getFgColorByIndex(4));
         fgColor5.setBackgroundColor(SNUTTUtils.getFgColorByIndex(5));
         fgColor6.setBackgroundColor(SNUTTUtils.getFgColorByIndex(6));
-        fgColor7.setBackgroundColor(SNUTTUtils.getFgColorByIndex(0));
+        fgColor7.setBackgroundColor(SNUTTUtils.getFgColorByIndex(7));
+        fgColor8.setBackgroundColor(SNUTTUtils.getFgColorByIndex(8));
+        fgColor9.setBackgroundColor(SNUTTUtils.getFgColorByIndex(9));
+        fgColor10.setBackgroundColor(SNUTTUtils.getFgColorByIndex(0));
+        textView1.setText(SNUTTUtils.getColorNameByIndex(1));
+        textView2.setText(SNUTTUtils.getColorNameByIndex(2));
+        textView3.setText(SNUTTUtils.getColorNameByIndex(3));
+        textView4.setText(SNUTTUtils.getColorNameByIndex(4));
+        textView5.setText(SNUTTUtils.getColorNameByIndex(5));
+        textView6.setText(SNUTTUtils.getColorNameByIndex(6));
+        textView7.setText(SNUTTUtils.getColorNameByIndex(7));
+        textView8.setText(SNUTTUtils.getColorNameByIndex(8));
+        textView9.setText(SNUTTUtils.getColorNameByIndex(9));
+        textView10.setText(SNUTTUtils.getColorNameByIndex(0));
     }
 
     private void setListener() {
@@ -151,6 +191,30 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
             }
         });
         layout7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onColorChanged(new Color(SNUTTUtils.getBgColorByIndex(7), SNUTTUtils.getFgColorByIndex(7)));
+                //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
+                getActivity().onBackPressed();
+            }
+        });
+        layout8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onColorChanged(new Color(SNUTTUtils.getBgColorByIndex(8), SNUTTUtils.getFgColorByIndex(8)));
+                //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
+                getActivity().onBackPressed();
+            }
+        });
+        layout9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onColorChanged(new Color(SNUTTUtils.getBgColorByIndex(9), SNUTTUtils.getFgColorByIndex(9)));
+                //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
+                getActivity().onBackPressed();
+            }
+        });
+        layout10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ColorPickerDialogBuilder

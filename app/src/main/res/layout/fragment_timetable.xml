@@ -4,9 +4,6 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/cell_header"/>
-
-    <include
         layout="@layout/cell_switch"/>
 
     <include

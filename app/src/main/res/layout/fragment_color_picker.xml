@@ -1,216 +1,423 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/color1"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 1"/>
+        <LinearLayout
+            android:id="@+id/color1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
 
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
 
-        <View
-            android:id="@+id/bgColor1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
+            <View
+                android:id="@+id/fgColor1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
 
-        <View
-            android:id="@+id/fgColor1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
+            <View
+                android:id="@+id/bgColor1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 1"
+                style="@style/Text.LectureDetailContent1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 2"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 3"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 4"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color5"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 5"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color6"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor6"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor6"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 6"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color7"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor7"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor7"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 7"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color8"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor8"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor8"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 8"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color9"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor9"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor9"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:id="@+id/name9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 9"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/color10"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:weightSum="15">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/fgColor10"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_dark"/>
+
+            <View
+                android:id="@+id/bgColor10"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/name10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="13"
+                android:text="컬러 10"
+                style="@style/Text.LectureDetailContent1"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/color2"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 2"/>
 
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/color3"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 3"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/color4"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 4"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor4"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor4"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/color5"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 5"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/color6"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="컬러 6"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor6"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor6"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/color7"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="커스텀"/>
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/bgColor7"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
-
-        <View
-            android:id="@+id/fgColor7"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
