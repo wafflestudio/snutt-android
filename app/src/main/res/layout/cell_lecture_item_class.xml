@@ -13,12 +13,12 @@
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5" />
+        android:layout_weight="1" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="9.5"
+        android:layout_weight="9"
         style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_time"
@@ -33,7 +33,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="9.5"
+        android:layout_weight="9"
         style="@style/Text.LectureDetailTitle2">
         <EditText
             android:id="@+id/input_location"
@@ -48,6 +48,6 @@
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5" />
+        android:layout_weight="1" />
 
 </LinearLayout>

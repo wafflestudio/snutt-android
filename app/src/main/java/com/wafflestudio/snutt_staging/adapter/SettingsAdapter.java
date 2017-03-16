@@ -66,7 +66,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public HeaderViewHolder(View view) {
             super(view);
             layout = (LinearLayout) view.findViewById(R.id.cell_header);
-            layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
+            //layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
         }
     }
 
