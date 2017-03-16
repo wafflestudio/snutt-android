@@ -48,6 +48,7 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHead
 public class LectureDetailAdapter extends BaseAdapter {
     private ArrayList<LectureItem> lists;
     private Activity activity;
+    private Lecture lecture;
 
     private int day;
     private int fromTime;
@@ -55,9 +56,10 @@ public class LectureDetailAdapter extends BaseAdapter {
 
     private final static String TAG = "LECTURE_DETAIL_ADAPTER";
 
-    public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists) {
+    public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists, Lecture lecture) {
         this.activity = activity;
         this.lists = lists;
+        this.lecture = lecture;
     }
 
     @Override
@@ -166,19 +168,10 @@ public class LectureDetailAdapter extends BaseAdapter {
                     public void onClick(View v) {
                         switch (item.getType()) {
                             case Syllabus:
-                                LectureManager.getInstance().getCoursebookUrl(getCourseNumber(), getLectureNumber(), new Callback<Map>() {
-                                    public void success(Map map, Response response) {
-                                        String url = (String) map.get("url");
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                        activity.startActivity(intent);
-                                    }
-                                    @Override
-                                    public void failure(RetrofitError error) {
-                                    }
-                                });
+                                startSyllabus();
                                 break;
                             case Remove:
-
+                                startAlertView();
                                 break;
                             default:
                                 break;
@@ -253,26 +246,6 @@ public class LectureDetailAdapter extends BaseAdapter {
             }
         }
         return view;
-    }
-
-    private String getCourseNumber() {
-        for (LectureItem item : lists) {
-            if (item.getType() == LectureItem.Type.CourseNumberLectureNumber) {
-                return item.getValue1();
-            }
-        }
-        Log.e(TAG, "can't find course number");
-        return null;
-    }
-
-    private String getLectureNumber() {
-        for (LectureItem item : lists) {
-            if (item.getType() == LectureItem.Type.CourseNumberLectureNumber) {
-                return item.getValue2();
-            }
-        }
-        Log.e(TAG, "can't find lecture number");
-        return null;
     }
 
     private void showDialog(ViewGroup viewGroup, final LectureItem item) {
@@ -397,5 +370,43 @@ public class LectureDetailAdapter extends BaseAdapter {
         }
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
+    }
+
+    private void startSyllabus() {
+        LectureManager.getInstance().getCoursebookUrl(lecture.getCourse_number(), lecture.getLecture_number(), new Callback<Map>() {
+            public void success(Map map, Response response) {
+                String url = (String) map.get("url");
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                activity.startActivity(intent);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
+    }
+
+    private void startAlertView() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle("강좌 삭제");
+        alert.setMessage("강좌를 삭제하시겠습니까");
+        alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        activity.finish();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+            }
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 }

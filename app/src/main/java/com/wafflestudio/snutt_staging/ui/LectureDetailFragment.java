@@ -83,7 +83,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem(LectureItem.Type.Remove));
         lists.add(new LectureItem(LectureItem.Type.Header));
-        adapter = new LectureDetailAdapter(getActivity(), lists);
+        adapter = new LectureDetailAdapter(getActivity(), lists, lecture);
     }
 
     @Override
