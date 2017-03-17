@@ -3,6 +3,7 @@ package com.wafflestudio.snutt_staging.adapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +36,8 @@ import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
 import java.util.ArrayList;
 
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHeader;
@@ -45,6 +48,7 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHead
 public class CustomLectureAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList<LectureItem> lists;
+    private Lecture lecture;
     private boolean isAnimated = true;
 
     private int day;
@@ -53,9 +57,10 @@ public class CustomLectureAdapter extends BaseAdapter {
 
     private final static String TAG = "LECTURE_CREATE_ADAPTER";
 
-    public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
+    public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists, Lecture lecture) {
         this.activity = activity;
         this.lists = lists;
+        this.lecture = lecture;
     }
 
     @Override
@@ -126,17 +131,32 @@ public class CustomLectureAdapter extends BaseAdapter {
             case ItemButton: { // add
                 LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
                 TextView textView = (TextView) view.findViewById(R.id.text_button);
-                textView.setText("시간 추가");
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addClassItem();
-                        isAnimated = false;
-                        notifyDataSetChanged();
-
-
-                    }
-                });
+                switch (item.getType()) {
+                    case AddClassTime:
+                        textView.setText("시간 추가");
+                        textView.setTextColor(Color.parseColor("#000000"));
+                        layout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                addClassItem();
+                                isAnimated = false;
+                                notifyDataSetChanged();
+                            }
+                        });
+                        break;
+                    case RemoveLecture:
+                        textView.setText("삭제");
+                        textView.setTextColor(Color.parseColor("#FF0000"));
+                        layout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startAlertView();
+                            }
+                        });
+                        break;
+                    default:
+                        break;
+                }
                 break;
             }
             case ItemColor: {
@@ -162,7 +182,7 @@ public class CustomLectureAdapter extends BaseAdapter {
                 TextInputLayout title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
                 final EditText editText1 = (EditText) view.findViewById(R.id.input_time);
                 final EditText editText2 = (EditText) view.findViewById(R.id.input_location);
-                if (position == getCount() - 3) {
+                if (isLastClassItem(position)) { //   position == getCount() - 3
                     if (!isAnimated) {
                         editText1.setVisibility(View.GONE);
                         editText2.setVisibility(View.GONE);
@@ -300,7 +320,7 @@ public class CustomLectureAdapter extends BaseAdapter {
     }
 
     private void addClassItem() {
-        int pos = getCount() - 2;
+        int pos = getLastClassItemPosition() + 1;
         lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ClassTime, true));
     }
 
@@ -366,5 +386,43 @@ public class CustomLectureAdapter extends BaseAdapter {
         }
         lecture.setClass_time_json(ja);
         LectureManager.getInstance().createLecture(lecture, callback);
+    }
+
+    private void startAlertView() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle("강좌 삭제");
+        alert.setMessage("강좌를 삭제하시겠습니까");
+        alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        activity.finish();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+            }
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    private int getLastClassItemPosition() {
+        for (int i = 0;i < getCount();i ++) {
+            if (isLastClassItem(i)) return i;
+        }
+        Log.e(TAG, "can't find class time item");
+        return -1;
+    }
+
+    private boolean isLastClassItem(int position) {
+        if (position == getCount() - 1) return false;
+        return (getItem(position + 1).getType() == LectureItem.Type.AddClassTime);
     }
 }

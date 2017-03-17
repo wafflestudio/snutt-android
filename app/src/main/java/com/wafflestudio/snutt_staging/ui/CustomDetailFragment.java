@@ -68,13 +68,19 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                 ClassTime classTime = new ClassTime(jsonObject);
                 lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
             }
+            lists.add(new LectureItem(LectureItem.Type.Header));
+            lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
+            lists.add(new LectureItem(LectureItem.Type.Header));
+
+        } else {
+            lists.add(new LectureItem(LectureItem.Type.AddClassTime));
+            lists.add(new LectureItem(LectureItem.Type.Header));
         }
-        lists.add(new LectureItem(LectureItem.Type.AddClassTime));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+
         for (LectureItem it : lists) {
             it.setEditable(add);
         }
-        adapter = new CustomLectureAdapter(getActivity(), lists);
+        adapter = new CustomLectureAdapter(getActivity(), lists, lecture);
     }
 
     @Override
