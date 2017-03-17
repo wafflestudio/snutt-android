@@ -20,7 +20,7 @@ public class LectureItem {
         Credit(11),
         AddClassTime(12);
         private final int value;
-        Type(int value) {
+        Type(final int value) {
             this.value = value;
         }
         public final int getValue() {
@@ -36,7 +36,7 @@ public class LectureItem {
         ItemColor(4),
         ItemClass(5);
         private final int value;
-        ViewType(int value) {
+        ViewType(final int value) {
             this.value = value;
         }
         public final int getValue() {

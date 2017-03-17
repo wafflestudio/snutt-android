@@ -2,6 +2,8 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,12 +19,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
+import com.wafflestudio.snutt_staging.adapter.CustomLectureAdapter;
 import com.wafflestudio.snutt_staging.model.ClassTime;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.LectureItem;
 import com.wafflestudio.snutt_staging.model.Table;
-import com.wafflestudio.snutt_staging.adapter.CustomLectureAdapter;
 
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     private static final String TAG = "CUSTOM_DETAIL_FRAGMENT";
 
     private Lecture lecture;
-    private ListView detailList;
+    private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private CustomLectureAdapter adapter;
     private boolean editable = false;
@@ -80,7 +82,17 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         for (LectureItem it : lists) {
             it.setEditable(add);
         }
-        adapter = new CustomLectureAdapter(getActivity(), lists, lecture);
+        adapter = new CustomLectureAdapter(getActivity(), lecture, lists);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
+        detailView = (RecyclerView) rootView.findViewById(R.id.lecture_detail_view);
+        detailView.setAdapter(adapter);
+        detailView.setLayoutManager(new LinearLayoutManager(getContext()));
+        return rootView;
     }
 
     @Override
@@ -93,15 +105,6 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         } else {
             item.setTitle("편집");
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
-        detailList = (ListView) rootView.findViewById(R.id.lecture_detail_list);
-        detailList.setAdapter(adapter);
-        return rootView;
     }
 
     @Override

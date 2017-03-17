@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -14,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -33,6 +33,7 @@ import com.wafflestudio.snutt_staging.model.Table;
 import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -43,10 +44,13 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButt
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHeader;
 
 /**
- * Created by makesource on 2016. 9. 4..
+ * Created by makesource on 2017. 3. 17..
  */
-public class LectureDetailAdapter extends BaseAdapter {
-    private ArrayList<LectureItem> lists;
+
+public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "LECTURE_DETAIL_ADAPTER";
+    private static TextChangedListener textChangedListener;
+    private List<LectureItem> lists;
     private Activity activity;
     private Lecture lecture;
 
@@ -54,201 +58,359 @@ public class LectureDetailAdapter extends BaseAdapter {
     private int fromTime;
     private int toTime;
 
-    private final static String TAG = "LECTURE_DETAIL_ADAPTER";
-
-    public LectureDetailAdapter(Activity activity, ArrayList<LectureItem> lists, Lecture lecture) {
+    public LectureDetailAdapter(Activity activity, Lecture lecture, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
         this.lecture = lecture;
+        setOnTextChangedListener(new TextChangedListener() {
+            @Override
+            public void onText1Changed(String text, int position) {
+                getItem(position).setValue1(text);
+            }
+
+            @Override
+            public void onText2Changed(String text, int position) {
+                getItem(position).setValue2(text);
+            }
+
+            @Override
+            public void onLocationChanged(String text, int position) {
+                getItem(position).getClassTime().setPlace(text);
+            }
+        });
     }
 
     @Override
-    public int getCount() {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "On create view holder called.");
+        if (viewType == LectureItem.ViewType.ItemHeader.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_header, parent, false);
+            return new HeaderViewHolder(view);
+        }
+        if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_title, parent, false);
+            return new TitleViewHolder(view);
+        }
+        if (viewType == LectureItem.ViewType.ItemDetail.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_detail, parent, false);
+            return new DetailViewHolder(view);
+        }
+        if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_button, parent, false);
+            return new ButtonViewHolder(view);
+        }
+        if (viewType == LectureItem.ViewType.ItemColor.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_color, parent, false);
+            return new ColorViewHolder(view);
+        }
+        if (viewType == LectureItem.ViewType.ItemClass.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_class, parent, false);
+            return new ClassViewHolder(view);
+        }
+        return null;
+    }
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.d(TAG, "On bind view holder called.");
+        int viewType = getItemViewType(position);
+        final LectureItem item = getItem(position);
+        if (viewType == LectureItem.ViewType.ItemHeader.getValue()) {
+            // do nothing
+        }
+        if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
+            TitleViewHolder viewHolder = (TitleViewHolder) holder;
+            viewHolder.bindData(item);
+        }
+        if (viewType == LectureItem.ViewType.ItemDetail.getValue()) {
+            DetailViewHolder viewHolder = (DetailViewHolder) holder;
+            viewHolder.bindData(item);
+        }
+        if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
+            ButtonViewHolder viewHolder = (ButtonViewHolder) holder;
+            viewHolder.bindData(item, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (item.getType()) {
+                        case Syllabus:
+                            startSyllabus();
+                            break;
+                        case RemoveLecture:
+                            startAlertView();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        if (viewType == LectureItem.ViewType.ItemColor.getValue()) {
+            ColorViewHolder viewHolder = (ColorViewHolder) holder;
+            viewHolder.bindData(item, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (item.isEditable()) {
+                        ((LectureMainActivity) activity).setColorPickerFragment();
+                    }
+                }
+            });
+        }
+        if (viewType == LectureItem.ViewType.ItemClass.getValue()) {
+            ClassViewHolder viewHolder = (ClassViewHolder) holder;
+            viewHolder.bindData(item, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (item.isEditable()) {
+                        showDialog(item);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         return lists.size();
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return lists.get(position).getViewType().getValue();
+    }
+
     public LectureItem getItem(int position) {
         return lists.get(position);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public void updateLecture(Lecture lecture, Callback<Table> callback) {
+        // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
+        Log.d(TAG, "update lecture called.");
+        Lecture target = new Lecture();
+        JsonArray ja = new JsonArray();
+        for (LectureItem item : lists) {
+            if (item.getViewType() == ItemHeader) continue;
+            if (item.getViewType() == ItemButton) continue;
+            LectureItem.Type type = item.getType();
 
-    @Override
-    public View getView(int position, View view, final ViewGroup viewGroup) {
-        final LectureItem item = getItem(position);
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        LectureItem.ViewType type = lists.get(position).getViewType();
-        switch (type) {
-            case ItemHeader:
-                view = inflater.inflate(R.layout.cell_lecture_header, viewGroup, false);
-                break;
-            case ItemTitle:
-                view = inflater.inflate(R.layout.cell_lecture_item_title, viewGroup, false);
-                break;
-            case ItemDetail:
-                view = inflater.inflate(R.layout.cell_lecture_item_detail, viewGroup, false);
-                break;
-            case ItemButton:
-                view = inflater.inflate(R.layout.cell_lecture_item_button, viewGroup, false);
-                break;
-            case ItemColor:
-                view = inflater.inflate(R.layout.cell_lecture_item_color, viewGroup, false);
-                break;
-            case ItemClass:
-                view = inflater.inflate(R.layout.cell_lecture_item_class, viewGroup, false);
-                break;
-        }
-        switch (type) {
-            case ItemTitle: {
-                TextView title = (TextView) view.findViewById(R.id.text_title);
-                EditText value = (EditText) view.findViewById(R.id.text_value);
-                title.setText(item.getTitle1());
-                value.setText(item.getValue1());
-                value.setClickable(item.isEditable());
-                value.setFocusable(item.isEditable());
-                value.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.setValue1(s.toString());
-                    }
-                });
-                break;
-            }
-            case ItemDetail: {
-                TextInputLayout title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
-                EditText editText1 = (EditText) view.findViewById(R.id.input_detail1);
-                title1.setHint(item.getTitle1());
-                editText1.setText(item.getValue1());
-                editText1.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.setValue1(s.toString());
-                    }
-                });
-                TextInputLayout title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
-                EditText editText2 = (EditText) view.findViewById(R.id.input_detail2);
-                title2.setHint(item.getTitle2());
-                editText2.setText(item.getValue2());
-                editText2.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.setValue2(s.toString());
-                    }
-                });
-                editText1.setClickable(item.isEditable());
-                editText1.setFocusable(item.isEditable());
-                editText2.setClickable(item.isEditable());
-                editText2.setFocusable(item.isEditable());
-                if (item.getType() == LectureItem.Type.AcademicYearCredit) { // 학점
-                    editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
-                }
-                break;
-            }
-            case ItemButton: {
-                LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
-                TextView textView = (TextView) view.findViewById(R.id.text_button);
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        switch (item.getType()) {
-                            case Syllabus:
-                                startSyllabus();
-                                break;
-                            case RemoveLecture:
-                                startAlertView();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                });
-                switch (item.getType()) {
-                    case Syllabus:
-                        textView.setText("강의계획서");
-                        textView.setTextColor(Color.parseColor("#000000"));
-                        break;
-                    case RemoveLecture:
-                        textView.setText("삭제");
-                        textView.setTextColor(Color.parseColor("#FF0000"));
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            }
-            case ItemColor: {
-                LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout);
-                TextView title = (TextView) view.findViewById(R.id.text_title);
-                View fgColor = (View) view.findViewById(R.id.fgColor);
-                View bgColor = (View) view.findViewById(R.id.bgColor);
-                title.setText("색상");
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (item.isEditable()) {
-                            ((LectureMainActivity) activity).setColorPickerFragment();
-                        }
-                    }
-                });
-                bgColor.setBackgroundColor(item.getColor().getBg());
-                fgColor.setBackgroundColor(item.getColor().getFg());
-                break;
-            }
-            case ItemClass: {
-                EditText editText1 = (EditText) view.findViewById(R.id.input_time);
-                editText1.setHint("시간");
-                String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
-                        SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
-                        SNUTTUtils.numberToTime(item.getClassTime().getStart() + item.getClassTime().getLen());
-                editText1.setText(time);
-                editText1.setClickable(false);
-                editText1.setFocusable(false);
-                editText1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (item.isEditable()) {
-                            showDialog(viewGroup, item);
-                        }
-                    }
-                });
-                EditText editText2 = (EditText) view.findViewById(R.id.input_location);
-                editText2.setHint("장소");
-                editText2.setText(item.getClassTime().getPlace());
-                editText2.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        item.getClassTime().setPlace(s.toString());
-                    }
-                });
-                editText2.setClickable(item.isEditable());
-                editText2.setFocusable(item.isEditable());
-                break;
+            switch (type) {
+                case Title: // 강의명
+                    target.setCourse_title(item.getValue1());
+                    break;
+                case Instructor: // 교수
+                    target.setInstructor(item.getValue1());
+                    break;
+                case Color: // 색상
+                    target.setBgColor(item.getColor().getBg());
+                    target.setFgColor(item.getColor().getFg());
+                    break;
+                case Department: // 학과
+                    target.setDepartment(item.getValue1());
+                    break;
+                case AcademicYearCredit: // 학년, 학점
+                    target.setAcademic_year(item.getValue1());
+                    target.setCredit(Integer.parseInt(item.getValue2()));
+                    break;
+                case ClassificationCategory: // 분류, 구분
+                    target.setClassification(item.getValue1());
+                    target.setCategory(item.getValue2());
+                    break;
+                case CourseNumberLectureNumber: // 강좌번호, 분반번호
+                    break;
+                case ClassTime:
+                    JsonElement je = new Gson().toJsonTree(item.getClassTime());
+                    ja.add(je);
+                    break;
+                default:
+                    break;
             }
         }
-        return view;
+        target.setClass_time_json(ja);
+        LectureManager.getInstance().updateLecture(lecture, target, callback);
     }
 
-    private void showDialog(ViewGroup viewGroup, final LectureItem item) {
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private HeaderViewHolder(View view) {
+            super(view);
+        }
+    }
+
+    private static class TitleViewHolder extends RecyclerView.ViewHolder {
+        private TextView title;
+        private EditText value;
+
+        private TitleViewHolder(View view) {
+            super(view);
+            title = (TextView) view.findViewById(R.id.text_title);
+            value = (EditText) view.findViewById(R.id.text_value);
+        }
+        private void bindData(final LectureItem item) {
+            Log.d(TAG, item.getTitle1() + " " + item.getValue1());
+            title.setText(item.getTitle1());
+            value.setText(item.getValue1());
+            value.setClickable(item.isEditable());
+            value.setFocusable(item.isEditable());
+            value.setFocusableInTouchMode(item.isEditable());
+            value.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textChangedListener.onText1Changed(s.toString(), getPosition());
+                }
+            });
+        }
+    }
+
+    private static class DetailViewHolder extends RecyclerView.ViewHolder {
+        private TextInputLayout title1;
+        private TextInputLayout title2;
+        private EditText editText1;
+        private EditText editText2;
+
+        private DetailViewHolder(View view) {
+            super(view);
+            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+            editText1 = (EditText) view.findViewById(R.id.input_detail1);
+            title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
+            editText2 = (EditText) view.findViewById(R.id.input_detail2);
+        }
+        private void bindData(final LectureItem item) {
+            title1.setHint(item.getTitle1());
+            editText1.setText(item.getValue1());
+            editText1.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textChangedListener.onText1Changed(s.toString(), getPosition());
+                    //item.setValue1(s.toString());
+                }
+            });
+            title2.setHint(item.getTitle2());
+            editText2.setText(item.getValue2());
+            editText2.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textChangedListener.onText2Changed(s.toString(), getPosition());
+
+                }
+            });
+            Log.d(TAG, "item editable is changed.." + item.isEditable());
+            editText1.setClickable(item.isEditable());
+            editText1.setFocusable(item.isEditable());
+            editText1.setFocusableInTouchMode(item.isEditable());
+            editText2.setClickable(item.isEditable());
+            editText2.setFocusable(item.isEditable());
+            editText2.setFocusableInTouchMode(item.isEditable());
+            if (item.getType() == LectureItem.Type.AcademicYearCredit) { // 학점
+                editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
+        }
+    }
+
+    private static class ButtonViewHolder extends RecyclerView.ViewHolder {
+        private LinearLayout layout;
+        private TextView textView;
+        private ButtonViewHolder(View view) {
+            super(view);
+            layout = (LinearLayout) view.findViewById(R.id.layout);
+            textView = (TextView) view.findViewById(R.id.text_button);
+        }
+        private void bindData(final LectureItem item, View.OnClickListener listener) {
+            layout.setOnClickListener(listener);
+            switch (item.getType()) {
+                case Syllabus:
+                    textView.setText("강의계획서");
+                    textView.setTextColor(Color.parseColor("#000000"));
+                    break;
+                case RemoveLecture:
+                    textView.setText("삭제");
+                    textView.setTextColor(Color.parseColor("#FF0000"));
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private static class ColorViewHolder extends RecyclerView.ViewHolder {
+        private LinearLayout layout;
+        private TextView title;
+        private View fgColor;
+        private View bgColor;
+
+        private ColorViewHolder(View view) {
+            super(view);
+            layout = (LinearLayout) view.findViewById(R.id.layout);
+            title = (TextView) view.findViewById(R.id.text_title);
+            fgColor = (View) view.findViewById(R.id.fgColor);
+            bgColor = (View) view.findViewById(R.id.bgColor);
+        }
+        private void bindData(final LectureItem item, View.OnClickListener listener) {
+            title.setText("색상");
+            layout.setOnClickListener(listener);
+            bgColor.setBackgroundColor(item.getColor().getBg());
+            fgColor.setBackgroundColor(item.getColor().getFg());
+        }
+    }
+
+    private static class ClassViewHolder extends RecyclerView.ViewHolder {
+        private TextInputLayout title1;
+        private TextInputLayout title2;
+        private EditText editText1;
+        private EditText editText2;
+
+        private ClassViewHolder(View view) {
+            super(view);
+            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+            title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
+            editText1 = (EditText) view.findViewById(R.id.input_time);
+            editText2 = (EditText) view.findViewById(R.id.input_location);
+        }
+        private void bindData(final LectureItem item, View.OnClickListener listener) {
+            title1.setHint("시간");
+            String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
+                    SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
+                    SNUTTUtils.numberToTime(item.getClassTime().getStart() + item.getClassTime().getLen());
+            editText1.setText(time);
+            editText1.setClickable(false);
+            editText1.setFocusable(false);
+            editText1.setOnClickListener(listener);
+            title2.setHint("장소");
+            editText2.setText(item.getClassTime().getPlace());
+            editText2.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textChangedListener.onLocationChanged(s.toString(), getPosition());
+                    //item.getClassTime().setPlace(s.toString());
+                }
+            });
+            editText2.setClickable(item.isEditable());
+            editText2.setFocusable(item.isEditable());
+            editText2.setFocusableInTouchMode(item.isEditable());
+        }
+    }
+
+    private void showDialog(final LectureItem item) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
@@ -265,7 +427,7 @@ public class LectureDetailAdapter extends BaseAdapter {
                 dialog.dismiss();
             }
         });
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        LayoutInflater inflater = LayoutInflater.from(activity);
         View layout = inflater.inflate(R.layout.dialog_time_picker, null);
         alert.setView(layout);
         alert.show();
@@ -326,52 +488,6 @@ public class LectureDetailAdapter extends BaseAdapter {
         });
     }
 
-    public void updateLecture(Lecture lecture, Callback<Table> callback) {
-        // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        Log.d(TAG, "update lecture called.");
-        Lecture target = new Lecture();
-        JsonArray ja = new JsonArray();
-        for (LectureItem item : lists) {
-            if (item.getViewType() == ItemHeader) continue;
-            if (item.getViewType() == ItemButton) continue;
-            LectureItem.Type type = item.getType();
-
-            switch (type) {
-                case Title: // 강의명
-                    target.setCourse_title(item.getValue1());
-                    break;
-                case Instructor: // 교수
-                    target.setInstructor(item.getValue1());
-                    break;
-                case Color: // 색상
-                    target.setBgColor(item.getColor().getBg());
-                    target.setFgColor(item.getColor().getFg());
-                    break;
-                case Department: // 학과
-                    target.setDepartment(item.getValue1());
-                    break;
-                case AcademicYearCredit: // 학년, 학점
-                    target.setAcademic_year(item.getValue1());
-                    target.setCredit(Integer.parseInt(item.getValue2()));
-                    break;
-                case ClassificationCategory: // 분류, 구분
-                    target.setClassification(item.getValue1());
-                    target.setCategory(item.getValue2());
-                    break;
-                case CourseNumberLectureNumber: // 강좌번호, 분반번호
-                    break;
-                case ClassTime:
-                    JsonElement je = new Gson().toJsonTree(item.getClassTime());
-                    ja.add(je);
-                    break;
-                default:
-                    break;
-            }
-        }
-        target.setClass_time_json(ja);
-        LectureManager.getInstance().updateLecture(lecture, target, callback);
-    }
-
     private void startSyllabus() {
         LectureManager.getInstance().getCoursebookUrl(lecture.getCourse_number(), lecture.getLecture_number(), new Callback<Map>() {
             public void success(Map map, Response response) {
@@ -409,4 +525,15 @@ public class LectureDetailAdapter extends BaseAdapter {
         AlertDialog dialog = alert.create();
         dialog.show();
     }
+
+    private interface TextChangedListener {
+        public void onText1Changed(String text, int position);
+        public void onText2Changed(String text, int position);
+        public void onLocationChanged(String text, int position);
+    }
+
+    private void setOnTextChangedListener(TextChangedListener textChangedListener) {
+        this.textChangedListener = textChangedListener;
+    }
+
 }

@@ -2,6 +2,10 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
@@ -17,12 +20,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
+import com.wafflestudio.snutt_staging.adapter.LectureDetailAdapter;
 import com.wafflestudio.snutt_staging.model.ClassTime;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.LectureItem;
 import com.wafflestudio.snutt_staging.model.Table;
-import com.wafflestudio.snutt_staging.adapter.LectureDetailAdapter;
 
 import java.util.ArrayList;
 
@@ -38,7 +41,7 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemDeta
 public class LectureDetailFragment extends SNUTTBaseFragment {
     private static final String TAG = "LECTURE_DETAIL_FRAGMENT";
     private Lecture lecture;
-    private ListView detailList;
+    private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private LectureDetailAdapter adapter;
     private boolean editable = false;
@@ -83,15 +86,19 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
         lists.add(new LectureItem(LectureItem.Type.Header));
-        adapter = new LectureDetailAdapter(getActivity(), lists, lecture);
+        adapter = new LectureDetailAdapter(getActivity(), lecture, lists);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
-        detailList = (ListView) rootView.findViewById(R.id.lecture_detail_list);
-        detailList.setAdapter(adapter);
+        detailView = (RecyclerView) rootView.findViewById(R.id.lecture_detail_view);
+        detailView.setAdapter(adapter);
+        detailView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemTitle.getValue(), 0);
+        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemDetail.getValue(), 0);
+        //detailView.setItemViewCacheSize(0);
         return rootView;
     }
 
@@ -165,5 +172,4 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         Preconditions.checkArgument(activity instanceof LectureMainActivity);
         return (LectureMainActivity) activity;
     }
-
 }
