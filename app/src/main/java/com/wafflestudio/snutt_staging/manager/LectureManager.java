@@ -196,7 +196,7 @@ public class LectureManager {
                     }
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e(TAG, "post lecture request failed ...");
+                        Log.e(TAG, "remove lecture request failed ...");
                         if (callback != null) callback.failure(error);
                     }
                 });
@@ -204,6 +204,28 @@ public class LectureManager {
             }
         }
         Log.w(TAG, "lecture is not exist!!");
+    }
+
+    // reset lecture from my lecture list
+    // _id 는 유지된다
+    public void resetLecture(Lecture lec, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        String lecture_id = lec.getId();
+        app.getRestService().resetLecture(token, id, lecture_id, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "reset lecture request success!!");
+                setLectures(table.getLecture_list());
+                notifyLectureChanged();
+                if (callback != null) callback.success(table, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "reset lecture request failed ...");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     // 배경색, 글자색 업데이트
@@ -445,6 +467,13 @@ public class LectureManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
+
+    public Lecture getLectureById(String id) {
+        for (Lecture lecture : lectures) {
+            if (lecture.getId().equals(id)) return lecture;
+        }
+        return null;
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

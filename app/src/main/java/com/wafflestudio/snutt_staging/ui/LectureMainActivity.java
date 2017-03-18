@@ -11,6 +11,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
+import com.wafflestudio.snutt_staging.adapter.CustomLectureAdapter;
+import com.wafflestudio.snutt_staging.adapter.LectureDetailAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
@@ -176,6 +178,27 @@ public class LectureMainActivity extends SNUTTBaseActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "on back pressed called");
+        int index = getCurrentFragmentIndex();
+        if (index == FRAGMENT_LECTURE_DETAIL) {
+            LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
+            if (fragment.getEditable()) {
+                fragment.refreshFragment();
+                return;
+            }
+        } else if (index == FRAGMENT_CUSTOM_DETAIL) {
+            CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
+            if (fragment.getEditable()) {
+                fragment.refreshFragment();
+                return;
+            }
+        }
+        super.onBackPressed();
+
     }
 
     @Override

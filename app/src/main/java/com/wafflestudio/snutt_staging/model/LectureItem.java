@@ -18,7 +18,8 @@ public class LectureItem {
         Syllabus(9),
         RemoveLecture(10),
         Credit(11),
-        AddClassTime(12);
+        AddClassTime(12),
+        ResetLecture(13);
         private final int value;
         Type(final int value) {
             this.value = value;
@@ -88,6 +89,15 @@ public class LectureItem {
         this.editable = false;
     }
 
+    public LectureItem(Type type, boolean editable) {
+        this.type = type;
+        this.editable = editable;
+    }
+
+    public LectureItem(Type type) {
+        this.type = type;
+    }
+
     public ViewType getViewType() {
         if (type == Type.Header) return ViewType.ItemHeader;
         else if (type == Type.Title || type == Type.Instructor || type == Type.Credit) return ViewType.ItemTitle;
@@ -97,9 +107,7 @@ public class LectureItem {
         else return ViewType.ItemButton;
     }
 
-    public LectureItem(Type type) {
-        this.type = type;
-    }
+
 
     public String getTitle1() {
         return title1;

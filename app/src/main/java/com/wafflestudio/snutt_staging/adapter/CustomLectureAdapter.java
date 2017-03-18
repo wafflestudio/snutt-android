@@ -3,6 +3,7 @@ package com.wafflestudio.snutt_staging.adapter;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -44,11 +45,11 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHead
 
 public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LECTURE_CREATE_ADAPTER";
+    private static TextChangedListener textChangedListener;
 
     private Activity activity;
     private ArrayList<LectureItem> lists;
     private Lecture lecture;
-    private boolean isAnimated = true;
 
     private int day;
     private int fromTime;
@@ -58,6 +59,16 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.activity = activity;
         this.lists = lists;
         this.lecture = lecture;
+        this.setOnTextChangedListener(new TextChangedListener() {
+            @Override
+            public void onTextChanged(String text, int position) {
+                getItem(position).setValue1(text);
+            }
+            @Override
+            public void onLocationChanged(String text, int position) {
+                getItem(position).getClassTime().setPlace(text);
+            }
+        });
     }
 
     @Override
@@ -109,7 +120,6 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     switch (item.getType()) {
                         case AddClassTime:
                             addClassItem();
-                            isAnimated = false;
                             notifyItemInserted(getLastClassItemPosition());
                             //notifyDataSetChanged();
                             break;
@@ -223,6 +233,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             value.setText(item.getValue1());
             value.setClickable(item.isEditable());
             value.setFocusable(item.isEditable());
+            value.setFocusableInTouchMode(item.isEditable());
             value.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -230,7 +241,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onTextChanged(CharSequence s, int start, int before, int count) {}
                 @Override
                 public void afterTextChanged(Editable s) {
-                    item.setValue1(s.toString());
+                    textChangedListener.onTextChanged(s.toString(), getPosition());
                 }
             });
             if (item.getType() == LectureItem.Type.Credit) { // 학점
@@ -286,16 +297,20 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private static class ClassViewHolder extends RecyclerView.ViewHolder {
+        private TextInputLayout title1;
+        private TextInputLayout title2;
         private EditText editText1;
         private EditText editText2;
 
         private ClassViewHolder(View view) {
             super(view);
+            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+            title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
             editText1 = (EditText) view.findViewById(R.id.input_time);
             editText2 = (EditText) view.findViewById(R.id.input_location);
         }
         private void bindData(final LectureItem item, View.OnClickListener listener) {
-            editText1.setHint("시간");
+            title1.setHint("시간");
             String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
                     SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
                     SNUTTUtils.numberToTime(item.getClassTime().getStart() + item.getClassTime().getLen());
@@ -303,7 +318,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             editText1.setClickable(false);
             editText1.setFocusable(false);
             editText1.setOnClickListener(listener);
-            editText2.setHint("장소");
+            title2.setHint("장소");
             editText2.setText(item.getClassTime().getPlace());
             editText2.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -312,11 +327,12 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onTextChanged(CharSequence s, int start, int before, int count) {}
                 @Override
                 public void afterTextChanged(Editable s) {
-                    item.getClassTime().setPlace(s.toString());
+                    textChangedListener.onLocationChanged(s.toString(), getPosition());
                 }
             });
             editText2.setClickable(item.isEditable());
             editText2.setFocusable(item.isEditable());
+            editText2.setFocusableInTouchMode(item.isEditable());
         }
     }
 
@@ -460,5 +476,14 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         lecture.setClass_time_json(ja);
         LectureManager.getInstance().createLecture(lecture, callback);
+    }
+
+    private interface TextChangedListener {
+        public void onTextChanged(String text, int position);
+        public void onLocationChanged(String text, int position);
+    }
+
+    private void setOnTextChangedListener(TextChangedListener textChangedListener) {
+        this.textChangedListener = textChangedListener;
     }
 }

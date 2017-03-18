@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
@@ -59,8 +63,170 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
             Log.e(TAG, "lecture refers to null point!!");
             return;
         }
-
         lists = new ArrayList<>();
+        attachLectureDetailList(lecture);
+        adapter = new LectureDetailAdapter(getLectureMainActivity(), this, lecture, lists);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
+        detailView = (RecyclerView) rootView.findViewById(R.id.lecture_detail_view);
+        detailView.setAdapter(adapter);
+        detailView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemTitle.getValue(), 0);
+        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemDetail.getValue(), 0);
+        //detailView.setItemViewCacheSize(0);
+        return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        Log.d(TAG, "on create options menu called");
+        inflater.inflate(R.menu.menu_lecture_detail, menu);
+        MenuItem item = menu.getItem(0);
+        if (editable) {
+            item.setTitle("완료");
+        } else {
+            item.setTitle("편집");
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        Log.d(TAG, "on prepare options menu called");
+
+        MenuItem item = menu.getItem(0);
+        if (editable) {
+            item.setTitle("완료");
+        } else {
+            item.setTitle("편집");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_edit :
+                if (editable) {
+                    adapter.updateLecture(lecture, new Callback<Table>() {
+                        @Override
+                        public void success(Table table, Response response) {
+                            item.setTitle("편집");
+                            setNormalMode();
+                        }
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Toast.makeText(getContext(), "강의 업데이트에 실패하였습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    item.setTitle("완료");
+                    setEditMode();
+                }
+                break;
+            case R.id.home:
+                if (editable) {
+                    refreshFragment();
+                    return true;
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setLectureColor(Color color) {
+        getColorItem().setColor(color); // 색상
+        adapter.notifyDataSetChanged();
+    }
+
+    public LectureItem getColorItem() {
+        for (LectureItem item : lists) {
+            if (item.getType() == LectureItem.Type.Color) return item;
+        }
+        Log.e(TAG, "can't find color item");
+        return null;
+    }
+
+    public void refreshFragment() {
+        Log.d(TAG, "refresh fragment called.");
+        editable = false;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+        lists.clear();
+        attachLectureDetailList(lecture);
+        adapter.notifyDataSetChanged();
+    }
+
+    public boolean getEditable() {
+        return editable;
+    }
+
+    private boolean isEditable(LectureItem item) {
+        if (item.getViewType() != ItemDetail) return true;
+        if (item.getType() != LectureItem.Type.CourseNumberLectureNumber) return true;
+        return false;
+    }
+
+    private LectureMainActivity getLectureMainActivity() {
+        Activity activity = getActivity();
+        Preconditions.checkArgument(activity instanceof LectureMainActivity);
+        return (LectureMainActivity) activity;
+    }
+
+    private void setNormalMode() {
+        hideSoftKeyboard(getView());
+        editable = false;
+        for (int i = 0;i < lists.size();i ++) {
+            LectureItem it = lists.get(i);
+            if (!isEditable(it))
+            it.setEditable(false);
+            adapter.notifyItemChanged(i);
+        }
+
+        int pos = getAddClassTimeItemPosition();
+        lists.remove(pos);
+        adapter.notifyItemRemoved(pos);
+        lists.add(pos, new LectureItem(LectureItem.Type.Header, false));
+        adapter.notifyItemInserted(pos);
+        lists.add(pos + 1, new LectureItem(LectureItem.Type.Syllabus, false));
+        adapter.notifyItemInserted(pos + 1);
+
+        pos = getResetItemPosition();
+        lists.remove(pos);
+        lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
+        adapter.notifyItemChanged(pos);
+    }
+
+    private void setEditMode() {
+        editable = true;
+        for (int i = 0;i < lists.size();i ++) {
+            LectureItem it = lists.get(i);
+            if (!isEditable(it)) continue;
+            it.setEditable(true);
+            adapter.notifyItemChanged(i);
+        }
+
+        int syllabusPosition = getSyllabusItemPosition();
+        lists.remove(syllabusPosition - 1);
+        adapter.notifyItemRemoved(syllabusPosition - 1);
+        lists.remove(syllabusPosition - 1);
+        adapter.notifyItemRemoved(syllabusPosition - 1);
+
+        int lastPosition = getLastClassItemPosition();
+        Log.d(TAG, "last position : " + lastPosition);
+        lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
+        adapter.notifyItemInserted(lastPosition + 1);
+
+        int removePosition = getRemoveItemPosition();
+        lists.remove(removePosition);
+        lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
+        adapter.notifyItemChanged(removePosition);
+    }
+
+    private void attachLectureDetailList(Lecture lecture) {
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.Instructor));
@@ -86,90 +252,56 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
         lists.add(new LectureItem(LectureItem.Type.Header));
-        adapter = new LectureDetailAdapter(getActivity(), lecture, lists);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false);
-        detailView = (RecyclerView) rootView.findViewById(R.id.lecture_detail_view);
-        detailView.setAdapter(adapter);
-        detailView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemTitle.getValue(), 0);
-        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemDetail.getValue(), 0);
-        //detailView.setItemViewCacheSize(0);
-        return rootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_lecture_detail, menu);
-        MenuItem item = menu.getItem(0);
-        if (editable) {
-            item.setTitle("완료");
-        } else {
-            item.setTitle("편집");
+    private int getSyllabusItemPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.Syllabus) return i;
         }
+        Log.e(TAG, "can't find syllabus item");
+        return -1;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.action_edit :
-                if (editable) {
-                    adapter.updateLecture(lecture, new Callback<Table>() {
-                        @Override
-                        public void success(Table table, Response response) {
-                            item.setTitle("편집");
-                            editable = false;
-                            for (LectureItem it : lists) {
-                                it.setEditable(false);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Toast.makeText(getContext(), "강의 업데이트에 실패하였습니다", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    item.setTitle("완료");
-                    editable = true;
-                    for (LectureItem it : lists) {
-                        if (!isEditable(it)) continue;
-                        it.setEditable(true);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-                break;
+    private int getAddClassTimeItemPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.AddClassTime) return i;
         }
-        return super.onOptionsItemSelected(item);
+        Log.e(TAG, "can't find add class time item");
+        return -1;
     }
 
-    public void setLectureColor(Color color) {
-        getColorItem().setColor(color); // 색상
-        adapter.notifyDataSetChanged();
-    }
 
-    public LectureItem getColorItem() {
-        for (LectureItem item : lists) {
-            if (item.getType() == LectureItem.Type.Color) return item;
+    private int getRemoveItemPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.RemoveLecture) return i;
         }
-        Log.e(TAG, "can't find color item");
-        return null;
+        Log.e(TAG, "can't find syllabus item");
+        return -1;
     }
 
-    private boolean isEditable(LectureItem item) {
-        if (item.getViewType() != ItemDetail) return true;
-        if (item.getType() != LectureItem.Type.CourseNumberLectureNumber) return true;
-        return false;
+    private int getResetItemPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.ResetLecture) return i;
+        }
+        Log.e(TAG, "can't find reset item");
+        return -1;
     }
 
-    private LectureMainActivity getLectureMainActivity() {
-        Activity activity = getActivity();
-        Preconditions.checkArgument(activity instanceof LectureMainActivity);
-        return (LectureMainActivity) activity;
+    private int getLastClassItemPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (isLastClassItem(i)) return i;
+        }
+        Log.e(TAG, "can't find class time item");
+        return -1;
+    }
+
+    private boolean isLastClassItem(int position) {
+        if (position == lists.size() - 1) return false;
+        return (lists.get(position).getType() == LectureItem.Type.ClassTime) && (lists.get(position + 1).getType() != LectureItem.Type.ClassTime);
+    }
+
+    protected void hideSoftKeyboard(View view) {
+        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

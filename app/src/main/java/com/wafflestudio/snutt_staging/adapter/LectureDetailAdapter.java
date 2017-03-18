@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt_staging.adapter;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -30,6 +30,7 @@ import com.wafflestudio.snutt_staging.model.ClassTime;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.LectureItem;
 import com.wafflestudio.snutt_staging.model.Table;
+import com.wafflestudio.snutt_staging.ui.LectureDetailFragment;
 import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
 
 import java.util.ArrayList;
@@ -51,18 +52,20 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final String TAG = "LECTURE_DETAIL_ADAPTER";
     private static TextChangedListener textChangedListener;
     private List<LectureItem> lists;
-    private Activity activity;
+    private LectureMainActivity activity;
+    private LectureDetailFragment fragment;
     private Lecture lecture;
 
     private int day;
     private int fromTime;
     private int toTime;
 
-    public LectureDetailAdapter(Activity activity, Lecture lecture, ArrayList<LectureItem> lists) {
+    public LectureDetailAdapter(LectureMainActivity activity, LectureDetailFragment fragment, Lecture lecture, ArrayList<LectureItem> lists) {
         this.activity = activity;
+        this.fragment = fragment;
         this.lists = lists;
         this.lecture = lecture;
-        setOnTextChangedListener(new TextChangedListener() {
+        this.setOnTextChangedListener(new TextChangedListener() {
             @Override
             public void onText1Changed(String text, int position) {
                 getItem(position).setValue1(text);
@@ -143,7 +146,14 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                             startSyllabus();
                             break;
                         case RemoveLecture:
-                            startAlertView();
+                            startRemoveAlertView();
+                            break;
+                        case AddClassTime:
+                            addClassItem();
+                            notifyItemInserted(getLastClassItemPosition());
+                            break;
+                        case ResetLecture:
+                            startResetAlertView();
                             break;
                         default:
                             break;
@@ -157,7 +167,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     if (item.isEditable()) {
-                        ((LectureMainActivity) activity).setColorPickerFragment();
+                        activity.setColorPickerFragment();
                     }
                 }
             });
@@ -173,6 +183,24 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
         }
+    }
+
+    private void addClassItem() {
+        int pos = getLastClassItemPosition() + 1;
+        lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ClassTime, true));
+    }
+
+    private int getLastClassItemPosition() {
+        for (int i = 0;i < getItemCount();i ++) {
+            if (isLastClassItem(i)) return i;
+        }
+        Log.e(TAG, "can't find class time item");
+        return -1;
+    }
+
+    private boolean isLastClassItem(int position) {
+        if (position == getItemCount() - 1) return false;
+        return (getItem(position).getType() == LectureItem.Type.ClassTime) && (getItem(position + 1).getType() != LectureItem.Type.ClassTime);
     }
 
     @Override
@@ -342,6 +370,14 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     textView.setText("삭제");
                     textView.setTextColor(Color.parseColor("#FF0000"));
                     break;
+                case AddClassTime:
+                    textView.setText("시간 추가");
+                    textView.setTextColor(Color.parseColor("#000000"));
+                    break;
+                case ResetLecture:
+                    textView.setText("초기화");
+                    textView.setTextColor(Color.parseColor("#FF0000"));
+                    break;
                 default:
                     break;
             }
@@ -501,7 +537,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         });
     }
 
-    private void startAlertView() {
+    private void startRemoveAlertView() {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle("강좌 삭제");
         alert.setMessage("강좌를 삭제하시겠습니까");
@@ -511,6 +547,42 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     @Override
                     public void success(Object o, Response response) {
                         activity.finish();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+            }
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    private void startResetAlertView() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle("강좌 초기화");
+        alert.setMessage("강좌를  원래 상태로 초기화하시겠습니까");
+        alert.setPositiveButton("초기화", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                LectureManager.getInstance().resetLecture(lecture, new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        Lecture updated = LectureManager.getInstance().getLectureById(lecture.getId());
+                        lecture.setCourse_title(updated.getCourse_title());
+                        lecture.setInstructor(updated.getInstructor());
+                        lecture.setColor(updated.getColor());
+                        lecture.setDepartment(updated.getDepartment());
+                        lecture.setAcademic_year(updated.getAcademic_year());
+                        lecture.setCredit(updated.getCredit());
+                        lecture.setClassification(updated.getClassification());
+                        lecture.setCategory(updated.getCategory());
+                        lecture.setClass_time(updated.getClass_time());
+                        lecture.setClass_time_json(updated.getClass_time_json());
+                        fragment.refreshFragment();
                     }
                     @Override
                     public void failure(RetrofitError error) {
