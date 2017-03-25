@@ -24,7 +24,7 @@
             android:layout_weight="12"
             android:layout_gravity="left|center_vertical"
             android:text="Section"
-            android:textSize="12sp"/>
+            style="@style/Text.TimetableSection"/>
 
     </LinearLayout>
 

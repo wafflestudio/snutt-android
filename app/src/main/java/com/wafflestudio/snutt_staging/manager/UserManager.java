@@ -380,7 +380,7 @@ public class UserManager {
         PrefManager.getInstance().resetPrefValue();
         LoginManager.getInstance().logOut(); // for facebook sdk
         deleteFirebaseInstanceId();
-        me = null;
+        me = new User();
     }
 
     public void deleteFirebaseInstanceId() {

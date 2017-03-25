@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,26 +66,6 @@ public class TableCreateActivity extends SNUTTBaseActivity {
             public void failure(RetrofitError error) {
             }
         });
-
-        submitButton = (Button) findViewById(R.id.submit);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = titleText.getText().toString();
-                TableManager.getInstance().postTable(year, semester, title, new Callback<List<Table>>() {
-                    @Override
-                    public void success(List<Table> tables, Response response) {
-                        // 보고있는 테이블 정보 변경하기
-                        //startTableView(id);
-                        finish();
-                    }
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Toast.makeText(TableCreateActivity.this, "테이블 생성에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                }
-                });
-            }
-        });
     }
 
     @Override
@@ -101,6 +83,35 @@ public class TableCreateActivity extends SNUTTBaseActivity {
             list[i] = year + " " + semester;
         }
         return list;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_table_create, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_create) {
+            String title = titleText.getText().toString();
+            TableManager.getInstance().postTable(year, semester, title, new Callback<List<Table>>() {
+                @Override
+                public void success(List<Table> tables, Response response) {
+                    // 보고있는 테이블 정보 변경하기
+                    //startTableView(id);
+                    finish();
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(TableCreateActivity.this, "테이블 생성에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private String getSemester(int semester) {

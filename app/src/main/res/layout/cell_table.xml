@@ -12,16 +12,15 @@
         <View
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="3"/>
+            android:layout_weight="2"/>
 
         <TextView
             android:id="@+id/cell_table"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
-            android:text = "시간표 제목"
-            android:textSize="16sp" />
-
+            android:text = "My timetable title"
+            style="@style/Text.TimetableTitle"/>
     </LinearLayout>
 
 </LinearLayout>

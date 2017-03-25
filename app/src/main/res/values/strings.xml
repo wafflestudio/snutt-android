@@ -11,6 +11,7 @@
     <string name="action_add">Add</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hello_world">Hello world!</string>
+    <string name="action_create">저장</string>
 
     <string name="wday_mon">월요일</string>
     <string name="wday_tue">화요일</string>
