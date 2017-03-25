@@ -132,11 +132,12 @@ public class UserManager {
         });
     }
 
-    public void postSingUp(String id, String password, final Callback callback) {
+    public void postSingUp(String id, String password, String email, final Callback callback) {
         // id, password -> regex check!
         Map query = new HashMap();
         query.put("id", id);
         query.put("password", password);
+        query.put("email", email);
         app.getRestService().postSignUp(query, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {

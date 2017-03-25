@@ -25,6 +25,7 @@ public class SignUpFragment extends SNUTTBaseFragment {
     private OnSignUpSucceedListener mListener;
     private EditText et_id;
     private EditText et_password;
+    private EditText et_email;
     private Button sign_up;
 
     public static SignUpFragment newInstance() {
@@ -41,13 +42,15 @@ public class SignUpFragment extends SNUTTBaseFragment {
         final View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         et_id = (EditText) rootView.findViewById(R.id.input_id);
         et_password = (EditText) rootView.findViewById(R.id.input_password);
+        et_email = (EditText) rootView.findViewById(R.id.input_email);
         sign_up = (Button) rootView.findViewById(R.id.button_sign_up);
         sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String id = et_id.getText().toString();
                 final String password = et_password.getText().toString();
-                UserManager.getInstance().postSingUp(id, password, new Callback<Response>() {
+                final String email = et_email.getText().toString();
+                UserManager.getInstance().postSingUp(id, password, email, new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {
                         Toast.makeText(getContext(), "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();

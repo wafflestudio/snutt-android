@@ -51,7 +51,6 @@ public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnU
             public void onClick(View v) {
                 String id = et_id.getText().toString();
                 String password = et_password.getText().toString();
-
                 UserManager.getInstance().postSignIn(id, password);
             }
         });
