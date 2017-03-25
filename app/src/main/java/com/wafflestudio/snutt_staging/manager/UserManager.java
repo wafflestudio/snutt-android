@@ -339,14 +339,13 @@ public class UserManager {
     }
 
     public void registerFirebaseToken(final Callback callback) {
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
-        Map query = new HashMap();
-        query.put("registration_id", firebaseToken);
-        app.getRestService().registerFirebaseToken(token, query, new Callback<Response>() {
+        final String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        final String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        app.getRestService().registerFirebaseToken(token, firebaseToken, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 Log.d(TAG, "register firebase token success!");
+                Log.d(TAG, "token : " + firebaseToken);
                 if (callback != null) callback.success(response, response2);
             }
             @Override
@@ -358,14 +357,13 @@ public class UserManager {
     }
 
     public void deleteFirebaseToken(final Callback callback) {
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
-        Map query = new HashMap();
-        query.put("registration_id", firebaseToken);
-        app.getRestService().deleteFirebaseToken(token, query, new Callback<Response>() {
+        final String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        final String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        app.getRestService().deleteFirebaseToken(token, firebaseToken, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 Log.d(TAG, "delete firebase token success!");
+                Log.d(TAG, "token : " + firebaseToken);
                 if (callback != null) callback.success(response, response2);
             }
             @Override
@@ -377,7 +375,8 @@ public class UserManager {
     }
 
     public void performLogout() {
-        //UserManager.getInstance().deleteFirebaseToken(null);
+        /* firebase token 삭제 후 로그아웃 시행 */
+        // UserManager.getInstance().deleteFirebaseToken(null);
         PrefManager.getInstance().resetPrefValue();
         LoginManager.getInstance().logOut(); // for facebook sdk
         me = new User();

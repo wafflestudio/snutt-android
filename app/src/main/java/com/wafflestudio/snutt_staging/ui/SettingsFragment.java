@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
@@ -109,9 +110,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         getMainActivity().startSettingsMain(FRAGMENT_PRIVACY);
                         break;
                     case Logout: // logout
-                        UserManager.getInstance().performLogout();
-                        getMainActivity().finishAll();
-                        getMainActivity().startWelcome();
+                        performLogout();
                         break;
                     default:
                         break;
@@ -163,5 +162,20 @@ public class SettingsFragment extends SNUTTBaseFragment {
         }
         lists.get(position).setDetail(version);
         adapter.notifyItemChanged(position);
+    }
+
+    private void performLogout() {
+        UserManager.getInstance().deleteFirebaseToken(new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                UserManager.getInstance().performLogout();
+                getMainActivity().finishAll();
+                getMainActivity().startWelcome();
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getContext(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

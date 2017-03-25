@@ -114,11 +114,11 @@ public interface SNUTTRestApi {
     @GET("/user/facebook")
     public void getUserFacebook(@Header("x-access-token") String token, Callback<Facebook> callback);
 
-    @POST("/user/device")
-    public void registerFirebaseToken(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    @POST("/user/device/{registration_id}")
+    public void registerFirebaseToken(@Header("x-access-token") String token, @Path("registration_id") String id, Callback<Response> callback);
 
-    @DELETE("/user/device")
-    public void deleteFirebaseToken(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    @DELETE("/user/device/{registration_id}")
+    public void deleteFirebaseToken(@Header("x-access-token") String token, @Path("registration_id") String id, Callback<Response> callback);
 
     @DELETE("/user/account")
     public void deleteUserAccount(@Header("x-access-token") String token, Callback<Response> callback);

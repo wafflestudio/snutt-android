@@ -304,16 +304,24 @@ public class AccountFragment extends SNUTTBaseFragment {
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?");
         alert.setPositiveButton("회원탈퇴", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                UserManager.getInstance().deleteUserAccount(new Callback() {
+                UserManager.getInstance().deleteFirebaseToken(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        UserManager.getInstance().performLogout();
-                        getSNUTTBaseActivity().finishAll();
-                        getSNUTTBaseActivity().startWelcome();
+                        UserManager.getInstance().deleteUserAccount(new Callback() {
+                            @Override
+                            public void success(Object o, Response response) {
+                                UserManager.getInstance().performLogout();
+                                getSNUTTBaseActivity().finishAll();
+                                getSNUTTBaseActivity().startWelcome();
+                            }
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
