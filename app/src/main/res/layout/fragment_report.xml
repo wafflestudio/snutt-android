@@ -3,20 +3,37 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
         android:hint="이메일 (옵션)"
-        android:ems="10"
-        android:id="@+id/email_editText" />
+        style="@style/Text.LectureDetailTitle2">
 
-    <EditText
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/email_editText" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:hint="불편한 점이나 버그를 적어주세요."
-        android:ems="10"
-        android:id="@+id/detail_editText" />
+        android:layout_height="wrap_content"
+        android:hint="내용"
+        style="@style/Text.LectureDetailTitle2">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:text="불편한 점이나 버그를 적어주세요."
+            android:ems="10"
+            android:id="@+id/detail_editText" />
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>

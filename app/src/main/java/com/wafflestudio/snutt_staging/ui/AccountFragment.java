@@ -322,6 +322,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                     }
                     @Override
                     public void failure(RetrofitError error) {
+                        Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_send"
         android:title="보내기"
-        android:icon="@drawable/com_facebook_button_send_icon"
+        android:icon="@drawable/ic_action_send"
         android:orderInCategory="100"
         app:showAsAction="always" />
 </menu>
