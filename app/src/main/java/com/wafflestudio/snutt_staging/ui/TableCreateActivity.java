@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.wafflestudio.snutt_staging.R;
@@ -29,9 +32,7 @@ public class TableCreateActivity extends SNUTTBaseActivity {
     private int year = -1;
     private int semester = -1;
     private EditText titleText;
-    private NumberPicker semesterPicker;
-    private Button submitButton;
-
+    private Spinner semesterSpinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +40,8 @@ public class TableCreateActivity extends SNUTTBaseActivity {
         setContentView(R.layout.activity_table_create);
         setTitle("새로운 시간표");
 
-        semesterPicker = (NumberPicker) findViewById(R.id.semesterPicker);
-        titleText = (EditText) findViewById(R.id.tableName);
+        semesterSpinner = (Spinner) findViewById(R.id.spinner);
+        titleText = (EditText) findViewById(R.id.table_title);
 
         TableManager.getInstance().getCoursebook(new Callback<List<Coursebook>>() {
             @Override
@@ -48,17 +49,19 @@ public class TableCreateActivity extends SNUTTBaseActivity {
                 String[] displays = getDisplayList(coursebooks);
                 final int[] years = getYearList(coursebooks);
                 final int[] semesters = getSemesterList(coursebooks);
-                int size = coursebooks.size();
                 year = years[0];
                 semester = semesters[0];
-                semesterPicker.setMinValue(0);
-                semesterPicker.setMaxValue(size - 1);
-                semesterPicker.setDisplayedValues(displays);
-                semesterPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, displays);
+                semesterSpinner.setAdapter(adapter);
+                semesterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                        year = years[newVal];
-                        semester = semesters[newVal];
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        year = years[position];
+                        semester = semesters[position];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        return;
                     }
                 });
             }

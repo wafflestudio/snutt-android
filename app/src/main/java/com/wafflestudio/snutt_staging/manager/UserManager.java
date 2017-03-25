@@ -379,27 +379,9 @@ public class UserManager {
         //UserManager.getInstance().deleteFirebaseToken(null);
         PrefManager.getInstance().resetPrefValue();
         LoginManager.getInstance().logOut(); // for facebook sdk
-        deleteFirebaseInstanceId();
         me = new User();
     }
 
-    public void deleteFirebaseInstanceId() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String msg = "";
-                Log.d(TAG, msg);
-                try {
-                    FirebaseInstanceId.getInstance().deleteInstanceId();
-                    msg = "Device unRegistered";
-                    Log.d(TAG, msg);
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                }
-                return msg;
-            }
-        }.execute(null, null, null);
-    }
 
     private void notifySingIn(boolean code) {
         for (OnUserDataChangedListener listener : listeners) {

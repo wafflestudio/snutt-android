@@ -32,5 +32,4 @@
         android:text="value"
         android:background="@android:color/transparent"
         style="@style/Text.LectureDetailContent1"/>
-
 </LinearLayout>
