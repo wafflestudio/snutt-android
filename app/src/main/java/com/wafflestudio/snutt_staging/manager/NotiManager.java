@@ -113,4 +113,21 @@ public class NotiManager {
         });
     }
 
+    public void getNotificationCount(final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().getNotificationCount(token, new Callback<Map<String,Integer>>() {
+            @Override
+            public void success(Map<String,Integer> map, Response response) {
+                Log.d(TAG, "get notification count success!");
+                if (callback != null) callback.success(map, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "get notification count failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
 }

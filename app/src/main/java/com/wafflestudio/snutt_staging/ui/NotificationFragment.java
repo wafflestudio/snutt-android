@@ -102,6 +102,13 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMainActivity().onNotificationChecked();
+    }
+
+
     // Append the next page of data into the adapter
     // This method probably sends out a network request and appends new data items to your adapter.
     private void loadNextDataFromApi(int page, final int totalItemsCount) {
@@ -132,5 +139,4 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
         });
     }
-
 }

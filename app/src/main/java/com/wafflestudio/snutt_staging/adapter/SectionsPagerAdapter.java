@@ -47,20 +47,4 @@ public class SectionsPagerAdapter  extends FragmentPagerAdapter {
         return NUM_ITEMS;
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "시간표";
-            case 1:
-                return "검색";
-            case 2:
-                return "내 강의";
-            case 3:
-                return "알림";
-            case 4:
-                return "설정";
-        }
-        return null;
-    }
 }

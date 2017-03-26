@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 
@@ -9,8 +10,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
@@ -18,9 +25,14 @@ import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.adapter.SectionsPagerAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
+import com.wafflestudio.snutt_staging.manager.NotiManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.manager.TableManager;
 import com.wafflestudio.snutt_staging.model.Table;
+
+import org.w3c.dom.Text;
+
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -47,6 +59,7 @@ public class MainActivity extends SNUTTBaseActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private ImageView notiCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +77,7 @@ public class MainActivity extends SNUTTBaseActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        setTabLayoutView(tabLayout);
 
         // 1. token 의 유무 검사
         if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
@@ -170,6 +184,20 @@ public class MainActivity extends SNUTTBaseActivity {
     public void onResume(){
         super.onResume();
         checkGoogleServiceVersion();
+        NotiManager.getInstance().getNotificationCount(new Callback<Map<String,Integer>>() {
+            @Override
+            public void success(Map<String,Integer> map, Response response) {
+                int count = map.get("count");
+                Log.d(TAG, "notification count : " + count);
+                if (notiCircle != null) {
+                    notiCircle.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+                }
+            }
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     private boolean checkGoogleServiceVersion() {
@@ -190,5 +218,60 @@ public class MainActivity extends SNUTTBaseActivity {
             Log.e(TAG, "google play service is not supported in this device.");
         }
         return false;
+    }
+
+    private void setTabLayoutView(TabLayout tabLayout) {
+        for (int i=0;i<tabLayout.getTabCount();i++) {
+            FrameLayout layout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+            TextView textView = (TextView) layout.findViewById(R.id.tab_title);
+            textView.setText(getPageTitle(i));
+            ImageView imageView = (ImageView) layout.findViewById(R.id.noti);
+            imageView.setVisibility(View.GONE);
+            tabLayout.getTabAt(i).setCustomView(layout);
+            if (getPageTitle(i).equals("알림")) {
+                notiCircle = imageView;
+            }
+        }
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
+                textView.setTypeface(null, Typeface.BOLD);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
+                textView.setTypeface(null, Typeface.NORMAL);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    public String getPageTitle(int position) {
+        switch (position) {
+            case 0:
+                return "시간표";
+            case 1:
+                return "검색";
+            case 2:
+                return "내 강의";
+            case 3:
+                return "알림";
+            case 4:
+                return "설정";
+        }
+        return null;
+    }
+
+    public void onNotificationChecked() {
+        Log.d(TAG, "on notification checked!");
+        if (notiCircle != null) {
+            notiCircle.setVisibility(View.GONE);
+        }
     }
 }

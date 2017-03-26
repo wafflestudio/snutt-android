@@ -129,6 +129,6 @@ public interface SNUTTRestApi {
     public void getNotification(@Header("x-access-token") String token, @QueryMap Map query, Callback<List<Notification>> callback);
 
     @GET("/notification/count")
-    public void getNotificationCount(@Header("x-access-token") String token, Callback<Response> callback);
+    public void getNotificationCount(@Header("x-access-token") String token, Callback<Map<String,Integer>> callback);
 
 }
