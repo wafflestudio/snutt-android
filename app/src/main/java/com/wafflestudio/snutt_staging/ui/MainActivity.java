@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
@@ -84,6 +85,7 @@ public class MainActivity extends SNUTTBaseActivity {
             // 로그인 창으로 이동
             startWelcome();
             finish();
+            return;
         }
 
         // 2. 앱 내부에 저장된 시간표 뛰어주기
@@ -126,6 +128,21 @@ public class MainActivity extends SNUTTBaseActivity {
                 }
             });
         }
+
+        // noti check
+        NotiManager.getInstance().getNotificationCount(new Callback<Map<String,Integer>>() {
+            @Override
+            public void success(Map<String,Integer> map, Response response) {
+                int count = map.get("count");
+                Log.d(TAG, "notification count : " + count);
+                if (notiCircle != null) {
+                    notiCircle.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+                }
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 
     @Override
@@ -184,20 +201,6 @@ public class MainActivity extends SNUTTBaseActivity {
     public void onResume(){
         super.onResume();
         checkGoogleServiceVersion();
-        NotiManager.getInstance().getNotificationCount(new Callback<Map<String,Integer>>() {
-            @Override
-            public void success(Map<String,Integer> map, Response response) {
-                int count = map.get("count");
-                Log.d(TAG, "notification count : " + count);
-                if (notiCircle != null) {
-                    notiCircle.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
-                }
-            }
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
     }
 
     private boolean checkGoogleServiceVersion() {
@@ -235,6 +238,10 @@ public class MainActivity extends SNUTTBaseActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                /*
+                 * This listener overrides default tabselected listener.
+                 * So we have to call setCurrentItem method manually.
+                 * */
                 mViewPager.setCurrentItem(tab.getPosition());
                 TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
                 textView.setTypeface(null, Typeface.BOLD);
@@ -248,8 +255,12 @@ public class MainActivity extends SNUTTBaseActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
+                textView.setTypeface(null, Typeface.BOLD);
             }
         });
+        //
+        tabLayout.getTabAt(0).select();
     }
 
     public String getPageTitle(int position) {

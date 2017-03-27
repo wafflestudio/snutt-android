@@ -99,13 +99,13 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         if (!NotiManager.getInstance().getFetched()) {
             autoFetch(layout, refreshListener);
         }
+        getMainActivity().onNotificationChecked();
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getMainActivity().onNotificationChecked();
     }
 
 

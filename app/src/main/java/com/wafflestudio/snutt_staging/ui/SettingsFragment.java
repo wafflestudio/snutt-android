@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -165,17 +167,30 @@ public class SettingsFragment extends SNUTTBaseFragment {
     }
 
     private void performLogout() {
-        UserManager.getInstance().deleteFirebaseToken(new Callback() {
-            @Override
-            public void success(Object o, Response response) {
-                UserManager.getInstance().performLogout();
-                getMainActivity().finishAll();
-                getMainActivity().startWelcome();
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("로그아웃");
+        alert.setMessage("로그아웃 하시겠습니까?");
+        alert.setPositiveButton("로그아웃", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                UserManager.getInstance().deleteFirebaseToken(new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        UserManager.getInstance().performLogout();
+                        getMainActivity().startWelcome();
+                        getMainActivity().finishAll();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getContext(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getContext(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
             }
         });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 }

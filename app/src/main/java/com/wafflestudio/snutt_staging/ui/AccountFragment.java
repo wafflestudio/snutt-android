@@ -311,8 +311,8 @@ public class AccountFragment extends SNUTTBaseFragment {
                             @Override
                             public void success(Object o, Response response) {
                                 UserManager.getInstance().performLogout();
-                                getSNUTTBaseActivity().finishAll();
                                 getSNUTTBaseActivity().startWelcome();
+                                getSNUTTBaseActivity().finishAll();
                             }
                             @Override
                             public void failure(RetrofitError error) {

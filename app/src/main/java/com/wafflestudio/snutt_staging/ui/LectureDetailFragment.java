@@ -187,6 +187,10 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
 
         int pos = getAddClassTimeItemPosition();
+        if (pos == -1) {
+            // TODO (seongwon) : notify an error occured
+            return;
+        }
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
         lists.add(pos, new LectureItem(LectureItem.Type.Header, false));
@@ -195,6 +199,10 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         adapter.notifyItemInserted(pos + 1);
 
         pos = getResetItemPosition();
+        if (pos == -1) {
+            // TODO (seongwon) : notify an error occured
+            return;
+        }
         lists.remove(pos);
         lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
         adapter.notifyItemChanged(pos);
@@ -210,17 +218,29 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
 
         int syllabusPosition = getSyllabusItemPosition();
+        if (syllabusPosition == -1) {
+            // TODO (seongwon) : notify an error occured
+            return;
+        }
         lists.remove(syllabusPosition - 1);
         adapter.notifyItemRemoved(syllabusPosition - 1);
         lists.remove(syllabusPosition - 1);
         adapter.notifyItemRemoved(syllabusPosition - 1);
 
         int lastPosition = getLastClassItemPosition();
+        if (lastPosition == -1) {
+            // TODO (seongwon) : notify an error occured
+            return;
+        }
         Log.d(TAG, "last position : " + lastPosition);
         lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
         adapter.notifyItemInserted(lastPosition + 1);
 
         int removePosition = getRemoveItemPosition();
+        if (removePosition == -1) {
+            // TODO (seongwon) : notify an error occured
+            return;
+        }
         lists.remove(removePosition);
         lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
         adapter.notifyItemChanged(removePosition);

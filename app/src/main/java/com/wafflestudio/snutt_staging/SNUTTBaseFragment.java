@@ -3,6 +3,7 @@ package com.wafflestudio.snutt_staging;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.google.common.base.Preconditions;
 import com.wafflestudio.snutt_staging.ui.MainActivity;
@@ -12,6 +13,7 @@ import com.wafflestudio.snutt_staging.ui.MainActivity;
  */
 public class SNUTTBaseFragment extends Fragment {
 
+    private static final String TAG = "SNUTT_BASE_FRAGMENT";
     public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
     public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
 

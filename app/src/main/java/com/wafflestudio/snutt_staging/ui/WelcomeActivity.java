@@ -19,7 +19,8 @@ public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityList.add(this);
+        //activityList.add(this);
+        //finishAll();
         setContentView(R.layout.activity_welcome);
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -40,6 +41,6 @@ public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        activityList.remove(this);
+        //activityList.remove(this);
     }
 }
