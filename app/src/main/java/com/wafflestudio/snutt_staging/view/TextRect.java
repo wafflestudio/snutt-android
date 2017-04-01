@@ -87,31 +87,22 @@ public class TextRect {
 
                     paint.getTextBounds(text, start, stop, bounds );
 
-                    if( (lowest >= start && lowest < stop) ||
-                            bounds.width() > maxWidth ) // start~stop까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
+                    if( (start <= lowest && lowest < stop) || bounds.width() > maxWidth ) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
                     {
                         --stop;
 
-                        if( lowest < start ||
-                                lowest > stop )
+                        if( lowest < start || lowest > stop )
                         {
                             final int blank = text.lastIndexOf( " ", stop );
-                            final int hyphen = text.lastIndexOf( "-", stop );
 
-                            if( blank > start &&
-                                    (hyphen < start || blank > hyphen) )
-                                lowest = blank;
-                            else if( hyphen > start )
-                                lowest = hyphen;
+                            if( blank > start ) lowest = blank;
                         }
 
-                        if( lowest >= start &&
-                                lowest <= stop )
+                        if( start <= lowest && lowest <= stop )
                         {
                             final char ch = text.charAt( stop );
 
-                            if( ch != '\n' &&
-                                    ch != ' ' )
+                            if( ch != '\n' && ch != ' ' )
                                 ++lowest;
 
                             stop = lowest;
