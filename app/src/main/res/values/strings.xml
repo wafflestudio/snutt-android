@@ -13,13 +13,13 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_create">저장</string>
 
-    <string name="wday_mon">월요일</string>
-    <string name="wday_tue">화요일</string>
-    <string name="wday_wed">수요일</string>
-    <string name="wday_thu">목요일</string>
-    <string name="wday_fri">금요일</string>
-    <string name="wday_sat">토요일</string>
-    <string name="wday_sun">일요일</string>
+    <string name="wday_mon">월</string>
+    <string name="wday_tue">화</string>
+    <string name="wday_wed">수</string>
+    <string name="wday_thu">목</string>
+    <string name="wday_fri">금</string>
+    <string name="wday_sat">토</string>
+    <string name="wday_sun">일</string>
     <string name="class_time">교시</string>
     <string name="credit">학점</string>
     <string name="add">추가</string>

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -33,18 +34,19 @@ public class TableView extends View {
 
     private static String TAG = "VIEW_TAG_TABLE_VIEW";
 
-    Paint backgroundPaint;
-    Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
-    Paint lectureTextPaint;
-    Context mContext;
-    String[] wdays;
-    float leftLabelWidth = SNUTTApplication.dpTopx(60);
-    float topLabelHeight = SNUTTApplication.dpTopx(30);
-    float unitWidth, unitHeight;
-    TextRect lectureTextRect;
+    private Paint backgroundPaint;
+    private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
+    private Paint lectureTextPaint;
+    private Path path;
+    private Context mContext;
+    private String[] wdays;
+    private float leftLabelWidth = SNUTTApplication.dpTopx(20);
+    private float topLabelHeight = SNUTTApplication.dpTopx(25);
+    private float unitWidth, unitHeight;
+    private TextRect lectureTextRect;
 
     //사용자 정의 시간표 추가
-    Paint mCustomPaint = new Paint();
+    private Paint mCustomPaint = new Paint();
 
     private List<Lecture> lectures ;
     private boolean export; // 현재 선택한 강의를 보여줄지 말지?
@@ -55,7 +57,6 @@ public class TableView extends View {
     private int startWidth;
     private int numHeight;
     private int startHeight;
-
 
     public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,21 +85,28 @@ public class TableView extends View {
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setColor(0xffcccccc);
-        linePaint.setStrokeWidth(SNUTTApplication.dpTopx(1));
+        linePaint.setStrokeWidth(1);
+
+        linePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
+        linePaint2.setStyle(Paint.Style.STROKE);
+        linePaint2.setColor(0xffcccccc);
+        linePaint2.setStrokeWidth(1);
+        linePaint2.setPathEffect(new DashPathEffect(new float[]{5,5}, 2));
+
+        path = new Path();
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        topLabelTextPaint.setColor(0xff000000);
-        topLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12));
+        topLabelTextPaint.setColor(0xff404040);
+        topLabelTextPaint.setTextSize(SNUTTApplication.spTopx(11.5f));
         topLabelTextPaint.setTextAlign(Paint.Align.CENTER);
-        topLabelTextPaint.setFakeBoldText(true);
 
         leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         leftLabelTextPaint.setFakeBoldText(true);
-        leftLabelTextPaint.setColor(0xff000000);
+        leftLabelTextPaint.setColor(0xff999999);
         leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(14));
         leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
         leftLabelTextPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        leftLabelTextPaint2.setColor(0xff000000);
+        leftLabelTextPaint2.setColor(0xff999999);
         leftLabelTextPaint2.setTextSize(SNUTTApplication.spTopx(10));
         leftLabelTextPaint2.setTextAlign(Paint.Align.CENTER);
 
@@ -311,10 +319,14 @@ public class TableView extends View {
         canvas.drawLine(0, canvasHeight, canvasWidth, canvasHeight, linePaint);
         for (int i=0;i<numHeight*2;i++){
             float height = topLabelHeight + unitHeight * i;
-            if (i%2 == 1)
-                canvas.drawLine(leftLabelWidth, height, canvasWidth, height, linePaint);
-            else
-                canvas.drawLine(0, height, canvasWidth, height, linePaint);
+            if (i%2 == 1) {
+                path.moveTo(leftLabelWidth, height);
+                path.lineTo(canvasWidth, height);
+                canvas.drawPath(path, linePaint2);
+            }
+            else {
+                canvas.drawLine(leftLabelWidth / 3f, height, canvasWidth, height, linePaint);
+            }
         }
         //세로 줄 그리기
         for (int i=0;i<numWidth;i++){
@@ -329,13 +341,16 @@ public class TableView extends View {
         for (int i=0;i<numHeight;i++){
             String str1 = i + startHeight + "교시";
             String str2 = SNUTTUtils.zeroStr(i+startHeight+8) + ":00~" + SNUTTUtils.zeroStr(i+startHeight+9) + ":00";
+            String str = String.valueOf(i + startHeight + 8);
             float textHeight = getTextHeight(str1, leftLabelTextPaint);
             float textHeight2 = getTextHeight(str2, leftLabelTextPaint2);
             float padding = SNUTTApplication.dpTopx(5);
             if (canvasWidth > canvasHeight) padding = 0;
             float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
-            canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
-            canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
+            //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
+            //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
+
+            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f, leftLabelTextPaint2);
         }
         //내 강의 그리기
         if (lectures != null) {
@@ -361,21 +376,9 @@ public class TableView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        path.reset(); // to remove line which drawn by drawPath
         drawTimetable(canvas, getWidth(), getHeight(), export);
     }
-
-    /*void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
-        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
-        for (JsonElement element : lecture.getClass_time_json()) {
-            JsonObject classTime = element.getAsJsonObject();
-
-            int wday = classTime.get("day").getAsInt();
-            float startTime = classTime.get("start").getAsFloat();
-            float duration = classTime.get("len").getAsFloat();
-            String location = classTime.get("place").getAsString();
-            drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, colorIndex);
-        }
-    }*/
 
     void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
