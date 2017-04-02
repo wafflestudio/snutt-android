@@ -514,9 +514,14 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case Credit: // 학점
                     target.setCredit(Integer.parseInt(item.getValue1()));
                     break;
-                default: // 강의 시간
+                case Remark: // 비고
+                    lecture.setRemark(item.getValue1());
+                    break;
+                case ClassTime: // 강의 시간
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
                     ja.add(je);
+                    break;
+                default:
                     break;
             }
         }
@@ -525,7 +530,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void createLecture(Callback<Table> callback) {
-        Log.d(TAG, "update lecture called.");
+        Log.d(TAG, "create lecture called.");
         Lecture lecture = new Lecture();
         JsonArray ja = new JsonArray();
         for (int i=0;i<lists.size();i++) {
@@ -549,9 +554,11 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case Remark: // 비고
                     lecture.setRemark(item.getValue1());
                     break;
-                default: // 강의 시간
+                case ClassTime: // 강의 시간
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
                     ja.add(je);
+                    break;
+                default:
                     break;
             }
         }
