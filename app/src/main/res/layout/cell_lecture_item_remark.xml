@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:focusable="true"
+    android:clickable="true"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:weightSum="20">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_title1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="18"
+        android:hint="비고"
+        style="@style/Text.LectureDetailTitle2">
+        <EditText
+            android:id="@+id/input_detail1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/empty_edit_text"
+            style="@style/Text.LectureDetailContent2"/>
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

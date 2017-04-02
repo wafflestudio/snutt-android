@@ -148,6 +148,8 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("색상", add ? new Color() : lecture.getColor(), LectureItem.Type.Color));
         lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
         lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem("비고", add ? "" : lecture.getRemark(), LectureItem.Type.Remark));
+        lists.add(new LectureItem(LectureItem.Type.Header));
 
         if (!add) {
             for (JsonElement element : lecture.getClass_time_json()) {

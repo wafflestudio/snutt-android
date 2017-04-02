@@ -19,7 +19,8 @@ public class LectureItem {
         RemoveLecture(10),
         Credit(11),
         AddClassTime(12),
-        ResetLecture(13);
+        ResetLecture(13),
+        Remark(14);
         private final int value;
         Type(final int value) {
             this.value = value;
@@ -35,7 +36,8 @@ public class LectureItem {
         ItemDetail(2),
         ItemButton(3),
         ItemColor(4),
-        ItemClass(5);
+        ItemClass(5),
+        ItemRemark(6);
         private final int value;
         ViewType(final int value) {
             this.value = value;
@@ -104,10 +106,9 @@ public class LectureItem {
         else if (type == Type.Color) return ViewType.ItemColor;
         else if (type == Type.Department || type == Type.AcademicYearCredit || type == Type.ClassificationCategory || type == Type.CourseNumberLectureNumber) return ViewType.ItemDetail;
         else if (type == Type.ClassTime) return ViewType.ItemClass;
+        else if (type == Type.Remark) return ViewType.ItemRemark;
         else return ViewType.ItemButton;
     }
-
-
 
     public String getTitle1() {
         return title1;

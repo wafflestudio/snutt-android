@@ -75,9 +75,6 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         detailView = (RecyclerView) rootView.findViewById(R.id.lecture_detail_view);
         detailView.setAdapter(adapter);
         detailView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemTitle.getValue(), 0);
-        //detailView.getRecycledViewPool().setMaxRecycledViews(LectureItem.ViewType.ItemDetail.getValue(), 0);
-        //detailView.setItemViewCacheSize(0);
         return rootView;
     }
 
@@ -181,7 +178,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         editable = false;
         for (int i = 0;i < lists.size();i ++) {
             LectureItem it = lists.get(i);
-            if (!isEditable(it))
+            if (!isEditable(it)) continue;
             it.setEditable(false);
             adapter.notifyItemChanged(i);
         }
@@ -256,6 +253,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("학년", lecture.getAcademic_year(), "학점", String.valueOf(lecture.getCredit()), LectureItem.Type.AcademicYearCredit));
         lists.add(new LectureItem("분류", lecture.getClassification(), "구분", lecture.getCategory(), LectureItem.Type.ClassificationCategory));
         lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), "분반번호", lecture.getLecture_number(), LectureItem.Type.CourseNumberLectureNumber));
+        lists.add(new LectureItem("비고", lecture.getRemark(), LectureItem.Type.Remark));
         lists.add(new LectureItem(LectureItem.Type.Header));
 
         int count = 0;

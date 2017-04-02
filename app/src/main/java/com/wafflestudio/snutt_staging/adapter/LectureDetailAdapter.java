@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -124,6 +125,11 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .inflate(R.layout.cell_lecture_item_class, parent, false);
             return new ClassViewHolder(view);
         }
+        if (viewType == LectureItem.ViewType.ItemRemark.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_item_remark, parent, false);
+            return new RemarkViewHolder(view);
+        }
         return null;
     }
 
@@ -190,6 +196,10 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                 }
             });
+        }
+        if (viewType == LectureItem.ViewType.ItemRemark.getValue()) {
+            RemarkViewHolder viewHolder = (RemarkViewHolder) holder;
+            viewHolder.bindData(item);
         }
     }
 
@@ -262,6 +272,9 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case ClassTime:
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
                     ja.add(je);
+                    break;
+                case Remark: // 비고
+                    target.setRemark(item.getValue1());
                     break;
                 default:
                     break;
@@ -410,6 +423,34 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             layout.setOnClickListener(listener);
             bgColor.setBackgroundColor(item.getColor().getBg());
             fgColor.setBackgroundColor(item.getColor().getFg());
+        }
+    }
+
+    private static class RemarkViewHolder extends RecyclerView.ViewHolder {
+        private TextInputLayout title1;
+        private EditText editText1;
+
+        private RemarkViewHolder(View view) {
+            super(view);
+            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
+            editText1 = (EditText) view.findViewById(R.id.input_detail1);
+        }
+        private void bindData(final LectureItem item) {
+            title1.setHint(item.getTitle1());
+            editText1.setText(item.getValue1());
+            editText1.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textChangedListener.onText1Changed(s.toString(), getPosition());
+                }
+            });
+            editText1.setClickable(item.isEditable());
+            editText1.setFocusable(item.isEditable());
+            editText1.setFocusableInTouchMode(item.isEditable());
         }
     }
 
@@ -622,6 +663,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                         lecture.setCategory(updated.getCategory());
                         lecture.setClass_time(updated.getClass_time());
                         lecture.setClass_time_json(updated.getClass_time_json());
+                        lecture.setRemark(updated.getRemark());
                         fragment.refreshFragment();
                     }
                     @Override
