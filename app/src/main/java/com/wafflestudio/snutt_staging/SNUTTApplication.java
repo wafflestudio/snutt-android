@@ -3,9 +3,17 @@ package com.wafflestudio.snutt_staging;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.http.HttpResponseCache;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.facebook.FacebookSdk;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.NotiManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
@@ -13,15 +21,22 @@ import com.wafflestudio.snutt_staging.manager.TableManager;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.manager.UserManager;
 
+import java.io.File;
+import java.io.IOException;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by makesource on 2016. 1. 17..
  */
 public class SNUTTApplication extends Application {
 
+    private static final String TAG = "SNUTT_APPLICATION";
     private static Context context;
+    private static long SIZE_OF_CACHE = 10 * 1024 * 1024; // 10 MB
 
     private RestAdapter restAdapter;
     private SNUTTRestApi restService;
@@ -67,6 +82,15 @@ public class SNUTTApplication extends Application {
         return px/scaledDensity;
     }
 
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+
     public SNUTTRestApi getRestService() {
         if (restService == null) {
             RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -75,11 +99,17 @@ public class SNUTTApplication extends Application {
                     request.addHeader("x-access-apikey", getResources().getString(R.string.api_key));
                 }
             };
+            Cache cache = new Cache(new File(context.getCacheDir(), "http"), SIZE_OF_CACHE);
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient.setCache(cache);
+
             restAdapter = new RestAdapter.Builder()
                     .setEndpoint(restUrl)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setRequestInterceptor(requestInterceptor)
+                    .setClient(new OkClient(okHttpClient))
                     .build();
+
             restService = restAdapter.create(SNUTTRestApi.class);
         }
         return restService;
