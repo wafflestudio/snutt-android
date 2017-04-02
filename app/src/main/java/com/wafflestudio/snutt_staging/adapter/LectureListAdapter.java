@@ -43,7 +43,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static ClickListener clickListener;
 
     private List<Lecture> lectures;
-    private int selectedPosition = -1;
+    private static int selectedPosition = -1;
 
     public LectureListAdapter(List<Lecture> lectures) {
         this.lectures = lectures;
@@ -91,8 +91,6 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         setOnItemClickListener(new ClickListener() {
             @Override
             public void onClick(View v, final int position) {
-                //TODO : (Seongowon) 배경색 바꾸기 등등 시각적 효과 넣기
-                //TODO : (Seongowon) 내 강의 리스트와 비교해서 이미 있는 강의면 remove를 없으면 add버튼을 활성화
                 if (v.getId() == holder.layout.getId()) {
                     Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");
@@ -189,7 +187,16 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             tagText += lecture.getAcademic_year();
             if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
-            tag.setText(tagText);
+
+            if (getPosition() == selectedPosition) {
+                if (!Strings.isNullOrEmpty(lecture.getRemark())) {
+                    tag.setText(lecture.getRemark());
+                } else {
+                    tag.setText(tagText);
+                }
+            } else {
+                tag.setText(tagText);
+            }
 
             String classTimeText = lecture.getSimplifiedClassTime();
             if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)";
