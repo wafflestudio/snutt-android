@@ -51,6 +51,8 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHead
 public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "LECTURE_DETAIL_ADAPTER";
     private static TextChangedListener textChangedListener;
+    private static LongClickListener longClickListener;
+
     private List<LectureItem> lists;
     private LectureMainActivity activity;
     private LectureDetailFragment fragment;
@@ -79,6 +81,12 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public void onLocationChanged(String text, int position) {
                 getItem(position).getClassTime().setPlace(text);
+            }
+        });
+        this.setOnLongClickListener(new LongClickListener() {
+            @Override
+            public void onLongClick(View view, int position) {
+                showDeleteDialog(position);
             }
         });
     }
@@ -405,7 +413,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    private static class ClassViewHolder extends RecyclerView.ViewHolder {
+    private static class ClassViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
         private TextInputLayout title1;
         private TextInputLayout title2;
         private EditText editText1;
@@ -417,6 +425,11 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
             editText1 = (EditText) view.findViewById(R.id.input_time);
             editText2 = (EditText) view.findViewById(R.id.input_location);
+            title1.setOnLongClickListener(this);
+            editText1.setOnLongClickListener(this);
+            title2.setOnLongClickListener(this);
+            editText2.setOnLongClickListener(this);
+            view.setOnLongClickListener(this);
         }
         private void bindData(final LectureItem item, View.OnClickListener listener) {
             title1.setHint("시간");
@@ -443,6 +456,15 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             editText2.setClickable(item.isEditable());
             editText2.setFocusable(item.isEditable());
             editText2.setFocusableInTouchMode(item.isEditable());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (longClickListener != null) {
+                longClickListener.onLongClick(v, getPosition());
+                return true;
+            }
+            return false;
         }
     }
 
@@ -522,6 +544,24 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 toTime = newVal;
             }
         });
+    }
+
+    private void showDeleteDialog(final int position) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                lists.remove(position);
+                notifyItemRemoved(position);
+                dialog.dismiss();
+            }
+        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).setTitle("시간을 삭제하시겠습니까?");
+        alert.show();
     }
 
     private void startSyllabus() {
@@ -606,6 +646,14 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void setOnTextChangedListener(TextChangedListener textChangedListener) {
         this.textChangedListener = textChangedListener;
+    }
+
+    private interface LongClickListener {
+        public void onLongClick(View view, int position);
+    }
+
+    private void setOnLongClickListener(LongClickListener listener) {
+        this.longClickListener = listener;
     }
 
 }
