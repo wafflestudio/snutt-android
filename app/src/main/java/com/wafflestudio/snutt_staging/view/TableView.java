@@ -35,7 +35,7 @@ public class TableView extends View {
     private static String TAG = "VIEW_TAG_TABLE_VIEW";
 
     private Paint backgroundPaint;
-    private Paint linePaint, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
+    private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
     private Paint lectureTextPaint;
     private Path path;
     private Context mContext;
@@ -86,6 +86,12 @@ public class TableView extends View {
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setColor(0xffcccccc);
         linePaint.setStrokeWidth(1);
+
+        linePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
+        linePaint2.setStyle(Paint.Style.STROKE);
+        linePaint2.setColor(0xffcccccc);
+        linePaint2.setStrokeWidth(1);
+        linePaint2.setPathEffect(new DashPathEffect(new float[]{5,5}, 2));
 
         path = new Path();
 
