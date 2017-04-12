@@ -59,6 +59,7 @@ public class MainActivity extends SNUTTBaseActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    protected TabLayout tabLayout;
     private ViewPager mViewPager;
     private ImageView notiCircle;
 
@@ -76,7 +77,7 @@ public class MainActivity extends SNUTTBaseActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         setTabLayoutView(tabLayout);
 
@@ -262,6 +263,15 @@ public class MainActivity extends SNUTTBaseActivity {
         //
         tabLayout.getTabAt(0).select();
     }
+
+    protected void showTabLayout() {
+        tabLayout.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideTabLayout() {
+        tabLayout.setVisibility(View.GONE);
+    }
+
 
     public String getPageTitle(int position) {
         switch (position) {

@@ -37,7 +37,6 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.lapism:searchview:4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

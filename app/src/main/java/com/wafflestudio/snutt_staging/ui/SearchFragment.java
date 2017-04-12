@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.app.SearchManager;
-import android.app.Service;
 import android.content.Context;
 import android.database.AbstractCursor;
 import android.database.Cursor;
@@ -17,7 +16,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,17 +24,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.adapter.LectureListAdapter;
+import com.wafflestudio.snutt_staging.adapter.SuggestionAdapter;
 import com.wafflestudio.snutt_staging.listener.EndlessRecyclerViewScrollListener;
 import com.wafflestudio.snutt_staging.adapter.TagListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
@@ -48,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -70,7 +64,9 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private RecyclerView tagRecyclerView;
     private RecyclerView lectureRecyclerView;
-    private LectureListAdapter mAdapter;
+    private RecyclerView suggestionRecyclerView;
+    private LectureListAdapter lectureAdapter;
+    private SuggestionAdapter suggestionAdapter;
     private TagListAdapter tagAdapter;
 
     /**
@@ -84,8 +80,10 @@ public class SearchFragment extends SNUTTBaseFragment
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
-    private SearchSuggestionsAdapter suggestionAdapter;
-    private LinearLayout tagSuggestion;
+    private SearchSuggestionsAdapter suggestionAdapter2;
+    private LinearLayout tagHelper;
+    private LinearLayout lectureLayout;
+    private LinearLayout suggestionLayout;
 
     public SearchFragment() {
     }
@@ -109,16 +107,17 @@ public class SearchFragment extends SNUTTBaseFragment
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         setHasOptionsMenu(true);
 
-        tagSuggestion = (LinearLayout) rootView.findViewById(R.id.tag_suggestion);
+        tagHelper = (LinearLayout) rootView.findViewById(R.id.tag_suggestion);
         lectureRecyclerView = (RecyclerView) rootView.findViewById(R.id.search_recyclerView);
+        suggestionRecyclerView = (RecyclerView) rootView.findViewById(R.id.suggestion_recyclerView);
         tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.tag_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
+        lectureAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
         lectureRecyclerView.setLayoutManager(layoutManager);
         lectureRecyclerView.setItemAnimator(null);
-        lectureRecyclerView.setAdapter(mAdapter);
+        lectureRecyclerView.setAdapter(lectureAdapter);
         lectureRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public int getFooterViewType(int defaultNoFooterViewType) {
@@ -131,12 +130,18 @@ public class SearchFragment extends SNUTTBaseFragment
             }
         });
 
+        suggestionAdapter = new SuggestionAdapter(TagManager.getInstance().getTags());
+        suggestionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        suggestionRecyclerView.setAdapter(suggestionAdapter);
 
         LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(getApp(), LinearLayoutManager.HORIZONTAL, false);
         tagRecyclerView.setLayoutManager(horizontalLayoutManager);
         tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTags());
         tagRecyclerView.setAdapter(tagAdapter);
+
+        lectureLayout = (LinearLayout) rootView.findViewById(R.id.lecture_layout);
+        suggestionLayout = (LinearLayout) rootView.findViewById(R.id.suggestion_layout);
         return rootView;
     }
 
@@ -147,11 +152,13 @@ public class SearchFragment extends SNUTTBaseFragment
                 if (hasFocus) {
                     Log.d(TAG, "keyboard up");
                     Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.fade_in);
-                    tagSuggestion.startAnimation(animation);
-                    tagSuggestion.setVisibility(View.VISIBLE);
+                    tagHelper.startAnimation(animation);
+                    tagHelper.setVisibility(View.VISIBLE);
+                    getMainActivity().hideTabLayout();
                 } else {
                     Log.d(TAG, "keyboard down");
-                    tagSuggestion.setVisibility(View.GONE);
+                    tagHelper.setVisibility(View.GONE);
+                    getMainActivity().showTabLayout();
                 }
             }
         });
@@ -159,11 +166,11 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private void loadNextDataFromApi(int page, final int totalItemsCount) {
         LectureManager.getInstance().addProgressBar();
-        mAdapter.notifyDataSetChanged();
+        lectureAdapter.notifyDataSetChanged();
         LectureManager.getInstance().loadData(totalItemsCount, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> searchedLectureList, Response response) {
-                mAdapter.notifyDataSetChanged();
+                lectureAdapter.notifyDataSetChanged();
             }
             @Override
             public void failure(RetrofitError error) { }
@@ -178,7 +185,7 @@ public class SearchFragment extends SNUTTBaseFragment
         clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         editText = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         editText.setThreshold(0);
-        suggestionAdapter = new SearchSuggestionsAdapter(getContext());
+        suggestionAdapter2 = new SearchSuggestionsAdapter(getContext());
         searchView.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
         searchView.setOnSuggestionListener(suggestionListener);
         searchView.setOnQueryTextListener(queryTextListener);
@@ -201,6 +208,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                enableDefaultMode();
                 return true;
             }
         });
@@ -280,6 +288,9 @@ public class SearchFragment extends SNUTTBaseFragment
 
             if (newText.endsWith("#")) {
                 enableTagMode();
+            } else if (mode == TAG_MODE) {
+                Log.d(TAG, "Query text : " + newText);
+                suggestionAdapter.filter(newText);
             }
 
             return true;
@@ -290,7 +301,7 @@ public class SearchFragment extends SNUTTBaseFragment
         LectureManager.getInstance().postSearchQuery(text, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectures, Response response) {
-                mAdapter.notifyDataSetChanged();
+                lectureAdapter.notifyDataSetChanged();
             }
             @Override
             public void failure(RetrofitError error) { }
@@ -304,14 +315,18 @@ public class SearchFragment extends SNUTTBaseFragment
         last_query = searchView.getQuery().toString().substring(0, len-1);
         searchView.setQuery("", false);
         searchView.setQueryHint("ex) 3학점, 컴공 등...");
-        searchView.setSuggestionsAdapter(suggestionAdapter);
-        SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        Drawable img = getActivity().getResources().getDrawable(R.drawable.tag_gray);
+        //searchView.setSuggestionsAdapter(suggestionAdapter2);
+        //SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        /*Drawable img = getActivity().getResources().getDrawable(R.drawable.tag_gray);
         text.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-        text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));
+        text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));*/
 
         clearButton.setVisibility(View.VISIBLE);
         clearButton.setOnClickListener(mTagListener);
+
+        lectureLayout.setVisibility(View.GONE);
+        suggestionLayout.setVisibility(View.VISIBLE);
+        suggestionAdapter.filter("");
     }
 
     private void enableDefaultMode() {
@@ -319,10 +334,12 @@ public class SearchFragment extends SNUTTBaseFragment
 
         searchView.setQuery(last_query, false);
         searchView.setQueryHint("#으로 태그검색!");
-        suggestionAdapter.changeCursor(null);
+        suggestionAdapter2.changeCursor(null);
         searchView.setSuggestionsAdapter(null);
-        editText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         clearButton.setOnClickListener(mDefaultListener);
+
+        //suggestionLayout.setVisibility(View.GONE);
+        //lectureLayout.setVisibility(View.VISIBLE);
     }
 
     private View.OnClickListener mDefaultListener = new View.OnClickListener() {
@@ -343,7 +360,7 @@ public class SearchFragment extends SNUTTBaseFragment
     {
         private static final String[] mFields  = { "_id" , "result" }; // _id field must exist
         private static final String[] mVisible = { "result" }; // db field name
-        private static final int[]    mViewIds = { R.id.text1 };
+        private static final int[]    mViewIds = { /*R.id.text1*/ };
 
 
         public SearchSuggestionsAdapter(Context context)
@@ -368,7 +385,7 @@ public class SearchFragment extends SNUTTBaseFragment
                 for(int i = 0; i < count; i++){
                     mResults.add("Result " + (i + 1));
                 }*/
-                mResults = new ArrayList<>();
+                /*mResults = new ArrayList<>();
                 List<String> tags = TagManager.getInstance().getTags();
                 for (String tag : tags) {
                     mResults.add(tag);
@@ -382,7 +399,7 @@ public class SearchFragment extends SNUTTBaseFragment
                             iter.remove();
                         }
                     }
-                }
+                }*/
             }
 
             @Override

@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@drawable/actionbar_background"
+        android:animateLayoutChanges="true"
         app:elevation="0dp">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

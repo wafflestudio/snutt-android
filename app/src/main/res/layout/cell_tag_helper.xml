@@ -4,7 +4,7 @@
     android:id="@+id/tag_suggestion"
     android:layout_width="match_parent"
     android:layout_height="35dp"
-    android:background="#d9d9d9"
+    android:background="#FFFFFF"
     android:layout_alignParentBottom="true"
     android:orientation="horizontal"
     android:visibility="gone">
