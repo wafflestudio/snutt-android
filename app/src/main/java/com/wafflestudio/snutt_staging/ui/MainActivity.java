@@ -3,6 +3,8 @@ package com.wafflestudio.snutt_staging.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 
@@ -75,11 +77,13 @@ public class MainActivity extends SNUTTBaseActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         setTabLayoutView(tabLayout);
+        setUpAppBarLayout(appBarLayout);
 
         // 1. token 의 유무 검사
         if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
@@ -262,6 +266,12 @@ public class MainActivity extends SNUTTBaseActivity {
         });
         //
         tabLayout.getTabAt(0).select();
+    }
+
+    private void setUpAppBarLayout(AppBarLayout appBarLayout) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // for pre-lollipop device
+            appBarLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_background));
+        }
     }
 
     protected void showTabLayout() {

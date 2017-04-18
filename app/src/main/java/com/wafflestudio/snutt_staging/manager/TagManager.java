@@ -168,8 +168,8 @@ public class TagManager {
                     field.put(tag, "classification");
                     tags.add(tag);
                 }
-                for (String tag : tagList.getDepartment()) {
-                    field.put(tag, "department");
+                for (String tag : tagList.getCredit()) {
+                    field.put(tag, "credit");
                     tags.add(tag);
                 }
                 for (String tag : tagList.getAcademic_year()) {
@@ -185,14 +185,16 @@ public class TagManager {
                     tags.add(tag);
                 }
                 for (String tag : tagList.getCategory()) {
-                    field.put(tag, "time");
+                    field.put(tag, "category");
                     tags.add(tag);
                 }
                 classification.clear();
+                credit.clear();
                 department.clear();
                 academic_year.clear();
                 instructor.clear();
                 department.clear();
+                category.clear();
                 time.clear();
             }
 

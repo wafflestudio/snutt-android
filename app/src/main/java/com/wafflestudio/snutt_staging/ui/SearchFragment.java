@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
@@ -131,6 +132,19 @@ public class SearchFragment extends SNUTTBaseFragment
         });
 
         suggestionAdapter = new SuggestionAdapter(TagManager.getInstance().getTags());
+        suggestionAdapter.setClickListener(new SuggestionAdapter.ClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                Log.d(TAG, "suggestion item clicked!");
+                TextView textView = (TextView) v.findViewById(R.id.suggestion_text);
+                String text = textView.getText().toString();
+                if (TagManager.getInstance().addTag(text)) {
+                    tagAdapter.notifyItemInserted(0);
+                    tagRecyclerView.scrollToPosition(0);
+                }
+                enableDefaultMode();
+            }
+        });
         suggestionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         suggestionRecyclerView.setAdapter(suggestionAdapter);
 
@@ -142,6 +156,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
         lectureLayout = (LinearLayout) rootView.findViewById(R.id.lecture_layout);
         suggestionLayout = (LinearLayout) rootView.findViewById(R.id.suggestion_layout);
+
         return rootView;
     }
 
@@ -151,14 +166,15 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     Log.d(TAG, "keyboard up");
-                    Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.fade_in);
-                    tagHelper.startAnimation(animation);
+                    //Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.fade_in);
+                    //tagHelper.startAnimation(animation);
                     tagHelper.setVisibility(View.VISIBLE);
                     getMainActivity().hideTabLayout();
                 } else {
                     Log.d(TAG, "keyboard down");
                     tagHelper.setVisibility(View.GONE);
                     getMainActivity().showTabLayout();
+                    enableDefaultMode();
                 }
             }
         });
@@ -267,6 +283,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
+            Log.d(TAG, "onQueryTextSubmit called!");
             if (mode == DEFAULT_MODE) {
                 searchView.clearFocus();
                 postQuery(query);
@@ -292,7 +309,6 @@ public class SearchFragment extends SNUTTBaseFragment
                 Log.d(TAG, "Query text : " + newText);
                 suggestionAdapter.filter(newText);
             }
-
             return true;
         }
     };
@@ -338,8 +354,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setSuggestionsAdapter(null);
         clearButton.setOnClickListener(mDefaultListener);
 
-        //suggestionLayout.setVisibility(View.GONE);
-        //lectureLayout.setVisibility(View.VISIBLE);
+        lectureLayout.setVisibility(View.VISIBLE);
+        suggestionLayout.setVisibility(View.GONE);
     }
 
     private View.OnClickListener mDefaultListener = new View.OnClickListener() {

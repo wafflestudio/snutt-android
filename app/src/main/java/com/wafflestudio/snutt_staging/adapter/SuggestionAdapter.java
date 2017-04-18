@@ -25,10 +25,10 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private List<String> tagList;
     private List<String> filteredList;
+    private static ClickListener clickListener;
 
     public SuggestionAdapter(List<String> lists) {
         this.tagList = lists;
-        //this.filteredList = new ArrayList<>(lists);
         this.filteredList = new ArrayList<>();
     }
 
@@ -67,17 +67,32 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
 
-    protected static class SuggestionViewHolder extends RecyclerView.ViewHolder {
+    protected static class SuggestionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView suggestion;
 
         public SuggestionViewHolder(View itemView) {
             super(itemView);
             suggestion = (TextView) itemView.findViewById(R.id.suggestion_text);
+            itemView.setOnClickListener(this);
         }
 
         private void bindData(String tag) {
             suggestion.setText(tag);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null) {
+                clickListener.onClick(v, getPosition());
+            }
+        }
     }
 
+    public interface ClickListener {
+        public void onClick(View v, int position);
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 }
