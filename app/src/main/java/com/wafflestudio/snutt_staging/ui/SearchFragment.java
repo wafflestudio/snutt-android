@@ -156,6 +156,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
         lectureLayout = (LinearLayout) rootView.findViewById(R.id.lecture_layout);
         suggestionLayout = (LinearLayout) rootView.findViewById(R.id.suggestion_layout);
+        setTagHelper();
 
         return rootView;
     }
@@ -193,6 +194,23 @@ public class SearchFragment extends SNUTTBaseFragment
         });
     }
 
+    private void setTagHelper() {
+        ImageView tag = (ImageView) tagHelper.findViewById(R.id.tag);
+        tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enableTagMode(false);
+            }
+        });
+        TextView cancel = (TextView) tagHelper.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enableDefaultMode();
+            }
+        });
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
@@ -206,6 +224,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setOnSuggestionListener(suggestionListener);
         searchView.setOnQueryTextListener(queryTextListener);
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
         DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
         searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
 
@@ -304,7 +324,7 @@ public class SearchFragment extends SNUTTBaseFragment
             }
 
             if (newText.endsWith("#")) {
-                enableTagMode();
+                enableTagMode(true);
             } else if (mode == TAG_MODE) {
                 Log.d(TAG, "Query text : " + newText);
                 suggestionAdapter.filter(newText);
@@ -324,18 +344,19 @@ public class SearchFragment extends SNUTTBaseFragment
         });
     }
 
-    private void enableTagMode() {
+    private void enableTagMode(boolean contains) {
         mode = TAG_MODE;
 
+        LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
+        LinearLayout layout2 = (LinearLayout) tagHelper.findViewById(R.id.default_mode);
+        layout1.setVisibility(View.VISIBLE);
+        layout2.setVisibility(View.GONE);
+
         int len = searchView.getQuery().length();
-        last_query = searchView.getQuery().toString().substring(0, len-1);
+        if (contains) last_query = searchView.getQuery().toString().substring(0, len-1);
+        else last_query = searchView.getQuery().toString();
         searchView.setQuery("", false);
         searchView.setQueryHint("ex) 3학점, 컴공 등...");
-        //searchView.setSuggestionsAdapter(suggestionAdapter2);
-        //SearchView.SearchAutoComplete text = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        /*Drawable img = getActivity().getResources().getDrawable(R.drawable.tag_gray);
-        text.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-        text.setCompoundDrawablePadding((int) SNUTTApplication.dpTopx(5));*/
 
         clearButton.setVisibility(View.VISIBLE);
         clearButton.setOnClickListener(mTagListener);
@@ -347,6 +368,11 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private void enableDefaultMode() {
         mode = DEFAULT_MODE;
+
+        LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
+        LinearLayout layout2 = (LinearLayout) tagHelper.findViewById(R.id.default_mode);
+        layout1.setVisibility(View.GONE);
+        layout2.setVisibility(View.VISIBLE);
 
         searchView.setQuery(last_query, false);
         searchView.setQueryHint("#으로 태그검색!");

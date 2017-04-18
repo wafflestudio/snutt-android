@@ -7,19 +7,23 @@
     android:background="#FFFFFF"
     android:layout_alignParentBottom="true"
     android:orientation="horizontal"
+    android:clickable="true"
     android:visibility="gone">
 
     <LinearLayout
+        android:id="@+id/default_mode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:id="@+id/tag"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/hash_black"
-            android:paddingLeft="10dp"/>
+            android:padding="5dp"
+            android:layout_marginLeft="20dp"/>
 
         <View
             android:layout_width="0dp"
@@ -30,20 +34,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="빈 시간대 검색"
-            android:paddingRight="10dp"/>
+            android:paddingRight="20dp"/>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/tag_mode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:visibility="gone">
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
         <TextView
+            android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="취소" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/academic_year"
@@ -51,15 +67,31 @@
             android:layout_height="wrap_content"
             android:text="학년" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="교양분류" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="분류" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/credit"
@@ -67,17 +99,32 @@
             android:layout_height="wrap_content"
             android:text="학점" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
         <TextView
             android:id="@+id/department"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="학과" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
         <TextView
             android:id="@+id/instructor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="교수" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
