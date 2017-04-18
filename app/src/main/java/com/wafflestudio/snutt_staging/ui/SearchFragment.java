@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -219,12 +221,26 @@ public class SearchFragment extends SNUTTBaseFragment
         clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         editText = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         editText.setThreshold(0);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { // to handle empty query
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String text = searchView.getQuery().toString();
+                    if (mode == DEFAULT_MODE && TextUtils.isEmpty(text)) {
+                        searchView.clearFocus();
+                        postQuery(text);
+                    } else {
+                        searchView.setQuery(text, true);
+                    }
+                }
+                return true;
+            }
+        });
         suggestionAdapter2 = new SearchSuggestionsAdapter(getContext());
         searchView.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
         searchView.setOnSuggestionListener(suggestionListener);
         searchView.setOnQueryTextListener(queryTextListener);
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
 
         DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
         searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
@@ -283,7 +299,6 @@ public class SearchFragment extends SNUTTBaseFragment
             tagRecyclerView.startAnimation(animation);
         }
     }
-
 
     private SearchView.OnSuggestionListener suggestionListener = new SearchView.OnSuggestionListener() {
         @Override
