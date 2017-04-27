@@ -34,8 +34,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
         View cellLayoutView;
         ViewHolder viewHolder;
 
-        cellLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cell_tag, parent, false);
+        cellLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_tag, parent, false);
         viewHolder = new ViewHolder(cellLayoutView);
         return viewHolder;
     }

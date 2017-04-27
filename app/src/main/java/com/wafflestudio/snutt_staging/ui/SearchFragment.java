@@ -109,8 +109,8 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView called!");
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         setHasOptionsMenu(true);
 
@@ -159,6 +159,9 @@ public class SearchFragment extends SNUTTBaseFragment
         tagRecyclerView.setLayoutManager(horizontalLayoutManager);
         tagAdapter = new TagListAdapter(getContext(), TagManager.getInstance().getMyTags());
         tagRecyclerView.setAdapter(tagAdapter);
+        if (TagManager.getInstance().getMyTags().size() > 0) {
+            tagRecyclerView.setVisibility(View.VISIBLE);
+        }
 
         lectureLayout = (LinearLayout) rootView.findViewById(R.id.lecture_layout);
         suggestionLayout = (LinearLayout) rootView.findViewById(R.id.suggestion_layout);
@@ -330,7 +333,6 @@ public class SearchFragment extends SNUTTBaseFragment
         super.onResume();
         LectureManager.getInstance().addListener(this);
         TagManager.getInstance().registerListener(this);
-
     }
 
     @Override
@@ -339,16 +341,22 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     @Override
-    public void notifyTagChanged() {
+    public void notifyTagChanged(boolean anim) {
+        Log.d(TAG, "notifyTagChanged called");
         if (TagManager.getInstance().getMyTags().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
             tagRecyclerView.setVisibility(View.GONE);
-            Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
-            tagRecyclerView.startAnimation(animation);
+            if (anim) {
+                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
+                tagRecyclerView.startAnimation(animation);
+            }
         } else if (TagManager.getInstance().getMyTags().size() > 0 && tagRecyclerView.getVisibility() == View.GONE) {
             tagRecyclerView.setVisibility(View.VISIBLE);
-            Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
-            tagRecyclerView.startAnimation(animation);
+            if (anim) {
+                Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
+                tagRecyclerView.startAnimation(animation);
+            }
         }
+        tagAdapter.notifyDataSetChanged();
     }
 
     private SearchView.OnSuggestionListener suggestionListener = new SearchView.OnSuggestionListener() {

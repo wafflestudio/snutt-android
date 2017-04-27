@@ -62,7 +62,7 @@ public class TagManager {
     }
 
     public interface OnTagChangedListener {
-        void notifyTagChanged();
+        void notifyTagChanged(boolean anim);
     }
 
     private OnTagChangedListener listener;
@@ -113,7 +113,7 @@ public class TagManager {
                 break;*/
         }
         Log.d(TAG, "a tag is successfully added!!!");
-        notifyTagChanged();
+        notifyTagChanged(true);
         return true;
     }
 
@@ -144,7 +144,7 @@ public class TagManager {
                 break;*/
         }
         myTags.remove(position);
-        notifyTagChanged();
+        notifyTagChanged(true);
     }
 
     public List<String> getTags() {
@@ -163,6 +163,14 @@ public class TagManager {
                 tags.clear();
                 myTags.clear();
                 field.clear();
+                classification.clear();
+                credit.clear();
+                department.clear();
+                academic_year.clear();
+                instructor.clear();
+                department.clear();
+                category.clear();
+                time.clear();
 
                 for (String tag : tagList.getClassification()) {
                     field.put(tag, "classification");
@@ -188,14 +196,7 @@ public class TagManager {
                     field.put(tag, "category");
                     tags.add(tag);
                 }
-                classification.clear();
-                credit.clear();
-                department.clear();
-                academic_year.clear();
-                instructor.clear();
-                department.clear();
-                category.clear();
-                time.clear();
+                notifyTagChanged(false);
             }
 
             @Override
@@ -276,8 +277,8 @@ public class TagManager {
         tags.add("자율전공학부");
    }
 
-    private void notifyTagChanged() {
+    private void notifyTagChanged(boolean anim) {
         if (listener == null) return;
-        listener.notifyTagChanged();
+        listener.notifyTagChanged(anim);
     }
 }
