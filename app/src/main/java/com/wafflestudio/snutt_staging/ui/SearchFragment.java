@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.database.AbstractCursor;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -43,6 +44,8 @@ import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.view.TableView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,18 +78,19 @@ public class SearchFragment extends SNUTTBaseFragment
     /**
      * This Variable is used for SearchView
      */
-    private static final int DEFAULT_MODE = 1;
-    private static final int TAG_MODE = 2;
+    enum TagMode {
+        DEFAULT_MODE, TAG_MODE;
+    }
+    private static TagMode tagMode = TagMode.DEFAULT_MODE;
 
-    private int mode = DEFAULT_MODE;
     private SearchView searchView;
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
-    private SearchSuggestionsAdapter suggestionAdapter2;
     private LinearLayout tagHelper;
     private LinearLayout lectureLayout;
     private LinearLayout suggestionLayout;
+    private TextView  cancel, all, academicYear, category, classification, credit, department, instructor;
 
     public SearchFragment() {
     }
@@ -197,18 +201,66 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void setTagHelper() {
-        ImageView tag = (ImageView) tagHelper.findViewById(R.id.tag);
+        final ImageView tag = (ImageView) tagHelper.findViewById(R.id.tag);
         tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enableTagMode(false);
             }
         });
-        TextView cancel = (TextView) tagHelper.findViewById(R.id.cancel);
+        cancel = (TextView) tagHelper.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enableDefaultMode();
+            }
+        });
+        academicYear = (TextView) tagHelper.findViewById(R.id.academic_year);
+        academicYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleAcademicYear();
+                academicYear.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        category = (TextView) tagHelper.findViewById(R.id.category);
+        category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleCategory();
+                category.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        classification = (TextView) tagHelper.findViewById(R.id.classification);
+        classification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleClassification();
+                classification.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        credit = (TextView) tagHelper.findViewById(R.id.credit);
+        credit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleCredit();
+                credit.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        department = (TextView) tagHelper.findViewById(R.id.department);
+        department.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleDepartment();
+                department.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        instructor = (TextView) tagHelper.findViewById(R.id.instructor);
+        instructor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = suggestionAdapter.toggleInstructor();
+                instructor.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
             }
         });
     }
@@ -226,7 +278,7 @@ public class SearchFragment extends SNUTTBaseFragment
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { // to handle empty query
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String text = searchView.getQuery().toString();
-                    if (mode == DEFAULT_MODE && TextUtils.isEmpty(text)) {
+                    if (isDefaultMode() && TextUtils.isEmpty(text)) {
                         searchView.clearFocus();
                         postQuery(text);
                     } else {
@@ -236,7 +288,6 @@ public class SearchFragment extends SNUTTBaseFragment
                 return true;
             }
         });
-        suggestionAdapter2 = new SearchSuggestionsAdapter(getContext());
         searchView.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
         searchView.setOnSuggestionListener(suggestionListener);
         searchView.setOnQueryTextListener(queryTextListener);
@@ -319,7 +370,7 @@ public class SearchFragment extends SNUTTBaseFragment
         @Override
         public boolean onQueryTextSubmit(String query) {
             Log.d(TAG, "onQueryTextSubmit called!");
-            if (mode == DEFAULT_MODE) {
+            if (isDefaultMode()) {
                 searchView.clearFocus();
                 postQuery(query);
                 return false;
@@ -334,13 +385,13 @@ public class SearchFragment extends SNUTTBaseFragment
         }
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (Strings.isNullOrEmpty(newText) && mode == TAG_MODE) {
+            if (Strings.isNullOrEmpty(newText) && isTagMode()) {
                 clearButton.setVisibility(View.VISIBLE);
             }
 
             if (newText.endsWith("#")) {
                 enableTagMode(true);
-            } else if (mode == TAG_MODE) {
+            } else if (isTagMode()) {
                 Log.d(TAG, "Query text : " + newText);
                 suggestionAdapter.filter(newText);
             }
@@ -360,12 +411,20 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void enableTagMode(boolean contains) {
-        mode = TAG_MODE;
+        tagMode = TagMode.TAG_MODE;
 
         LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
         LinearLayout layout2 = (LinearLayout) tagHelper.findViewById(R.id.default_mode);
         layout1.setVisibility(View.VISIBLE);
         layout2.setVisibility(View.GONE);
+
+        suggestionAdapter.resetState();
+        academicYear.setTypeface(null, Typeface.NORMAL);
+        category.setTypeface(null, Typeface.NORMAL);
+        classification.setTypeface(null, Typeface.NORMAL);
+        credit.setTypeface(null, Typeface.NORMAL);
+        department.setTypeface(null, Typeface.NORMAL);
+        instructor.setTypeface(null, Typeface.NORMAL);
 
         int len = searchView.getQuery().length();
         if (contains) last_query = searchView.getQuery().toString().substring(0, len-1);
@@ -382,7 +441,7 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void enableDefaultMode() {
-        mode = DEFAULT_MODE;
+        tagMode = TagMode.DEFAULT_MODE;
 
         LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
         LinearLayout layout2 = (LinearLayout) tagHelper.findViewById(R.id.default_mode);
@@ -391,7 +450,6 @@ public class SearchFragment extends SNUTTBaseFragment
 
         searchView.setQuery(last_query, false);
         searchView.setQueryHint("#으로 태그검색!");
-        suggestionAdapter2.changeCursor(null);
         searchView.setSuggestionsAdapter(null);
         clearButton.setOnClickListener(mDefaultListener);
 
@@ -413,111 +471,11 @@ public class SearchFragment extends SNUTTBaseFragment
         }
     };
 
-    public static class SearchSuggestionsAdapter extends SimpleCursorAdapter
-    {
-        private static final String[] mFields  = { "_id" , "result" }; // _id field must exist
-        private static final String[] mVisible = { "result" }; // db field name
-        private static final int[]    mViewIds = { /*R.id.text1*/ };
+    private boolean isTagMode() {
+        return tagMode == TagMode.TAG_MODE;
+    }
 
-
-        public SearchSuggestionsAdapter(Context context)
-        {
-            super(context, R.layout.cell_suggestion, null, mVisible, mViewIds, 0);
-        }
-
-        @Override
-        public Cursor runQueryOnBackgroundThread(CharSequence constraint)
-        {
-            return new SuggestionsCursor(constraint);
-        }
-
-        private static class SuggestionsCursor extends AbstractCursor
-        {
-            private ArrayList<String> mResults;
-
-            public SuggestionsCursor(CharSequence constraint)
-            {
-                /*final int count = 100;
-                mResults = new ArrayList<String>(count);
-                for(int i = 0; i < count; i++){
-                    mResults.add("Result " + (i + 1));
-                }*/
-                /*mResults = new ArrayList<>();
-                List<String> tags = TagManager.getInstance().getTags();
-                for (String tag : tags) {
-                    mResults.add(tag);
-                }
-
-                if(!TextUtils.isEmpty(constraint)){
-                    String constraintString = constraint.toString().toLowerCase(Locale.ROOT);
-                    Iterator<String> iter = mResults.iterator();
-                    while(iter.hasNext()) {
-                        if(!iter.next().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
-                            iter.remove();
-                        }
-                    }
-                }*/
-            }
-
-            @Override
-            public int getCount()
-            {
-                return mResults.size();
-            }
-
-            @Override
-            public String[] getColumnNames()
-            {
-                return mFields;
-            }
-
-            @Override
-            public long getLong(int column)
-            {
-                if(column == 0){
-                    return mPos;
-                }
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public String getString(int column)
-            {
-                if(column == 1){
-                    return mResults.get(mPos);
-                }
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public short getShort(int column)
-            {
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public int getInt(int column)
-            {
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public float getFloat(int column)
-            {
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public double getDouble(int column)
-            {
-                throw new UnsupportedOperationException("unimplemented");
-            }
-
-            @Override
-            public boolean isNull(int column)
-            {
-                return false;
-            }
-        }
+    private boolean isDefaultMode() {
+        return tagMode == TagMode.DEFAULT_MODE;
     }
 }

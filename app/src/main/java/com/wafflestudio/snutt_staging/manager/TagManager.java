@@ -206,6 +206,10 @@ public class TagManager {
         });
     }
 
+    public String getField(String tag) {
+        return field.get(tag);
+    }
+
     public List<String> getClassification() {
         return classification;
     }

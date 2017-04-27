@@ -77,6 +77,7 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/category"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -89,6 +90,7 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/classification"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
