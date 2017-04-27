@@ -54,6 +54,7 @@ public class NotiManager {
 
         query.put("limit", 20);
         query.put("offset", offset);
+        query.put("explicit", 1); // for unread count update
         app.getRestService().getNotification(token, query, new Callback<List<Notification>>() {
             @Override
             public void success(List<Notification> notificationList, Response response) {
@@ -95,6 +96,7 @@ public class NotiManager {
         Map query = new HashMap();
         query.put("limit", 20);
         query.put("offset", 0);
+        query.put("explicit", 1);
         app.getRestService().getNotification(token, query, new Callback<List<Notification>>() {
             @Override
             public void success(List<Notification> notificationList, Response response) {
