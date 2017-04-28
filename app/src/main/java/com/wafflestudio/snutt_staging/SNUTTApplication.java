@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.wafflestudio.snutt_staging.handler.RetrofitErrorHandler;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.NotiManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
@@ -108,6 +109,7 @@ public class SNUTTApplication extends Application {
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setRequestInterceptor(requestInterceptor)
                     .setClient(new OkClient(okHttpClient))
+                    .setErrorHandler(new RetrofitErrorHandler(getApplicationContext()))
                     .build();
 
             restService = restAdapter.create(SNUTTRestApi.class);

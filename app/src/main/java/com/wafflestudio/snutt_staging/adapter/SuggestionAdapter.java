@@ -75,6 +75,8 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             for (String tag : tagList) {
                 String field = TagManager.getInstance().getField(tag);
+                if (field == null) continue;
+
                 if (field.equals("academic_year") && !academicYear) continue;
                 if (field.equals("category") && !category) continue;
                 if (field.equals("classification") && !classification) continue;

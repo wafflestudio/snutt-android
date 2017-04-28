@@ -101,11 +101,6 @@ public class UserManager {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.w(TAG, "post sign in failed");
-                System.out.println(error);
-                // TODO : (Seongwon) for test!!
-                //notifySingIn(false);
-                //notifySingIn(true);
             }
         });
     }
@@ -145,7 +140,6 @@ public class UserManager {
             }
             @Override
             public void failure(RetrofitError error) {
-                if (callback != null) callback.failure(error);
             }
         });
     }
