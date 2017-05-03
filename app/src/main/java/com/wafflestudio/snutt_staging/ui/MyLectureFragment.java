@@ -116,6 +116,11 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     }
 
     @Override
+    public void notifySearchedLectureChanged() {
+
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_my_lecture, menu);
         super.onCreateOptionsMenu(menu, inflater);

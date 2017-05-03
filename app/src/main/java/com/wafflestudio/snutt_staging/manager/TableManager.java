@@ -105,6 +105,7 @@ public class TableManager {
             public void success(Table table, Response response) {
                 Log.d(TAG, "get table by id success");
                 LectureManager.getInstance().setLectures(table.getLecture_list());
+                LectureManager.getInstance().clearSearchedLectures();
                 PrefManager.getInstance().updateNewTable(table);
                 TagManager.getInstance().updateNewTag(table.getYear(), table.getSemester());
                 if (callback != null) callback.success(table, response);
@@ -124,6 +125,7 @@ public class TableManager {
             public void success(Table table, Response response) {
                 Log.d(TAG, "get recent table request success");
                 LectureManager.getInstance().setLectures(table.getLecture_list());
+                LectureManager.getInstance().clearSearchedLectures();
                 PrefManager.getInstance().updateNewTable(table);
                 TagManager.getInstance().updateNewTag(table.getYear(), table.getSemester());
                 if (callback != null) callback.success(table, response);

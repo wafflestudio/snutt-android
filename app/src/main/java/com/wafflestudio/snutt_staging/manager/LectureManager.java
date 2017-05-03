@@ -67,6 +67,7 @@ public class LectureManager {
 
     public interface OnLectureChangedListener {
         void notifyLectureChanged();
+        void notifySearchedLectureChanged();
     }
 
     private List<OnLectureChangedListener> listeners = new ArrayList<>();
@@ -476,6 +477,11 @@ public class LectureManager {
         return null;
     }
 
+    public void clearSearchedLectures() {
+        searchedLectures.clear();
+        notifySelectedLectureChanged();
+    }
+
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {
         if (lec1.isCustom()) { // custom lecture 면 id 로 비교
             if (lec1.getId().equals(lec2.getId())) return true;
@@ -537,6 +543,12 @@ public class LectureManager {
     private void notifyLectureChanged() {
         for (OnLectureChangedListener listener : listeners) {
             listener.notifyLectureChanged();
+        }
+    }
+
+    private void notifySelectedLectureChanged() {
+        for (OnLectureChangedListener listener : listeners) {
+            listener.notifySearchedLectureChanged();
         }
     }
 

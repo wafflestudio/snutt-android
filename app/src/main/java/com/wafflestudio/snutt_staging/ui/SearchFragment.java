@@ -341,6 +341,11 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     @Override
+    public void notifySearchedLectureChanged() {
+        lectureAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void notifyTagChanged(boolean anim) {
         Log.d(TAG, "notifyTagChanged called");
         if (TagManager.getInstance().getMyTags().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
