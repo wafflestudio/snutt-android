@@ -1,15 +1,20 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.adapter.ExpandableTableListAdapter;
+import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.TableManager;
 import com.wafflestudio.snutt_staging.model.Table;
 
@@ -24,6 +29,7 @@ import retrofit.client.Response;
  * Created by makesource on 2016. 1. 17..
  */
 public class TableListActivity extends SNUTTBaseActivity {
+    private static final String TAG = "TABLE_LIST_ACTIVITY";
 
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<Table>> mChildList = null;
@@ -53,6 +59,37 @@ public class TableListActivity extends SNUTTBaseActivity {
                 return false;
             }
         });
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+
+                    Log.d(TAG, groupPosition + " " + childPosition);
+                    Table table = mChildList.get(groupPosition).get(childPosition);
+
+                    final CharSequence[] items = {"시간표 제목 수정", "시간표 삭제"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TableListActivity.this);
+                    builder.setTitle(table.getTitle())
+                            .setItems(items, new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int index){
+
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    // You now have everything that you would as if this was an OnChildClickListener()
+                    // Add your logic here.
+
+                    // Return true as we are handling the event.
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
 
         TableManager.getInstance().getTableList(new Callback<List<Table>>() {
             @Override
