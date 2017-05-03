@@ -211,6 +211,8 @@ public class TagManager {
         return field.get(tag);
     }
 
+    /* Below method will used when post query */
+
     public List<String> getClassification() {
         return classification;
     }
@@ -220,7 +222,11 @@ public class TagManager {
     }
 
     public List<String> getCredit() {
-        return credit;
+        List<String> integerCredit = new ArrayList<>();
+        for (String c : credit) {
+            integerCredit.add(c.substring(0, c.length() - 2));
+        }
+        return integerCredit;
     }
 
     public void setCredit(List<String> credit) {
