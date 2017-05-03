@@ -479,6 +479,8 @@ public class LectureManager {
 
     public void clearSearchedLectures() {
         searchedLectures.clear();
+        selectedLecture = null;
+        notifyLectureChanged();
         notifySelectedLectureChanged();
     }
 
