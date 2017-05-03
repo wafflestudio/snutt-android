@@ -3,12 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tag_suggestion"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="41dp"
     android:background="#FFFFFF"
     android:layout_alignParentBottom="true"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:clickable="true"
     android:visibility="gone">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#80000000" />
 
     <LinearLayout
         android:id="@+id/default_mode"
@@ -19,8 +24,8 @@
 
         <ImageView
             android:id="@+id/tag"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:src="@drawable/hash_black"
             android:padding="5dp"
             android:layout_marginLeft="20dp"/>
