@@ -345,6 +345,10 @@ public class SearchFragment extends SNUTTBaseFragment
         lectureAdapter.notifyDataSetChanged();
     }
 
+    /**
+     *  this method only for whether tags are zero or not
+     *  handle tag insert, remove listener in other method
+     */
     @Override
     public void notifyTagChanged(boolean anim) {
         Log.d(TAG, "notifyTagChanged called");
@@ -354,14 +358,15 @@ public class SearchFragment extends SNUTTBaseFragment
                 Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_up);
                 tagRecyclerView.startAnimation(animation);
             }
+            tagAdapter.notifyDataSetChanged();
         } else if (TagManager.getInstance().getMyTags().size() > 0 && tagRecyclerView.getVisibility() == View.GONE) {
             tagRecyclerView.setVisibility(View.VISIBLE);
             if (anim) {
                 Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.slide_down);
                 tagRecyclerView.startAnimation(animation);
             }
+            tagAdapter.notifyDataSetChanged();
         }
-        tagAdapter.notifyDataSetChanged();
     }
 
     private SearchView.OnSuggestionListener suggestionListener = new SearchView.OnSuggestionListener() {
