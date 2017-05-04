@@ -76,6 +76,9 @@ public interface SNUTTRestApi {
     @DELETE("/tables/{id}")
     public void deleteTable(@Header("x-access-token") String token, @Path("id") String id, Callback<List<Table>> callback);
 
+    @PUT("/tables/{id}")
+    public void putTable(@Header("x-access-token") String token, @Path("id") String id, @Body Map query, Callback<List<Table>> callback);
+
     @POST("/tables/{id}/lecture")
     public void postLecture(@Header("x-access-token") String token, @Path("id") String id, @Body Lecture lecture, Callback<Table> callback);
 

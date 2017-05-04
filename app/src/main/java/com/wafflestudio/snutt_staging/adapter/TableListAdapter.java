@@ -1,12 +1,15 @@
 package com.wafflestudio.snutt_staging.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.List;
@@ -74,6 +77,11 @@ public class TableListAdapter extends RecyclerView.Adapter<TableListAdapter.View
                 break;
             case TYPE_TABLE_CELL:
                 holder.tableName.setText(table.getTitle());
+                if (PrefManager.getInstance().getLastViewTableId().equals(table.getId())) {
+                    holder.checked.setVisibility(View.VISIBLE);
+                } else {
+                    holder.checked.setVisibility(View.INVISIBLE);
+                }
                 break;
         }
     }
@@ -86,11 +94,13 @@ public class TableListAdapter extends RecyclerView.Adapter<TableListAdapter.View
     public final static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tableSectionName;
         public TextView tableName;
+        public ImageView checked;
 
         public ViewHolder(View view) {
             super(view);
             tableSectionName = (TextView) view.findViewById(R.id.cell_table_section);
             tableName = (TextView) view.findViewById(R.id.cell_table);
+            checked = (ImageView) view.findViewById(R.id.checked);
         }
     }
 }

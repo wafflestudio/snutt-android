@@ -206,6 +206,14 @@ public class MainActivity extends SNUTTBaseActivity {
     public void onResume(){
         super.onResume();
         checkGoogleServiceVersion();
+        updateTableTitle();
+    }
+
+    private void updateTableTitle() {
+        String id = PrefManager.getInstance().getLastViewTableId();
+        if (id == null) return;
+        String title = TableManager.getInstance().getTableTitleById(id);
+        getSupportActionBar().setTitle(title);
     }
 
     private boolean checkGoogleServiceVersion() {

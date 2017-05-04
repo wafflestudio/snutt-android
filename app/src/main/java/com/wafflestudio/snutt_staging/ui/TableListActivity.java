@@ -1,21 +1,27 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.adapter.ExpandableTableListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
+import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.manager.TableManager;
+import com.wafflestudio.snutt_staging.manager.UserManager;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.ArrayList;
@@ -76,23 +82,8 @@ public class TableListActivity extends SNUTTBaseActivity {
                     builder.setTitle(table.getTitle())
                             .setItems(items, new DialogInterface.OnClickListener(){
                                 public void onClick(DialogInterface dialog, int index){
-                                    if (items[index].equals(DIALOG_EDIT)) {
-
-                                    } else {
-                                        TableManager.getInstance().deleteTable(table.getId(), new Callback<List<Table>>() {
-                                            @Override
-                                            public void success(List<Table> tables, Response response) {
-                                                mAdapter = getAdapter(tables);
-                                                mListView.setAdapter(mAdapter);
-                                                for (int i = 0;i < mGroupList.size();i ++) {
-                                                    mListView.expandGroup(i);
-                                                }
-                                            }
-                                            @Override
-                                            public void failure(RetrofitError error) {
-                                            }
-                                        });
-                                    }
+                                    if (items[index].equals(DIALOG_EDIT)) showEditDialog(table);
+                                    else performDelete(table);
                                 }
                             });
                     AlertDialog dialog = builder.create();
@@ -124,19 +115,84 @@ public class TableListActivity extends SNUTTBaseActivity {
         });
     }
 
+    private void showEditDialog(final Table table) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(R.layout.dialog_change_title, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("시간표 이름 변경");
+        alert.setView(layout);
+        alert.setPositiveButton("변경", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // do nothing in here. because we override this button listener later
+            }
+        }).setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String title = ((EditText) layout.findViewById(R.id.title)).getText().toString();
+                if (!Strings.isNullOrEmpty(title)) {
+                    TableManager.getInstance().putTable(table.getId(), title, new Callback<List<Table>>() {
+                        @Override
+                        public void success(List<Table> tables, Response response) {
+                            mAdapter = getAdapter(tables);
+                            mListView.setAdapter(mAdapter);
+                            for (int i = 0;i < mGroupList.size();i ++) {
+                                mListView.expandGroup(i);
+                            }
+                        }
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(TableListActivity.this, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void performDelete(Table table) {
+        if (PrefManager.getInstance().getLastViewTableId().equals(table.getId())) {
+            Toast.makeText(TableListActivity.this, "현재 보고있는 테이블은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            return ;
+        }
+        TableManager.getInstance().deleteTable(table.getId(), new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> tables, Response response) {
+                mAdapter = getAdapter(tables);
+                mListView.setAdapter(mAdapter);
+                for (int i = 0;i < mGroupList.size();i ++) {
+                    mListView.expandGroup(i);
+                }
+            }
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
+    }
+
     private ExpandableTableListAdapter getAdapter(List<Table> tables) {
         mGroupList = new ArrayList<String>();
         mChildList = new ArrayList<ArrayList<Table>>();
 
-        if (tables.size()>0) {
+        if (tables.size() > 0) {
             mGroupList.add(tables.get(0).getFullSemester());
             mChildListContent = new ArrayList<Table>();
             mChildListContent.add(tables.get(0));
         }
 
-        for(int i=1;i<tables.size();i++) {
+        for (int i = 1; i < tables.size(); i++) {
             Table table = tables.get(i);
-            if( tables.get(i-1).getFullSemester().equals( table.getFullSemester() )) {
+            if (tables.get(i - 1).getFullSemester().equals(table.getFullSemester())) {
                 mChildListContent.add(table);
             } else {
                 mChildList.add(mChildListContent);
@@ -146,7 +202,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                 mChildListContent.add(table);
             }
         }
-        if (tables.size()>0) {
+        if (tables.size() > 0) {
             mChildList.add(mChildListContent);
         }
 

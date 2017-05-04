@@ -4,9 +4,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.model.Table;
 import com.wafflestudio.snutt_staging.ui.TableListActivity;
 
@@ -103,13 +105,19 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
             viewHolder = new ViewHolder();
             v = inflater.inflate(R.layout.cell_table, null);
             viewHolder.tableName = (TextView) v.findViewById(R.id.cell_table);
+            viewHolder.checked = (ImageView) v.findViewById(R.id.checked);
             v.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)v.getTag();
         }
 
         viewHolder.tableName.setText(getChild(groupPosition, childPosition));
-
+        String id = childList.get(groupPosition).get(childPosition).getId();
+        if (PrefManager.getInstance().getLastViewTableId().equals(id)) {
+            viewHolder.checked.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.checked.setVisibility(View.INVISIBLE);
+        }
         return v;
     }
 
@@ -122,6 +130,7 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
     class ViewHolder {
         public TextView tableName;
         public TextView tableSectionName;
+        public ImageView checked;
     }
 
 }

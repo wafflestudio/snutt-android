@@ -16,11 +16,25 @@
 
         <TextView
             android:id="@+id/cell_table"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="17"
             android:layout_gravity="left|center_vertical"
             android:text = "My timetable title"
             style="@style/Text.TimetableTitle"/>
+
+        <ImageView
+            android:id="@+id/checked"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/checked"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 </LinearLayout>

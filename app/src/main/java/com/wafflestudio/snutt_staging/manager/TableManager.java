@@ -94,10 +94,6 @@ public class TableManager {
         });
     }
 
-    /*public void setTableList(List<Table> tables) {
-        this.tables = tables;
-    }*/
-
     public void getTableById(String id, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableById(token, id, new Callback<Table>() {
@@ -172,13 +168,43 @@ public class TableManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
 
+    public void putTable(String id, String title, final Callback<List<Table>> callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        Map query = new HashMap();
+        query.put("title", title);
+        app.getRestService().putTable(token, id, query, new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> table_list, Response response) {
+                Log.d(TAG, "delete table request success.");
+                tables.clear();
+                tableMap.clear();
+                for (Table table : table_list) addTable(table);
+                if (callback != null) callback.success(tables, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "delete table request failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     public void addTable(Table table) {
         tables.add(table);
         tableMap.put(table.getId(), table);
         Collections.sort(tables);
+    }
+
+    public String getTableTitleById(String id) {
+        Table table = tableMap.get(id);
+        if (table == null) {
+            Log.e(TAG, "invalid table id..");
+            return "(알수없음)";
+        }
+        return table.getTitle();
     }
 
     public void updateTables(Table table) {
