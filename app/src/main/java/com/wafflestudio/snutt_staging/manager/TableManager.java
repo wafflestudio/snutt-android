@@ -155,6 +155,26 @@ public class TableManager {
         });
     }
 
+    public void deleteTable(String id, final Callback<List<Table>> callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        app.getRestService().deleteTable(token, id, new Callback<List<Table>>() {
+            @Override
+            public void success(List<Table> table_list, Response response) {
+                Log.d(TAG, "delete table request success.");
+                tables.clear();
+                tableMap.clear();
+                for (Table table : table_list) addTable(table);
+                if (callback != null) callback.success(tables, response);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "delete table request failed.");
+                if (callback != null) callback.failure(error);
+            }
+        });
+
+    }
+
     public void addTable(Table table) {
         tables.add(table);
         tableMap.put(table.getId(), table);

@@ -30,6 +30,8 @@ import retrofit.client.Response;
  */
 public class TableListActivity extends SNUTTBaseActivity {
     private static final String TAG = "TABLE_LIST_ACTIVITY";
+    private static final String DIALOG_EDIT = "시간표 이름 변경";
+    private static final String DIALOG_DELETE = "시간표 삭제";
 
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<Table>> mChildList = null;
@@ -67,14 +69,30 @@ public class TableListActivity extends SNUTTBaseActivity {
                     int childPosition = ExpandableListView.getPackedPositionChild(id);
 
                     Log.d(TAG, groupPosition + " " + childPosition);
-                    Table table = mChildList.get(groupPosition).get(childPosition);
+                    final Table table = mChildList.get(groupPosition).get(childPosition);
 
-                    final CharSequence[] items = {"시간표 제목 수정", "시간표 삭제"};
+                    final CharSequence[] items = {DIALOG_EDIT, DIALOG_DELETE};
                     AlertDialog.Builder builder = new AlertDialog.Builder(TableListActivity.this);
                     builder.setTitle(table.getTitle())
                             .setItems(items, new DialogInterface.OnClickListener(){
                                 public void onClick(DialogInterface dialog, int index){
+                                    if (items[index].equals(DIALOG_EDIT)) {
 
+                                    } else {
+                                        TableManager.getInstance().deleteTable(table.getId(), new Callback<List<Table>>() {
+                                            @Override
+                                            public void success(List<Table> tables, Response response) {
+                                                mAdapter = getAdapter(tables);
+                                                mListView.setAdapter(mAdapter);
+                                                for (int i = 0;i < mGroupList.size();i ++) {
+                                                    mListView.expandGroup(i);
+                                                }
+                                            }
+                                            @Override
+                                            public void failure(RetrofitError error) {
+                                            }
+                                        });
+                                    }
                                 }
                             });
                     AlertDialog dialog = builder.create();
