@@ -1,11 +1,13 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
@@ -35,6 +39,7 @@ import com.wafflestudio.snutt_staging.model.Table;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -146,6 +151,16 @@ public class MainActivity extends SNUTTBaseActivity {
             }
             @Override
             public void failure(RetrofitError error) {
+            }
+        });
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mViewPager.getCurrentItem() == 0) {
+                    Toast.makeText(MainActivity.this,"adsf",Toast.LENGTH_SHORT).show();
+                    showEditDialog(PrefManager.getInstance().getLastViewTableId());
+                }
             }
         });
     }
@@ -273,8 +288,48 @@ public class MainActivity extends SNUTTBaseActivity {
                 textView.setTypeface(null, Typeface.BOLD);
             }
         });
-        //
         tabLayout.getTabAt(0).select();
+    }
+
+    private void showEditDialog(final String id) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(R.layout.dialog_change_title, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("시간표 이름 변경");
+        alert.setView(layout);
+        alert.setPositiveButton("변경", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // do nothing in here. because we override this button listener later
+            }
+        }).setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String title = ((EditText) layout.findViewById(R.id.title)).getText().toString();
+                if (!Strings.isNullOrEmpty(title)) {
+                    TableManager.getInstance().putTable(id, title, new Callback<List<Table>>() {
+                        @Override
+                        public void success(List<Table> tables, Response response) {
+                            getSupportActionBar().setTitle(title);
+                        }
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(MainActivity.this, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setUpAppBarLayout(AppBarLayout appBarLayout) {
