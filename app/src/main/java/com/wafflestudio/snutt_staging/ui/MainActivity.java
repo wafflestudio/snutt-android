@@ -213,6 +213,7 @@ public class MainActivity extends SNUTTBaseActivity {
         String id = PrefManager.getInstance().getLastViewTableId();
         if (id == null) return;
         String title = TableManager.getInstance().getTableTitleById(id);
+        if (title == null) return;
         getSupportActionBar().setTitle(title);
     }
 

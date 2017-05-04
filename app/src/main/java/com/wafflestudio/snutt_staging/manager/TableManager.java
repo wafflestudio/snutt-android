@@ -202,7 +202,7 @@ public class TableManager {
         Table table = tableMap.get(id);
         if (table == null) {
             Log.e(TAG, "invalid table id..");
-            return "(알수없음)";
+            return null;
         }
         return table.getTitle();
     }
