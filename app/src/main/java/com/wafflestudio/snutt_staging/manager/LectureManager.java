@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.SNUTTUtils;
+import com.wafflestudio.snutt_staging.model.Color;
+import com.wafflestudio.snutt_staging.model.ColorList;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Table;
 
@@ -42,6 +44,10 @@ public class LectureManager {
     private float customDuration = -1;
     private float customStartTime = -1;
     private static LectureManager singleton;
+
+    // color list
+    private List<Color> colors;
+    private List<String> names;
 
     /**
      * LectureManager 싱글톤
@@ -261,8 +267,8 @@ public class LectureManager {
         if (colorIndex == 0) colorIndex++;
         Lecture target = new Lecture();
         target.setColorIndex(colorIndex);
-        target.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
-        target.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
+        target.setBgColor(LectureManager.getInstance().getBgColorByIndex(colorIndex));
+        target.setFgColor(LectureManager.getInstance().getFgColorByIndex(colorIndex));
 
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         String id = PrefManager.getInstance().getLastViewTableId();
@@ -272,8 +278,8 @@ public class LectureManager {
             public void success(Table table, Response response) {
                 Log.d(TAG, "put lecture request success..");
                 lec.setColorIndex(colorIndex);
-                lec.setBgColor(SNUTTUtils.getBgColorByIndex(colorIndex));
-                lec.setFgColor(SNUTTUtils.getFgColorByIndex(colorIndex));
+                lec.setBgColor(LectureManager.getInstance().getBgColorByIndex(colorIndex));
+                lec.setFgColor(LectureManager.getInstance().getFgColorByIndex(colorIndex));
                 notifyLectureChanged();
             }
             @Override
@@ -482,6 +488,46 @@ public class LectureManager {
         selectedLecture = null;
         notifyLectureChanged();
         notifySelectedLectureChanged();
+    }
+
+    // for color list
+
+    public void fetchColorList(String name, final Callback callback) {
+        app.getRestService().getColorList(name, new Callback<ColorList>() {
+            @Override
+            public void success(ColorList colorList, Response response) {
+                Log.d(TAG, "get color list request success");
+                setColors(colorList.getColors());
+                setNames(colorList.getNames());
+                if (callback != null) callback.success(colorList, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "get color list request failed");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
+    public void setColors(List<Color> colors) {
+        this.colors = colors;
+    }
+
+    public void setNames(List<String> names) {
+        this.names = names;
+    }
+
+    public int getBgColorByIndex(int index) {
+        return colors.get(index - 1).getBg();
+    }
+
+    public int getFgColorByIndex(int index) {
+        return colors.get(index - 1).getFg();
+    }
+
+    public String getColorNameByIndex(int index) {
+        return names.get(index - 1);
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

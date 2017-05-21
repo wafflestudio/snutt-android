@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging;
 
+import com.wafflestudio.snutt_staging.model.ColorList;
 import com.wafflestudio.snutt_staging.model.Coursebook;
 import com.wafflestudio.snutt_staging.model.Facebook;
 import com.wafflestudio.snutt_staging.model.Lecture;
@@ -46,6 +47,9 @@ public interface SNUTTRestApi {
     @GET("/app_version")
     public void getAppVersion(Callback<Version> callback);
 
+    @GET("/colors/{name}")
+    public void getColorList(@Path("name") String name, Callback<ColorList> callback);
+
     // API Feedback
 
     @POST("/feedback")
@@ -57,7 +61,6 @@ public interface SNUTTRestApi {
 
     @GET("/course_books/official")
     public void getCoursebooksOfficial(@QueryMap Map query, Callback<Map> callback);
-
 
     // API Timetable
 
