@@ -154,7 +154,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(2)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(2), LectureManager.getInstance().getFgColorByIndex(2)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(2), SNUTTUtils.getFgColorByIndex(2));
                 getActivity().onBackPressed();
             }
@@ -162,7 +162,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(3)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(3), LectureManager.getInstance().getFgColorByIndex(3)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(3), SNUTTUtils.getFgColorByIndex(3));
                 getActivity().onBackPressed();
             }
@@ -170,7 +170,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(4)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(4), LectureManager.getInstance().getFgColorByIndex(4)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(4), SNUTTUtils.getFgColorByIndex(4));
                 getActivity().onBackPressed();
             }
@@ -178,7 +178,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(5)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(5), LectureManager.getInstance().getFgColorByIndex(5)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(5), SNUTTUtils.getFgColorByIndex(5));
                 getActivity().onBackPressed();
             }
@@ -186,7 +186,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(6)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(6), LectureManager.getInstance().getFgColorByIndex(6)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
                 getActivity().onBackPressed();
             }
@@ -194,7 +194,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(7)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(7), LectureManager.getInstance().getFgColorByIndex(7)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
                 getActivity().onBackPressed();
             }
@@ -202,7 +202,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(8)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(8), LectureManager.getInstance().getFgColorByIndex(8)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
                 getActivity().onBackPressed();
             }
@@ -210,7 +210,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         layout9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(1), LectureManager.getInstance().getFgColorByIndex(9)));
+                mCallback.onColorChanged(new Color(LectureManager.getInstance().getBgColorByIndex(9), LectureManager.getInstance().getFgColorByIndex(9)));
                 //LectureManager.getInstance().updateLecture(lecture, SNUTTUtils.getBgColorByIndex(6), SNUTTUtils.getFgColorByIndex(6));
                 getActivity().onBackPressed();
             }
