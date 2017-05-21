@@ -294,6 +294,8 @@ public class MainActivity extends SNUTTBaseActivity {
     private void showEditDialog(final String id) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.dialog_change_title, null);
+        EditText titleText = (EditText) layout.findViewById(R.id.title);
+        titleText.setHint(getSupportActionBar().getTitle());
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("시간표 이름 변경");
         alert.setView(layout);

@@ -121,6 +121,8 @@ public class TableListActivity extends SNUTTBaseActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("시간표 이름 변경");
         alert.setView(layout);
+        EditText titleText = (EditText) layout.findViewById(R.id.title);
+        titleText.setHint(table.getTitle());
         alert.setPositiveButton("변경", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // do nothing in here. because we override this button listener later
