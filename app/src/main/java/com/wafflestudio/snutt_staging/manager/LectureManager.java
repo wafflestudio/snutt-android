@@ -28,8 +28,10 @@ import retrofit.client.Response;
  * Created by makesource on 2016. 2. 7..
  */
 public class LectureManager {
-
     private static final String TAG = "LECTURE_MANAGER" ;
+    private static final String DEFAULT_NAME = "직접 지정하기";
+    private static final int DEFAULT_FG = 0xff333333;
+    private static final int DEFAULT_BG = 0xffe0e0e0;
 
     private SNUTTApplication app;
     private List<Lecture> lectures;
@@ -548,8 +550,20 @@ public class LectureManager {
         return colors.get(index - 1).getFg();
     }
 
+    public int getDefaultBgColor() {
+        return DEFAULT_BG;
+    }
+
+    public int getDefaultFgColor() {
+        return DEFAULT_FG;
+    }
+
     public String getColorNameByIndex(int index) {
         return colorNames.get(index - 1);
+    }
+
+    public String getDefaultColorName() {
+        return DEFAULT_NAME;
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

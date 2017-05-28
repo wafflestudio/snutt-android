@@ -25,7 +25,6 @@ import java.util.List;
  * Created by makesource on 2016. 3. 6..
  */
 public class ClassTimeAdapter extends BaseAdapter {
-
     private static final String TAG = "CLASS_TIME_ADAPTER" ;
 
     private Context context;

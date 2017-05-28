@@ -3,11 +3,13 @@ package com.wafflestudio.snutt_staging.ui;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -27,6 +29,7 @@ import com.wafflestudio.snutt_staging.model.Color;
 public class ColorPickerFragment extends SNUTTBaseFragment {
     private static final String TAG = "COLOR_PICKER_FRAGMENT" ;
 
+    private ListView listView;
     private View fgColor1, bgColor1, layout1;
     private View fgColor2, bgColor2, layout2;
     private View fgColor3, bgColor3, layout3;
@@ -55,7 +58,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
-
+        listView = (ListView) rootView.findViewById(R.id.listView);
         fgColor1 = (View) rootView.findViewById(R.id.fgColor1);
         fgColor2 = (View) rootView.findViewById(R.id.fgColor2);
         fgColor3 = (View) rootView.findViewById(R.id.fgColor3);
@@ -119,7 +122,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         bgColor7.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(7));
         bgColor8.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(8));
         bgColor9.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(9));
-        bgColor10.setBackgroundColor(SNUTTUtils.getBgColorByIndex(0));
+        bgColor10.setBackgroundColor(LectureManager.getInstance().getDefaultBgColor());
         fgColor1.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(1));
         fgColor2.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(2));
         fgColor3.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(3));
@@ -129,7 +132,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         fgColor7.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(7));
         fgColor8.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(8));
         fgColor9.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(9));
-        fgColor10.setBackgroundColor(SNUTTUtils.getFgColorByIndex(0));
+        fgColor10.setBackgroundColor(LectureManager.getInstance().getDefaultFgColor());
         textView1.setText(LectureManager.getInstance().getColorNameByIndex(1));
         textView2.setText(LectureManager.getInstance().getColorNameByIndex(2));
         textView3.setText(LectureManager.getInstance().getColorNameByIndex(3));
@@ -139,7 +142,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
         textView7.setText(LectureManager.getInstance().getColorNameByIndex(7));
         textView8.setText(LectureManager.getInstance().getColorNameByIndex(8));
         textView9.setText(LectureManager.getInstance().getColorNameByIndex(9));
-        textView10.setText(SNUTTUtils.getColorNameByIndex(0));
+        textView10.setText(LectureManager.getInstance().getDefaultColorName());
     }
 
     private void setListener() {
@@ -221,7 +224,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
                 ColorPickerDialogBuilder
                         .with(getContext())
                         .setTitle("배경색")
-                        .initialColor(SNUTTUtils.getBgColorByIndex(0))
+                        .initialColor(LectureManager.getInstance().getDefaultBgColor())
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(12)
                         .setOnColorSelectedListener(new OnColorSelectedListener() {
@@ -238,7 +241,7 @@ public class ColorPickerFragment extends SNUTTBaseFragment {
                                 ColorPickerDialogBuilder
                                         .with(getContext())
                                         .setTitle("텍스트색")
-                                        .initialColor(SNUTTUtils.getFgColorByIndex(0))
+                                        .initialColor(LectureManager.getInstance().getDefaultFgColor())
                                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                                         .density(12)
                                         .setOnColorSelectedListener(new OnColorSelectedListener() {

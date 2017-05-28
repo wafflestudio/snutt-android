@@ -3,6 +3,7 @@ package com.wafflestudio.snutt_staging.model;
 import android.util.Log;
 
 import com.wafflestudio.snutt_staging.SNUTTUtils;
+import com.wafflestudio.snutt_staging.manager.LectureManager;
 
 /**
  * Created by makesource on 2016. 8. 15..
@@ -23,7 +24,7 @@ public class Color {
     public int getFg() {
         if (fg == null) {
             Log.e("Color.java", "foreground color is null object!");
-            return SNUTTUtils.getFgColorByIndex(0);
+            return LectureManager.getInstance().getDefaultFgColor();
         }
         int fgColor = android.graphics.Color.parseColor(fg);
         return fgColor;
@@ -37,7 +38,7 @@ public class Color {
     public int getBg() {
         if (bg == null) {
             Log.e("Color.java", "background color is null object!");
-            return SNUTTUtils.getBgColorByIndex(0);
+            return LectureManager.getInstance().getDefaultBgColor();
         }
         int bgColor = android.graphics.Color.parseColor(bg);
         return bgColor;

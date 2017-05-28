@@ -366,7 +366,7 @@ public class TableView extends View {
             //현재 선택한 강의 그리기
             Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
             if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){
-                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, SNUTTUtils.getBgColorByIndex(0), SNUTTUtils.getFgColorByIndex(0));
+                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, LectureManager.getInstance().getDefaultBgColor(), LectureManager.getInstance().getDefaultFgColor());
             }
         }
 
