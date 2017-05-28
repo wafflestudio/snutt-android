@@ -427,7 +427,8 @@ public class TableView extends View {
         RectF r = new RectF(left, top, right, bottom);
         Paint p = new Paint();
         p.setColor(bgColor);
-        canvas.drawRoundRect(r, 20, 20, p);
+        canvas.drawRect(r, p);
+        //canvas.drawRoundRect(r, 20, 20, p);
         //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
         //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, paints[colorIndex]);
         //강의명, 강의실 기록
