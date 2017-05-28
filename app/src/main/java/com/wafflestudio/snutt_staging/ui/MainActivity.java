@@ -158,7 +158,6 @@ public class MainActivity extends SNUTTBaseActivity {
             @Override
             public void onClick(View v) {
                 if (mViewPager.getCurrentItem() == 0) {
-                    Toast.makeText(MainActivity.this,"adsf",Toast.LENGTH_SHORT).show();
                     showEditDialog(PrefManager.getInstance().getLastViewTableId());
                 }
             }

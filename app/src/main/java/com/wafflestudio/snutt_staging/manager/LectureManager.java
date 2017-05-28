@@ -3,15 +3,17 @@ package com.wafflestudio.snutt_staging.manager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
-import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.ColorList;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Table;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +49,7 @@ public class LectureManager {
 
     // color list
     private List<Color> colors;
-    private List<String> names;
+    private List<String> colorNames;
 
     /**
      * LectureManager 싱글톤
@@ -57,6 +59,22 @@ public class LectureManager {
         this.app = app;
         this.lectures = new ArrayList<>();
         this.searchedLectures = new ArrayList<>();
+        loadColorData();
+    }
+
+    private void loadColorData() {
+        Type type1 = new TypeToken<List<Color>>(){}.getType();
+        colors = new Gson().fromJson(PrefManager.getInstance().getLectureColors(), type1);
+
+        Type type2 = new TypeToken<List<String>>(){}.getType();
+        colorNames = new Gson().fromJson(PrefManager.getInstance().getLectureColorNames(), type2);
+
+        if (colors == null) {
+            colors = new ArrayList<Color>();
+        }
+        if (colorNames == null) {
+            colorNames = new ArrayList<String>();
+        }
     }
 
     public static LectureManager getInstance(SNUTTApplication app) {
@@ -498,7 +516,11 @@ public class LectureManager {
             public void success(ColorList colorList, Response response) {
                 Log.d(TAG, "get color list request success");
                 setColors(colorList.getColors());
-                setNames(colorList.getNames());
+                setColorNames(colorList.getNames());
+                String colorListJson = new Gson().toJson(colors);
+                String colorNameListJson = new Gson().toJson(colorNames);
+                PrefManager.getInstance().setLectureColors(colorListJson);
+                PrefManager.getInstance().setLectureColorNames(colorNameListJson);
                 if (callback != null) callback.success(colorList, response);
             }
 
@@ -514,8 +536,8 @@ public class LectureManager {
         this.colors = colors;
     }
 
-    public void setNames(List<String> names) {
-        this.names = names;
+    public void setColorNames(List<String> colorNames) {
+        this.colorNames = colorNames;
     }
 
     public int getBgColorByIndex(int index) {
@@ -527,7 +549,7 @@ public class LectureManager {
     }
 
     public String getColorNameByIndex(int index) {
-        return names.get(index - 1);
+        return colorNames.get(index - 1);
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

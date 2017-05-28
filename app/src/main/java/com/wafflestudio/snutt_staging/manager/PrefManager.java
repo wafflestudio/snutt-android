@@ -30,8 +30,8 @@ public class PrefManager {
     private static final String PREF_KEY_TRIM_HEIGHT_START = "pref_key_trim_height_start";
     private static final String PREF_KEY_TRIM_HEIGHT_NUM = "pref_key_trim_height_num";
     private static final String PREF_KEY_AUTO_TRIM = "pref_key_auto_trim";
-    //private String defToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiZ2V0dGVycyI6eyJsb2NhbCI6eyJwYXNzd29yZCI6IiQyYSQwNCRZNVZjczd1WERLemIuWkdXOVFjZkV1TFRucUhhd1VRLm52VXk2Wk9WRjM3TUpRaXNPcE8vUyIsImlkIjoic251dHQifX0sIndhc1BvcHVsYXRlZCI6ZmFsc2UsInNjb3BlIjp7Il9pZCI6IjU2OTVlYTg5YzNlMjU0ODYwOTcwZWY2YyIsIl9fdiI6MCwicmVnRGF0ZSI6IjIwMTYtMDEtMTNUMDY6MTE6MDcuMjM1WiIsImlzQWRtaW4iOmZhbHNlLCJsb2NhbCI6eyJpZCI6InNudXR0IiwicGFzc3dvcmQiOiIkMmEkMDQkWTVWY3M3dVhES3piLlpHVzlRY2ZFdUxUbnFIYXdVUS5udlV5NlpPVkYzN01KUWlzT3BPL1MifX0sImFjdGl2ZVBhdGhzIjp7InBhdGhzIjp7ImlzQWRtaW4iOiJpbml0IiwicmVnRGF0ZSI6ImluaXQiLCJfX3YiOiJpbml0IiwibG9jYWwucGFzc3dvcmQiOiJpbml0IiwibG9jYWwuaWQiOiJpbml0IiwiX2lkIjoiaW5pdCJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnsiX192Ijp0cnVlLCJsb2NhbC5wYXNzd29yZCI6dHJ1ZSwibG9jYWwuaWQiOnRydWUsImlzQWRtaW4iOnRydWUsInJlZ0RhdGUiOnRydWUsIl9pZCI6dHJ1ZX0sIm1vZGlmeSI6e30sInJlcXVpcmUiOnt9fSwic3RhdGVOYW1lcyI6WyJyZXF1aXJlIiwibW9kaWZ5IiwiaW5pdCIsImRlZmF1bHQiLCJpZ25vcmUiXX0sImVtaXR0ZXIiOnsiZG9tYWluIjpudWxsLCJfZXZlbnRzIjp7fSwiX2V2ZW50c0NvdW50IjowLCJfbWF4TGlzdGVuZXJzIjowfX0sImlzTmV3IjpmYWxzZSwiX2RvYyI6eyJsb2NhbCI6eyJwYXNzd29yZCI6IiQyYSQwNCRZNVZjczd1WERLemIuWkdXOVFjZkV1TFRucUhhd1VRLm52VXk2Wk9WRjM3TUpRaXNPcE8vUyIsImlkIjoic251dHQifSwiZmFjZWJvb2siOnt9LCJpc0FkbWluIjpmYWxzZSwicmVnRGF0ZSI6IjIwMTYtMDEtMTNUMDY6MTE6MDcuMjM1WiIsIl9fdiI6MCwiX2lkIjoiNTY5NWVhODljM2UyNTQ4NjA5NzBlZjZjIn0sIl9wcmVzIjp7IiRfX29yaWdpbmFsX3NhdmUiOltudWxsLG51bGwsbnVsbF19LCJfcG9zdHMiOnsiJF9fb3JpZ2luYWxfc2F2ZSI6W119LCJpYXQiOjE0NTMyOTU2NzcsImV4cCI6MTQ2ODg0NzY3N30.Pb4OgIxZIKTwoCOwhJiAX0Tv6L2lJa7Ivkn5-QGl5EA" ;
-
+    private static final String PREF_KEY_LECTURE_COLORS = "pref_key_lecture_colors";
+    private static final String PREF_KEY_LECTURE_COLOR_NAMES = "pref_key_lecture_color_names";
 
     private PrefManager(Context context) {
         Preconditions.checkNotNull(context);
@@ -158,6 +158,26 @@ public class PrefManager {
 
     public boolean getAutoTrim() {
         return sp.getBoolean(PREF_KEY_AUTO_TRIM, true);
+    }
+
+    public void setLectureColors(String colors) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(PREF_KEY_LECTURE_COLORS, colors);
+        editor.apply();
+    }
+
+    public String getLectureColors() {
+        return sp.getString(PREF_KEY_LECTURE_COLORS, null);
+    }
+
+    public void setLectureColorNames(String names) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(PREF_KEY_LECTURE_COLOR_NAMES, names);
+        editor.apply();
+    }
+
+    public String getLectureColorNames() {
+        return sp.getString(PREF_KEY_LECTURE_COLOR_NAMES, null);
     }
 
 }

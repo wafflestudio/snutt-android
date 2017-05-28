@@ -357,7 +357,8 @@ public class TableView extends View {
         if (lectures != null) {
             for (int i = 0; i < lectures.size(); i++) {
                 Lecture lecture = lectures.get(i);
-                drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
+                if (lecture.getColorIndex() == 0) drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
+                else drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getColorIndex());
             }
         }
 
@@ -393,6 +394,22 @@ public class TableView extends View {
             drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
         }
     }
+
+    void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
+        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
+        for (JsonElement element : lecture.getClass_time_json()) {
+            JsonObject classTime = element.getAsJsonObject();
+
+            int wday = classTime.get("day").getAsInt();
+            float startTime = classTime.get("start").getAsFloat();
+            float duration = classTime.get("len").getAsFloat();
+            String location = classTime.get("place").getAsString();
+            int bgColor = LectureManager.getInstance().getBgColorByIndex(colorIndex);
+            int fgColor = LectureManager.getInstance().getFgColorByIndex(colorIndex);
+            drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
+        }
+    }
+
 
     //사각형 하나를 그림
     void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
