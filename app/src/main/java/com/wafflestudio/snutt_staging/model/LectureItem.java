@@ -51,6 +51,7 @@ public class LectureItem {
     private String value1;
     private String title2;
     private String value2;
+    private int colorIndex;
     private Color color;
     private ClassTime classTime;
     private Type type;
@@ -72,8 +73,9 @@ public class LectureItem {
         this.editable = false;
     }
 
-    public LectureItem(String title1, Color color, Type type) {
+    public LectureItem(String title1, int index, Color color, Type type) {
         this.title1 = title1;
+        this.colorIndex = index;
         this.color = color;
         this.type = type;
         this.editable = false;
@@ -150,11 +152,20 @@ public class LectureItem {
         this.type = type;
     }
 
+    public int getColorIndex() {
+        return colorIndex;
+    }
+
+    public void setColorIndex(int index) {
+        this.colorIndex = index;
+    }
+
     public Color getColor() {
         return color;
     }
 
     public void setColor(Color color) {
+        this.colorIndex = 0;
         this.color = color;
     }
 

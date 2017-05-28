@@ -181,7 +181,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     if (item.isEditable()) {
-                        activity.setColorPickerFragment();
+                        activity.setColorPickerFragment(item);
                     }
                 }
             });
@@ -253,8 +253,12 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     target.setInstructor(item.getValue1());
                     break;
                 case Color: // 색상
-                    target.setBgColor(item.getColor().getBg());
-                    target.setFgColor(item.getColor().getFg());
+                    if (item.getColorIndex() > 0) {
+                        target.setColorIndex(item.getColorIndex());
+                    } else {
+                        target.setBgColor(item.getColor().getBg());
+                        target.setFgColor(item.getColor().getFg());
+                    }
                     break;
                 case Department: // 학과
                     target.setDepartment(item.getValue1());
@@ -421,8 +425,13 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         private void bindData(final LectureItem item, View.OnClickListener listener) {
             title.setText("색상");
             layout.setOnClickListener(listener);
-            bgColor.setBackgroundColor(item.getColor().getBg());
-            fgColor.setBackgroundColor(item.getColor().getFg());
+            if (item.getColorIndex() > 0) {
+                bgColor.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(item.getColorIndex()));
+                fgColor.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(item.getColorIndex()));
+            } else {
+                bgColor.setBackgroundColor(item.getColor().getBg());
+                fgColor.setBackgroundColor(item.getColor().getFg());
+            }
         }
     }
 

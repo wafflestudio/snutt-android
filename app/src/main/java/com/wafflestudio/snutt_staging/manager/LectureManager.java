@@ -256,7 +256,7 @@ public class LectureManager {
     }
 
     // 배경색, 글자색 업데이트
-    public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
+    /*public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
         Log.d(TAG, "update Lecture method (color) called!!");
         Lecture target = new Lecture();
         target.setBgColor(bgColor);
@@ -278,7 +278,7 @@ public class LectureManager {
                 Log.e(TAG, "put lecture request failed..");
             }
         });
-    }
+    }*/
 
     // 배경색, 글자색 업데이트
     public void setNextColor(final Lecture lec) {
@@ -534,12 +534,20 @@ public class LectureManager {
         });
     }
 
-    public void setColors(List<Color> colors) {
+    private void setColors(List<Color> colors) {
         this.colors = colors;
     }
 
-    public void setColorNames(List<String> colorNames) {
+    private void setColorNames(List<String> colorNames) {
         this.colorNames = colorNames;
+    }
+
+    public List<Color> getColorList() {
+        return colors;
+    }
+
+    public List<String> getColorNameList() {
+        return colorNames;
     }
 
     public int getBgColorByIndex(int index) {

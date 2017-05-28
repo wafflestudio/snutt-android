@@ -16,6 +16,7 @@ import com.wafflestudio.snutt_staging.adapter.LectureDetailAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
+import com.wafflestudio.snutt_staging.model.LectureItem;
 
 /**
  * Created by makesource on 2016. 3. 1..
@@ -72,8 +73,10 @@ public class LectureMainActivity extends SNUTTBaseActivity
         getSupportActionBar().setTitle("강의 상세 보기");
     }
 
-    public void setColorPickerFragment() {
-        showFragment(FRAGMENT_COLOR_PICKER, true);
+    public void setColorPickerFragment(LectureItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", item.getColorIndex());
+        showFragment(FRAGMENT_COLOR_PICKER, true, bundle);
     }
 
     public void setCustomDetailFragment() {
@@ -142,12 +145,13 @@ public class LectureMainActivity extends SNUTTBaseActivity
         }
     }
 
-    private void showFragment(int fragmentIdx, boolean withBackStackPush) {
+    private void showFragment(int fragmentIdx, boolean withBackStackPush, Bundle bundle) {
         Preconditions.checkArgument(fragmentIdx >= 0);
         Preconditions.checkArgument(fragmentIdx < FRAGMENT_ROOM_NUM);
 
         String fragmentTag = FRAGMENT_TAGS[fragmentIdx];
         Fragment fragment = newFragment(fragmentIdx);
+        fragment.setArguments(bundle);
 
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(
@@ -197,13 +201,13 @@ public class LectureMainActivity extends SNUTTBaseActivity
     }
 
     @Override
-    public void onColorChanged(Color color) {
+    public void onColorChanged(int index, Color color) {
         if (lecture == null || lecture.isCustom()) {
             CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL);
-            fragment.setLectureColor(color);
+            fragment.setLectureColor(index, color);
         } else {
             LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL);
-            fragment.setLectureColor(color);
+            fragment.setLectureColor(index, color);
         }
 
     }

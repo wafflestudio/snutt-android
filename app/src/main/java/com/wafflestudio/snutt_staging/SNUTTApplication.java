@@ -54,7 +54,7 @@ public class SNUTTApplication extends Application {
         TableManager.getInstance(this);
         NotiManager.getInstance(this);
         restUrl = getString(R.string.api_server);
-        LectureManager.getInstance().fetchColorList("pastel", null);
+        LectureManager.getInstance().fetchColorList("vivid_ios", null);
         super.onCreate();
     }
 

@@ -135,8 +135,12 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setLectureColor(Color color) {
-        getColorItem().setColor(color); // 색상
+    public void setLectureColor(int index, Color color) {
+        if (index > 0) {
+            getColorItem().setColorIndex(index);
+        } else {
+            getColorItem().setColor(color); // 색상
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -247,7 +251,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.Instructor));
-        lists.add(new LectureItem("색상", lecture.getColor(), LectureItem.Type.Color));
+        lists.add(new LectureItem("색상", lecture.getColorIndex(), lecture.getColor(), LectureItem.Type.Color));
         lists.add(new LectureItem(LectureItem.Type.Header));
         lists.add(new LectureItem("학과", lecture.getDepartment(), LectureItem.Type.Department));
         lists.add(new LectureItem("학년", lecture.getAcademic_year(), "학점", String.valueOf(lecture.getCredit()), LectureItem.Type.AcademicYearCredit));

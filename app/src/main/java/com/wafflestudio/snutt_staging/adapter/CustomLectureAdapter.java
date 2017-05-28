@@ -150,7 +150,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     if (item.isEditable()) {
-                        ((LectureMainActivity) activity).setColorPickerFragment();
+                        ((LectureMainActivity) activity).setColorPickerFragment(item);
                     }
                 }
             });
@@ -307,8 +307,13 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         private void bindData(final LectureItem item, View.OnClickListener listener) {
             title.setText("색상");
             layout.setOnClickListener(listener);
-            bgColor.setBackgroundColor(item.getColor().getBg());
-            fgColor.setBackgroundColor(item.getColor().getFg());
+            if (item.getColorIndex() > 0) {
+                bgColor.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(item.getColorIndex()));
+                fgColor.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(item.getColorIndex()));
+            } else {
+                bgColor.setBackgroundColor(item.getColor().getBg());
+                fgColor.setBackgroundColor(item.getColor().getFg());
+            }
         }
     }
 
@@ -508,8 +513,12 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     target.setInstructor(item.getValue1());
                     break;
                 case Color: // 색상
-                    target.setBgColor(item.getColor().getBg());
-                    target.setFgColor(item.getColor().getFg());
+                    if (item.getColorIndex() > 0) {
+                        target.setColorIndex(item.getColorIndex());
+                    } else {
+                        target.setBgColor(item.getColor().getBg());
+                        target.setFgColor(item.getColor().getFg());
+                    }
                     break;
                 case Credit: // 학점
                     target.setCredit(Integer.parseInt(item.getValue1()));
@@ -545,8 +554,12 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     lecture.setInstructor(item.getValue1());
                     break;
                 case Color: // 색상
-                    lecture.setBgColor(item.getColor().getBg());
-                    lecture.setFgColor(item.getColor().getFg());
+                    if (item.getColorIndex() > 0) {
+                        lecture.setColorIndex(item.getColorIndex());
+                    } else {
+                        lecture.setBgColor(item.getColor().getBg());
+                        lecture.setFgColor(item.getColor().getFg());
+                    }
                     break;
                 case Credit: // 학점
                     lecture.setCredit(Integer.parseInt(item.getValue1()));

@@ -206,6 +206,7 @@ public class Lecture {
     }
 
     public void setColor(Color color) {
+        this.colorIndex = 0;
         this.color = color;
     }
 
