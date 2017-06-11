@@ -15,11 +15,21 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <View
-            android:id="@+id/fgColor"
+        <FrameLayout
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@android:color/holo_green_dark"/>
+            android:background="@drawable/rect_black">
+            <View
+                android:id="@+id/fgColor"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/rect_black"/>
+        </FrameLayout>
 
         <View
             android:id="@+id/bgColor"
