@@ -16,26 +16,32 @@
             android:layout_weight="1"/>
 
         <FrameLayout
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/rect_black">
-            <View
-                android:id="@+id/fgColor"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@android:color/holo_green_light"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="20dp">
+
+                <View
+                    android:id="@+id/fgColor"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@android:color/white"/>
+
+                <View
+                    android:id="@+id/bgColor"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@android:color/holo_green_dark"/>
+
+            </LinearLayout>
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="40dp"
                 android:layout_height="20dp"
                 android:background="@drawable/rect_black"/>
-        </FrameLayout>
 
-        <View
-            android:id="@+id/bgColor"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
+        </FrameLayout>
 
         <View
             android:layout_width="0dp"
