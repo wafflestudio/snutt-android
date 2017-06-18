@@ -44,10 +44,6 @@ public class LectureManager {
     // Search query
     private List<Lecture> searchedLectures;
 
-    // 사용자 정의 시간표
-    private int customWday = -1;
-    private float customDuration = -1;
-    private float customStartTime = -1;
     private static LectureManager singleton;
 
     // color list
@@ -370,14 +366,6 @@ public class LectureManager {
         return false;
     }
 
-    //이미 내 강의에 존재하는 시간인지 (day, time, duration 으로 비교), custom lecture 생성시
-    public boolean alreadyExistClassTime(float duration) {
-        for (Lecture lecture : lectures) {
-            if (isDuplicatedClassTime(lecture, customWday, customStartTime, duration)) return true;
-        }
-        return false;
-    }
-
     //주어진 요일, 시각을 포함하고 있는지
     public boolean contains(Lecture lec1, int given_day, float given_time) {
         for (JsonElement element1 : lec1.getClass_time_json()) {
@@ -387,47 +375,14 @@ public class LectureManager {
             float start1 = class1.get("start").getAsFloat();
             float len1 = class1.get("len").getAsFloat();
             float end1 = start1 + len1;
+            float start2 = given_time;
+            float len2 = 1;
+            float end2 = start2 + len2;
 
             if (day1 != given_day) continue;
-            if (!(end1 <= given_time || given_time <= end1)) return true;
+            if (!(end1 <= start2 || end2 <= start1)) return true;
         }
         return false;
-    }
-
-    //사용자 정의 시간표 초기화
-    public void resetCustomLecture() {
-        customStartTime = customDuration = customWday = -1;
-        notifyLectureChanged();
-    }
-
-    public void setCustomValue(int wday, float startTime, float duration) {
-        Log.d(TAG, "setting custom lecture values..");
-        customWday = wday;
-        customStartTime = startTime;
-        customDuration = duration;
-        notifyLectureChanged();
-    }
-
-    public int getCustomWday() {
-        return customWday;
-    }
-
-    public float getCustomStartTime() {
-        return customStartTime;
-    }
-
-    public float getCustomDuration() {
-        return customDuration;
-    }
-
-    public void setCustomDuration(float duration) {
-        customDuration = duration;
-        notifyLectureChanged();
-    }
-
-    //사용자 정의 시간표가 있는지
-    public boolean existCustomLecture() {
-        return (customWday != -1 && customStartTime != -1 && customDuration > 0);
     }
 
     public void postSearchQuery(String text, final Callback callback) {

@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
+import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
@@ -45,12 +46,8 @@ public class TableView extends View {
     private float unitWidth, unitHeight;
     private TextRect lectureTextRect;
 
-    //사용자 정의 시간표 추가
-    private Paint mCustomPaint = new Paint();
-
     private List<Lecture> lectures ;
     private boolean export; // 현재 선택한 강의를 보여줄지 말지?
-    private boolean custom; // custom lecture 생성시 보여주는 view
 
     // 시간표 trim 용
     private int numWidth;
@@ -63,8 +60,6 @@ public class TableView extends View {
 
         export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
                 R.styleable.TimeTableView_export, false);
-        custom = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
-                R.styleable.TimeTableView_custom, false);
 
         lectures = LectureManager.getInstance().getLectures();
         mContext = context;
@@ -150,55 +145,35 @@ public class TableView extends View {
         float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f + (float) startHeight;
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
+            Log.d(TAG, "action down");
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
-            //Toast.makeText(getContext(), wday + " " + time, Toast.LENGTH_SHORT).show();
 
-            boolean lectureClicked = false;
 
             //터치한 게 내 강의 중 하나
-            for (Lecture lecture : LectureManager.getInstance().getLectures()) {
-                if (LectureManager.getInstance().contains(lecture,wday, time)) {
-                    lectureClicked = true;
-                }
-            }
-            //빈 공간 클릭
-            if (!lectureClicked && custom){
-                LectureManager.getInstance().setCustomValue(wday, time, 0.5f);
-            } else {
-                LectureManager.getInstance().resetCustomLecture();
-            }
+
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            Log.d(TAG, "action up");
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
-
-            if (!custom) {
-                //터치한 게 내 강의 중 하나
-                for (int i = 0; i < lectures.size(); i++) {
-                    Lecture lecture = lectures.get(i);
-                    if (LectureManager.getInstance().contains(lecture, wday, time)) {
-                        LectureManager.getInstance().setNextColor(lecture);
-                        break;
-                    }
+            //터치한 게 내 강의 중 하나
+            for (int i = 0; i < lectures.size(); i++) {
+                Lecture lecture = lectures.get(i);
+                if (LectureManager.getInstance().contains(lecture, wday, time)) {
+                    getActivity().startLectureMain(i);
                 }
-            }
-
-            //터치한 게 custom lecture
-            if (LectureManager.getInstance().existCustomLecture()) {
-                // 적절한 처리..
             }
         }  else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             //x, y를 교시로
 
-            if (LectureManager.getInstance().existCustomLecture()) {
+            /*if (LectureManager.getInstance().existCustomLecture()) {
                 float duration = time - LectureManager.getInstance().getCustomStartTime() + 0.5f;
                 if (!LectureManager.getInstance().alreadyExistClassTime(duration) && custom) {
                     Log.d(TAG, "update custom lecture duration");
                     LectureManager.getInstance().setCustomDuration(duration);
                 }
-            }
+            }*/
         }
 
         /*    boolean lectureClicked = false;
@@ -370,10 +345,6 @@ public class TableView extends View {
             }
         }
 
-        //사용자 정의 시간표 추가중..
-        if (LectureManager.getInstance().existCustomLecture()){
-            drawCustomBox(canvas, canvasWidth, canvasHeight, LectureManager.getInstance().getCustomWday(), LectureManager.getInstance().getCustomStartTime(), LectureManager.getInstance().getCustomDuration());
-        }
     }
 
     @Override
@@ -440,7 +411,7 @@ public class TableView extends View {
     }
 
     //사용자 정의 시간표용..
-    void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
+    /*void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
         if (!custom) return;
 
         float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
@@ -460,7 +431,7 @@ public class TableView extends View {
 
 //		canvas.drawRect(left, top, right, bottom, mCustomPaint);
         canvas.drawRect(left+borderWidth/2, top+borderWidth/2, right-borderWidth/2, bottom-borderWidth/2, mCustomPaint);
-    }
+    }*/
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -535,5 +506,9 @@ public class TableView extends View {
         int tabBarHeight = 0;
         tabBarHeight = mContext.getResources().getDimensionPixelSize(R.dimen.tab_bar_height);
         return tabBarHeight;
+    }
+
+    private SNUTTBaseActivity getActivity() {
+        return (SNUTTBaseActivity) mContext;
     }
 }
