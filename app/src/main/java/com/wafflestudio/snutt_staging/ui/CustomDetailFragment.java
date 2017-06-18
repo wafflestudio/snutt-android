@@ -45,6 +45,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private CustomLectureAdapter adapter;
+    private int classItemCursor = -1;
     private boolean editable = false;
     private boolean add = false;
 
@@ -156,6 +157,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.Header));
 
         if (!add) {
+            classItemCursor = lists.size();
             for (JsonElement element : lecture.getClass_time_json()) {
                 JsonObject jsonObject = element.getAsJsonObject();
                 ClassTime classTime = new ClassTime(jsonObject);
@@ -166,6 +168,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
             lists.add(new LectureItem(LectureItem.Type.Header));
 
         } else {
+            classItemCursor = lists.size();
             lists.add(new LectureItem(LectureItem.Type.AddClassTime));
             lists.add(new LectureItem(LectureItem.Type.Header));
         }
@@ -243,16 +246,10 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     }
 
     private int getLastClassItemPosition() {
-        for (int i = 0;i < lists.size();i ++) {
-            if (isLastClassItem(i)) return i;
+        for (int i = classItemCursor;i < lists.size();i ++) {
+            if (lists.get(i).getType() != LectureItem.Type.ClassTime) return i - 1;
         }
-        Log.e(TAG, "can't find class time item");
-        return -1;
-    }
-
-    private boolean isLastClassItem(int position) {
-        if (position == lists.size() - 1) return false;
-        return (lists.get(position).getType() == LectureItem.Type.ClassTime) && (lists.get(position + 1).getType() != LectureItem.Type.ClassTime);
+        return lists.size() - 1;
     }
 
     protected void hideSoftKeyboard(View view) {
