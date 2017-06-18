@@ -27,6 +27,7 @@ public class TagManager {
     private List<String> classification, credit, academic_year, instructor, department, category, time;
     private List<Tag> myTags;
     private Map<String, String> field;
+    private boolean searchEmptyClass;
 
     private SNUTTApplication app;
     private static TagManager singleton;
@@ -46,6 +47,7 @@ public class TagManager {
         time = new ArrayList<>();
         field = new HashMap<>();
         myTags = new ArrayList<>();
+        searchEmptyClass = false;
         this.app = app;
     }
 
@@ -272,6 +274,21 @@ public class TagManager {
     public void setTime(List<String> time) {
         this.time = time;
     }
+
+    public boolean getSearchEmptyClass() {
+        return searchEmptyClass;
+    }
+
+    public boolean toggleSearchEmptyClass() {
+        this.searchEmptyClass = !this.searchEmptyClass;
+        return searchEmptyClass;
+    }
+
+    public void setSearchEmptyClass(boolean searchEmptyClass) {
+        this.searchEmptyClass = searchEmptyClass;
+    }
+
+
 
     private void getDefaultTag() {
         tags = new ArrayList<>();

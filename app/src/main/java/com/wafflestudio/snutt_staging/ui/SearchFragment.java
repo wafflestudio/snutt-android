@@ -90,7 +90,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private LinearLayout tagHelper;
     private LinearLayout lectureLayout;
     private LinearLayout suggestionLayout;
-    private TextView  cancel, all, academicYear, category, classification, credit, department, instructor;
+    private TextView  cancel, all, academicYear, category, classification, credit, department, instructor, searchEmptyClass;
 
     public SearchFragment() {
     }
@@ -264,6 +264,14 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onClick(View v) {
                 boolean b = suggestionAdapter.toggleInstructor();
                 instructor.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            }
+        });
+        searchEmptyClass = (TextView) tagHelper.findViewById(R.id.search_empty_class);
+        searchEmptyClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean b = TagManager.getInstance().toggleSearchEmptyClass();
+                searchEmptyClass.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
             }
         });
     }

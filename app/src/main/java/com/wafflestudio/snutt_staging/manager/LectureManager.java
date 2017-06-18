@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -440,6 +441,9 @@ public class LectureManager {
         query.put("instructor", TagManager.getInstance().getInstructor());
         query.put("department", TagManager.getInstance().getDepartment());
         query.put("category", TagManager.getInstance().getCategory());
+        if (TagManager.getInstance().getSearchEmptyClass()) {
+            query.put("time_mask", getClassTimeMask());
+        }
         searchedQuery = text;
 
         app.getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
@@ -478,6 +482,9 @@ public class LectureManager {
         query.put("category", TagManager.getInstance().getCategory());
         query.put("offset", offset);
         query.put("limit", 20);
+        if (TagManager.getInstance().getSearchEmptyClass()) {
+            query.put("time_mask", getClassTimeMask());
+        }
         app.getRestService().postSearchQuery(query, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectureList, Response response) {
@@ -494,6 +501,20 @@ public class LectureManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
+
+    public int[] getClassTimeMask() {
+        int[] masks = new int[7];
+        for (Lecture lecture : lectures) {
+            for (int i = 0; i < lecture.getClass_time_mask().size(); i++) {
+                int mask = lecture.getClass_time_mask().get(i).getAsInt();
+                masks[i] = masks[i] | mask;
+            }
+        }
+        for (int i = 0; i < 7; i ++) {
+            masks[i] = masks[i] ^ (0x3FFFFFFF);
+        }
+        return masks;
     }
 
     public Lecture getLectureById(String id) {

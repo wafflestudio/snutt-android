@@ -28,6 +28,7 @@ public class Lecture {
     private String course_title;
     private int credit;
     private String class_time; // lecture 검색시 띄어주는 class time
+    private JsonArray class_time_mask;
     private JsonArray class_time_json;
     private String location;
     private String instructor;
@@ -52,6 +53,7 @@ public class Lecture {
         this.course_title = lec.course_title;
         this.credit = lec.credit;
         this.class_time = lec.class_time;
+        this.class_time_mask = lec.class_time_mask;
         this.class_time_json = lec.class_time_json;
         this.location = lec.location;
         this.instructor = lec.instructor;
@@ -125,6 +127,14 @@ public class Lecture {
 
     public void setClass_time(String class_time) {
         this.class_time = class_time;
+    }
+
+    public JsonArray getClass_time_mask() {
+        return class_time_mask;
+    }
+
+    public void setClass_time_mask(JsonArray class_time_mask) {
+        this.class_time_mask = class_time_mask;
     }
 
     public JsonArray getClass_time_json() {
