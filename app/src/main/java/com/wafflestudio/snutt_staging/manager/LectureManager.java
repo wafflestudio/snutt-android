@@ -376,7 +376,7 @@ public class LectureManager {
             float len1 = class1.get("len").getAsFloat();
             float end1 = start1 + len1;
             float start2 = given_time;
-            float len2 = 1;
+            float len2 = 0.5f;
             float end2 = start2 + len2;
 
             if (day1 != given_day) continue;

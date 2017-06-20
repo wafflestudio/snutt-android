@@ -3,16 +3,16 @@ package com.wafflestudio.snutt_staging.view;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -38,7 +38,6 @@ public class TableView extends View {
     private Paint backgroundPaint;
     private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
     private Paint lectureTextPaint;
-    private Path path;
     private Context mContext;
     private String[] wdays;
     private float leftLabelWidth = SNUTTApplication.dpTopx(20);
@@ -86,9 +85,6 @@ public class TableView extends View {
         linePaint2.setStyle(Paint.Style.STROKE);
         linePaint2.setColor(0xffcccccc);
         linePaint2.setStrokeWidth(1);
-        linePaint2.setPathEffect(new DashPathEffect(new float[]{5,5}, 2));
-
-        path = new Path();
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         topLabelTextPaint.setColor(0xff404040);
@@ -144,110 +140,18 @@ public class TableView extends View {
         int wday = (int) ((x - leftLabelWidth) / unitWidth) + startWidth;
         float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f + (float) startHeight;
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d(TAG, "action down");
-            Log.d(TAG, "day : " + String.valueOf(wday));
-            Log.d(TAG, "time : " + String.valueOf(time));
-
-
-            //터치한 게 내 강의 중 하나
-
-
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             Log.d(TAG, "action up");
             Log.d(TAG, "day : " + String.valueOf(wday));
             Log.d(TAG, "time : " + String.valueOf(time));
-            //터치한 게 내 강의 중 하나
+
             for (int i = 0; i < lectures.size(); i++) {
                 Lecture lecture = lectures.get(i);
                 if (LectureManager.getInstance().contains(lecture, wday, time)) {
                     getActivity().startLectureMain(i);
                 }
             }
-        }  else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            //x, y를 교시로
-
-            /*if (LectureManager.getInstance().existCustomLecture()) {
-                float duration = time - LectureManager.getInstance().getCustomStartTime() + 0.5f;
-                if (!LectureManager.getInstance().alreadyExistClassTime(duration) && custom) {
-                    Log.d(TAG, "update custom lecture duration");
-                    LectureManager.getInstance().setCustomDuration(duration);
-                }
-            }*/
         }
-
-        /*    boolean lectureClicked = false;
-            //터치한 게 selectedLecture이면
-            if (Lecture.selectedLecture != null && Lecture.selectedLecture.contains(wday, time)){
-                lectureClicked = true;
-            }
-            //터치한 게 내 강의 중 하나
-            for (int i=0;i<Lecture.myLectures.size();i++){
-                if (Lecture.myLectures.get(i).contains(wday, time)){
-                    lectureClicked = true;
-                }
-            }
-            //빈 공간 클릭
-            if (lectureClicked == false && mContext.getCustomEditable()){
-                mCustomStartTime = time;
-                mCustomWday = wday;
-                mCustomDuration = 0.5f;
-            } else {
-                resetCustomVariables();
-            }
-            invalidate();
-
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE){
-            //x, y를 교시로
-            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
-
-            if (mCustomStartTime != -1 && mCustomWday != -1){
-                float duration = time - mCustomStartTime + 0.5f;
-                Lecture tmpLecture = new Lecture("", "", mCustomWday, mCustomStartTime, duration);
-                if (!tmpLecture.alreadyExistClassTime() && mContext.getCustomEditable()){
-                    mCustomDuration = duration;
-                }
-            }
-
-            invalidate();
-        } else if (event.getAction() == MotionEvent.ACTION_UP){
-            //x, y를 요일, 교시로
-            int wday = (int) ((x - leftLabelWidth) / unitWidth);
-            float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f;
-
-            boolean lectureClicked = false;
-            //터치한 게 selectedLecture이면 강의 추가
-            if (Lecture.selectedLecture != null && Lecture.selectedLecture.contains(wday, time)){
-                Lecture.addMyLecture(mContext, Lecture.selectedLecture);
-                lectureClicked = true;
-            }
-            //터치한 게 내 강의 중 하나
-            for (int i=0;i<Lecture.myLectures.size();i++){
-                if (Lecture.myLectures.get(i).contains(wday, time)){
-                    lectureClicked = true;
-                    Lecture.myLectures.get(i).setNextColor();
-                    invalidate();
-                    Lecture.saveMyLectures();
-                }
-            }
-            //빈 공간 클릭 시선택 해제
-            if (lectureClicked == false){
-                Lecture.selectedLecture = null;
-                if (TimetableView.mInstance != null)
-                    TimetableView.mInstance.invalidate();
-                if (MainActivity.mSearchAdapter != null)
-                    MainActivity.mSearchAdapter.notifyDataSetChanged();
-            }
-
-            if (mCustomWday != -1 && mCustomStartTime != -1 && mCustomDuration > 0 ){
-                if (mContext.getCustomEditable()){
-                    new CustomLectureDialog(mContext, mCustomWday, mCustomStartTime, mCustomDuration).show();
-                }
-            }
-
-            resetCustomVariables();
-            invalidate();*/
-
         return true;
     }
 
@@ -295,9 +199,6 @@ public class TableView extends View {
         for (int i=0;i<numHeight*2;i++){
             float height = topLabelHeight + unitHeight * i;
             if (i%2 == 1) {
-                path.moveTo(leftLabelWidth, height);
-                path.lineTo(canvasWidth, height);
-                //canvas.drawPath(path, linePaint2);
                 canvas.drawLine(leftLabelWidth, height,canvasWidth, height,linePaint);
             }
             else {
@@ -349,7 +250,6 @@ public class TableView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        path.reset(); // to remove line which drawn by drawPath
         drawTimetable(canvas, getWidth(), getHeight(), export);
     }
 
@@ -399,39 +299,21 @@ public class TableView extends View {
         Paint p = new Paint();
         p.setColor(bgColor);
         canvas.drawRect(r, p);
-        //canvas.drawRoundRect(r, 20, 20, p);
-        //canvas.drawRect(left, top, right, bottom, lectureBorderPaint[colorIndex]);
-        //canvas.drawRect(left+borderWidth, top+borderWidth, right-borderWidth, bottom-borderWidth, paints[colorIndex]);
+
+        Paint s = new Paint();
+        s.setStyle(Paint.Style.STROKE);
+        s.setColor(0x0d000000);
+        s.setStrokeWidth(2);
+        canvas.drawRect(r, s);
+
         //강의명, 강의실 기록
         String str = course_title + "\n" + location;
-        int width = (int)(right - left);
-        int height = (int)(bottom - top);
+        int padding = 5;
+        int width = (int)(right - left) - padding * 2;
+        int height = (int)(bottom - top) - padding * 2;
         int strHeight = lectureTextRect.prepare(str, width, height);
-        lectureTextRect.draw(canvas, (int)left, (int)(top + (height - strHeight)/2), width, fgColor);
+        lectureTextRect.draw(canvas, (int)left + padding, (int)(top + (height - strHeight)/2) + padding, width, fgColor);
     }
-
-    //사용자 정의 시간표용..
-    /*void drawCustomBox(Canvas canvas, float canvasWidth, float canvasHeight, int wday, float startTime, float duration){
-        if (!custom) return;
-
-        float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
-        float unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
-
-        //startTime : 시작 교시
-        float left = leftLabelWidth + wday * unitWidth;
-        float right = leftLabelWidth + wday * unitWidth + unitWidth;
-        float top = topLabelHeight + startTime * unitHeight * 2;
-        float bottom = topLabelHeight + startTime * unitHeight * 2 + (unitHeight * duration * 2);
-        float borderWidth = SNUTTApplication.dpTopx(3);
-
-        mCustomPaint.setColor(Color.RED);
-        mCustomPaint.setStyle(Paint.Style.STROKE);  // 테두리만
-        mCustomPaint.setStrokeWidth(borderWidth);
-        mCustomPaint.setPathEffect(new DashPathEffect(new float[] {SNUTTApplication.dpTopx(6),SNUTTApplication.dpTopx(3)}, 0));
-
-//		canvas.drawRect(left, top, right, bottom, mCustomPaint);
-        canvas.drawRect(left+borderWidth/2, top+borderWidth/2, right-borderWidth/2, bottom-borderWidth/2, mCustomPaint);
-    }*/
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
