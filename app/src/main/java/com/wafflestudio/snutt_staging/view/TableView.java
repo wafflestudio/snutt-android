@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -37,13 +38,14 @@ public class TableView extends View {
 
     private Paint backgroundPaint;
     private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
-    private Paint lectureTextPaint;
     private Context mContext;
     private String[] wdays;
     private float leftLabelWidth = SNUTTApplication.dpTopx(20);
     private float topLabelHeight = SNUTTApplication.dpTopx(25);
     private float unitWidth, unitHeight;
-    private TextRect lectureTextRect;
+    private TextRect titleTextRect, locationTextRect;
+    private Paint titleTextPaint, locationTextPaint;
+
 
     private List<Lecture> lectures ;
     private boolean export; // 현재 선택한 강의를 보여줄지 말지?
@@ -110,11 +112,13 @@ public class TableView extends View {
         wdays[5] = mContext.getResources().getString(R.string.wday_sat);
         wdays[6] = mContext.getResources().getString(R.string.wday_sun);
 
-        lectureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        //lectureTextPaint.setColor(0xff000000);
-        lectureTextPaint.setTextSize(SNUTTApplication.spTopx(11));
-
-        lectureTextRect = new TextRect(lectureTextPaint);
+        titleTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        titleTextPaint.setTextSize(SNUTTApplication.spTopx(10));
+        titleTextRect = new TextRect(titleTextPaint);
+        locationTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        locationTextPaint.setTextSize(SNUTTApplication.spTopx(11));
+        locationTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        locationTextRect = new TextRect(locationTextPaint);
 
         numWidth = 7;
         startWidth = 0;
@@ -307,12 +311,15 @@ public class TableView extends View {
         canvas.drawRect(r, s);
 
         //강의명, 강의실 기록
-        String str = course_title + "\n" + location;
+        String str1 = course_title;
+        String str2 = location;
         int padding = 5;
         int width = (int)(right - left) - padding * 2;
         int height = (int)(bottom - top) - padding * 2;
-        int strHeight = lectureTextRect.prepare(str, width, height);
-        lectureTextRect.draw(canvas, (int)left + padding, (int)(top + (height - strHeight)/2) + padding, width, fgColor);
+        int str1Height = titleTextRect.prepare(str1, width, height);
+        int str2Height = locationTextRect.prepare(str2, width, height - str1Height);
+        titleTextRect.draw(canvas, (int)left + padding, (int)(top + (height - str1Height - str2Height)/2) + padding, width, fgColor);
+        locationTextRect.draw(canvas, (int)left + padding, (int)(top + str1Height + (height - str1Height - str2Height)/2) + padding, width, fgColor);
     }
 
     @Override
