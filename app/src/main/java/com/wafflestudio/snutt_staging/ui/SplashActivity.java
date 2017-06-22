@@ -17,11 +17,11 @@ public class SplashActivity extends SNUTTBaseActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_splash);
-
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
                 startMain();
+//                startIntro();
                 finish();
             }
         }, SPLASH_DISPLAY_LENGTH);

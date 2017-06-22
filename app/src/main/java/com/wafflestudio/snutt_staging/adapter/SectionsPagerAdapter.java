@@ -29,15 +29,15 @@ public class SectionsPagerAdapter  extends FragmentPagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         switch(position) {
             case 0:
-                return TableFragment.newInstance(position + 1);
+                return TableFragment.newInstance(0);
             case 1:
-                return SearchFragment.newInstance(position+1);
+                return SearchFragment.newInstance(1);
             case 2:
-                return MyLectureFragment.newInstance(position+1);
+                return MyLectureFragment.newInstance(2);
             case 3:
-                return NotificationFragment.newInstance(position+1);
+                return NotificationFragment.newInstance(3);
             case 4:
-                return SettingsFragment.newInstance(position+1);
+                return SettingsFragment.newInstance(4);
         }
         return null;
     }

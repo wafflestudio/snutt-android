@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
+import com.wafflestudio.snutt_staging.ui.IntroActivity;
 import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
 import com.wafflestudio.snutt_staging.ui.MainActivity;
 import com.wafflestudio.snutt_staging.ui.SettingsMainActivity;
@@ -64,6 +65,11 @@ public class SNUTTBaseActivity extends AppCompatActivity {
     public void startSettingsMain(int type) {
         Intent intent = new Intent(this, SettingsMainActivity.class);
         intent.putExtra(INTENT_KEY_SETTINGS_TYPE, type);
+        startActivity(intent);
+    }
+
+    public void startIntro() {
+        Intent intent = new Intent(this, IntroActivity.class);
         startActivity(intent);
     }
 
