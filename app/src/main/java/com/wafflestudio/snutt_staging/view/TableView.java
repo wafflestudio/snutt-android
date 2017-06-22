@@ -159,39 +159,51 @@ public class TableView extends View {
     }
 
     //주어진 canvas에 시간표를 그림
-    public void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export){
-
-        if (export) {
-            if (PrefManager.getInstance().getAutoTrim()) {
-                int startWday = 7;
-                int endWday = 0;
-                int startTime = 14;
-                int endTime = 0;
-                for (Lecture lecture : lectures) {
-                    for (JsonElement element : lecture.getClass_time_json()) {
-                        JsonObject classTime = element.getAsJsonObject();
-                        int wday = classTime.get("day").getAsInt();
-                        float start = classTime.get("start").getAsFloat();
-                        float duration = classTime.get("len").getAsFloat();
-                        startWday = Math.min(startWday, wday);
-                        endWday = Math.max(endWday, wday);
-                        startTime = Math.min(startTime, (int) start); // 버림
-                        endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
-                    }
-                }
-                // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
-                startWidth = 0;
-                numWidth = Math.max(5, endWday + 1);
-                //
-                startHeight = Math.min(1, startTime);
-                numHeight = Math.max(10, endTime - startHeight);
-            } else {
-                startWidth = PrefManager.getInstance().getTrimWidthStart();
-                numWidth = PrefManager.getInstance().getTrimWidthNum();
-                startHeight = PrefManager.getInstance().getTrimHeightStart();
-                numHeight = PrefManager.getInstance().getTrimHeightNum();
+    public void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export) {
+        int startWday, endWday, startTime, endTime;
+        startWday = 7; endWday = 0;
+        startTime = 14; endTime = 0;
+        for (Lecture lecture : lectures) {
+            for (JsonElement element : lecture.getClass_time_json()) {
+                JsonObject classTime = element.getAsJsonObject();
+                int wday = classTime.get("day").getAsInt();
+                float start = classTime.get("start").getAsFloat();
+                float duration = classTime.get("len").getAsFloat();
+                startWday = Math.min(startWday, wday);
+                endWday = Math.max(endWday, wday);
+                startTime = Math.min(startTime, (int) start); // 버림
+                endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
             }
         }
+        Lecture lec = LectureManager.getInstance().getSelectedLecture();
+        boolean selected = (!export && lec != null);
+        if (selected) {
+            for (JsonElement element : lec.getClass_time_json()) {
+                JsonObject classTime = element.getAsJsonObject();
+                int wday = classTime.get("day").getAsInt();
+                float start = classTime.get("start").getAsFloat();
+                float duration = classTime.get("len").getAsFloat();
+                startWday = Math.min(startWday, wday);
+                endWday = Math.max(endWday, wday);
+                startTime = Math.min(startTime, (int) start); // 버림
+                endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
+            }
+        }
+
+        if (PrefManager.getInstance().getAutoTrim() || selected) {
+            // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
+            startWidth = 0;
+            numWidth = Math.max(5, endWday + 1);
+            //
+            startHeight = Math.min(1, startTime);
+            numHeight = Math.max(10, endTime - startHeight);
+        } else {
+            startWidth = PrefManager.getInstance().getTrimWidthStart();
+            numWidth = PrefManager.getInstance().getTrimWidthNum();
+            startHeight = PrefManager.getInstance().getTrimHeightStart();
+            numHeight = PrefManager.getInstance().getTrimHeightNum();
+        }
+
 
         unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
         unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
