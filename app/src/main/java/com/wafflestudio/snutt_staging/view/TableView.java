@@ -94,12 +94,12 @@ public class TableView extends View {
 
         leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         leftLabelTextPaint.setFakeBoldText(true);
-        leftLabelTextPaint.setColor(0xff999999);
+        leftLabelTextPaint.setColor(0xff404040);
         leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(14));
         leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
         leftLabelTextPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        leftLabelTextPaint2.setColor(0xff999999);
-        leftLabelTextPaint2.setTextSize(SNUTTApplication.spTopx(10));
+        leftLabelTextPaint2.setColor(0xff404040);
+        leftLabelTextPaint2.setTextSize(SNUTTApplication.spTopx(12));
         leftLabelTextPaint2.setTextAlign(Paint.Align.CENTER);
 
         wdays = new String[7];
@@ -222,15 +222,16 @@ public class TableView extends View {
             String str1 = i + startHeight + "교시";
             String str2 = SNUTTUtils.zeroStr(i+startHeight+8) + ":00~" + SNUTTUtils.zeroStr(i+startHeight+9) + ":00";
             String str = String.valueOf(i + startHeight + 8);
-            float textHeight = getTextHeight(str1, leftLabelTextPaint);
-            float textHeight2 = getTextHeight(str2, leftLabelTextPaint2);
-            float padding = SNUTTApplication.dpTopx(5);
-            if (canvasWidth > canvasHeight) padding = 0;
-            float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
+            //float textHeight = getTextHeight(str1, leftLabelTextPaint);
+            //float textHeight2 = getTextHeight(str2, leftLabelTextPaint2);
+            //float padding = SNUTTApplication.dpTopx(5);
+            //if (canvasWidth > canvasHeight) padding = 0;
+            //float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
             //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
             //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
 
-            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f, leftLabelTextPaint2);
+            float padding = SNUTTApplication.dpTopx(5);;
+            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f + padding, leftLabelTextPaint2);
         }
         //내 강의 그리기
         if (lectures != null) {
