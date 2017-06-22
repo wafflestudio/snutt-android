@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by makesource on 2017. 2. 27..
@@ -113,7 +114,8 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
                     Log.e(TAG, "notification type is out of bound!!");
             }
             try {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA);
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                format.setTimeZone(TimeZone.getTimeZone("UTC"));
                 Date date1 = format.parse(notification.getCreated_at());
                 Date date2 = new Date();
                 long diff = date2.getTime() - date1.getTime();
