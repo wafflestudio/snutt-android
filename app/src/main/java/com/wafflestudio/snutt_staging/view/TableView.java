@@ -80,12 +80,11 @@ public class TableView extends View {
         backgroundPaint.setColor(0xfff3f3f3);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(0xffcccccc);
+        linePaint.setColor(0xffebebeb);
         linePaint.setStrokeWidth(1);
 
         linePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint2.setStyle(Paint.Style.STROKE);
-        linePaint2.setColor(0xffcccccc);
+        linePaint2.setColor(0xfff3f3f3);
         linePaint2.setStrokeWidth(1);
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -203,7 +202,7 @@ public class TableView extends View {
         for (int i=0;i<numHeight*2;i++){
             float height = topLabelHeight + unitHeight * i;
             if (i%2 == 1) {
-                canvas.drawLine(leftLabelWidth, height,canvasWidth, height,linePaint);
+                canvas.drawLine(leftLabelWidth, height,canvasWidth, height,linePaint2);
             }
             else {
                 canvas.drawLine(leftLabelWidth / 3f, height, canvasWidth, height, linePaint);
