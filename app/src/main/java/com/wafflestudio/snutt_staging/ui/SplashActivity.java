@@ -21,7 +21,6 @@ public class SplashActivity extends SNUTTBaseActivity {
             @Override
             public void run() {
                 startMain();
-//                startIntro();
                 finish();
             }
         }, SPLASH_DISPLAY_LENGTH);

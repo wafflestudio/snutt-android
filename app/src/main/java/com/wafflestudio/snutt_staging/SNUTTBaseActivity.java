@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by makesource on 2016. 1. 16..
  */
 public class SNUTTBaseActivity extends AppCompatActivity {
-
+    public static final String INTENT_KEY_FRAGMENT_TYPE = "INTENT_KEY_FRAGMENT_TYPE";
     public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
     public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
     public static final String INTENT_KEY_SETTINGS_TYPE = "INTENT_KEY_SETTINGS_TYPE";
@@ -57,8 +57,9 @@ public class SNUTTBaseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void startWelcome() {
+    public void startWelcome(int type) {
         Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.putExtra(INTENT_KEY_FRAGMENT_TYPE, type);
         startActivity(intent);
     }
 

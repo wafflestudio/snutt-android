@@ -93,7 +93,8 @@ public class MainActivity extends SNUTTBaseActivity {
         // 1. token 의 유무 검사
         if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
             // 로그인 창으로 이동
-            startWelcome();
+            //startWelcome();
+            startIntro();
             finish();
             return;
         }

@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 import com.wafflestudio.snutt_staging.R;
@@ -11,36 +13,38 @@ import com.wafflestudio.snutt_staging.adapter.IntroAdapter;
 /**
  * Created by makesource on 2016. 3. 18..
  */
-public class WelcomeActivity extends SNUTTBaseActivity implements SignUpFragment.OnSignUpSucceedListener {
-
+public class WelcomeActivity extends SNUTTBaseActivity {
     private ViewPager mViewPager;
     private IntroAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //activityList.add(this);
-        //finishAll();
+        activityList.add(this);
         setContentView(R.layout.activity_welcome);
-
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        adapter = new IntroAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(adapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        int type = getIntent().getIntExtra(INTENT_KEY_FRAGMENT_TYPE, 0);
+        switch (type) {
+            case 0:
+                setFragment(SignInFragment.newInstance());
+                break;
+            case 1:
+                setFragment(SignUpFragment.newInstance());
+                break;
+            default:
+                break;
+        }
     }
 
-    @Override
-    public void onSignUpSucceed(String id, String password) {
-        mViewPager.setCurrentItem(0);
-        SignInFragment fragment = (SignInFragment) adapter.getItem(0);
-        fragment.setInfo(id, password);
+    protected void setFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //activityList.remove(this);
+        activityList.remove(this);
     }
 }

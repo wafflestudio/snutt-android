@@ -311,7 +311,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                             @Override
                             public void success(Object o, Response response) {
                                 UserManager.getInstance().performLogout();
-                                getSNUTTBaseActivity().startWelcome();
+                                getSNUTTBaseActivity().startIntro();
                                 getSNUTTBaseActivity().finishAll();
                             }
                             @Override

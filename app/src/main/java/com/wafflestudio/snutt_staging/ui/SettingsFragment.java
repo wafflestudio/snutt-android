@@ -176,7 +176,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                     @Override
                     public void success(Object o, Response response) {
                         UserManager.getInstance().performLogout();
-                        getMainActivity().startWelcome();
+                        getMainActivity().startIntro();
                         getMainActivity().finishAll();
                     }
                     @Override

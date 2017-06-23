@@ -13,6 +13,8 @@ import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.manager.UserManager;
 
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -22,7 +24,6 @@ import retrofit.client.Response;
  */
 public class SignUpFragment extends SNUTTBaseFragment {
 
-    private OnSignUpSucceedListener mListener;
     private EditText et_id;
     private EditText et_password;
     private EditText et_email;
@@ -30,10 +31,6 @@ public class SignUpFragment extends SNUTTBaseFragment {
 
     public static SignUpFragment newInstance() {
         return new SignUpFragment();
-    }
-
-    public interface OnSignUpSucceedListener {
-        public void onSignUpSucceed(String id, String password);
     }
 
     @Override
@@ -50,11 +47,12 @@ public class SignUpFragment extends SNUTTBaseFragment {
                 final String id = et_id.getText().toString();
                 final String password = et_password.getText().toString();
                 final String email = et_email.getText().toString();
-                UserManager.getInstance().postSingUp(id, password, email, new Callback<Response>() {
+                UserManager.getInstance().postSingUp(id, password, email, new Callback<Map<String, String>>() {
                     @Override
-                    public void success(Response response, Response response2) {
+                    public void success(Map<String, String> response, Response response2) {
                         Toast.makeText(getContext(), "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
-                        mListener.onSignUpSucceed(id , password);
+                        getBaseActivity().startMain();
+                        getBaseActivity().finishAll();
                     }
                     @Override
                     public void failure(RetrofitError error) {
@@ -64,12 +62,6 @@ public class SignUpFragment extends SNUTTBaseFragment {
             }
         });
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mListener = (OnSignUpSucceedListener) activity;
     }
 
 }

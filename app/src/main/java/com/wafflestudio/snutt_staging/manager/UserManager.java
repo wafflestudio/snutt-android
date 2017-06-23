@@ -133,11 +133,13 @@ public class UserManager {
         query.put("id", id);
         query.put("password", password);
         query.put("email", email);
-        app.getRestService().postSignUp(query, new Callback<Response>() {
+        app.getRestService().postSignUp(query, new Callback<Map<String, String>>() {
             @Override
-            public void success(Response response, Response response2) {
+            public void success(Map<String, String> response, Response response2) {
+                PrefManager.getInstance().setPrefKeyXAccessToken(response.get("token"));
                 if (callback != null) callback.success(response, response2);
             }
+
             @Override
             public void failure(RetrofitError error) {
             }
