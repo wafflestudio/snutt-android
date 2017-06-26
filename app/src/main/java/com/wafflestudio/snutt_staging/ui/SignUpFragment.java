@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt_staging.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +47,7 @@ public class SignUpFragment extends SNUTTBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_signup2, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         setTitle("회원가입");
         idEditText = (EditText) rootView.findViewById(R.id.input_id);
         passwordEditText = (EditText) rootView.findViewById(R.id.input_password);
@@ -88,7 +87,6 @@ public class SignUpFragment extends SNUTTBaseFragment {
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"test...");
                 LoginManager.getInstance().logInWithReadPermissions(SignUpFragment.this, null);
             }
         });

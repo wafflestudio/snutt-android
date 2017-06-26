@@ -16,7 +16,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.manager.UserManager;
@@ -45,7 +44,7 @@ public class SignInFragment extends SNUTTBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_signin2, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
         setTitle("로그인");
         idEditText = (EditText) rootView.findViewById(R.id.input_id);
         passwordEditText = (EditText) rootView.findViewById(R.id.input_password) ;
