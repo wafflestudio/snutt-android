@@ -53,32 +53,6 @@ public class UserManager {
         return singleton;
     }
 
-    public interface OnUserDataChangedListener {
-        void notifySignIn(boolean code);
-    }
-
-    private List<OnUserDataChangedListener> listeners = new ArrayList<>();
-
-    public void addListener(OnUserDataChangedListener listener) {
-        for (int i = 0; i < listeners.size(); i++) {
-            if (listeners.get(i).equals(listener)) {
-                Log.w(TAG, "listener reference is duplicated !!");
-                return;
-            }
-        }
-        listeners.add(listener);
-    }
-
-    public void removeListener(OnUserDataChangedListener listener) {
-        for (int i=0;i<listeners.size(); i++) {
-            OnUserDataChangedListener reference = listeners.get(i);
-            if (reference == listener) {
-                listeners.remove(i);
-                break;
-            }
-        }
-    }
-
     ///////
 
     public User getUser() {
@@ -86,21 +60,25 @@ public class UserManager {
     }
 
     // login with local id
-    public void postSignIn(String id, String password) {
+    public void postSignIn(String id, String password, final Callback callback) {
         Map query = new HashMap();
         query.put("id", id);
         query.put("password", password);
         app.getRestService().postSignIn(query, new Callback<Token>() {
             @Override
             public void success(Token token, Response response) {
-                Log.d(TAG, "post sign in success!!");
+                Log.d(TAG, "post local sign in success!!");
                 Log.d(TAG, "token : " + token.getToken());
                 PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
-                notifySingIn(true);
+                UserManager.getInstance().registerFirebaseToken(null);
+                if (callback != null) callback.success(token, response);
+
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Log.w(TAG, "post local sign in failed!");
+                if (callback != null) callback.failure(error);
             }
         });
     }
@@ -115,7 +93,7 @@ public class UserManager {
                 public void success(Token token, Response response) {
                     Log.d(TAG, "post user facebook success!");
                     PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
-                    notifySingIn(true);
+                    UserManager.getInstance().registerFirebaseToken(null);
                     if (callback != null) callback.success(token, response);
                 }
 
@@ -377,12 +355,4 @@ public class UserManager {
         LoginManager.getInstance().logOut(); // for facebook sdk
         me = new User();
     }
-
-
-    private void notifySingIn(boolean code) {
-        for (OnUserDataChangedListener listener : listeners) {
-            listener.notifySignIn(code);
-        }
-    }
-
 }

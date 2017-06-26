@@ -56,6 +56,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="IntroEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">#1A000000</item>
+        <item name="android:textColorHint">#34000000</item>
+    </style>
+
+
+
     <!-- Text -->
     <style name="Text"></style>
 
@@ -171,5 +178,15 @@
     <style name="Text.TimetableSection">
         <item name="android:textSize">12sp</item>
     </style>
+
+
+    <!--For Welcome page-->
+    <style name="Text.AppTitle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 
 </resources>

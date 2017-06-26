@@ -8,118 +8,120 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.manager.UserManager;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by makesource on 2016. 3. 26..
  */
 
-public class SignInFragment extends SNUTTBaseFragment implements UserManager.OnUserDataChangedListener {
+public class SignInFragment extends SNUTTBaseFragment {
 
     public static SignInFragment newInstance() {
         return new SignInFragment();
     }
 
     private static final String TAG = "SIGN_IN_FRAGMENT";
-    private EditText et_id;
-    private EditText et_password;
-    private Button sign_in;
-
+    private EditText idEditText;
+    private EditText passwordEditText;
+    private Button signinButton;
+    private LinearLayout facebookButton;
     private CallbackManager callbackManager;
-    private LoginButton facebookLogin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
-        et_id = (EditText) rootView.findViewById(R.id.input_id);
-        et_password = (EditText) rootView.findViewById(R.id.input_password) ;
-        sign_in = (Button) rootView.findViewById(R.id.button_sign_in);
-        facebookLogin = (LoginButton) rootView.findViewById(R.id.login_button);
+        final View rootView = inflater.inflate(R.layout.fragment_signin2, container, false);
+        setTitle("로그인");
+        idEditText = (EditText) rootView.findViewById(R.id.input_id);
+        passwordEditText = (EditText) rootView.findViewById(R.id.input_password) ;
+        signinButton = (Button) rootView.findViewById(R.id.button_sign_in);
+        facebookButton = (LinearLayout) rootView.findViewById(R.id.button_facebook);
 
-        sign_in.setOnClickListener(new View.OnClickListener() {
+        signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = et_id.getText().toString();
-                String password = et_password.getText().toString();
-                UserManager.getInstance().postSignIn(id, password);
+                String id = idEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                UserManager.getInstance().postSignIn(id, password, new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
+                        getBaseActivity().startMain();
+                        getBaseActivity().finishAll();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getContext(), "로그인 실패..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        facebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this, null);
             }
         });
 
         callbackManager = CallbackManager.Factory.create();
-        facebookLogin.setFragment(this);
-        facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 String id = loginResult.getAccessToken().getUserId();
                 String token = loginResult.getAccessToken().getToken();
-                UserManager.getInstance().postLoginFacebook(id, token, null);
-                Log.i(TAG, "User ID: " + loginResult.getAccessToken().getUserId());
-                Log.i(TAG, "Auth Token: " + loginResult.getAccessToken().getToken());
+                UserManager.getInstance().postLoginFacebook(id, token, new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        getBaseActivity().startMain();
+                        getBaseActivity().finishAll();
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
             }
 
             @Override
-            public void onCancel()
-            {
+            public void onCancel() {
                 // App code
                 Log.w(TAG, "Cancel");
             }
 
             @Override
-            public void onError(FacebookException exception)
-            {
+            public void onError(FacebookException error) {
                 // App code
-                Log.e(TAG, "Error", exception);
+                Log.e(TAG, "Error", error);
             }
         });
-
-        Log.d(TAG, "on create view finished");
         return rootView;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        UserManager.getInstance().removeListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        UserManager.getInstance().addListener(this);
-    }
-
-    @Override
-    public void notifySignIn(boolean code) {
-        if (code) {
-            Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
-            UserManager.getInstance().registerFirebaseToken(null);
-            getBaseActivity().startMain();
-            getBaseActivity().finishAll();
-        } else {
-            Toast.makeText(getContext(), "로그인 실패..", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void setInfo(String id, String password) {
-        Log.d(TAG, "set info method called");
-        et_id.setText(id);
-        et_password.setText(password);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setTitle(String title) {
+        getActivity().setTitle(title);
     }
 }

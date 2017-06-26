@@ -73,8 +73,10 @@
         </activity>
         <activity
             android:name="com.wafflestudio.snutt_staging.ui.WelcomeActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.wafflestudio.snutt_staging.ui.IntroActivity" />
         </activity>
         <activity
             android:name="com.wafflestudio.snutt_staging.ui.IntroActivity"
