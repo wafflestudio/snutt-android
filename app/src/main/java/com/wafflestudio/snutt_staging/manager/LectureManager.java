@@ -30,10 +30,20 @@ import retrofit.client.Response;
  */
 public class LectureManager {
     private static final String TAG = "LECTURE_MANAGER" ;
-    private static final String DEFAULT_NAME = "직접 지정하기";
-    private static final int DEFAULT_FG = 0xff333333;
-    private static final int DEFAULT_BG = 0xffe0e0e0;
-
+    private static final String DEFAULT_NAME[] = {
+            "석류",
+            "감귤",
+            "들국",
+            "완두",
+            "비취",
+            "지중해",
+            "하늘",
+            "라벤더",
+            "자수정",
+            "직접 지정하기"
+    };
+    private static final int DEFAULT_FG[] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xff333333};
+    private static final int DEFAULT_BG[] = {0xffe54459, 0xfff58d3d, 0xfffac52d, 0xffa6d930 ,0xff2bc366, 0xff1bd0c9, 0xff1d99e9, 0xff4f48c4, 0xffaf56b3, 0xffe0e0e0};
     private SNUTTApplication app;
     private List<Lecture> lectures;
     private Lecture selectedLecture;
@@ -499,6 +509,7 @@ public class LectureManager {
                 String colorNameListJson = new Gson().toJson(colorNames);
                 PrefManager.getInstance().setLectureColors(colorListJson);
                 PrefManager.getInstance().setLectureColorNames(colorNameListJson);
+                notifyLectureChanged();
                 if (callback != null) callback.success(colorList, response);
             }
 
@@ -527,27 +538,30 @@ public class LectureManager {
     }
 
     public int getBgColorByIndex(int index) {
+        if (colors.size() == 0) return DEFAULT_BG[index - 1];
         return colors.get(index - 1).getBg();
     }
 
     public int getFgColorByIndex(int index) {
+        if (colors.size() == 0) return DEFAULT_FG[index - 1];
         return colors.get(index - 1).getFg();
     }
 
-    public int getDefaultBgColor() {
-        return DEFAULT_BG;
-    }
-
-    public int getDefaultFgColor() {
-        return DEFAULT_FG;
-    }
-
     public String getColorNameByIndex(int index) {
+        if (colorNames.size() == 0) return DEFAULT_NAME[index - 1];
         return colorNames.get(index - 1);
     }
 
+    public int getDefaultBgColor() {
+        return DEFAULT_BG[DEFAULT_BG.length - 1];
+    }
+
+    public int getDefaultFgColor() {
+        return DEFAULT_FG[DEFAULT_FG.length - 1];
+    }
+
     public String getDefaultColorName() {
-        return DEFAULT_NAME;
+        return DEFAULT_NAME[DEFAULT_NAME.length - 1];
     }
 
     private boolean isEqualLecture(Lecture lec1,Lecture lec2) {

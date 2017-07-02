@@ -23,7 +23,6 @@ public class TableManager {
 
     private static final String TAG = "TABLE_MANAGER" ;
 
-    private Table current;
     private List<Table> tables;
     private Map<String, Table> tableMap;
     private SNUTTApplication app;

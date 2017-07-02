@@ -102,7 +102,10 @@ public class MainActivity extends SNUTTBaseActivity {
             return;
         }
 
-        // 2. 앱 내부에 저장된 시간표 뛰어주기
+        // 2. colorList 받아오기
+        LectureManager.getInstance().fetchColorList("vivid_ios", null);
+
+        // 3. 앱 내부에 저장된 시간표 뛰어주기
         // TODO : 저장된 정보를 불러와 보여주기, 없으면 empty상태로 띄어준다.
         String json = PrefManager.getInstance().getCurrentTable();
         if (json != null) {
@@ -111,7 +114,7 @@ public class MainActivity extends SNUTTBaseActivity {
             LectureManager.getInstance().setLectures(table.getLecture_list());
         }
 
-        // 3. 서버에서 시간표 정보 얻어오기
+        // 4. 서버에서 시간표 정보 얻어오기
         // TODO : 서버에서 마지막에 본 시간표 정보 받아오기
         String id = PrefManager.getInstance().getLastViewTableId();
         if (id != null) {
