@@ -53,6 +53,7 @@
             android:paddingBottom="15dp"
             android:hint="아이디"
             android:maxLines="1"
+            android:inputType="text"
             style="@style/IntroEditTextStyle"
             app:theme="@style/IntroEditTextStyle"/>
 
