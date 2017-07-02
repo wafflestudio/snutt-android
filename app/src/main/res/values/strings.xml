@@ -28,4 +28,47 @@
     <string name="search_query_hint">검색어를 입력하세요.</string>
     <string name="save_complete">이미지 저장이 완료되었습니다.</string>
     <string name="share_image">이미지 내보내기</string>
+
+    <!--error-message-->
+    <string name="error_server_fault">서버에 문제가 있으니, 잠시후 다시 시도해주세요.</string>
+    <string name="error_no_network">네트워크가 불안정합니다.</string>
+    <string name="error_no_fb_id_or_token">페이스북 아이디 혹은 토큰이 주어지지 않았습니다.</string>
+    <string name="error_no_user_token">로그인 정보가 없습니다.</string>
+    <string name="error_no_year_or_semester">올바른 년도와 학기를 정해주세요.</string>
+    <string name="error_not_enough_to_create_timetable">올바른 년도, 학기, 이름을 정해주세요.</string>
+    <string name="error_no_lecture_input">올바른 강좌를 넣어주세요.</string>
+    <string name="error_no_lecture_id">업데이트 하려는 강좌의 id가 존재하지 않습니다.</string>
+    <string name="error_no_lecture_title">강좌의 제목을 넣어주세요.</string>
+    <string name="error_attempt_to_modify_identity">강좌 번호나 분반 정보는 바꿀 수 없습니다.</string>
+    <string name="error_no_timetable_title">시간표 이름이 주어지지 않았습니다.</string>
+    <string name="error_no_registration_id">알림을 주기 위한 절차에 문제가 생겼습니다.</string>
+    <string name="error_invalid_timemask">잘못된 비트마스크 형식입니다.</string>
+    <string name="error_invalid_color">잘못된 컬러 형식입니다.</string>
+    <string name="error_wrong_api_key">잘못된 API Key 입니다.</string>
+    <string name="error_wrong_user_token">잘못된 유저 토큰입니다.</string>
+    <string name="error_no_admin_privilege">어드민 유저가 아닙니다.</string>
+    <string name="error_wrong_id">잘못된 ID입니다.</string>
+    <string name="error_wrong_password">잘못된 비밀번호입니다.</string>
+    <string name="error_wrong_fb_token">잘못된 페이스북 토큰입니다.</string>
+    <string name="error_unknown_app">앱 버전 정보를 가져오는 것을 실패했습니다.</string>
+    <string name="error_invalid_id">ID는 영문자와 숫자로 이루어진 4~32자여야 합니다.</string>
+    <string name="error_invalid_password">비밀번호는 최소 하나의 숫자와 하나의 영문자를 포함하는 6~20자여야 합니다.</string>
+    <string name="error_duplicate_id">이미 존재하는 ID입니다.</string>
+    <string name="error_duplicate_timetable_title">이미 존재하는 시간표 이름입니다.</string>
+    <string name="error_duplicate_lecture">이미 넣은 강좌입니다.</string>
+    <string name="error_already_local_account">이미 ID와 비밀번호가 등록되어 있습니다.</string>
+    <string name="error_already_fb_account">아미 페이스북 계정이 연동되었습니다.</string>
+    <string name="error_not_local_account">등록된 ID와 비밀번호가 없습니다.</string>
+    <string name="error_not_fb_account">연동된 페이스북 계정이 없습니다.</string>
+    <string name="error_fb_id_with_someone_else">이미 다른 계정에 연동이 되어있습니다.</string>
+    <string name="error_tag_not_found">없는 태크입니다.</string>
+    <string name="error_timetable_not_found">없는 시간표입니다.</string>
+    <string name="error_lecture_not_found">없는 강좌입니다.</string>
+    <string name="error_wrong_semester">올바르지 않은 학기입니다.</string>
+    <string name="error_not_custom_lecture">직접 만든 강좌가 아닙니다.</string>
+    <string name="error_lecture_time_overlap">시간표의 시간과 겹칩니다.</string>
+    <string name="error_is_custom_lecture">직접 만든 강좌입니다.</string>
+    <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다.</string>
+    <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다.</string>
+    <string name="error_unknown">알수없는 에러입니다.</string>
 </resources>
