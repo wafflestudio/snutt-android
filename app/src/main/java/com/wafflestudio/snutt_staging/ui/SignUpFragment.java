@@ -72,13 +72,11 @@ public class SignUpFragment extends SNUTTBaseFragment {
                 UserManager.getInstance().postSingUp(id, password, email, new Callback<Map<String, String>>() {
                     @Override
                     public void success(Map<String, String> response, Response response2) {
-                        Toast.makeText(getContext(), "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
                     }
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

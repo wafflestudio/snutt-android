@@ -166,7 +166,7 @@ public class LectureManager {
         }
         if (alreadyExistClassTime(lec)) {
             Log.d(TAG, "lecture is duplicated!! ");
-            Toast.makeText(app, "강의시간이 겹칩니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(app, "시간표의 시간과 겹칩니다", Toast.LENGTH_SHORT).show();
             return ;
         }
         /*final Lecture target = new Lecture(lec);

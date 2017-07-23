@@ -53,20 +53,19 @@ public class ReportFragment extends SNUTTBaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_send) {
             if (Strings.isNullOrEmpty(detailText.getText().toString())) {
-                Toast.makeText(getContext(), "내용을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "내용을 입력해 주세요", Toast.LENGTH_SHORT).show();
             } else {
                 String email = emailText.getText().toString();
                 String detail = detailText.getText().toString();
                 UserManager.getInstance().postFeedback(email, detail, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        Toast.makeText(getContext(), "전송하였습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "전송하였습니다", Toast.LENGTH_SHORT).show();
                         getActivity().finish();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
                 getActivity().finish();

@@ -155,22 +155,18 @@ public class AccountFragment extends SNUTTBaseFragment {
 
                 if (!newPassword.equals(newPasswordConfirm)) {
                     Toast.makeText(getContext(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                } else if (!SNUTTUtils.checkPassword(newPassword)) {
-                    Toast.makeText(getContext(), "비밀번호는 6자 이상 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     UserManager.getInstance().putUserPassword(oldPassword, newPassword, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
                             Toast.makeText(getContext(), "비밀번호를 변경하였습니다.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-
                         }
                     });
-                    // 비밀번호 번경 요청
-                    dialog.dismiss();
                 }
             }
         });
@@ -247,20 +243,17 @@ public class AccountFragment extends SNUTTBaseFragment {
                 final String passwordConfirm = ((EditText) layout.findViewById(R.id.password_confirm)).getText().toString();
 
                 if (!password.equals(passwordConfirm)) {
-                    Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                } else if (!SNUTTUtils.checkPassword(password)) {
-                    Toast.makeText(getContext(), "비밀번호는 6자 이상 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show();
                 } else {
                     UserManager.getInstance().postUserPassword(id, password, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
-                            Toast.makeText(getContext(), "아이디를 추가하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show();
                             updateNewId(id);
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getContext(), "아이디 추가에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                     dialog.dismiss();
@@ -278,14 +271,13 @@ public class AccountFragment extends SNUTTBaseFragment {
                 UserManager.getInstance().deleteUserFacebook(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        Toast.makeText(getContext(), "페이스북 연동이 끊어졌습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show();
                         LoginManager.getInstance().logOut();
                         updateDeleteFacebook();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "페이스북 연동이 끊기에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -58,9 +58,6 @@ public class TableListActivity extends SNUTTBaseActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Toast.makeText(getApplicationContext(), "c click = " + childPosition,
-                        Toast.LENGTH_SHORT).show();
-
                 String tableId = mChildList.get(groupPosition).get(childPosition).getId();
                 startTableView(tableId);
                 finish();

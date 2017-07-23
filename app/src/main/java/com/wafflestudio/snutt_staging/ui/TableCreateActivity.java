@@ -61,7 +61,7 @@ public class TableCreateActivity extends SNUTTBaseActivity {
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
-                        return;
+
                     }
                 });
             }
@@ -102,13 +102,10 @@ public class TableCreateActivity extends SNUTTBaseActivity {
             TableManager.getInstance().postTable(year, semester, title, new Callback<List<Table>>() {
                 @Override
                 public void success(List<Table> tables, Response response) {
-                    // 보고있는 테이블 정보 변경하기
-                    //startTableView(id);
                     finish();
                 }
                 @Override
                 public void failure(RetrofitError error) {
-                    Toast.makeText(TableCreateActivity.this, "테이블 생성에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

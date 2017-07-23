@@ -80,7 +80,7 @@ public class TagManager {
     public boolean addTag(String name) {
         if (field.get(name) == null) {
             Log.e(TAG, "invalid tag name!!!");
-            Toast.makeText(app, "유효하지 않은 테그입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(app, "유효하지 않은 테그입니다", Toast.LENGTH_SHORT).show();
             return false;
         }
         String val = field.get(name);
@@ -204,7 +204,6 @@ public class TagManager {
             @Override
             public void failure(RetrofitError error) {
                 Log.d(TAG, "update new tags failed...");
-                Toast.makeText(app, "테그 받아오기 실패",Toast.LENGTH_SHORT).show();
             }
         });
     }

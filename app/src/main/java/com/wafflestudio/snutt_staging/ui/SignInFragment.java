@@ -59,14 +59,12 @@ public class SignInFragment extends SNUTTBaseFragment {
                 UserManager.getInstance().postSignIn(id, password, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        Toast.makeText(getContext(), "로그인 성공!", Toast.LENGTH_SHORT).show();
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "로그인 실패..", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
