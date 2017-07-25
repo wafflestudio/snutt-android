@@ -53,9 +53,7 @@
             android:paddingBottom="15dp"
             android:hint="아이디"
             android:maxLines="1"
-            android:inputType="text"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:inputType="text"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -65,9 +63,7 @@
             android:paddingBottom="15dp"
             android:inputType="textPassword"
             android:hint="비밀번호"
-            android:maxLines="1"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:maxLines="1"/>
 
         <View
             android:layout_width="match_parent"

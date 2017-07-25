@@ -19,6 +19,8 @@
         <!--
                 <item name="colorControlHighlight">#40ffffff</item> // this is for click event
         -->
+        <item name="colorControlNormal">#1A000000</item>
+        <item name="android:textColorHint">#34000000</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
@@ -55,12 +57,6 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="IntroEditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="colorControlNormal">#1A000000</item>
-        <item name="android:textColorHint">#34000000</item>
-    </style>
-
 
     <!-- Text -->
     <style name="Text"></style>

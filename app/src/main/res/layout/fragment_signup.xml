@@ -52,9 +52,7 @@
             android:layout_marginBottom="5dp"
             android:hint="아이디"
             android:maxLines="1"
-            android:inputType="text"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:inputType="text"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -63,9 +61,7 @@
             android:layout_marginBottom="5dp"
             android:inputType="textPassword"
             android:hint="비밀번호"
-            android:maxLines="1"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:maxLines="1"/>
 
         <EditText
             android:id="@+id/input_password_confirm"
@@ -74,9 +70,7 @@
             android:layout_marginBottom="5dp"
             android:inputType="textPassword"
             android:hint="비밀번호 확인"
-            android:maxLines="1"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:maxLines="1"/>
 
         <EditText
             android:id="@+id/input_email"
@@ -85,9 +79,7 @@
             android:layout_marginBottom="5dp"
             android:inputType="textEmailAddress"
             android:hint="이메일 입력"
-            android:maxLines="1"
-            style="@style/IntroEditTextStyle"
-            app:theme="@style/IntroEditTextStyle"/>
+            android:maxLines="1"/>
 
         <View
             android:layout_width="match_parent"
