@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -49,7 +50,7 @@ import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemShor
 public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LECTURE_CREATE_ADAPTER";
     private static TextChangedListener textChangedListener;
-    private static LongClickListener longClickListener;
+    private static DeleteClickListener deleteClickListener;
 
     private Activity activity;
     private ArrayList<LectureItem> lists;
@@ -73,9 +74,9 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 getItem(position).getClassTime().setPlace(text);
             }
         });
-        this.setOnLongClickListener(new LongClickListener() {
+        this.setOnDeleteClickListener(new DeleteClickListener() {
             @Override
-            public void onLongClick(View view, int position) {
+            public void onDeleteClick(View view, int position) {
                 showDeleteDialog(position);
             }
         });
@@ -297,8 +298,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             layout.setOnClickListener(listener);
             switch (item.getType()) {
                 case AddClassTime:
-                    textView.setText("시간 추가");
-                    textView.setTextColor(Color.parseColor("#000000"));
+                    textView.setText("+ 시간 및 장소 추가");
+                    textView.setTextColor(Color.argb(154,0,0,0));
                     break;
                 case RemoveLecture:
                     textView.setText("삭제");
@@ -315,6 +316,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView title;
         private View fgColor;
         private View bgColor;
+        private View arrow;
 
         private ColorViewHolder(View view) {
             super(view);
@@ -322,6 +324,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             title = (TextView) view.findViewById(R.id.text_title);
             fgColor = (View) view.findViewById(R.id.fgColor);
             bgColor = (View) view.findViewById(R.id.bgColor);
+            arrow = view.findViewById(R.id.arrow);
         }
         private void bindData(final LectureItem item, View.OnClickListener listener) {
             title.setText("색상");
@@ -333,6 +336,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 bgColor.setBackgroundColor(item.getColor().getBg());
                 fgColor.setBackgroundColor(item.getColor().getFg());
             }
+            arrow.setVisibility(item.isEditable() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -357,6 +361,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     textChangedListener.onTextChanged(s.toString(), getPosition());
                 }
             });
+            editText1.setHint(item.isEditable() ? "비고를 입력해주세요." : "(없음)");
             editText1.setClickable(item.isEditable());
             editText1.setFocusable(item.isEditable());
             editText1.setFocusableInTouchMode(item.isEditable());
@@ -364,23 +369,26 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
 
-    private static class ClassViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        private TextInputLayout title1;
-        private TextInputLayout title2;
+    private static class ClassViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        private TextView title1;
+        private TextView title2;
         private EditText editText1;
         private EditText editText2;
+        private Button remove;
 
         private ClassViewHolder(View view) {
             super(view);
-            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
-            title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
+            title1 = (TextView) view.findViewById(R.id.input_title1);
+            title2 = (TextView) view.findViewById(R.id.input_title2);
             editText1 = (EditText) view.findViewById(R.id.input_time);
             editText2 = (EditText) view.findViewById(R.id.input_location);
+            remove = (Button) view.findViewById(R.id.remove);
             title1.setOnLongClickListener(this);
             editText1.setOnLongClickListener(this);
             title2.setOnLongClickListener(this);
             editText2.setOnLongClickListener(this);
             view.setOnLongClickListener(this);
+            remove.setOnClickListener(this);
         }
         private void bindData(final LectureItem item, View.OnClickListener listener) {
             title1.setHint("시간");
@@ -407,15 +415,23 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             editText2.setClickable(item.isEditable());
             editText2.setFocusable(item.isEditable());
             editText2.setFocusableInTouchMode(item.isEditable());
+            remove.setVisibility(item.isEditable() ? View.VISIBLE : View.GONE);
         }
 
         @Override
         public boolean onLongClick(View v) {
-            if (longClickListener != null) {
-                longClickListener.onLongClick(v, getPosition());
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(v, getPosition());
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(v, getPosition());
+            }
         }
     }
 
@@ -606,11 +622,11 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.textChangedListener = textChangedListener;
     }
 
-    private interface LongClickListener {
-        public void onLongClick(View view, int position);
+    private interface DeleteClickListener {
+        public void onDeleteClick(View view, int position);
     }
 
-    private void setOnLongClickListener(LongClickListener listener) {
-        this.longClickListener = listener;
+    private void setOnDeleteClickListener(DeleteClickListener listener) {
+        this.deleteClickListener = listener;
     }
 }

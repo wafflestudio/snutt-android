@@ -4,53 +4,80 @@
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:gravity="center"
+    android:layout_height="60dp"
     android:focusable="true"
     android:clickable="true"
-    android:weightSum="20"
     android:background="@color/white">
 
-    <View
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_title1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="9"
-        style="@style/Text.LectureDetailTitle2">
-        <EditText
-            android:id="@+id/input_time"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/empty_edit_text"
-            android:singleLine="true"
-            android:hint="시간"
-            style="@style/Text.LectureDetailContent2"/>
-    </android.support.design.widget.TextInputLayout>
+            android:gravity="center">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_title2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="9"
-        style="@style/Text.LectureDetailTitle2">
-        <EditText
-            android:id="@+id/input_location"
+            <TextView
+                android:id="@+id/input_title1"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="시간"
+                android:layout_marginLeft="20dp"
+                style="@style/Text.LectureDetailTitle1"/>
+
+            <EditText
+                android:id="@+id/input_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="value"
+                android:background="@android:color/transparent"
+                style="@style/Text.LectureDetailContent1"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/empty_edit_text"
-            android:singleLine="true"
-            android:hint="장소"
-            style="@style/Text.LectureDetailContent2"/>
-    </android.support.design.widget.TextInputLayout>
+            android:gravity="center">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+            <TextView
+                android:id="@+id/input_title2"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="장소"
+                android:layout_marginLeft="20dp"
+                style="@style/Text.LectureDetailTitle1"/>
 
+            <EditText
+                android:id="@+id/input_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="value"
+                android:background="@android:color/transparent"
+                style="@style/Text.LectureDetailContent1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_gravity="center"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btntipclose"/>
 </LinearLayout>

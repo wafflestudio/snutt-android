@@ -52,4 +52,12 @@
         </FrameLayout>
     </LinearLayout>
 
+    <View
+        android:id="@+id/arrow"
+        android:layout_gravity="center"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/arrowright"/>
+
 </LinearLayout>

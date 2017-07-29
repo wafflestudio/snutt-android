@@ -164,11 +164,6 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         return editable;
     }
 
-    private boolean isEditable(LectureItem item) {
-        if (item.getType() == LectureItem.Type.LectureNumber || item.getType() == LectureItem.Type.CourseNumber) return false;
-        return true;
-    }
-
     private LectureMainActivity getLectureMainActivity() {
         Activity activity = getActivity();
         Preconditions.checkArgument(activity instanceof LectureMainActivity);
@@ -180,7 +175,6 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         editable = false;
         for (int i = 0;i < lists.size();i ++) {
             LectureItem it = lists.get(i);
-            if (!isEditable(it)) continue;
             it.setEditable(false);
             adapter.notifyItemChanged(i);
         }
@@ -211,7 +205,6 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         editable = true;
         for (int i = 0;i < lists.size();i ++) {
             LectureItem it = lists.get(i);
-            if (!isEditable(it)) continue;
             it.setEditable(true);
             adapter.notifyItemChanged(i);
         }
