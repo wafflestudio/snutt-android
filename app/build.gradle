@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
 
     repositories {
@@ -12,7 +12,7 @@ android {
         applicationId "com.wafflestudio.snutt_staging"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d"]
         minSdkVersion 14
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 2
         versionName "1.0"
     }
@@ -27,9 +27,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:recyclerview-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     compile 'com.appyvet:materialrangebar:1.3'
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
     compile 'com.github.QuadFlask:colorpicker:0.0.10'
