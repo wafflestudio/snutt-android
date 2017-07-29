@@ -260,18 +260,15 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("분반번호", lecture.getLecture_number(), LectureItem.Type.LectureNumber));
         lists.add(new LectureItem("비고", lecture.getRemark(), LectureItem.Type.Remark));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
 
-        int count = 0;
         classItemCursor = lists.size();
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject jsonObject = element.getAsJsonObject();
             ClassTime classTime = new ClassTime(jsonObject);
             lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
-            count ++;
         }
-        if (count > 0) {
-            lists.add(new LectureItem(LectureItem.Type.LongHeader));
-        }
+        lists.add(new LectureItem(LectureItem.Type.LongHeader));
         lists.add(new LectureItem(LectureItem.Type.Syllabus));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem(LectureItem.Type.RemoveLecture));

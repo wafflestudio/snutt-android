@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemClassTimeHeader;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemLongHeader;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemShortHeader;
 
@@ -91,6 +93,11 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .inflate(R.layout.cell_lecture_long_header, parent, false);
             return new HeaderViewHolder(view);
         }
+        if (viewType == ItemClassTimeHeader.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_class_header, parent, false);
+            return new HeaderViewHolder(view);
+        }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cell_lecture_item_title, parent, false);
@@ -127,6 +134,9 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             // do nothing
         }
         if (viewType == LectureItem.ViewType.ItemLongHeader.getValue()) {
+            // do nothing
+        }
+        if (viewType == LectureItem.ViewType.ItemClassTimeHeader.getValue()) {
             // do nothing
         }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
@@ -276,11 +286,11 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private static class ButtonViewHolder extends RecyclerView.ViewHolder {
-        private LinearLayout layout;
+        private FrameLayout layout;
         private TextView textView;
         private ButtonViewHolder(View view) {
             super(view);
-            layout = (LinearLayout) view.findViewById(R.id.layout);
+            layout = (FrameLayout) view.findViewById(R.id.layout);
             textView = (TextView) view.findViewById(R.id.text_button);
         }
         private void bindData(final LectureItem item, View.OnClickListener listener) {

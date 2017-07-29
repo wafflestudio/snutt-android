@@ -155,6 +155,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem("비고", add ? "" : lecture.getRemark(), LectureItem.Type.Remark));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
 
         if (!add) {
             classItemCursor = lists.size();

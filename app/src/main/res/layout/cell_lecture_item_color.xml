@@ -7,7 +7,8 @@
     android:layout_height="40dp"
     android:gravity="center"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/text_title"

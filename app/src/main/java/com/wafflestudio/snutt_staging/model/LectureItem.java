@@ -23,7 +23,8 @@ public class LectureItem {
         AddClassTime(14),
         ResetLecture(15),
         ShortHeader(16),
-        LongHeader(17);
+        LongHeader(17),
+        ClassTimeHeader(18);
         private final int value;
         Type(final int value) {
             this.value = value;
@@ -40,7 +41,8 @@ public class LectureItem {
         ItemButton(3),
         ItemColor(4),
         ItemClass(5),
-        ItemRemark(6);
+        ItemRemark(6),
+        ItemClassTimeHeader(7);
         private final int value;
         ViewType(final int value) {
             this.value = value;
@@ -106,14 +108,32 @@ public class LectureItem {
     }
 
     public ViewType getViewType() {
-        if (type == Type.ShortHeader) return ViewType.ItemShortHeader;
-        else if (type == Type.LongHeader) return ViewType.ItemLongHeader;
-        else if (type == Type.Title || type == Type.Instructor) return ViewType.ItemTitle;
-        else if (type == Type.Department || type == Type.AcademicYear || type == Type.Credit || type == Type.Classification || type == Type.Category || type == Type.CourseNumber || type == Type.LectureNumber) return ViewType.ItemTitle;
-        else if (type == Type.Color) return ViewType.ItemColor;
-        else if (type == Type.ClassTime) return ViewType.ItemClass;
-        else if (type == Type.Remark) return ViewType.ItemRemark;
-        else return ViewType.ItemButton;
+        switch (type) {
+            case ShortHeader:
+                return ViewType.ItemShortHeader;
+            case LongHeader:
+                return ViewType.ItemLongHeader;
+            case ClassTimeHeader:
+                return ViewType.ItemClassTimeHeader;
+            case Title:
+            case Instructor:
+            case Department:
+            case AcademicYear:
+            case Credit:
+            case Classification:
+            case Category:
+            case CourseNumber:
+            case LectureNumber:
+                return ViewType.ItemTitle;
+            case Color:
+                return ViewType.ItemColor;
+            case ClassTime:
+                return ViewType.ItemClass;
+            case Remark:
+                return ViewType.ItemRemark;
+            default:
+                return ViewType.ItemButton;
+        }
     }
 
     public String getTitle1() {
