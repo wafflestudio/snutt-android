@@ -390,13 +390,13 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private static class RemarkViewHolder extends RecyclerView.ViewHolder {
-        private TextInputLayout title1;
+        private TextView title1;
         private EditText editText1;
 
         private RemarkViewHolder(View view) {
             super(view);
-            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
-            editText1 = (EditText) view.findViewById(R.id.input_detail1);
+            title1 = (TextView) view.findViewById(R.id.text_title);
+            editText1 = (EditText) view.findViewById(R.id.text_value);
         }
         private void bindData(final LectureItem item) {
             title1.setHint(item.getTitle1());

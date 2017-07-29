@@ -26,5 +26,6 @@
         android:singleLine="true"
         android:text="value"
         android:background="@android:color/transparent"
+        android:layout_marginRight="20dp"
         style="@style/Text.LectureDetailContent1"/>
 </LinearLayout>

@@ -5,26 +5,30 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    android:minHeight="40dp"
     android:focusable="true"
-    android:clickable="true"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp"
-    android:weightSum="20">
+    android:clickable="true">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_title1"
+    <TextView
+        android:id="@+id/text_title"
+        style="@style/Text.LectureDetailTitle1"
+        android:layout_width="76dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="비고" />
+
+    <EditText
+        android:id="@+id/text_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="18"
-        android:hint="비고"
-        style="@style/Text.LectureDetailTitle2">
-        <EditText
-            android:id="@+id/input_detail1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/empty_edit_text"
-            style="@style/Text.LectureDetailContent2"/>
-    </android.support.design.widget.TextInputLayout>
+        android:layout_weight="1"
+        android:hint="(없음)"
+        android:background="@android:color/transparent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginRight="20dp"
+        style="@style/Text.LectureDetailContent1"/>
 
 </LinearLayout>
