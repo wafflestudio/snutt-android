@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,7 +41,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
-import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemHeader;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemLongHeader;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemShortHeader;
 
 /**
  * Created by makesource on 2017. 3. 17..
@@ -95,20 +94,20 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "On create view holder called.");
-        if (viewType == LectureItem.ViewType.ItemHeader.getValue()) {
+        if (viewType == ItemShortHeader.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_header, parent, false);
+                    .inflate(R.layout.cell_lecture_short_header, parent, false);
+            return new HeaderViewHolder(view);
+        }
+        if (viewType == ItemLongHeader.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_long_header, parent, false);
             return new HeaderViewHolder(view);
         }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cell_lecture_item_title, parent, false);
             return new TitleViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemDetail.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_detail, parent, false);
-            return new DetailViewHolder(view);
         }
         if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
@@ -139,15 +138,14 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         Log.d(TAG, "On bind view holder called.");
         int viewType = getItemViewType(position);
         final LectureItem item = getItem(position);
-        if (viewType == LectureItem.ViewType.ItemHeader.getValue()) {
+        if (viewType == ItemShortHeader.getValue()) {
+            // do nothing
+        }
+        if (viewType == ItemLongHeader.getValue()) {
             // do nothing
         }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             TitleViewHolder viewHolder = (TitleViewHolder) holder;
-            viewHolder.bindData(item);
-        }
-        if (viewType == LectureItem.ViewType.ItemDetail.getValue()) {
-            DetailViewHolder viewHolder = (DetailViewHolder) holder;
             viewHolder.bindData(item);
         }
         if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
@@ -241,7 +239,8 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
         for (LectureItem item : lists) {
-            if (item.getViewType() == ItemHeader) continue;
+            if (item.getViewType() == ItemShortHeader) continue;
+            if (item.getViewType() == ItemLongHeader) continue;
             if (item.getViewType() == ItemButton) continue;
             LectureItem.Type type = item.getType();
 
@@ -263,15 +262,20 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case Department: // 학과
                     target.setDepartment(item.getValue1());
                     break;
-                case AcademicYearCredit: // 학년, 학점
+                case AcademicYear: // 학년
                     target.setAcademic_year(item.getValue1());
-                    target.setCredit(Integer.parseInt(item.getValue2()));
                     break;
-                case ClassificationCategory: // 분류, 구분
+                case Credit: // 학점
+                    target.setCredit(Integer.parseInt(item.getValue1()));
+                    break;
+                case Classification: // 분류
                     target.setClassification(item.getValue1());
-                    target.setCategory(item.getValue2());
                     break;
-                case CourseNumberLectureNumber: // 강좌번호, 분반번호
+                case Category: // 구분
+                    target.setCategory(item.getValue1());
+                    break;
+                case CourseNumber: // 강좌번호, 분반번호
+                case LectureNumber:
                     break;
                 case ClassTime:
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
@@ -320,58 +324,8 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     textChangedListener.onText1Changed(s.toString(), getPosition());
                 }
             });
-        }
-    }
-
-    private static class DetailViewHolder extends RecyclerView.ViewHolder {
-        private TextInputLayout title1;
-        private TextInputLayout title2;
-        private EditText editText1;
-        private EditText editText2;
-
-        private DetailViewHolder(View view) {
-            super(view);
-            title1 = (TextInputLayout) view.findViewById(R.id.input_title1);
-            editText1 = (EditText) view.findViewById(R.id.input_detail1);
-            title2 = (TextInputLayout) view.findViewById(R.id.input_title2);
-            editText2 = (EditText) view.findViewById(R.id.input_detail2);
-        }
-        private void bindData(final LectureItem item) {
-            title1.setHint(item.getTitle1());
-            editText1.setText(item.getValue1());
-            editText1.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    textChangedListener.onText1Changed(s.toString(), getPosition());
-                    //item.setValue1(s.toString());
-                }
-            });
-            title2.setHint(item.getTitle2());
-            editText2.setText(item.getValue2());
-            editText2.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    textChangedListener.onText2Changed(s.toString(), getPosition());
-
-                }
-            });
-            Log.d(TAG, "item editable is changed.." + item.isEditable());
-            editText1.setClickable(item.isEditable());
-            editText1.setFocusable(item.isEditable());
-            editText1.setFocusableInTouchMode(item.isEditable());
-            editText2.setClickable(item.isEditable());
-            editText2.setFocusable(item.isEditable());
-            editText2.setFocusableInTouchMode(item.isEditable());
-            if (item.getType() == LectureItem.Type.AcademicYearCredit) { // 학점
-                editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
+            if (item.getType() == LectureItem.Type.Credit) { // 학점
+                value.setInputType(InputType.TYPE_CLASS_NUMBER);
             }
         }
     }

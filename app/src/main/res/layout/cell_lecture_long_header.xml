@@ -4,7 +4,7 @@
     android:id="@+id/cell_header"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="20dp"
-    android:background="#f2f2f2">
+    android:layout_height="30dp"
+    android:background="@color/gray">
 
 </LinearLayout>

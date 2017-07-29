@@ -147,14 +147,14 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     }
 
     private void attachLectureDetailList() {
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", add ? "" : lecture.getInstructor(), LectureItem.Type.Instructor));
         lists.add(new LectureItem("색상", add ? 0 : lecture.getColorIndex(), add ? new Color() : lecture.getColor(), LectureItem.Type.Color));
         lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem("비고", add ? "" : lecture.getRemark(), LectureItem.Type.Remark));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
 
         if (!add) {
             classItemCursor = lists.size();
@@ -163,14 +163,14 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                 ClassTime classTime = new ClassTime(jsonObject);
                 lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
             }
-            lists.add(new LectureItem(LectureItem.Type.Header));
+            lists.add(new LectureItem(LectureItem.Type.LongHeader));
             lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
-            lists.add(new LectureItem(LectureItem.Type.Header));
+            lists.add(new LectureItem(LectureItem.Type.LongHeader));
 
         } else {
             classItemCursor = lists.size();
             lists.add(new LectureItem(LectureItem.Type.AddClassTime));
-            lists.add(new LectureItem(LectureItem.Type.Header));
+            lists.add(new LectureItem(LectureItem.Type.LongHeader));
         }
     }
 
@@ -187,7 +187,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         int pos = getAddClassTimeItemPosition();
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
-        lists.add(pos, new LectureItem(LectureItem.Type.Header, false));
+        lists.add(pos, new LectureItem(LectureItem.Type.LongHeader, false));
         adapter.notifyItemInserted(pos);
         lists.add(pos + 1, new LectureItem(LectureItem.Type.RemoveLecture, false));
         adapter.notifyItemInserted(pos + 1);

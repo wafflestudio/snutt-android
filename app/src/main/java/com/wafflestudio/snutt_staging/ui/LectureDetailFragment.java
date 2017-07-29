@@ -37,8 +37,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemDetail;
-
 /**
  * Created by makesource on 2016. 9. 4..
  */
@@ -167,9 +165,8 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     private boolean isEditable(LectureItem item) {
-        if (item.getViewType() != ItemDetail) return true;
-        if (item.getType() != LectureItem.Type.CourseNumberLectureNumber) return true;
-        return false;
+        if (item.getType() == LectureItem.Type.LectureNumber || item.getType() == LectureItem.Type.CourseNumber) return false;
+        return true;
     }
 
     private LectureMainActivity getLectureMainActivity() {
@@ -195,7 +192,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
-        lists.add(pos, new LectureItem(LectureItem.Type.Header, false));
+        lists.add(pos, new LectureItem(LectureItem.Type.LongHeader, false));
         adapter.notifyItemInserted(pos);
         lists.add(pos + 1, new LectureItem(LectureItem.Type.Syllabus, false));
         adapter.notifyItemInserted(pos + 1);
@@ -249,17 +246,20 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     private void attachLectureDetailList(Lecture lecture) {
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.Instructor));
         lists.add(new LectureItem("색상", lecture.getColorIndex(), lecture.getColor(), LectureItem.Type.Color));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem("학과", lecture.getDepartment(), LectureItem.Type.Department));
-        lists.add(new LectureItem("학년", lecture.getAcademic_year(), "학점", String.valueOf(lecture.getCredit()), LectureItem.Type.AcademicYearCredit));
-        lists.add(new LectureItem("분류", lecture.getClassification(), "구분", lecture.getCategory(), LectureItem.Type.ClassificationCategory));
-        lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), "분반번호", lecture.getLecture_number(), LectureItem.Type.CourseNumberLectureNumber));
+        lists.add(new LectureItem("학년", lecture.getAcademic_year(), LectureItem.Type.AcademicYear));
+        lists.add(new LectureItem("학점", String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
+        lists.add(new LectureItem("분류", lecture.getClassification(), LectureItem.Type.Classification));
+        lists.add(new LectureItem("구분", lecture.getCategory(), LectureItem.Type.Category));
+        lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), LectureItem.Type.CourseNumber));
+        lists.add(new LectureItem("분반번호", lecture.getLecture_number(), LectureItem.Type.LectureNumber));
         lists.add(new LectureItem("비고", lecture.getRemark(), LectureItem.Type.Remark));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
 
         int count = 0;
         classItemCursor = lists.size();
@@ -270,12 +270,12 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
             count ++;
         }
         if (count > 0) {
-            lists.add(new LectureItem(LectureItem.Type.Header));
+            lists.add(new LectureItem(LectureItem.Type.LongHeader));
         }
         lists.add(new LectureItem(LectureItem.Type.Syllabus));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
-        lists.add(new LectureItem(LectureItem.Type.Header));
+        lists.add(new LectureItem(LectureItem.Type.LongHeader));
     }
 
     private int getSyllabusItemPosition() {

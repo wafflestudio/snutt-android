@@ -6,21 +6,24 @@ package com.wafflestudio.snutt_staging.model;
 public class LectureItem {
 
     public enum Type {
-        Header(0),
-        Title(1),
-        Instructor(2),
-        Color(3),
-        Department(4),
-        AcademicYearCredit(5),
-        ClassificationCategory(6),
-        CourseNumberLectureNumber(7),
-        ClassTime(8),
-        Syllabus(9),
-        RemoveLecture(10),
-        Credit(11),
-        AddClassTime(12),
-        ResetLecture(13),
-        Remark(14);
+        Title(0),
+        Instructor(1),
+        Color(2),
+        Department(3),
+        AcademicYear(4),
+        Credit(5),
+        Classification(6),
+        Category(7),
+        CourseNumber(8),
+        LectureNumber(9),
+        Remark(10),
+        ClassTime(11),
+        Syllabus(12),
+        RemoveLecture(13),
+        AddClassTime(14),
+        ResetLecture(15),
+        ShortHeader(16),
+        LongHeader(17);
         private final int value;
         Type(final int value) {
             this.value = value;
@@ -31,9 +34,9 @@ public class LectureItem {
     }
 
     public enum ViewType {
-        ItemHeader(0),
-        ItemTitle(1),
-        ItemDetail(2),
+        ItemShortHeader(0),
+        ItemLongHeader(1),
+        ItemTitle(2),
         ItemButton(3),
         ItemColor(4),
         ItemClass(5),
@@ -103,10 +106,11 @@ public class LectureItem {
     }
 
     public ViewType getViewType() {
-        if (type == Type.Header) return ViewType.ItemHeader;
-        else if (type == Type.Title || type == Type.Instructor || type == Type.Credit) return ViewType.ItemTitle;
+        if (type == Type.ShortHeader) return ViewType.ItemShortHeader;
+        else if (type == Type.LongHeader) return ViewType.ItemLongHeader;
+        else if (type == Type.Title || type == Type.Instructor) return ViewType.ItemTitle;
+        else if (type == Type.Department || type == Type.AcademicYear || type == Type.Credit || type == Type.Classification || type == Type.Category || type == Type.CourseNumber || type == Type.LectureNumber) return ViewType.ItemTitle;
         else if (type == Type.Color) return ViewType.ItemColor;
-        else if (type == Type.Department || type == Type.AcademicYearCredit || type == Type.ClassificationCategory || type == Type.CourseNumberLectureNumber) return ViewType.ItemDetail;
         else if (type == Type.ClassTime) return ViewType.ItemClass;
         else if (type == Type.Remark) return ViewType.ItemRemark;
         else return ViewType.ItemButton;
