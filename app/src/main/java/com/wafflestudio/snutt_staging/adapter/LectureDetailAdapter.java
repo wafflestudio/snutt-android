@@ -399,7 +399,6 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             editText1 = (EditText) view.findViewById(R.id.text_value);
         }
         private void bindData(final LectureItem item) {
-            title1.setHint(item.getTitle1());
             editText1.setText(item.getValue1());
             editText1.addTextChangedListener(new TextWatcher() {
                 @Override
