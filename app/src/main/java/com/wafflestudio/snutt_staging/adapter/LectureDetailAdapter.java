@@ -46,6 +46,7 @@ import retrofit.client.Response;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemClassTimeHeader;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemLongHeader;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemMargin;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemShortHeader;
 
 /**
@@ -113,6 +114,11 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .inflate(R.layout.cell_lecture_class_header, parent, false);
             return new HeaderViewHolder(view);
         }
+        if (viewType == ItemMargin.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_margin, parent, false);
+            return new HeaderViewHolder(view);
+        }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cell_lecture_item_title, parent, false);
@@ -147,15 +153,6 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         Log.d(TAG, "On bind view holder called.");
         int viewType = getItemViewType(position);
         final LectureItem item = getItem(position);
-        if (viewType == ItemShortHeader.getValue()) {
-            // do nothing
-        }
-        if (viewType == ItemLongHeader.getValue()) {
-            // do nothing
-        }
-        if (viewType == LectureItem.ViewType.ItemClassTimeHeader.getValue()) {
-            // do nothing
-        }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             TitleViewHolder viewHolder = (TitleViewHolder) holder;
             viewHolder.bindData(item);
@@ -251,9 +248,6 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
         for (LectureItem item : lists) {
-            if (item.getViewType() == ItemShortHeader) continue;
-            if (item.getViewType() == ItemLongHeader) continue;
-            if (item.getViewType() == ItemButton) continue;
             LectureItem.Type type = item.getType();
 
             switch (type) {

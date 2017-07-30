@@ -46,7 +46,6 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private LectureDetailAdapter adapter;
-    private int classItemCursor = -1;
     private boolean editable = false;
 
     public static LectureDetailFragment newInstance() {
@@ -180,25 +179,18 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
 
         int pos = getAddClassTimeItemPosition();
-        if (pos == -1) {
-            // TODO (seongwon) : notify an error occured
-            return;
-        }
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
-        lists.add(pos, new LectureItem(LectureItem.Type.LongHeader, false));
-        adapter.notifyItemInserted(pos);
-        lists.add(pos + 1, new LectureItem(LectureItem.Type.Syllabus, false));
-        adapter.notifyItemInserted(pos + 1);
 
         pos = getResetItemPosition();
-        if (pos == -1) {
-            // TODO (seongwon) : notify an error occured
-            return;
-        }
         lists.remove(pos);
         lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
         adapter.notifyItemChanged(pos);
+
+        lists.add(pos - 1, new LectureItem(LectureItem.Type.Syllabus, false));
+        adapter.notifyItemInserted(pos - 1);
+        lists.add(pos - 1, new LectureItem(LectureItem.Type.LongHeader, false));
+        adapter.notifyItemInserted(pos - 1);
     }
 
     private void setEditMode() {
@@ -210,29 +202,19 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
 
         int syllabusPosition = getSyllabusItemPosition();
-        if (syllabusPosition == -1) {
-            // TODO (seongwon) : notify an error occured
-            return;
-        }
+        // remove syllabus & long header
         lists.remove(syllabusPosition - 1);
         adapter.notifyItemRemoved(syllabusPosition - 1);
         lists.remove(syllabusPosition - 1);
         adapter.notifyItemRemoved(syllabusPosition - 1);
 
         int lastPosition = getLastClassItemPosition();
-        if (lastPosition == -1) {
-            // TODO (seongwon) : notify an error occured
-            return;
-        }
-        Log.d(TAG, "last position : " + lastPosition);
+        // add button
         lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
         adapter.notifyItemInserted(lastPosition + 1);
 
         int removePosition = getRemoveItemPosition();
-        if (removePosition == -1) {
-            // TODO (seongwon) : notify an error occured
-            return;
-        }
+        // change button
         lists.remove(removePosition);
         lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
         adapter.notifyItemChanged(removePosition);
@@ -240,10 +222,13 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
 
     private void attachLectureDetailList(Lecture lecture) {
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem("강의명", lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", lecture.getInstructor(), LectureItem.Type.Instructor));
         lists.add(new LectureItem("색상", lecture.getColorIndex(), lecture.getColor(), LectureItem.Type.Color));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem("학과", lecture.getDepartment(), LectureItem.Type.Department));
         lists.add(new LectureItem("학년", lecture.getAcademic_year(), LectureItem.Type.AcademicYear));
         lists.add(new LectureItem("학점", String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
@@ -252,10 +237,11 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("강좌번호", lecture.getCourse_number(), LectureItem.Type.CourseNumber));
         lists.add(new LectureItem("분반번호", lecture.getLecture_number(), LectureItem.Type.LectureNumber));
         lists.add(new LectureItem("비고", lecture.getRemark(), LectureItem.Type.Remark));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
 
-        classItemCursor = lists.size();
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject jsonObject = element.getAsJsonObject();
             ClassTime classTime = new ClassTime(jsonObject);
@@ -301,8 +287,16 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         return -1;
     }
 
+    private int getClassTimeHeaderPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.ClassTimeHeader) return i;
+        }
+        Log.e(TAG, "can't find class time header item");
+        return -1;
+    }
+
     private int getLastClassItemPosition() {
-        for (int i = classItemCursor;i < lists.size();i ++) {
+        for (int i = getClassTimeHeaderPosition() + 1;i < lists.size();i ++) {
             if (lists.get(i).getType() != LectureItem.Type.ClassTime) return i - 1;
         }
         return lists.size() - 1;

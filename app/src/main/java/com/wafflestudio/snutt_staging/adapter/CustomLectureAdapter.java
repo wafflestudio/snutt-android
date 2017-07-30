@@ -41,6 +41,7 @@ import retrofit.client.Response;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemButton;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemClassTimeHeader;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemLongHeader;
+import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemMargin;
 import static com.wafflestudio.snutt_staging.model.LectureItem.ViewType.ItemShortHeader;
 
 /**
@@ -99,6 +100,11 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .inflate(R.layout.cell_lecture_class_header, parent, false);
             return new HeaderViewHolder(view);
         }
+        if (viewType == ItemMargin.getValue()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.cell_lecture_margin, parent, false);
+            return new HeaderViewHolder(view);
+        }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cell_lecture_item_title, parent, false);
@@ -131,15 +137,6 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         final LectureItem item = getItem(position);
-        if (viewType == LectureItem.ViewType.ItemShortHeader.getValue()) {
-            // do nothing
-        }
-        if (viewType == LectureItem.ViewType.ItemLongHeader.getValue()) {
-            // do nothing
-        }
-        if (viewType == LectureItem.ViewType.ItemClassTimeHeader.getValue()) {
-            // do nothing
-        }
         if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
             TitleViewHolder viewHolder = (TitleViewHolder) holder;
             viewHolder.bindData(item);
@@ -578,7 +575,6 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         JsonArray ja = new JsonArray();
         for (int i=0;i<lists.size();i++) {
             LectureItem item = lists.get(i);
-            if (item.getViewType() == ItemShortHeader || item.getViewType() == ItemLongHeader || item.getViewType() == ItemButton) continue;
             LectureItem.Type type = item.getType();
             switch (type) {
                 case Title: // 강의명

@@ -24,7 +24,8 @@ public class LectureItem {
         ResetLecture(15),
         ShortHeader(16),
         LongHeader(17),
-        ClassTimeHeader(18);
+        ClassTimeHeader(18),
+        Margin(19);
         private final int value;
         Type(final int value) {
             this.value = value;
@@ -42,7 +43,8 @@ public class LectureItem {
         ItemColor(4),
         ItemClass(5),
         ItemRemark(6),
-        ItemClassTimeHeader(7);
+        ItemClassTimeHeader(7),
+        ItemMargin(8);
         private final int value;
         ViewType(final int value) {
             this.value = value;
@@ -115,6 +117,8 @@ public class LectureItem {
                 return ViewType.ItemLongHeader;
             case ClassTimeHeader:
                 return ViewType.ItemClassTimeHeader;
+            case Margin:
+                return ViewType.ItemMargin;
             case Title:
             case Instructor:
             case Department:

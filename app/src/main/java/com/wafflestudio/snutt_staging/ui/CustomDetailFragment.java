@@ -45,7 +45,6 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private CustomLectureAdapter adapter;
-    private int classItemCursor = -1;
     private boolean editable = false;
     private boolean add = false;
 
@@ -148,17 +147,20 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
 
     private void attachLectureDetailList() {
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.Title));
         lists.add(new LectureItem("교수", add ? "" : lecture.getInstructor(), LectureItem.Type.Instructor));
         lists.add(new LectureItem("색상", add ? 0 : lecture.getColorIndex(), add ? new Color() : lecture.getColor(), LectureItem.Type.Color));
         lists.add(new LectureItem("학점", add ? "0" : String.valueOf(lecture.getCredit()), LectureItem.Type.Credit));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem("비고", add ? "" : lecture.getRemark(), LectureItem.Type.Remark));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+        lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
-
         if (!add) {
-            classItemCursor = lists.size();
             for (JsonElement element : lecture.getClass_time_json()) {
                 JsonObject jsonObject = element.getAsJsonObject();
                 ClassTime classTime = new ClassTime(jsonObject);
@@ -169,7 +171,6 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
             lists.add(new LectureItem(LectureItem.Type.LongHeader));
 
         } else {
-            classItemCursor = lists.size();
             lists.add(new LectureItem(LectureItem.Type.AddClassTime));
             lists.add(new LectureItem(LectureItem.Type.LongHeader));
         }
@@ -188,10 +189,13 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         int pos = getAddClassTimeItemPosition();
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
+
+        // add button & header
+        pos = getLastItem();
+        lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
+        adapter.notifyItemInserted(pos);
         lists.add(pos, new LectureItem(LectureItem.Type.LongHeader, false));
         adapter.notifyItemInserted(pos);
-        lists.add(pos + 1, new LectureItem(LectureItem.Type.RemoveLecture, false));
-        adapter.notifyItemInserted(pos + 1);
     }
 
     private void setEditMode() {
@@ -203,13 +207,14 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         }
 
         int pos = getRemoveItemPosition();
+        // remove button & long header
         lists.remove(pos - 1);
         adapter.notifyItemRemoved(pos - 1);
         lists.remove(pos - 1);
         adapter.notifyItemRemoved(pos - 1);
 
         int lastPosition = getLastClassItemPosition();
-        Log.d(TAG, "last position : " + lastPosition);
+        // add button
         lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
         adapter.notifyItemInserted(lastPosition + 1);
     }
@@ -246,10 +251,22 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         return -1;
     }
 
+    private int getClassTimeHeaderPosition() {
+        for (int i = 0;i < lists.size();i ++) {
+            if (lists.get(i).getType() == LectureItem.Type.ClassTimeHeader) return i;
+        }
+        Log.e(TAG, "can't find class time header item");
+        return -1;
+    }
+
     private int getLastClassItemPosition() {
-        for (int i = classItemCursor;i < lists.size();i ++) {
+        for (int i = getClassTimeHeaderPosition() + 1;i < lists.size();i ++) {
             if (lists.get(i).getType() != LectureItem.Type.ClassTime) return i - 1;
         }
+        return lists.size() - 1;
+    }
+
+    private int getLastItem() {
         return lists.size() - 1;
     }
 
