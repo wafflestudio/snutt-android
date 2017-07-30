@@ -38,6 +38,7 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:text="value"
+                android:hint="(없음)"
                 android:background="@android:color/transparent"
                 style="@style/Text.LectureDetailContent1"/>
         </LinearLayout>
@@ -68,6 +69,7 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:text="value"
+                android:hint="(없음)"
                 android:background="@android:color/transparent"
                 style="@style/Text.LectureDetailContent1"/>
         </LinearLayout>

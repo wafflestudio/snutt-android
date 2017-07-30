@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -552,7 +553,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                     break;
                 case Credit: // 학점
-                    target.setCredit(Integer.parseInt(item.getValue1()));
+                    int value = getIntegerValue(item.getValue1());
+                    target.setCredit(value);
                     break;
                 case Remark: // 비고
                     lecture.setRemark(item.getValue1());
@@ -567,6 +569,14 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
+    }
+
+    private int getIntegerValue(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch(Exception e) {
+            return 0;
+        }
     }
 
     public void createLecture(Callback<Table> callback) {
@@ -592,7 +602,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                     break;
                 case Credit: // 학점
-                    lecture.setCredit(Integer.parseInt(item.getValue1()));
+                    int value = getIntegerValue(item.getValue1());
+                    lecture.setCredit(value);
                     break;
                 case Remark: // 비고
                     lecture.setRemark(item.getValue1());

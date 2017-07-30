@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -272,7 +273,8 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     target.setAcademic_year(item.getValue1());
                     break;
                 case Credit: // 학점
-                    target.setCredit(Integer.parseInt(item.getValue1()));
+                    int value = getIntegerValue(item.getValue1());
+                    target.setCredit(value);
                     break;
                 case Classification: // 분류
                     target.setClassification(item.getValue1());
@@ -296,6 +298,14 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         target.setClass_time_json(ja);
         LectureManager.getInstance().updateLecture(lecture, target, callback);
+    }
+
+    private int getIntegerValue(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch(Exception e) {
+            return 0;
+        }
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
