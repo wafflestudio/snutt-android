@@ -73,11 +73,17 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
+    <LinearLayout
         android:id="@+id/remove"
-        android:layout_gravity="center"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/btntipclose"/>
+        android:layout_width="36dp"
+        android:layout_height="match_parent">
+
+
+        <View
+            android:layout_gravity="center_vertical"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/btntipclose"/>
+    </LinearLayout>
+
 </LinearLayout>

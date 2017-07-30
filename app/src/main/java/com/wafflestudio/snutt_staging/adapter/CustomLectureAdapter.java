@@ -371,7 +371,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView title2;
         private EditText editText1;
         private EditText editText2;
-        private Button remove;
+        private LinearLayout remove;
 
         private ClassViewHolder(View view) {
             super(view);
@@ -379,7 +379,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             title2 = (TextView) view.findViewById(R.id.input_title2);
             editText1 = (EditText) view.findViewById(R.id.input_time);
             editText2 = (EditText) view.findViewById(R.id.input_location);
-            remove = (Button) view.findViewById(R.id.remove);
+            remove = (LinearLayout) view.findViewById(R.id.remove);
             title1.setOnLongClickListener(this);
             editText1.setOnLongClickListener(this);
             title2.setOnLongClickListener(this);
