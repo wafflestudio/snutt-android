@@ -169,11 +169,6 @@ public class LectureManager {
             Toast.makeText(app, "시간표의 시간과 겹칩니다", Toast.LENGTH_SHORT).show();
             return ;
         }
-        /*final Lecture target = new Lecture(lec);
-        int random = getRandomColor();
-        target.setColorIndex(getRandomColor());
-        target.setBgColor(SNUTTUtils.getBgColorByIndex(random));
-        target.setFgColor(SNUTTUtils.getFgColorByIndex(random));*/
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         String id = PrefManager.getInstance().getLastViewTableId();
         String lecture_id = lec.getId();
@@ -181,6 +176,7 @@ public class LectureManager {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "post lecture request success!!");
+                PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
                 notifyLectureChanged();
                 if (callback != null) callback.success(table, response);
@@ -201,6 +197,7 @@ public class LectureManager {
         app.getRestService().postLecture(token, id, lecture, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
+                PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
                 notifyLectureChanged();
                 if (callback != null) callback.success(table, response);
@@ -224,6 +221,7 @@ public class LectureManager {
                     @Override
                     public void success(Table table, Response response) {
                         Log.d(TAG, "remove lecture request success!!");
+                        PrefManager.getInstance().updateNewTable(table);
                         setLectures(table.getLecture_list());
                         notifyLectureChanged();
                         if (callback != null) callback.success(table, response);
@@ -250,6 +248,7 @@ public class LectureManager {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "reset lecture request success!!");
+                PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
                 notifyLectureChanged();
                 if (callback != null) callback.success(table, response);
@@ -324,6 +323,7 @@ public class LectureManager {
         app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
+                PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
                 notifyLectureChanged();
                 if (callback != null) callback.success(table, response);
