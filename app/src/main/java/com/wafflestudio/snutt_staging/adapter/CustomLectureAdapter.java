@@ -557,7 +557,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     target.setCredit(value);
                     break;
                 case Remark: // 비고
-                    lecture.setRemark(item.getValue1());
+                    target.setRemark(item.getValue1());
                     break;
                 case ClassTime: // 강의 시간
                     JsonElement je = new Gson().toJsonTree(item.getClassTime());
