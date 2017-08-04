@@ -182,15 +182,18 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.remove(pos);
         adapter.notifyItemRemoved(pos);
 
+        lists.add(pos, new LectureItem(LectureItem.Type.Margin, false));
+        adapter.notifyItemInserted(pos);
+        lists.add(pos + 1, new LectureItem(LectureItem.Type.LongHeader, false));
+        adapter.notifyItemInserted(pos + 1);
+        lists.add(pos + 2, new LectureItem(LectureItem.Type.Syllabus, false));
+        adapter.notifyItemInserted(pos + 2);
+
+        // change button
         pos = getResetItemPosition();
         lists.remove(pos);
         lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
         adapter.notifyItemChanged(pos);
-
-        lists.add(pos - 1, new LectureItem(LectureItem.Type.Syllabus, false));
-        adapter.notifyItemInserted(pos - 1);
-        lists.add(pos - 1, new LectureItem(LectureItem.Type.LongHeader, false));
-        adapter.notifyItemInserted(pos - 1);
     }
 
     private void setEditMode() {
@@ -202,19 +205,23 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
 
         int syllabusPosition = getSyllabusItemPosition();
-        // remove syllabus & long header
+        // remove syllabus
+        lists.remove(syllabusPosition);
+        adapter.notifyItemRemoved(syllabusPosition);
+        // remove long header
         lists.remove(syllabusPosition - 1);
         adapter.notifyItemRemoved(syllabusPosition - 1);
-        lists.remove(syllabusPosition - 1);
-        adapter.notifyItemRemoved(syllabusPosition - 1);
+        // remove margin
+        lists.remove(syllabusPosition - 2);
+        adapter.notifyItemRemoved(syllabusPosition - 2);
 
         int lastPosition = getLastClassItemPosition();
         // add button
         lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
         adapter.notifyItemInserted(lastPosition + 1);
 
-        int removePosition = getRemoveItemPosition();
         // change button
+        int removePosition = getRemoveItemPosition();
         lists.remove(removePosition);
         lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
         adapter.notifyItemChanged(removePosition);
@@ -239,15 +246,18 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("비고", lecture.getRemark(), LectureItem.Type.Remark));
         lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+
         lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
-
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject jsonObject = element.getAsJsonObject();
             ClassTime classTime = new ClassTime(jsonObject);
             lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
         }
+        lists.add(new LectureItem(LectureItem.Type.Margin));
+
         lists.add(new LectureItem(LectureItem.Type.LongHeader));
+
         lists.add(new LectureItem(LectureItem.Type.Syllabus));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem(LectureItem.Type.RemoveLecture));

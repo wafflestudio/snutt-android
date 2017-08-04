@@ -158,6 +158,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         lists.add(new LectureItem("비고", add ? "" : lecture.getRemark(), LectureItem.Type.Remark));
         lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
+
         lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem(LectureItem.Type.ClassTimeHeader));
         if (!add) {
@@ -166,6 +167,8 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                 ClassTime classTime = new ClassTime(jsonObject);
                 lists.add(new LectureItem(classTime, LectureItem.Type.ClassTime));
             }
+            lists.add(new LectureItem(LectureItem.Type.Margin));
+
             lists.add(new LectureItem(LectureItem.Type.LongHeader));
             lists.add(new LectureItem(LectureItem.Type.RemoveLecture));
             lists.add(new LectureItem(LectureItem.Type.LongHeader));
@@ -192,10 +195,13 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
 
         // add button & header
         pos = getLastItem();
-        lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
+        lists.add(pos, new LectureItem(LectureItem.Type.Margin, false));
         adapter.notifyItemInserted(pos);
-        lists.add(pos, new LectureItem(LectureItem.Type.LongHeader, false));
-        adapter.notifyItemInserted(pos);
+        lists.add(pos + 1, new LectureItem(LectureItem.Type.LongHeader, false));
+        adapter.notifyItemInserted(pos + 1);
+        lists.add(pos + 2, new LectureItem(LectureItem.Type.RemoveLecture, false));
+        adapter.notifyItemInserted(pos + 2);
+
     }
 
     private void setEditMode() {
@@ -207,11 +213,15 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         }
 
         int pos = getRemoveItemPosition();
-        // remove button & long header
+        // remove button
+        lists.remove(pos);
+        adapter.notifyItemRemoved(pos);
+        // remove long header
         lists.remove(pos - 1);
         adapter.notifyItemRemoved(pos - 1);
-        lists.remove(pos - 1);
-        adapter.notifyItemRemoved(pos - 1);
+        // remove margin
+        lists.remove(pos - 2);
+        adapter.notifyItemRemoved(pos - 2);
 
         int lastPosition = getLastClassItemPosition();
         // add button
