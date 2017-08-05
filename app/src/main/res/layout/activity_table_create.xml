@@ -23,8 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:singleLine="true"
-                android:hint="학기"
-                style="@style/Text.LectureDetailTitle1"/>
+                android:text="학기"
+                style="@style/Text.TableCreateTitle"/>
 
             <Spinner
                 android:id="@+id/spinner"
@@ -61,8 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:singleLine="true"
-                android:hint="시간표 이름"
-                style="@style/Text.LectureDetailTitle1"/>
+                android:text="시간표 이름"
+                style="@style/Text.TableCreateTitle"/>
 
             <EditText
                 android:id="@+id/table_title"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="13"
                 android:singleLine="true"
-                style="@style/Text.LectureDetailContent1"/>
+                style="@style/Text.TableCreateDetail"/>
 
             <View
                 android:layout_width="0dp"

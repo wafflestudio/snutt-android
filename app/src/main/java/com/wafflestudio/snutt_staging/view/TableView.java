@@ -75,7 +75,7 @@ public class TableView extends View {
     void init(){
         setDrawingCacheEnabled(true);
         backgroundPaint = new Paint();
-        backgroundPaint.setColor(0xfff3f3f3);
+        backgroundPaint.setColor(0xffffffff);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setColor(0xffebebeb);
@@ -92,7 +92,7 @@ public class TableView extends View {
 
         leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         leftLabelTextPaint.setColor(Color.argb(180,0,0,0));
-        leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12));
+        leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12f));
         leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
 
         wdays = new String[7];
