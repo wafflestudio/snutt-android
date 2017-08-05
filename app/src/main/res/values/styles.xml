@@ -104,13 +104,18 @@
 
     <style name="Text.MyLectureTitle">
         <item name="android:textColor">#000000</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Text.MyLectureSubTitle">
+        <item name="android:textColor">#9a000000</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="Text.MyLectureBody">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#cd000000</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Text.SettingsTitle">

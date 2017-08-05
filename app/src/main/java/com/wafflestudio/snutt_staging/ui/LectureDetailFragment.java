@@ -103,14 +103,16 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
+    public synchronized boolean onOptionsItemSelected(final MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_edit :
                 if (editable) {
+                    item.setEnabled(false);
                     adapter.updateLecture(LectureManager.getInstance().getCurrentLecture(), new Callback<Table>() {
                         @Override
                         public void success(Table table, Response response) {
                             item.setTitle("편집");
+                            item.setEnabled(true);
                             setNormalMode();
                         }
                         @Override
