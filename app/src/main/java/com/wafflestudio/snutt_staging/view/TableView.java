@@ -3,17 +3,15 @@ package com.wafflestudio.snutt_staging.view;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -37,11 +35,11 @@ public class TableView extends View {
     private static String TAG = "VIEW_TAG_TABLE_VIEW";
 
     private Paint backgroundPaint;
-    private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint, leftLabelTextPaint2;
+    private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint;
     private Context mContext;
     private String[] wdays;
-    private float leftLabelWidth = SNUTTApplication.dpTopx(20);
-    private float topLabelHeight = SNUTTApplication.dpTopx(25);
+    private float leftLabelWidth = SNUTTApplication.dpTopx(24.5f);
+    private float topLabelHeight = SNUTTApplication.dpTopx(28.5f);
     private float unitWidth, unitHeight;
     private TextRect titleTextRect, locationTextRect;
     private Paint titleTextPaint, locationTextPaint;
@@ -88,19 +86,14 @@ public class TableView extends View {
         linePaint2.setStrokeWidth(1);
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        topLabelTextPaint.setColor(0xff404040);
-        topLabelTextPaint.setTextSize(SNUTTApplication.spTopx(11.5f));
+        topLabelTextPaint.setColor(Color.argb(180,0,0,0));
+        topLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12f));
         topLabelTextPaint.setTextAlign(Paint.Align.CENTER);
 
         leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        leftLabelTextPaint.setFakeBoldText(true);
-        leftLabelTextPaint.setColor(0xff404040);
-        leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(14));
+        leftLabelTextPaint.setColor(Color.argb(180,0,0,0));
+        leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12));
         leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
-        leftLabelTextPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        leftLabelTextPaint2.setColor(0xff404040);
-        leftLabelTextPaint2.setTextSize(SNUTTApplication.spTopx(12));
-        leftLabelTextPaint2.setTextAlign(Paint.Align.CENTER);
 
         wdays = new String[7];
         wdays[0] = mContext.getResources().getString(R.string.wday_mon);
@@ -235,15 +228,15 @@ public class TableView extends View {
             String str2 = SNUTTUtils.zeroStr(i+startHeight+8) + ":00~" + SNUTTUtils.zeroStr(i+startHeight+9) + ":00";
             String str = String.valueOf(i + startHeight + 8);
             //float textHeight = getTextHeight(str1, leftLabelTextPaint);
-            //float textHeight2 = getTextHeight(str2, leftLabelTextPaint2);
+            //float textHeight2 = getTextHeight(str2, leftLabelTextPaint);
             //float padding = SNUTTApplication.dpTopx(5);
             //if (canvasWidth > canvasHeight) padding = 0;
             //float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
             //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
-            //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint2);
+            //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
 
             float padding = SNUTTApplication.dpTopx(5);;
-            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f + padding, leftLabelTextPaint2);
+            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f + padding, leftLabelTextPaint);
         }
         //내 강의 그리기
         if (lectures != null) {
