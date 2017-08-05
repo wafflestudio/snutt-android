@@ -104,10 +104,12 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                         }
                     });
                 } else if (editable) {
+                    item.setEnabled(false);
                     adapter.updateLecture(LectureManager.getInstance().getCurrentLecture(), new Callback<Table>() {
                         @Override
                         public void success(Table table, Response response) {
                             item.setTitle("편집");
+                            item.setEnabled(true);
                             setNormalMode();
                         }
                         @Override
