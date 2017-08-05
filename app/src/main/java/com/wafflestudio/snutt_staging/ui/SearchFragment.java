@@ -344,12 +344,13 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     @Override
-    public void notifyLectureChanged() {
+    public void notifyLecturesChanged() {
         mInstance.invalidate();
+        lectureAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void notifySearchedLectureChanged() {
+    public void notifySearchedLecturesChanged() {
         lectureAdapter.notifyDataSetChanged();
     }
 

@@ -4,7 +4,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -47,8 +45,7 @@ public class LectureManager {
     private SNUTTApplication app;
     private List<Lecture> lectures;
     private Lecture selectedLecture;
-    private Random random = new Random();
-    private int colorIndex = -1;
+    private Lecture currentLecture;
     private String searchedQuery;
 
     // Search query
@@ -99,8 +96,8 @@ public class LectureManager {
     }
 
     public interface OnLectureChangedListener {
-        void notifyLectureChanged();
-        void notifySearchedLectureChanged();
+        void notifyLecturesChanged();
+        void notifySearchedLecturesChanged();
     }
 
     private List<OnLectureChangedListener> listeners = new ArrayList<>();
@@ -139,7 +136,7 @@ public class LectureManager {
         for (Lecture lecture : lecture_list) {
             lectures.add(lecture);
         }
-        notifyLectureChanged();
+        notifyLecturesChanged();
     }
 
     public void setSearchedLectures(List<Lecture> lecture_list) {
@@ -155,7 +152,15 @@ public class LectureManager {
 
     public void setSelectedLecture(Lecture selectedLecture) {
         this.selectedLecture = selectedLecture;
-        notifyLectureChanged();
+        notifyLecturesChanged();
+    }
+
+    public Lecture getCurrentLecture() {
+        return currentLecture;
+    }
+
+    public void setCurrentLecture(Lecture currentLecture) {
+        this.currentLecture = currentLecture;
     }
 
     // this is for searched lecture
@@ -178,7 +183,7 @@ public class LectureManager {
                 Log.d(TAG, "post lecture request success!!");
                 PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
-                notifyLectureChanged();
+                notifyLecturesChanged();
                 if (callback != null) callback.success(table, response);
             }
             @Override
@@ -187,6 +192,17 @@ public class LectureManager {
                 if (callback != null) callback.failure(error);
             }
         });
+    }
+
+    // this is for searched lecture
+    public void removeLecture(Lecture target, final Callback callback) {
+        for (Lecture lecture : lectures) {
+            if (isEqualLecture(target, lecture)) {
+                removeLecture(lecture.getId(), callback);
+                return;
+            }
+        }
+        Log.w(TAG, "lecture is not exist!!");
     }
 
     // this is for custom lecture
@@ -199,7 +215,7 @@ public class LectureManager {
             public void success(Table table, Response response) {
                 PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
-                notifyLectureChanged();
+                notifyLecturesChanged();
                 if (callback != null) callback.success(table, response);
             }
             @Override
@@ -210,47 +226,40 @@ public class LectureManager {
         });
     }
 
-    public void removeLecture(Lecture lec, final Callback callback) {
-        for (Lecture lecture : lectures) {
-            if (isEqualLecture(lecture, lec)) {
-                final Lecture target = lecture;
-                String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-                String id = PrefManager.getInstance().getLastViewTableId();
-                String lecture_id = target.getId();
-                app.getRestService().deleteLecture(token, id, lecture_id, new Callback<Table>() {
-                    @Override
-                    public void success(Table table, Response response) {
-                        Log.d(TAG, "remove lecture request success!!");
-                        PrefManager.getInstance().updateNewTable(table);
-                        setLectures(table.getLecture_list());
-                        notifyLectureChanged();
-                        if (callback != null) callback.success(table, response);
-                    }
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(TAG, "remove lecture request failed ...");
-                        if (callback != null) callback.failure(error);
-                    }
-                });
-                return;
+    public void removeLecture(String lectureId, final Callback callback) {
+        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        String id = PrefManager.getInstance().getLastViewTableId();
+        app.getRestService().deleteLecture(token, id, lectureId, new Callback<Table>() {
+            @Override
+            public void success(Table table, Response response) {
+                Log.d(TAG, "remove lecture request success!!");
+                PrefManager.getInstance().updateNewTable(table);
+                setLectures(table.getLecture_list());
+                setCurrentLecture(null);
+                notifyLecturesChanged();
+                if (callback != null) callback.success(table, response);
             }
-        }
-        Log.w(TAG, "lecture is not exist!!");
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "remove lecture request failed ...");
+                if (callback != null) callback.failure(error);
+            }
+        });
     }
 
     // reset lecture from my lecture list
     // _id 는 유지된다
-    public void resetLecture(Lecture lec, final Callback callback) {
+    public void resetLecture(final String lectureId, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         String id = PrefManager.getInstance().getLastViewTableId();
-        String lecture_id = lec.getId();
-        app.getRestService().resetLecture(token, id, lecture_id, new Callback<Table>() {
+        app.getRestService().resetLecture(token, id, lectureId, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
                 Log.d(TAG, "reset lecture request success!!");
                 PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
-                notifyLectureChanged();
+                setCurrentLecture(getLectureById(lectureId));
+                notifyLecturesChanged();
                 if (callback != null) callback.success(table, response);
             }
             @Override
@@ -261,71 +270,17 @@ public class LectureManager {
         });
     }
 
-    // 배경색, 글자색 업데이트
-    /*public void updateLecture(final Lecture lec, final int bgColor, final int fgColor) {
-        Log.d(TAG, "update Lecture method (color) called!!");
-        Lecture target = new Lecture();
-        target.setBgColor(bgColor);
-        target.setFgColor(fgColor);
-
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String id = PrefManager.getInstance().getLastViewTableId();
-        String lecture_id = lec.getId();
-        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
-            @Override
-            public void success(Table table, Response response) {
-                Log.d(TAG, "put lecture request success.");
-                lec.setBgColor(bgColor);
-                lec.setFgColor(fgColor);
-                notifyLectureChanged();
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "put lecture request failed..");
-            }
-        });
-    }*/
-
-    // 배경색, 글자색 업데이트
-    public void setNextColor(final Lecture lec) {
-        Log.d(TAG, "setNextColor method called!!");
-        colorIndex = (colorIndex + 1) % 7;
-        if (colorIndex == 0) colorIndex++;
-        Lecture target = new Lecture();
-        target.setColorIndex(colorIndex);
-        target.setBgColor(LectureManager.getInstance().getBgColorByIndex(colorIndex));
-        target.setFgColor(LectureManager.getInstance().getFgColorByIndex(colorIndex));
-
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String id = PrefManager.getInstance().getLastViewTableId();
-        String lecture_id = lec.getId();
-        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
-            @Override
-            public void success(Table table, Response response) {
-                Log.d(TAG, "put lecture request success..");
-                lec.setColorIndex(colorIndex);
-                lec.setBgColor(LectureManager.getInstance().getBgColorByIndex(colorIndex));
-                lec.setFgColor(LectureManager.getInstance().getFgColorByIndex(colorIndex));
-                notifyLectureChanged();
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "put lecture request failed..");
-            }
-        });
-    }
-
-    public void updateLecture(final Lecture lecture, final Lecture target, final Callback<Table> callback) {
+    public void updateLecture(final String lectureId, final Lecture target, final Callback<Table> callback) {
         Log.d(TAG, "update lecture method called!!");
-        String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        String id = PrefManager.getInstance().getLastViewTableId();
-        String lecture_id = lecture.getId();
-        app.getRestService().putLecture(token, id, lecture_id, target, new Callback<Table>() {
+        final String token = PrefManager.getInstance().getPrefKeyXAccessToken();
+        final String id = PrefManager.getInstance().getLastViewTableId();
+        app.getRestService().putLecture(token, id, lectureId, target, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
                 PrefManager.getInstance().updateNewTable(table);
                 setLectures(table.getLecture_list());
-                notifyLectureChanged();
+                setCurrentLecture(getLectureById(lectureId));
+                notifyLecturesChanged();
                 if (callback != null) callback.success(table, response);
             }
 
@@ -492,8 +447,8 @@ public class LectureManager {
     public void clearSearchedLectures() {
         searchedLectures.clear();
         selectedLecture = null;
-        notifyLectureChanged();
-        notifySelectedLectureChanged();
+        notifyLecturesChanged();
+        notifySearchedLecturesChanged();
     }
 
     // for color list
@@ -509,7 +464,7 @@ public class LectureManager {
                 String colorNameListJson = new Gson().toJson(colorNames);
                 PrefManager.getInstance().setLectureColors(colorListJson);
                 PrefManager.getInstance().setLectureColorNames(colorNameListJson);
-                notifyLectureChanged();
+                notifyLecturesChanged();
                 if (callback != null) callback.success(colorList, response);
             }
 
@@ -597,40 +552,15 @@ public class LectureManager {
         return false;
     }
 
-    private boolean isDuplicatedClassTime(Lecture lec1,int day2,float start2, float len2) {
-        for (JsonElement element1 : lec1.getClass_time_json()) {
-            JsonObject class1= element1.getAsJsonObject();
-            int day1 = class1.get("day").getAsInt();
-            float start1 = class1.get("start").getAsFloat();
-            float len1 = class1.get("len").getAsFloat();
-            float end1 = start1 + len1;
-            float end2 = start2 + len2;
-
-            if (day1 != day2) continue;
-            if (!(end1 <= start2 || end2 <= start1)) return true;
-        }
-        return false;
-    }
-
-    private int getRandomColor(){
-        while (true){
-            int colorIndex = random.nextInt(6) + 1;
-            if (colorIndex != this.colorIndex){
-                this.colorIndex = colorIndex;
-                return colorIndex;
-            }
-        }
-    }
-
-    private void notifyLectureChanged() {
+    private void notifyLecturesChanged() {
         for (OnLectureChangedListener listener : listeners) {
-            listener.notifyLectureChanged();
+            listener.notifyLecturesChanged();
         }
     }
 
-    private void notifySelectedLectureChanged() {
+    private void notifySearchedLecturesChanged() {
         for (OnLectureChangedListener listener : listeners) {
-            listener.notifySearchedLectureChanged();
+            listener.notifySearchedLecturesChanged();
         }
     }
 

@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.adapter.CustomLectureAdapter;
+import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.ClassTime;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
@@ -41,7 +42,6 @@ import retrofit.client.Response;
 public class CustomDetailFragment extends SNUTTBaseFragment {
     private static final String TAG = "CUSTOM_DETAIL_FRAGMENT";
 
-    private Lecture lecture;
     private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private CustomLectureAdapter adapter;
@@ -56,13 +56,13 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        lecture = getLectureMainActivity().lecture;
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         if (lecture == null) add = true;
 
         lists = new ArrayList<>();
-        attachLectureDetailList();
+        attachLectureDetailList(lecture);
         for (LectureItem it : lists) it.setEditable(add);
-        adapter = new CustomLectureAdapter(getActivity(), lecture, lists);
+        adapter = new CustomLectureAdapter(getActivity(), lists);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                         }
                     });
                 } else if (editable) {
-                    adapter.updateLecture(lecture, new Callback<Table>() {
+                    adapter.updateLecture(LectureManager.getInstance().getCurrentLecture(), new Callback<Table>() {
                         @Override
                         public void success(Table table, Response response) {
                             item.setTitle("편집");
@@ -133,11 +133,11 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
     }
 
     public void refreshFragment() {
-        Log.d(TAG, "refresh fragment called.");
         editable = false;
         ActivityCompat.invalidateOptionsMenu(getActivity());
+
         lists.clear();
-        attachLectureDetailList();
+        attachLectureDetailList(LectureManager.getInstance().getCurrentLecture());
         adapter.notifyDataSetChanged();
     }
 
@@ -145,7 +145,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         return (!add && editable);
     }
 
-    private void attachLectureDetailList() {
+    private void attachLectureDetailList(Lecture lecture) {
         lists.add(new LectureItem(LectureItem.Type.ShortHeader));
         lists.add(new LectureItem(LectureItem.Type.Margin));
         lists.add(new LectureItem("강의명", add ? "" : lecture.getCourse_title(), LectureItem.Type.Title));

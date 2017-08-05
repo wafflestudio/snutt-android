@@ -84,12 +84,12 @@ public class TableFragment extends SNUTTBaseFragment implements LectureManager.O
     }
 
     @Override
-    public void notifyLectureChanged() {
+    public void notifyLecturesChanged() {
         mInstance.invalidate();
     }
 
     @Override
-    public void notifySearchedLectureChanged() {
+    public void notifySearchedLecturesChanged() {
 
     }
 }

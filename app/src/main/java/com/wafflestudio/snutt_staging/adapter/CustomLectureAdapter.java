@@ -56,16 +56,14 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private Activity activity;
     private ArrayList<LectureItem> lists;
-    private Lecture lecture;
 
     private int day;
     private int fromTime;
     private int toTime;
 
-    public CustomLectureAdapter(Activity activity, Lecture lecture, ArrayList<LectureItem> lists) {
+    public CustomLectureAdapter(Activity activity, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.lists = lists;
-        this.lecture = lecture;
         this.setOnTextChangedListener(new TextChangedListener() {
             @Override
             public void onTextChanged(String text, int position) {
@@ -228,7 +226,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를 삭제하시겠습니까");
         alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
+                LectureManager.getInstance().removeLecture(lectureId, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         activity.finish();
@@ -532,6 +531,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void updateLecture(Lecture lecture, Callback<Table> callback) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.");
+        Lecture current = LectureManager.getInstance().getCurrentLecture();
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
         for (LectureItem item : lists) {
@@ -568,7 +568,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
         target.setClass_time_json(ja);
-        LectureManager.getInstance().updateLecture(lecture, target, callback);
+        LectureManager.getInstance().updateLecture(current.getId(), target, callback);
     }
 
     private int getIntegerValue(String s) {

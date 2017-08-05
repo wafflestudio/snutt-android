@@ -95,7 +95,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
                                 } else if (items[index].equals(DIALOG_SYLLABUS)) {
                                     startSyllabus(lecture.getCourse_number(), lecture.getLecture_number());
                                 } else {
-                                    LectureManager.getInstance().removeLecture(lecture, null);
+                                    LectureManager.getInstance().removeLecture(lecture.getId(), null);
                                 }
                             }
                        });
@@ -110,13 +110,13 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     }
 
     @Override
-    public void notifyLectureChanged() {
+    public void notifyLecturesChanged() {
         Log.d (TAG, "notify lecture changed called");
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void notifySearchedLectureChanged() {
+    public void notifySearchedLecturesChanged() {
 
     }
 

@@ -62,17 +62,15 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private List<LectureItem> lists;
     private LectureMainActivity activity;
     private LectureDetailFragment fragment;
-    private Lecture lecture;
 
     private int day;
     private int fromTime;
     private int toTime;
 
-    public LectureDetailAdapter(LectureMainActivity activity, LectureDetailFragment fragment, Lecture lecture, ArrayList<LectureItem> lists) {
+    public LectureDetailAdapter(LectureMainActivity activity, LectureDetailFragment fragment, ArrayList<LectureItem> lists) {
         this.activity = activity;
         this.fragment = fragment;
         this.lists = lists;
-        this.lecture = lecture;
         this.setOnTextChangedListener(new TextChangedListener() {
             @Override
             public void onText1Changed(String text, int position) {
@@ -246,6 +244,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void updateLecture(Lecture lecture, Callback<Table> callback) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.");
+        Lecture current = LectureManager.getInstance().getCurrentLecture();
         Lecture target = new Lecture();
         JsonArray ja = new JsonArray();
         for (LectureItem item : lists) {
@@ -297,7 +296,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
         target.setClass_time_json(ja);
-        LectureManager.getInstance().updateLecture(lecture, target, callback);
+        LectureManager.getInstance().updateLecture(current.getId(), target, callback);
     }
 
     private int getIntegerValue(String s) {
@@ -610,6 +609,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void startSyllabus() {
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         LectureManager.getInstance().getCoursebookUrl(lecture.getCourse_number(), lecture.getLecture_number(), new Callback<Map>() {
             public void success(Map map, Response response) {
                 String url = (String) map.get("url");
@@ -628,7 +628,8 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를 삭제하시겠습니까");
         alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                LectureManager.getInstance().removeLecture(lecture, new Callback() {
+                String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
+                LectureManager.getInstance().removeLecture(lectureId, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         activity.finish();
@@ -653,21 +654,10 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를  원래 상태로 초기화하시겠습니까");
         alert.setPositiveButton("초기화", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                LectureManager.getInstance().resetLecture(lecture, new Callback() {
+                String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
+                LectureManager.getInstance().resetLecture(lectureId, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        Lecture updated = LectureManager.getInstance().getLectureById(lecture.getId());
-                        lecture.setCourse_title(updated.getCourse_title());
-                        lecture.setInstructor(updated.getInstructor());
-                        lecture.setColor(updated.getColor());
-                        lecture.setDepartment(updated.getDepartment());
-                        lecture.setAcademic_year(updated.getAcademic_year());
-                        lecture.setCredit(updated.getCredit());
-                        lecture.setClassification(updated.getClassification());
-                        lecture.setCategory(updated.getCategory());
-                        lecture.setClass_time(updated.getClass_time());
-                        lecture.setClass_time_json(updated.getClass_time_json());
-                        lecture.setRemark(updated.getRemark());
                         fragment.refreshFragment();
                     }
                     @Override

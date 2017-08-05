@@ -46,8 +46,6 @@ public class LectureMainActivity extends SNUTTBaseActivity
     //public final static int FRAGMENT_TEST = 2;
     public final static int FRAGMENT_ROOM_NUM = 3;  // Number of fragments
 
-    public Lecture lecture = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +54,11 @@ public class LectureMainActivity extends SNUTTBaseActivity
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         int position = getIntent().getIntExtra(INTENT_KEY_LECTURE_POSITION, -1);
         if (position == -1) { // create custom lecture
-            lecture = null;
+            LectureManager.getInstance().setCurrentLecture(null);
             setCustomDetailFragment();
         } else {
-            lecture = LectureManager.getInstance().getLectures().get(position);
+            Lecture lecture = LectureManager.getInstance().getLectures().get(position);
+            LectureManager.getInstance().setCurrentLecture(lecture);
             if (lecture.isCustom()) setCustomDetailFragment();
             else setMainFragment();
         }
@@ -84,6 +83,8 @@ public class LectureMainActivity extends SNUTTBaseActivity
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_lecture_main, fragment, TAG_FRAGMENT_CUSTOM_DETAIL);
         transaction.commit();
+
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         if (lecture == null) getSupportActionBar().setTitle("커스텀 강의 추가");
         else getSupportActionBar().setTitle("강의 상세 보기");
     }
@@ -113,6 +114,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
     }
 
     private void setTitle() {
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         int index = getCurrentFragmentIndex();
         switch (index) {
             case FRAGMENT_LECTURE_DETAIL:
@@ -202,6 +204,7 @@ public class LectureMainActivity extends SNUTTBaseActivity
 
     @Override
     public void onColorChanged(int index, Color color) {
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         if (lecture == null || lecture.isCustom()) {
             CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL);
             fragment.setLectureColor(index, color);

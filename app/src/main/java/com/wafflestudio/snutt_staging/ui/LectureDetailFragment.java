@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.adapter.LectureDetailAdapter;
+import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.ClassTime;
 import com.wafflestudio.snutt_staging.model.Color;
 import com.wafflestudio.snutt_staging.model.Lecture;
@@ -42,7 +43,6 @@ import retrofit.client.Response;
  */
 public class LectureDetailFragment extends SNUTTBaseFragment {
     private static final String TAG = "LECTURE_DETAIL_FRAGMENT";
-    private Lecture lecture;
     private RecyclerView detailView;
     private ArrayList<LectureItem> lists;
     private LectureDetailAdapter adapter;
@@ -56,14 +56,14 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        lecture = getLectureMainActivity().lecture;
+        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         if (lecture == null) {
             Log.e(TAG, "lecture refers to null point!!");
             return;
         }
         lists = new ArrayList<>();
         attachLectureDetailList(lecture);
-        adapter = new LectureDetailAdapter(getLectureMainActivity(), this, lecture, lists);
+        adapter = new LectureDetailAdapter(getLectureMainActivity(), this, lists);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         switch(item.getItemId()) {
             case R.id.action_edit :
                 if (editable) {
-                    adapter.updateLecture(lecture, new Callback<Table>() {
+                    adapter.updateLecture(LectureManager.getInstance().getCurrentLecture(), new Callback<Table>() {
                         @Override
                         public void success(Table table, Response response) {
                             item.setTitle("편집");
@@ -151,11 +151,11 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     public void refreshFragment() {
-        Log.d(TAG, "refresh fragment called.");
         editable = false;
         ActivityCompat.invalidateOptionsMenu(getActivity());
+
         lists.clear();
-        attachLectureDetailList(lecture);
+        attachLectureDetailList(LectureManager.getInstance().getCurrentLecture());
         adapter.notifyDataSetChanged();
     }
 
