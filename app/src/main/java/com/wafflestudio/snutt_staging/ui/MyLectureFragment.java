@@ -103,7 +103,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
                 dialog.show();
             }
         });
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.lecture_divider));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
         return rootView;

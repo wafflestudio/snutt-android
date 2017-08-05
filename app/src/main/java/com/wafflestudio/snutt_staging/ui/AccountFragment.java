@@ -29,7 +29,6 @@ import com.wafflestudio.snutt_staging.model.Facebook;
 import com.wafflestudio.snutt_staging.model.SettingsItem;
 import com.wafflestudio.snutt_staging.model.User;
 import com.wafflestudio.snutt_staging.adapter.SettingsAdapter;
-import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

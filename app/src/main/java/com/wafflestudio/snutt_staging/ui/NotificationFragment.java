@@ -15,7 +15,6 @@ import com.wafflestudio.snutt_staging.adapter.NotificationAdapter;
 import com.wafflestudio.snutt_staging.listener.EndlessRecyclerViewScrollListener;
 import com.wafflestudio.snutt_staging.manager.NotiManager;
 import com.wafflestudio.snutt_staging.model.Notification;
-import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 
 import java.util.List;
 

@@ -17,7 +17,6 @@ import com.wafflestudio.snutt_staging.manager.UserManager;
 import com.wafflestudio.snutt_staging.model.SettingsItem;
 import com.wafflestudio.snutt_staging.model.Version;
 import com.wafflestudio.snutt_staging.adapter.SettingsAdapter;
-import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
