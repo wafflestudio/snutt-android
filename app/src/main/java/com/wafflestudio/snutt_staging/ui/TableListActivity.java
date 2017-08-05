@@ -188,7 +188,6 @@ public class TableListActivity extends SNUTTBaseActivity {
             mChildListContent = new ArrayList<Table>();
             mChildListContent.add(tables.get(0));
         }
-        mGroupList.get(0).
 
         for (int i = 1; i < tables.size(); i++) {
             Table table = tables.get(i);
