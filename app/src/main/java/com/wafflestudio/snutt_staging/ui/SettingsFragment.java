@@ -180,7 +180,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                     }
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApp(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -153,7 +153,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                     });
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(TableListActivity.this, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApp(), "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -161,7 +161,7 @@ public class TableListActivity extends SNUTTBaseActivity {
 
     private void performDelete(Table table) {
         if (PrefManager.getInstance().getLastViewTableId().equals(table.getId())) {
-            Toast.makeText(TableListActivity.this, "현재 보고있는 테이블은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApp(), "현재 보고있는 테이블은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
             return ;
         }
         TableManager.getInstance().deleteTable(table.getId(), new Callback<List<Table>>() {

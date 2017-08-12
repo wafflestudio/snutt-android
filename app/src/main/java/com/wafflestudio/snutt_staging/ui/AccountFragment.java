@@ -153,12 +153,12 @@ public class AccountFragment extends SNUTTBaseFragment {
                 String newPasswordConfirm = ((EditText) layout.findViewById(R.id.new_password_confirm)).getText().toString();
 
                 if (!newPassword.equals(newPasswordConfirm)) {
-                    Toast.makeText(getContext(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApp(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     UserManager.getInstance().putUserPassword(oldPassword, newPassword, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
-                            Toast.makeText(getContext(), "비밀번호를 변경하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApp(), "비밀번호를 변경하였습니다.", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
 
@@ -197,19 +197,19 @@ public class AccountFragment extends SNUTTBaseFragment {
                     UserManager.getInstance().putUserInfo(email, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
-                            Toast.makeText(getContext(), "이메일 변경에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApp(), "이메일 변경에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                             getEmailItem().setDetail(email);
                             adapter.notifyDataSetChanged();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getContext(), "이메일 변경에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApp(), "이메일 변경에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                     dialog2.dismiss();
                 } else {
-                    Toast.makeText(getContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApp(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -242,12 +242,12 @@ public class AccountFragment extends SNUTTBaseFragment {
                 final String passwordConfirm = ((EditText) layout.findViewById(R.id.password_confirm)).getText().toString();
 
                 if (!password.equals(passwordConfirm)) {
-                    Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApp(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show();
                 } else {
                     UserManager.getInstance().postUserPassword(id, password, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
-                            Toast.makeText(getContext(), "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApp(), "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show();
                             updateNewId(id);
                         }
 
@@ -270,7 +270,7 @@ public class AccountFragment extends SNUTTBaseFragment {
                 UserManager.getInstance().deleteUserFacebook(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
-                        Toast.makeText(getContext(), "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApp(), "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show();
                         LoginManager.getInstance().logOut();
                         updateDeleteFacebook();
                     }
@@ -307,13 +307,13 @@ public class AccountFragment extends SNUTTBaseFragment {
                             }
                             @Override
                             public void failure(RetrofitError error) {
-                                Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApp(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getContext(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApp(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

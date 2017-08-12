@@ -356,7 +356,7 @@ public class MainActivity extends SNUTTBaseActivity {
                     });
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(MainActivity.this, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApp(), "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
