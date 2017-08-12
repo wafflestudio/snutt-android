@@ -2,121 +2,149 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="20dp"
+        android:layout_height="match_parent" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:paddingLeft="5dp"
-        android:layout_weight="8">
+        android:layout_weight="1"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Computer Architecture"
-                android:singleLine="true"
-                style="@style/Text.LectureTitle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:orientation="horizontal"
             android:gravity="center_vertical">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/tag_white"
-                android:paddingRight="2dp"/>
+
             <TextView
-                android:id="@+id/tag"
+                android:id="@+id/title"
+                style="@style/Text.LectureTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="전필, 컴퓨터공학부, 3학년"
                 android:singleLine="true"
-                style="@style/Text.LectureBody"/>
+                android:ellipsize="end"
+                android:textScaleX="1"
+                android:text="Computer Architecture"/>
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/sub_title"
+                style="@style/Text.LectureSubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:text="Computer Architecture"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/clock_white"
-                    android:paddingRight="2dp"/>
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="화3/목3/목11"
-                    android:singleLine="true"
-                    style="@style/Text.LectureBody"/>
-            </LinearLayout>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/tagvectorwhite" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tag"
+                style="@style/Text.LectureBody"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/location_pin_white"
-                    android:paddingRight="2dp"/>
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="302-208/302-310-2"
-                    android:singleLine="true"
-                    style="@style/Text.LectureBody"/>
-            </LinearLayout>
+                android:singleLine="true"
+                android:text="전필, 컴퓨터공학부, 3학년"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/clockvectorwhite" />
+
+            <TextView
+                android:id="@+id/time"
+                style="@style/Text.LectureBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="화3/목3/목11" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/mapvectorwhite" />
+
+            <TextView
+                android:id="@+id/location"
+                style="@style/Text.LectureBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="302-208/302-310-2" />
         </LinearLayout>
     </LinearLayout>
 
+
     <LinearLayout
-        android:layout_width="45dp"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/margin"
+            android:layout_width="20dp"
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/add"
             style="@style/Text.AddRemoveButton"
-            android:layout_width="45dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="3dp"
-            android:background="@drawable/round_rect_green"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="?selectableItemBackground"
             android:text="@string/add" />
 
         <Button
             android:id="@+id/remove"
             style="@style/Text.AddRemoveButton"
-            android:layout_width="45dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="3dp"
-            android:background="@drawable/round_rect_red"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="@string/remove"
+            android:background="?selectableItemBackground"
             android:visibility="gone"/>
     </LinearLayout>
 

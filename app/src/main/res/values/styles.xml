@@ -22,8 +22,7 @@
         <item name="colorControlNormal">#1A000000</item>
         <item name="android:textColorHint">#34000000</item>
 
-        <!-- background color-->
-        <item name="android:colorBackground">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
@@ -65,8 +64,9 @@
     <style name="Text"></style>
 
     <style name="Text.AddRemoveButton">
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Text.MainLabel">
@@ -89,13 +89,18 @@
 
     <style name="Text.LectureTitle">
         <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Text.LectureSubTitle">
+        <item name="android:textColor">#9AFFFFFF</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="Text.LectureBody">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#ccffffff</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Text.LectureDetail">

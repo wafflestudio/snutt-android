@@ -22,8 +22,8 @@
     <string name="wday_sun">일</string>
     <string name="class_time">교시</string>
     <string name="credit">학점</string>
-    <string name="add">추가</string>
-    <string name="remove">제거</string>
+    <string name="add">+ 추가하기</string>
+    <string name="remove">— 제거하기</string>
     <string name="click_back_twice">종료를 원하시면 뒤로 버튼을 한 번 더 눌러주세요</string>
     <string name="search_query_hint">검색어를 입력하세요</string>
     <string name="save_complete">이미지 저장이 완료되었습니다</string>

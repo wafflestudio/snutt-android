@@ -2,16 +2,19 @@ package com.wafflestudio.snutt_staging.adapter;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
 
@@ -76,14 +79,17 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             holder.layout.setBackgroundColor(Color.parseColor("#33000000"));
             if (LectureManager.getInstance().alreadyOwned(lecture)) {
                 holder.add.setVisibility(View.GONE);
+                holder.margin.setVisibility(View.GONE);
                 holder.remove.setVisibility(View.VISIBLE);
             } else {
-                holder.add.setVisibility(View.VISIBLE);
                 holder.remove.setVisibility(View.GONE);
+                holder.margin.setVisibility(View.GONE);
+                holder.add.setVisibility(View.VISIBLE);
             }
         } else {
             holder.add.setVisibility(View.GONE);
             holder.remove.setVisibility(View.GONE);
+            holder.margin.setVisibility(View.VISIBLE);
             holder.layout.setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -152,31 +158,51 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static class LectureViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected View layout;
         protected TextView title;
+        protected TextView subTitle;
         protected TextView tag;
         protected TextView classTime;
         protected TextView location;
         protected Button add;
         protected Button remove;
+        protected View margin;
 
         private LectureViewHolder(View itemView) {
             super(itemView);
             layout = itemView;
             title = (TextView) itemView.findViewById(R.id.title);
+            subTitle = (TextView) itemView.findViewById(R.id.sub_title);
             tag = (TextView) itemView.findViewById(R.id.tag);
             classTime = (TextView) itemView.findViewById(R.id.time);
             location = (TextView) itemView.findViewById(R.id.location);
             add = (Button) itemView.findViewById(R.id.add);
             remove = (Button) itemView.findViewById(R.id.remove);
+            margin = itemView.findViewById(R.id.margin);
             this.layout.setOnClickListener(this);
             this.add.setOnClickListener(this);
             this.remove.setOnClickListener(this);
         }
 
         private void bindData(Lecture lecture) {
-            String titleText = "" ;
-            titleText += lecture.getCourse_title();
-            titleText += " (" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
+            String titleText = lecture.getCourse_title();
+            String subTitleText =  "(" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
             title.setText(titleText);
+            title.setTextScaleX(1.0f);
+            subTitle.setText(subTitleText);
+
+            boolean selected = (getPosition() == selectedPosition);
+            int margin = 20 + 20 + 10 + (selected ? 80 : 0);
+            int maxWidth = (int) (SNUTTUtils.getDisplayWidth() - SNUTTUtils.dpTopx(margin));
+            int subTitleWidth = (int) Math.min(getTextViewWidth(subTitle), maxWidth / 2);
+            int titleWidth = (int) Math.min(getTextViewWidth(title), maxWidth - subTitleWidth);
+            if (titleWidth + subTitleWidth < maxWidth) {
+                subTitleWidth = maxWidth - titleWidth;
+            }
+
+            title.setLayoutParams(new LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            title.setSelected(selected);
+            title.setEllipsize(selected ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.END);
+            title.setTextScaleX(1.0f);
+            subTitle.setLayoutParams(new LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             String tagText = "";
             if (!Strings.isNullOrEmpty(lecture.getCategory())) {
@@ -188,14 +214,18 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tagText += lecture.getAcademic_year();
             if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
 
-            if (getPosition() == selectedPosition) {
+            if (selected) {
                 if (!Strings.isNullOrEmpty(lecture.getRemark())) {
                     tag.setText(lecture.getRemark());
                 } else {
                     tag.setText(tagText);
                 }
+                tag.setSelected(true);
+                tag.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             } else {
                 tag.setText(tagText);
+                tag.setSelected(false);
+                tag.setEllipsize(TextUtils.TruncateAt.END);
             }
 
             String classTimeText = lecture.getSimplifiedClassTime();
@@ -205,6 +235,11 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             String locationText = lecture.getSimplifiedLocation();
             if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)";
             location.setText(locationText);
+        }
+
+        private float getTextViewWidth(TextView textView) {
+            textView.measure(0, 0);
+            return textView.getMeasuredWidth();
         }
 
         @Override

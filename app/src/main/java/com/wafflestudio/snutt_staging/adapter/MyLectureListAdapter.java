@@ -83,12 +83,15 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
             title.setText(titleText);
             subTitle.setText(subTitleText);
 
-            float maxWidth = SNUTTUtils.getDisplayWidth() - SNUTTUtils.dpTopx(20 + 20 + 10);
-            float subTitleWidth = Math.min(getTextViewWidth(subTitle), maxWidth / 2);
-            float titleWidth = Math.min(getTextViewWidth(title), maxWidth - subTitleWidth);
+            int maxWidth = (int) (SNUTTUtils.getDisplayWidth() - SNUTTUtils.dpTopx(20 + 20 + 10));
+            int subTitleWidth = (int) Math.min(getTextViewWidth(subTitle), maxWidth / 2);
+            int titleWidth = (int) Math.min(getTextViewWidth(title), maxWidth - subTitleWidth);
+            if (titleWidth + subTitleWidth < maxWidth) {
+                subTitleWidth = maxWidth - titleWidth;
+            }
 
-            subTitle.setLayoutParams(new LinearLayout.LayoutParams((int)(subTitleWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
-            title.setLayoutParams(new LinearLayout.LayoutParams((int)(titleWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
+            subTitle.setLayoutParams(new LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            title.setLayoutParams(new LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             String tagText = "";
             if (!Strings.isNullOrEmpty(lecture.getCategory())) {
@@ -114,8 +117,7 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         private float getTextViewWidth(TextView textView) {
-            textView.measure(0, 0);       //must call measure!
-//            textView.getMeasuredHeight(); //get width
+            textView.measure(0, 0);
             return textView.getMeasuredWidth();
         }
 

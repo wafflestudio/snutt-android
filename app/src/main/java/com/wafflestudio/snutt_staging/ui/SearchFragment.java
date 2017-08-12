@@ -42,6 +42,7 @@ import com.wafflestudio.snutt_staging.adapter.TagListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
+import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 import com.wafflestudio.snutt_staging.view.TableView;
 
 import org.w3c.dom.Text;
@@ -125,6 +126,7 @@ public class SearchFragment extends SNUTTBaseFragment
         lectureRecyclerView.setLayoutManager(layoutManager);
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(lectureAdapter);
+        lectureRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.search_lecture_divider));
         lectureRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public int getFooterViewType(int defaultNoFooterViewType) {
