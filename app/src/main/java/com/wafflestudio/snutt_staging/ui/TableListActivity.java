@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.manager.TableManager;
 import com.wafflestudio.snutt_staging.manager.UserManager;
+import com.wafflestudio.snutt_staging.model.Coursebook;
 import com.wafflestudio.snutt_staging.model.Table;
 
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class TableListActivity extends SNUTTBaseActivity {
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<Table>> mChildList = null;
     private ArrayList<Table> mChildListContent = null;
+
+    private List<Coursebook> coursebookList;
 
     private ExpandableListView mListView;
     private ExpandableTableListAdapter mAdapter;
@@ -96,15 +100,23 @@ public class TableListActivity extends SNUTTBaseActivity {
             }
         });
 
-
-        TableManager.getInstance().getTableList(new Callback<List<Table>>() {
+        TableManager.getInstance().getCoursebook(new Callback<List<Coursebook>>() {
             @Override
-            public void success(List<Table> tables, Response response) {
-                mAdapter = getAdapter(tables);
-                mListView.setAdapter(mAdapter);
-                for (int i = 0;i < mGroupList.size();i ++) {
-                    mListView.expandGroup(i);
-                }
+            public void success(List<Coursebook> coursebooks, Response response) {
+                coursebookList = coursebooks;
+                TableManager.getInstance().getTableList(new Callback<List<Table>>() {
+                    @Override
+                    public void success(List<Table> tables, Response response) {
+                        mAdapter = getAdapter(tables);
+                        mListView.setAdapter(mAdapter);
+                        for (int i = 0;i < mGroupList.size();i ++) {
+                            mListView.expandGroup(i);
+                        }
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
             }
             @Override
             public void failure(RetrofitError error) {
@@ -112,6 +124,31 @@ public class TableListActivity extends SNUTTBaseActivity {
         });
     }
 
+    private String getFullSemester(int year, int semester) {
+        String yearString;
+        String semesterString;
+
+        yearString = String.valueOf(year);
+        switch (semester) {
+            case 1:
+                semesterString = "1";
+                break;
+            case 2:
+                semesterString = "S";
+                break;
+            case 3:
+                semesterString = "2";
+                break;
+            case 4:
+                semesterString = "W";
+                break;
+            default:
+                semesterString = "";
+                Log.e(TAG, "semester is out of range!!");
+                break;
+        }
+        return yearString + '-' + semesterString;
+    }
     private void showEditDialog(final Table table) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.dialog_change_title, null);
@@ -182,27 +219,16 @@ public class TableListActivity extends SNUTTBaseActivity {
     private ExpandableTableListAdapter getAdapter(List<Table> tables) {
         mGroupList = new ArrayList<String>();
         mChildList = new ArrayList<ArrayList<Table>>();
-
-        if (tables.size() > 0) {
-            mGroupList.add(tables.get(0).getFullSemester());
-            mChildListContent = new ArrayList<Table>();
-            mChildListContent.add(tables.get(0));
+        for (Coursebook coursebook : coursebookList) {
+            mGroupList.add(getFullSemester(coursebook.getYear(), coursebook.getSemester()));
+            mChildList.add(new ArrayList<Table>());
         }
 
-        for (int i = 1; i < tables.size(); i++) {
-            Table table = tables.get(i);
-            if (tables.get(i - 1).getFullSemester().equals(table.getFullSemester())) {
-                mChildListContent.add(table);
-            } else {
-                mChildList.add(mChildListContent);
-
-                mGroupList.add(table.getFullSemester());
-                mChildListContent = new ArrayList<>();
-                mChildListContent.add(table);
-            }
-        }
-        if (tables.size() > 0) {
-            mChildList.add(mChildListContent);
+        int index = 0;
+        for (Table table : tables) {
+            while (index < mGroupList.size() && !mGroupList.get(index).equals(table.getFullSemester())) index ++;
+            if (index >= mGroupList.size()) break;
+            mChildList.get(index).add(table);
         }
 
         return new ExpandableTableListAdapter(this, mGroupList, mChildList);
