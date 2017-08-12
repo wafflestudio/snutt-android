@@ -21,6 +21,9 @@
         -->
         <item name="colorControlNormal">#1A000000</item>
         <item name="android:textColorHint">#34000000</item>
+
+        <!-- background color-->
+        <item name="android:colorBackground">@color/white</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">

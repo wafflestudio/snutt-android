@@ -118,6 +118,7 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
                         @Override
                         public void failure(RetrofitError error) {
                             Toast.makeText(getContext(), "강의 업데이트에 실패하였습니다", Toast.LENGTH_SHORT).show();
+                            refreshFragment();
                         }
                     });
                 } else {
