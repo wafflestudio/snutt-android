@@ -1,5 +1,11 @@
 package com.wafflestudio.snutt_staging;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
+
 import java.util.regex.Pattern;
 
 import retrofit.client.Response;
@@ -9,6 +15,8 @@ import retrofit.mime.TypedByteArray;
  * Created by makesource on 2016. 1. 24..
  */
 public class SNUTTUtils {
+
+    public static Context context;
 
     public static int wdayToNumber(String wday){
         if (wday.equals("월")) return 0;
@@ -57,19 +65,46 @@ public class SNUTTUtils {
         return "" + number;
     }
 
-    public static String getBodyString(Response response) {
-        if (response != null) {
-            String bodyString = new String(((TypedByteArray) response.getBody()).getBytes());
-            return bodyString;
-        }
-        return null;
+    //dp to px
+    public static float dpTopx(float dp){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+    //px to dp
+    public static float pxTodp(float px){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return dp;
+    }
+    //sp to px
+    public static float spTopx(float sp) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return sp*scaledDensity;
     }
 
-    public static boolean checkId(String id) {
-        return Pattern.matches("^[a-z0-9]{4,32}$", id);
+    //px to sp
+    public static float pxTosp(float px) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return px/scaledDensity;
     }
 
-    public static boolean checkPassword(String password) {
-        return Pattern.matches("^(?=.*\\d)(?=.*[a-z])\\S{6,20}$", password);
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
+
+    public static float getDisplayWidth() {
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+    public static float getDisplayHeight() {
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
 }

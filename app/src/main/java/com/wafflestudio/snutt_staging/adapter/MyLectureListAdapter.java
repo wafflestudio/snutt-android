@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt_staging.adapter;
 
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.model.Lecture;
 
 import java.util.List;
@@ -57,27 +60,21 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     // inner class to hold a reference to each item of RecyclerView
     private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private View layout;
         private TextView title;
         private TextView subTitle;
         private TextView tag;
         private TextView classTime;
         private TextView location;
-        private LinearLayout titleLayout;
-        private LinearLayout subTitleLayout;
 
         private ViewHolder(View itemView) {
             super(itemView);
-            layout = itemView;
             title = (TextView) itemView.findViewById(R.id.title);
             subTitle = (TextView) itemView.findViewById(R.id.sub_title);
             tag = (TextView) itemView.findViewById(R.id.tag);
             classTime = (TextView) itemView.findViewById(R.id.time);
             location = (TextView) itemView.findViewById(R.id.location);
-            titleLayout = (LinearLayout) itemView.findViewById(R.id.title_layout);
-            subTitleLayout = (LinearLayout) itemView.findViewById(R.id.sub_title_layout);
-            this.layout.setOnClickListener(this);
-            this.layout.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         private void bindData(Lecture lecture) {
@@ -85,28 +82,13 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
             String subTitleText =  "(" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
             title.setText(titleText);
             subTitle.setText(subTitleText);
-            titleLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            subTitleLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-            titleLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (titleLayout.getWidth() > title.getWidth()) {
-                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(title.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, 0f);
-                        titleLayout.setLayoutParams(param);
-                    }
-                }
-            });
+            float maxWidth = SNUTTUtils.getDisplayWidth() - SNUTTUtils.dpTopx(20 + 20 + 10);
+            float subTitleWidth = Math.min(getTextViewWidth(subTitle), maxWidth / 2);
+            float titleWidth = Math.min(getTextViewWidth(title), maxWidth - subTitleWidth);
 
-            subTitleLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (subTitleLayout.getWidth() > subTitle.getWidth()) {
-                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(subTitle.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, 0f);
-                        subTitleLayout.setLayoutParams(param);
-                    }
-                }
-            });
+            subTitle.setLayoutParams(new LinearLayout.LayoutParams((int)(subTitleWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
+            title.setLayoutParams(new LinearLayout.LayoutParams((int)(titleWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
 
             String tagText = "";
             if (!Strings.isNullOrEmpty(lecture.getCategory())) {
@@ -129,7 +111,12 @@ public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)";
             location.setText(locationText);
 
+        }
 
+        private float getTextViewWidth(TextView textView) {
+            textView.measure(0, 0);       //must call measure!
+//            textView.getMeasuredHeight(); //get width
+            return textView.getMeasuredWidth();
         }
 
         @Override

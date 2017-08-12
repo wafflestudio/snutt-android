@@ -38,8 +38,8 @@ public class TableView extends View {
     private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint;
     private Context mContext;
     private String[] wdays;
-    private float leftLabelWidth = SNUTTApplication.dpTopx(24.5f);
-    private float topLabelHeight = SNUTTApplication.dpTopx(28.5f);
+    private float leftLabelWidth = SNUTTUtils.dpTopx(24.5f);
+    private float topLabelHeight = SNUTTUtils.dpTopx(28.5f);
     private float unitWidth, unitHeight;
     private TextRect titleTextRect, locationTextRect;
     private Paint titleTextPaint, locationTextPaint;
@@ -87,12 +87,12 @@ public class TableView extends View {
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         topLabelTextPaint.setColor(Color.argb(180,0,0,0));
-        topLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12f));
+        topLabelTextPaint.setTextSize(SNUTTUtils.spTopx(12f));
         topLabelTextPaint.setTextAlign(Paint.Align.CENTER);
 
         leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         leftLabelTextPaint.setColor(Color.argb(180,0,0,0));
-        leftLabelTextPaint.setTextSize(SNUTTApplication.spTopx(12f));
+        leftLabelTextPaint.setTextSize(SNUTTUtils.spTopx(12f));
         leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
 
         wdays = new String[7];
@@ -105,10 +105,10 @@ public class TableView extends View {
         wdays[6] = mContext.getResources().getString(R.string.wday_sun);
 
         titleTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        titleTextPaint.setTextSize(SNUTTApplication.spTopx(10));
+        titleTextPaint.setTextSize(SNUTTUtils.spTopx(10));
         titleTextRect = new TextRect(titleTextPaint);
         locationTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        locationTextPaint.setTextSize(SNUTTApplication.spTopx(11));
+        locationTextPaint.setTextSize(SNUTTUtils.spTopx(11));
         locationTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         locationTextRect = new TextRect(locationTextPaint);
 
@@ -235,7 +235,7 @@ public class TableView extends View {
             //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
             //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
 
-            float padding = SNUTTApplication.dpTopx(5);;
+            float padding = SNUTTUtils.dpTopx(5);
             canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f + padding, leftLabelTextPaint);
         }
         //내 강의 그리기
@@ -303,7 +303,7 @@ public class TableView extends View {
         float right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth;
         float top = topLabelHeight + Math.max(0, (startTime - startHeight)) * unitHeight * 2;
         float bottom = topLabelHeight + (startTime - startHeight) * unitHeight * 2 + (unitHeight * duration * 2);
-        float borderWidth = SNUTTApplication.dpTopx(3);
+        float borderWidth = SNUTTUtils.dpTopx(3);
         RectF r = new RectF(left, top, right, bottom);
         Paint p = new Paint();
         p.setColor(bgColor);

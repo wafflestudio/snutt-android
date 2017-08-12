@@ -53,44 +53,10 @@ public class SNUTTApplication extends Application {
         UserManager.getInstance(this);
         TableManager.getInstance(this);
         NotiManager.getInstance(this);
+        SNUTTUtils.context = context;
         restUrl = getString(R.string.api_server);
         super.onCreate();
     }
-
-    //dp to px
-    public static float dpTopx(float dp){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi/160f);
-        return px;
-    }
-    //px to dp
-    public static float pxTodp(float px){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
-    }
-    //sp to px
-    public static float spTopx(float sp) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return sp*scaledDensity;
-    }
-
-    //px to sp
-    public static float pxTosp(float px) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return px/scaledDensity;
-    }
-
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-    }
-
 
     public SNUTTRestApi getRestService() {
         if (restService == null) {

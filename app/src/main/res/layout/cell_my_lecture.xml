@@ -21,37 +21,26 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <LinearLayout
-                android:id="@+id/title_layout"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/title"
+                style="@style/Text.MyLectureTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/title"
-                    style="@style/Text.MyLectureTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="Computer Architecture" />
-            </LinearLayout>
+                android:singleLine="true"
+                android:text="Computer Architecture"/>
 
             <View
                 android:layout_width="10dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
 
-            <LinearLayout
-                android:id="@+id/sub_title_layout"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/sub_title"
+                style="@style/Text.MyLectureSubTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/sub_title"
-                    style="@style/Text.MyLectureSubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="Computer Architecture" />
-            </LinearLayout>
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:text="Computer Architecture"/>
 
         </LinearLayout>
 
