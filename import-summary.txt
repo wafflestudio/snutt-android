@@ -1,0 +1,560 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Manifest Merging:
+-----------------
+Your project uses libraries that provide manifests, and your Eclipse
+project did not explicitly turn on manifest merging. In Android Gradle
+projects, manifests are always merged (meaning that contents from your
+libraries' manifests will be merged into the app manifest. If you had
+manually copied contents from library manifests into your app manifest
+you may need to remove these for the app to build correctly.
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* 3rd/
+* 3rd/actionbarsherlock/
+* 3rd/actionbarsherlock/.settings/
+* 3rd/actionbarsherlock/.settings/org.eclipse.jdt.core.prefs
+* 3rd/actionbarsherlock/AndroidManifest.xml
+* 3rd/actionbarsherlock/README.md
+* 3rd/actionbarsherlock/libs/
+* 3rd/actionbarsherlock/libs/android-support-v4.jar
+* 3rd/actionbarsherlock/lint.xml
+* 3rd/actionbarsherlock/pom.xml
+* 3rd/actionbarsherlock/project.properties
+* 3rd/actionbarsherlock/res/
+* 3rd/actionbarsherlock/res/color/
+* 3rd/actionbarsherlock/res/color/abs__primary_text_disable_only_holo_dark.xml
+* 3rd/actionbarsherlock/res/color/abs__primary_text_disable_only_holo_light.xml
+* 3rd/actionbarsherlock/res/color/abs__primary_text_holo_dark.xml
+* 3rd/actionbarsherlock/res/color/abs__primary_text_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable-hdpi/
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_bottom_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_bottom_solid_inverse_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_bottom_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_bottom_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_bottom_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_share_pack_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_share_pack_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_solid_shadow_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_stacked_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_stacked_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_stacked_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_stacked_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ab_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__btn_cab_done_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__cab_background_bottom_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__cab_background_bottom_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__cab_background_top_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__cab_background_top_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_ab_back_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_ab_back_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_cab_done_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_cab_done_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_clear_disabled.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_clear_normal.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_clear_search_api_disabled_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_clear_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_commit_search_api_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_commit_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_go.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_go_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_menu_moreoverflow_normal_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_menu_moreoverflow_normal_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_menu_share_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_menu_share_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_search.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_voice_search.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__ic_voice_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_activated_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_divider_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_divider_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_longpressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_selector_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__list_selector_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__menu_dropdown_panel_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__menu_dropdown_panel_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_bg_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_bg_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_primary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_primary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_secondary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__progress_secondary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_48_inner_holo.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_48_outer_holo.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__spinner_ab_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__tab_selected_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__tab_selected_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__tab_selected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__tab_unselected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_right_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_right_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_right_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_right_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__textfield_search_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-hdpi/abs__toast_frame.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_bottom_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_bottom_solid_inverse_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_bottom_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_bottom_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_bottom_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_share_pack_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_share_pack_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_solid_shadow_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_stacked_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_stacked_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_stacked_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_stacked_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ab_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__btn_cab_done_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__cab_background_bottom_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__cab_background_bottom_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__cab_background_top_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__cab_background_top_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_ab_back_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_ab_back_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_cab_done_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_cab_done_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_clear_disabled.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_clear_normal.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_clear_search_api_disabled_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_clear_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_commit_search_api_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_commit_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_go.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_go_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_menu_moreoverflow_normal_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_menu_moreoverflow_normal_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_menu_share_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_menu_share_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_search.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_voice_search.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__ic_voice_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_activated_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_divider_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_divider_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_longpressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_selector_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__list_selector_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__menu_dropdown_panel_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__menu_dropdown_panel_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_bg_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_bg_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_primary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_primary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_secondary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__progress_secondary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_48_inner_holo.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_48_outer_holo.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__spinner_ab_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__tab_selected_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__tab_selected_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__tab_selected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__tab_unselected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_right_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_right_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_right_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_right_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__textfield_search_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-mdpi/abs__toast_frame.9.png
+* 3rd/actionbarsherlock/res/drawable-v11/
+* 3rd/actionbarsherlock/res/drawable-v11/abs__progress_medium_holo.xml
+* 3rd/actionbarsherlock/res/drawable-xhdpi/
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_bottom_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_bottom_solid_inverse_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_bottom_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_bottom_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_bottom_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_share_pack_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_share_pack_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_solid_shadow_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_stacked_solid_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_stacked_solid_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_stacked_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_stacked_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_transparent_dark_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ab_transparent_light_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__btn_cab_done_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__cab_background_bottom_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__cab_background_bottom_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__cab_background_top_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__cab_background_top_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_ab_back_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_ab_back_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_cab_done_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_cab_done_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_clear_disabled.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_clear_search_api_disabled_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_clear_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_commit_search_api_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_commit_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_go.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_go_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_menu_moreoverflow_normal_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_menu_moreoverflow_normal_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_menu_share_holo_dark.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_menu_share_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_search.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_voice_search.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__ic_voice_search_api_holo_light.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_activated_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_divider_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_divider_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_longpressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_selector_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__list_selector_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__menu_dropdown_panel_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__menu_dropdown_panel_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_bg_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_bg_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_primary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_primary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_secondary_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__progress_secondary_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_48_inner_holo.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_48_outer_holo.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_disabled_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_disabled_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_focused_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_focused_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_pressed_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__spinner_ab_pressed_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__tab_selected_focused_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__tab_selected_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__tab_selected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__tab_unselected_pressed_holo.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_right_default_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_right_default_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_right_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_right_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_selected_holo_dark.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__textfield_search_selected_holo_light.9.png
+* 3rd/actionbarsherlock/res/drawable-xhdpi/abs__toast_frame.9.png
+* 3rd/actionbarsherlock/res/drawable/
+* 3rd/actionbarsherlock/res/drawable/abs__activated_background_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__activated_background_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__btn_cab_done_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__btn_cab_done_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__ic_clear.xml
+* 3rd/actionbarsherlock/res/drawable/abs__ic_clear_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__ic_menu_moreoverflow_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__ic_menu_moreoverflow_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__item_background_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__item_background_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__list_selector_background_transition_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__list_selector_background_transition_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__list_selector_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__list_selector_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__progress_horizontal_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__progress_horizontal_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__progress_medium_holo.xml
+* 3rd/actionbarsherlock/res/drawable/abs__search_dropdown_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__search_dropdown_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__spinner_ab_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__spinner_ab_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__tab_indicator_ab_holo.xml
+* 3rd/actionbarsherlock/res/drawable/abs__textfield_searchview_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__textfield_searchview_holo_light.xml
+* 3rd/actionbarsherlock/res/drawable/abs__textfield_searchview_right_holo_dark.xml
+* 3rd/actionbarsherlock/res/drawable/abs__textfield_searchview_right_holo_light.xml
+* 3rd/actionbarsherlock/res/layout-large/
+* 3rd/actionbarsherlock/res/layout-large/abs__action_mode_close_item.xml
+* 3rd/actionbarsherlock/res/layout-v14/
+* 3rd/actionbarsherlock/res/layout-v14/sherlock_spinner_dropdown_item.xml
+* 3rd/actionbarsherlock/res/layout-v14/sherlock_spinner_item.xml
+* 3rd/actionbarsherlock/res/layout-xlarge/
+* 3rd/actionbarsherlock/res/layout-xlarge/abs__screen_action_bar.xml
+* 3rd/actionbarsherlock/res/layout-xlarge/abs__screen_action_bar_overlay.xml
+* 3rd/actionbarsherlock/res/layout/
+* 3rd/actionbarsherlock/res/layout/abs__action_bar_home.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_bar_tab.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_bar_tab_bar_view.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_bar_title_item.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_menu_item_layout.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_menu_layout.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_mode_bar.xml
+* 3rd/actionbarsherlock/res/layout/abs__action_mode_close_item.xml
+* 3rd/actionbarsherlock/res/layout/abs__activity_chooser_view.xml
+* 3rd/actionbarsherlock/res/layout/abs__activity_chooser_view_list_item.xml
+* 3rd/actionbarsherlock/res/layout/abs__list_menu_item_checkbox.xml
+* 3rd/actionbarsherlock/res/layout/abs__list_menu_item_icon.xml
+* 3rd/actionbarsherlock/res/layout/abs__list_menu_item_radio.xml
+* 3rd/actionbarsherlock/res/layout/abs__popup_menu_item_layout.xml
+* 3rd/actionbarsherlock/res/layout/abs__screen_action_bar.xml
+* 3rd/actionbarsherlock/res/layout/abs__screen_action_bar_overlay.xml
+* 3rd/actionbarsherlock/res/layout/abs__screen_simple.xml
+* 3rd/actionbarsherlock/res/layout/abs__screen_simple_overlay_action_mode.xml
+* 3rd/actionbarsherlock/res/layout/abs__search_dropdown_item_icons_2line.xml
+* 3rd/actionbarsherlock/res/layout/abs__search_view.xml
+* 3rd/actionbarsherlock/res/layout/abs__simple_dropdown_hint.xml
+* 3rd/actionbarsherlock/res/layout/sherlock_spinner_dropdown_item.xml
+* 3rd/actionbarsherlock/res/layout/sherlock_spinner_item.xml
+* 3rd/actionbarsherlock/res/values-land/
+* 3rd/actionbarsherlock/res/values-land/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-large-hdpi-1024x600/
+* 3rd/actionbarsherlock/res/values-large-hdpi-1024x600/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-large-land-hdpi-1024x600/
+* 3rd/actionbarsherlock/res/values-large-land-hdpi-1024x600/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-large-land-mdpi-1024x600/
+* 3rd/actionbarsherlock/res/values-large-land-mdpi-1024x600/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-large-mdpi-1024x600/
+* 3rd/actionbarsherlock/res/values-large-mdpi-1024x600/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-sw600dp/
+* 3rd/actionbarsherlock/res/values-sw600dp/abs__bools.xml
+* 3rd/actionbarsherlock/res/values-sw600dp/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-v11/
+* 3rd/actionbarsherlock/res/values-v11/abs__themes.xml
+* 3rd/actionbarsherlock/res/values-v14/
+* 3rd/actionbarsherlock/res/values-v14/abs__styles.xml
+* 3rd/actionbarsherlock/res/values-v14/abs__themes.xml
+* 3rd/actionbarsherlock/res/values-w360dp/
+* 3rd/actionbarsherlock/res/values-w360dp/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-w480dp/
+* 3rd/actionbarsherlock/res/values-w480dp/abs__bools.xml
+* 3rd/actionbarsherlock/res/values-w480dp/abs__config.xml
+* 3rd/actionbarsherlock/res/values-w500dp/
+* 3rd/actionbarsherlock/res/values-w500dp/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-w600dp/
+* 3rd/actionbarsherlock/res/values-w600dp/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values-xlarge/
+* 3rd/actionbarsherlock/res/values-xlarge/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values/
+* 3rd/actionbarsherlock/res/values/abs__attrs.xml
+* 3rd/actionbarsherlock/res/values/abs__bools.xml
+* 3rd/actionbarsherlock/res/values/abs__colors.xml
+* 3rd/actionbarsherlock/res/values/abs__config.xml
+* 3rd/actionbarsherlock/res/values/abs__dimens.xml
+* 3rd/actionbarsherlock/res/values/abs__ids.xml
+* 3rd/actionbarsherlock/res/values/abs__strings.xml
+* 3rd/actionbarsherlock/res/values/abs__styles.xml
+* 3rd/actionbarsherlock/res/values/abs__themes.xml
+* 3rd/actionbarsherlock/src/
+* 3rd/actionbarsherlock/src/android/
+* 3rd/actionbarsherlock/src/android/support/
+* 3rd/actionbarsherlock/src/android/support/v4/
+* 3rd/actionbarsherlock/src/android/support/v4/app/
+* 3rd/actionbarsherlock/src/android/support/v4/app/Watson.java
+* 3rd/actionbarsherlock/src/com/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/ActionBarSherlock.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/ActionBar.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockActivity.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockDialogFragment.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockExpandableListActivity.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockFragment.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockFragmentActivity.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockListActivity.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockListFragment.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/app/SherlockPreferenceActivity.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/ActionBarSherlockCompat.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/ActionBarSherlockNative.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/ResourcesCompat.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/app/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/app/ActionBarImpl.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/app/ActionBarWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/Animator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/AnimatorListenerAdapter.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/AnimatorSet.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/FloatEvaluator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/FloatKeyframeSet.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/IntEvaluator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/IntKeyframeSet.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/Keyframe.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/KeyframeSet.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/ObjectAnimator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/PropertyValuesHolder.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/TypeEvaluator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/animation/ValueAnimator.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/view/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/view/NineViewGroup.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/view/animation/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/view/animation/AnimatorProxy.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/widget/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/widget/NineFrameLayout.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/widget/NineHorizontalScrollView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/nineoldandroids/widget/NineLinearLayout.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/ActionProviderWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/StandaloneActionMode.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/View_HasStateListenerSupport.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/View_OnAttachStateChangeListener.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ActionMenu.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ActionMenuItem.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ActionMenuItemView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ActionMenuPresenter.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ActionMenuView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/BaseMenuPresenter.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/ListMenuItemView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuBuilder.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuItemImpl.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuItemWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuPopupHelper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuPresenter.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/MenuWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/SubMenuBuilder.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/view/menu/SubMenuWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/AbsActionBarView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/ActionBarContainer.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/ActionBarContextView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/ActionBarView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/CapitalizingButton.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/CapitalizingTextView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/CollapsibleActionViewWrapper.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsAbsSpinner.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsAdapterView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsColorDrawable.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsLinearLayout.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsListPopupWindow.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsProgressBar.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsSpinner.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsToast.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/IcsView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/ScrollingTabContainerView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/internal/widget/TabsLinearLayout.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/ActionMode.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/ActionProvider.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/CollapsibleActionView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/Menu.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/MenuInflater.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/MenuItem.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/SubMenu.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/view/Window.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/ActivityChooserModel.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/ActivityChooserView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/SearchView.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/ShareActionProvider.java
+* 3rd/actionbarsherlock/src/com/actionbarsherlock/widget/SuggestionsAdapter.java
+* 3rd/actionbarsherlock/test/
+* 3rd/actionbarsherlock/test/com/
+* 3rd/actionbarsherlock/test/com/actionbarsherlock/
+* 3rd/actionbarsherlock/test/com/actionbarsherlock/internal/
+* 3rd/actionbarsherlock/test/com/actionbarsherlock/internal/ResourcesCompatTest.java
+* ic_launcher-web.png
+* proguard-project.txt
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:18.0.0
+
+Replaced Libraries with Dependencies:
+-------------------------------------
+The importer recognized the following library projects as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the source files in your project were of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the library replacement in the import wizard and try
+again:
+
+actionbarsherlock =>
+    com.actionbarsherlock:actionbarsherlock:4.4.0@aar
+    com.android.support:support-v4:18.0.0
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* libs/android-async-http-1.4.3.jar => app/libs/android-async-http-1.4.3.jar
+* libs/libGoogleAnalyticsV2.jar => app/libs/libGoogleAnalyticsV2.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

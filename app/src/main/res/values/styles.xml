@@ -1,0 +1,39 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <!-- Text -->
+    <style name="Text"></style>
+
+    <style name="Text.addRemoveButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Text.mainLabel">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.smallLabel">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Text.smallLabelRed">
+        <item name="android:textColor">#ffff0000</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+    
+    <style name="Text.actionBarText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+</resources>
