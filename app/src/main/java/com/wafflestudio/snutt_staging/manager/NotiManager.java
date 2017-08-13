@@ -53,6 +53,11 @@ public class NotiManager {
         return notifications;
     }
 
+    public boolean hasNotifications() {
+        if (notifications.size() > 0) return true;
+        return false;
+    }
+
     public void loadData(int offset, final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         Map query = new HashMap();

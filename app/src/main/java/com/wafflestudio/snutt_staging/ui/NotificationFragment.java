@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
@@ -33,6 +34,8 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
     private static final String TAG = "NOTIFICATION_FRAGMENT";
     private EndlessRecyclerViewScrollListener scrollListener;
     private NotificationAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+    private LinearLayout placeholder;
 
     public NotificationFragment() {
     }
@@ -55,12 +58,11 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.notification_recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        placeholder = (LinearLayout) rootView.findViewById(R.id.placeholder);
+        placeholder.setVisibility(NotiManager.getInstance().hasNotifications() ? View.GONE : View.VISIBLE);
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new NotificationAdapter(NotiManager.getInstance().getNotifications());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public int getFooterViewType(int defaultNoFooterViewType) {
@@ -72,8 +74,9 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                 Log.d(TAG, "on Load More called. page : " + page + ", totalItemsCount : " + totalItemsCount);
             }
         };
-        // Adds the scroll listener to RecyclerView
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         final SwipeRefreshLayout layout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
         SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -87,6 +90,8 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                         layout.setRefreshing(false);
                         adapter.notifyDataSetChanged();
                         NotiManager.getInstance().setFetched(true);
+                        getMainActivity().onNotificationChecked();
+                        placeholder.setVisibility(NotiManager.getInstance().hasNotifications() ? View.GONE : View.VISIBLE);
                     }
                     @Override
                     public void failure(RetrofitError error) {
@@ -99,7 +104,6 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         if (!NotiManager.getInstance().getFetched()) {
             autoFetch(layout, refreshListener);
         }
-        getMainActivity().onNotificationChecked();
         return rootView;
     }
 

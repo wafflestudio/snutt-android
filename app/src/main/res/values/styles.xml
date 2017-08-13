@@ -207,5 +207,18 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!-- For Notification Alert -->
+
+    <style name="Text.NotificationPlaceholderTitle">
+        <item name="android:textColor">#aaaaaa</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.NotificationPlaceholderDetail">
+        <item name="android:textColor">#aaaaaa</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 
 </resources>
