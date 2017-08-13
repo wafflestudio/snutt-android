@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -171,16 +172,19 @@ public class SettingsFragment extends SNUTTBaseFragment {
         alert.setMessage("로그아웃 하시겠습니까?");
         alert.setPositiveButton("로그아웃", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그아웃", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().deleteFirebaseToken(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         UserManager.getInstance().performLogout();
                         getMainActivity().startIntro();
                         getMainActivity().finishAll();
+                        progressDialog.dismiss();
                     }
                     @Override
                     public void failure(RetrofitError error) {
                         Toast.makeText(getApp(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 });
             }

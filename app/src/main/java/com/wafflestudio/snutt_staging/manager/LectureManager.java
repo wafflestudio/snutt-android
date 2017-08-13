@@ -123,6 +123,14 @@ public class LectureManager {
     }
     ////////
 
+    public void reset() {
+        this.lectures = new ArrayList<>();
+        this.searchedLectures = new ArrayList<>();
+        this.currentLecture = null;
+        this.selectedLecture = null;
+        this.searchedQuery = null;
+    }
+
     public List<Lecture> getLectures() {
         return lectures;
     }

@@ -37,7 +37,7 @@ public class TagManager {
      */
 
     private TagManager(SNUTTApplication app) {
-        getDefaultTag();
+        tags = new ArrayList<>();
         classification = new ArrayList<>();
         credit = new ArrayList<>();
         academic_year = new ArrayList<>();
@@ -75,6 +75,20 @@ public class TagManager {
 
     public void unregisterListener() {
         this.listener = null;
+    }
+
+    public void reset() {
+        tags = new ArrayList<>();
+        classification = new ArrayList<>();
+        credit = new ArrayList<>();
+        academic_year = new ArrayList<>();
+        instructor = new ArrayList<>();
+        department = new ArrayList<>();
+        category = new ArrayList<>();
+        time = new ArrayList<>();
+        field = new HashMap<>();
+        myTags = new ArrayList<>();
+        searchEmptyClass = false;
     }
 
     public boolean addTag(String name) {
@@ -162,17 +176,7 @@ public class TagManager {
             @Override
             public void success(TagList tagList, Response response) {
                 Log.d(TAG, "update new tags Success!!");
-                tags.clear();
-                myTags.clear();
-                field.clear();
-                classification.clear();
-                credit.clear();
-                department.clear();
-                academic_year.clear();
-                instructor.clear();
-                department.clear();
-                category.clear();
-                time.clear();
+                reset();
 
                 for (String tag : tagList.getClassification()) {
                     field.put(tag, "classification");
@@ -286,18 +290,6 @@ public class TagManager {
     public void setSearchEmptyClass(boolean searchEmptyClass) {
         this.searchEmptyClass = searchEmptyClass;
     }
-
-
-
-    private void getDefaultTag() {
-        tags = new ArrayList<>();
-        tags.add("컴공");
-        tags.add("김명수 교수");
-        tags.add("컴퓨터공학");
-        tags.add("독어 교육과");
-        tags.add("불어 교육과");
-        tags.add("자율전공학부");
-   }
 
     private void notifyTagChanged(boolean anim) {
         if (listener == null) return;

@@ -350,6 +350,10 @@ public class UserManager {
 
     public void performLogout() {
         /* firebase token 삭제 후 로그아웃 시행 */
+        LectureManager.getInstance().reset();
+        NotiManager.getInstance().reset();
+        TableManager.getInstance().reset();
+        TagManager.getInstance().reset();
         PrefManager.getInstance().resetPrefValue();
         LoginManager.getInstance().logOut(); // for facebook sdk
         me = new User();

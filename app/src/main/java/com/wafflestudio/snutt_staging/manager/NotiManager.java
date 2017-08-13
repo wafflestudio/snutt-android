@@ -44,6 +44,11 @@ public class NotiManager {
         return singleton;
     }
 
+    public void reset() {
+        this.notifications = new ArrayList<>();
+        this.fetched = false;
+    }
+
     public List<Notification> getNotifications() {
         return notifications;
     }

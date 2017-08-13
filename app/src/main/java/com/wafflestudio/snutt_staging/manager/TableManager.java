@@ -51,6 +51,11 @@ public class TableManager {
         return singleton;
     }
 
+    public void reset() {
+        this.tables = new ArrayList<>();
+        this.tableMap = new HashMap<>();
+    }
+
     public void getTableList(final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableList(token, new Callback<List<Table>>() {

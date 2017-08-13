@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -295,6 +296,7 @@ public class AccountFragment extends SNUTTBaseFragment {
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?");
         alert.setPositiveButton("회원탈퇴", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "회원탈퇴", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().deleteFirebaseToken(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
@@ -304,16 +306,19 @@ public class AccountFragment extends SNUTTBaseFragment {
                                 UserManager.getInstance().performLogout();
                                 getSNUTTBaseActivity().startIntro();
                                 getSNUTTBaseActivity().finishAll();
+                                progressDialog.dismiss();
                             }
                             @Override
                             public void failure(RetrofitError error) {
                                 Toast.makeText(getApp(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             }
                         });
                     }
                     @Override
                     public void failure(RetrofitError error) {
                         Toast.makeText(getApp(), "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 });
             }
