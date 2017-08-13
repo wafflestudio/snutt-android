@@ -13,6 +13,7 @@ public class SharedPrefUtil {
 	
 	public static String PREF_KEY_CURRENT_YEAR = "CURRENT_YEAR";
 	public static String PREF_KEY_CURRENT_SEMESTER = "CURRENT_SEMESTER";
+	public static String PREF_KEY_UPGRADE_ALERT_SHOWN = "UPGRADE_ALERT_SHOWN";
 	
 	private SharedPrefUtil(Context ctx, String name) {
 		super();

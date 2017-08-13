@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -83,6 +84,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	//커스텀 시간표
 	boolean customEditable = false;
 	ImageButton customButton;
+
+	//새로운 버전 배너
+	LinearLayout bannerForUpgrade;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -192,6 +196,20 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		checkAppUpdate();
 		checkUpdate();
 
+		//버전 2.0 홍보
+		bannerForUpgrade = (LinearLayout)findViewById(R.id.banner_upgrade);
+		bannerForUpgrade.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				showNewVersionMarket();
+			}
+		});
+
+		if (!SharedPrefUtil.getInstance().getBoolean(SharedPrefUtil.PREF_KEY_UPGRADE_ALERT_SHOWN)) {
+			SharedPrefUtil.getInstance().setBoolean(SharedPrefUtil.PREF_KEY_UPGRADE_ALERT_SHOWN, true);
+			showUpgradeAlert();
+		}
+
 		int currentYear = SharedPrefUtil.getInstance().getInt(SharedPrefUtil.PREF_KEY_CURRENT_YEAR);
 		String currentSemester = SharedPrefUtil.getInstance().getString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER);
 		loadData(currentYear, currentSemester);
@@ -262,6 +280,30 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		SharedPrefUtil.getInstance().setString(SharedPrefUtil.PREF_KEY_CURRENT_SEMESTER, semester);
 		
 		Lecture.loadMyLectures();
+	}
+
+	public void showNewVersionMarket() {
+		final String appName = "company.fortytwo.slide.app";
+		try {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+appName)));
+		} catch (android.content.ActivityNotFoundException anfe) {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="+appName)));
+		}
+	}
+
+	public void showUpgradeAlert() {
+		new AlertDialog.Builder(MainActivity.this)
+				.setIcon(R.drawable.ic_about)
+				.setTitle("새로운 SNUTT를 만나보세요!")
+				.setMessage("SNUTT 2.0이 출시되었습니다. 지금 다운로드하러 가시겠습니까?")
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						showNewVersionMarket();
+						finish();
+					}
+
+				}).setNegativeButton(R.string.no, null).show();
 	}
 
 	public void confirmAppUpdate(){

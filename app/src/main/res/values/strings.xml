@@ -58,4 +58,8 @@
     <string name="error_message_file_not_found">Error: File not found!</string>
     <string name="error_message_general">Error downloading file!</string>
 
+    <string name="banner_upgrade_title">새로운 SNUTT를 만나보세요!</string>
+
+    <string name="banner_upgrade_detail">(현재 버전은 2018년부터 지원하지 않습니다.)</string>
+
 </resources>
