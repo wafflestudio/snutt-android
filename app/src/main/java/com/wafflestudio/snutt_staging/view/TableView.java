@@ -78,11 +78,11 @@ public class TableView extends View {
         backgroundPaint.setColor(0xffffffff);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(0xffebebeb);
+        linePaint.setColor(Color.rgb(235, 235, 235));
         linePaint.setStrokeWidth(1);
 
         linePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint2.setColor(0xfff3f3f3);
+        linePaint2.setColor(Color.rgb(243, 243, 243));
         linePaint2.setStrokeWidth(1);
 
         topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

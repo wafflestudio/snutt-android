@@ -13,7 +13,7 @@ android {
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d"]
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
+        versionCode 4
         versionName "1.0"
     }
     buildTypes {

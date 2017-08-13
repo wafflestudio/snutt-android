@@ -155,6 +155,11 @@ public class LectureManager {
         notifyLecturesChanged();
     }
 
+    public int getSelectedPosition() {
+        if (selectedLecture == null) return -1;
+        return searchedLectures.indexOf(selectedLecture);
+    }
+
     public Lecture getCurrentLecture() {
         return currentLecture;
     }

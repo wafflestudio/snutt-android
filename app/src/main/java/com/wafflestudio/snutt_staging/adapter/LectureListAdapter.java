@@ -46,7 +46,6 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static ClickListener clickListener;
 
     private List<Lecture> lectures;
-    private static int selectedPosition = -1;
 
     public LectureListAdapter(List<Lecture> lectures) {
         this.lectures = lectures;
@@ -73,6 +72,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         final Lecture lecture = lectures.get(position);
         final LectureViewHolder holder = (LectureViewHolder) viewHolder;
+        final int selectedPosition = LectureManager.getInstance().getSelectedPosition();
         holder.bindData(lecture);
 
         if (selectedPosition == position) {
@@ -101,13 +101,11 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");
                     if (selectedPosition == position) {
-                        selectedPosition = -1;
                         notifyItemChanged(position);
                         LectureManager.getInstance().setSelectedLecture(null);
                     } else {
                         notifyItemChanged(selectedPosition);
                         notifyItemChanged(position);
-                        selectedPosition = position;
                         LectureManager.getInstance().setSelectedLecture(getItem(position));
                     }
 
@@ -183,6 +181,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         private void bindData(Lecture lecture) {
+            int selectedPosition = LectureManager.getInstance().getSelectedPosition();
             String titleText = lecture.getCourse_title();
             String subTitleText =  "(" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
             title.setText(titleText);
