@@ -83,6 +83,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                 NotiManager.getInstance().refreshNotification(new Callback() {
                     @Override
                     public void success(Object o, Response response) {
+                        scrollListener.init();
                         layout.setRefreshing(false);
                         adapter.notifyDataSetChanged();
                         NotiManager.getInstance().setFetched(true);

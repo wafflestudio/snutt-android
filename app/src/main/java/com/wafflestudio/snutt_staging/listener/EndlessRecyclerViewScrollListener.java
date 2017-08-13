@@ -39,14 +39,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
 
     //init from  self-define
-    private void init() {
+    public void init() {
         footerViewType = getFooterViewType(defaultNoFooterViewType);
-        startingPageIndex = getStartingPageIndex();
-
-        int threshold = getVisibleThreshold();
-        if (threshold > visibleThreshold) {
-            visibleThreshold = threshold;
-        }
+        currentPage = 0;
+        previousTotalItemCount = 0;
+        loading = true;
     }
 
 
@@ -72,10 +69,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
                 if (!isFooterView(adapter)) {
                     if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change list size ,reset page index
                         this.currentPage = this.startingPageIndex;
-//                            Log.i(mTag, "****totalItemCount:" + totalItemCount + ",previousTotalItemCount:" + previousTotalItemCount + ",currentpage=startingPageIndex");
                     } else if (totalItemCount == previousTotalItemCount) { //if load failure or load empty data , we rollback  page index
                         currentPage = currentPage == startingPageIndex ? startingPageIndex : --currentPage;
-//                            Log.i(mTag, "!!!!currentpage:" + currentPage);
                     }
 
                     loading = false;
@@ -111,7 +106,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     public boolean isUseFooterView() {
         boolean isUse = footerViewType != defaultNoFooterViewType;
-//        Log.i(mTag, "isUseFooterView:" + isUse);
         return isUse;
     }
 
@@ -130,7 +124,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             isFooterView = lastViewType == footerViewType;
         }
         Log.i(mTag, "isFooterView:" + isFooterView);
-
 
         return isFooterView;
     }
@@ -153,7 +146,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         }
         return maxSize;
     }
-
 
     // set FooterView type
     // if don't use footview load more  default: -1
