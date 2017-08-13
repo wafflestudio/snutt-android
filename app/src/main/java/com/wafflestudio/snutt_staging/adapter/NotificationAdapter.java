@@ -99,16 +99,16 @@ public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.View
             String text = notification.getMessage();
             switch (notification.getType()) {
                 case 0:
-                    image.setImageResource(R.drawable.noti_normal);
+                    image.setImageResource(R.drawable.noticewarning);
                     break;
                 case 1:
-                    image.setImageResource(R.drawable.noti_coursebook);
+                    image.setImageResource(R.drawable.noticetimetable);
                     break;
                 case 2:
-                    image.setImageResource(R.drawable.noti_update);
+                    image.setImageResource(R.drawable.noticeupdate);
                     break;
                 case 3:
-                    image.setImageResource(R.drawable.noti_remove);
+                    image.setImageResource(R.drawable.noticetrash);
                     break;
                 default:
                     Log.e(TAG, "notification type is out of bound!!");

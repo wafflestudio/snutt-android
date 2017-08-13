@@ -91,7 +91,6 @@ public class NotiManager {
     }
 
     public void refreshNotification(final Callback callback) {
-        notifications.clear();
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         Map query = new HashMap();
         query.put("limit", 20);
@@ -101,6 +100,7 @@ public class NotiManager {
             @Override
             public void success(List<Notification> notificationList, Response response) {
                 Log.d(TAG, "get notification success!");
+                notifications.clear();
                 for (Notification notification : notificationList) {
                     notifications.add(notification);
                 }
