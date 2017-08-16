@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.common.base.Strings;
@@ -20,6 +21,7 @@ import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseActivity;
 import com.wafflestudio.snutt_staging.adapter.ExpandableTableListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
+import com.wafflestudio.snutt_staging.manager.NotiManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.manager.TableManager;
 import com.wafflestudio.snutt_staging.manager.UserManager;
@@ -43,7 +45,7 @@ public class TableListActivity extends SNUTTBaseActivity {
 
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<Table>> mChildList = null;
-    private ArrayList<Table> mChildListContent = null;
+    private LinearLayout placeholder;
 
     private List<Coursebook> coursebookList;
 
@@ -56,7 +58,9 @@ public class TableListActivity extends SNUTTBaseActivity {
         activityList.add(this);
         setContentView(R.layout.activity_table_list);
         setTitle("시간표 목록");
-        
+
+        placeholder = (LinearLayout) findViewById(R.id.placeholder);
+
         mListView = (ExpandableListView) findViewById(R.id.listView);
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -112,6 +116,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                         for (int i = 0;i < mGroupList.size();i ++) {
                             mListView.expandGroup(i);
                         }
+                        placeholder.setVisibility(TableManager.getInstance().hasTimetables() ? View.GONE : View.VISIBLE);
                     }
                     @Override
                     public void failure(RetrofitError error) {
@@ -182,6 +187,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                             for (int i = 0;i < mGroupList.size();i ++) {
                                 mListView.expandGroup(i);
                             }
+                            placeholder.setVisibility(TableManager.getInstance().hasTimetables() ? View.GONE : View.VISIBLE);
                         }
                         @Override
                         public void failure(RetrofitError error) {
@@ -209,6 +215,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                 for (int i = 0;i < mGroupList.size();i ++) {
                     mListView.expandGroup(i);
                 }
+                placeholder.setVisibility(TableManager.getInstance().hasTimetables() ? View.GONE : View.VISIBLE);
             }
             @Override
             public void failure(RetrofitError error) {
@@ -268,6 +275,7 @@ public class TableListActivity extends SNUTTBaseActivity {
                 for (int i = 0;i < mGroupList.size();i ++) {
                     mListView.expandGroup(i);
                 }
+                placeholder.setVisibility(TableManager.getInstance().hasTimetables() ? View.GONE : View.VISIBLE);
             }
             @Override
             public void failure(RetrofitError error) {

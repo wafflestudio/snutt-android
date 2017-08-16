@@ -54,7 +54,7 @@ public class NotiManager {
     }
 
     public boolean hasNotifications() {
-        if (notifications.size() > 0) return true;
+        if (notifications == null || notifications.size() > 0) return true;
         return false;
     }
 

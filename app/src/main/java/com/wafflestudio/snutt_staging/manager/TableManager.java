@@ -56,6 +56,11 @@ public class TableManager {
         this.tableMap = new HashMap<>();
     }
 
+    public boolean hasTimetables() {
+        if (tables == null || tables.size() == 0) return false;
+        return true;
+    }
+
     public void getTableList(final Callback callback) {
         String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         app.getRestService().getTableList(token, new Callback<List<Table>>() {
