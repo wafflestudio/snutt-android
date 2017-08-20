@@ -65,7 +65,6 @@ public class TimetableWidgetProvider extends AppWidgetProvider {
         super.onEnabled(context);
     }
 
-
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
