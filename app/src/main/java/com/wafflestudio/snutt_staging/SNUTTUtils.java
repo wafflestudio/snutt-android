@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt_staging;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import java.util.regex.Pattern;
 
@@ -106,5 +108,4 @@ public class SNUTTUtils {
     public static float getDisplayHeight() {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
-
 }

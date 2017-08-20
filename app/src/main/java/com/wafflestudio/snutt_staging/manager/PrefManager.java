@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt_staging.manager;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -8,6 +11,7 @@ import android.util.Log;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.wafflestudio.snutt_staging.model.Table;
+import com.wafflestudio.snutt_staging.provider.TimetableWidgetProvider;
 
 /**
  * Created by makesource on 2016. 1. 24..
@@ -50,6 +54,7 @@ public class PrefManager {
 
     public void resetPrefValue() {
         sp.edit().clear().commit();
+        sendWidgetUpdateIntent();
     }
 
     public void updateNewTable(Table table) {
@@ -58,6 +63,7 @@ public class PrefManager {
         setCurrentTable(json);
         setCurrentYear(table.getYear());
         setCurrentSemester(table.getSemester());
+        sendWidgetUpdateIntent();
         Log.d(TAG, "update new table : " + json);
     }
 
@@ -104,6 +110,7 @@ public class PrefManager {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(PREF_KEY_CURRENT_TABLE, table);
         editor.apply();
+        sendWidgetUpdateIntent();
     }
 
     public String getCurrentTable() {
@@ -180,4 +187,13 @@ public class PrefManager {
         return sp.getString(PREF_KEY_LECTURE_COLOR_NAMES, null);
     }
 
+    private void sendWidgetUpdateIntent() {
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+        ComponentName widgetComponent = new ComponentName(context, TimetableWidgetProvider.class);
+        int[] widgetIds = widgetManager.getAppWidgetIds(widgetComponent);
+        Intent update = new Intent();
+        update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+        update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        context.sendBroadcast(update);
+    }
 }

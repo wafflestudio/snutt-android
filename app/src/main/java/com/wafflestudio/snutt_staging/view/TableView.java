@@ -2,6 +2,8 @@ package com.wafflestudio.snutt_staging.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +17,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wafflestudio.snutt_staging.R;
@@ -24,7 +27,12 @@ import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.PrefManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
+import com.wafflestudio.snutt_staging.model.Table;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -45,7 +53,7 @@ public class TableView extends View {
     private Paint titleTextPaint, locationTextPaint;
 
 
-    private List<Lecture> lectures ;
+    private List<Lecture> lectures;
     private boolean export; // 현재 선택한 강의를 보여줄지 말지?
 
     // 시간표 trim 용
@@ -53,6 +61,19 @@ public class TableView extends View {
     private int startWidth;
     private int numHeight;
     private int startHeight;
+
+    public TableView(Context context) {
+        super(context);
+        export = true;
+        String json = PrefManager.getInstance().getCurrentTable();
+        if (json != null) {
+            Table table = new Gson().fromJson(json, Table.class);
+            LectureManager.getInstance().setLectures(table.getLecture_list());
+        }
+        lectures = LectureManager.getInstance().getLectures();
+        mContext = context;
+        init();
+    }
 
     public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,7 +93,7 @@ public class TableView extends View {
         invalidate();
     }
 
-    void init(){
+    private void init(){
         setDrawingCacheEnabled(true);
         backgroundPaint = new Paint();
         backgroundPaint.setColor(0xffffffff);
@@ -152,7 +173,7 @@ public class TableView extends View {
     }
 
     //주어진 canvas에 시간표를 그림
-    public void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export) {
+    private void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export) {
         int startWday, endWday, startTime, endTime;
         startWday = 7; endWday = 0;
         startTime = 14; endTime = 0;
@@ -262,7 +283,11 @@ public class TableView extends View {
         drawTimetable(canvas, getWidth(), getHeight(), export);
     }
 
-    void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
+    public void drawWidget(Canvas canvas, int width, int height) {
+        drawTimetable(canvas, width, height, true);
+    }
+
+    private void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject classTime = element.getAsJsonObject();
@@ -275,7 +300,7 @@ public class TableView extends View {
         }
     }
 
-    void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
+    private void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
         for (JsonElement element : lecture.getClass_time_json()) {
             JsonObject classTime = element.getAsJsonObject();
@@ -292,7 +317,7 @@ public class TableView extends View {
 
 
     //사각형 하나를 그림
-    void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
+    private void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
         float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
         float unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
         if (wday - startWidth < 0) return; // 날자가 잘리는 경우

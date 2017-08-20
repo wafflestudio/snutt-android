@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/layout"
+    android:background="@color/white"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="로그인을 해주세요\n마지막에 본 시간표가 이곳에 표시됩니다"
+        android:textSize="15sp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <ImageView
+        android:id="@+id/table"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"/>
 </LinearLayout>
