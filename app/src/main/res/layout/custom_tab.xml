@@ -7,7 +7,8 @@
     <TextView
         android:id="@+id/tab_title"
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:gravity="center"/>
+        android:gravity="center"
+        style="@style/Text.TabLayout"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

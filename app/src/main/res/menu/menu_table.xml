@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_more"
-        android:icon="@drawable/hamburger_dark"
-        android:title="@string/action_settings"
+        android:icon="@drawable/ic_hamburger"
+        android:title="@string/action_timetable_list"
         app:showAsAction="always" />
 </menu>

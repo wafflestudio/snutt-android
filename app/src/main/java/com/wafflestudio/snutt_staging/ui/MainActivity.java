@@ -292,31 +292,8 @@ public class MainActivity extends SNUTTBaseActivity {
                 notiCircle = imageView;
             }
         }
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                /*
-                 * This listener overrides default tabselected listener.
-                 * So we have to call setCurrentItem method manually.
-                 * */
-                mViewPager.setCurrentItem(tab.getPosition());
-                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
-                textView.setTypeface(null, Typeface.BOLD);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
-                textView.setTypeface(null, Typeface.NORMAL);
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                TextView textView = (TextView) tab.getCustomView().findViewById(R.id.tab_title);
-                textView.setTypeface(null, Typeface.BOLD);
-            }
-        });
-        tabLayout.getTabAt(0).select();
+        // for initial state
+        tabLayout.getTabAt(0).getCustomView().setSelected(true);
     }
 
     private void showEditDialog(final String id) {

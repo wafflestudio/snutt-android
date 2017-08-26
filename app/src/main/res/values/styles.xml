@@ -30,20 +30,18 @@
         <item name="background">@drawable/actionbar_background</item>
         <item name="titleTextStyle">@style/Text.ActionBarTitle</item>
         <item name="android:titleTextStyle">@style/Text.ActionBarTitle</item>
+        <item name="homeAsUpIndicator">@drawable/ic_back</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
     </style>
 
     <style name="Text.ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title" >
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <!--<item name="android:textStyle">bold</item>-->
     </style>
 
     <style name="Text.ActionBarItemMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item" >
         <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Text.TabLayout" parent="TextAppearance.Design.Tab">
-        <item name="android:textStyle">bold</item>
+        <!--<item name="android:textStyle">bold</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -62,6 +60,11 @@
 
     <!-- Text -->
     <style name="Text"></style>
+
+    <style name="Text.TabLayout">
+        <item name="android:textColor">@drawable/tab_selectable_text</item>
+        <!--<item name="android:textStyle">bold</item>-->
+    </style>
 
     <style name="Text.AddRemoveButton">
         <item name="android:textColor">#ffffff</item>

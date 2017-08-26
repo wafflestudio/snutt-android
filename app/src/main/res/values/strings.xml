@@ -7,8 +7,9 @@
     <string name="privacy">/privacy_policy</string>
     <string name="member">/member</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="action_add">Add</string>
+    <string name="action_timetable_list">시간표 목록</string>
+    <string name="action_settings">설정</string>
+    <string name="action_add">추가</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_create">저장</string>
