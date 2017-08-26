@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Tag;
 import com.wafflestudio.snutt_staging.model.TagType;
@@ -28,14 +29,13 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private List<Tag> tagList;
     private List<Tag> filteredList;
-    private boolean all, academicYear, category, classification, credit, department, instructor;
+    private TagType filterType;
     private String query = "";
 
     public SuggestionAdapter(List<Tag> lists) {
         this.tagList = lists;
         this.filteredList = new ArrayList<>();
-        this.all = true;
-        this.academicYear = this.category = this.classification = this.credit = this.department = this.instructor = false;
+        this.filterType = null;
         this.query = "";
     }
 
@@ -63,11 +63,10 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void filter(String query) {
         Log.d(TAG, "query : " + query);
         this.query = query;
-        this.all = !(academicYear || category || classification || credit || department || instructor);
         String constraintString = query.toLowerCase(Locale.ROOT);
         filteredList.clear();
 
-        if (all) {
+        if (filterType == null) {
             for (Tag tag : tagList) {
                 if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                     filteredList.add(tag);
@@ -78,12 +77,12 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 TagType type = tag.getTagType();
                 if (type == null) continue;
 
-                if (type == TagType.ACADEMIC_YEAR   && !academicYear) continue;
-                if (type == TagType.CATEGORY        && !category) continue;
-                if (type == TagType.CLASSIFICATION  && !classification) continue;
-                if (type == TagType.CREDIT          && !credit) continue;
-                if (type == TagType.DEPARTMENT      && !department) continue;
-                if (type == TagType.INSTRUCTOR      && !instructor) continue;
+                if (type == TagType.ACADEMIC_YEAR   && filterType != TagType.ACADEMIC_YEAR)     continue;
+                if (type == TagType.CATEGORY        && filterType != TagType.CATEGORY)          continue;
+                if (type == TagType.CLASSIFICATION  && filterType != TagType.CLASSIFICATION)    continue;
+                if (type == TagType.CREDIT          && filterType != TagType.CREDIT)            continue;
+                if (type == TagType.DEPARTMENT      && filterType != TagType.DEPARTMENT)        continue;
+                if (type == TagType.INSTRUCTOR      && filterType != TagType.INSTRUCTOR)        continue;
 
                 if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                     filteredList.add(tag);
@@ -93,60 +92,32 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
-    public boolean toggleAcademicYear() {
-        academicYear = !academicYear;
+    public void toggleButton(TagType filterType) {
+        if (this.filterType == filterType) return;
+        this.filterType = filterType;
         filter(query);
-        return academicYear;
-    }
-
-    public boolean toggleCategory() {
-        category = !category;
-        filter(query);
-        return category;
-    }
-
-    public boolean toggleClassification() {
-        classification = !classification;
-        filter(query);
-        return classification;
-    }
-
-    public boolean toggleCredit() {
-        credit = !credit;
-        filter(query);
-        return credit;
-    }
-
-    public boolean toggleDepartment() {
-        department = !department;
-        filter(query);
-        return department;
-    }
-
-    public boolean toggleInstructor() {
-        instructor = !instructor;
-        filter(query);
-        return instructor;
     }
 
     public void resetState() {
         query = "";
-        all = true;
-        academicYear = category = classification = credit = department = instructor = false;
+        filterType = null;
     }
 
     protected static class SuggestionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView suggestionTag;
         private TextView suggestion;
         private Tag tag;
 
         public SuggestionViewHolder(View itemView) {
             super(itemView);
+            suggestionTag = (TextView) itemView.findViewById(R.id.suggestion_tag);
             suggestion = (TextView) itemView.findViewById(R.id.suggestion_text);
             itemView.setOnClickListener(this);
         }
 
         private void bindData(Tag tag) {
             this.tag = tag;
+            suggestionTag.setTextColor(SNUTTUtils.getTagColor(tag.getTagType()));
             suggestion.setText(tag.getName());
         }
 

@@ -5,10 +5,10 @@ package com.wafflestudio.snutt_staging.model;
  */
 
 public enum TagType {
+    ACADEMIC_YEAR,
     CLASSIFICATION,
     CREDIT,
-    ACADEMIC_YEAR,
-    INSTRUCTOR,
     DEPARTMENT,
+    INSTRUCTOR,
     CATEGORY
 }

@@ -2,13 +2,12 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.database.AbstractCursor;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,13 +26,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
-import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.adapter.LectureListAdapter;
 import com.wafflestudio.snutt_staging.adapter.SuggestionAdapter;
@@ -43,15 +44,12 @@ import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
 import com.wafflestudio.snutt_staging.model.Tag;
+import com.wafflestudio.snutt_staging.model.TagType;
 import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 import com.wafflestudio.snutt_staging.view.TableView;
+import com.wafflestudio.snutt_staging.view.ToggleRadioButton;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -89,10 +87,16 @@ public class SearchFragment extends SNUTTBaseFragment
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
+
+    /*
+     * This variables for tagHelper
+     */
     private LinearLayout tagHelper;
     private LinearLayout lectureLayout;
     private LinearLayout suggestionLayout;
-    private TextView  cancel, all, academicYear, category, classification, credit, department, instructor, searchEmptyClass;
+    private LinearLayout emptyClass;
+    private RadioGroup radioGroup;
+    private TextView emptyClassStatus;
 
     public SearchFragment() {
     }
@@ -176,8 +180,6 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     Log.d(TAG, "keyboard up");
-                    //Animation animation = AnimationUtils.loadAnimation(getApp(), R.anim.fade_in);
-                    //tagHelper.startAnimation(animation);
                     tagHelper.setVisibility(View.VISIBLE);
                     getMainActivity().hideTabLayout();
                 } else {
@@ -204,74 +206,41 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void setTagHelper() {
-        final ImageView tag = (ImageView) tagHelper.findViewById(R.id.tag);
+        final TextView tag = (TextView) tagHelper.findViewById(R.id.tag);
         tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enableTagMode(false);
             }
         });
-        cancel = (TextView) tagHelper.findViewById(R.id.cancel);
+        final TextView cancel = (TextView) tagHelper.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enableDefaultMode();
             }
         });
-        academicYear = (TextView) tagHelper.findViewById(R.id.academic_year);
-        academicYear.setOnClickListener(new View.OnClickListener() {
+        radioGroup = (RadioGroup) tagHelper.findViewById(R.id.radio_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleAcademicYear();
-                academicYear.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if (checkedId == -1) {
+                    suggestionAdapter.toggleButton(null);
+                } else {
+                    View radioButton = radioGroup.findViewById(checkedId);
+                    int idx = radioGroup.indexOfChild(radioButton);
+                    suggestionAdapter.toggleButton(TagType.values()[idx]);
+                }
             }
         });
-        category = (TextView) tagHelper.findViewById(R.id.category);
-        category.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleCategory();
-                category.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
-            }
-        });
-        classification = (TextView) tagHelper.findViewById(R.id.classification);
-        classification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleClassification();
-                classification.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
-            }
-        });
-        credit = (TextView) tagHelper.findViewById(R.id.credit);
-        credit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleCredit();
-                credit.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
-            }
-        });
-        department = (TextView) tagHelper.findViewById(R.id.department);
-        department.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleDepartment();
-                department.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
-            }
-        });
-        instructor = (TextView) tagHelper.findViewById(R.id.instructor);
-        instructor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = suggestionAdapter.toggleInstructor();
-                instructor.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
-            }
-        });
-        searchEmptyClass = (TextView) tagHelper.findViewById(R.id.search_empty_class);
-        searchEmptyClass.setOnClickListener(new View.OnClickListener() {
+        emptyClass = (LinearLayout) tagHelper.findViewById(R.id.empty_class);
+        emptyClassStatus = (TextView) tagHelper.findViewById(R.id.status);
+        emptyClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean b = TagManager.getInstance().toggleSearchEmptyClass();
-                searchEmptyClass.setTypeface(null, b ? Typeface.BOLD : Typeface.NORMAL);
+                emptyClassStatus.setText(b ? "ON" : "OFF");
+                emptyClassStatus.setTextColor(b ? Color.rgb(0,0,0) : Color.argb(76, 0, 0, 0));
             }
         });
     }
@@ -451,22 +420,17 @@ public class SearchFragment extends SNUTTBaseFragment
 
         LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
         LinearLayout layout2 = (LinearLayout) tagHelper.findViewById(R.id.default_mode);
-        layout1.setVisibility(View.VISIBLE);
         layout2.setVisibility(View.GONE);
+        layout1.setVisibility(View.VISIBLE);
 
         suggestionAdapter.resetState();
-        academicYear.setTypeface(null, Typeface.NORMAL);
-        category.setTypeface(null, Typeface.NORMAL);
-        classification.setTypeface(null, Typeface.NORMAL);
-        credit.setTypeface(null, Typeface.NORMAL);
-        department.setTypeface(null, Typeface.NORMAL);
-        instructor.setTypeface(null, Typeface.NORMAL);
+        radioGroup.clearCheck();
 
         int len = searchView.getQuery().length();
         if (contains) last_query = searchView.getQuery().toString().substring(0, len-1);
         else last_query = searchView.getQuery().toString();
         searchView.setQuery("", false);
-        searchView.setQueryHint("테그 검색");
+        searchView.setQueryHint("태그 검색");
 
         clearButton.setVisibility(View.VISIBLE);
         clearButton.setOnClickListener(mTagListener);
@@ -489,8 +453,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setSuggestionsAdapter(null);
         clearButton.setOnClickListener(mDefaultListener);
 
-        lectureLayout.setVisibility(View.VISIBLE);
         suggestionLayout.setVisibility(View.GONE);
+        lectureLayout.setVisibility(View.VISIBLE);
     }
 
     private View.OnClickListener mDefaultListener = new View.OnClickListener() {
