@@ -104,6 +104,10 @@ public class TableListActivity extends SNUTTBaseActivity {
             }
         });
 
+        getTableList();
+    }
+
+    private void getTableList() {
         TableManager.getInstance().getCoursebook(new Callback<List<Coursebook>>() {
             @Override
             public void success(List<Coursebook> coursebooks, Response response) {
@@ -154,6 +158,7 @@ public class TableListActivity extends SNUTTBaseActivity {
         }
         return yearString + '-' + semesterString;
     }
+
     private void showEditDialog(final Table table) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.dialog_change_title, null);
@@ -267,20 +272,7 @@ public class TableListActivity extends SNUTTBaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        TableManager.getInstance().getTableList(new Callback<List<Table>>() {
-            @Override
-            public void success(List<Table> tables, Response response) {
-                mAdapter = getAdapter(tables);
-                mListView.setAdapter(mAdapter);
-                for (int i = 0;i < mGroupList.size();i ++) {
-                    mListView.expandGroup(i);
-                }
-                placeholder.setVisibility(TableManager.getInstance().hasTimetables() ? View.GONE : View.VISIBLE);
-            }
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
+        getTableList();
     }
 
     @Override
