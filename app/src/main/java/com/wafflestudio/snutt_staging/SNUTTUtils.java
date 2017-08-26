@@ -3,10 +3,13 @@ package com.wafflestudio.snutt_staging;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+
+import com.wafflestudio.snutt_staging.model.TagType;
 
 import java.util.regex.Pattern;
 
@@ -107,5 +110,23 @@ public class SNUTTUtils {
 
     public static float getDisplayHeight() {
         return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    public static int getTagColor(TagType type) {
+        switch (type) {
+            case ACADEMIC_YEAR:
+                return Color.rgb(229, 68, 89);
+            case CLASSIFICATION:
+                return Color.rgb(245, 141, 61);
+            case CREDIT:
+                return Color.rgb(166, 217, 48);
+            case DEPARTMENT:
+                return Color.rgb(27, 208, 200);
+            case INSTRUCTOR:
+                return Color.rgb(29, 153, 232);
+            case CATEGORY:
+                return Color.rgb(175, 86, 179);
+        }
+        return Color.RED;
     }
 }

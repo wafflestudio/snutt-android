@@ -10,6 +10,5 @@ public enum TagType {
     ACADEMIC_YEAR,
     INSTRUCTOR,
     DEPARTMENT,
-    CATEGORY,
-    TIME
+    CATEGORY
 }

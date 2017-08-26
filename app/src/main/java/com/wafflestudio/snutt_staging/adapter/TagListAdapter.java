@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt_staging.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.SNUTTUtils;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Tag;
 
@@ -43,6 +45,8 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Tag tag = tags.get(position);
 
+        GradientDrawable bgShape = (GradientDrawable) holder.itemView.getBackground();
+        bgShape.setColor(SNUTTUtils.getTagColor(tag.getTagType()));
         holder.tagTitle.setText(tag.getName());
         holder.setClickListener(new ViewHolder.ClickListener() {
             @Override
@@ -63,17 +67,14 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
 
         public View tagLayout;
         public TextView tagTitle;
-        public Button remove;
 
         private ClickListener clickListener;
 
         public ViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
             this.tagLayout = view;
             this.tagTitle = (TextView) view.findViewById(R.id.tag_title);
-            this.remove = (Button) view.findViewById(R.id.remove);
-
-            this.remove.setOnClickListener(this);
         }
 
         public interface ClickListener {
