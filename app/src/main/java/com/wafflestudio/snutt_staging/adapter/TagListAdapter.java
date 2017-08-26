@@ -64,17 +64,18 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
 
     // inner class to hold a reference to each item of RecyclerView
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         public View tagLayout;
         public TextView tagTitle;
+        public Button remove;
 
         private ClickListener clickListener;
 
         public ViewHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
             this.tagLayout = view;
             this.tagTitle = (TextView) view.findViewById(R.id.tag_title);
+            this.remove = (Button) view.findViewById(R.id.remove);
+            this.remove.setOnClickListener(this);
         }
 
         public interface ClickListener {
