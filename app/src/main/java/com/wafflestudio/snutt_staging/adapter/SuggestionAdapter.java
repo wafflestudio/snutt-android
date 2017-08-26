@@ -26,12 +26,12 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final String TAG = "SUGGESTION_ADAPTER";
     private static ClickListener clickListener;
 
-    private List<String> tagList;
-    private List<String> filteredList;
+    private List<Tag> tagList;
+    private List<Tag> filteredList;
     private boolean all, academicYear, category, classification, credit, department, instructor;
     private String query = "";
 
-    public SuggestionAdapter(List<String> lists) {
+    public SuggestionAdapter(List<Tag> lists) {
         this.tagList = lists;
         this.filteredList = new ArrayList<>();
         this.all = true;
@@ -46,7 +46,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return new SuggestionViewHolder(view);
     }
 
-    public String getItem(int position) {
+    public Tag getItem(int position) {
         return filteredList.get(position);
     }
 
@@ -68,14 +68,14 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         filteredList.clear();
 
         if (all) {
-            for (String tag : tagList) {
-                if (tag.toLowerCase(Locale.ROOT).startsWith(constraintString)) {
+            for (Tag tag : tagList) {
+                if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                     filteredList.add(tag);
                 }
             }
         } else {
-            for (String tag : tagList) {
-                TagType type = TagManager.getInstance().getField(tag);
+            for (Tag tag : tagList) {
+                TagType type = tag.getTagType();
                 if (type == null) continue;
 
                 if (type == TagType.ACADEMIC_YEAR   && !academicYear) continue;
@@ -85,7 +85,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (type == TagType.DEPARTMENT      && !department) continue;
                 if (type == TagType.INSTRUCTOR      && !instructor) continue;
 
-                if (tag.toLowerCase(Locale.ROOT).startsWith(constraintString)) {
+                if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                     filteredList.add(tag);
                 }
             }
@@ -137,6 +137,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     protected static class SuggestionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView suggestion;
+        private Tag tag;
 
         public SuggestionViewHolder(View itemView) {
             super(itemView);
@@ -144,20 +145,21 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             itemView.setOnClickListener(this);
         }
 
-        private void bindData(String tag) {
-            suggestion.setText(tag);
+        private void bindData(Tag tag) {
+            this.tag = tag;
+            suggestion.setText(tag.getName());
         }
 
         @Override
         public void onClick(View v) {
             if (clickListener != null) {
-                clickListener.onClick(v, getPosition());
+                clickListener.onClick(v, tag);
             }
         }
     }
 
     public interface ClickListener {
-        public void onClick(View v, int position);
+        public void onClick(View v, Tag tag);
     }
 
     public void setClickListener(ClickListener clickListener) {

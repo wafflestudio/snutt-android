@@ -42,6 +42,7 @@ import com.wafflestudio.snutt_staging.adapter.TagListAdapter;
 import com.wafflestudio.snutt_staging.manager.LectureManager;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Lecture;
+import com.wafflestudio.snutt_staging.model.Tag;
 import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 import com.wafflestudio.snutt_staging.view.TableView;
 
@@ -142,14 +143,11 @@ public class SearchFragment extends SNUTTBaseFragment
         suggestionAdapter = new SuggestionAdapter(TagManager.getInstance().getTags());
         suggestionAdapter.setClickListener(new SuggestionAdapter.ClickListener() {
             @Override
-            public void onClick(View v, int position) {
+            public void onClick(View v, Tag tag) {
                 Log.d(TAG, "suggestion item clicked!");
-                TextView textView = (TextView) v.findViewById(R.id.suggestion_text);
-                String text = textView.getText().toString();
-                if (TagManager.getInstance().addTag(text)) {
-                    tagAdapter.notifyItemInserted(0);
-                    tagRecyclerView.scrollToPosition(0);
-                }
+                TagManager.getInstance().addTag(tag);
+                tagAdapter.notifyItemInserted(0);
+                tagRecyclerView.scrollToPosition(0);
                 enableDefaultMode();
             }
         });
@@ -361,8 +359,8 @@ public class SearchFragment extends SNUTTBaseFragment
      *  handle tag insert, remove listener in other method
      */
     @Override
-    public void notifyTagChanged(boolean anim) {
-        Log.d(TAG, "notifyTagChanged called");
+    public void notifyMyTagChanged(boolean anim) {
+        Log.d(TAG, "notifyMyTagChanged called");
         if (TagManager.getInstance().getMyTags().size() == 0 && tagRecyclerView.getVisibility() == View.VISIBLE) {
             tagRecyclerView.setVisibility(View.GONE);
             if (anim) {
@@ -377,6 +375,14 @@ public class SearchFragment extends SNUTTBaseFragment
                 tagRecyclerView.startAnimation(animation);
             }
             tagAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void notifyTagListChanged() {
+        Log.d(TAG, "notifyTagListChanged called");
+        if (suggestionAdapter != null) {
+            suggestionAdapter.notifyDataSetChanged();
         }
     }
 

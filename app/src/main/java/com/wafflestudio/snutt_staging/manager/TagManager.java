@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt_staging.manager;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.model.Tag;
@@ -24,11 +23,14 @@ public class TagManager {
 
     private static final String TAG = "TAG_MANAGER" ;
 
-    private List<String> tags;
+    // for search
+    private List<Tag> tags;
+    private Map<String, Tag> tagsMap;
+    private boolean searchEmptyClass;
+
+    // for api post
     private List<String> classification, credit, academic_year, instructor, department, category, time;
     private List<Tag> myTags;
-    private Map<String, TagType> field;
-    private boolean searchEmptyClass;
 
     private SNUTTApplication app;
     private static TagManager singleton;
@@ -46,7 +48,7 @@ public class TagManager {
         department = new ArrayList<>();
         category = new ArrayList<>();
         time = new ArrayList<>();
-        field = new HashMap<>();
+        tagsMap = new HashMap<>();
         myTags = new ArrayList<>();
         searchEmptyClass = false;
         this.app = app;
@@ -65,7 +67,8 @@ public class TagManager {
     }
 
     public interface OnTagChangedListener {
-        void notifyTagChanged(boolean anim);
+        void notifyMyTagChanged(boolean anim);
+        void notifyTagListChanged();
     }
 
     private OnTagChangedListener listener;
@@ -79,92 +82,81 @@ public class TagManager {
     }
 
     public void reset() {
-        tags = new ArrayList<>();
-        classification = new ArrayList<>();
-        credit = new ArrayList<>();
-        academic_year = new ArrayList<>();
-        instructor = new ArrayList<>();
-        department = new ArrayList<>();
-        category = new ArrayList<>();
-        time = new ArrayList<>();
-        field = new HashMap<>();
-        myTags = new ArrayList<>();
+        tags.clear();
+        classification.clear();
+        credit.clear();
+        academic_year.clear();
+        instructor.clear();
+        department.clear();
+        category.clear();
+        time.clear();
+        tagsMap.clear();
+        myTags.clear();
         searchEmptyClass = false;
     }
 
-    public boolean addTag(String name) {
-        if (field.get(name) == null) {
-            Log.e(TAG, "invalid tag name!!!");
-            Toast.makeText(app, "유효하지 않은 테그입니다", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        TagType type = field.get(name);
+    public boolean addTag(String query) {
+        if (!tagsMap.containsKey(query.toLowerCase())) return false;
+        addTag(tagsMap.get(query));
+        return true;
+    }
+
+    public boolean addTag(Tag tag) {
+        TagType type = tag.getTagType();
         switch (type) {
             case CLASSIFICATION:
-                classification.add(name);
-                myTags.add(0, new Tag(name, "classification"));
+                classification.add(tag.getName());
                 break;
             case CREDIT:
-                credit.add(name);
-                myTags.add(0, new Tag(name, "credit"));
+                credit.add(tag.getName());
                 break;
             case ACADEMIC_YEAR:
-                academic_year.add(name);
-                myTags.add(0, new Tag(name, "academic_year"));
+                academic_year.add(tag.getName());
                 break;
             case INSTRUCTOR:
-                instructor.add(name);
-                myTags.add(0, new Tag(name, "instructor"));
+                instructor.add(tag.getName());
                 break;
             case DEPARTMENT:
-                department.add(name);
-                myTags.add(0, new Tag(name, "department"));
+                department.add(tag.getName());
                 break;
             case CATEGORY:
-                category.add(name);
-                myTags.add(0, new Tag(name, "category"));
+                category.add(tag.getName());
                 break;
-            /*case "time":
-                time.add(name);
-                myTags.add(0, new Tag(name, "time"));
-                break;*/
+
         }
         Log.d(TAG, "a tag is successfully added!!!");
-        notifyTagChanged(true);
+        myTags.add(0, tag);
+        notifyMyTagChanged(true);
         return true;
     }
 
     public void removeTag(int position) {
-        String name = myTags.get(position).getName();
-        TagType type = field.get(name);
-        switch (type) {
+        Tag tag = myTags.get(position);
+        switch (tag.getTagType()) {
             case CLASSIFICATION:
-                classification.remove(name);
+                classification.remove(tag.getName());
                 break;
             case CREDIT:
-                credit.remove(name);
+                credit.remove(tag.getName());
                 break;
             case ACADEMIC_YEAR:
-                academic_year.remove(name);
+                academic_year.remove(tag.getName());
                 break;
             case INSTRUCTOR:
-                instructor.remove(name);
+                instructor.remove(tag.getName());
                 break;
             case DEPARTMENT:
-                department.remove(name);
+                department.remove(tag.getName());
                 break;
             case CATEGORY:
-                category.remove(name);
+                category.remove(tag.getName());
                 break;
-            /*case "time":
-                time.remove(name);
-                break;*/
         }
         myTags.remove(position);
-        notifyTagChanged(true);
+        notifyMyTagChanged(true);
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
@@ -179,31 +171,38 @@ public class TagManager {
                 Log.d(TAG, "update new tags Success!!");
                 reset();
 
-                for (String tag : tagList.getClassification()) {
-                    field.put(tag, TagType.CLASSIFICATION);
+                for (String name : tagList.getClassification()) {
+                    Tag tag = new Tag(name, TagType.CLASSIFICATION);
+                    tagsMap.put(name.toLowerCase(), tag);
                     tags.add(tag);
                 }
-                for (String tag : tagList.getCredit()) {
-                    field.put(tag, TagType.CREDIT);
+                for (String name : tagList.getCredit()) {
+                    Tag tag = new Tag(name, TagType.CREDIT);
+                    tagsMap.put(name.toLowerCase(), tag);
                     tags.add(tag);
                 }
-                for (String tag : tagList.getAcademic_year()) {
-                    field.put(tag, TagType.ACADEMIC_YEAR);
+                for (String name : tagList.getAcademic_year()) {
+                    Tag tag = new Tag(name, TagType.ACADEMIC_YEAR);
+                    tagsMap.put(name.toLowerCase(), tag);
                     tags.add(tag);
                 }
-                for (String tag : tagList.getInstructor()) {
-                    field.put(tag, TagType.INSTRUCTOR);
+                for (String name : tagList.getInstructor()) {
+                    Tag tag = new Tag(name, TagType.INSTRUCTOR);
+                    tagsMap.put(name.toLowerCase(), tag);
                     tags.add(tag);
                 }
-                for (String tag : tagList.getDepartment()) {
-                    field.put(tag, TagType.DEPARTMENT);
+                for (String name : tagList.getDepartment()) {
+                    Tag tag = new Tag(name, TagType.DEPARTMENT);
+                    tagsMap.put(name.toLowerCase(), tag);
                     tags.add(tag);
                 }
-                for (String tag : tagList.getCategory()) {
-                    field.put(tag, TagType.CATEGORY);
+                for (String name : tagList.getCategory()) {
+                    Tag tag = new Tag(name.toLowerCase(), TagType.CATEGORY);
+                    tagsMap.put(name, tag);
                     tags.add(tag);
                 }
-                notifyTagChanged(false);
+                notifyMyTagChanged(false);
+                notifyTagListChanged();
             }
 
             @Override
@@ -211,10 +210,6 @@ public class TagManager {
                 Log.d(TAG, "update new tags failed...");
             }
         });
-    }
-
-    public TagType getField(String tag) {
-        return field.get(tag);
     }
 
     /* Below method will used when post query */
@@ -292,8 +287,13 @@ public class TagManager {
         this.searchEmptyClass = searchEmptyClass;
     }
 
-    private void notifyTagChanged(boolean anim) {
+    private void notifyMyTagChanged(boolean anim) {
         if (listener == null) return;
-        listener.notifyTagChanged(anim);
+        listener.notifyMyTagChanged(anim);
+    }
+
+    private void notifyTagListChanged() {
+        if (listener == null) return;
+        listener.notifyTagListChanged();
     }
 }

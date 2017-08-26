@@ -6,11 +6,11 @@ package com.wafflestudio.snutt_staging.model;
 public class Tag {
 
     private String name;
-    private String category;
+    private TagType tagType;
 
-    public Tag(String name,String category) {
+    public Tag(String name,TagType tagType) {
         this.name = name;
-        this.category = category;
+        this.tagType = tagType;
     }
 
     public String getName() {
@@ -21,16 +21,12 @@ public class Tag {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setTagType(TagType tagType) {
+        this.tagType = tagType;
     }
 
     public TagType getTagType() {
-        return TagType.valueOf(category);
+        return tagType;
     }
 
 }
