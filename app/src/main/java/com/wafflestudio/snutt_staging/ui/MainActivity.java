@@ -343,6 +343,7 @@ public class MainActivity extends SNUTTBaseActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // for pre-lollipop device
             appBarLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_background));
         }
+
     }
 
     protected void showTabLayout() {

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
@@ -23,6 +23,10 @@
         <item name="android:textColorHint">#34000000</item>
 
         <item name="android:windowBackground">@color/white</item>
+
+        <!--For SearchView home indicator -->
+        <item name="homeAsUpIndicator">@drawable/ic_back</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">

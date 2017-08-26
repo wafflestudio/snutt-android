@@ -282,6 +282,7 @@ public class SearchFragment extends SNUTTBaseFragment
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchMenuItem.getActionView();
         clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        clearButton.setImageResource(R.drawable.ic_close);
         editText = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         editText.setThreshold(0);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -465,7 +466,7 @@ public class SearchFragment extends SNUTTBaseFragment
         if (contains) last_query = searchView.getQuery().toString().substring(0, len-1);
         else last_query = searchView.getQuery().toString();
         searchView.setQuery("", false);
-        searchView.setQueryHint("ex) 3학점, 컴공 등...");
+        searchView.setQueryHint("테그 검색");
 
         clearButton.setVisibility(View.VISIBLE);
         clearButton.setOnClickListener(mTagListener);
@@ -484,7 +485,7 @@ public class SearchFragment extends SNUTTBaseFragment
         layout2.setVisibility(View.VISIBLE);
 
         searchView.setQuery(last_query, false);
-        searchView.setQueryHint("#으로 태그검색!");
+        searchView.setQueryHint("강의명 검색");
         searchView.setSuggestionsAdapter(null);
         clearButton.setOnClickListener(mDefaultListener);
 
