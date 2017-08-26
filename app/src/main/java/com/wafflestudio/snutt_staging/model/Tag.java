@@ -29,4 +29,8 @@ public class Tag {
         this.category = category;
     }
 
+    public TagType getTagType() {
+        return TagType.valueOf(category);
+    }
+
 }

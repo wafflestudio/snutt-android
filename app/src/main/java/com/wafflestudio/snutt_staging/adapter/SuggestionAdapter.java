@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.manager.TagManager;
 import com.wafflestudio.snutt_staging.model.Tag;
+import com.wafflestudio.snutt_staging.model.TagType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,15 +75,15 @@ public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         } else {
             for (String tag : tagList) {
-                String field = TagManager.getInstance().getField(tag);
-                if (field == null) continue;
+                TagType type = TagManager.getInstance().getField(tag);
+                if (type == null) continue;
 
-                if (field.equals("academic_year") && !academicYear) continue;
-                if (field.equals("category") && !category) continue;
-                if (field.equals("classification") && !classification) continue;
-                if (field.equals("credit") && !credit) continue;
-                if (field.equals("department") && !department) continue;
-                if (field.equals("instructor") && !instructor) continue;
+                if (type == TagType.ACADEMIC_YEAR   && !academicYear) continue;
+                if (type == TagType.CATEGORY        && !category) continue;
+                if (type == TagType.CLASSIFICATION  && !classification) continue;
+                if (type == TagType.CREDIT          && !credit) continue;
+                if (type == TagType.DEPARTMENT      && !department) continue;
+                if (type == TagType.INSTRUCTOR      && !instructor) continue;
 
                 if (tag.toLowerCase(Locale.ROOT).startsWith(constraintString)) {
                     filteredList.add(tag);

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.wafflestudio.snutt_staging.SNUTTApplication;
 import com.wafflestudio.snutt_staging.model.Tag;
 import com.wafflestudio.snutt_staging.model.TagList;
+import com.wafflestudio.snutt_staging.model.TagType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class TagManager {
     private List<String> tags;
     private List<String> classification, credit, academic_year, instructor, department, category, time;
     private List<Tag> myTags;
-    private Map<String, String> field;
+    private Map<String, TagType> field;
     private boolean searchEmptyClass;
 
     private SNUTTApplication app;
@@ -97,29 +98,29 @@ public class TagManager {
             Toast.makeText(app, "유효하지 않은 테그입니다", Toast.LENGTH_SHORT).show();
             return false;
         }
-        String val = field.get(name);
-        switch (val) {
-            case "classification":
+        TagType type = field.get(name);
+        switch (type) {
+            case CLASSIFICATION:
                 classification.add(name);
                 myTags.add(0, new Tag(name, "classification"));
                 break;
-            case "credit":
+            case CREDIT:
                 credit.add(name);
                 myTags.add(0, new Tag(name, "credit"));
                 break;
-            case "academic_year":
+            case ACADEMIC_YEAR:
                 academic_year.add(name);
                 myTags.add(0, new Tag(name, "academic_year"));
                 break;
-            case "instructor":
+            case INSTRUCTOR:
                 instructor.add(name);
                 myTags.add(0, new Tag(name, "instructor"));
                 break;
-            case "department":
+            case DEPARTMENT:
                 department.add(name);
                 myTags.add(0, new Tag(name, "department"));
                 break;
-            case "category":
+            case CATEGORY:
                 category.add(name);
                 myTags.add(0, new Tag(name, "category"));
                 break;
@@ -135,24 +136,24 @@ public class TagManager {
 
     public void removeTag(int position) {
         String name = myTags.get(position).getName();
-        String val = field.get(name);
-        switch (val) {
-            case "classification":
+        TagType type = field.get(name);
+        switch (type) {
+            case CLASSIFICATION:
                 classification.remove(name);
                 break;
-            case "credit":
+            case CREDIT:
                 credit.remove(name);
                 break;
-            case "academic_year":
+            case ACADEMIC_YEAR:
                 academic_year.remove(name);
                 break;
-            case "instructor":
+            case INSTRUCTOR:
                 instructor.remove(name);
                 break;
-            case "department":
+            case DEPARTMENT:
                 department.remove(name);
                 break;
-            case "category":
+            case CATEGORY:
                 category.remove(name);
                 break;
             /*case "time":
@@ -179,27 +180,27 @@ public class TagManager {
                 reset();
 
                 for (String tag : tagList.getClassification()) {
-                    field.put(tag, "classification");
+                    field.put(tag, TagType.CLASSIFICATION);
                     tags.add(tag);
                 }
                 for (String tag : tagList.getCredit()) {
-                    field.put(tag, "credit");
+                    field.put(tag, TagType.CREDIT);
                     tags.add(tag);
                 }
                 for (String tag : tagList.getAcademic_year()) {
-                    field.put(tag, "academic_year");
+                    field.put(tag, TagType.ACADEMIC_YEAR);
                     tags.add(tag);
                 }
                 for (String tag : tagList.getInstructor()) {
-                    field.put(tag, "instructor");
+                    field.put(tag, TagType.INSTRUCTOR);
                     tags.add(tag);
                 }
                 for (String tag : tagList.getDepartment()) {
-                    field.put(tag, "department");
+                    field.put(tag, TagType.DEPARTMENT);
                     tags.add(tag);
                 }
                 for (String tag : tagList.getCategory()) {
-                    field.put(tag, "category");
+                    field.put(tag, TagType.CATEGORY);
                     tags.add(tag);
                 }
                 notifyTagChanged(false);
@@ -212,7 +213,7 @@ public class TagManager {
         });
     }
 
-    public String getField(String tag) {
+    public TagType getField(String tag) {
         return field.get(tag);
     }
 
