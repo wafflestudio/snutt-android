@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.view.MenuItemCompat;
@@ -26,10 +25,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -47,7 +44,6 @@ import com.wafflestudio.snutt_staging.model.Tag;
 import com.wafflestudio.snutt_staging.model.TagType;
 import com.wafflestudio.snutt_staging.view.DividerItemDecoration;
 import com.wafflestudio.snutt_staging.view.TableView;
-import com.wafflestudio.snutt_staging.view.ToggleRadioButton;
 
 import java.util.List;
 
@@ -97,6 +93,19 @@ public class SearchFragment extends SNUTTBaseFragment
     private LinearLayout emptyClass;
     private RadioGroup radioGroup;
     private TextView emptyClassStatus;
+
+    /*
+     * This variables for placeholder
+     */
+    private LinearLayout placeholder;
+    private LinearLayout help;
+    private LinearLayout popup;
+
+    /*
+     * This variables for main content
+     */
+    private LinearLayout mainContainer;
+    private LinearLayout emptyPlaceholder;
 
     public SearchFragment() {
     }
@@ -171,6 +180,14 @@ public class SearchFragment extends SNUTTBaseFragment
         suggestionLayout = (LinearLayout) rootView.findViewById(R.id.suggestion_layout);
         setTagHelper();
 
+        mainContainer = (LinearLayout) rootView.findViewById(R.id.main_container);
+        emptyPlaceholder = (LinearLayout) rootView.findViewById(R.id.empty_placeholder);
+        placeholder = (LinearLayout) rootView.findViewById(R.id.placeholder);
+        popup = (LinearLayout) rootView.findViewById(R.id.popup);
+        help = (LinearLayout) rootView.findViewById(R.id.help);
+        setPlaceholder();
+        showPlaceholder();
+
         return rootView;
     }
 
@@ -180,13 +197,14 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     Log.d(TAG, "keyboard up");
+                    showMainContainer(true);
                     tagHelper.setVisibility(View.VISIBLE);
                     getMainActivity().hideTabLayout();
+
                 } else {
                     Log.d(TAG, "keyboard down");
                     tagHelper.setVisibility(View.GONE);
                     getMainActivity().showTabLayout();
-                    enableDefaultMode();
                 }
             }
         });
@@ -245,6 +263,43 @@ public class SearchFragment extends SNUTTBaseFragment
         });
     }
 
+    private void setPlaceholder() {
+        help.findViewById(R.id.help_text).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                help.setVisibility(View.GONE);
+                popup.setVisibility(View.VISIBLE);
+            }
+        });
+        popup.findViewById(R.id.button_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.setVisibility(View.GONE);
+                help.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void showPlaceholder() {
+        mainContainer.setVisibility(View.GONE);
+        popup.setVisibility(View.GONE);
+        placeholder.setVisibility(View.VISIBLE);
+        help.setVisibility(View.VISIBLE);
+    }
+
+    private void showMainContainer(boolean isKeyboardUp) {
+        placeholder.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+
+        if (isDefaultMode() && !isKeyboardUp && LectureManager.getInstance().getSearchedLectures().size() == 0) {
+            lectureRecyclerView.setVisibility(View.GONE);
+            emptyPlaceholder.setVisibility(View.VISIBLE);
+        } else {
+            emptyPlaceholder.setVisibility(View.GONE);
+            lectureRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
@@ -286,13 +341,14 @@ public class SearchFragment extends SNUTTBaseFragment
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                enableDefaultMode();
+                Log.d(TAG, "onMenuItemActionExpand");
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                enableDefaultMode();
+                Log.d(TAG, "onMenuItemActionCollapse");
+                showPlaceholder();
                 return true;
             }
         });
@@ -302,6 +358,7 @@ public class SearchFragment extends SNUTTBaseFragment
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
         LectureManager.getInstance().removeListener(this);
         TagManager.getInstance().unregisterListener();
     }
@@ -309,8 +366,10 @@ public class SearchFragment extends SNUTTBaseFragment
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         LectureManager.getInstance().addListener(this);
         TagManager.getInstance().registerListener(this);
+        showPlaceholder();
     }
 
     @Override
@@ -409,13 +468,17 @@ public class SearchFragment extends SNUTTBaseFragment
             @Override
             public void success(List<Lecture> lectures, Response response) {
                 lectureAdapter.notifyDataSetChanged();
+                showMainContainer(false);
             }
             @Override
-            public void failure(RetrofitError error) { }
+            public void failure(RetrofitError error) {
+                showMainContainer(false);
+            }
         });
     }
 
     private void enableTagMode(boolean contains) {
+        Log.d(TAG, "enableTagMode");
         tagMode = TagMode.TAG_MODE;
 
         LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);
@@ -441,6 +504,7 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void enableDefaultMode() {
+        Log.d(TAG, "enableDefaultMode");
         tagMode = TagMode.DEFAULT_MODE;
 
         LinearLayout layout1 = (LinearLayout) tagHelper.findViewById(R.id.tag_mode);

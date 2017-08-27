@@ -95,14 +95,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp" />
 
-            <Button
-                android:id="@+id/button_sign_up"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:text="회원가입"
-                android:textSize="16sp"
-                android:background="@drawable/border_gray" />
+                android:background="@drawable/border_gray">
 
+                <Button
+                    android:id="@+id/button_sign_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="회원가입"
+                    android:textSize="16sp"
+                    android:background="?selectableItemBackground"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -133,21 +138,26 @@
                 android:id="@+id/button_facebook"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:gravity="center"
-                android:background="@drawable/border_blue">
+                android:background="?selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/border_blue">
 
-                <ImageView
-                    android:layout_width="9.5dp"
-                    android:layout_height="18dp"
-                    android:layout_marginRight="7dp"
-                    android:src="@drawable/iconfacebook"/>
+                    <ImageView
+                        android:layout_width="9.5dp"
+                        android:layout_height="18dp"
+                        android:layout_marginRight="7dp"
+                        android:src="@drawable/iconfacebook"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="#3c5dd4"
-                    android:text="페이스북으로 시작하기" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="#3c5dd4"
+                        android:text="페이스북으로 시작하기" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

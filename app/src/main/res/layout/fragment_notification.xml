@@ -8,32 +8,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="40dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/tab_alarm_on"/>
+                android:src="@drawable/tab_alarm_on" />
+
             <TextView
-                android:layout_marginTop="10dp"
+                style="@style/Text.NotificationPlaceholderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="알림이 없습니다"
-                style="@style/Text.NotificationPlaceholderTitle" />
-            <TextView
                 android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="알림이 없습니다" />
+
+            <TextView
+                style="@style/Text.NotificationPlaceholderDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="넣은 강좌의 수강편람이 바뀌거나, 새로운 수강편람이 뜨면 알림을 줍니다"
-                style="@style/Text.NotificationPlaceholderDetail" />
+                android:text="넣은 강좌의 수강편람이 바뀌거나, 새로운 수강편람이 뜨면 알림을 줍니다" />
         </LinearLayout>
     </LinearLayout>
 

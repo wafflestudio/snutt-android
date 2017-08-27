@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:focusableInTouchMode="true">
@@ -21,17 +20,297 @@
         </ScrollView>
 
         <LinearLayout
+            android:id="@+id/placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="#80000000"
+            android:clickable="true">
 
             <LinearLayout
+                android:id="@+id/help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="58dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/img_search_big"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:gravity="center"
+                    android:text="과목명을 직접 검색하거나\n원하는 태그로 쉽게 검색해보세요!"
+                    android:textSize="18sp"
+                    android:textColor="#B3FFFFFF"/>
+
+                <LinearLayout
+                    android:id="@+id/help_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:padding="3dp"
+                    android:clickable="true"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_marginRight="6dp"
+                        android:src="@drawable/icon_help"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="태그 검색은 어떻게 하나요?"
+                            android:textSize="14sp"
+                            android:textColor="#80FFFFFF" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#80FFFFFF" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/popup"
+                android:layout_height="400dp"
+                android:layout_width="match_parent"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical"
+                android:background="#F3FFFFFF"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/button_close"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginRight="18dp"
+                        android:src="@drawable/btntipclose"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="강좌명 외의 내용으로 검색하려면\n태그 검색을 이용해보세요!"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="같은 분야의 태그를 두 개 이상 입력하면 :"
+                        android:textColor="#B3000000"
+                        android:textSize="16sp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:background="@drawable/round_rect_red"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:gravity="center"
+                                android:textSize="15sp"
+                                android:textColor="#ffffff"
+                                android:text="#2학년"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7.5dp"
+                            android:layout_marginRight="7.5dp"
+                            android:text="or"
+                            android:textColor="#B3000000"
+                            android:textSize="15sp"/>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:background="@drawable/round_rect_red"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:gravity="center"
+                                android:textSize="15sp"
+                                android:textColor="#ffffff"
+                                android:text="#3학년"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2학년, 3학년 수업 모두를 검색"
+                        android:textColor="#B3000000"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="다른 분야의 태그를 두 개 이상 입력하면 :"
+                        android:textColor="#B3000000"
+                        android:textSize="16sp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:background="@drawable/round_rect_green"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:gravity="center"
+                                android:textSize="15sp"
+                                android:textColor="#ffffff"
+                                android:text="#전필"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7.5dp"
+                            android:layout_marginRight="7.5dp"
+                            android:text="and"
+                            android:textColor="#B3000000"
+                            android:textSize="15sp"/>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:background="@drawable/round_rect_blue"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:gravity="center"
+                                android:textSize="15sp"
+                                android:textColor="#ffffff"
+                                android:text="#컴퓨터공학부"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="컴퓨터공학부 강좌 중 전필을 검색"
+                        android:textColor="#B3000000"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#80000000"
+            android:clickable="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/main_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:animateLayoutChanges="true"
-                android:background="#80000000">
+                android:animateLayoutChanges="true">
 
                 <LinearLayout
                     android:id="@+id/lecture_layout"
@@ -52,6 +331,31 @@
                         android:layout_weight="1"
                         android:scrollbars="vertical"
                         android:scrollbarThumbVertical="@drawable/recyclerview_dark_scrollbar" />
+
+                    <LinearLayout
+                        android:id="@+id/empty_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="58dp"
+                            android:layout_height="56dp"
+                            android:src="@drawable/img_search_big"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="26dp"
+                            android:layout_marginBottom="40dp"
+                            android:gravity="center"
+                            android:text="검색결과가 없습니다"
+                            android:textSize="18sp"
+                            android:textColor="#B3FFFFFF"/>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -78,5 +382,4 @@
         </LinearLayout>
     </FrameLayout>
 
-
-</RelativeLayout>
+</LinearLayout>
