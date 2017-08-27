@@ -286,7 +286,8 @@ public class Downloader extends Thread
 				outStream = new BufferedOutputStream(fileStream, DOWNLOAD_BUFFER_SIZE);
 				byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
 				int bytesRead = 0, totalRead = 0;
-				while(!isInterrupted() && (bytesRead = inStream.read(data, 0, data.length)) >= 0)
+				boolean isInterrupted = false;
+				while(!(isInterrupted = isInterrupted()) && (bytesRead = inStream.read(data, 0, data.length)) >= 0)
 				{
 					outStream.write(data, 0, bytesRead);
 
@@ -301,7 +302,7 @@ public class Downloader extends Thread
 				fileStream.close();
 				inStream.close();
 
-				if(isInterrupted())
+				if(isInterrupted || isInterrupted())
 				{
 					// the download was canceled, so let's delete the partially downloaded file
 					outFile.delete();
