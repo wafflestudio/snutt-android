@@ -370,7 +370,10 @@ public class TimetableView extends View {
 			duration = Float.parseFloat(str3[1]);
 
 			String[] locations = lecture.location.split("/");
-			String location = locations[i];
+			String location = "";
+			if (i < locations.length) {
+				location = locations[i];
+			}
 			drawClass(canvas, canvasWidth, canvasHeight, lecture.course_title, location, wday, startTime, duration, colorIndex);
 		}
 	}
