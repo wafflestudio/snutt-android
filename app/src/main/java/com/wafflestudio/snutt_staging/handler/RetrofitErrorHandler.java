@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt_staging.handler;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -8,10 +11,14 @@ import android.widget.Toast;
 
 import com.google.gson.annotations.SerializedName;
 import com.wafflestudio.snutt_staging.R;
+import com.wafflestudio.snutt_staging.manager.UserManager;
+import com.wafflestudio.snutt_staging.ui.IntroActivity;
 
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static com.wafflestudio.snutt_staging.SNUTTBaseActivity.activityList;
 
 /**
  * Created by makesource on 2017. 4. 28..
@@ -88,6 +95,9 @@ public class RetrofitErrorHandler implements ErrorHandler {
                                 break;
                             case WRONG_USER_TOKEN:
                                 Toast.makeText(context, context.getString(R.string.error_wrong_user_token), Toast.LENGTH_SHORT).show();
+                                UserManager.getInstance().performLogout();
+                                startIntro(context);
+                                finishAll();
                                 break;
                             case NO_ADMIN_PRIVILEGE:
                                 Toast.makeText(context, context.getString(R.string.error_no_admin_privilege), Toast.LENGTH_SHORT).show();
@@ -171,6 +181,18 @@ public class RetrofitErrorHandler implements ErrorHandler {
             }
         }
         return cause;
+    }
+
+    private void startIntro(Context context) {
+        Intent intent = new Intent(context, IntroActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    private void finishAll() {
+        for (Activity activity : activityList) {
+            activity.finish();
+        }
     }
 
 }
