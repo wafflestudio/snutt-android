@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -84,6 +85,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
+    private boolean isSearchViewExpanded = false;
     private boolean isSearching = false;
 
     /*
@@ -207,7 +209,9 @@ public class SearchFragment extends SNUTTBaseFragment
 
                 } else {
                     Log.d(TAG, "keyboard down");
-                    showMainContainer(false);
+                    if (isSearchViewExpanded) {
+                        showMainContainer(false);
+                    }
                     tagHelper.setVisibility(View.GONE);
                     getMainActivity().showTabLayout();
                 }
@@ -273,6 +277,9 @@ public class SearchFragment extends SNUTTBaseFragment
             @Override
             public void onClick(View v) {
                 searchMenuItem.expandActionView();
+                searchView.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         help.findViewById(R.id.help_text).setOnClickListener(new View.OnClickListener() {
@@ -296,6 +303,9 @@ public class SearchFragment extends SNUTTBaseFragment
             @Override
             public void onClick(View v) {
                 searchMenuItem.expandActionView();
+                searchView.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
     }
@@ -362,6 +372,7 @@ public class SearchFragment extends SNUTTBaseFragment
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 Log.d(TAG, "onMenuItemActionExpand");
+                isSearchViewExpanded = true;
                 return true;
             }
 
@@ -369,6 +380,7 @@ public class SearchFragment extends SNUTTBaseFragment
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 Log.d(TAG, "onMenuItemActionCollapse");
                 showPlaceholder();
+                isSearchViewExpanded = false;
                 return true;
             }
         });
