@@ -329,6 +329,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             value.setClickable(item.isEditable());
             value.setFocusable(item.isEditable());
             value.setFocusableInTouchMode(item.isEditable());
+            // set text watcher
             switch (item.getType()) {
                 case LectureNumber:
                 case CourseNumber:
@@ -351,6 +352,25 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     if (item.getType() == LectureItem.Type.Credit) { // 학점
                         value.setInputType(InputType.TYPE_CLASS_NUMBER);
                     }
+                    break;
+            }
+            // set input type & hint
+            switch(item.getType()) {
+                case Credit:
+                    value.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    value.setHint("0");
+                    break;
+                case Title:
+                    value.setInputType(InputType.TYPE_CLASS_TEXT);
+                    value.setHint(item.isEditable() ? "예) 기초 영어" : "(없음)");
+                    break;
+                case Instructor:
+                    value.setInputType(InputType.TYPE_CLASS_TEXT);
+                    value.setHint(item.isEditable() ? "예) 홍길동" : "(없음)");
+                    break;
+                default:
+                    value.setInputType(InputType.TYPE_CLASS_TEXT);
+                    value.setHint("(없음)");
                     break;
             }
         }
@@ -439,7 +459,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     textChangedListener.onText1Changed(s.toString(), getPosition());
                 }
             });
-            editText1.setHint(item.isEditable() ? "비고를 입력해주세요." : "(없음)");
+            editText1.setHint(item.isEditable() ? "비고를 입력해주세요" : "(없음)");
             editText1.setClickable(item.isEditable());
             editText1.setFocusable(item.isEditable());
             editText1.setFocusableInTouchMode(item.isEditable());
