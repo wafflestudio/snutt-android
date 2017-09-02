@@ -3,6 +3,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/day_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
         android:layout_height="72dp"
         android:weightSum="20"
         android:orientation="horizontal"
-        android:background="?attr/selectableItemBackground">
+        android:background="@color/white">
 
         <View
             android:layout_width="0dp"
@@ -60,7 +61,8 @@
             custom:connectingLineWeight="1dp"
             custom:pinColor="@color/colorAccent"
             custom:selectorColor="@color/colorAccent"
-            custom:connectingLineColor="@color/colorAccent"/>
+            custom:connectingLineColor="@color/colorAccent"
+            custom:temporaryPins="false"/>
 
         <View
             android:layout_width="0dp"

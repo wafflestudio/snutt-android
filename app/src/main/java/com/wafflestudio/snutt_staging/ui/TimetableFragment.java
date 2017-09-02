@@ -1,11 +1,13 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.appyvet.rangebar.IRangeBarFormatter;
@@ -23,6 +25,8 @@ public class TimetableFragment extends SNUTTBaseFragment {
     private static final String TAG = "TIMETABLE_FRAGMENT";
 
     private Switch mSwitch;
+    private LinearLayout dayLayout;
+    private LinearLayout classLayout;
     private RangeBar dayRangeBar;
     private RangeBar classRangeBar;
 
@@ -31,10 +35,13 @@ public class TimetableFragment extends SNUTTBaseFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
         mSwitch = (Switch) rootView.findViewById(R.id.switch1);
+        dayLayout = (LinearLayout) rootView.findViewById(R.id.day_layout);
+        classLayout = (LinearLayout) rootView.findViewById(R.id.class_layout);
         dayRangeBar = (RangeBar) rootView.findViewById(R.id.day_range_bar);
         classRangeBar = (RangeBar) rootView.findViewById(R.id.class_range_bar);
 
         mSwitch.setChecked(PrefManager.getInstance().getAutoTrim());
+        initRangeBar();
         updateRangeBarStatus(PrefManager.getInstance().getAutoTrim());
 
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -49,9 +56,7 @@ public class TimetableFragment extends SNUTTBaseFragment {
         return rootView;
     }
 
-    private void updateRangeBarStatus(boolean b) {
-        Log.d(TAG, "update range bar status called");
-        dayRangeBar.setEnabled(!b);
+    private void initRangeBar() {
         dayRangeBar.setRangePinsByIndices(PrefManager.getInstance().getTrimWidthStart(),
                 PrefManager.getInstance().getTrimWidthStart() + PrefManager.getInstance().getTrimWidthNum() - 1);
         dayRangeBar.setFormatter(new IRangeBarFormatter() {
@@ -70,7 +75,6 @@ public class TimetableFragment extends SNUTTBaseFragment {
                 PrefManager.getInstance().setTrimWidthNum(num);
             }
         });
-        classRangeBar.setEnabled(!b);
         classRangeBar.setRangePinsByIndices(PrefManager.getInstance().getTrimHeightStart(),
                 PrefManager.getInstance().getTrimHeightStart() + PrefManager.getInstance().getTrimHeightNum() - 1);
         classRangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
@@ -82,6 +86,12 @@ public class TimetableFragment extends SNUTTBaseFragment {
                 PrefManager.getInstance().setTrimHeightNum(num);
             }
         });
+
+    }
+
+    private void updateRangeBarStatus(boolean b) {
+        dayLayout.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
+        classLayout.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
     }
 
 }

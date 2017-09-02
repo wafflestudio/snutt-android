@@ -10,7 +10,6 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:background="?selectableItemBackground">
-
         <Switch
             android:text="자동 맞춤"
             android:layout_width="match_parent"
