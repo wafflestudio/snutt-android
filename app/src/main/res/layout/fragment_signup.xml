@@ -3,7 +3,9 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -174,10 +176,12 @@
             android:gravity="center">
 
             <TextView
+                android:id="@+id/terms_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="회원가입을 누르시면 일반 이용 약관에 동의하시게 됩니다."
-                android:textSize="11sp"/>
+                android:text="@string/sign_up_terms"
+                android:textSize="11sp"
+                android:background="?selectableItemBackground"/>
 
         </LinearLayout>
 

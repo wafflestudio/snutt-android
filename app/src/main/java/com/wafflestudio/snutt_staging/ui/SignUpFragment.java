@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt_staging.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -36,6 +38,7 @@ public class SignUpFragment extends SNUTTBaseFragment {
     private EditText passwordEditText;
     private EditText passwordConfirmEditText;
     private EditText emailEditText;
+    private TextView termsTextView;
     private Button signupButton;
     private LinearLayout facebookButton;
     private CallbackManager callbackManager;
@@ -55,6 +58,7 @@ public class SignUpFragment extends SNUTTBaseFragment {
         emailEditText = (EditText) rootView.findViewById(R.id.input_email);
         signupButton = (Button) rootView.findViewById(R.id.button_sign_up);
         facebookButton = (LinearLayout) rootView.findViewById(R.id.button_facebook);
+        termsTextView = (TextView) rootView.findViewById(R.id.terms_textview);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +90,15 @@ public class SignUpFragment extends SNUTTBaseFragment {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logInWithReadPermissions(SignUpFragment.this, null);
+            }
+        });
+
+        termsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = getString(R.string.api_server) + getString(R.string.terms);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
             }
         });
 

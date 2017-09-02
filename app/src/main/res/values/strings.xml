@@ -30,6 +30,9 @@
     <string name="save_complete">이미지 저장이 완료되었습니다</string>
     <string name="share_image">이미지 내보내기</string>
 
+    <!-- For sign up fragment -->
+    <string name="sign_up_terms">회원가입을 누르시면 <u><b>일반 이용 약관</b></u>에 동의하시게 됩니다.</string>
+
     <!--error-message-->
     <string name="error_server_fault">서버에 문제가 있으니, 잠시후 다시 시도해주세요</string>
     <string name="error_no_network">네트워크가 불안정합니다</string>
