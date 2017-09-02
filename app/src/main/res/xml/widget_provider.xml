@@ -4,4 +4,5 @@
     android:minHeight="250dp"
     android:minWidth="180dp"
     android:updatePeriodMillis="0"
-    android:resizeMode="horizontal|vertical" />
+    android:resizeMode="horizontal|vertical"
+    android:previewImage="@mipmap/ic_launcher"/>
