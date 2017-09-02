@@ -66,7 +66,6 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public View tagLayout;
         public TextView tagTitle;
-        public Button remove;
 
         private ClickListener clickListener;
 
@@ -74,8 +73,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHold
             super(view);
             this.tagLayout = view;
             this.tagTitle = (TextView) view.findViewById(R.id.tag_title);
-            this.remove = (Button) view.findViewById(R.id.remove);
-            this.remove.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
 
         public interface ClickListener {

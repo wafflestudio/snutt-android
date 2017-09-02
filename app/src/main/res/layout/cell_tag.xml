@@ -19,15 +19,16 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:gravity="center"
-            android:textSize="15sp"
+            android:text="컴공"
             android:textColor="#ffffff"
-            android:text="컴공"/>
+            android:textSize="15sp" />
 
-        <Button
+        <ImageView
             android:id="@+id/remove"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@android:drawable/ic_menu_close_clear_cancel"/>
+            android:padding="2.5dp"
+            android:src="@drawable/ic_close_white" />
 
     </LinearLayout>
 </LinearLayout>
