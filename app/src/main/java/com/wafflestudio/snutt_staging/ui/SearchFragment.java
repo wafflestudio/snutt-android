@@ -83,6 +83,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
     private ImageView clearButton;
+    private boolean isSearching = false;
 
     /*
      * This variables for tagHelper
@@ -203,6 +204,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
                 } else {
                     Log.d(TAG, "keyboard down");
+                    showMainContainer(false);
                     tagHelper.setVisibility(View.GONE);
                     getMainActivity().showTabLayout();
                 }
@@ -291,7 +293,7 @@ public class SearchFragment extends SNUTTBaseFragment
         placeholder.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
 
-        if (isDefaultMode() && !isKeyboardUp && LectureManager.getInstance().getSearchedLectures().size() == 0) {
+        if (isDefaultMode() && !isKeyboardUp && !isSearching && LectureManager.getInstance().getSearchedLectures().size() == 0) {
             lectureRecyclerView.setVisibility(View.GONE);
             emptyPlaceholder.setVisibility(View.VISIBLE);
         } else {
@@ -315,8 +317,8 @@ public class SearchFragment extends SNUTTBaseFragment
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String text = searchView.getQuery().toString();
                     if (isDefaultMode() && TextUtils.isEmpty(text)) {
-                        searchView.clearFocus();
                         postQuery(text);
+                        searchView.clearFocus();
                     } else {
                         searchView.setQuery(text, true);
                     }
@@ -435,8 +437,8 @@ public class SearchFragment extends SNUTTBaseFragment
         public boolean onQueryTextSubmit(String query) {
             Log.d(TAG, "onQueryTextSubmit called!");
             if (isDefaultMode()) {
-                searchView.clearFocus();
                 postQuery(query);
+                searchView.clearFocus();
                 return false;
             } else {
                 if (TagManager.getInstance().addTag(query)) {
@@ -464,14 +466,17 @@ public class SearchFragment extends SNUTTBaseFragment
     };
 
     private void postQuery(String text) {
+        isSearching = true;
         LectureManager.getInstance().postSearchQuery(text, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectures, Response response) {
                 lectureAdapter.notifyDataSetChanged();
+                isSearching = false;
                 showMainContainer(false);
             }
             @Override
             public void failure(RetrofitError error) {
+                isSearching = false;
                 showMainContainer(false);
             }
         });
