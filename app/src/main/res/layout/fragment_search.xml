@@ -103,14 +103,13 @@
                     android:layout_height="0dp"
                     android:layout_weight="1">
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/button_close"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginRight="18dp"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:paddingTop="18dp"
+                        android:paddingRight="18dp"
                         android:src="@drawable/btntipclose"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"/>
                 </RelativeLayout>
@@ -233,7 +232,7 @@
 
                         <LinearLayout
                             android:orientation="horizontal"
-                            android:background="@drawable/round_rect_green"
+                            android:background="@drawable/round_rect_orange"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:layout_width="wrap_content"

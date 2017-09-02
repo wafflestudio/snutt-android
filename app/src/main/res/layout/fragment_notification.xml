@@ -50,7 +50,8 @@
             android:id="@+id/notification_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
