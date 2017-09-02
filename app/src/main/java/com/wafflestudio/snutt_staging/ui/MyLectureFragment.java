@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
@@ -44,6 +45,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     private static final String DIALOG_SYLLABUS = "강의계획서";
     private static final String DIALOG_DELETE = "삭제";
 
+    private LinearLayout placeholder;
     private RecyclerView recyclerView;
     private MyLectureListAdapter mAdapter;
     private List<Lecture> lectures;
@@ -69,6 +71,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         View rootView = inflater.inflate(R.layout.fragment_my_lecture, container, false);
         setHasOptionsMenu(true);
 
+        placeholder = (LinearLayout) rootView.findViewById(R.id.placeholder);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_lecture_recyclerView);
         lectures = LectureManager.getInstance().getLectures();
         mAdapter = new MyLectureListAdapter(lectures);
@@ -105,6 +108,8 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.lecture_divider));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
+
+        placeholder.setVisibility(lectures.size() == 0 ? View.VISIBLE : View.GONE);
         return rootView;
     }
 
@@ -112,6 +117,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
     public void notifyLecturesChanged() {
         Log.d (TAG, "notify lecture changed called");
         mAdapter.notifyDataSetChanged();
+        placeholder.setVisibility(lectures.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -157,6 +163,7 @@ public class MyLectureFragment extends SNUTTBaseFragment implements LectureManag
             // 강의 색상 변경시 fragment 이동 발생!
             mAdapter.notifyDataSetChanged();
         }
+        placeholder.setVisibility(lectures.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void startSyllabus(String courseNumber, String lectureNumber) {

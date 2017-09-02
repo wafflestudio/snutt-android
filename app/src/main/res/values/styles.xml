@@ -215,23 +215,15 @@
 
     <!-- For Notification Placeholder -->
 
-    <style name="Text.NotificationPlaceholderTitle">
+    <style name="Text.PlaceholderTitle">
         <item name="android:textColor">#aaaaaa</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.NotificationPlaceholderDetail">
+    <style name="Text.PlaceholderDetail">
         <item name="android:textColor">#aaaaaa</item>
         <item name="android:textSize">14sp</item>
-    </style>
-
-    <!-- For Timetable Placeholder -->
-
-    <style name="Text.TimetablePlaceholderTitle">
-        <item name="android:textColor">#aaaaaa</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!--For TagHelper-->
