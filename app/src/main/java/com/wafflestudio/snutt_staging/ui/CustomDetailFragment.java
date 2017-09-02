@@ -204,7 +204,6 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         adapter.notifyItemInserted(pos + 1);
         lists.add(pos + 2, new LectureItem(LectureItem.Type.RemoveLecture, false));
         adapter.notifyItemInserted(pos + 2);
-
     }
 
     private void setEditMode() {

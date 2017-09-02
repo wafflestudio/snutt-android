@@ -1,9 +1,11 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -186,15 +188,41 @@ public class LectureMainActivity extends SNUTTBaseActivity
         Log.d(TAG, "on back pressed called");
         int index = getCurrentFragmentIndex();
         if (index == FRAGMENT_LECTURE_DETAIL) {
-            LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
+            final LectureDetailFragment fragment = (LectureDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
             if (fragment.getEditable()) {
-                fragment.refreshFragment();
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fragment.refreshFragment();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setTitle("편집을 취소하시겠습니까?");
+                alert.show();
                 return;
             }
         } else if (index == FRAGMENT_CUSTOM_DETAIL) {
-            CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
+            final CustomDetailFragment fragment = (CustomDetailFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[index]);
             if (fragment.getEditable()) {
-                fragment.refreshFragment();
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fragment.refreshFragment();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setTitle("편집을 취소하시겠습니까?");
+                alert.show();
                 return;
             }
         }

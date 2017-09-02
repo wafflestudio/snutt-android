@@ -79,6 +79,7 @@ public class SearchFragment extends SNUTTBaseFragment
     }
     private static TagMode tagMode = TagMode.DEFAULT_MODE;
 
+    private MenuItem searchMenuItem;
     private SearchView searchView;
     private String last_query = "";
     private SearchView.SearchAutoComplete editText;
@@ -187,6 +188,8 @@ public class SearchFragment extends SNUTTBaseFragment
         popup = (LinearLayout) rootView.findViewById(R.id.popup);
         help = (LinearLayout) rootView.findViewById(R.id.help);
         setPlaceholder();
+        setMainContainer();
+
         showPlaceholder();
 
         return rootView;
@@ -266,6 +269,12 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     private void setPlaceholder() {
+        help.findViewById(R.id.search_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchMenuItem.expandActionView();
+            }
+        });
         help.findViewById(R.id.help_text).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,6 +287,15 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onClick(View v) {
                 popup.setVisibility(View.GONE);
                 help.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void setMainContainer() {
+        emptyPlaceholder.findViewById(R.id.search_icon_empty).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchMenuItem.expandActionView();
             }
         });
     }
@@ -305,7 +323,7 @@ public class SearchFragment extends SNUTTBaseFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        searchMenuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchMenuItem.getActionView();
         clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         clearButton.setImageResource(R.drawable.ic_close);
