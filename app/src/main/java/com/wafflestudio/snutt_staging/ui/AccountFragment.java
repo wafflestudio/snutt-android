@@ -451,8 +451,8 @@ public class AccountFragment extends SNUTTBaseFragment {
     private void addSettingsList(User user) {
         lists.clear();
         if (Strings.isNullOrEmpty(user.getLocal_id())) {
-            //lists.add(new SettingsItem(SettingsItem.Type.Header));
-            lists.add(new SettingsItem("아이디 비번 추가", user.getLocal_id(), SettingsItem.Type.AddIdPassword));
+            lists.add(new SettingsItem(SettingsItem.Type.Header));
+            lists.add(new SettingsItem("아이디 비밀번호 추가", user.getLocal_id(), SettingsItem.Type.AddIdPassword));
             lists.add(new SettingsItem(SettingsItem.Type.Header));
             if (Strings.isNullOrEmpty(user.getFb_name())) { // 연동 x
                 lists.add(new SettingsItem("페이스북 연동", user.getFb_name(), SettingsItem.Type.LinkFacebook));
@@ -467,7 +467,7 @@ public class AccountFragment extends SNUTTBaseFragment {
             lists.add(new SettingsItem("회원탈퇴", SettingsItem.Type.Leave));
             //lists.add(new SettingsItem(SettingsItem.Type.Header));
         } else {
-            //lists.add(new SettingsItem(SettingsItem.Type.Header));
+            lists.add(new SettingsItem(SettingsItem.Type.Header));
             lists.add(new SettingsItem("아이디", user.getLocal_id(), SettingsItem.Type.Id));
             lists.add(new SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword));
             lists.add(new SettingsItem(SettingsItem.Type.Header));

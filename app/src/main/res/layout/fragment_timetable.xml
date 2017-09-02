@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray">
+
+    <include
+        layout="@layout/cell_setting_header"/>
 
     <include
         layout="@layout/cell_switch"/>
 
     <include
-        layout="@layout/cell_header"/>
+        layout="@layout/cell_setting_header"/>
 
     <include
         layout="@layout/cell_day_range_bar"/>
 
     <include
-        layout="@layout/cell_header"/>
+        layout="@layout/cell_setting_header"/>
 
     <include
         layout="@layout/cell_class_range_bar"/>
 
     <include
-        layout="@layout/cell_header"/>
+        layout="@layout/cell_setting_header"/>
 
 
 </LinearLayout>

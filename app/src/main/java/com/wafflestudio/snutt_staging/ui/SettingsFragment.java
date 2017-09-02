@@ -67,7 +67,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lists = new ArrayList<>();
-        //lists.add(new SettingsItem(SettingsItem.Type.Header));
+        lists.add(new SettingsItem(SettingsItem.Type.Header));
         lists.add(new SettingsItem("계정관리", SettingsItem.Type.Account));
         lists.add(new SettingsItem("시간표 설정",  SettingsItem.Type.Timetable));
         lists.add(new SettingsItem(SettingsItem.Type.Header));

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +30,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == SettingsItem.ViewType.Header.getValue()) {
-            View view = inflater.inflate(R.layout.cell_header, parent, false);
+            View view = inflater.inflate(R.layout.cell_setting_header, parent, false);
             return new HeaderViewHolder(view);
         } else {
             View view = inflater.inflate(R.layout.cell_settings, parent, false);
@@ -74,18 +75,34 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private View view;
         private TextView title;
         private TextView detail;
+        private ImageView arrow;
 
         private TitleViewHolder(View view) {
             super(view);
             this.view = view;
             this.title = (TextView) view.findViewById(R.id.settings_text);
             this.detail = (TextView) view.findViewById(R.id.settings_detail);
+            this.arrow = (ImageView) view.findViewById(R.id.settings_arrow);
             this.view.setOnClickListener(this);
         }
 
         private void bindData(SettingsItem item) {
             title.setText(item.getTitle());
             detail.setText(item.getDetail());
+
+            switch (item.getType()) {
+                case AddIdPassword:
+                case ChangePassword:
+                case LinkFacebook:
+                case DeleteFacebook:
+                case ChangeEmail:
+                case Leave:
+                    arrow.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    arrow.setVisibility(View.GONE);
+                    break;
+            }
         }
 
         @Override
