@@ -90,7 +90,6 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
                         layout.setRefreshing(false);
                         adapter.notifyDataSetChanged();
                         NotiManager.getInstance().setFetched(true);
-                        getMainActivity().onNotificationChecked();
                         placeholder.setVisibility(NotiManager.getInstance().hasNotifications() ? View.GONE : View.VISIBLE);
                     }
                     @Override
@@ -110,6 +109,7 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume called");
     }
 
 

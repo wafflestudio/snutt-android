@@ -280,7 +280,7 @@ public class MainActivity extends SNUTTBaseActivity {
         return false;
     }
 
-    private void setTabLayoutView(TabLayout tabLayout) {
+    private void setTabLayoutView(final TabLayout tabLayout) {
         for (int i=0;i<tabLayout.getTabCount();i++) {
             FrameLayout layout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             TextView textView = (TextView) layout.findViewById(R.id.tab_title);
@@ -294,6 +294,17 @@ public class MainActivity extends SNUTTBaseActivity {
         }
         // for initial state
         tabLayout.getTabAt(0).getCustomView().setSelected(true);
+        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d(TAG, "on tab selected!");
+                int index = tab.getPosition();
+                if (getPageTitle(index).equals("알림")) {
+                    onNotificationChecked();
+                }
+                super.onTabSelected(tab);
+            }
+        });
     }
 
     private void showEditDialog(final String id) {
