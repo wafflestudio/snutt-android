@@ -26,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="(없음)"
+        android:linksClickable="true"
+        android:autoLink="web"
         android:background="@android:color/transparent"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
