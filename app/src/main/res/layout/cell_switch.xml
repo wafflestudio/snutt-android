@@ -7,14 +7,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:background="?selectableItemBackground">
-        <Switch
+        <android.support.v7.widget.SwitchCompat
             android:text="자동 맞춤"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center_vertical"
             android:id="@+id/switch1"
             style="@style/Text.SettingsTitle"/>
     </LinearLayout>

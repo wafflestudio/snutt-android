@@ -92,6 +92,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         switch(item.getItemId()) {
             case R.id.action_edit :
                 if (add) {
+                    item.setEnabled(false);
                     adapter.createLecture(new Callback<Table>() {
                         @Override
                         public void success(Table table, Response response) {
@@ -99,8 +100,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                         }
                         @Override
                         public void failure(RetrofitError error) {
-                            getLectureMainActivity().finish();
-                            Toast.makeText(getApp(), "강의 추가를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            item.setEnabled(true);
                         }
                     });
                 } else if (editable) {
@@ -114,8 +114,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
                         }
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getApp(), "강의 업데이트에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                            refreshFragment();
+                            item.setEnabled(true);
                         }
                     });
                 } else {

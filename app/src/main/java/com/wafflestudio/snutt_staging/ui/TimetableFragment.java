@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import com.wafflestudio.snutt_staging.manager.PrefManager;
 public class TimetableFragment extends SNUTTBaseFragment {
     private static final String TAG = "TIMETABLE_FRAGMENT";
 
-    private Switch mSwitch;
+    private SwitchCompat mSwitch;
     private LinearLayout dayLayout;
     private LinearLayout classLayout;
     private RangeBar dayRangeBar;
@@ -34,7 +35,7 @@ public class TimetableFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
-        mSwitch = (Switch) rootView.findViewById(R.id.switch1);
+        mSwitch = (SwitchCompat) rootView.findViewById(R.id.switch1);
         dayLayout = (LinearLayout) rootView.findViewById(R.id.day_layout);
         classLayout = (LinearLayout) rootView.findViewById(R.id.class_layout);
         dayRangeBar = (RangeBar) rootView.findViewById(R.id.day_range_bar);
