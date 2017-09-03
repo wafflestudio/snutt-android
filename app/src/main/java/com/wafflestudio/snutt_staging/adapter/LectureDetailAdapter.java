@@ -74,6 +74,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.setOnTextChangedListener(new TextChangedListener() {
             @Override
             public void onText1Changed(String text, int position) {
+                Log.d(TAG, "position : " + position + ", text : " + text);
                 getItem(position).setValue1(text);
             }
 
@@ -329,6 +330,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             value.setClickable(item.isEditable());
             value.setFocusable(item.isEditable());
             value.setFocusableInTouchMode(item.isEditable());
+            value.setTextColor(Color.BLACK);
             // set text watcher
             switch (item.getType()) {
                 case LectureNumber:
