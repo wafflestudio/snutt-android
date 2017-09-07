@@ -6,6 +6,10 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#000000</color>
+    <color name="colorControlNormal">#1A000000</color>
+    <color name="colorControlActivated">#80000000</color>
+
+    <color name="colorTextCursor">#b2b2b2</color>
 
     <color name="gray">#f2f2f2</color>
     <color name="white">#ffffff</color>

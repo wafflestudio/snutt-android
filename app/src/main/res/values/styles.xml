@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
 
         <!-- RemoveLecture shadow below action bar Android < 5.0 -->
         <item name="android:windowContentOverlay">@null</item>
@@ -19,9 +20,11 @@
         <!--
                 <item name="colorControlHighlight">#40ffffff</item> // this is for click event
         -->
-        <item name="colorControlNormal">#1A000000</item>
-        <item name="android:textColorHint">#34000000</item>
 
+        <!--For EditText-->
+        <item name="editTextStyle">@style/EditTextStyle</item>
+
+        <!--For Background color-->
         <item name="android:windowBackground">@color/white</item>
 
         <!--For SearchView home indicator -->
@@ -46,6 +49,13 @@
     <style name="Text.ActionBarItemMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item" >
         <item name="android:textSize">14sp</item>
         <!--<item name="android:textStyle">bold</item>-->
+    </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">#34000000</item>
+        <item name="android:textCursorDrawable">@drawable/text_cursor</item>
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:paddingBottom">13dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
