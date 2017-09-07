@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -73,14 +74,17 @@ public class SignUpFragment extends SNUTTBaseFragment {
                     return;
                 }
 
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "회원가입", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().postSingUp(id, password, email, new Callback<Map<String, String>>() {
                     @Override
                     public void success(Map<String, String> response, Response response2) {
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
+                        progressDialog.dismiss();
                     }
                     @Override
                     public void failure(RetrofitError error) {
+                        progressDialog.dismiss();
                     }
                 });
             }
@@ -109,15 +113,18 @@ public class SignUpFragment extends SNUTTBaseFragment {
                 // App code
                 String id = loginResult.getAccessToken().getUserId();
                 String token = loginResult.getAccessToken().getToken();
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그인", "잠시만 기다려 주세요", true, false);
+
                 UserManager.getInstance().postLoginFacebook(id, token, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
+                        progressDialog.dismiss();
                     }
                     @Override
                     public void failure(RetrofitError error) {
-
+                        progressDialog.dismiss();
                     }
                 });
             }

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt_staging.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,15 +56,18 @@ public class SignInFragment extends SNUTTBaseFragment {
             public void onClick(View v) {
                 String id = idEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그인", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().postSignIn(id, password, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
+                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
+                        progressDialog.dismiss();
                     }
                 });
             }
@@ -83,15 +87,17 @@ public class SignInFragment extends SNUTTBaseFragment {
                 // App code
                 String id = loginResult.getAccessToken().getUserId();
                 String token = loginResult.getAccessToken().getToken();
+                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그인", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().postLoginFacebook(id, token, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
+                        progressDialog.dismiss();
                     }
                     @Override
                     public void failure(RetrofitError error) {
-
+                        progressDialog.dismiss();
                     }
                 });
             }
