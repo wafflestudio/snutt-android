@@ -13,6 +13,9 @@ import com.wafflestudio.snutt_staging.model.TagType;
 
 import java.util.regex.Pattern;
 
+import de.psdev.licensesdialog.licenses.MITLicense;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.SNUTTBaseFragment;
 import com.wafflestudio.snutt_staging.manager.UserManager;
@@ -22,6 +23,8 @@ import com.wafflestudio.snutt_staging.adapter.SettingsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.License;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -103,7 +106,7 @@ public class SettingsFragment extends SNUTTBaseFragment {
                         getMainActivity().startSettingsMain(FRAGMENT_REPORT);
                         break;
                     case License: // license
-                        getMainActivity().startSettingsMain(FRAGMENT_LICENSE);
+                        showLicenseDialog();
                         break;
                     case Terms: // terms
                         getMainActivity().startSettingsMain(FRAGMENT_TERMS);
@@ -195,5 +198,13 @@ public class SettingsFragment extends SNUTTBaseFragment {
         });
         AlertDialog dialog = alert.create();
         dialog.show();
+    }
+
+    private void showLicenseDialog() {
+        new LicensesDialog.Builder(getContext())
+                .setNotices(R.raw.notices)
+                .setIncludeOwnLicense(true)
+                .build()
+                .show();
     }
 }
