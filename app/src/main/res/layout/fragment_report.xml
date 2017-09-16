@@ -3,42 +3,44 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingTop="18dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일 (옵션)"
+        android:paddingLeft="4dp"
+        style="@style/Text.ReportTextView" />
+
+    <EditText
+        android:id="@+id/email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:hint="example@gmail.com"
+        android:inputType="textEmailAddress"
+        style="@style/Text.ReportEditText"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="15dp" />
 
-    <android.support.design.widget.TextInputLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내용"
+        android:paddingLeft="4dp"
+        style="@style/Text.ReportTextView" />
+
+    <EditText
+        android:id="@+id/detail_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="이메일 (옵션)"
-        style="@style/Text.LectureDetailTitle2">
+        android:paddingBottom="15dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:hint="불편한 점이나 버그를 적어주세요." />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:id="@+id/email_editText" />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="내용"
-        style="@style/Text.LectureDetailTitle2">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:text="불편한 점이나 버그를 적어주세요."
-            android:id="@+id/detail_editText" />
-    </android.support.design.widget.TextInputLayout>
 </LinearLayout>
