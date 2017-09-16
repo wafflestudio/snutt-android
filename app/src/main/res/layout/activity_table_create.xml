@@ -69,6 +69,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="13"
+                android:paddingBottom="15dp"
                 android:singleLine="true"
                 style="@style/Text.TableCreateDetail"/>
 

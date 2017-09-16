@@ -315,9 +315,4 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
         }
         return lists.size() - 1;
     }
-
-    protected void hideSoftKeyboard(View view) {
-        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 }

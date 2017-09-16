@@ -8,6 +8,8 @@
     android:minHeight="40dp"
     android:focusable="true"
     android:clickable="true"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:background="@color/white">
 
     <TextView
@@ -15,7 +17,6 @@
         style="@style/Text.LectureDetailTitle1"
         android:layout_width="76dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="20dp"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:text="비고" />
@@ -31,7 +32,6 @@
         android:background="@android:color/transparent"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:layout_marginRight="20dp"
         style="@style/Text.LectureDetailContent1"/>
 
 </LinearLayout>

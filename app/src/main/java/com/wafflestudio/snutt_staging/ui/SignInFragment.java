@@ -56,6 +56,7 @@ public class SignInFragment extends SNUTTBaseFragment {
             public void onClick(View v) {
                 String id = idEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
+                hideSoftKeyboard(getView());
                 final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그인", "잠시만 기다려 주세요", true, false);
                 UserManager.getInstance().postSignIn(id, password, new Callback() {
                     @Override

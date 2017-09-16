@@ -1,8 +1,11 @@
 package com.wafflestudio.snutt_staging;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.wafflestudio.snutt_staging.ui.IntroActivity;
 import com.wafflestudio.snutt_staging.ui.LectureMainActivity;
@@ -82,5 +85,10 @@ public class SNUTTBaseActivity extends AppCompatActivity {
 
     public SNUTTApplication getApp() {
         return (SNUTTApplication) getApplication();
+    }
+
+    public void hideSoftKeyboard(View view) {
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

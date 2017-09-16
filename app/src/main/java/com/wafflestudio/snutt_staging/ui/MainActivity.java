@@ -310,8 +310,6 @@ public class MainActivity extends SNUTTBaseActivity {
     private void showEditDialog(final String id) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.dialog_change_title, null);
-        EditText titleText = (EditText) layout.findViewById(R.id.title);
-        titleText.setHint(getSupportActionBar().getTitle());
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("시간표 이름 변경");
         alert.setView(layout);
@@ -336,13 +334,13 @@ public class MainActivity extends SNUTTBaseActivity {
                         @Override
                         public void success(List<Table> tables, Response response) {
                             getSupportActionBar().setTitle(title);
+                            dialog.dismiss();
                         }
                         @Override
                         public void failure(RetrofitError error) {
-
+                            //show error message
                         }
                     });
-                    dialog.dismiss();
                 } else {
                     Toast.makeText(getApp(), "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }

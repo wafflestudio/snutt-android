@@ -68,6 +68,7 @@ public class SignUpFragment extends SNUTTBaseFragment {
                 final String password = passwordEditText.getText().toString();
                 final String passwordConfirm = passwordConfirmEditText.getText().toString();
                 final String email = emailEditText.getText().toString();
+                hideSoftKeyboard(getView());
 
                 if (!password.equals(passwordConfirm)) {
                     Toast.makeText(getApp(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();

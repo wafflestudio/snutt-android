@@ -120,6 +120,7 @@ public class UserManager {
 
             @Override
             public void failure(RetrofitError error) {
+                if (callback != null) callback.failure(error);
             }
         });
     }

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -464,10 +465,11 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
             editText1.setHint(item.isEditable() ? "비고를 입력해주세요" : "(없음)");
-            editText1.setMovementMethod(LinkMovementMethod.getInstance());
+            editText1.setMovementMethod(null);
             editText1.setClickable(item.isEditable());
             editText1.setFocusable(item.isEditable());
             editText1.setFocusableInTouchMode(item.isEditable());
+            editText1.setMovementMethod(item.isEditable() ? ArrowKeyMovementMethod.getInstance() : LinkMovementMethod.getInstance());
         }
     }
 

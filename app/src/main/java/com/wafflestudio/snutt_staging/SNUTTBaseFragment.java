@@ -2,8 +2,11 @@ package com.wafflestudio.snutt_staging;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.common.base.Preconditions;
 import com.wafflestudio.snutt_staging.ui.MainActivity;
@@ -31,5 +34,10 @@ public class SNUTTBaseFragment extends Fragment {
         Activity activity = getActivity();
         Preconditions.checkState(activity instanceof SNUTTBaseActivity);
         return (SNUTTBaseActivity) activity;
+    }
+
+    protected void hideSoftKeyboard(View view) {
+        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -136,7 +136,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
 
     public void refreshFragment() {
         editable = false;
-        hideSoftKeyboard(getView());
+
         ActivityCompat.invalidateOptionsMenu(getActivity());
 
         lists.clear();
@@ -282,9 +282,5 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
         return lists.size() - 1;
     }
 
-    protected void hideSoftKeyboard(View view) {
-        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 
 }
