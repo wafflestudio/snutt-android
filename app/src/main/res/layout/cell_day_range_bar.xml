@@ -62,6 +62,7 @@
             custom:pinColor="@color/colorAccent"
             custom:selectorColor="@color/colorAccent"
             custom:connectingLineColor="@color/colorAccent"
+            custom:tickHeight="1dp"
             custom:temporaryPins="false"/>
 
         <View
