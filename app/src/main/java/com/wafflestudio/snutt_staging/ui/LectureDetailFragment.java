@@ -154,7 +154,9 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
 
     public void refreshFragment() {
         editable = false;
+        hideSoftKeyboard(getView());
         ActivityCompat.invalidateOptionsMenu(getActivity());
+
 
         lists.clear();
         attachLectureDetailList(LectureManager.getInstance().getCurrentLecture());

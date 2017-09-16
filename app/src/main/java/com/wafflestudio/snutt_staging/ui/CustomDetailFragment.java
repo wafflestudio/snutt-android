@@ -136,6 +136,7 @@ public class CustomDetailFragment extends SNUTTBaseFragment {
 
     public void refreshFragment() {
         editable = false;
+        hideSoftKeyboard(getView());
         ActivityCompat.invalidateOptionsMenu(getActivity());
 
         lists.clear();
