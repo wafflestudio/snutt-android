@@ -61,7 +61,6 @@
             custom:connectingLineWeight="1dp"
             custom:pinColor="@color/colorAccent"
             custom:selectorColor="@color/colorAccent"
-            custom:tickHeight="1dp"
             custom:temporaryPins="false"
             custom:connectingLineColor="@color/colorAccent"/>
 

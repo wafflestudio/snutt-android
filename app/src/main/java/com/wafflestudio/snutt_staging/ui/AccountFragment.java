@@ -198,14 +198,12 @@ public class AccountFragment extends SNUTTBaseFragment {
                     UserManager.getInstance().putUserInfo(email, new Callback() {
                         @Override
                         public void success(Object o, Response response) {
-                            Toast.makeText(getApp(), "이메일 변경에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                             getEmailItem().setDetail(email);
                             adapter.notifyDataSetChanged();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getApp(), "이메일 변경에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                     dialog2.dismiss();
