@@ -204,7 +204,7 @@ public class TableView extends View {
             }
         }
 
-        if (PrefManager.getInstance().getAutoTrim() || selected) {
+        if (PrefManager.getInstance().getAutoTrim() || !export) {
             // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
             startWidth = 0;
             numWidth = Math.max(5, endWday + 1);
