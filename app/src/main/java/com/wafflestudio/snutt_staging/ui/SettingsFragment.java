@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.ui;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -123,6 +124,8 @@ public class SettingsFragment extends SNUTTBaseFragment {
             }
         };
 
+        /*
+        // 서버에서 version name 가져옴
         UserManager.getInstance().getAppVersion(new Callback<Version>() {
             @Override
             public void success(Version version, Response response) {
@@ -133,7 +136,14 @@ public class SettingsFragment extends SNUTTBaseFragment {
 
             }
         });
-
+        */
+        try {
+            String packageName = getApp().getPackageName();
+            String appVersion = getApp().getPackageManager().getPackageInfo(packageName, 0).versionName;
+            updateVersion(appVersion);
+        } catch (PackageManager.NameNotFoundException e) {
+            updateVersion("2.0.0");
+        }
     }
 
     @Override
