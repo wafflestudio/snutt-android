@@ -246,7 +246,8 @@
 
     <!--For report Fragment-->
     <style name="Text.ReportTextView">
-        <item name="android:textColor">#66000000</item>
+        <item name="android:textColor">#9a000000</item>
+        <!--<item name="android:textColor">#66000000</item>-->
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
     </style>
