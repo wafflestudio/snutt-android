@@ -181,7 +181,12 @@ public class RetrofitErrorHandler implements ErrorHandler {
                         }
                     }, 0);
                 } catch (Exception e) {
-                    Toast.makeText(context, context.getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, context.getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
+                        }
+                    }, 0);
                 }
             }
         }
