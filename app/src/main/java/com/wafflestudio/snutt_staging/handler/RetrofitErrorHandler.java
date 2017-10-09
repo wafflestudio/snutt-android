@@ -45,139 +45,144 @@ public class RetrofitErrorHandler implements ErrorHandler {
         } else {
             final Response response = cause.getResponse();
             if (response != null) {
-                final RestError error = (RestError) cause.getBodyAs(RestError.class);
-                Log.d(TAG, error.code + " " + error.message);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (error.code) {
-                            case SERVER_FAULT:
-                                Toast.makeText(context, context.getString(R.string.error_server_fault), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_FB_ID_OR_TOKEN:
-                                Toast.makeText(context, context.getString(R.string.error_no_fb_id_or_token), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_YEAR_OR_SEMESTER:
-                                Toast.makeText(context, context.getString(R.string.error_no_year_or_semester), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NOT_ENOUGH_TO_CREATE_TIMETABLE:
-                                Toast.makeText(context, context.getString(R.string.error_not_enough_to_create_timetable), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_LECTURE_INPUT:
-                                Toast.makeText(context, context.getString(R.string.error_no_lecture_input), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_LECTURE_ID:
-                                Toast.makeText(context, context.getString(R.string.error_no_lecture_id), Toast.LENGTH_SHORT).show();
-                                break;
-                            case ATTEMPT_TO_MODIFY_IDENTITY:
-                                Toast.makeText(context, context.getString(R.string.error_attempt_to_modify_identity), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_TIMETABLE_TITLE:
-                                Toast.makeText(context, context.getString(R.string.error_no_timetable_title), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_REGISTRATION_ID:
-                                Toast.makeText(context, context.getString(R.string.error_no_registration_id), Toast.LENGTH_SHORT).show();
-                                break;
-                            case INVALID_TIMEMASK:
-                                Toast.makeText(context, context.getString(R.string.error_invalid_timemask), Toast.LENGTH_SHORT).show();
-                                break;
-                            case INVALID_COLOR:
-                                Toast.makeText(context, context.getString(R.string.error_invalid_color), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_LECTURE_TITLE:
-                                Toast.makeText(context, context.getString(R.string.error_no_lecture_title), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_API_KEY:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_api_key), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NO_USER_TOKEN:
-                                Toast.makeText(context, context.getString(R.string.error_no_user_token), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_USER_TOKEN:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_user_token), Toast.LENGTH_SHORT).show();
-                                UserManager.getInstance().performLogout();
-                                startIntro(context);
-                                finishAll();
-                                break;
-                            case NO_ADMIN_PRIVILEGE:
-                                Toast.makeText(context, context.getString(R.string.error_no_admin_privilege), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_ID:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_id), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_PASSWORD:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_password), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_FB_TOKEN:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_fb_token), Toast.LENGTH_SHORT).show();
-                                break;
-                            case UNKNOWN_APP:
-                                Toast.makeText(context, context.getString(R.string.error_unknown_app), Toast.LENGTH_SHORT).show();
-                                break;
-                            case INVALID_ID:
-                                Toast.makeText(context, context.getString(R.string.error_invalid_id), Toast.LENGTH_SHORT).show();
-                                break;
-                            case INVALID_PASSWORD:
-                                Toast.makeText(context, context.getString(R.string.error_invalid_password), Toast.LENGTH_SHORT).show();
-                                break;
-                            case DUPLICATE_ID:
-                                Toast.makeText(context, context.getString(R.string.error_duplicate_id), Toast.LENGTH_SHORT).show();
-                                break;
-                            case DUPLICATE_TIMETABLE_TITLE:
-                                Toast.makeText(context, context.getString(R.string.error_duplicate_timetable_title), Toast.LENGTH_SHORT).show();
-                                break;
-                            case DUPLICATE_LECTURE:
-                                Toast.makeText(context, context.getString(R.string.error_duplicate_lecture), Toast.LENGTH_SHORT).show();
-                                break;
-                            case ALREADY_LOCAL_ACCOUNT:
-                                Toast.makeText(context, context.getString(R.string.error_already_local_account), Toast.LENGTH_SHORT).show();
-                                break;
-                            case ALREADY_FB_ACCOUNT:
-                                Toast.makeText(context, context.getString(R.string.error_already_fb_account), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NOT_LOCAL_ACCOUNT:
-                                Toast.makeText(context, context.getString(R.string.error_not_local_account), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NOT_FB_ACCOUNT:
-                                Toast.makeText(context, context.getString(R.string.error_not_fb_account), Toast.LENGTH_SHORT).show();
-                                break;
-                            case FB_ID_WITH_SOMEONE_ELSE:
-                                Toast.makeText(context, context.getString(R.string.error_fb_id_with_someone_else), Toast.LENGTH_SHORT).show();
-                                break;
-                            case WRONG_SEMESTER:
-                                Toast.makeText(context, context.getString(R.string.error_wrong_semester), Toast.LENGTH_SHORT).show();
-                                break;
-                            case NOT_CUSTOM_LECTURE:
-                                Toast.makeText(context, context.getString(R.string.error_not_custom_lecture), Toast.LENGTH_SHORT).show();
-                                break;
-                            case LECTURE_TIME_OVERLAP:
-                                Toast.makeText(context, context.getString(R.string.error_lecture_time_overlap), Toast.LENGTH_SHORT).show();
-                                break;
-                            case IS_CUSTOM_LECTURE:
-                                Toast.makeText(context, context.getString(R.string.error_is_custom_lecture), Toast.LENGTH_SHORT).show();
-                                break;
-                            case TAG_NOT_FOUND:
-                                Toast.makeText(context, context.getString(R.string.error_tag_not_found), Toast.LENGTH_SHORT).show();
-                                break;
-                            case TIMETABLE_NOT_FOUND:
-                                Toast.makeText(context, context.getString(R.string.error_timetable_not_found), Toast.LENGTH_SHORT).show();
-                                break;
-                            case LECTURE_NOT_FOUND:
-                                Toast.makeText(context, context.getString(R.string.error_lecture_not_found), Toast.LENGTH_SHORT).show();
-                                break;
-                            case REF_LECTURE_NOT_FOUND:
-                                Toast.makeText(context, context.getString(R.string.error_ref_lecture_not_found), Toast.LENGTH_SHORT).show();
-                                break;
-                            case COLORLIST_NOT_FOUND:
-                                Toast.makeText(context, context.getString(R.string.error_colorlist_not_found), Toast.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                Toast.makeText(context, context.getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
-                                break;
-                        }
+                try {
+                    final RestError error = (RestError) cause.getBodyAs(RestError.class);
+                    Log.d(TAG, error.code + " " + error.message);
 
-                    }
-                }, 0);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            switch (error.code) {
+                                case SERVER_FAULT:
+                                    Toast.makeText(context, context.getString(R.string.error_server_fault), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_FB_ID_OR_TOKEN:
+                                    Toast.makeText(context, context.getString(R.string.error_no_fb_id_or_token), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_YEAR_OR_SEMESTER:
+                                    Toast.makeText(context, context.getString(R.string.error_no_year_or_semester), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NOT_ENOUGH_TO_CREATE_TIMETABLE:
+                                    Toast.makeText(context, context.getString(R.string.error_not_enough_to_create_timetable), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_LECTURE_INPUT:
+                                    Toast.makeText(context, context.getString(R.string.error_no_lecture_input), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_LECTURE_ID:
+                                    Toast.makeText(context, context.getString(R.string.error_no_lecture_id), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case ATTEMPT_TO_MODIFY_IDENTITY:
+                                    Toast.makeText(context, context.getString(R.string.error_attempt_to_modify_identity), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_TIMETABLE_TITLE:
+                                    Toast.makeText(context, context.getString(R.string.error_no_timetable_title), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_REGISTRATION_ID:
+                                    Toast.makeText(context, context.getString(R.string.error_no_registration_id), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case INVALID_TIMEMASK:
+                                    Toast.makeText(context, context.getString(R.string.error_invalid_timemask), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case INVALID_COLOR:
+                                    Toast.makeText(context, context.getString(R.string.error_invalid_color), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_LECTURE_TITLE:
+                                    Toast.makeText(context, context.getString(R.string.error_no_lecture_title), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_API_KEY:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_api_key), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NO_USER_TOKEN:
+                                    Toast.makeText(context, context.getString(R.string.error_no_user_token), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_USER_TOKEN:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_user_token), Toast.LENGTH_SHORT).show();
+                                    UserManager.getInstance().performLogout();
+                                    startIntro(context);
+                                    finishAll();
+                                    break;
+                                case NO_ADMIN_PRIVILEGE:
+                                    Toast.makeText(context, context.getString(R.string.error_no_admin_privilege), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_ID:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_id), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_PASSWORD:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_password), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_FB_TOKEN:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_fb_token), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case UNKNOWN_APP:
+                                    Toast.makeText(context, context.getString(R.string.error_unknown_app), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case INVALID_ID:
+                                    Toast.makeText(context, context.getString(R.string.error_invalid_id), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case INVALID_PASSWORD:
+                                    Toast.makeText(context, context.getString(R.string.error_invalid_password), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case DUPLICATE_ID:
+                                    Toast.makeText(context, context.getString(R.string.error_duplicate_id), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case DUPLICATE_TIMETABLE_TITLE:
+                                    Toast.makeText(context, context.getString(R.string.error_duplicate_timetable_title), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case DUPLICATE_LECTURE:
+                                    Toast.makeText(context, context.getString(R.string.error_duplicate_lecture), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case ALREADY_LOCAL_ACCOUNT:
+                                    Toast.makeText(context, context.getString(R.string.error_already_local_account), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case ALREADY_FB_ACCOUNT:
+                                    Toast.makeText(context, context.getString(R.string.error_already_fb_account), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NOT_LOCAL_ACCOUNT:
+                                    Toast.makeText(context, context.getString(R.string.error_not_local_account), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NOT_FB_ACCOUNT:
+                                    Toast.makeText(context, context.getString(R.string.error_not_fb_account), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case FB_ID_WITH_SOMEONE_ELSE:
+                                    Toast.makeText(context, context.getString(R.string.error_fb_id_with_someone_else), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case WRONG_SEMESTER:
+                                    Toast.makeText(context, context.getString(R.string.error_wrong_semester), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case NOT_CUSTOM_LECTURE:
+                                    Toast.makeText(context, context.getString(R.string.error_not_custom_lecture), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case LECTURE_TIME_OVERLAP:
+                                    Toast.makeText(context, context.getString(R.string.error_lecture_time_overlap), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case IS_CUSTOM_LECTURE:
+                                    Toast.makeText(context, context.getString(R.string.error_is_custom_lecture), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case TAG_NOT_FOUND:
+                                    Toast.makeText(context, context.getString(R.string.error_tag_not_found), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case TIMETABLE_NOT_FOUND:
+                                    Toast.makeText(context, context.getString(R.string.error_timetable_not_found), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case LECTURE_NOT_FOUND:
+                                    Toast.makeText(context, context.getString(R.string.error_lecture_not_found), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case REF_LECTURE_NOT_FOUND:
+                                    Toast.makeText(context, context.getString(R.string.error_ref_lecture_not_found), Toast.LENGTH_SHORT).show();
+                                    break;
+                                case COLORLIST_NOT_FOUND:
+                                    Toast.makeText(context, context.getString(R.string.error_colorlist_not_found), Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(context, context.getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+
+                        }
+                    }, 0);
+                } catch (Exception e) {
+                    Toast.makeText(context, context.getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
+                }
             }
         }
         return cause;
