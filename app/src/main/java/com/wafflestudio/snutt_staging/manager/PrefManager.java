@@ -24,8 +24,9 @@ public class PrefManager {
     private Context context;
     private SharedPreferences sp;
 
-    private static final String PREF_KEY_LAST_VIEW_TABLE_ID = "pref_key_last_view_table_id" ;
-    private static final String PREF_KEY_X_ACCESS_TOKEN = "pref_key_x_access_token" ;
+    private static final String PREF_KEY_LAST_VIEW_TABLE_ID = "pref_key_last_view_table_id";
+    private static final String PREF_KEY_X_ACCESS_TOKEN = "pref_key_x_access_token";
+    private static final String PREF_KEY_USER_ID = "pref_key_user_id";
     private static final String PREF_KEY_CURRENT_YEAR = "pref_key_current_year" ;
     private static final String PREF_KEY_CURRENT_SEMESTER = "pref_key_current_semester" ;
     private static final String PREF_KEY_CURRENT_TABLE = "pref_key_current_table" ;
@@ -84,6 +85,16 @@ public class PrefManager {
 
     public String getPrefKeyXAccessToken() {
         return sp.getString(PREF_KEY_X_ACCESS_TOKEN, null);
+    }
+
+    public void setPrefKeyUserId(String user_id) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(PREF_KEY_USER_ID, user_id);
+        editor.apply();
+    }
+
+    public String getPrefKeyUserId() {
+        return sp.getString(PREF_KEY_USER_ID, null);
     }
 
     public void setCurrentYear(int year) {

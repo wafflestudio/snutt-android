@@ -68,8 +68,9 @@ public class UserManager {
             @Override
             public void success(Token token, Response response) {
                 Log.d(TAG, "post local sign in success!!");
-                Log.d(TAG, "token : " + token.getToken());
+                Log.d(TAG, "token : " + token.getToken() + " user_id : " + token.getUser_id());
                 PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
                 UserManager.getInstance().registerFirebaseToken(null);
                 if (callback != null) callback.success(token, response);
 
@@ -92,7 +93,9 @@ public class UserManager {
                 @Override
                 public void success(Token token, Response response) {
                     Log.d(TAG, "post user facebook success!");
+                    Log.d(TAG, "token : " + token.getToken() + " user_id : " + token.getUser_id());
                     PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                    PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
                     UserManager.getInstance().registerFirebaseToken(null);
                     if (callback != null) callback.success(token, response);
                 }
@@ -111,11 +114,15 @@ public class UserManager {
         query.put("id", id);
         query.put("password", password);
         query.put("email", email);
-        app.getRestService().postSignUp(query, new Callback<Map<String, String>>() {
+        app.getRestService().postSignUp(query, new Callback<Token>() {
             @Override
-            public void success(Map<String, String> response, Response response2) {
-                PrefManager.getInstance().setPrefKeyXAccessToken(response.get("token"));
-                if (callback != null) callback.success(response, response2);
+            public void success(Token token, Response response) {
+                Log.d(TAG, "post sign up success!");
+                Log.d(TAG, "token : " + token.getToken() + " user_id : " + token.getUser_id());
+                PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
+                PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
+                UserManager.getInstance().registerFirebaseToken(null);
+                if (callback != null) callback.success(token, response);
             }
 
             @Override
