@@ -2,6 +2,7 @@ package com.wafflestudio.snutt_staging.handler;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import com.wafflestudio.snutt_staging.R;
 import com.wafflestudio.snutt_staging.manager.UserManager;
 import com.wafflestudio.snutt_staging.ui.IntroActivity;
 
+import retrofit.Callback;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -33,7 +35,7 @@ public class RetrofitErrorHandler implements ErrorHandler {
     }
 
     @Override
-    public Throwable handleError(RetrofitError cause) {
+    public Throwable handleError(final RetrofitError cause) {
         Handler mHandler = new Handler(Looper.getMainLooper());
         if (cause.getKind() == RetrofitError.Kind.NETWORK) { // network error
             mHandler.postDelayed(new Runnable() {
@@ -97,9 +99,22 @@ public class RetrofitErrorHandler implements ErrorHandler {
                                     break;
                                 case WRONG_USER_TOKEN:
                                     Toast.makeText(context, context.getString(R.string.error_wrong_user_token), Toast.LENGTH_SHORT).show();
-                                    UserManager.getInstance().performLogout();
-                                    startIntro(context);
-                                    finishAll();
+                                    final ProgressDialog progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false);
+                                    UserManager.getInstance().postForceLogout(new Callback() {
+                                        @Override
+                                        public void success(Object o, Response response) {
+                                            UserManager.getInstance().performLogout();
+                                            startIntro(context);
+                                            finishAll();
+                                            progressDialog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            Toast.makeText(context, "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
+                                        }
+                                    });
                                     break;
                                 case NO_ADMIN_PRIVILEGE:
                                     Toast.makeText(context, context.getString(R.string.error_no_admin_privilege), Toast.LENGTH_SHORT).show();

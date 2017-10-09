@@ -356,6 +356,27 @@ public class UserManager {
         });
     }
 
+    public void postForceLogout(final Callback callback) {
+        final String user_id = PrefManager.getInstance().getPrefKeyUserId();
+        final String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        final Map query = new HashMap();
+        query.put("user_id", user_id);
+        query.put("registration_id", firebaseToken);
+        app.getRestService().postForceLogout(query, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "post force logout success");
+                if (callback != null) callback.success(response, response2);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "post force logout failed..");
+                if (callback != null) callback.failure(error);
+            }
+        });
+    }
+
     public void performLogout() {
         /* firebase token 삭제 후 로그아웃 시행 */
         LectureManager.getInstance().reset();

@@ -41,6 +41,9 @@ public interface SNUTTRestApi {
     @POST("/auth/login_fb")
     public void postLoginFacebook(@Body Map query, Callback<Token> callback);
 
+    @POST("/auth/logout")
+    public void postForceLogout(@Body Map query, Callback<Response> callback);
+
     @POST("/search_query")
     public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
 
