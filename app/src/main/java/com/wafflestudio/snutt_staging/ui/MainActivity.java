@@ -54,7 +54,7 @@ import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 public class MainActivity extends SNUTTBaseActivity {
 
     private static final String TAG = "MainActivity" ;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 2017;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
