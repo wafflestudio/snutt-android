@@ -64,7 +64,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param title FCM message body received.
+     * @param title FCM message title received.
+     * @param body FCM message body received.
      */
     private void sendNotification(String title, String body) {
         Log.d(TAG, "title : " + title);
