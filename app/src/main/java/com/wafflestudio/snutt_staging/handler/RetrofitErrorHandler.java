@@ -99,14 +99,15 @@ public class RetrofitErrorHandler implements ErrorHandler {
                                     break;
                                 case WRONG_USER_TOKEN:
                                     Toast.makeText(context, context.getString(R.string.error_wrong_user_token), Toast.LENGTH_SHORT).show();
-                                    final ProgressDialog progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false);
+                                    final Context activity = getActivityContext();
+                                    final ProgressDialog progressDialog = activity != null ? ProgressDialog.show(activity, "로그아웃", "잠시만 기다려 주세요", true, false) : null;
                                     UserManager.getInstance().postForceLogout(new Callback() {
                                         @Override
                                         public void success(Object o, Response response) {
                                             UserManager.getInstance().performLogout();
                                             startIntro(context);
                                             finishAll();
-                                            progressDialog.dismiss();
+                                            if (activity != null) progressDialog.dismiss();
                                         }
 
                                         @Override
@@ -217,6 +218,15 @@ public class RetrofitErrorHandler implements ErrorHandler {
     private void finishAll() {
         for (Activity activity : activityList) {
             activity.finish();
+        }
+    }
+
+    private Context getActivityContext() {
+        try {
+            int size = activityList.size();
+            return activityList.get(size - 1);
+        } catch(Exception e) {
+            return null;
         }
     }
 
