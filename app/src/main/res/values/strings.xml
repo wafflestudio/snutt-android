@@ -1,8 +1,4 @@
 <resources>
-    <string name="app_name">SNUTT-Staging</string>
-    <string name="facebook_app_id">1635364463444351</string>
-
-    <string name="api_server">http://walnut.wafflestudio.com:3000</string>
     <string name="terms">/terms_of_service</string>
     <string name="privacy">/privacy_policy</string>
     <string name="member">/member</string>

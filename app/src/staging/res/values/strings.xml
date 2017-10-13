@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SNUTT-Staging</string>
+
+    <string name="api_key">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdHJpbmciOiJhbmRyb2lkIiwia2V5X3ZlcnNpb24iOiIwIiwiaWF0IjoxNDg2MTk0OTIwfQ.Vmg42rGG_fVYjxFq7-BquRJhC5O6UP8z8hQk3rBYo-0</string>
+    <string name="api_server">http://walnut.wafflestudio.com:3000</string>
+</resources>
