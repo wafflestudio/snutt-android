@@ -35,9 +35,6 @@ import com.wafflestudio.snutt.manager.PrefManager;
 import com.wafflestudio.snutt.manager.TableManager;
 import com.wafflestudio.snutt.model.Table;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
-
 import java.util.List;
 import java.util.Map;
 
@@ -165,7 +162,6 @@ public class MainActivity extends SNUTTBaseActivity {
                 }
             }
         });
-        checkForUpdates();
     }
 
     @Override
@@ -218,7 +214,6 @@ public class MainActivity extends SNUTTBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         activityList.remove(this);
-        unregisterManagers();
     }
 
     @Override
@@ -226,26 +221,11 @@ public class MainActivity extends SNUTTBaseActivity {
         super.onResume();
         checkGoogleServiceVersion();
         updateTableTitle();
-        checkForCrashes();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        unregisterManagers();
-    }
-
-    private void checkForCrashes() {
-        CrashManager.register(this);
-    }
-
-    private void checkForUpdates() {
-        // Remove this for store builds!
-        UpdateManager.register(this);
-    }
-
-    private void unregisterManagers() {
-        UpdateManager.unregister();
     }
 
     private void updateTableTitle() {
