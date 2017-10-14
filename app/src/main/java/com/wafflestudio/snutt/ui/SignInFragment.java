@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -107,12 +108,14 @@ public class SignInFragment extends SNUTTBaseFragment {
             public void onCancel() {
                 // App code
                 Log.w(TAG, "Cancel");
+                Toast.makeText(getApp(), "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
                 // App code
                 Log.e(TAG, "Error", error);
+                Toast.makeText(getApp(), "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show();
             }
         });
         return rootView;

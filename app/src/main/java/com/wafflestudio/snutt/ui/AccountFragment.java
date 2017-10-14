@@ -435,12 +435,14 @@ public class AccountFragment extends SNUTTBaseFragment {
             {
                 // App code
                 Log.w(TAG, "Cancel");
+                Toast.makeText(getApp(), "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onError(FacebookException exception)
             {
                 // App code
                 Log.e(TAG, "Error", exception);
+                Toast.makeText(getApp(), "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show();
             }
         });
     }
