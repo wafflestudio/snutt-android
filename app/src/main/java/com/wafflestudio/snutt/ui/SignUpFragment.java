@@ -22,6 +22,7 @@ import com.facebook.login.LoginResult;
 import com.wafflestudio.snutt.R;
 import com.wafflestudio.snutt.SNUTTBaseFragment;
 import com.wafflestudio.snutt.manager.UserManager;
+import com.wafflestudio.snutt.model.Token;
 
 import java.util.Map;
 
@@ -76,9 +77,9 @@ public class SignUpFragment extends SNUTTBaseFragment {
                 }
 
                 final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "회원가입", "잠시만 기다려 주세요", true, false);
-                UserManager.getInstance().postSingUp(id, password, email, new Callback<Map<String, String>>() {
+                UserManager.getInstance().postSingUp(id, password, email, new Callback<Token>() {
                     @Override
-                    public void success(Map<String, String> response, Response response2) {
+                    public void success(Token token, Response response) {
                         getBaseActivity().startMain();
                         getBaseActivity().finishAll();
                         progressDialog.dismiss();
