@@ -23,20 +23,18 @@ android {
 
     productFlavors {
         staging {
-            applicationId "com.wafflestudio.snutt.staging"
+            applicationIdSuffix ".staging"
             manifestPlaceholders = [
-                    HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d",
-                    FACEBOOK_APP_ID: "1635364463444351"
+                    HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d"
             ]
             versionCode 13
             versionName "2.1.3"
         }
 
         live {
-            applicationId "com.wafflestudio.snutt.live"
+            applicationIdSuffix ".live"
             manifestPlaceholders = [
-                    HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d",
-                    FACEBOOK_APP_ID: "1784457425210381"
+                    HOCKEYAPP_APP_ID: "73514f33f932434c80234837a3d9ca6d"
             ]
             versionCode 1
             versionName "1.0.0"
