@@ -43,6 +43,34 @@ public class NotiManager {
         return singleton;
     }
 
+    public interface OnNotificationReceivedListener {
+        void notifyNotificationReceived();
+    }
+
+    private List<OnNotificationReceivedListener> listeners = new ArrayList<>();
+
+    public void addListener(OnNotificationReceivedListener current) {
+        for (OnNotificationReceivedListener listener: listeners) {
+            if (listener.equals(current)) {
+                Log.w(TAG, "listener reference is duplicated !!");
+                return;
+            }
+        }
+        listeners.add(current);
+    }
+
+    public void removeListener(OnNotificationReceivedListener current) {
+        for (OnNotificationReceivedListener listener: listeners) {
+            if (listener.equals(current)) {
+                listeners.remove(listener);
+                break;
+            }
+        }
+        Log.d(TAG, "listener count: " + listeners.size());
+    }
+
+    /* local method */
+
     public void reset() {
         this.notifications = new ArrayList<>();
         this.fetched = false;
@@ -141,4 +169,10 @@ public class NotiManager {
         });
     }
 
+    public void notifyNotificationReceived() {
+        fetched = false;
+        for (OnNotificationReceivedListener listener: listeners) {
+            listener.notifyNotificationReceived();
+        }
+    }
 }

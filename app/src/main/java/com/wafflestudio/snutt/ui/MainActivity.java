@@ -46,7 +46,7 @@ import retrofit.client.Response;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 
-public class MainActivity extends SNUTTBaseActivity {
+public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNotificationReceivedListener {
 
     private static final String TAG = "MainActivity" ;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -72,6 +72,7 @@ public class MainActivity extends SNUTTBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityList.add(this);
+        NotiManager.getInstance().addListener(this);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
@@ -217,6 +218,7 @@ public class MainActivity extends SNUTTBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         activityList.remove(this);
+        NotiManager.getInstance().removeListener(this);
     }
 
     @Override
@@ -224,11 +226,6 @@ public class MainActivity extends SNUTTBaseActivity {
         super.onResume();
         checkGoogleServiceVersion();
         updateTableTitle();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     private void updateTableTitle() {
@@ -363,6 +360,19 @@ public class MainActivity extends SNUTTBaseActivity {
         Log.d(TAG, "on notification checked!");
         if (notiCircle != null) {
             notiCircle.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void notifyNotificationReceived() {
+        Log.d(TAG, "on notification received");
+        if (notiCircle != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notiCircle.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 }

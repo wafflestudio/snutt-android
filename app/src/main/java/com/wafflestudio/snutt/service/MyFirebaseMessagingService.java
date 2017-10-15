@@ -17,6 +17,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.wafflestudio.snutt.R;
+import com.wafflestudio.snutt.manager.NotiManager;
 import com.wafflestudio.snutt.ui.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -87,5 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+
+        NotiManager.getInstance().notifyNotificationReceived();
     }
 }

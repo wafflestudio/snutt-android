@@ -26,16 +26,20 @@ import retrofit.client.Response;
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class NotificationFragment extends SNUTTBaseFragment { /**
- * The fragment argument representing the section number for this
- * fragment.
- */
+public class NotificationFragment extends SNUTTBaseFragment implements NotiManager.OnNotificationReceivedListener {
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "NOTIFICATION_FRAGMENT";
     private EndlessRecyclerViewScrollListener scrollListener;
     private NotificationAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout placeholder;
+
+    private SwipeRefreshLayout layout;
+    private SwipeRefreshLayout.OnRefreshListener refreshListener;
 
     public NotificationFragment() {
     }
@@ -78,8 +82,8 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        final SwipeRefreshLayout layout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
-        SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        layout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
+        refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "swipe refreshed called.");
@@ -100,9 +104,6 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
         };
         layout.setOnRefreshListener(refreshListener);
 
-        if (!NotiManager.getInstance().getFetched()) {
-            autoFetch(layout, refreshListener);
-        }
         return rootView;
     }
 
@@ -110,6 +111,24 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume called");
+        if (!NotiManager.getInstance().getFetched()) {
+            autoFetch(layout, refreshListener);
+        }
+        NotiManager.getInstance().addListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause called");
+        NotiManager.getInstance().removeListener(this);
+    }
+
+
+    @Override
+    public void notifyNotificationReceived() {
+        Log.d(TAG, "notify notification received");
+        autoFetch(layout, refreshListener);
     }
 
 
@@ -143,4 +162,5 @@ public class NotificationFragment extends SNUTTBaseFragment { /**
             }
         });
     }
+
 }
