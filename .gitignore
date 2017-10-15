@@ -6,4 +6,7 @@
 .DS_Store
 /build
 /captures
-/app/src/main/res/values/apikey.xml
+
+##################################
+/app/src/live/
+/app/src/staging/

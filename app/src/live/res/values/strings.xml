@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">SNUTT</string>
-    <string name="facebook_app_id">1784457425210381</string>
-
-    <string name="api_key">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdHJpbmciOiJhbmRyb2lkIiwia2V5X3ZlcnNpb24iOiIwIiwiaWF0IjoxNTA3NzIzNzA3fQ.XVhn7m0CnPvIWeZ36PEMqm_oROQj-iPy4gAgg62N97A</string>
-    <string name="api_server">https://api.snutt.kr/v1</string>
-</resources>
