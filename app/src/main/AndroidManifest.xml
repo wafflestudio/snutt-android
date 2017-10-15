@@ -14,7 +14,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ea6344db89eda10b60bad3829587e17aec38d9f5" />
         <activity
             android:name="com.wafflestudio.snutt.ui.SplashActivity"
             android:label="@string/app_name"
