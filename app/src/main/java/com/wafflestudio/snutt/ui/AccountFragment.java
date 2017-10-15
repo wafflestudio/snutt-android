@@ -247,13 +247,13 @@ public class AccountFragment extends SNUTTBaseFragment {
                         public void success(Object o, Response response) {
                             Toast.makeText(getApp(), "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show();
                             updateNewId(id);
+                            dialog.dismiss();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
                         }
                     });
-                    dialog.dismiss();
                 }
             }
         });
