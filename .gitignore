@@ -7,6 +7,13 @@
 /build
 /captures
 
-##################################
+#Build Setting
 /app/src/live/
 /app/src/staging/
+
+#Crashlytics
+com_crashlytics_export_strings.xml
+crashlytics-build.properties
+
+#Fabric
+/app/fabric.properties
