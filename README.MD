@@ -2,6 +2,11 @@
 
 ## SETUP
 
+### app/fabric.properties
+fabric console 에서 아래 값을 복사
+- apiKey=<API_KEY>
+- apiSecret=<BUILD_SECRET>
+
 ### app/src/live/
 
 #### google-services.json
