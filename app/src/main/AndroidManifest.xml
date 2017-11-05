@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wafflestudio.snutt">
+    package="com.wafflestudio.snutt2">
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.wafflestudio.snutt.SNUTTApplication"
+        android:name="com.wafflestudio.snutt2.SNUTTApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,7 +15,7 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
         <activity
-            android:name="com.wafflestudio.snutt.ui.SplashActivity"
+            android:name="com.wafflestudio.snutt2.ui.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name="com.wafflestudio.snutt.ui.MainActivity"
+            android:name="com.wafflestudio.snutt2.ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
@@ -39,64 +39,64 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name="com.wafflestudio.snutt.ui.TableListActivity"
+            android:name="com.wafflestudio.snutt2.ui.TableListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wafflestudio.snutt.ui.MainActivity" />
+                android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt.ui.LectureMainActivity"
+            android:name="com.wafflestudio.snutt2.ui.LectureMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wafflestudio.snutt.ui.MainActivity" />
+                android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt.ui.SettingsMainActivity"
+            android:name="com.wafflestudio.snutt2.ui.SettingsMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wafflestudio.snutt.ui.MainActivity" />
+                android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt.ui.TableCreateActivity"
+            android:name="com.wafflestudio.snutt2.ui.TableCreateActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wafflestudio.snutt.ui.TableListActivity" />
+                android:value="com.wafflestudio.snutt2.ui.TableListActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt.ui.WelcomeActivity"
+            android:name="com.wafflestudio.snutt2.ui.WelcomeActivity"
             android:label="@string/app_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wafflestudio.snutt.ui.IntroActivity" />
+                android:value="com.wafflestudio.snutt2.ui.IntroActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt.ui.IntroActivity"
+            android:name="com.wafflestudio.snutt2.ui.IntroActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <service
-            android:name="com.wafflestudio.snutt.service.MyFirebaseMessagingService">
+            android:name="com.wafflestudio.snutt2.service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <service
-            android:name="com.wafflestudio.snutt.service.MyFirebaseInstanceIDService">
+            android:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <receiver android:name="com.wafflestudio.snutt.provider.TimetableWidgetProvider" >
+        <receiver android:name="com.wafflestudio.snutt2.provider.TimetableWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

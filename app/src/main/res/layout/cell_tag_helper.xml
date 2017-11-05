@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/academic_year"
                         android:gravity="center"
                         android:layout_width="45dp"
@@ -116,7 +116,7 @@
                         android:textColor="#dc2f45"
                         style="@style/Text.TagHelper"/>
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/classification"
                         android:gravity="center"
                         android:layout_width="45dp"
@@ -127,7 +127,7 @@
                         android:textColor="#e5731c"
                         style="@style/Text.TagHelper"/>
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/credit"
                         android:gravity="center"
                         android:layout_width="45dp"
@@ -138,7 +138,7 @@
                         android:textColor="#8bbb1a"
                         style="@style/Text.TagHelper"/>
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/department"
                         android:gravity="center"
                         android:layout_width="45dp"
@@ -149,7 +149,7 @@
                         android:textColor="#0cada6"
                         style="@style/Text.TagHelper"/>
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/instructor"
                         android:gravity="center"
                         android:layout_width="45dp"
@@ -160,7 +160,7 @@
                         android:textColor="#0d82cd"
                         style="@style/Text.TagHelper"/>
 
-                    <com.wafflestudio.snutt.view.ToggleRadioButton
+                    <com.wafflestudio.snutt2.view.ToggleRadioButton
                         android:id="@+id/category"
                         android:gravity="center"
                         android:layout_width="71dp"

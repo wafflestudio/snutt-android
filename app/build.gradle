@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.wafflestudio.snutt"
+        applicationId "com.wafflestudio.snutt2"
         minSdkVersion 14
         targetSdkVersion 23
     }
