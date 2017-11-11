@@ -45,8 +45,23 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.google.android.gms.common.ConnectionResult.SUCCESS;
+import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.NOTIFICATION;
+import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.TIMETABLE;
 
 public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNotificationReceivedListener {
+
+    enum MainTab {
+        TIMETABLE("시간표"),
+        SEARCH("검색"),
+        MY_LECTURE("내 강의"),
+        NOTIFICATION("알림"),
+        SETTING("설정");
+
+        private String title;
+        MainTab(String title) {
+            this.title = title;
+        }
+    }
 
     private static final String TAG = "MainActivity" ;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -161,7 +176,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mViewPager.getCurrentItem() == 0) {
+                MainTab type = MainTab.values()[mViewPager.getCurrentItem()];
+                if (type == TIMETABLE) {
                     showEditDialog(PrefManager.getInstance().getLastViewTableId());
                 }
             }
@@ -200,21 +216,6 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-       // int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
-       //     return true;
-        //}
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         activityList.remove(this);
@@ -232,8 +233,9 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         String id = PrefManager.getInstance().getLastViewTableId();
         if (id == null) return;
         String title = TableManager.getInstance().getTableTitleById(id);
-        if (title == null) return;
-        getSupportActionBar().setTitle(title);
+        if (!Strings.isNullOrEmpty(title)) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     private boolean checkGoogleServiceVersion() {
@@ -257,28 +259,32 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
     }
 
     private void setTabLayoutView(final TabLayout tabLayout) {
-        for (int i=0;i<tabLayout.getTabCount();i++) {
+        for (int i = 0; i < tabLayout.getTabCount(); i ++) {
             FrameLayout layout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             TextView textView = (TextView) layout.findViewById(R.id.tab_title);
             textView.setText(getPageTitle(i));
+
             ImageView imageView = (ImageView) layout.findViewById(R.id.noti);
             imageView.setVisibility(View.GONE);
             tabLayout.getTabAt(i).setCustomView(layout);
-            if (getPageTitle(i).equals("알림")) {
+
+            MainTab type = MainTab.values()[i];
+            if (type == NOTIFICATION) {
                 notiCircle = imageView;
             }
         }
         // for initial state
-        tabLayout.getTabAt(0).getCustomView().setSelected(true);
+        tabLayout.getTabAt(TIMETABLE.ordinal()).getCustomView().setSelected(true);
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+
                 Log.d(TAG, "on tab selected!");
-                int index = tab.getPosition();
-                if (getPageTitle(index).equals("알림")) {
+                MainTab type = MainTab.values()[tab.getPosition()];
+                if (type == NOTIFICATION) {
                     onNotificationChecked();
                 }
-                super.onTabSelected(tab);
             }
         });
     }
@@ -341,19 +347,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
 
 
     public String getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "시간표";
-            case 1:
-                return "검색";
-            case 2:
-                return "내 강의";
-            case 3:
-                return "알림";
-            case 4:
-                return "설정";
-        }
-        return null;
+        MainTab type = MainTab.values()[position];
+        return type.title;
     }
 
     public void onNotificationChecked() {
@@ -366,7 +361,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
     @Override
     public void notifyNotificationReceived() {
         Log.d(TAG, "on notification received");
-        if (notiCircle != null) {
+        MainTab type = MainTab.values()[tabLayout.getSelectedTabPosition()];
+        if (notiCircle != null && type != NOTIFICATION) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
