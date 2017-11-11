@@ -152,6 +152,7 @@ public class LectureManager {
         for (Lecture lecture : lecture_list) {
             searchedLectures.add(lecture);
         }
+        notifySearchedLecturesChanged();
     }
 
     public Lecture getSelectedLecture() {

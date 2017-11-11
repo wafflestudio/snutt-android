@@ -67,6 +67,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private RecyclerView tagRecyclerView;
     private RecyclerView lectureRecyclerView;
+    private LinearLayoutManager lectureLayoutManager;
     private RecyclerView suggestionRecyclerView;
     private LectureListAdapter lectureAdapter;
     private SuggestionAdapter suggestionAdapter;
@@ -139,13 +140,13 @@ public class SearchFragment extends SNUTTBaseFragment
         tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.tag_recyclerView);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        lectureLayoutManager = new LinearLayoutManager(getContext());
         lectureAdapter = new LectureListAdapter(LectureManager.getInstance().getSearchedLectures());
-        lectureRecyclerView.setLayoutManager(layoutManager);
+        lectureRecyclerView.setLayoutManager(lectureLayoutManager);
         lectureRecyclerView.setItemAnimator(null);
         lectureRecyclerView.setAdapter(lectureAdapter);
         lectureRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.search_lecture_divider));
-        lectureRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        lectureRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(lectureLayoutManager) {
             @Override
             public int getFooterViewType(int defaultNoFooterViewType) {
                 return LectureListAdapter.VIEW_TYPE.ProgressBar.getValue();
@@ -412,7 +413,9 @@ public class SearchFragment extends SNUTTBaseFragment
 
     @Override
     public void notifySearchedLecturesChanged() {
+        Log.d(TAG, "notify Searched Lectures Changed");
         lectureAdapter.notifyDataSetChanged();
+        lectureRecyclerView.scrollToPosition(0);
     }
 
     /**
@@ -500,7 +503,6 @@ public class SearchFragment extends SNUTTBaseFragment
         LectureManager.getInstance().postSearchQuery(text, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectures, Response response) {
-                lectureAdapter.notifyDataSetChanged();
                 isSearching = false;
                 showMainContainer(false);
             }
