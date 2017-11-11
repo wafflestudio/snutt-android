@@ -283,7 +283,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void showNewVersionMarket() {
-		final String appName = "company.fortytwo.slide.app";
+		final String appName = "com.wafflestudio.snutt2.live";
 		try {
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+appName)));
 		} catch (android.content.ActivityNotFoundException anfe) {
