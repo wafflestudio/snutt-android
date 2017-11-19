@@ -17,24 +17,6 @@
 #}
 
 
-#OKIo
--dontwarn okio.**
-
-# Retrofit 1.X
-
--keep class com.squareup.okhttp.** { *; }
--keep class retrofit.** { *; }
--keep interface com.squareup.okhttp.** { *; }
-
--dontwarn com.squareup.okhttp.**
--dontwarn okio.**
--dontwarn retrofit.**
--dontwarn rx.**
-
--keepclasseswithmembers class * {
-    @retrofit.http.* <methods>;
-}
-
 # If in your rest service interface you use methods with Callback argument.
 -keepattributes Exceptions
 
@@ -48,3 +30,7 @@
 
 -keep class com.google.**
 -dontwarn com.google.**
+
+#shard preference
+-keep class com.loopj.android.** { *; }
+-keep interface com.loopj.android.** { *; }

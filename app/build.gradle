@@ -32,7 +32,15 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'proguard-common.pro'
+            proguardFile 'proguard-crashlytics.pro'
+            proguardFile 'proguard-facebook.pro'
+            proguardFile 'proguard-gson.pro'
+            proguardFile 'proguard-guava.pro'
+            proguardFile 'proguard-retrofit.pro'
+            proguardFile 'proguard-support-design.pro'
+            proguardFile 'proguard-support-v7-appcompat.pro'
         }
     }
 
@@ -45,8 +53,8 @@ android {
 
         live {
             applicationIdSuffix ".live"
-            versionCode 1
-            versionName "1.0.0"
+            versionCode 3
+            versionName "1.0.2"
         }
     }
 }

@@ -17,3 +17,6 @@ crashlytics-build.properties
 
 #Fabric
 /app/fabric.properties
+
+#KeyStore
+/app/android.jks
