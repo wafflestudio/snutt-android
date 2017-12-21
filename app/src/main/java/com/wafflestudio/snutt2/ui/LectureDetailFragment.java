@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -168,61 +169,71 @@ public class LectureDetailFragment extends SNUTTBaseFragment {
     }
 
     private void setNormalMode() {
-        hideSoftKeyboard(getView());
-        editable = false;
-        for (int i = 0;i < lists.size();i ++) {
-            LectureItem it = lists.get(i);
-            it.setEditable(false);
-            adapter.notifyItemChanged(i);
+        try {
+            hideSoftKeyboard(getView());
+            editable = false;
+            for (int i = 0; i < lists.size(); i++) {
+                LectureItem it = lists.get(i);
+                it.setEditable(false);
+                adapter.notifyItemChanged(i);
+            }
+
+            int pos = getAddClassTimeItemPosition();
+            lists.remove(pos);
+            adapter.notifyItemRemoved(pos);
+
+            lists.add(pos, new LectureItem(LectureItem.Type.Margin, false));
+            adapter.notifyItemInserted(pos);
+            lists.add(pos + 1, new LectureItem(LectureItem.Type.LongHeader, false));
+            adapter.notifyItemInserted(pos + 1);
+            lists.add(pos + 2, new LectureItem(LectureItem.Type.Syllabus, false));
+            adapter.notifyItemInserted(pos + 2);
+
+            // change button
+            pos = getResetItemPosition();
+            lists.remove(pos);
+            lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
+            adapter.notifyItemChanged(pos);
+        } catch (Exception e) {
+            Toast.makeText(getApp(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         }
-
-        int pos = getAddClassTimeItemPosition();
-        lists.remove(pos);
-        adapter.notifyItemRemoved(pos);
-
-        lists.add(pos, new LectureItem(LectureItem.Type.Margin, false));
-        adapter.notifyItemInserted(pos);
-        lists.add(pos + 1, new LectureItem(LectureItem.Type.LongHeader, false));
-        adapter.notifyItemInserted(pos + 1);
-        lists.add(pos + 2, new LectureItem(LectureItem.Type.Syllabus, false));
-        adapter.notifyItemInserted(pos + 2);
-
-        // change button
-        pos = getResetItemPosition();
-        lists.remove(pos);
-        lists.add(pos, new LectureItem(LectureItem.Type.RemoveLecture, false));
-        adapter.notifyItemChanged(pos);
     }
 
     private void setEditMode() {
-        editable = true;
-        for (int i = 0;i < lists.size();i ++) {
-            LectureItem it = lists.get(i);
-            it.setEditable(true);
-            adapter.notifyItemChanged(i);
+        try {
+            editable = true;
+            for (int i = 0; i < lists.size(); i++) {
+                LectureItem it = lists.get(i);
+                it.setEditable(true);
+                adapter.notifyItemChanged(i);
+            }
+
+            int syllabusPosition = getSyllabusItemPosition();
+            // remove syllabus
+            lists.remove(syllabusPosition);
+            adapter.notifyItemRemoved(syllabusPosition);
+            // remove long header
+            lists.remove(syllabusPosition - 1);
+            adapter.notifyItemRemoved(syllabusPosition - 1);
+            // remove margin
+            lists.remove(syllabusPosition - 2);
+            adapter.notifyItemRemoved(syllabusPosition - 2);
+
+            int lastPosition = getLastClassItemPosition();
+            // add button
+            lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
+            adapter.notifyItemInserted(lastPosition + 1);
+
+            // change button
+            int removePosition = getRemoveItemPosition();
+            lists.remove(removePosition);
+            lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
+            adapter.notifyItemChanged(removePosition);
+        } catch (Exception e) {
+            Toast.makeText(getApp(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         }
-
-        int syllabusPosition = getSyllabusItemPosition();
-        // remove syllabus
-        lists.remove(syllabusPosition);
-        adapter.notifyItemRemoved(syllabusPosition);
-        // remove long header
-        lists.remove(syllabusPosition - 1);
-        adapter.notifyItemRemoved(syllabusPosition - 1);
-        // remove margin
-        lists.remove(syllabusPosition - 2);
-        adapter.notifyItemRemoved(syllabusPosition - 2);
-
-        int lastPosition = getLastClassItemPosition();
-        // add button
-        lists.add(lastPosition + 1, new LectureItem(LectureItem.Type.AddClassTime, true));
-        adapter.notifyItemInserted(lastPosition + 1);
-
-        // change button
-        int removePosition = getRemoveItemPosition();
-        lists.remove(removePosition);
-        lists.add(removePosition, new LectureItem(LectureItem.Type.ResetLecture, true));
-        adapter.notifyItemChanged(removePosition);
     }
 
     private void attachLectureDetailList(Lecture lecture) {

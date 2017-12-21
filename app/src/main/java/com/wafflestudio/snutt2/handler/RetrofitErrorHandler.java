@@ -48,6 +48,7 @@ public class RetrofitErrorHandler implements ErrorHandler {
             if (response != null) {
                 try {
                     final RestError error = (RestError) cause.getBodyAs(RestError.class);
+
                     Log.d(TAG, error.code + " " + error.message);
 
                     mHandler.postDelayed(new Runnable() {
