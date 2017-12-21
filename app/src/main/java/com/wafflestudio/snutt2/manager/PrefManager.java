@@ -74,7 +74,7 @@ public class PrefManager {
         editor.apply();
     }
     public String getLastViewTableId() {
-        return sp.getString(PREF_KEY_LAST_VIEW_TABLE_ID, null);
+        return sp.getString(PREF_KEY_LAST_VIEW_TABLE_ID, "");
     }
 
     public void setPrefKeyXAccessToken(String token) {
