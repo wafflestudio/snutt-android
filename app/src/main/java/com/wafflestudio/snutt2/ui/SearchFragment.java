@@ -360,8 +360,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setOnQueryTextListener(queryTextListener);
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-        searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
+//        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+//        searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
 
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if (searchManager!=null) {
