@@ -68,7 +68,6 @@ public class ReportFragment extends SNUTTBaseFragment {
                     public void failure(RetrofitError error) {
                     }
                 });
-                getActivity().finish();
             }
             return true;
         }

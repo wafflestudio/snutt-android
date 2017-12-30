@@ -211,6 +211,14 @@ public class TableView extends View {
             numHeight = PrefManager.getInstance().getTrimHeightNum();
         }
 
+        // FIX: #13. Fatal Exception: java.lang.ArrayIndexOutOfBoundsException
+        if (startWidth + numWidth - 1 > wdays.length - 1) {
+            startWidth = 0;
+            numWidth = 5;
+
+            PrefManager.getInstance().setTrimWidthStart(startWidth);
+            PrefManager.getInstance().setTrimWidthNum(numWidth);
+        }
 
         unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
         unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
