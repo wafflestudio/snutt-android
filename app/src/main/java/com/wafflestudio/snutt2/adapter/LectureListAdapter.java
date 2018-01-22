@@ -97,6 +97,8 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         setOnItemClickListener(new ClickListener() {
             @Override
             public void onClick(View v, final int position) {
+                if (position >= getItemCount()) return;
+
                 if (v.getId() == holder.layout.getId()) {
                     Log.d(TAG, "View ID : " + v.getId());
                     Log.d(TAG, String.valueOf(position) + " item Clicked!!");

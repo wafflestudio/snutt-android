@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 import com.wafflestudio.snutt2.R;
 import com.wafflestudio.snutt2.SNUTTBaseFragment;
+import com.wafflestudio.snutt2.SNUTTUtils;
 import com.wafflestudio.snutt2.adapter.LectureListAdapter;
 import com.wafflestudio.snutt2.adapter.SuggestionAdapter;
 import com.wafflestudio.snutt2.listener.EndlessRecyclerViewScrollListener;
@@ -360,8 +361,8 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setOnQueryTextListener(queryTextListener);
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-//        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-//        searchView.setMaxWidth(dm.widthPixels); // handle some high density devices and landscape mode
+        int width = (int) SNUTTUtils.getDisplayWidth();
+        searchView.setMaxWidth(width); // handle some high density devices and landscape mode
 
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if (searchManager!=null) {
@@ -500,6 +501,7 @@ public class SearchFragment extends SNUTTBaseFragment
 
     private void postQuery(String text) {
         isSearching = true;
+
         LectureManager.getInstance().postSearchQuery(text, new Callback<List<Lecture>>() {
             @Override
             public void success(List<Lecture> lectures, Response response) {
