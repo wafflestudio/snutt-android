@@ -86,6 +86,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "MainActivity onCreate called!");
+
         activityList.add(this);
         NotiManager.getInstance().addListener(this);
         Fabric.with(this, new Crashlytics());
