@@ -225,6 +225,7 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를 삭제하시겠습니까");
         alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                if (LectureManager.getInstance().getCurrentLecture() == null) return;
                 String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
                 LectureManager.getInstance().removeLecture(lectureId, new Callback() {
                     @Override
