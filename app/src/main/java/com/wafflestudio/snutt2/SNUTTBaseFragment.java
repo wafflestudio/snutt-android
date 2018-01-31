@@ -51,6 +51,8 @@ public class SNUTTBaseFragment extends Fragment {
     }
 
     protected void hideSoftKeyboard(View view) {
+        if (mActivity == null) return;
+
         InputMethodManager mgr = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

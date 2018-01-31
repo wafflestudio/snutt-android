@@ -630,6 +630,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void startSyllabus() {
+        if (LectureManager.getInstance().getCurrentLecture() == null) return;
         Lecture lecture = LectureManager.getInstance().getCurrentLecture();
         LectureManager.getInstance().getCoursebookUrl(lecture.getCourse_number(), lecture.getLecture_number(), new Callback<Map>() {
             public void success(Map map, Response response) {
@@ -649,6 +650,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를 삭제하시겠습니까");
         alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                if (LectureManager.getInstance().getCurrentLecture() == null) return;
                 String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
                 LectureManager.getInstance().removeLecture(lectureId, new Callback() {
                     @Override
@@ -656,8 +658,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                         activity.finish();
                     }
                     @Override
-                    public void failure(RetrofitError error) {
-                    }
+                    public void failure(RetrofitError error) {}
                 });
             }
         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -675,6 +676,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         alert.setMessage("강좌를  원래 상태로 초기화하시겠습니까");
         alert.setPositiveButton("초기화", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                if (LectureManager.getInstance().getCurrentLecture() == null) return;
                 String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
                 LectureManager.getInstance().resetLecture(lectureId, new Callback() {
                     @Override
