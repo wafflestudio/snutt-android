@@ -42,7 +42,7 @@ public class LectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private static final String TAG = "LECTURE_LIST_ADAPTER" ;
+    private static final String TAG = "LECTURE_LIST_ADAPTER";
     private static ClickListener clickListener;
 
     private List<Lecture> lectures;
