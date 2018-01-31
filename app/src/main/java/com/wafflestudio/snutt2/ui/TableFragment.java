@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import com.wafflestudio.snutt2.R;
 import com.wafflestudio.snutt2.SNUTTBaseFragment;
 import com.wafflestudio.snutt2.manager.LectureManager;
+import com.wafflestudio.snutt2.manager.PrefManager;
 import com.wafflestudio.snutt2.view.TableView;
 
 /**
@@ -44,6 +47,15 @@ public class TableFragment extends SNUTTBaseFragment implements LectureManager.O
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_table, container, false);
         mInstance = (TableView) rootView.findViewById(R.id.timetable);
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setVisibility(PrefManager.getInstance().getHiddenCaptureButton() ? View.GONE : View.VISIBLE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "시간표가 갤러리에 저장되었습니다", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
         setHasOptionsMenu(true);
         return rootView;
     }

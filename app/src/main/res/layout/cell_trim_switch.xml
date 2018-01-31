@@ -9,13 +9,13 @@
         android:layout_height="match_parent"
         android:background="?selectableItemBackground">
         <android.support.v7.widget.SwitchCompat
-            android:text="자동 맞춤"
+            android:text="시간표 자동 맞춤"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:gravity="center_vertical"
-            android:id="@+id/switch1"
+            android:id="@+id/switch2"
             style="@style/Text.SettingsTitle"/>
     </LinearLayout>
 </LinearLayout>

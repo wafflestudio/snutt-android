@@ -9,7 +9,13 @@
         layout="@layout/cell_setting_header"/>
 
     <include
-        layout="@layout/cell_switch"/>
+        layout="@layout/cell_capture_switch"/>
+
+    <include
+        layout="@layout/cell_setting_header"/>
+
+    <include
+        layout="@layout/cell_trim_switch"/>
 
     <include
         layout="@layout/cell_setting_header"/>
