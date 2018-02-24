@@ -44,7 +44,7 @@ public class ReportFragment extends SNUTTBaseFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -57,6 +57,7 @@ public class ReportFragment extends SNUTTBaseFragment {
             } else {
                 String email = emailText.getText().toString();
                 String detail = detailText.getText().toString();
+                item.setEnabled(false);
                 UserManager.getInstance().postFeedback(email, detail, new Callback() {
                     @Override
                     public void success(Object o, Response response) {
@@ -66,6 +67,7 @@ public class ReportFragment extends SNUTTBaseFragment {
 
                     @Override
                     public void failure(RetrofitError error) {
+                        item.setEnabled(true);
                     }
                 });
             }
