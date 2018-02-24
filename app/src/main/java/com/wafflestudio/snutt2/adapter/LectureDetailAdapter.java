@@ -673,7 +673,7 @@ public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private void startResetAlertView() {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle("강좌 초기화");
-        alert.setMessage("강좌를  원래 상태로 초기화하시겠습니까");
+        alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까");
         alert.setPositiveButton("초기화", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (LectureManager.getInstance().getCurrentLecture() == null) return;

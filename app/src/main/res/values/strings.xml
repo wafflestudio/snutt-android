@@ -57,7 +57,7 @@
     <string name="error_duplicate_timetable_title">이미 존재하는 시간표 이름입니다</string>
     <string name="error_duplicate_lecture">이미 넣은 강좌입니다</string>
     <string name="error_already_local_account">이미 ID와 비밀번호가 등록되어 있습니다</string>
-    <string name="error_already_fb_account">아미 페이스북 계정이 연동되었습니다</string>
+    <string name="error_already_fb_account">이미 페이스북 계정이 연동되었습니다</string>
     <string name="error_not_local_account">등록된 ID와 비밀번호가 없습니다</string>
     <string name="error_not_fb_account">연동된 페이스북 계정이 없습니다</string>
     <string name="error_fb_id_with_someone_else">이미 다른 계정에 연동이 되어있습니다</string>
