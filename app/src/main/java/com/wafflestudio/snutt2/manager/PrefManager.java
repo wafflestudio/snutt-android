@@ -37,7 +37,6 @@ public class PrefManager {
     private static final String PREF_KEY_AUTO_TRIM = "pref_key_auto_trim";
     private static final String PREF_KEY_LECTURE_COLORS = "pref_key_lecture_colors";
     private static final String PREF_KEY_LECTURE_COLOR_NAMES = "pref_key_lecture_color_names";
-    private static final String PREF_KEY_HIDDEN_CAPTURE_BUTTON = "pref_key_hidden_capture_button";
 
     private PrefManager(Context context) {
         Preconditions.checkNotNull(context);
@@ -197,16 +196,6 @@ public class PrefManager {
 
     public String getLectureColorNames() {
         return sp.getString(PREF_KEY_LECTURE_COLOR_NAMES, null);
-    }
-
-    public void setHiddenCaptureButton(boolean hidden) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(PREF_KEY_HIDDEN_CAPTURE_BUTTON, hidden);
-        editor.apply();
-    }
-
-    public boolean getHiddenCaptureButton() {
-        return sp.getBoolean(PREF_KEY_HIDDEN_CAPTURE_BUTTON, false);
     }
 
     private void sendWidgetUpdateIntent() {

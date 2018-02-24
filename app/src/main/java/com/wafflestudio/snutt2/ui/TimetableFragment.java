@@ -23,8 +23,7 @@ import com.wafflestudio.snutt2.manager.PrefManager;
 public class TimetableFragment extends SNUTTBaseFragment {
     private static final String TAG = "TIMETABLE_FRAGMENT";
 
-    private SwitchCompat captureSwitch;
-    private SwitchCompat trimSwitch;
+    private SwitchCompat mSwitch;
     private LinearLayout dayLayout;
     private LinearLayout classLayout;
     private RangeBar dayRangeBar;
@@ -34,27 +33,17 @@ public class TimetableFragment extends SNUTTBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
-        captureSwitch = (SwitchCompat) rootView.findViewById(R.id.switch1);
-        trimSwitch = (SwitchCompat) rootView.findViewById(R.id.switch2);
+        mSwitch = (SwitchCompat) rootView.findViewById(R.id.switch1);
         dayLayout = (LinearLayout) rootView.findViewById(R.id.day_layout);
         classLayout = (LinearLayout) rootView.findViewById(R.id.class_layout);
         dayRangeBar = (RangeBar) rootView.findViewById(R.id.day_range_bar);
         classRangeBar = (RangeBar) rootView.findViewById(R.id.class_range_bar);
 
-        captureSwitch.setChecked(!PrefManager.getInstance().getHiddenCaptureButton());
-        trimSwitch.setChecked(PrefManager.getInstance().getAutoTrim());
+        mSwitch.setChecked(PrefManager.getInstance().getAutoTrim());
         initRangeBar();
         updateRangeBarStatus(PrefManager.getInstance().getAutoTrim());
 
-        captureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "on checked changed listener called.");
-                PrefManager.getInstance().setHiddenCaptureButton(!isChecked);
-            }
-        });
-
-        trimSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "on checked changed listener called.");
