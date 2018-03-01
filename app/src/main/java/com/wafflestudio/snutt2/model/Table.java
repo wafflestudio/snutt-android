@@ -102,6 +102,20 @@ public class Table implements Comparable<Table> {
         return yearString + '-' + semesterString;
     }
 
+    public String getCreditText() {
+        if (getTotalCredit() == -1) return "";
+        return getTotalCredit() + "학점";
+    }
+
+    private int getTotalCredit() {
+        int credit = 0;
+        for (Lecture lecture: lecture_list) {
+            credit += lecture.getCredit();
+        }
+
+        if (credit < 0) return -1;
+        return credit;
+    }
     /**
      * Compares this object to the specified object to determine their relative
      * order.

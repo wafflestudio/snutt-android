@@ -73,6 +73,10 @@
     <!-- Text -->
     <style name="Text"></style>
 
+    <style name="Text.ToolBarSubTitle">
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <style name="Text.TabLayout">
         <item name="android:textColor">@drawable/tab_selectable_text</item>
         <!--<item name="android:textStyle">bold</item>-->

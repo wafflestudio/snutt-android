@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -48,8 +47,8 @@ import static com.google.android.gms.common.ConnectionResult.SUCCESS;
 import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.NOTIFICATION;
 import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.TIMETABLE;
 
-public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNotificationReceivedListener {
-
+public class MainActivity extends SNUTTBaseActivity
+        implements NotiManager.OnNotificationReceivedListener, LectureManager.OnLectureChangedListener {
     enum MainTab {
         TIMETABLE("시간표"),
         SEARCH("검색"),
@@ -83,6 +82,10 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
     private ViewPager mViewPager;
     private ImageView notiCircle;
 
+    // Toolbar Title
+    private TextView titleText;
+    private TextView subTitleText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,22 +93,28 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
 
         activityList.add(this);
         NotiManager.getInstance().addListener(this);
+        LectureManager.getInstance().addListener(this);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        titleText = toolbar.findViewById(R.id.title);
+        subTitleText = toolbar.findViewById(R.id.sub_title);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         setTabLayoutView(tabLayout);
-        setUpAppBarLayout(appBarLayout);
+        setupAppBarLayout(appBarLayout);
 
         // 1. token 의 유무 검사
         if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
@@ -124,7 +133,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         String json = PrefManager.getInstance().getCurrentTable();
         if (json != null) {
             Table table = new Gson().fromJson(json, Table.class);
-            getSupportActionBar().setTitle(table.getTitle());
+            titleText.setText(table.getTitle());
+            subTitleText.setText(table.getCreditText());
             LectureManager.getInstance().setLectures(table.getLecture_list());
         }
 
@@ -135,7 +145,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
             TableManager.getInstance().getTableById(id, new Callback<Table>() {
                 @Override
                 public void success(Table table, Response response) {
-                    getSupportActionBar().setTitle(table.getTitle());
+                    titleText.setText(table.getTitle());
+                    subTitleText.setText(table.getCreditText());
                 }
                 @Override
                 public void failure(RetrofitError error) {
@@ -149,13 +160,15 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
                 @Override
                 public void success(Table table, Response response) {
                     // default 가 존재하는 경우
-                    getSupportActionBar().setTitle(table.getTitle());
+                    titleText.setText(table.getTitle());
+                    subTitleText.setText(table.getCreditText());
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     // default가 존재하지 않거나, network error 인 경우
-                    getSupportActionBar().setTitle("empty table");
+                    titleText.setText("Default Table");
+                    subTitleText.setText("");
                 }
             });
         }
@@ -202,7 +215,8 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         TableManager.getInstance().getTableById(id, new Callback<Table>() {
             @Override
             public void success(Table table, Response response) {
-                getSupportActionBar().setTitle(table.getTitle());
+                titleText.setText(table.getTitle());
+                subTitleText.setText(table.getCreditText());
             }
             @Override
             public void failure(RetrofitError error) {
@@ -222,6 +236,7 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         super.onDestroy();
         activityList.remove(this);
         NotiManager.getInstance().removeListener(this);
+        LectureManager.getInstance().removeListener(this);
     }
 
     @Override
@@ -236,7 +251,7 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         if (id == null) return;
         String title = TableManager.getInstance().getTableTitleById(id);
         if (!Strings.isNullOrEmpty(title)) {
-            getSupportActionBar().setTitle(title);
+            titleText.setText(title);
         }
     }
 
@@ -317,7 +332,7 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
                     TableManager.getInstance().putTable(id, title, new Callback<List<Table>>() {
                         @Override
                         public void success(List<Table> tables, Response response) {
-                            getSupportActionBar().setTitle(title);
+                            titleText.setText(title);
                             dialog.dismiss();
                         }
                         @Override
@@ -332,7 +347,7 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
         });
     }
 
-    private void setUpAppBarLayout(AppBarLayout appBarLayout) {
+    private void setupAppBarLayout(AppBarLayout appBarLayout) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // for pre-lollipop device
             appBarLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_background));
         }
@@ -372,5 +387,14 @@ public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNot
                 }
             });
         }
+    }
+
+    @Override
+    public void notifyLecturesChanged() {
+        subTitleText.setText(LectureManager.getInstance().getCreditText());
+    }
+
+    @Override
+    public void notifySearchedLecturesChanged() {
     }
 }

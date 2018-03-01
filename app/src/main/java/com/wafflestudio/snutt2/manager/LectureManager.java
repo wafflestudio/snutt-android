@@ -490,6 +490,21 @@ public class LectureManager {
         });
     }
 
+    public String getCreditText() {
+        if (getTotalCredit() == -1) return "";
+        return getTotalCredit() + "학점";
+    }
+
+    private int getTotalCredit() {
+        int credit = 0;
+        for (Lecture lecture: lectures) {
+            credit += lecture.getCredit();
+        }
+
+        if (credit < 0) return -1;
+        return credit;
+    }
+
     private void setColors(List<Color> colors) {
         this.colors = colors;
     }
