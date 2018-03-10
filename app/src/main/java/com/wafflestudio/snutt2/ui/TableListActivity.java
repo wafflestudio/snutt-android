@@ -62,10 +62,29 @@ public class TableListActivity extends SNUTTBaseActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
+                if (mChildList.get(groupPosition).isEmpty()) {
+                    Coursebook coursebook = coursebookList.get(groupPosition);
+                    TableManager.getInstance().postTable(coursebook.getYear(), coursebook.getSemester(), "내 시간표", new Callback<List<Table>>() {
+                        @Override
+                        public void success(List<Table> tables, Response response) {
+                            mAdapter = getAdapter(tables);
+                            mListView.setAdapter(mAdapter);
+                            for (int i = 0; i < mGroupList.size(); i++) {
+                                mListView.expandGroup(i);
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                    return true;
+                }
                 String tableId = mChildList.get(groupPosition).get(childPosition).getId();
                 startTableView(tableId);
                 finish();
-                return false;
+                return true;
             }
         });
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
