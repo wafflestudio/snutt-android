@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,12 +79,14 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
     // 차일드뷰를 반환한다.
     @Override
     public String getChild(int groupPosition, int childPosition) {
+        if (childList.get(groupPosition).isEmpty()) return "+ 새로운 시간표 추가";
         return childList.get(groupPosition).get(childPosition).getTitle();
     }
 
     // 차일드뷰 사이즈를 반환한다.
     @Override
     public int getChildrenCount(int groupPosition) {
+        if (childList.get(groupPosition).isEmpty()) return 1;
         return childList.get(groupPosition).size();
     }
 
@@ -112,11 +115,17 @@ public class ExpandableTableListAdapter extends BaseExpandableListAdapter {
         }
 
         viewHolder.tableName.setText(getChild(groupPosition, childPosition));
-        String id = childList.get(groupPosition).get(childPosition).getId();
-        if (PrefManager.getInstance().getLastViewTableId().equals(id)) {
-            viewHolder.checked.setVisibility(View.VISIBLE);
-        } else {
+        if (childList.get(groupPosition).isEmpty()) {
+            viewHolder.tableName.setTextColor(Color.GRAY);
             viewHolder.checked.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.tableName.setTextColor(Color.BLACK);
+            String id = childList.get(groupPosition).get(childPosition).getId();
+            if (PrefManager.getInstance().getLastViewTableId().equals(id)) {
+                viewHolder.checked.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.checked.setVisibility(View.INVISIBLE);
+            }
         }
         return v;
     }
