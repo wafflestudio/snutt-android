@@ -1,5 +1,7 @@
 # SNUTT-android
 
+> THIS IS REFACTORING BRANCH
+
 ## SETUP
 
 ### 1. app/fabric.properties
