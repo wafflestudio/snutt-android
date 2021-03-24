@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_title1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -30,9 +30,9 @@
             android:background="@drawable/empty_edit_text"
             android:singleLine="true"
             style="@style/Text.LectureDetailContent2"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_title2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:background="@drawable/empty_edit_text"
             android:singleLine="true"
             style="@style/Text.LectureDetailContent2"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <View
         android:layout_width="0dp"
