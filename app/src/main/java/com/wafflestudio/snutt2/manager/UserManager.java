@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.manager;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.login.LoginManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.wafflestudio.snutt2.SNUTTApplication;
@@ -69,7 +68,7 @@ public class UserManager {
                 PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
                 PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
                 UserManager.getInstance().registerFirebaseToken(null);
-                logUserToCrashlytics(token.getUser_id());
+                logUserTemp(token.getUser_id());
                 if (callback != null) callback.success(token, response);
 
             }
@@ -95,7 +94,7 @@ public class UserManager {
                     PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
                     PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
                     UserManager.getInstance().registerFirebaseToken(null);
-                    logUserToCrashlytics(token.getUser_id());
+                    logUserTemp(token.getUser_id());
                     if (callback != null) callback.success(token, response);
                 }
 
@@ -121,7 +120,7 @@ public class UserManager {
                 PrefManager.getInstance().setPrefKeyXAccessToken(token.getToken());
                 PrefManager.getInstance().setPrefKeyUserId(token.getUser_id());
                 UserManager.getInstance().registerFirebaseToken(null);
-                logUserToCrashlytics(token.getUser_id());
+                logUserTemp(token.getUser_id());
                 if (callback != null) callback.success(token, response);
             }
 
@@ -388,7 +387,8 @@ public class UserManager {
         me = new User();
     }
 
-    private void logUserToCrashlytics(String id) {
-        Crashlytics.setUserIdentifier(id);
+    // Refactor FIXME
+    private void logUserTemp(String id) {
+        // do nothing
     }
 }

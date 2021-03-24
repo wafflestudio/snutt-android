@@ -8,7 +8,7 @@ import android.widget.RadioGroup;
  * Created by makesource on 2017. 8. 27..
  */
 
-public class ToggleRadioButton extends android.support.v7.widget.AppCompatRadioButton {
+public class ToggleRadioButton extends androidx.appcompat.widget.AppCompatRadioButton {
 
     public ToggleRadioButton(Context context, AttributeSet attrs) {
         super(context, attrs);

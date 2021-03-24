@@ -5,15 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+
+import androidx.annotation.IdRes;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -80,6 +81,7 @@ public class SearchFragment extends SNUTTBaseFragment
     enum TagMode {
         DEFAULT_MODE, TAG_MODE;
     }
+
     private static TagMode tagMode = TagMode.DEFAULT_MODE;
 
     private MenuItem searchMenuItem;
@@ -152,6 +154,7 @@ public class SearchFragment extends SNUTTBaseFragment
             public int getFooterViewType(int defaultNoFooterViewType) {
                 return LectureListAdapter.VIEW_TYPE.ProgressBar.getValue();
             }
+
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 loadNextDataFromApi(page, totalItemsCount);
@@ -229,8 +232,10 @@ public class SearchFragment extends SNUTTBaseFragment
             public void success(List<Lecture> searchedLectureList, Response response) {
                 lectureAdapter.notifyDataSetChanged();
             }
+
             @Override
-            public void failure(RetrofitError error) { }
+            public void failure(RetrofitError error) {
+            }
         });
     }
 
@@ -269,7 +274,7 @@ public class SearchFragment extends SNUTTBaseFragment
             public void onClick(View v) {
                 boolean b = TagManager.getInstance().toggleSearchEmptyClass();
                 emptyClassStatus.setText(b ? "ON" : "OFF");
-                emptyClassStatus.setTextColor(b ? Color.rgb(0,0,0) : Color.argb(76, 0, 0, 0));
+                emptyClassStatus.setTextColor(b ? Color.rgb(0, 0, 0) : Color.argb(76, 0, 0, 0));
             }
         });
     }
@@ -337,10 +342,11 @@ public class SearchFragment extends SNUTTBaseFragment
         inflater.inflate(R.menu.menu_search, menu);
         searchMenuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchMenuItem.getActionView();
-        clearButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        clearButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
         clearButton.setImageResource(R.drawable.ic_close);
-        editText = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        editText.setThreshold(0);
+        editText = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+//         Refactoring FIXME: error on lint
+//        editText.setThreshold(0);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { // to handle empty query
@@ -365,7 +371,7 @@ public class SearchFragment extends SNUTTBaseFragment
         searchView.setMaxWidth(width); // handle some high density devices and landscape mode
 
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager!=null) {
+        if (searchManager != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         }
         enableDefaultMode();
@@ -420,8 +426,8 @@ public class SearchFragment extends SNUTTBaseFragment
     }
 
     /**
-     *  this method only for whether tags are zero or not
-     *  handle tag insert, remove listener in other method
+     * this method only for whether tags are zero or not
+     * handle tag insert, remove listener in other method
      */
     @Override
     public void notifyMyTagChanged(boolean anim) {
@@ -483,6 +489,7 @@ public class SearchFragment extends SNUTTBaseFragment
                 return true;
             }
         }
+
         @Override
         public boolean onQueryTextChange(String newText) {
             if (Strings.isNullOrEmpty(newText) && isTagMode()) {
@@ -508,6 +515,7 @@ public class SearchFragment extends SNUTTBaseFragment
                 isSearching = false;
                 showMainContainer(false);
             }
+
             @Override
             public void failure(RetrofitError error) {
                 isSearching = false;
@@ -529,7 +537,7 @@ public class SearchFragment extends SNUTTBaseFragment
         radioGroup.clearCheck();
 
         int len = searchView.getQuery().length();
-        if (contains) last_query = searchView.getQuery().toString().substring(0, len-1);
+        if (contains) last_query = searchView.getQuery().toString().substring(0, len - 1);
         else last_query = searchView.getQuery().toString();
         searchView.setQuery("", false);
         searchView.setQueryHint("태그 검색");
@@ -563,7 +571,7 @@ public class SearchFragment extends SNUTTBaseFragment
     private View.OnClickListener mDefaultListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            searchView.setQuery("",false);
+            searchView.setQuery("", false);
         }
     };
 
