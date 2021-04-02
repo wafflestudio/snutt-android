@@ -1,299 +1,261 @@
-package com.wafflestudio.snutt2.manager;
+package com.wafflestudio.snutt2.manager
 
-import android.util.Log;
-
-import com.wafflestudio.snutt2.SNUTTApplication;
-import com.wafflestudio.snutt2.model.Tag;
-import com.wafflestudio.snutt2.model.TagList;
-import com.wafflestudio.snutt2.model.TagType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import android.util.Log
+import com.wafflestudio.snutt2.SNUTTApplication
+import com.wafflestudio.snutt2.model.Tag
+import com.wafflestudio.snutt2.model.TagList
+import com.wafflestudio.snutt2.model.TagType
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
+import java.util.*
 
 /**
  * Created by makesource on 2016. 2. 23..
  */
-public class TagManager {
-
-    private static final String TAG = "TAG_MANAGER" ;
-
+class TagManager private constructor(app: SNUTTApplication) {
     // for search
-    private List<Tag> tags;
-    private Map<String, Tag> tagsMap;
-    private boolean searchEmptyClass;
+    private val tags: MutableList<Tag>
+    private val tagsMap: MutableMap<String, Tag>
+    var searchEmptyClass: Boolean
 
     // for api post
-    private List<String> classification, credit, academic_year, instructor, department, category, time;
-    private List<Tag> myTags;
+    private var classification: MutableList<String>
+    private var credit: MutableList<String>
+    private var academic_year: MutableList<String>
+    private var instructor: MutableList<String>
+    private var department: MutableList<String>
+    private var category: MutableList<String>
+    private var time: MutableList<String>
+    private val myTags: MutableList<Tag?>
+    private val app: SNUTTApplication
 
-    private SNUTTApplication app;
-    private static TagManager singleton;
+    interface OnTagChangedListener {
+        fun notifyMyTagChanged(anim: Boolean)
+        fun notifyTagListChanged()
+    }
+
+    private var listener: OnTagChangedListener? = null
+    fun registerListener(fragment: OnTagChangedListener?) {
+        listener = fragment
+    }
+
+    fun unregisterListener() {
+        listener = null
+    }
+
+    fun reset() {
+        tags.clear()
+        classification.clear()
+        credit.clear()
+        academic_year.clear()
+        instructor.clear()
+        department.clear()
+        category.clear()
+        time.clear()
+        tagsMap.clear()
+        myTags.clear()
+        searchEmptyClass = false
+    }
+
+    fun addTag(query: String): Boolean {
+        if (!tagsMap.containsKey(query.toLowerCase())) return false
+        addTag(tagsMap[query])
+        return true
+    }
+
+    fun addTag(tag: Tag?): Boolean {
+        val type = tag!!.tagType
+        when (type) {
+            TagType.CLASSIFICATION -> classification.add(tag.name)
+            TagType.CREDIT -> credit.add(tag.name)
+            TagType.ACADEMIC_YEAR -> academic_year.add(tag.name)
+            TagType.INSTRUCTOR -> instructor.add(tag.name)
+            TagType.DEPARTMENT -> department.add(tag.name)
+            TagType.CATEGORY -> category.add(tag.name)
+        }
+        Log.d(TAG, "a tag is successfully added!!!")
+        myTags.add(0, tag)
+        notifyMyTagChanged(true)
+        return true
+    }
+
+    fun removeTag(position: Int) {
+        val tag = myTags[position]
+        when (tag!!.tagType) {
+            TagType.CLASSIFICATION -> classification.remove(tag.name)
+            TagType.CREDIT -> credit.remove(tag.name)
+            TagType.ACADEMIC_YEAR -> academic_year.remove(tag.name)
+            TagType.INSTRUCTOR -> instructor.remove(tag.name)
+            TagType.DEPARTMENT -> department.remove(tag.name)
+            TagType.CATEGORY -> category.remove(tag.name)
+        }
+        myTags.removeAt(position)
+        notifyMyTagChanged(true)
+    }
+
+    fun getTags(): List<Tag> {
+        return tags
+    }
+
+    fun getMyTags(): List<Tag?> {
+        return myTags
+    }
+
+    fun updateNewTag(year: Int, semester: Int) {
+        app.restService.getTagList(year, semester, object : Callback<TagList> {
+            override fun success(tagList: TagList, response: Response) {
+                Log.d(TAG, "update new tags Success!!")
+                reset()
+                for (name in tagList.classification) {
+                    val tag = Tag(name, TagType.CLASSIFICATION)
+                    tagsMap[name.toLowerCase()] = tag
+                    tags.add(tag)
+                }
+                for (name in tagList.credit) {
+                    val tag = Tag(name, TagType.CREDIT)
+                    tagsMap[name.toLowerCase()] = tag
+                    tags.add(tag)
+                }
+                for (name in tagList.academic_year) {
+                    val tag = Tag(name, TagType.ACADEMIC_YEAR)
+                    tagsMap[name.toLowerCase()] = tag
+                    tags.add(tag)
+                }
+                for (name in tagList.instructor) {
+                    val tag = Tag(name, TagType.INSTRUCTOR)
+                    tagsMap[name.toLowerCase()] = tag
+                    tags.add(tag)
+                }
+                for (name in tagList.department) {
+                    val tag = Tag(name, TagType.DEPARTMENT)
+                    tagsMap[name.toLowerCase()] = tag
+                    tags.add(tag)
+                }
+                for (name in tagList.category) {
+                    val tag = Tag(name.toLowerCase(), TagType.CATEGORY)
+                    tagsMap[name] = tag
+                    tags.add(tag)
+                }
+                notifyMyTagChanged(false)
+                notifyTagListChanged()
+            }
+
+            override fun failure(error: RetrofitError) {
+                Log.d(TAG, "update new tags failed...")
+            }
+        })
+    }
+
+    /* Below method will used when post query */
+    fun getClassification(): List<String> {
+        return classification
+    }
+
+    fun setClassification(classification: MutableList<String>) {
+        this.classification = classification
+    }
+
+    fun getCredit(): List<String> {
+        val integerCredit: MutableList<String> = ArrayList()
+        for (c in credit) {
+            integerCredit.add(c.substring(0, c.length - 2))
+        }
+        return integerCredit
+    }
+
+    fun setCredit(credit: MutableList<String>) {
+        this.credit = credit
+    }
+
+    fun getAcademic_year(): List<String> {
+        return academic_year
+    }
+
+    fun setAcademic_year(academic_year: MutableList<String>) {
+        this.academic_year = academic_year
+    }
+
+    fun getInstructor(): List<String> {
+        return instructor
+    }
+
+    fun setInstructor(instructor: MutableList<String>) {
+        this.instructor = instructor
+    }
+
+    fun getDepartment(): List<String> {
+        return department
+    }
+
+    fun setDepartment(department: MutableList<String>) {
+        this.department = department
+    }
+
+    fun getCategory(): List<String> {
+        return category
+    }
+
+    fun setCategory(category: MutableList<String>) {
+        this.category = category
+    }
+
+    fun getTime(): List<String> {
+        return time
+    }
+
+    fun setTime(time: MutableList<String>) {
+        this.time = time
+    }
+
+    fun toggleSearchEmptyClass(): Boolean {
+        searchEmptyClass = !searchEmptyClass
+        return searchEmptyClass
+    }
+
+    private fun notifyMyTagChanged(anim: Boolean) {
+        if (listener == null) return
+        listener!!.notifyMyTagChanged(anim)
+    }
+
+    private fun notifyTagListChanged() {
+        if (listener == null) return
+        listener!!.notifyTagListChanged()
+    }
+
+    companion object {
+        private const val TAG = "TAG_MANAGER"
+        private var singleton: TagManager? = null
+        fun getInstance(app: SNUTTApplication): TagManager? {
+            if (singleton == null) {
+                singleton = TagManager(app)
+            }
+            return singleton
+        }
+
+        @JvmStatic
+        val instance: TagManager?
+            get() {
+                if (singleton == null) Log.e(TAG, "This method should not be called at this time!!")
+                return singleton
+            }
+    }
 
     /**
      * TableManager 싱글톤
      */
-
-    private TagManager(SNUTTApplication app) {
-        tags = new ArrayList<>();
-        classification = new ArrayList<>();
-        credit = new ArrayList<>();
-        academic_year = new ArrayList<>();
-        instructor = new ArrayList<>();
-        department = new ArrayList<>();
-        category = new ArrayList<>();
-        time = new ArrayList<>();
-        tagsMap = new HashMap<>();
-        myTags = new ArrayList<>();
-        searchEmptyClass = false;
-        this.app = app;
-    }
-
-    public static TagManager getInstance(SNUTTApplication app) {
-        if(singleton == null) {
-            singleton = new TagManager(app);
-        }
-        return singleton;
-    }
-
-    public static TagManager getInstance() {
-        if (singleton == null) Log.e(TAG, "This method should not be called at this time!!");
-        return singleton;
-    }
-
-    public interface OnTagChangedListener {
-        void notifyMyTagChanged(boolean anim);
-        void notifyTagListChanged();
-    }
-
-    private OnTagChangedListener listener;
-
-    public void registerListener(OnTagChangedListener fragment) {
-        this.listener = fragment ;
-    }
-
-    public void unregisterListener() {
-        this.listener = null;
-    }
-
-    public void reset() {
-        tags.clear();
-        classification.clear();
-        credit.clear();
-        academic_year.clear();
-        instructor.clear();
-        department.clear();
-        category.clear();
-        time.clear();
-        tagsMap.clear();
-        myTags.clear();
-        searchEmptyClass = false;
-    }
-
-    public boolean addTag(String query) {
-        if (!tagsMap.containsKey(query.toLowerCase())) return false;
-        addTag(tagsMap.get(query));
-        return true;
-    }
-
-    public boolean addTag(Tag tag) {
-        TagType type = tag.getTagType();
-        switch (type) {
-            case CLASSIFICATION:
-                classification.add(tag.getName());
-                break;
-            case CREDIT:
-                credit.add(tag.getName());
-                break;
-            case ACADEMIC_YEAR:
-                academic_year.add(tag.getName());
-                break;
-            case INSTRUCTOR:
-                instructor.add(tag.getName());
-                break;
-            case DEPARTMENT:
-                department.add(tag.getName());
-                break;
-            case CATEGORY:
-                category.add(tag.getName());
-                break;
-
-        }
-        Log.d(TAG, "a tag is successfully added!!!");
-        myTags.add(0, tag);
-        notifyMyTagChanged(true);
-        return true;
-    }
-
-    public void removeTag(int position) {
-        Tag tag = myTags.get(position);
-        switch (tag.getTagType()) {
-            case CLASSIFICATION:
-                classification.remove(tag.getName());
-                break;
-            case CREDIT:
-                credit.remove(tag.getName());
-                break;
-            case ACADEMIC_YEAR:
-                academic_year.remove(tag.getName());
-                break;
-            case INSTRUCTOR:
-                instructor.remove(tag.getName());
-                break;
-            case DEPARTMENT:
-                department.remove(tag.getName());
-                break;
-            case CATEGORY:
-                category.remove(tag.getName());
-                break;
-        }
-        myTags.remove(position);
-        notifyMyTagChanged(true);
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public List<Tag> getMyTags() {
-        return myTags;
-    }
-
-    public void updateNewTag(int year, int semester) {
-        app.getRestService().getTagList(year, semester, new Callback<TagList>() {
-            @Override
-            public void success(TagList tagList, Response response) {
-                Log.d(TAG, "update new tags Success!!");
-                reset();
-
-                for (String name : tagList.getClassification()) {
-                    Tag tag = new Tag(name, TagType.CLASSIFICATION);
-                    tagsMap.put(name.toLowerCase(), tag);
-                    tags.add(tag);
-                }
-                for (String name : tagList.getCredit()) {
-                    Tag tag = new Tag(name, TagType.CREDIT);
-                    tagsMap.put(name.toLowerCase(), tag);
-                    tags.add(tag);
-                }
-                for (String name : tagList.getAcademic_year()) {
-                    Tag tag = new Tag(name, TagType.ACADEMIC_YEAR);
-                    tagsMap.put(name.toLowerCase(), tag);
-                    tags.add(tag);
-                }
-                for (String name : tagList.getInstructor()) {
-                    Tag tag = new Tag(name, TagType.INSTRUCTOR);
-                    tagsMap.put(name.toLowerCase(), tag);
-                    tags.add(tag);
-                }
-                for (String name : tagList.getDepartment()) {
-                    Tag tag = new Tag(name, TagType.DEPARTMENT);
-                    tagsMap.put(name.toLowerCase(), tag);
-                    tags.add(tag);
-                }
-                for (String name : tagList.getCategory()) {
-                    Tag tag = new Tag(name.toLowerCase(), TagType.CATEGORY);
-                    tagsMap.put(name, tag);
-                    tags.add(tag);
-                }
-                notifyMyTagChanged(false);
-                notifyTagListChanged();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "update new tags failed...");
-            }
-        });
-    }
-
-    /* Below method will used when post query */
-
-    public List<String> getClassification() {
-        return classification;
-    }
-
-    public void setClassification(List<String> classification) {
-        this.classification = classification;
-    }
-
-    public List<String> getCredit() {
-        List<String> integerCredit = new ArrayList<>();
-        for (String c : credit) {
-            integerCredit.add(c.substring(0, c.length() - 2));
-        }
-        return integerCredit;
-    }
-
-    public void setCredit(List<String> credit) {
-        this.credit = credit;
-    }
-
-    public List<String> getAcademic_year() {
-        return academic_year;
-    }
-
-    public void setAcademic_year(List<String> academic_year) {
-        this.academic_year = academic_year;
-    }
-
-    public List<String> getInstructor() {
-        return instructor;
-    }
-
-    public void setInstructor(List<String> instructor) {
-        this.instructor = instructor;
-    }
-
-    public List<String> getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(List<String> department) {
-        this.department = department;
-    }
-
-    public List<String> getCategory() {
-        return category;
-    }
-
-    public void setCategory(List<String> category) {
-        this.category = category;
-    }
-
-    public List<String> getTime() {
-        return time;
-    }
-
-    public void setTime(List<String> time) {
-        this.time = time;
-    }
-
-    public boolean getSearchEmptyClass() {
-        return searchEmptyClass;
-    }
-
-    public boolean toggleSearchEmptyClass() {
-        this.searchEmptyClass = !this.searchEmptyClass;
-        return searchEmptyClass;
-    }
-
-    public void setSearchEmptyClass(boolean searchEmptyClass) {
-        this.searchEmptyClass = searchEmptyClass;
-    }
-
-    private void notifyMyTagChanged(boolean anim) {
-        if (listener == null) return;
-        listener.notifyMyTagChanged(anim);
-    }
-
-    private void notifyTagListChanged() {
-        if (listener == null) return;
-        listener.notifyTagListChanged();
+    init {
+        tags = ArrayList()
+        classification = ArrayList()
+        credit = ArrayList()
+        academic_year = ArrayList()
+        instructor = ArrayList()
+        department = ArrayList()
+        category = ArrayList()
+        time = ArrayList()
+        tagsMap = HashMap()
+        myTags = ArrayList()
+        searchEmptyClass = false
+        this.app = app
     }
 }
