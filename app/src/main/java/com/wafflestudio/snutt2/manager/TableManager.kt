@@ -69,7 +69,7 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         app.restService.getTableById(token, id, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "get table by id success")
-                LectureManager.instance!!.setLectures(table.lecture_list)
+                LectureManager.instance!!.setLectures(table.lecture_list!!)
                 LectureManager.instance!!.clearSearchedLectures()
                 PrefManager.instance!!.updateNewTable(table)
                 TagManager.instance!!.updateNewTag(table.year, table.semester)
@@ -88,7 +88,7 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         app.restService.getRecentTable(token, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "get recent table request success")
-                LectureManager.instance!!.setLectures(table.lecture_list)
+                LectureManager.instance!!.setLectures(table.lecture_list!!)
                 LectureManager.instance!!.clearSearchedLectures()
                 PrefManager.instance!!.updateNewTable(table)
                 TagManager.instance!!.updateNewTag(table.year, table.semester)
@@ -157,7 +157,7 @@ class TableManager private constructor(private val app: SNUTTApplication) {
 
     fun addTable(table: Table) {
         tables!!.add(table)
-        tableMap[table.id] = table
+        tableMap[table.id!!] = table
         Collections.sort(tables)
     }
 

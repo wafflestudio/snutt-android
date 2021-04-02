@@ -341,8 +341,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                 bgColor.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(item.getColorIndex()));
                 fgColor.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(item.getColorIndex()));
             } else {
-                bgColor.setBackgroundColor(item.getColor().getBg());
-                fgColor.setBackgroundColor(item.getColor().getFg());
+                bgColor.setBackgroundColor(item.getColor().getBgColor());
+                fgColor.setBackgroundColor(item.getColor().getFgColor());
             }
             arrow.setVisibility(item.isEditable() ? View.VISIBLE : View.GONE);
         }
@@ -560,8 +560,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     if (item.getColorIndex() > 0) {
                         target.setColorIndex(item.getColorIndex());
                     } else {
-                        target.setBgColor(item.getColor().getBg());
-                        target.setFgColor(item.getColor().getFg());
+                        target.setBgColor(item.getColor().getBgColor());
+                        target.setFgColor(item.getColor().getFgColor());
                     }
                     break;
                 case Credit: // 학점
@@ -609,8 +609,8 @@ public class CustomLectureAdapter extends RecyclerView.Adapter<RecyclerView.View
                     if (item.getColorIndex() > 0) {
                         lecture.setColorIndex(item.getColorIndex());
                     } else {
-                        lecture.setBgColor(item.getColor().getBg());
-                        lecture.setFgColor(item.getColor().getFg());
+                        lecture.setBgColor(item.getColor().getBgColor());
+                        lecture.setFgColor(item.getColor().getFgColor());
                     }
                     break;
                 case Credit: // 학점

@@ -65,8 +65,8 @@ public class ColorListAdapter extends BaseAdapter {
             Color color = colorList.get(position);
             String name = colorNameList.get(position);
             nameText.setText(name);
-            fgColor.setBackgroundColor(color.getFg());
-            bgColor.setBackgroundColor(color.getBg());
+            fgColor.setBackgroundColor(color.getFgColor());
+            bgColor.setBackgroundColor(color.getBgColor());
         }
         return v;
     }

@@ -1,50 +1,44 @@
-package com.wafflestudio.snutt2.model;
+package com.wafflestudio.snutt2.model
 
-import android.util.Log;
-
-import com.wafflestudio.snutt2.manager.LectureManager;
+import android.graphics.Color
+import android.util.Log
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
 
 /**
  * Created by makesource on 2016. 8. 15..
  */
-public class Color {
-    private String bg;
-    private String fg;
+class Color {
+    private var bg: String? = null
+    private var fg: String? = null
 
-    public Color() {
-
+    constructor() {}
+    constructor(bgColor: Int, fgColor: Int) {
+        this.bgColor = bgColor
+        this.fgColor = fgColor
     }
 
-    public Color(int bgColor, int fgColor) {
-        setBg(bgColor);
-        setFg(fgColor);
-    }
-
-    public int getFg() {
-        if (fg == null) {
-            Log.e("Color.java", "foreground color is null object!");
-            return LectureManager.getInstance().getDefaultFgColor();
+    var fgColor: Int
+        get() {
+            if (fg == null) {
+                Log.e("Color.java", "foreground color is null object!")
+                return instance!!.defaultFgColor
+            }
+            return Color.parseColor(fg)
         }
-        int fgColor = android.graphics.Color.parseColor(fg);
-        return fgColor;
-    }
-
-    public void setFg(int fgColor) {
-        String fg = String.format("#%06X", (0xFFFFFF & fgColor));
-        this.fg = fg;
-    }
-
-    public int getBg() {
-        if (bg == null) {
-            Log.e("Color.java", "background color is null object!");
-            return LectureManager.getInstance().getDefaultBgColor();
+        set(fgColor) {
+            val fg = String.format("#%06X", 0xFFFFFF and fgColor)
+            this.fg = fg
         }
-        int bgColor = android.graphics.Color.parseColor(bg);
-        return bgColor;
-    }
-
-    public void setBg(int bgColor) {
-        String bg = String.format("#%06X", (0xFFFFFF & bgColor));
-        this.bg = bg;
-    }
+    var bgColor: Int
+        get() {
+            if (bg == null) {
+                Log.e("Color.java", "background color is null object!")
+                return instance!!.defaultBgColor
+            }
+            return Color.parseColor(bg)
+        }
+        set(bgColor) {
+            val bg = String.format("#%06X", 0xFFFFFF and bgColor)
+            this.bg = bg
+        }
 }

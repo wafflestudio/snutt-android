@@ -326,7 +326,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
     }
 
     // Refactor FIXME
-    private fun logUserTemp(id: String) {
+    private fun logUserTemp(id: String?) {
         // do nothing
     }
 

@@ -107,32 +107,32 @@ class TagManager private constructor(app: SNUTTApplication) {
             override fun success(tagList: TagList, response: Response) {
                 Log.d(TAG, "update new tags Success!!")
                 reset()
-                for (name in tagList.classification) {
+                for (name in tagList.classification!!) {
                     val tag = Tag(name, TagType.CLASSIFICATION)
                     tagsMap[name.toLowerCase()] = tag
                     tags.add(tag)
                 }
-                for (name in tagList.credit) {
+                for (name in tagList.credit!!) {
                     val tag = Tag(name, TagType.CREDIT)
                     tagsMap[name.toLowerCase()] = tag
                     tags.add(tag)
                 }
-                for (name in tagList.academic_year) {
+                for (name in tagList.academic_year!!) {
                     val tag = Tag(name, TagType.ACADEMIC_YEAR)
                     tagsMap[name.toLowerCase()] = tag
                     tags.add(tag)
                 }
-                for (name in tagList.instructor) {
+                for (name in tagList.instructor!!) {
                     val tag = Tag(name, TagType.INSTRUCTOR)
                     tagsMap[name.toLowerCase()] = tag
                     tags.add(tag)
                 }
-                for (name in tagList.department) {
+                for (name in tagList.department!!) {
                     val tag = Tag(name, TagType.DEPARTMENT)
                     tagsMap[name.toLowerCase()] = tag
                     tags.add(tag)
                 }
-                for (name in tagList.category) {
+                for (name in tagList.category!!) {
                     val tag = Tag(name.toLowerCase(), TagType.CATEGORY)
                     tagsMap[name] = tag
                     tags.add(tag)

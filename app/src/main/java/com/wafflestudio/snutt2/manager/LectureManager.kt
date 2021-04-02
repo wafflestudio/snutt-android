@@ -134,7 +134,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "post lecture request success!!")
                 PrefManager.instance!!.updateNewTable(table)
-                setLectures(table.lecture_list)
+                setLectures(table.lecture_list!!)
                 notifyLecturesChanged()
                 callback.success(table, response)
             }
@@ -165,7 +165,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         app.restService.postLecture(token, id, lecture, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 PrefManager.instance!!.updateNewTable(table)
-                setLectures(table.lecture_list)
+                setLectures(table.lecture_list!!)
                 notifyLecturesChanged()
                 callback?.success(table, response)
             }
@@ -184,7 +184,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "remove lecture request success!!")
                 PrefManager.instance!!.updateNewTable(table)
-                setLectures(table.lecture_list)
+                setLectures(table.lecture_list!!)
                 currentLecture = null
                 notifyLecturesChanged()
                 callback.success(table, response)
@@ -206,7 +206,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "reset lecture request success!!")
                 PrefManager.instance!!.updateNewTable(table)
-                setLectures(table.lecture_list)
+                setLectures(table.lecture_list!!)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
                 callback.success(table, response)
@@ -226,7 +226,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         app.restService.putLecture(token, id, lectureId, target, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 PrefManager.instance!!.updateNewTable(table)
-                setLectures(table.lecture_list)
+                setLectures(table.lecture_list!!)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
                 callback?.success(table, response)
@@ -278,7 +278,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
 
     //주어진 요일, 시각을 포함하고 있는지
     fun contains(lec1: Lecture, given_day: Int, given_time: Float): Boolean {
-        for (element1 in lec1.class_time_json) {
+        for (element1 in lec1.class_time_json!!) {
             val class1 = element1.asJsonObject
             val day1 = class1["day"].asInt
             val start1 = class1["start"].asFloat
@@ -366,8 +366,8 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         get() {
             val masks = IntArray(7)
             for (lecture in lectures) {
-                for (i in 0 until lecture.class_time_mask.size()) {
-                    val mask = lecture.class_time_mask[i].asInt
+                for (i in 0 until lecture.class_time_mask!!.size()) {
+                    val mask = lecture.class_time_mask!![i].asInt
                     masks[i] = masks[i] or mask
                 }
             }
@@ -396,8 +396,8 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         app.restService.getColorList(name, object : Callback<ColorList> {
             override fun success(colorList: ColorList, response: Response) {
                 Log.d(TAG, "get color list request success")
-                setColors(colorList.colors)
-                setColorNames(colorList.names)
+                setColors(colorList.colors!!)
+                setColorNames(colorList.names!!)
                 val colorListJson = Gson().toJson(this@LectureManager.colorList)
                 val colorNameListJson = Gson().toJson(colorNameList)
                 PrefManager.instance!!.lectureColors = colorListJson
@@ -422,11 +422,11 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     }
 
     fun getBgColorByIndex(index: Int): Int {
-        return if (colorList!!.size == 0) DEFAULT_BG[index - 1] else colorList!![index - 1].bg
+        return if (colorList!!.size == 0) DEFAULT_BG[index - 1] else colorList!![index - 1].bgColor
     }
 
     fun getFgColorByIndex(index: Int): Int {
-        return if (colorList!!.size == 0) DEFAULT_FG[index - 1] else colorList!![index - 1].fg
+        return if (colorList!!.size == 0) DEFAULT_FG[index - 1] else colorList!![index - 1].fgColor
     }
 
     fun getColorNameByIndex(index: Int): String {
@@ -448,13 +448,13 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     }
 
     private fun isDuplicatedClassTime(lec1: Lecture, lec2: Lecture): Boolean {
-        for (element1 in lec1.class_time_json) {
+        for (element1 in lec1.class_time_json!!) {
             val class1 = element1.asJsonObject
             val day1 = class1["day"].asInt
             val start1 = class1["start"].asFloat
             val len1 = class1["len"].asFloat
             val end1 = start1 + len1
-            for (element2 in lec2.class_time_json) {
+            for (element2 in lec2.class_time_json!!) {
                 val class2 = element2.asJsonObject
                 val day2 = class2["day"].asInt
                 val start2 = class2["start"].asFloat
