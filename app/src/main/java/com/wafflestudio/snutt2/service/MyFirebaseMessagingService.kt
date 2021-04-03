@@ -1,37 +1,28 @@
-package com.wafflestudio.snutt2.service;
+package com.wafflestudio.snutt2.service
+
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.media.RingtoneManager
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.manager.NotiManager
+import com.wafflestudio.snutt2.ui.MainActivity
 
 /**
  * Created by makesource on 2016. 11. 19..
  */
-
-
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import androidx.core.app.NotificationCompat;
-import android.util.Log;
-
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.manager.NotiManager;
-import com.wafflestudio.snutt2.ui.MainActivity;
-
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
-    private static final String TAG = "MyFirebaseMsgService";
-
+class MyFirebaseMessagingService : FirebaseMessagingService() {
     /**
      * Called when message is received.
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
-    @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // [START_EXCLUDE]
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
@@ -44,51 +35,49 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Log.d(TAG, "From: " + remoteMessage.from)
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+        if (remoteMessage.data.size > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.data)
         }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()) ;
+        if (remoteMessage.notification != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.notification.body)
+            sendNotification(remoteMessage.notification.title, remoteMessage.notification.body)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
     // [END receive_message]
-
     /**
      * Create and show a simple notification containing the received FCM message.
      *
      * @param title FCM message title received.
      * @param body FCM message body received.
      */
-    private void sendNotification(String title, String body) {
-        Log.d(TAG, "title : " + title);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+    private fun sendNotification(title: String?, body: String?) {
+        Log.d(TAG, "title : $title")
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT)
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val notificationBuilder = NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        NotiManager.instance!!.notifyNotificationReceived()
+    }
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-
-        NotiManager.getInstance().notifyNotificationReceived();
+    companion object {
+        private const val TAG = "MyFirebaseMsgService"
     }
 }
