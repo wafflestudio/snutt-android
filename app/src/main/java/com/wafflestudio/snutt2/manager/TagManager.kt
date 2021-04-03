@@ -27,7 +27,7 @@ class TagManager private constructor(app: SNUTTApplication) {
     private var department: MutableList<String>
     private var category: MutableList<String>
     private var time: MutableList<String>
-    private val myTags: MutableList<Tag?>
+    private val myTags: MutableList<Tag>
     private val app: SNUTTApplication
 
     interface OnTagChangedListener {
@@ -98,12 +98,12 @@ class TagManager private constructor(app: SNUTTApplication) {
         return tags
     }
 
-    fun getMyTags(): List<Tag?> {
+    fun getMyTags(): List<Tag> {
         return myTags
     }
 
     fun updateNewTag(year: Int, semester: Int) {
-        app.restService.getTagList(year, semester, object : Callback<TagList> {
+        app.restService!!.getTagList(year, semester, object : Callback<TagList> {
             override fun success(tagList: TagList, response: Response) {
                 Log.d(TAG, "update new tags Success!!")
                 reset()

@@ -1,76 +1,64 @@
-package com.wafflestudio.snutt2.provider;
+package com.wafflestudio.snutt2.provider
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.view.View;
-import android.widget.RemoteViews;
-
-import com.google.common.base.Strings;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.manager.PrefManager;
-import com.wafflestudio.snutt2.ui.SplashActivity;
-import com.wafflestudio.snutt2.view.TableView;
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
+import android.widget.RemoteViews
+import com.google.common.base.Strings
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
+import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.ui.SplashActivity
+import com.wafflestudio.snutt2.view.TableView
 
 /**
  * Created by makesource on 2017. 8. 19..
  */
-
-public class TimetableWidgetProvider extends AppWidgetProvider {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
+class TimetableWidgetProvider : AppWidgetProvider() {
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
     }
 
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            Intent intent = new Intent(context, SplashActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_timetable);
-            views.setOnClickPendingIntent(R.id.layout, pendingIntent);
-            renderViews(context, appWidgetManager, appWidgetId, views);
-
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (appWidgetId in appWidgetIds) {
+            val intent = Intent(context, SplashActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val views = RemoteViews(context.packageName, R.layout.widget_timetable)
+            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
+            renderViews(context, appWidgetManager, appWidgetId, views)
+            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
-    private void renderViews(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views) {
-        int width = (int) SNUTTUtils.getDisplayWidth();
-        int height = (int) SNUTTUtils.getDisplayHeight();
-
-        if (!Strings.isNullOrEmpty(PrefManager.getInstance().getCurrentTable())) {
-            Bitmap resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(resultBitmap);
-            TableView table = new TableView(context);
-            table.drawWidget(canvas, width, height);
-
-            views.setViewVisibility(R.id.placeholder, View.GONE);
-            views.setImageViewBitmap(R.id.table, resultBitmap);
+    private fun renderViews(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, views: RemoteViews) {
+        val width = displayWidth.toInt()
+        val height = displayHeight.toInt()
+        if (!Strings.isNullOrEmpty(PrefManager.instance!!.currentTable)) {
+            val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(resultBitmap)
+            val table = TableView(context)
+            table.drawWidget(canvas, width, height)
+            views.setViewVisibility(R.id.placeholder, View.GONE)
+            views.setImageViewBitmap(R.id.table, resultBitmap)
         }
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
     }
 
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
     }
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
     }
-
 }

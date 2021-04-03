@@ -14,7 +14,7 @@ import java.util.*
  */
 class NotiManager private constructor(app: SNUTTApplication) {
     private val app: SNUTTApplication
-    private var notifications: MutableList<Notification?>?
+    private var notifications: MutableList<Notification>?
     var fetched: Boolean
 
     interface OnNotificationReceivedListener {
@@ -48,7 +48,7 @@ class NotiManager private constructor(app: SNUTTApplication) {
         fetched = false
     }
 
-    fun getNotifications(): List<Notification?>? {
+    fun getNotifications(): List<Notification>? {
         return notifications
     }
 
@@ -56,14 +56,14 @@ class NotiManager private constructor(app: SNUTTApplication) {
         return if (notifications == null || notifications!!.size > 0) true else false
     }
 
-    fun loadData(offset: Int, callback: Callback<Any>) {
+    fun loadData(offset: Int, callback: Callback<List<Notification>>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["limit"] = 20
         query["offset"] = offset
         query["explicit"] = 1 // for unread count update
-        app.restService.getNotification(token, query, object : Callback<List<Notification?>> {
-            override fun success(notificationList: List<Notification?>, response: Response) {
+        app.restService!!.getNotification(token, query, object : Callback<List<Notification>> {
+            override fun success(notificationList: List<Notification>, response: Response) {
                 Log.d(TAG, "get notification success!")
                 removeProgressBar()
                 for (notification in notificationList) {
@@ -80,7 +80,8 @@ class NotiManager private constructor(app: SNUTTApplication) {
     }
 
     fun addProgressBar() {
-        notifications!!.add(null)
+        // Refactoring FIXME:
+//        notifications!!.add(null)
     }
 
     fun removeProgressBar() {
@@ -93,8 +94,8 @@ class NotiManager private constructor(app: SNUTTApplication) {
         query["limit"] = 20
         query["offset"] = 0
         query["explicit"] = 1
-        app.restService.getNotification(token, query, object : Callback<List<Notification?>> {
-            override fun success(notificationList: List<Notification?>, response: Response) {
+        app.restService!!.getNotification(token, query, object : Callback<List<Notification>> {
+            override fun success(notificationList: List<Notification>, response: Response) {
                 Log.d(TAG, "get notification success!")
                 notifications!!.clear()
                 for (notification in notificationList) {
@@ -110,9 +111,9 @@ class NotiManager private constructor(app: SNUTTApplication) {
         })
     }
 
-    fun getNotificationCount(callback: Callback<Any>) {
+    fun getNotificationCount(callback: Callback<Map<String?, Int?>>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getNotificationCount(token, object : Callback<Map<String?, Int?>> {
+        app.restService!!.getNotificationCount(token, object : Callback<Map<String?, Int?>> {
             override fun success(map: Map<String?, Int?>?, response: Response) {
                 Log.d(TAG, "get notification count success!")
                 callback.success(map, response)

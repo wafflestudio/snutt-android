@@ -24,9 +24,9 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         return if (tables == null || tables!!.size == 0) false else true
     }
 
-    fun getTableList(callback: Callback<Any>) {
+    fun getTableList(callback: Callback<List<Table>>) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getTableList(token, object : Callback<List<Table>> {
+        app.restService!!.getTableList(token, object : Callback<List<Table>> {
             override fun success(table_list: List<Table>, response: Response) {
                 Log.d(TAG, "get table list request success!")
                 tables!!.clear()
@@ -42,13 +42,13 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun postTable(year: Int, semester: Int, title: String?, callback: Callback<List<Table>?>?) {
+    fun postTable(year: Int, semester: Int, title: String?, callback: Callback<List<Table>>?) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["year"] = year
         query["semester"] = semester
         query["title"] = title
-        app.restService.postTable(token, query, object : Callback<List<Table>> {
+        app.restService!!.postTable(token, query, object : Callback<List<Table>> {
             override fun success(table_list: List<Table>, response: Response) {
                 Log.d(TAG, "post new table request success!!")
                 tables!!.clear()
@@ -64,9 +64,9 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun getTableById(id: String?, callback: Callback<Any>) {
+    fun getTableById(id: String?, callback: Callback<Table>) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getTableById(token, id, object : Callback<Table> {
+        app.restService!!.getTableById(token, id, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "get table by id success")
                 LectureManager.instance!!.setLectures(table.lecture_list!!)
@@ -83,9 +83,9 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun getDefaultTable(callback: Callback<Table?>?) {
+    fun getDefaultTable(callback: Callback<Table>?) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getRecentTable(token, object : Callback<Table> {
+        app.restService!!.getRecentTable(token, object : Callback<Table> {
             override fun success(table: Table, response: Response) {
                 Log.d(TAG, "get recent table request success")
                 LectureManager.instance!!.setLectures(table.lecture_list!!)
@@ -102,9 +102,9 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun getCoursebook(callback: Callback<List<Coursebook?>?>?) {
+    fun getCoursebook(callback: Callback<List<Coursebook>>?) {
         //String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        app.restService.getCoursebook(object : Callback<List<Coursebook>> {
+        app.restService!!.getCoursebook(object : Callback<List<Coursebook>> {
             override fun success(coursebooks: List<Coursebook>?, response: Response) {
                 Log.d(TAG, "get coursebook request success.")
                 callback?.success(coursebooks, response)
@@ -117,9 +117,9 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun deleteTable(id: String?, callback: Callback<List<Table>?>?) {
+    fun deleteTable(id: String?, callback: Callback<List<Table>>?) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.deleteTable(token, id, object : Callback<List<Table>> {
+        app.restService!!.deleteTable(token, id, object : Callback<List<Table>> {
             override fun success(table_list: List<Table>, response: Response) {
                 Log.d(TAG, "delete table request success.")
                 tables!!.clear()
@@ -135,11 +135,11 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun putTable(id: String?, title: String?, callback: Callback<List<Table>?>?) {
+    fun putTable(id: String?, title: String?, callback: Callback<List<Table>>?) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["title"] = title
-        app.restService.putTable(token, id, query, object : Callback<List<Table>> {
+        app.restService!!.putTable(token, id, query, object : Callback<List<Table>> {
             override fun success(table_list: List<Table>, response: Response) {
                 Log.d(TAG, "delete table request success.")
                 tables!!.clear()
