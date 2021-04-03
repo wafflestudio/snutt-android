@@ -56,11 +56,3 @@ jobs:
           EOF
       - name: Build debug APK
         run: ./gradlew assembleStagingDebug --stacktrace
-      - name: Run test
-        run: ./gradlew test --stacktrace
-      - name: Upload test report
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: test-result
-          path: ./**/build/reports/tests/**
