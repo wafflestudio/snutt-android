@@ -110,7 +110,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["email"] = email
-        app.restService.putUserInfo(token, query, object : Callback<Response?> {
+        app.restService.putUserInfo(token, query, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "put user info success")
                 user.email = email
@@ -126,7 +126,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
 
     fun deleteUserAccount(callback: Callback<Any>) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.deleteUserAccount(token, object : Callback<Response?> {
+        app.restService.deleteUserAccount(token, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "delete user account success")
                 callback?.success(response, response2)
@@ -160,7 +160,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
 
     fun getUserFacebook(callback: Callback<Any>) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getUserFacebook(token, object : Callback<Facebook?> {
+        app.restService.getUserFacebook(token, object : Callback<Facebook> {
             override fun success(facebook: Facebook?, response: Response) {
                 Log.d(TAG, "get user facebook success!")
                 callback?.success(facebook, response)
@@ -230,7 +230,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
     }
 
     fun getAppVersion(callback: Callback<Any>) {
-        app.restService.getAppVersion(object : Callback<Version?> {
+        app.restService.getAppVersion(object : Callback<Version> {
             override fun success(version: Version?, response: Response) {
                 Log.d(TAG, "get app version success!")
                 callback?.success(version, response)
@@ -248,7 +248,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["email"] = email
         query["message"] = detail
-        app.restService.postFeedback(token, query, object : Callback<Response?> {
+        app.restService.postFeedback(token, query, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "post feedback success!")
                 callback?.success(response, response2)
@@ -264,7 +264,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
     fun registerFirebaseToken(callback: Callback<Any>?) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         val firebaseToken = FirebaseInstanceId.getInstance().token
-        app.restService.registerFirebaseToken(token, firebaseToken, object : Callback<Response?> {
+        app.restService.registerFirebaseToken(token, firebaseToken, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "register firebase token success!")
                 Log.d(TAG, "token : $firebaseToken")
@@ -281,7 +281,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
     fun deleteFirebaseToken(callback: Callback<Any>) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         val firebaseToken = FirebaseInstanceId.getInstance().token
-        app.restService.deleteFirebaseToken(token, firebaseToken, object : Callback<Response?> {
+        app.restService.deleteFirebaseToken(token, firebaseToken, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "delete firebase token success!")
                 Log.d(TAG, "token : $firebaseToken")
@@ -301,7 +301,7 @@ class UserManager private constructor(private val app: SNUTTApplication) {
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
         query["user_id"] = user_id
         query["registration_id"] = firebaseToken
-        app.restService.postForceLogout(query, object : Callback<Response?> {
+        app.restService.postForceLogout(query, object : Callback<Response> {
             override fun success(response: Response?, response2: Response) {
                 Log.d(TAG, "post force logout success")
                 callback?.success(response, response2)

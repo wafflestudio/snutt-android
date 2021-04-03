@@ -104,8 +104,8 @@ class TableManager private constructor(private val app: SNUTTApplication) {
 
     fun getCoursebook(callback: Callback<List<Coursebook?>?>?) {
         //String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        app.restService.getCoursebook(object : Callback<List<Coursebook?>?> {
-            override fun success(coursebooks: List<Coursebook?>?, response: Response) {
+        app.restService.getCoursebook(object : Callback<List<Coursebook>> {
+            override fun success(coursebooks: List<Coursebook>?, response: Response) {
                 Log.d(TAG, "get coursebook request success.")
                 callback?.success(coursebooks, response)
             }

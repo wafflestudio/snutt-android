@@ -112,7 +112,7 @@ class NotiManager private constructor(app: SNUTTApplication) {
 
     fun getNotificationCount(callback: Callback<Any>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService.getNotificationCount(token, object : Callback<Map<String?, Int?>?> {
+        app.restService.getNotificationCount(token, object : Callback<Map<String?, Int?>> {
             override fun success(map: Map<String?, Int?>?, response: Response) {
                 Log.d(TAG, "get notification count success!")
                 callback.success(map, response)
