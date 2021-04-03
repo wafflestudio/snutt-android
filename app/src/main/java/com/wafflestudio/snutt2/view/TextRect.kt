@@ -1,43 +1,26 @@
-package com.wafflestudio.snutt2.view;
+package com.wafflestudio.snutt2.view
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Paint.FontMetricsInt
+import android.graphics.Rect
 
 /**
  * Created by makesource on 2016. 1. 24..
  */
-public class TextRect {
-    // maximum number of lines; this is a fixed number in order
-    // to use a predefined array to avoid ArrayList (or something
-    // similar) because filling it does involve allocating memory
-    static private int MAX_LINES = 256;
-
+class TextRect(paint: Paint) {
     // those members are stored per instance to minimize
     // the number of allocations to avoid triggering the
     // GC too much
-    private Paint.FontMetricsInt metrics = null;
-    private Paint paint = null;
-    private int starts[] = new int[MAX_LINES];
-    private int stops[] = new int[MAX_LINES];
-    private int lines = 0;
-    private int textHeight = 0;
-    private Rect bounds = new Rect();
-    private String text = null;
-    private boolean wasCut = false;
-
-    /**
-     * Create reusable text rectangle (use one instance per font).
-     *
-     * @param paint - paint specifying the font
-     */
-    public TextRect( final Paint paint )
-    {
-        metrics = paint.getFontMetricsInt();
-        String temp = metrics.toString();
-        System.out.println("metrics" + temp);
-        this.paint = paint;
-    }
+    private var metrics: FontMetricsInt? = null
+    private var paint: Paint? = null
+    private val starts = IntArray(MAX_LINES)
+    private val stops = IntArray(MAX_LINES)
+    private var lines = 0
+    private var textHeight = 0
+    private val bounds = Rect()
+    private var text: String? = null
+    private var wasCut = false
 
     /**
      * Calculate height of text block and prepare to draw it.
@@ -47,117 +30,78 @@ public class TextRect {
      * @param maxHeight - maximum height in pixels
      * @returns height of text in pixels
      */
-    public int prepare(final String text, final int maxWidth, final int maxHeight )
-    {
-        lines = 0;
-        textHeight = 0;
-        this.text = text;
-        wasCut = false;
+    fun prepare(text: String, maxWidth: Int, maxHeight: Int): Int {
+        lines = 0
+        textHeight = 0
+        this.text = text
+        wasCut = false
 
         // get maximum number of characters in one line
-        paint.getTextBounds("i", 0, 1, bounds);
-
-        final int maximumInLine = maxWidth / bounds.width();
-        final int length = text.length();
-
-        if( length > 0 )
-        {
-            final int lineHeight = -metrics.ascent + metrics.descent;
-            int start = 0;
-            int stop = maximumInLine > length ? length : maximumInLine;
+        paint!!.getTextBounds("i", 0, 1, bounds)
+        val maximumInLine = maxWidth / bounds.width()
+        val length = text.length
+        if (length > 0) {
+            val lineHeight = -metrics!!.ascent + metrics!!.descent
+            var start = 0
+            var stop = if (maximumInLine > length) length else maximumInLine
             // stop = min(length,maximuminline);
+            while (true) {
 
-            for( ;; )
-            {
                 // skip LF and spaces
-                for( ; start < length; ++start )
-                {
-                    char ch = text.charAt( start );
-
-                    if( ch != '\n' && ch != '\r' && ch != '\t' && ch != ' ' )
-                        break;
+                while (start < length) {
+                    val ch = text[start]
+                    if (ch != '\n' && ch != '\r' && ch != '\t' && ch != ' ') break
+                    ++start
                 }
-
-                for( int o = stop + 1; stop < o && stop > start; )
-                {
-                    o = stop;
-
-                    int lowest = text.indexOf( "\n", start );
+                var o = stop + 1
+                while (stop < o && stop > start) {
+                    o = stop
+                    var lowest = text.indexOf("\n", start)
                     // 강의명만 생각
-
-                    paint.getTextBounds(text, start, stop, bounds );
-
-                    if( (start <= lowest && lowest < stop) || bounds.width() > maxWidth ) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
+                    paint!!.getTextBounds(text, start, stop, bounds)
+                    if (start <= lowest && lowest < stop || bounds.width() > maxWidth) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
                     {
-                        --stop;
-
-                        if( lowest < start || lowest > stop )
-                        {
-                            final int blank = text.lastIndexOf( " ", stop );
-
-                            if( blank > start ) lowest = blank;
+                        --stop
+                        if (lowest < start || lowest > stop) {
+                            val blank = text.lastIndexOf(" ", stop)
+                            if (blank > start) lowest = blank
                         }
-
-                        if( start <= lowest && lowest <= stop )
-                        {
-                            final char ch = text.charAt( stop );
-
-                            if( ch != '\n' && ch != ' ' )
-                                ++lowest;
-
-                            stop = lowest;
+                        if (start <= lowest && lowest <= stop) {
+                            val ch = text[stop]
+                            if (ch != '\n' && ch != ' ') ++lowest
+                            stop = lowest
                         }
-
-                        continue;
+                        continue
                     }
-
-                    break;
+                    break
                 }
-
-                if( start >= stop )
-                    break;
-
-                int minus = 0;
+                if (start >= stop) break
+                var minus = 0
 
                 // cut off lf or space
-                if( stop < length )
-                {
-                    final char ch = text.charAt( stop - 1 );
-
-                    if( ch == '\n' ||
-                            ch == ' ' )
-                        minus = 1;
+                if (stop < length) {
+                    val ch = text[stop - 1]
+                    if (ch == '\n' ||
+                            ch == ' ') minus = 1
                 }
-
-                if( textHeight + lineHeight > maxHeight )
-                {
-                    wasCut = true;
-                    break;
+                if (textHeight + lineHeight > maxHeight) {
+                    wasCut = true
+                    break
                 }
-
-                starts[lines] = start;
-                stops[lines] = stop - minus;
-
-                if( ++lines > MAX_LINES )
-                {
-                    wasCut = true;
-                    break;
+                starts[lines] = start
+                stops[lines] = stop - minus
+                if (++lines > MAX_LINES) {
+                    wasCut = true
+                    break
                 }
-
-                if( textHeight > 0 )
-                    textHeight += metrics.leading;
-
-                textHeight += lineHeight;
-
-                if( stop >= length )
-                    break;
-
-                start = stop;
-                stop = length;
+                if (textHeight > 0) textHeight += metrics!!.leading
+                textHeight += lineHeight
+                if (stop >= length) break
+                start = stop
+                stop = length
             }
         }
-
-        return textHeight;
+        return textHeight
     }
 
     /**
@@ -167,44 +111,50 @@ public class TextRect {
      * @param left - left corner
      * @param top - top corner
      */
-    public void draw(final Canvas canvas, final int left, final int top, final int bubbleWidth, final int fgColor)
-    {
-        if( textHeight == 0 )
-            return;
-
-        final int before = -metrics.ascent;
-        final int after = metrics.descent + metrics.leading;
-        int y = top;
-
-        --lines;
-        for( int n = 0; n <= lines; ++n )
-        {
-            String t;
-
-            y += before;
-
-            if( wasCut && n == lines &&	stops[n] - starts[n] > 3 )
-                t = text.substring( starts[n], stops[n] - 3 ).concat( "..." );
-            else
-                t = text.substring( starts[n], stops[n] );
+    fun draw(canvas: Canvas, left: Int, top: Int, bubbleWidth: Int, fgColor: Int) {
+        if (textHeight == 0) return
+        val before = -metrics!!.ascent
+        val after = metrics!!.descent + metrics!!.leading
+        var y = top
+        --lines
+        for (n in 0..lines) {
+            var t: String
+            y += before
+            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) text!!.substring(starts[n], stops[n] - 3) + "..." else text!!.substring(starts[n], stops[n])
 
             //텍스트 가운데 정렬
-            int leftResult = left;
-            paint.getTextBounds(t, 0, t.length(), bounds);
-            int textWidth = bounds.right - bounds.left;
-            leftResult += (bubbleWidth - textWidth) / 2;
+            var leftResult = left
+            paint!!.getTextBounds(t, 0, t.length, bounds)
+            val textWidth = bounds.right - bounds.left
+            leftResult += (bubbleWidth - textWidth) / 2
             //
-            paint.setColor(fgColor);
-            canvas.drawText(t, leftResult, y, paint );
-
-            y += after;
+            paint!!.color = fgColor
+            canvas.drawText(t, leftResult.toFloat(), y.toFloat(), paint!!)
+            y += after
         }
     }
 
-    /** Returns true if text was cut to fit into the maximum height */
-    public final boolean wasCut()
-    {
-        return wasCut;
+    /** Returns true if text was cut to fit into the maximum height  */
+    fun wasCut(): Boolean {
+        return wasCut
     }
 
+    companion object {
+        // maximum number of lines; this is a fixed number in order
+        // to use a predefined array to avoid ArrayList (or something
+        // similar) because filling it does involve allocating memory
+        private const val MAX_LINES = 256
+    }
+
+    /**
+     * Create reusable text rectangle (use one instance per font).
+     *
+     * @param paint - paint specifying the font
+     */
+    init {
+        metrics = paint.fontMetricsInt
+        val temp = metrics.toString()
+        println("metrics$temp")
+        this.paint = paint
+    }
 }

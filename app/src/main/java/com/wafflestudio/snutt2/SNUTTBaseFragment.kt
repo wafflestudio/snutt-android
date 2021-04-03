@@ -1,59 +1,54 @@
-package com.wafflestudio.snutt2;
+package com.wafflestudio.snutt2
 
-
-import android.app.Activity;
-import android.content.Context;
-import androidx.fragment.app.Fragment;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-
-import com.google.common.base.Preconditions;
-import com.wafflestudio.snutt2.ui.MainActivity;
+import android.app.Activity
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
+import com.google.common.base.Preconditions
+import com.wafflestudio.snutt2.ui.MainActivity
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SNUTTBaseFragment extends Fragment {
-
-    private Activity mActivity;
-    private static final String TAG = "SNUTT_BASE_FRAGMENT";
-    public static final String INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID";
-    public static final String INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION";
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity){
-            mActivity = (Activity) context;
+open class SNUTTBaseFragment : Fragment() {
+    private var mActivity: Activity? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            mActivity = context
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mActivity = null;
+    override fun onDetach() {
+        super.onDetach()
+        mActivity = null
     }
 
-    protected SNUTTApplication getApp() {
-        return (SNUTTApplication) mActivity.getApplication();
+    protected val app: SNUTTApplication
+        protected get() = mActivity!!.application as SNUTTApplication
+    val mainActivity: MainActivity?
+        get() {
+            val activity = mActivity
+            Preconditions.checkState(activity is MainActivity)
+            return activity as MainActivity?
+        }
+    val baseActivity: SNUTTBaseActivity?
+        get() {
+            val activity = mActivity
+            Preconditions.checkState(activity is SNUTTBaseActivity)
+            return activity as SNUTTBaseActivity?
+        }
+
+    protected fun hideSoftKeyboard(view: View) {
+        if (mActivity == null) return
+        val mgr = mActivity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        mgr.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    public MainActivity getMainActivity() {
-        Activity activity = mActivity;
-        Preconditions.checkState(activity instanceof MainActivity);
-        return (MainActivity) activity;
-    }
-
-    public SNUTTBaseActivity getBaseActivity() {
-        Activity activity = mActivity;
-        Preconditions.checkState(activity instanceof SNUTTBaseActivity);
-        return (SNUTTBaseActivity) activity;
-    }
-
-    protected void hideSoftKeyboard(View view) {
-        if (mActivity == null) return;
-
-        InputMethodManager mgr = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    companion object {
+        private const val TAG = "SNUTT_BASE_FRAGMENT"
+        const val INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID"
+        const val INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION"
     }
 }

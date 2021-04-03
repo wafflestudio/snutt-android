@@ -1,254 +1,234 @@
-package com.wafflestudio.snutt2.view;
+package com.wafflestudio.snutt2.view
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.View;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseActivity;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.manager.PrefManager;
-import com.wafflestudio.snutt2.model.Lecture;
-import com.wafflestudio.snutt2.model.Table;
-
-import java.util.List;
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.*
+import android.util.AttributeSet
+import android.util.Log
+import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.View
+import com.google.gson.Gson
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseActivity
+import com.wafflestudio.snutt2.SNUTTUtils.dpTopx
+import com.wafflestudio.snutt2.SNUTTUtils.spTopx
+import com.wafflestudio.snutt2.SNUTTUtils.zeroStr
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.model.Table
 
 /**
  * Created by makesource on 2016. 1. 24..
  */
-public class TableView extends View {
-
-    private static String TAG = "VIEW_TAG_TABLE_VIEW";
-
-    private Paint backgroundPaint;
-    private Paint linePaint, linePaint2, topLabelTextPaint, leftLabelTextPaint;
-    private Context mContext;
-    private String[] wdays;
-    private float leftLabelWidth = SNUTTUtils.dpTopx(24.5f);
-    private float topLabelHeight = SNUTTUtils.dpTopx(28.5f);
-    private float unitWidth, unitHeight;
-    private TextRect titleTextRect, locationTextRect;
-    private Paint titleTextPaint, locationTextPaint;
-
-
-    private List<Lecture> lectures;
-    private boolean export; // 현재 선택한 강의를 보여줄지 말지?
+class TableView : View {
+    private var backgroundPaint: Paint? = null
+    private var linePaint: Paint? = null
+    private var linePaint2: Paint? = null
+    private var topLabelTextPaint: Paint? = null
+    private var leftLabelTextPaint: Paint? = null
+    private var mContext: Context
+    private var wdays: Array<String?> = emptyArray()
+    private val leftLabelWidth = dpTopx(24.5f)
+    private val topLabelHeight = dpTopx(28.5f)
+    private var unitWidth = 0f
+    private var unitHeight = 0f
+    private var titleTextRect: TextRect? = null
+    private var locationTextRect: TextRect? = null
+    private var titleTextPaint: Paint? = null
+    private var locationTextPaint: Paint? = null
+    private var lectures: List<Lecture>?
+    private var export // 현재 선택한 강의를 보여줄지 말지?
+            : Boolean
 
     // 시간표 trim 용
-    private int numWidth;
-    private int startWidth;
-    private int numHeight;
-    private int startHeight;
+    private var numWidth = 0
+    private var startWidth = 0
+    private var numHeight = 0
+    private var startHeight = 0
 
-    public TableView(Context context) {
-        super(context);
-        export = true;
-        String json = PrefManager.getInstance().getCurrentTable();
+    constructor(context: Context) : super(context) {
+        export = true
+        val json: String? = PrefManager.instance!!.currentTable
         if (json != null) {
-            Table table = new Gson().fromJson(json, Table.class);
-            LectureManager.getInstance().setLectures(table.getLecture_list());
+            val table = Gson().fromJson(json, Table::class.java)
+            instance!!.setLectures(table.lecture_list!!)
         }
-        lectures = LectureManager.getInstance().getLectures();
-        mContext = context;
-        init();
+        lectures = instance!!.getLectures()
+        mContext = context
+        init()
     }
 
-    public TableView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
-                R.styleable.TimeTableView_export, false);
-
-        lectures = LectureManager.getInstance().getLectures();
-        mContext = context;
-        init();
+                R.styleable.TimeTableView_export, false)
+        lectures = instance!!.getLectures()
+        mContext = context
+        init()
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        unitHeight = (getHeight() - topLabelHeight) / (float) (numHeight * 2);
-        unitWidth = (getWidth() - leftLabelWidth) / (float) numWidth;
-        invalidate();
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        unitHeight = (height - topLabelHeight) / (numHeight * 2).toFloat()
+        unitWidth = (width - leftLabelWidth) / numWidth.toFloat()
+        invalidate()
     }
 
-    private void init(){
-        setDrawingCacheEnabled(true);
-        backgroundPaint = new Paint();
-        backgroundPaint.setColor(0xffffffff);
-
-        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(Color.rgb(235, 235, 235));
-        linePaint.setStrokeWidth(1);
-
-        linePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint2.setColor(Color.rgb(243, 243, 243));
-        linePaint2.setStrokeWidth(1);
-
-        topLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        topLabelTextPaint.setColor(Color.argb(180,0,0,0));
-        topLabelTextPaint.setTextSize(SNUTTUtils.spTopx(12f));
-        topLabelTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        leftLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        leftLabelTextPaint.setColor(Color.argb(180,0,0,0));
-        leftLabelTextPaint.setTextSize(SNUTTUtils.spTopx(12f));
-        leftLabelTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        wdays = new String[7];
-        wdays[0] = mContext.getResources().getString(R.string.wday_mon);
-        wdays[1] = mContext.getResources().getString(R.string.wday_tue);
-        wdays[2] = mContext.getResources().getString(R.string.wday_wed);
-        wdays[3] = mContext.getResources().getString(R.string.wday_thu);
-        wdays[4] = mContext.getResources().getString(R.string.wday_fri);
-        wdays[5] = mContext.getResources().getString(R.string.wday_sat);
-        wdays[6] = mContext.getResources().getString(R.string.wday_sun);
-
-        titleTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        titleTextPaint.setTextSize(SNUTTUtils.spTopx(10));
-        titleTextRect = new TextRect(titleTextPaint);
-        locationTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        locationTextPaint.setTextSize(SNUTTUtils.spTopx(11));
-        locationTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        locationTextRect = new TextRect(locationTextPaint);
-
-        numWidth = 7;
-        startWidth = 0;
-        numHeight = 14;
-        startHeight = 0;
+    private fun init() {
+        isDrawingCacheEnabled = true
+        backgroundPaint = Paint()
+        backgroundPaint!!.color = -0x1
+        linePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        linePaint!!.color = Color.rgb(235, 235, 235)
+        linePaint!!.strokeWidth = 1f
+        linePaint2 = Paint(Paint.ANTI_ALIAS_FLAG)
+        linePaint2!!.color = Color.rgb(243, 243, 243)
+        linePaint2!!.strokeWidth = 1f
+        topLabelTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        topLabelTextPaint!!.color = Color.argb(180, 0, 0, 0)
+        topLabelTextPaint!!.textSize = spTopx(12f)
+        topLabelTextPaint!!.textAlign = Paint.Align.CENTER
+        leftLabelTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        leftLabelTextPaint!!.color = Color.argb(180, 0, 0, 0)
+        leftLabelTextPaint!!.textSize = spTopx(12f)
+        leftLabelTextPaint!!.textAlign = Paint.Align.CENTER
+        wdays = arrayOfNulls(7)
+        wdays[0] = mContext.resources.getString(R.string.wday_mon)
+        wdays[1] = mContext.resources.getString(R.string.wday_tue)
+        wdays[2] = mContext.resources.getString(R.string.wday_wed)
+        wdays[3] = mContext.resources.getString(R.string.wday_thu)
+        wdays[4] = mContext.resources.getString(R.string.wday_fri)
+        wdays[5] = mContext.resources.getString(R.string.wday_sat)
+        wdays[6] = mContext.resources.getString(R.string.wday_sun)
+        titleTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        titleTextPaint!!.textSize = spTopx(10f)
+        titleTextRect = TextRect(titleTextPaint!!)
+        locationTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        locationTextPaint!!.textSize = spTopx(11f)
+        locationTextPaint!!.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        locationTextRect = TextRect(locationTextPaint!!)
+        numWidth = 7
+        startWidth = 0
+        numHeight = 14
+        startHeight = 0
     }
 
-    float getTextWidth(String text, Paint paint){
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        return bounds.width();
-    }
-    float getTextHeight(String text, Paint paint){
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        return bounds.height();
+    fun getTextWidth(text: String, paint: Paint): Float {
+        val bounds = Rect()
+        paint.getTextBounds(text, 0, text.length, bounds)
+        return bounds.width().toFloat()
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        float x = event.getX();
-        float y = event.getY();
-        int wday = (int) ((x - leftLabelWidth) / unitWidth) + startWidth;
-        float time = ((int) ((y - topLabelHeight) / unitHeight)) / 2f + (float) startHeight;
+    fun getTextHeight(text: String?, paint: Paint?): Float {
+        val bounds = Rect()
+        paint!!.getTextBounds(text, 0, text!!.length, bounds)
+        return bounds.height().toFloat()
+    }
 
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            Log.d(TAG, "action up");
-            Log.d(TAG, "day : " + String.valueOf(wday));
-            Log.d(TAG, "time : " + String.valueOf(time));
-
-            for (int i = 0; i < lectures.size(); i++) {
-                Lecture lecture = lectures.get(i);
-                if (LectureManager.getInstance().contains(lecture, wday, time)) {
-                    getActivity().startLectureMain(i);
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
+        val wday = ((x - leftLabelWidth) / unitWidth).toInt() + startWidth
+        val time = ((y - topLabelHeight) / unitHeight).toInt() / 2f + startHeight.toFloat()
+        if (event.action == MotionEvent.ACTION_UP) {
+            Log.d(TAG, "action up")
+            Log.d(TAG, "day : $wday")
+            Log.d(TAG, "time : $time")
+            for (i in lectures!!.indices) {
+                val lecture = lectures!![i]
+                if (instance!!.contains(lecture, wday, time)) {
+                    activity.startLectureMain(i)
                 }
             }
         }
-        return true;
+        return true
     }
 
     //주어진 canvas에 시간표를 그림
-    private void drawTimetable(Canvas canvas, int canvasWidth, int canvasHeight, boolean export) {
-        int startWday, endWday, startTime, endTime;
-        startWday = 7; endWday = 0;
-        startTime = 14; endTime = 0;
-        for (Lecture lecture : lectures) {
-            for (JsonElement element : lecture.getClass_time_json()) {
-                JsonObject classTime = element.getAsJsonObject();
-                int wday = classTime.get("day").getAsInt();
-                float start = classTime.get("start").getAsFloat();
-                float duration = classTime.get("len").getAsFloat();
-                startWday = Math.min(startWday, wday);
-                endWday = Math.max(endWday, wday);
-                startTime = Math.min(startTime, (int) start); // 버림
-                endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
+    private fun drawTimetable(canvas: Canvas, canvasWidth: Int, canvasHeight: Int, export: Boolean) {
+        var startWday: Int
+        var endWday: Int
+        var startTime: Int
+        var endTime: Int
+        startWday = 7
+        endWday = 0
+        startTime = 14
+        endTime = 0
+        for (lecture in lectures!!) {
+            for (element in lecture.class_time_json!!) {
+                val classTime = element.asJsonObject
+                val wday = classTime["day"].asInt
+                val start = classTime["start"].asFloat
+                val duration = classTime["len"].asFloat
+                startWday = Math.min(startWday, wday)
+                endWday = Math.max(endWday, wday)
+                startTime = Math.min(startTime, start.toInt()) // 버림
+                endTime = Math.max(endTime, (start + duration + 0.5f).toInt()) // 반올림
             }
         }
-        Lecture lec = LectureManager.getInstance().getSelectedLecture();
-        boolean selected = (!export && lec != null);
+        val lec = instance!!.getSelectedLecture()
+        val selected = !export && lec != null
         if (selected) {
-            for (JsonElement element : lec.getClass_time_json()) {
-                JsonObject classTime = element.getAsJsonObject();
-                int wday = classTime.get("day").getAsInt();
-                float start = classTime.get("start").getAsFloat();
-                float duration = classTime.get("len").getAsFloat();
-                startWday = Math.min(startWday, wday);
-                endWday = Math.max(endWday, wday);
-                startTime = Math.min(startTime, (int) start); // 버림
-                endTime = Math.max(endTime, (int)(start + duration + 0.5f)); // 반올림
+            for (element in lec!!.class_time_json!!) {
+                val classTime = element.asJsonObject
+                val wday = classTime["day"].asInt
+                val start = classTime["start"].asFloat
+                val duration = classTime["len"].asFloat
+                startWday = Math.min(startWday, wday)
+                endWday = Math.max(endWday, wday)
+                startTime = Math.min(startTime, start.toInt()) // 버림
+                endTime = Math.max(endTime, (start + duration + 0.5f).toInt()) // 반올림
             }
         }
-
-        if (PrefManager.getInstance().getAutoTrim() || !export) {
+        if (PrefManager.instance!!.autoTrim || !export) {
             // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
-            startWidth = 0;
-            numWidth = Math.max(5, endWday + 1);
+            startWidth = 0
+            numWidth = Math.max(5, endWday + 1)
             //
-            startHeight = Math.min(1, startTime);
-            numHeight = Math.max(10, endTime - startHeight);
+            startHeight = Math.min(1, startTime)
+            numHeight = Math.max(10, endTime - startHeight)
         } else {
-            startWidth = PrefManager.getInstance().getTrimWidthStart();
-            numWidth = PrefManager.getInstance().getTrimWidthNum();
-            startHeight = PrefManager.getInstance().getTrimHeightStart();
-            numHeight = PrefManager.getInstance().getTrimHeightNum();
+            startWidth = PrefManager.instance!!.trimWidthStart
+            numWidth = PrefManager.instance!!.trimWidthNum
+            startHeight = PrefManager.instance!!.trimHeightStart
+            numHeight = PrefManager.instance!!.trimHeightNum
         }
 
         // FIX: #13. Fatal Exception: java.lang.ArrayIndexOutOfBoundsException
-        if (startWidth + numWidth - 1 > wdays.length - 1) {
-            startWidth = 0;
-            numWidth = 5;
-
-            PrefManager.getInstance().setTrimWidthStart(startWidth);
-            PrefManager.getInstance().setTrimWidthNum(numWidth);
+        if (startWidth + numWidth - 1 > wdays.size - 1) {
+            startWidth = 0
+            numWidth = 5
+            PrefManager.instance!!.trimWidthStart = startWidth
+            PrefManager.instance!!.trimWidthNum = numWidth
         }
-
-        unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
-        unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
+        unitHeight = (canvasHeight - topLabelHeight) / (numHeight * 2).toFloat()
+        unitWidth = (canvasWidth - leftLabelWidth) / numWidth.toFloat()
 
         //가로 줄 28개
-        canvas.drawLine(0, 0, canvasWidth, 0, linePaint);
-        canvas.drawLine(0, canvasHeight, canvasWidth, canvasHeight, linePaint);
-        for (int i=0;i<numHeight*2;i++){
-            float height = topLabelHeight + unitHeight * i;
-            if (i%2 == 1) {
-                canvas.drawLine(leftLabelWidth, height,canvasWidth, height,linePaint2);
-            }
-            else {
-                canvas.drawLine(leftLabelWidth / 3f, height, canvasWidth, height, linePaint);
+        canvas.drawLine(0f, 0f, canvasWidth.toFloat(), 0f, linePaint!!)
+        canvas.drawLine(0f, canvasHeight.toFloat(), canvasWidth.toFloat(), canvasHeight.toFloat(), linePaint!!)
+        for (i in 0 until numHeight * 2) {
+            val height = topLabelHeight + unitHeight * i
+            if (i % 2 == 1) {
+                canvas.drawLine(leftLabelWidth, height, canvasWidth.toFloat(), height, linePaint2!!)
+            } else {
+                canvas.drawLine(leftLabelWidth / 3f, height, canvasWidth.toFloat(), height, linePaint!!)
             }
         }
         //세로 줄 그리기
-        for (int i=0;i<numWidth;i++){
-            float width = leftLabelWidth + unitWidth * i;
-            float textHeight = getTextHeight(wdays[0], topLabelTextPaint);
-            canvas.drawLine(width, 0, width, canvasHeight, linePaint);
-            canvas.drawText(wdays[i + startWidth], (leftLabelWidth + unitWidth * (i+0.5f)), (topLabelHeight+textHeight)/2f, topLabelTextPaint);
+        for (i in 0 until numWidth) {
+            val width = leftLabelWidth + unitWidth * i
+            val textHeight = getTextHeight(wdays[0], topLabelTextPaint)
+            canvas.drawLine(width, 0f, width, canvasHeight.toFloat(), linePaint!!)
+            canvas.drawText(wdays[i + startWidth]!!, leftLabelWidth + unitWidth * (i + 0.5f), (topLabelHeight + textHeight) / 2f, topLabelTextPaint!!)
         }
-        canvas.drawLine(0, 0, 0, canvasHeight, linePaint);
-        canvas.drawLine(canvasWidth, 0, canvasWidth, canvasHeight, linePaint);
+        canvas.drawLine(0f, 0f, 0f, canvasHeight.toFloat(), linePaint!!)
+        canvas.drawLine(canvasWidth.toFloat(), 0f, canvasWidth.toFloat(), canvasHeight.toFloat(), linePaint!!)
         //교시 텍스트 그리기
-        for (int i=0;i<numHeight;i++){
-            String str1 = i + startHeight + "교시";
-            String str2 = SNUTTUtils.zeroStr(i+startHeight+8) + ":00~" + SNUTTUtils.zeroStr(i+startHeight+9) + ":00";
-            String str = String.valueOf(i + startHeight + 8);
+        for (i in 0 until numHeight) {
+            val str1: String = (i + startHeight).toString() + "교시"
+            val str2 = zeroStr(i + startHeight + 8) + ":00~" + zeroStr(i + startHeight + 9) + ":00"
+            val str = (i + startHeight + 8).toString()
             //float textHeight = getTextHeight(str1, leftLabelTextPaint);
             //float textHeight2 = getTextHeight(str2, leftLabelTextPaint);
             //float padding = SNUTTApplication.dpTopx(5);
@@ -256,179 +236,161 @@ public class TableView extends View {
             //float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
             //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
             //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
-
-            float padding = SNUTTUtils.dpTopx(5);
-            canvas.drawText(str,  leftLabelWidth/2f, topLabelHeight + unitHeight * (i * 2) + unitHeight/2f + padding, leftLabelTextPaint);
+            val padding = dpTopx(5f)
+            canvas.drawText(str, leftLabelWidth / 2f, topLabelHeight + unitHeight * (i * 2) + unitHeight / 2f + padding, leftLabelTextPaint!!)
         }
         //내 강의 그리기
         if (lectures != null) {
-            for (int i = 0; i < lectures.size(); i++) {
-                Lecture lecture = lectures.get(i);
-                if (lecture.getColorIndex() == 0) drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getBgColor(), lecture.getFgColor());
-                else drawLecture(canvas, canvasWidth, canvasHeight, lecture, lecture.getColorIndex());
+            for (i in lectures!!.indices) {
+                val lecture = lectures!![i]
+                if (lecture.colorIndex == 0) drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.bgColor, lecture.fgColor) else drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.colorIndex)
             }
         }
-
         if (!export) {
             //현재 선택한 강의 그리기
-            Lecture selectedLecture = LectureManager.getInstance().getSelectedLecture();
-            if (selectedLecture != null && !LectureManager.getInstance().alreadyOwned(selectedLecture)){
-                drawLecture(canvas, canvasWidth, canvasHeight,selectedLecture, LectureManager.getInstance().getDefaultBgColor(), LectureManager.getInstance().getDefaultFgColor());
+            val selectedLecture = instance!!.getSelectedLecture()
+            if (selectedLecture != null && !instance!!.alreadyOwned(selectedLecture)) {
+                drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), selectedLecture, instance!!.defaultBgColor, instance!!.defaultFgColor)
             }
         }
-
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        drawTimetable(canvas, getWidth(), getHeight(), export);
+    override fun onDraw(canvas: Canvas) {
+        drawTimetable(canvas, width, height, export)
     }
 
-    public void drawWidget(Canvas canvas, int width, int height) {
-        drawTimetable(canvas, width, height, true);
+    fun drawWidget(canvas: Canvas, width: Int, height: Int) {
+        drawTimetable(canvas, width, height, true)
     }
 
-    private void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int bgColor, int fgColor){
+    private fun drawLecture(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, lecture: Lecture, bgColor: Int, fgColor: Int) {
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
-        for (JsonElement element : lecture.getClass_time_json()) {
-            JsonObject classTime = element.getAsJsonObject();
-
-            int wday = classTime.get("day").getAsInt();
-            float startTime = classTime.get("start").getAsFloat();
-            float duration = classTime.get("len").getAsFloat();
-            String location = classTime.get("place").getAsString();
-            drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
+        for (element in lecture.class_time_json!!) {
+            val classTime = element.asJsonObject
+            val wday = classTime["day"].asInt
+            val startTime = classTime["start"].asFloat
+            val duration = classTime["len"].asFloat
+            val location = classTime["place"].asString
+            drawClass(canvas, canvasWidth, canvasHeight, lecture.course_title, location, wday, startTime, duration, bgColor, fgColor)
         }
     }
 
-    private void drawLecture(Canvas canvas, float canvasWidth, float canvasHeight, Lecture lecture, int colorIndex){
+    private fun drawLecture(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, lecture: Lecture, colorIndex: Int) {
         //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
-        for (JsonElement element : lecture.getClass_time_json()) {
-            JsonObject classTime = element.getAsJsonObject();
-
-            int wday = classTime.get("day").getAsInt();
-            float startTime = classTime.get("start").getAsFloat();
-            float duration = classTime.get("len").getAsFloat();
-            String location = classTime.get("place").getAsString();
-            int bgColor = LectureManager.getInstance().getBgColorByIndex(colorIndex);
-            int fgColor = LectureManager.getInstance().getFgColorByIndex(colorIndex);
-            drawClass(canvas, canvasWidth, canvasHeight, lecture.getCourse_title(), location, wday, startTime, duration, bgColor, fgColor);
+        for (element in lecture.class_time_json!!) {
+            val classTime = element.asJsonObject
+            val wday = classTime["day"].asInt
+            val startTime = classTime["start"].asFloat
+            val duration = classTime["len"].asFloat
+            val location = classTime["place"].asString
+            val bgColor = instance!!.getBgColorByIndex(colorIndex)
+            val fgColor = instance!!.getFgColorByIndex(colorIndex)
+            drawClass(canvas, canvasWidth, canvasHeight, lecture.course_title, location, wday, startTime, duration, bgColor, fgColor)
         }
     }
-
 
     //사각형 하나를 그림
-    private void drawClass(Canvas canvas, float canvasWidth, float canvasHeight, String course_title, String location, int wday, float startTime, float duration, int bgColor, int fgColor){
-        float unitHeight = (canvasHeight - topLabelHeight) / (float) (numHeight * 2);
-        float unitWidth = (canvasWidth - leftLabelWidth) / (float) numWidth;
-        if (wday - startWidth < 0) return; // 날자가 잘리는 경우
-        if ((startTime - startHeight) * unitHeight * 2 + (unitHeight * duration * 2) < 0) return; // 교시가 잘리는 경우
+    private fun drawClass(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, course_title: String?, location: String, wday: Int, startTime: Float, duration: Float, bgColor: Int, fgColor: Int) {
+        val unitHeight = (canvasHeight - topLabelHeight) / (numHeight * 2).toFloat()
+        val unitWidth = (canvasWidth - leftLabelWidth) / numWidth.toFloat()
+        if (wday - startWidth < 0) return  // 날자가 잘리는 경우
+        if ((startTime - startHeight) * unitHeight * 2 + unitHeight * duration * 2 < 0) return  // 교시가 잘리는 경우
 
         //startTime : 시작 교시
-        float left = leftLabelWidth + (wday - startWidth) * unitWidth;
-        float right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth;
-        float top = topLabelHeight + Math.max(0, (startTime - startHeight)) * unitHeight * 2;
-        float bottom = topLabelHeight + (startTime - startHeight) * unitHeight * 2 + (unitHeight * duration * 2);
-        float borderWidth = SNUTTUtils.dpTopx(3);
-        RectF r = new RectF(left, top, right, bottom);
-        Paint p = new Paint();
-        p.setColor(bgColor);
-        canvas.drawRect(r, p);
-
-        Paint s = new Paint();
-        s.setStyle(Paint.Style.STROKE);
-        s.setColor(0x0d000000);
-        s.setStrokeWidth(2);
-        canvas.drawRect(r, s);
+        val left = leftLabelWidth + (wday - startWidth) * unitWidth
+        val right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth
+        val top = topLabelHeight + Math.max(0f, startTime - startHeight) * unitHeight * 2
+        val bottom = topLabelHeight + (startTime - startHeight) * unitHeight * 2 + unitHeight * duration * 2
+        val borderWidth = dpTopx(3f)
+        val r = RectF(left, top, right, bottom)
+        val p = Paint()
+        p.color = bgColor
+        canvas.drawRect(r, p)
+        val s = Paint()
+        s.style = Paint.Style.STROKE
+        s.color = 0x0d000000
+        s.strokeWidth = 2f
+        canvas.drawRect(r, s)
 
         //강의명, 강의실 기록
-        String str1 = course_title;
-        String str2 = location;
-        int padding = 5;
-        int width = (int)(right - left) - padding * 2;
-        int height = (int)(bottom - top) - padding * 2;
-        int str1Height = titleTextRect.prepare(str1, width, height);
-        int str2Height = locationTextRect.prepare(str2, width, height - str1Height);
-        titleTextRect.draw(canvas, (int)left + padding, (int)(top + (height - str1Height - str2Height)/2) + padding, width, fgColor);
-        locationTextRect.draw(canvas, (int)left + padding, (int)(top + str1Height + (height - str1Height - str2Height)/2) + padding, width, fgColor);
+        val padding = 5
+        val width = (right - left).toInt() - padding * 2
+        val height = (bottom - top).toInt() - padding * 2
+        val str1Height = titleTextRect!!.prepare(course_title!!, width, height)
+        val str2Height = locationTextRect!!.prepare(location, width, height - str1Height)
+        titleTextRect!!.draw(canvas, left.toInt() + padding, (top + (height - str1Height - str2Height) / 2).toInt() + padding, width, fgColor)
+        locationTextRect!!.draw(canvas, left.toInt() + padding, (top + str1Height + (height - str1Height - str2Height) / 2).toInt() + padding, width, fgColor)
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-        int w = dm.widthPixels;
-        int h = dm.heightPixels;
-
-        int desiredWidth = w;
-        int desiredHeight = h - getTabBarHeight() - getStatusBarHeight() - getActionBarHeight();
-
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        int width;
-        int height;
+        val dm = mContext.resources.displayMetrics
+        val w = dm.widthPixels
+        val h = dm.heightPixels
+        val desiredHeight = h - tabBarHeight - statusBarHeight - actionBarHeight
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        val width: Int
+        val height: Int
 
         //Measure Width
-        if (widthMode == MeasureSpec.EXACTLY) {
+        width = if (widthMode == MeasureSpec.EXACTLY) {
             //Must be this size
-            width = widthSize;
+            widthSize
         } else if (widthMode == MeasureSpec.AT_MOST) {
             //Can't be bigger than...
-            width = Math.min(desiredWidth, widthSize);
+            Math.min(w, widthSize)
         } else {
             //Be whatever you want
-            width = desiredWidth;
+            w
         }
 
         //Measure Height
-        if (heightMode == MeasureSpec.EXACTLY) {
+        height = if (heightMode == MeasureSpec.EXACTLY) {
             //Must be this size
-            height = heightSize;
+            heightSize
         } else if (heightMode == MeasureSpec.AT_MOST) {
             //Can't be bigger than...
-            height = Math.min(desiredHeight, heightSize);
+            Math.min(desiredHeight, heightSize)
         } else {
             //Be whatever you want
-            height = desiredHeight;
+            desiredHeight
         }
         //MUST CALL THIS
-        setMeasuredDimension(width, height);
+        setMeasuredDimension(width, height)
     }
 
-    private int getStatusBarHeight(){
-
-        int statusHeight = 0;
-        int screenSizeType = (mContext.getResources().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK);
-
-        if(screenSizeType != Configuration.SCREENLAYOUT_SIZE_XLARGE) {
-            int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
-
-            if (resourceId > 0) {
-                statusHeight = mContext.getResources().getDimensionPixelSize(resourceId);
+    private val statusBarHeight: Int
+        private get() {
+            var statusHeight = 0
+            val screenSizeType = mContext.resources.configuration.screenLayout and
+                    Configuration.SCREENLAYOUT_SIZE_MASK
+            if (screenSizeType != Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+                val resourceId = mContext.resources.getIdentifier("status_bar_height", "dimen", "android")
+                if (resourceId > 0) {
+                    statusHeight = mContext.resources.getDimensionPixelSize(resourceId)
+                }
             }
+            return statusHeight
         }
+    private val actionBarHeight: Int
+        private get() {
+            val tv = TypedValue()
+            mContext.theme.resolveAttribute(R.attr.actionBarSize, tv, true)
+            return resources.getDimensionPixelSize(tv.resourceId)
+        }
+    private val tabBarHeight: Int
+        private get() {
+            var tabBarHeight = 0
+            tabBarHeight = mContext.resources.getDimensionPixelSize(R.dimen.tab_bar_height)
+            return tabBarHeight
+        }
+    private val activity: SNUTTBaseActivity
+        private get() = mContext as SNUTTBaseActivity
 
-        return statusHeight;
-    }
-
-    private int getActionBarHeight() {
-        TypedValue tv = new TypedValue();
-        mContext.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true);
-        int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
-        return actionBarHeight;
-    }
-
-    private int getTabBarHeight() {
-        int tabBarHeight = 0;
-        tabBarHeight = mContext.getResources().getDimensionPixelSize(R.dimen.tab_bar_height);
-        return tabBarHeight;
-    }
-
-    private SNUTTBaseActivity getActivity() {
-        return (SNUTTBaseActivity) mContext;
+    companion object {
+        private const val TAG = "VIEW_TAG_TABLE_VIEW"
     }
 }
