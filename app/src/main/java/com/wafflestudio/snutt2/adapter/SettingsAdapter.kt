@@ -50,7 +50,7 @@ class SettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adap
 
         init {
             layout = view.findViewById<View>(R.id.cell_header) as LinearLayout
-            //layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
+            // layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
         }
     }
 

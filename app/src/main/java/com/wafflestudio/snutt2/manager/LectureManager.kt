@@ -71,7 +71,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         }
     }
 
-    ////////
+    // //////
     fun reset() {
         lectures = ArrayList()
         searchedLectures = ArrayList()
@@ -130,20 +130,25 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
         val lectureId = lec.id
-        app.restService!!.postLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table?, response: Response) {
-                Log.d(TAG, "post lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table!!)
-                setLectures(table.lecture_list!!)
-                notifyLecturesChanged()
-                callback.success(table, response)
-            }
+        app.restService!!.postLecture(
+            token,
+            id,
+            lectureId,
+            object : Callback<Table> {
+                override fun success(table: Table?, response: Response) {
+                    Log.d(TAG, "post lecture request success!!")
+                    PrefManager.instance!!.updateNewTable(table!!)
+                    setLectures(table.lecture_list!!)
+                    notifyLecturesChanged()
+                    callback.success(table, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "post lecture request failed ...")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "post lecture request failed ...")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     // this is for searched lecture
@@ -162,39 +167,49 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         Log.d(TAG, "create lecture method called!!")
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService!!.postLecture(token, id, lecture, object : Callback<Table> {
-            override fun success(table: Table?, response: Response) {
-                PrefManager.instance!!.updateNewTable(table!!)
-                setLectures(table.lecture_list!!)
-                notifyLecturesChanged()
-                callback?.success(table, response)
-            }
+        app.restService!!.postLecture(
+            token,
+            id,
+            lecture,
+            object : Callback<Table> {
+                override fun success(table: Table?, response: Response) {
+                    PrefManager.instance!!.updateNewTable(table!!)
+                    setLectures(table.lecture_list!!)
+                    notifyLecturesChanged()
+                    callback?.success(table, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                callback?.failure(error)
-                Log.e(TAG, "post lecture request failed..")
+                override fun failure(error: RetrofitError) {
+                    callback?.failure(error)
+                    Log.e(TAG, "post lecture request failed..")
+                }
             }
-        })
+        )
     }
 
     fun removeLecture(lectureId: String?, callback: Callback<Any>?) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService!!.deleteLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table?, response: Response) {
-                Log.d(TAG, "remove lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table!!)
-                setLectures(table.lecture_list!!)
-                currentLecture = null
-                notifyLecturesChanged()
-                callback?.success(table, response)
-            }
+        app.restService!!.deleteLecture(
+            token,
+            id,
+            lectureId,
+            object : Callback<Table> {
+                override fun success(table: Table?, response: Response) {
+                    Log.d(TAG, "remove lecture request success!!")
+                    PrefManager.instance!!.updateNewTable(table!!)
+                    setLectures(table.lecture_list!!)
+                    currentLecture = null
+                    notifyLecturesChanged()
+                    callback?.success(table, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "remove lecture request failed ...")
-                callback?.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "remove lecture request failed ...")
+                    callback?.failure(error)
+                }
             }
-        })
+        )
     }
 
     // reset lecture from my lecture list
@@ -202,44 +217,59 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     fun resetLecture(lectureId: String, callback: Callback<Any>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService!!.resetLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table?, response: Response) {
-                Log.d(TAG, "reset lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table!!)
-                setLectures(table.lecture_list!!)
-                currentLecture = getLectureById(lectureId)
-                notifyLecturesChanged()
-                callback.success(table, response)
-            }
+        app.restService!!.resetLecture(
+            token,
+            id,
+            lectureId,
+            object : Callback<Table> {
+                override fun success(table: Table?, response: Response) {
+                    Log.d(TAG, "reset lecture request success!!")
+                    PrefManager.instance!!.updateNewTable(table!!)
+                    setLectures(table.lecture_list!!)
+                    currentLecture = getLectureById(lectureId)
+                    notifyLecturesChanged()
+                    callback.success(table, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "reset lecture request failed ...")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "reset lecture request failed ...")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     fun updateLecture(lectureId: String, target: Lecture?, callback: Callback<Table>?) {
         Log.d(TAG, "update lecture method called!!")
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService!!.putLecture(token, id, lectureId, target, object : Callback<Table> {
-            override fun success(table: Table?, response: Response) {
-                PrefManager.instance!!.updateNewTable(table!!)
-                setLectures(table.lecture_list!!)
-                currentLecture = getLectureById(lectureId)
-                notifyLecturesChanged()
-                callback?.success(table, response)
-            }
+        app.restService!!.putLecture(
+            token,
+            id,
+            lectureId,
+            target,
+            object : Callback<Table> {
+                override fun success(table: Table?, response: Response) {
+                    PrefManager.instance!!.updateNewTable(table!!)
+                    setLectures(table.lecture_list!!)
+                    currentLecture = getLectureById(lectureId)
+                    notifyLecturesChanged()
+                    callback?.success(table, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                callback?.failure(error)
-                Log.e(TAG, "put lecture request failed..")
+                override fun failure(error: RetrofitError) {
+                    callback?.failure(error)
+                    Log.e(TAG, "put lecture request failed..")
+                }
             }
-        })
+        )
     }
 
-    fun getCoursebookUrl(courseNumber: String?, lectureNumber: String?, callback: Callback<Map<*, *>>) {
+    fun getCoursebookUrl(
+        courseNumber: String?,
+        lectureNumber: String?,
+        callback: Callback<Map<*, *>>
+    ) {
         val year = PrefManager.instance!!.currentYear
         val semester = PrefManager.instance!!.currentSemester
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
@@ -247,20 +277,23 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         query["semester"] = semester
         query["course_number"] = courseNumber
         query["lecture_number"] = lectureNumber
-        app.restService!!.getCoursebooksOfficial(query, object : Callback<Map<*, *>> {
-            override fun success(map: Map<*, *>?, response: Response) {
-                Log.d(TAG, "get coursebook official request success!")
-                callback.success(map, response)
-            }
+        app.restService!!.getCoursebooksOfficial(
+            query,
+            object : Callback<Map<*, *>> {
+                override fun success(map: Map<*, *>?, response: Response) {
+                    Log.d(TAG, "get coursebook official request success!")
+                    callback.success(map, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "get coursebook official request failed..")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "get coursebook official request failed..")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
-    //내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
+    // 내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
     fun alreadyOwned(lec: Lecture): Boolean {
         for (lecture in lectures) {
             if (isEqualLecture(lecture, lec)) return true
@@ -268,7 +301,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         return false
     }
 
-    //이미 내 강의에 존재하는 시간인지
+    // 이미 내 강의에 존재하는 시간인지
     fun alreadyExistClassTime(lec: Lecture): Boolean {
         for (lecture in lectures) {
             if (isDuplicatedClassTime(lecture, lec)) return true
@@ -276,7 +309,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         return false
     }
 
-    //주어진 요일, 시각을 포함하고 있는지
+    // 주어진 요일, 시각을 포함하고 있는지
     fun contains(lec1: Lecture, given_day: Int, given_time: Float): Boolean {
         for (element1 in lec1.class_time_json!!) {
             val class1 = element1.asJsonObject
@@ -307,18 +340,21 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             query["time_mask"] = classTimeMask
         }
         searchedQuery = text
-        app.restService!!.postSearchQuery(query, object : Callback<List<Lecture>> {
-            override fun success(lectures: List<Lecture>?, response: Response) {
-                Log.d(TAG, "post search query success!!")
-                setSearchedLectures(lectures!!)
-                callback.success(lectures, response)
-            }
+        app.restService!!.postSearchQuery(
+            query,
+            object : Callback<List<Lecture>> {
+                override fun success(lectures: List<Lecture>?, response: Response) {
+                    Log.d(TAG, "post search query success!!")
+                    setSearchedLectures(lectures!!)
+                    callback.success(lectures, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.d(TAG, "post search query failed!!")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.d(TAG, "post search query failed!!")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     fun addProgressBar() {
@@ -346,21 +382,24 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         if (TagManager.instance!!.searchEmptyClass) {
             query["time_mask"] = classTimeMask
         }
-        app.restService!!.postSearchQuery(query, object : Callback<List<Lecture>> {
-            override fun success(lectureList: List<Lecture>?, response: Response) {
-                Log.d(TAG, "post search query success!!")
-                removeProgressBar()
-                for (lecture in lectureList!!) {
-                    searchedLectures.add(lecture)
+        app.restService!!.postSearchQuery(
+            query,
+            object : Callback<List<Lecture>> {
+                override fun success(lectureList: List<Lecture>?, response: Response) {
+                    Log.d(TAG, "post search query success!!")
+                    removeProgressBar()
+                    for (lecture in lectureList!!) {
+                        searchedLectures.add(lecture)
+                    }
+                    callback.success(lectureList, response)
                 }
-                callback.success(lectureList, response)
-            }
 
-            override fun failure(error: RetrofitError) {
-                Log.d(TAG, "post search query failed!!")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.d(TAG, "post search query failed!!")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     val classTimeMask: IntArray
@@ -394,24 +433,27 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
 
     // for color list
     fun fetchColorList(name: String?, callback: Callback<Any>?) {
-        app.restService!!.getColorList(name, object : Callback<ColorList> {
-            override fun success(colorList: ColorList?, response: Response) {
-                Log.d(TAG, "get color list request success")
-                setColors(colorList!!.colors!!)
-                setColorNames(colorList.names!!)
-                val colorListJson = Gson().toJson(this@LectureManager.colorList)
-                val colorNameListJson = Gson().toJson(colorNameList)
-                PrefManager.instance!!.lectureColors = colorListJson
-                PrefManager.instance!!.lectureColorNames = colorNameListJson
-                notifyLecturesChanged()
-                callback?.success(colorList, response)
-            }
+        app.restService!!.getColorList(
+            name,
+            object : Callback<ColorList> {
+                override fun success(colorList: ColorList?, response: Response) {
+                    Log.d(TAG, "get color list request success")
+                    setColors(colorList!!.colors!!)
+                    setColorNames(colorList.names!!)
+                    val colorListJson = Gson().toJson(this@LectureManager.colorList)
+                    val colorNameListJson = Gson().toJson(colorNameList)
+                    PrefManager.instance!!.lectureColors = colorListJson
+                    PrefManager.instance!!.lectureColorNames = colorNameListJson
+                    notifyLecturesChanged()
+                    callback?.success(colorList, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.d(TAG, "get color list request failed")
-                callback?.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.d(TAG, "get color list request failed")
+                    callback?.failure(error)
+                }
             }
-        })
+        )
     }
 
     private fun setColors(colors: List<Color>) {
@@ -483,16 +525,16 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     companion object {
         private const val TAG = "LECTURE_MANAGER"
         private val DEFAULT_NAME = arrayOf(
-                "석류",
-                "감귤",
-                "들국",
-                "완두",
-                "비취",
-                "지중해",
-                "하늘",
-                "라벤더",
-                "자수정",
-                "직접 지정하기"
+            "석류",
+            "감귤",
+            "들국",
+            "완두",
+            "비취",
+            "지중해",
+            "하늘",
+            "라벤더",
+            "자수정",
+            "직접 지정하기"
         )
         private val DEFAULT_FG = intArrayOf(-0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0xcccccd)
         private val DEFAULT_BG = intArrayOf(-0x1abba7, -0xa72c3, -0x53ad3, -0x5926d0, -0xd43c9a, -0xe42f37, -0xe26617, -0xb0b73c, -0x50a94d, -0x1f1f20)

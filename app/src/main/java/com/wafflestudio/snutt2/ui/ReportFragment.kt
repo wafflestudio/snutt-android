@@ -18,8 +18,11 @@ import retrofit.client.Response
 class ReportFragment : SNUTTBaseFragment() {
     private var emailText: EditText? = null
     private var detailText: EditText? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_report, container, false)
         setHasOptionsMenu(true)
         emailText = rootView.findViewById<View>(R.id.email_editText) as EditText
@@ -44,16 +47,20 @@ class ReportFragment : SNUTTBaseFragment() {
                 val email = emailText!!.text.toString()
                 val detail = detailText!!.text.toString()
                 item.isEnabled = false
-                instance!!.postFeedback(email, detail, object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        Toast.makeText(app, "전송하였습니다", Toast.LENGTH_SHORT).show()
-                        activity!!.finish()
-                    }
+                instance!!.postFeedback(
+                    email,
+                    detail,
+                    object : Callback<Any> {
+                        override fun success(o: Any?, response: Response) {
+                            Toast.makeText(app, "전송하였습니다", Toast.LENGTH_SHORT).show()
+                            activity!!.finish()
+                        }
 
-                    override fun failure(error: RetrofitError) {
-                        item.isEnabled = true
+                        override fun failure(error: RetrofitError) {
+                            item.isEnabled = true
+                        }
                     }
-                })
+                )
             }
             return true
         }

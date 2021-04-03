@@ -13,7 +13,11 @@ import com.wafflestudio.snutt2.model.Color
 /**
  * Created by makesource on 2017. 5. 28..
  */
-class ColorListAdapter(private val colorList: List<Color>, private val colorNameList: List<String>, index: Int) : BaseAdapter() {
+class ColorListAdapter(
+    private val colorList: List<Color>,
+    private val colorNameList: List<String>,
+    index: Int
+) : BaseAdapter() {
     private val selected: Int
     override fun getCount(): Int {
         return colorList.size + 1
@@ -32,7 +36,7 @@ class ColorListAdapter(private val colorList: List<Color>, private val colorName
         var v = convertView
         if (v == null) {
             v = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_color, parent, false)
+                .inflate(R.layout.cell_lecture_color, parent, false)
         }
         val nameText = v.findViewById<View>(R.id.name) as TextView
         val fgColor = v.findViewById<View>(R.id.fgColor)

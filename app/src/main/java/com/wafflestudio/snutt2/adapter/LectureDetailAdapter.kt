@@ -36,7 +36,11 @@ import java.util.*
 /**
  * Created by makesource on 2017. 3. 17..
  */
-class LectureDetailAdapter(private val activity: LectureMainActivity, private val fragment: LectureDetailFragment, lists: ArrayList<LectureItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+class LectureDetailAdapter(
+    private val activity: LectureMainActivity,
+    private val fragment: LectureDetailFragment,
+    lists: ArrayList<LectureItem>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private val lists: MutableList<LectureItem>
     private var day = 0
     private var fromTime = 0
@@ -45,47 +49,47 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
         Log.d(TAG, "On create view holder called.")
         if (viewType == LectureItem.ViewType.ItemShortHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_short_header, parent, false)
+                .inflate(R.layout.cell_lecture_short_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemLongHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_long_header, parent, false)
+                .inflate(R.layout.cell_lecture_long_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClassTimeHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_class_header, parent, false)
+                .inflate(R.layout.cell_lecture_class_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemMargin.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_margin, parent, false)
+                .inflate(R.layout.cell_lecture_margin, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemTitle.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_title, parent, false)
+                .inflate(R.layout.cell_lecture_item_title, parent, false)
             return TitleViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemButton.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_button, parent, false)
+                .inflate(R.layout.cell_lecture_item_button, parent, false)
             return ButtonViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_color, parent, false)
+                .inflate(R.layout.cell_lecture_item_color, parent, false)
             return ColorViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_class, parent, false)
+                .inflate(R.layout.cell_lecture_item_class, parent, false)
             return ClassViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemRemark.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_remark, parent, false)
+                .inflate(R.layout.cell_lecture_item_remark, parent, false)
             return RemarkViewHolder(view)
         }
         throw IllegalStateException("illegal viewType")
@@ -178,12 +182,13 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
             when (type) {
                 LectureItem.Type.Title -> target.course_title = item.value1
                 LectureItem.Type.Instructor -> target.instructor = item.value1
-                LectureItem.Type.Color -> if (item.colorIndex > 0) {
-                    target.colorIndex = item.colorIndex
-                } else {
-                    target.bgColor = item.getColor()!!.bgColor
-                    target.fgColor = item.getColor()!!.fgColor
-                }
+                LectureItem.Type.Color ->
+                    if (item.colorIndex > 0) {
+                        target.colorIndex = item.colorIndex
+                    } else {
+                        target.bgColor = item.getColor()!!.bgColor
+                        target.fgColor = item.getColor()!!.fgColor
+                    }
                 LectureItem.Type.Department -> target.department = item.value1
                 LectureItem.Type.AcademicYear -> target.academic_year = item.value1
                 LectureItem.Type.Credit -> {
@@ -235,13 +240,15 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
                     value.setTextColor(Color.argb(if (item.isEditable) 51 else 255, 0, 0, 0))
                 }
                 else -> {
-                    value.addTextChangedListener(object : TextWatcher {
-                        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                        override fun afterTextChanged(s: Editable) {
-                            textChangedListener!!.onText1Changed(s.toString(), position)
+                    value.addTextChangedListener(
+                        object : TextWatcher {
+                            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                            override fun afterTextChanged(s: Editable) {
+                                textChangedListener!!.onText1Changed(s.toString(), position)
+                            }
                         }
-                    })
+                    )
                     if (item.type === LectureItem.Type.Credit) { // 학점
                         value.inputType = InputType.TYPE_CLASS_NUMBER
                     }
@@ -339,13 +346,15 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
         private val editText1: EditText
         fun bindData(item: LectureItem) {
             editText1.setText(item.value1)
-            editText1.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    textChangedListener!!.onText1Changed(s.toString(), position)
+            editText1.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable) {
+                        textChangedListener!!.onText1Changed(s.toString(), position)
+                    }
                 }
-            })
+            )
             editText1.hint = if (item.isEditable) "비고를 입력해주세요" else "(없음)"
             editText1.movementMethod = null
             editText1.isClickable = item.isEditable
@@ -369,22 +378,24 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
         fun bindData(item: LectureItem, listener: View.OnClickListener) {
             title1.hint = "시간"
             val time = SNUTTUtils.numberToWday(item.classTime!!.day) + " " +
-                    SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
-                    SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
+                SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
+                SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
             editText1.setText(time)
             editText1.isClickable = false
             editText1.isFocusable = false
             editText1.setOnClickListener(listener)
             title2.hint = "장소"
             editText2.setText(item.classTime!!.place)
-            editText2.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    textChangedListener!!.onLocationChanged(s.toString(), position)
-                    //item.getClassTime().setPlace(s.toString());
+            editText2.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable) {
+                        textChangedListener!!.onLocationChanged(s.toString(), position)
+// item.getClassTime().setPlace(s.toString());
+                    }
                 }
-            })
+            )
             editText2.isClickable = item.isEditable
             editText2.isFocusable = item.isEditable
             editText2.isFocusableInTouchMode = item.isEditable
@@ -484,32 +495,45 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
     private fun startSyllabus() {
         if (instance!!.currentLecture == null) return
         val lecture = instance!!.currentLecture
-        instance!!.getCoursebookUrl(lecture!!.course_number, lecture.lecture_number, object : Callback<Map<*, *>> {
-            override fun success(map: Map<*, *>, response: Response) {
-                val url = map["url"] as String?
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                activity.startActivity(intent)
-            }
+        instance!!.getCoursebookUrl(
+            lecture!!.course_number,
+            lecture.lecture_number,
+            object : Callback<Map<*, *>> {
+                override fun success(map: Map<*, *>, response: Response) {
+                    val url = map["url"] as String?
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    activity.startActivity(intent)
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     private fun startRemoveAlertView() {
         val alert = AlertDialog.Builder(activity)
         alert.setTitle("강좌 삭제")
         alert.setMessage("강좌를 삭제하시겠습니까")
-        alert.setPositiveButton("삭제", DialogInterface.OnClickListener { dialog, whichButton ->
-            if (instance!!.currentLecture == null) return@OnClickListener
-            val lectureId = instance!!.currentLecture!!.id
-            instance!!.removeLecture(lectureId, object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    activity.finish()
-                }
+        alert.setPositiveButton(
+            "삭제",
+            DialogInterface.OnClickListener { dialog, whichButton ->
+                if (instance!!.currentLecture == null) return@OnClickListener
+                val lectureId = instance!!.currentLecture!!.id
+                instance!!.removeLecture(
+                    lectureId,
+                    object : Callback<Any> {
+                        override fun success(
+                            o: Any?,
+                            response: Response
+                        ) {
+                            activity.finish()
+                        }
 
-                override fun failure(error: RetrofitError) {}
-            })
-        }).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
+            }
+        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
     }
@@ -518,17 +542,26 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
         val alert = AlertDialog.Builder(activity)
         alert.setTitle("강좌 초기화")
         alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까")
-        alert.setPositiveButton("초기화", DialogInterface.OnClickListener { dialog, whichButton ->
-            if (instance!!.currentLecture == null) return@OnClickListener
-            val lectureId = instance!!.currentLecture!!.id
-            instance!!.resetLecture(lectureId!!, object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    fragment.refreshFragment()
-                }
+        alert.setPositiveButton(
+            "초기화",
+            DialogInterface.OnClickListener { dialog, whichButton ->
+                if (instance!!.currentLecture == null) return@OnClickListener
+                val lectureId = instance!!.currentLecture!!.id
+                instance!!.resetLecture(
+                    lectureId!!,
+                    object : Callback<Any> {
+                        override fun success(
+                            o: Any?,
+                            response: Response
+                        ) {
+                            fragment.refreshFragment()
+                        }
 
-                override fun failure(error: RetrofitError) {}
-            })
-        }).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
+            }
+        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
     }
@@ -559,24 +592,28 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
 
     init {
         this.lists = lists
-        setOnTextChangedListener(object : TextChangedListener {
-            override fun onText1Changed(text: String, position: Int) {
-                Log.d(TAG, "position : $position, text : $text")
-                getItem(position).value1 = text
-            }
+        setOnTextChangedListener(
+            object : TextChangedListener {
+                override fun onText1Changed(text: String, position: Int) {
+                    Log.d(TAG, "position : $position, text : $text")
+                    getItem(position).value1 = text
+                }
 
-            override fun onText2Changed(text: String?, position: Int) {
-                getItem(position).value2 = text
-            }
+                override fun onText2Changed(text: String?, position: Int) {
+                    getItem(position).value2 = text
+                }
 
-            override fun onLocationChanged(text: String?, position: Int) {
-                getItem(position).classTime!!.place = text!!
+                override fun onLocationChanged(text: String?, position: Int) {
+                    getItem(position).classTime!!.place = text!!
+                }
             }
-        })
-        setOnDeleteClickListener(object : DeleteClickListener {
-            override fun onDeleteClick(view: View?, position: Int) {
-                showDeleteDialog(position)
+        )
+        setOnDeleteClickListener(
+            object : DeleteClickListener {
+                override fun onDeleteClick(view: View?, position: Int) {
+                    showDeleteDialog(position)
+                }
             }
-        })
+        )
     }
 }

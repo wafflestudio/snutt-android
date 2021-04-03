@@ -92,7 +92,11 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
      */
     private var mainContainer: LinearLayout? = null
     private var emptyPlaceholder: LinearLayout? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         Log.d(TAG, "onCreateView called!")
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
         setHasOptionsMenu(true)
@@ -106,30 +110,40 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         lectureRecyclerView!!.layoutManager = lectureLayoutManager
         lectureRecyclerView!!.itemAnimator = null
         lectureRecyclerView!!.adapter = lectureAdapter
-        lectureRecyclerView!!.addItemDecoration(DividerItemDecoration(context!!, R.drawable.search_lecture_divider))
-        lectureRecyclerView!!.addOnScrollListener(object : EndlessRecyclerViewScrollListener(lectureLayoutManager!!) {
-            override fun getFooterViewType(defaultNoFooterViewType: Int): Int {
-                return LectureListAdapter.VIEW_TYPE.ProgressBar.value
-            }
+        lectureRecyclerView!!.addItemDecoration(
+            DividerItemDecoration(context!!, R.drawable.search_lecture_divider)
+        )
+        lectureRecyclerView!!.addOnScrollListener(
+            object : EndlessRecyclerViewScrollListener(lectureLayoutManager!!) {
+                override fun getFooterViewType(defaultNoFooterViewType: Int): Int {
+                    return LectureListAdapter.VIEW_TYPE.ProgressBar.value
+                }
 
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                loadNextDataFromApi(page, totalItemsCount)
-                Log.d(TAG, "on Load More called. page : $page, totalItemsCount : $totalItemsCount")
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    loadNextDataFromApi(page, totalItemsCount)
+                    Log.d(TAG, "on Load More called. page : $page, totalItemsCount : $totalItemsCount")
+                }
             }
-        })
+        )
         suggestionAdapter = SuggestionAdapter(TagManager.instance!!.getTags())
-        suggestionAdapter!!.setClickListener(object : SuggestionAdapter.ClickListener {
-            override fun onClick(v: View?, tag: Tag?) {
-                Log.d(TAG, "suggestion item clicked!")
-                TagManager.instance!!.addTag(tag)
-                tagAdapter!!.notifyItemInserted(0)
-                tagRecyclerView!!.scrollToPosition(0)
-                enableDefaultMode()
+        suggestionAdapter!!.setClickListener(
+            object : SuggestionAdapter.ClickListener {
+                override fun onClick(v: View?, tag: Tag?) {
+                    Log.d(TAG, "suggestion item clicked!")
+                    TagManager.instance!!.addTag(tag)
+                    tagAdapter!!.notifyItemInserted(0)
+                    tagRecyclerView!!.scrollToPosition(0)
+                    enableDefaultMode()
+                }
             }
-        })
+        )
         suggestionRecyclerView!!.layoutManager = LinearLayoutManager(context)
         suggestionRecyclerView!!.adapter = suggestionAdapter
-        val horizontalLayoutManager = LinearLayoutManager(app, LinearLayoutManager.HORIZONTAL, false)
+        val horizontalLayoutManager = LinearLayoutManager(
+            app,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         tagRecyclerView!!.layoutManager = horizontalLayoutManager
         tagAdapter = TagListAdapter(context!!, TagManager.instance!!.getMyTags())
         tagRecyclerView!!.adapter = tagAdapter
@@ -171,13 +185,19 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
     private fun loadNextDataFromApi(page: Int, totalItemsCount: Int) {
         LectureManager.instance!!.addProgressBar()
         lectureAdapter!!.notifyDataSetChanged()
-        LectureManager.instance!!.loadData(totalItemsCount, object : Callback<List<Lecture>> {
-            override fun success(searchedLectureList: List<Lecture>?, response: Response) {
-                lectureAdapter!!.notifyDataSetChanged()
-            }
+        LectureManager.instance!!.loadData(
+            totalItemsCount,
+            object : Callback<List<Lecture>> {
+                override fun success(
+                    searchedLectureList: List<Lecture>?,
+                    response: Response
+                ) {
+                    lectureAdapter!!.notifyDataSetChanged()
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     private fun setTagHelper() {
@@ -270,7 +290,10 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
             }
             true
         }
-        searchView!!.layoutParams = ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT)
+        searchView!!.layoutParams = ActionBar.LayoutParams(
+            ActionBar.LayoutParams.MATCH_PARENT,
+            ActionBar.LayoutParams.MATCH_PARENT
+        )
         searchView!!.setOnSuggestionListener(suggestionListener)
         searchView!!.setOnQueryTextListener(queryTextListener)
         searchView!!.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -278,23 +301,28 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         searchView!!.maxWidth = width // handle some high density devices and landscape mode
         val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         if (searchManager != null) {
-            searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+            searchView!!.setSearchableInfo(
+                searchManager.getSearchableInfo(activity!!.componentName)
+            )
         }
         enableDefaultMode()
-        MenuItemCompat.setOnActionExpandListener(searchMenuItem, object : MenuItemCompat.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                Log.d(TAG, "onMenuItemActionExpand")
-                isSearchViewExpanded = true
-                return true
-            }
+        MenuItemCompat.setOnActionExpandListener(
+            searchMenuItem,
+            object : MenuItemCompat.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    Log.d(TAG, "onMenuItemActionExpand")
+                    isSearchViewExpanded = true
+                    return true
+                }
 
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                Log.d(TAG, "onMenuItemActionCollapse")
-                showPlaceholder()
-                isSearchViewExpanded = false
-                return true
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    Log.d(TAG, "onMenuItemActionCollapse")
+                    showPlaceholder()
+                    isSearchViewExpanded = false
+                    return true
+                }
             }
-        })
+        )
         setKeyboardListener()
     }
 
@@ -399,17 +427,20 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
 
     private fun postQuery(text: String) {
         isSearching = true
-        LectureManager.instance!!.postSearchQuery(text, object : Callback<List<Lecture>> {
-            override fun success(lectures: List<Lecture>?, response: Response) {
-                isSearching = false
-                showMainContainer(false)
-            }
+        LectureManager.instance!!.postSearchQuery(
+            text,
+            object : Callback<List<Lecture>> {
+                override fun success(lectures: List<Lecture>?, response: Response) {
+                    isSearching = false
+                    showMainContainer(false)
+                }
 
-            override fun failure(error: RetrofitError) {
-                isSearching = false
-                showMainContainer(false)
+                override fun failure(error: RetrofitError) {
+                    isSearching = false
+                    showMainContainer(false)
+                }
             }
-        })
+        )
     }
 
     private fun enableTagMode(contains: Boolean) {

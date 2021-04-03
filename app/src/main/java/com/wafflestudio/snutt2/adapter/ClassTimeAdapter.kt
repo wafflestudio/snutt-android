@@ -40,15 +40,15 @@ class ClassTimeAdapter(private val context: Context, private val times: List<Cla
         var v = convertView
         if (v == null) {
             val inflater = context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             v = inflater.inflate(R.layout.cell_time, null)
         }
         val classTime = times[position]
         val tv_time = v.findViewById<View>(R.id.class_time) as TextView
         val et_place = v.findViewById<View>(R.id.class_place) as EditText
         val time = SNUTTUtils.numberToWday(classTime.day) + " " +
-                SNUTTUtils.numberToTime(classTime.start) + "~" +
-                SNUTTUtils.numberToTime(classTime.start + classTime.len)
+            SNUTTUtils.numberToTime(classTime.start) + "~" +
+            SNUTTUtils.numberToTime(classTime.start + classTime.len)
         tv_time.text = time
         if (watcher != null) et_place.removeTextChangedListener(watcher)
         et_place.setText(places[position])

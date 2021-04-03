@@ -39,8 +39,11 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         adapter = CustomLectureAdapter(activity!!, lists!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false)
         detailView = rootView.findViewById<View>(R.id.lecture_detail_view) as RecyclerView
         detailView!!.adapter = adapter
@@ -61,34 +64,40 @@ class CustomDetailFragment : SNUTTBaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_edit -> if (add) {
-                item.isEnabled = false
-                adapter!!.createLecture(object : Callback<Table> {
-                    override fun success(table: Table, response: Response) {
-                        lectureMainActivity!!.finish()
-                    }
+            R.id.action_edit ->
+                if (add) {
+                    item.isEnabled = false
+                    adapter!!.createLecture(
+                        object : Callback<Table> {
+                            override fun success(table: Table, response: Response) {
+                                lectureMainActivity!!.finish()
+                            }
 
-                    override fun failure(error: RetrofitError) {
-                        item.isEnabled = true
-                    }
-                })
-            } else if (editable) {
-                item.isEnabled = false
-                adapter!!.updateLecture(instance!!.currentLecture, object : Callback<Table> {
-                    override fun success(table: Table?, response: Response) {
-                        item.title = "편집"
-                        item.isEnabled = true
-                        setNormalMode()
-                    }
+                            override fun failure(error: RetrofitError) {
+                                item.isEnabled = true
+                            }
+                        }
+                    )
+                } else if (editable) {
+                    item.isEnabled = false
+                    adapter!!.updateLecture(
+                        instance!!.currentLecture,
+                        object : Callback<Table> {
+                            override fun success(table: Table?, response: Response) {
+                                item.title = "편집"
+                                item.isEnabled = true
+                                setNormalMode()
+                            }
 
-                    override fun failure(error: RetrofitError) {
-                        item.isEnabled = true
-                    }
-                })
-            } else {
-                item.title = "완료"
-                setEditMode()
-            }
+                            override fun failure(error: RetrofitError) {
+                                item.isEnabled = true
+                            }
+                        }
+                    )
+                } else {
+                    item.title = "완료"
+                    setEditMode()
+                }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -117,10 +126,27 @@ class CustomDetailFragment : SNUTTBaseFragment() {
     private fun attachLectureDetailList(lecture: Lecture?) {
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))
-        lists!!.add(LectureItem("강의명", if (add) "" else lecture!!.course_title, LectureItem.Type.Title))
-        lists!!.add(LectureItem("교수", if (add) "" else lecture!!.instructor, LectureItem.Type.Instructor))
-        lists!!.add(LectureItem("색상", if (add) 0 else lecture!!.colorIndex, if (add) Color() else lecture!!.getColor(), LectureItem.Type.Color))
-        lists!!.add(LectureItem("학점", if (add) "0" else String.valueOf(lecture!!.credit), LectureItem.Type.Credit))
+        lists!!.add(
+            LectureItem("강의명", if (add) "" else lecture!!.course_title, LectureItem.Type.Title)
+        )
+        lists!!.add(
+            LectureItem("교수", if (add) "" else lecture!!.instructor, LectureItem.Type.Instructor)
+        )
+        lists!!.add(
+            LectureItem(
+                "색상",
+                if (add) 0 else lecture!!.colorIndex,
+                if (add) Color() else lecture!!.getColor(),
+                LectureItem.Type.Color
+            )
+        )
+        lists!!.add(
+            LectureItem(
+                "학점",
+                if (add) "0" else String.valueOf(lecture!!.credit),
+                LectureItem.Type.Credit
+            )
+        )
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))

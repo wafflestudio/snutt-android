@@ -25,7 +25,11 @@ class TimetableWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         for (appWidgetId in appWidgetIds) {
             val intent = Intent(context, SplashActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -37,7 +41,12 @@ class TimetableWidgetProvider : AppWidgetProvider() {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
-    private fun renderViews(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, views: RemoteViews) {
+    private fun renderViews(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        views: RemoteViews
+    ) {
         val width = displayWidth.toInt()
         val height = displayHeight.toInt()
         if (!Strings.isNullOrEmpty(PrefManager.instance!!.currentTable)) {

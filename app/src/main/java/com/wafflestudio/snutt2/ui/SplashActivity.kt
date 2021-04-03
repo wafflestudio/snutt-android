@@ -13,9 +13,12 @@ class SplashActivity : SNUTTBaseActivity() {
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         setContentView(R.layout.activity_splash)
-        Handler().postDelayed({
-            startMain()
-            finish()
-        }, SPLASH_DISPLAY_LENGTH.toLong())
+        Handler().postDelayed(
+            {
+                startMain()
+                finish()
+            },
+            SPLASH_DISPLAY_LENGTH.toLong()
+        )
     }
 }

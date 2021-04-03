@@ -26,18 +26,17 @@ import retrofit.client.Response
 class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class VIEW_TYPE(val value: Int) {
         Lecture(0), ProgressBar(1);
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE.Lecture.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture, parent, false)
+                .inflate(R.layout.cell_lecture, parent, false)
             // create ViewHolder
             LectureViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_progressbar, parent, false)
+                .inflate(R.layout.cell_lecture_progressbar, parent, false)
             ProgressBarViewHolder(view)
         }
     }
@@ -68,43 +67,51 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
         }
 
         // 3개의 서로 다른 클릭을 구분하기 위해 onBindViewHolder 에서 view Id 를 비교함.
-        setOnItemClickListener(object : ClickListener {
-            override fun onClick(v: View, position: Int) {
-                if (position >= itemCount) return
-                if (v.id == holder.layout.id) {
-                    Log.d(TAG, "View ID : " + v.id)
-                    Log.d(TAG, "$position item Clicked!!")
-                    if (selectedPosition == position) {
-                        notifyItemChanged(position)
-                        instance!!.setSelectedLecture(null)
+        setOnItemClickListener(
+            object : ClickListener {
+                override fun onClick(v: View, position: Int) {
+                    if (position >= itemCount) return
+                    if (v.id == holder.layout.id) {
+                        Log.d(TAG, "View ID : " + v.id)
+                        Log.d(TAG, "$position item Clicked!!")
+                        if (selectedPosition == position) {
+                            notifyItemChanged(position)
+                            instance!!.setSelectedLecture(null)
+                        } else {
+                            notifyItemChanged(selectedPosition)
+                            notifyItemChanged(position)
+                            instance!!.setSelectedLecture(getItem(position))
+                        }
+                    } else if (v.id == holder.add.id) {
+                        Log.d(TAG, "View ID : " + v.id)
+                        Log.d(TAG, "$position add Clicked!!")
+                        instance!!.addLecture(
+                            getItem(position),
+                            object : Callback<Any> {
+                                override fun success(o: Any?, response: Response) {
+                                    notifyItemChanged(position)
+                                }
+
+                                override fun failure(error: RetrofitError) {}
+                            }
+                        )
                     } else {
-                        notifyItemChanged(selectedPosition)
-                        notifyItemChanged(position)
-                        instance!!.setSelectedLecture(getItem(position))
+                        Log.d(TAG, "View ID : " + v.id)
+                        Log.d(TAG, "$position remove Clicked!!")
+                        instance!!.removeLecture(
+                            getItem(position),
+                            object : Callback<Any> {
+                                override fun success(o: Any?, response: Response) {
+                                    notifyItemChanged(position)
+                                }
+
+                                override fun failure(error: RetrofitError) {}
+                            }
+                        )
                     }
-                } else if (v.id == holder.add.id) {
-                    Log.d(TAG, "View ID : " + v.id)
-                    Log.d(TAG, "$position add Clicked!!")
-                    instance!!.addLecture(getItem(position), object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
-                            notifyItemChanged(position)
-                        }
-
-                        override fun failure(error: RetrofitError) {}
-                    })
-                } else {
-                    Log.d(TAG, "View ID : " + v.id)
-                    Log.d(TAG, "$position remove Clicked!!")
-                    instance!!.removeLecture(getItem(position), object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
-                            notifyItemChanged(position)
-                        }
-
-                        override fun failure(error: RetrofitError) {}
-                    })
                 }
             }
-        })
+        )
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -132,7 +139,9 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
         fun bindData(lecture: Lecture) {
             val selectedPosition = instance!!.selectedPosition
             val titleText = lecture.course_title
-            val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(lecture.credit) + "학점)"
+            val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(
+                lecture.credit
+            ) + "학점)"
             title.text = titleText
             title.textScaleX = 1.0f
             subTitle.text = subTitleText
@@ -144,11 +153,17 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
             if (titleWidth + subTitleWidth < maxWidth) {
                 subTitleWidth = maxWidth - titleWidth
             }
-            title.layoutParams = LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            title.layoutParams = LinearLayout.LayoutParams(
+                titleWidth,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             title.isSelected = selected
             title.ellipsize = if (selected) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
             title.textScaleX = 1.0f
-            subTitle.layoutParams = LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            subTitle.layoutParams = LinearLayout.LayoutParams(
+                subTitleWidth,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             var tagText: String? = ""
             if (!Strings.isNullOrEmpty(lecture.category)) {
                 tagText += lecture.category + ", "

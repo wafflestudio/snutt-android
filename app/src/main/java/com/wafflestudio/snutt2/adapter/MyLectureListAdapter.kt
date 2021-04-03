@@ -20,7 +20,7 @@ class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView
         val cellLayoutView: View
         val viewHolder: ViewHolder
         cellLayoutView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.cell_my_lecture, parent, false)
+            .inflate(R.layout.cell_my_lecture, parent, false)
         // create ViewHolder
         viewHolder = ViewHolder(cellLayoutView)
         return viewHolder
@@ -45,7 +45,9 @@ class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView
         private val location: TextView
         fun bindData(lecture: Lecture) {
             val titleText = lecture.course_title
-            val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(lecture.credit) + "학점)"
+            val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(
+                lecture.credit
+            ) + "학점)"
             title.text = titleText
             subTitle.text = subTitleText
             val maxWidth = (SNUTTUtils.displayWidth - SNUTTUtils.dpTopx((20 + 20 + 10).toFloat())).toInt()
@@ -54,8 +56,14 @@ class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView
             if (titleWidth + subTitleWidth < maxWidth) {
                 subTitleWidth = maxWidth - titleWidth
             }
-            subTitle.layoutParams = LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
-            title.layoutParams = LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            subTitle.layoutParams = LinearLayout.LayoutParams(
+                subTitleWidth,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            title.layoutParams = LinearLayout.LayoutParams(
+                titleWidth,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             var tagText: String? = ""
             if (!Strings.isNullOrEmpty(lecture.category)) {
                 tagText += lecture.category + ", "

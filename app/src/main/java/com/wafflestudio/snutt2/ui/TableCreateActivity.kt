@@ -33,27 +33,29 @@ class TableCreateActivity : SNUTTBaseActivity() {
         title = "새로운 시간표"
         semesterSpinner = findViewById<View>(R.id.spinner) as Spinner
         titleText = findViewById<View>(R.id.table_title) as EditText
-        instance!!.getCoursebook(object : Callback<List<Coursebook>> {
-            override fun success(coursebooks: List<Coursebook>, response: Response) {
-                val displays = getDisplayList(coursebooks)
-                val years = getYearList(coursebooks)
-                val semesters = getSemesterList(coursebooks)
-                year = years[0]
-                semester = semesters[0]
-                val adapter = ArrayAdapter(baseContext, android.R.layout.simple_spinner_dropdown_item, displays)
-                semesterSpinner!!.adapter = adapter
-                semesterSpinner!!.onItemSelectedListener = object : OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                        year = years[position]
-                        semester = semesters[position]
+        instance!!.getCoursebook(
+            object : Callback<List<Coursebook>> {
+                override fun success(coursebooks: List<Coursebook>, response: Response) {
+                    val displays = getDisplayList(coursebooks)
+                    val years = getYearList(coursebooks)
+                    val semesters = getSemesterList(coursebooks)
+                    year = years[0]
+                    semester = semesters[0]
+                    val adapter = ArrayAdapter(baseContext, android.R.layout.simple_spinner_dropdown_item, displays)
+                    semesterSpinner!!.adapter = adapter
+                    semesterSpinner!!.onItemSelectedListener = object : OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                            year = years[position]
+                            semester = semesters[position]
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
                     }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {}
                 }
-            }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     override fun onDestroy() {
@@ -81,13 +83,18 @@ class TableCreateActivity : SNUTTBaseActivity() {
         val id = item.itemId
         if (id == R.id.action_create) {
             val title = titleText!!.text.toString()
-            instance!!.postTable(year, semester, title, object : Callback<List<Table>> {
-                override fun success(tables: List<Table>?, response: Response) {
-                    finish()
-                }
+            instance!!.postTable(
+                year,
+                semester,
+                title,
+                object : Callback<List<Table>> {
+                    override fun success(tables: List<Table>?, response: Response) {
+                        finish()
+                    }
 
-                override fun failure(error: RetrofitError) {}
-            })
+                    override fun failure(error: RetrofitError) {}
+                }
+            )
             return true
         }
         return super.onOptionsItemSelected(item)

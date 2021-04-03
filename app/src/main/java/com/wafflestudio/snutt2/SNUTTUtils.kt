@@ -54,7 +54,7 @@ object SNUTTUtils {
         return if (number < 10) "0$number" else "" + number
     }
 
-    //dp to px
+    // dp to px
     @JvmStatic
     fun dpTopx(dp: Float): Float {
         val resources = context!!.resources
@@ -62,21 +62,21 @@ object SNUTTUtils {
         return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    //px to dp
+    // px to dp
     fun pxTodp(px: Float): Float {
         val resources = context!!.resources
         val metrics = resources.displayMetrics
         return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    //sp to px
+    // sp to px
     @JvmStatic
     fun spTopx(sp: Float): Float {
         val scaledDensity = context!!.resources.displayMetrics.scaledDensity
         return sp * scaledDensity
     }
 
-    //px to sp
+    // px to sp
     fun pxTosp(px: Float): Float {
         val scaledDensity = context!!.resources.displayMetrics.scaledDensity
         return px / scaledDensity
@@ -86,7 +86,7 @@ object SNUTTUtils {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
         return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting
+            activeNetwork.isConnectedOrConnecting
     }
 
     @JvmStatic

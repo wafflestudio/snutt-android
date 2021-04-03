@@ -24,7 +24,7 @@ class ClassTime {
         start = jsonObject["start"].asFloat
         len = jsonObject["len"].asFloat
         place = jsonObject["place"].asString
-        //this._id = jsonObject.get("_id").getAsString();
+        // this._id = jsonObject.get("_id").getAsString();
     }
 
     fun get_id(): String? {

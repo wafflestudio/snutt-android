@@ -22,14 +22,14 @@ class TableListAdapter(private val tables: List<Table>) : RecyclerView.Adapter<T
             TYPE_TABLE_SECTION -> {
                 // create a new view
                 cellLayoutView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.cell_table_section, parent, false)
+                    .inflate(R.layout.cell_table_section, parent, false)
                 // create ViewHolder
                 viewHolder = ViewHolder(cellLayoutView)
                 return viewHolder
             }
             TYPE_TABLE_CELL -> {
                 cellLayoutView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.cell_table, parent, false)
+                    .inflate(R.layout.cell_table, parent, false)
                 // create ViewHolder
                 viewHolder = ViewHolder(cellLayoutView)
                 return viewHolder
