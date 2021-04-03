@@ -5,5 +5,4 @@ package com.wafflestudio.snutt2.model
  */
 class Notification(var id: String, var message: String, var type: Int) {
     var created_at: String? = null
-
 }

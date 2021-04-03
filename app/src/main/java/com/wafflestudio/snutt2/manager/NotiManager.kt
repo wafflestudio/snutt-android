@@ -62,21 +62,28 @@ class NotiManager private constructor(app: SNUTTApplication) {
         query["limit"] = 20
         query["offset"] = offset
         query["explicit"] = 1 // for unread count update
-        app.restService!!.getNotification(token, query, object : Callback<List<Notification>> {
-            override fun success(notificationList: List<Notification>, response: Response) {
-                Log.d(TAG, "get notification success!")
-                removeProgressBar()
-                for (notification in notificationList) {
-                    notifications!!.add(notification)
+        app.restService!!.getNotification(
+            token,
+            query,
+            object : Callback<List<Notification>> {
+                override fun success(
+                    notificationList: List<Notification>,
+                    response: Response
+                ) {
+                    Log.d(TAG, "get notification success!")
+                    removeProgressBar()
+                    for (notification in notificationList) {
+                        notifications!!.add(notification)
+                    }
+                    callback.success(notificationList, response)
                 }
-                callback.success(notificationList, response)
-            }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "get notification failed.")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "get notification failed.")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     fun addProgressBar() {
@@ -94,36 +101,46 @@ class NotiManager private constructor(app: SNUTTApplication) {
         query["limit"] = 20
         query["offset"] = 0
         query["explicit"] = 1
-        app.restService!!.getNotification(token, query, object : Callback<List<Notification>> {
-            override fun success(notificationList: List<Notification>, response: Response) {
-                Log.d(TAG, "get notification success!")
-                notifications!!.clear()
-                for (notification in notificationList) {
-                    notifications!!.add(notification)
+        app.restService!!.getNotification(
+            token,
+            query,
+            object : Callback<List<Notification>> {
+                override fun success(
+                    notificationList: List<Notification>,
+                    response: Response
+                ) {
+                    Log.d(TAG, "get notification success!")
+                    notifications!!.clear()
+                    for (notification in notificationList) {
+                        notifications!!.add(notification)
+                    }
+                    callback.success(notificationList, response)
                 }
-                callback.success(notificationList, response)
-            }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "get notification failed.")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "get notification failed.")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     fun getNotificationCount(callback: Callback<Map<String?, Int?>>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService!!.getNotificationCount(token, object : Callback<Map<String?, Int?>> {
-            override fun success(map: Map<String?, Int?>?, response: Response) {
-                Log.d(TAG, "get notification count success!")
-                callback.success(map, response)
-            }
+        app.restService!!.getNotificationCount(
+            token,
+            object : Callback<Map<String?, Int?>> {
+                override fun success(map: Map<String?, Int?>?, response: Response) {
+                    Log.d(TAG, "get notification count success!")
+                    callback.success(map, response)
+                }
 
-            override fun failure(error: RetrofitError) {
-                Log.e(TAG, "get notification count failed.")
-                callback.failure(error)
+                override fun failure(error: RetrofitError) {
+                    Log.e(TAG, "get notification count failed.")
+                    callback.failure(error)
+                }
             }
-        })
+        )
     }
 
     fun notifyNotificationReceived() {

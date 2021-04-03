@@ -18,17 +18,22 @@ import java.io.File
 class SNUTTApplication : Application() {
     private var restAdapter: RestAdapter? = null
     val restService: SNUTTRestApi? by lazy {
-        val requestInterceptor = RequestInterceptor { request -> request.addHeader("x-access-apikey", resources.getString(R.string.api_key)) }
+        val requestInterceptor = RequestInterceptor { request ->
+            request.addHeader(
+                "x-access-apikey",
+                resources.getString(R.string.api_key)
+            )
+        }
         val cache = Cache(File(context!!.cacheDir, "http"), SIZE_OF_CACHE)
         val okHttpClient = OkHttpClient()
         okHttpClient.cache = cache
         restAdapter = RestAdapter.Builder()
-                .setEndpoint(restUrl)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setRequestInterceptor(requestInterceptor)
-                .setClient(OkClient(okHttpClient))
-                .setErrorHandler(RetrofitErrorHandler(applicationContext))
-                .build()
+            .setEndpoint(restUrl)
+            .setLogLevel(RestAdapter.LogLevel.FULL)
+            .setRequestInterceptor(requestInterceptor)
+            .setClient(OkClient(okHttpClient))
+            .setErrorHandler(RetrofitErrorHandler(applicationContext))
+            .build()
         restAdapter?.create(SNUTTRestApi::class.java)
     }
 
@@ -50,7 +55,8 @@ class SNUTTApplication : Application() {
     companion object {
         private const val TAG = "SNUTT_APPLICATION"
         private var context: Context? = null
-        private const val SIZE_OF_CACHE = (10 * 1024 * 1024 // 10 MB
-                ).toLong()
+        private const val SIZE_OF_CACHE = (
+            10 * 1024 * 1024 // 10 MB
+            ).toLong()
     }
 }

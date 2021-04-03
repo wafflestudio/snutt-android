@@ -22,8 +22,11 @@ class TimetableFragment : SNUTTBaseFragment() {
     private var classLayout: LinearLayout? = null
     private var dayRangeBar: RangeBar? = null
     private var classRangeBar: RangeBar? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_timetable, container, false)
         mSwitch = rootView.findViewById<View>(R.id.switch1) as SwitchCompat
         dayLayout = rootView.findViewById<View>(R.id.day_layout) as LinearLayout
@@ -42,8 +45,10 @@ class TimetableFragment : SNUTTBaseFragment() {
     }
 
     private fun initRangeBar() {
-        dayRangeBar!!.setRangePinsByIndices(PrefManager.instance!!.trimWidthStart,
-                PrefManager.instance!!.trimWidthStart + PrefManager.instance!!.trimWidthNum - 1)
+        dayRangeBar!!.setRangePinsByIndices(
+            PrefManager.instance!!.trimWidthStart,
+            PrefManager.instance!!.trimWidthStart + PrefManager.instance!!.trimWidthNum - 1
+        )
         dayRangeBar!!.setFormatter { value ->
             val wday = value.toInt()
             numberToWday(wday)!!
@@ -53,8 +58,10 @@ class TimetableFragment : SNUTTBaseFragment() {
             PrefManager.instance!!.trimWidthStart = leftPinIndex
             PrefManager.instance!!.trimWidthNum = num
         }
-        classRangeBar!!.setRangePinsByIndices(PrefManager.instance!!.trimHeightStart,
-                PrefManager.instance!!.trimHeightStart + PrefManager.instance!!.trimHeightNum - 1)
+        classRangeBar!!.setRangePinsByIndices(
+            PrefManager.instance!!.trimHeightStart,
+            PrefManager.instance!!.trimHeightStart + PrefManager.instance!!.trimHeightNum - 1
+        )
         classRangeBar!!.setOnRangeBarChangeListener { rangeBar, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue ->
             val num = rightPinIndex - leftPinIndex + 1
             PrefManager.instance!!.trimHeightStart = leftPinIndex
