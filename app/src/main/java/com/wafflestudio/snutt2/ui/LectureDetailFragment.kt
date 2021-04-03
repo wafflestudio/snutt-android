@@ -80,7 +80,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         when (item.itemId) {
             R.id.action_edit -> if (editable) {
                 item.isEnabled = false
-                adapter!!.updateLecture(instance!!.currentLecture, object : Callback<Table?> {
+                adapter!!.updateLecture(instance!!.currentLecture, object : Callback<Table> {
                     override fun success(table: Table?, response: Response) {
                         item.title = "편집"
                         item.isEnabled = true

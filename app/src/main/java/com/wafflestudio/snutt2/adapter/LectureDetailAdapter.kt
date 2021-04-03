@@ -167,7 +167,7 @@ class LectureDetailAdapter(private val activity: LectureMainActivity, private va
         return lists[position]
     }
 
-    fun updateLecture(lecture: Lecture?, callback: Callback<Table?>?) {
+    fun updateLecture(lecture: Lecture?, callback: Callback<Table>?) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.")
         val current = instance!!.currentLecture

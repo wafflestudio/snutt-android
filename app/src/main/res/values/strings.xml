@@ -2,8 +2,11 @@
     <string name="terms">/terms_of_service</string>
     <string name="privacy">/privacy_policy</string>
     <string name="member">/member</string>
+
+<!--    Should Fix -->
     <string name="api_server">api_server</string>
     <string name="api_key">api_key</string>
+    <string name="facebook_app_id">facebook_app_id</string>
 
     <string name="action_timetable_list">시간표 목록</string>
     <string name="action_settings">설정</string>

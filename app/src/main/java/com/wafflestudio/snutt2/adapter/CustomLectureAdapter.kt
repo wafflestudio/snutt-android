@@ -417,7 +417,7 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
         alert.show()
     }
 
-    fun updateLecture(lecture: Lecture?, callback: Callback<Table?>?) {
+    fun updateLecture(lecture: Lecture?, callback: Callback<Table>?) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.")
         val current = instance!!.currentLecture
@@ -460,7 +460,7 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
         }
     }
 
-    fun createLecture(callback: Callback<Table?>?) {
+    fun createLecture(callback: Callback<Table>?) {
         Log.d(TAG, "create lecture called.")
         val lecture = Lecture()
         val ja = JsonArray()
