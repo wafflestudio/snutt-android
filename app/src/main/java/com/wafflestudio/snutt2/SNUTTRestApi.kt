@@ -112,7 +112,7 @@ interface SNUTTRestApi {
 
     // API for Notification
     @GET("/notification")
-    fun getNotification(@Header("x-access-token") token: String?, @QueryMap query: Map<*, *>?, callback: Callback<List<Notification?>>?)
+    fun getNotification(@Header("x-access-token") token: String?, @QueryMap query: Map<*, *>?, callback: Callback<List<Notification>>?)
 
     @GET("/notification/count")
     fun getNotificationCount(@Header("x-access-token") token: String?, callback: Callback<Map<String?, Int?>>?)

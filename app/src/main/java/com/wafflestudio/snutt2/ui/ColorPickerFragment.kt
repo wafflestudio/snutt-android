@@ -1,130 +1,97 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseFragment;
-import com.wafflestudio.snutt2.adapter.ColorListAdapter;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.model.Color;
-
-import java.util.List;
+import android.app.Activity
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ListView
+import com.flask.colorpicker.ColorPickerView
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseFragment
+import com.wafflestudio.snutt2.adapter.ColorListAdapter
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.model.Color
 
 /**
  * Created by makesource on 2016. 4. 5..
  */
-public class ColorPickerFragment extends SNUTTBaseFragment {
-    private static final String TAG = "COLOR_PICKER_FRAGMENT" ;
-
-    private ListView listView;
+class ColorPickerFragment : SNUTTBaseFragment() {
+    private var listView: ListView? = null
 
     // Activity 로 데이터를 전달할 커스텀 리스너
-    private ColorChangedListener mCallback;
+    private var mCallback: ColorChangedListener? = null
 
     // Activity 로 데이터를 전달할 커스텀 리스너의 인터페이스
-    public interface ColorChangedListener {
-        public void onColorChanged(int index, Color color);
+    interface ColorChangedListener {
+        fun onColorChanged(index: Int, color: Color?)
     }
 
-    public static ColorPickerFragment newInstance() {
-        return new ColorPickerFragment();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_color_picker, container, false);
-        final List<Color> colors = LectureManager.getInstance().getColorList();
-        List<String> names = LectureManager.getInstance().getColorNameList();
-        int index = getArguments().getInt("index");
-        listView = (ListView) rootView.findViewById(R.id.listView);
-        listView.setAdapter(new ColorListAdapter(colors, names, index));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == colors.size()) {
-                    ColorPickerDialogBuilder
-                            .with(getContext())
-                            .setTitle("배경색")
-                            .initialColor(LectureManager.getInstance().getDefaultBgColor())
-                            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                            .density(12)
-                            .setOnColorSelectedListener(new OnColorSelectedListener() {
-                                @Override
-                                public void onColorSelected(int selectedColor) {
-                                    Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor));
-                                    //Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setPositiveButton("ok", new ColorPickerClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                    final int bgColor = selectedColor;
-                                    ColorPickerDialogBuilder
-                                            .with(getContext())
-                                            .setTitle("텍스트색")
-                                            .initialColor(LectureManager.getInstance().getDefaultFgColor())
-                                            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                                            .density(12)
-                                            .setOnColorSelectedListener(new OnColorSelectedListener() {
-                                                @Override
-                                                public void onColorSelected(int selectedColor) {
-                                                    Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor));
-                                                }
-                                            })
-                                            .setPositiveButton("ok", new ColorPickerClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                                    final int fgColor = selectedColor;
-                                                    mCallback.onColorChanged(0, new Color(bgColor, fgColor));
-                                                    //LectureManager.getInstance().updateLecture(lecture, bgColor, fgColor);
-                                                    getActivity().onBackPressed();
-                                                }
-                                            })
-                                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            })
-                                            .build()
-                                            .show();
-                                }
-                            })
-                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .build()
-                            .show();
-                } else {
-                    mCallback.onColorChanged(position + 1, null);
-                    getActivity().onBackPressed();
-                }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_color_picker, container, false)
+        val colors = instance!!.colorList
+        val names = instance!!.colorNameList
+        val index = arguments!!.getInt("index")
+        listView = rootView.findViewById<View>(R.id.listView) as ListView
+        listView!!.adapter = ColorListAdapter(colors!!, names!!, index)
+        listView!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            if (position == colors.size) {
+                ColorPickerDialogBuilder
+                        .with(context)
+                        .setTitle("배경색")
+                        .initialColor(instance!!.defaultBgColor)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setOnColorSelectedListener { selectedColor ->
+                            Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor))
+                            //Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
+                        }
+                        .setPositiveButton("ok") { dialog, selectedColor, allColors ->
+                            val bgColor = selectedColor
+                            ColorPickerDialogBuilder
+                                    .with(context)
+                                    .setTitle("텍스트색")
+                                    .initialColor(instance!!.defaultFgColor)
+                                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                                    .density(12)
+                                    .setOnColorSelectedListener { selectedColor -> Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor)) }
+                                    .setPositiveButton("ok") { dialog, selectedColor, allColors ->
+                                        val fgColor = selectedColor
+                                        mCallback!!.onColorChanged(0, Color(bgColor, fgColor))
+                                        //LectureManager.getInstance().updateLecture(lecture, bgColor, fgColor);
+                                        activity!!.onBackPressed()
+                                    }
+                                    .setNegativeButton("cancel") { dialog, which -> }
+                                    .build()
+                                    .show()
+                        }
+                        .setNegativeButton("cancel") { dialog, which -> }
+                        .build()
+                        .show()
+            } else {
+                mCallback!!.onColorChanged(position + 1, null)
+                activity!!.onBackPressed()
             }
-        });
+        }
         //setDefaultColor();
         //setListener();
-
-        return rootView;
+        return rootView
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mCallback = (ColorChangedListener) activity;
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        mCallback = activity as ColorChangedListener
     }
 
+    companion object {
+        private const val TAG = "COLOR_PICKER_FRAGMENT"
+        @JvmStatic
+        fun newInstance(): ColorPickerFragment {
+            return ColorPickerFragment()
+        }
+    }
 }

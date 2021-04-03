@@ -1,95 +1,76 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseFragment;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.view.TableView;
+import android.os.Bundle
+import android.view.*
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseFragment
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
+import com.wafflestudio.snutt2.view.TableView
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class TableFragment extends SNUTTBaseFragment implements LectureManager.OnLectureChangedListener {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static TableView mInstance;
-
-    public TableFragment() {
+class TableFragment : SNUTTBaseFragment(), OnLectureChangedListener {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_table, container, false)
+        mInstance = rootView.findViewById<View>(R.id.timetable) as TableView
+        setHasOptionsMenu(true)
+        return rootView
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static TableFragment newInstance(int sectionNumber) {
-        TableFragment fragment = new TableFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_table, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_table, container, false);
-        mInstance = (TableView) rootView.findViewById(R.id.timetable);
-        setHasOptionsMenu(true);
-        return rootView;
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_table, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-         if (id == R.id.action_more) {
-             getMainActivity().startTableList();
-             return true;
+        val id = item.itemId
+        if (id == R.id.action_more) {
+            mainActivity!!.startTableList()
+            return true
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        LectureManager.getInstance().removeListener(this);
+    override fun onPause() {
+        super.onPause()
+        instance!!.removeListener(this)
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        LectureManager.getInstance().addListener(this);
+    override fun onResume() {
+        super.onResume()
+        instance!!.addListener(this)
     }
 
-    @Override
-    public void notifyLecturesChanged() {
-        mInstance.invalidate();
+    override fun notifyLecturesChanged() {
+        mInstance!!.invalidate()
     }
 
-    @Override
-    public void notifySearchedLecturesChanged() {
+    override fun notifySearchedLecturesChanged() {}
 
+    companion object {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private const val ARG_SECTION_NUMBER = "section_number"
+        private var mInstance: TableView? = null
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        fun newInstance(sectionNumber: Int): TableFragment {
+            val fragment = TableFragment()
+            val args = Bundle()
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

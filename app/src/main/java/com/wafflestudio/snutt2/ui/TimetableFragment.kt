@@ -1,96 +1,73 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.os.Bundle;
-import androidx.appcompat.widget.SwitchCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-
-import com.appyvet.rangebar.IRangeBarFormatter;
-import com.appyvet.rangebar.RangeBar;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseFragment;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.manager.PrefManager;
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.widget.SwitchCompat
+import com.appyvet.rangebar.RangeBar
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseFragment
+import com.wafflestudio.snutt2.SNUTTUtils.numberToWday
+import com.wafflestudio.snutt2.manager.PrefManager
 
 /**
  * Created by makesource on 2017. 1. 24..
  */
-
-public class TimetableFragment extends SNUTTBaseFragment {
-    private static final String TAG = "TIMETABLE_FRAGMENT";
-
-    private SwitchCompat mSwitch;
-    private LinearLayout dayLayout;
-    private LinearLayout classLayout;
-    private RangeBar dayRangeBar;
-    private RangeBar classRangeBar;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
-        mSwitch = (SwitchCompat) rootView.findViewById(R.id.switch1);
-        dayLayout = (LinearLayout) rootView.findViewById(R.id.day_layout);
-        classLayout = (LinearLayout) rootView.findViewById(R.id.class_layout);
-        dayRangeBar = (RangeBar) rootView.findViewById(R.id.day_range_bar);
-        classRangeBar = (RangeBar) rootView.findViewById(R.id.class_range_bar);
-
-        mSwitch.setChecked(PrefManager.getInstance().getAutoTrim());
-        initRangeBar();
-        updateRangeBarStatus(PrefManager.getInstance().getAutoTrim());
-
-        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "on checked changed listener called.");
-                PrefManager.getInstance().setAutoTrim(isChecked);
-                updateRangeBarStatus(isChecked);
-            }
-        });
-
-        return rootView;
+class TimetableFragment : SNUTTBaseFragment() {
+    private var mSwitch: SwitchCompat? = null
+    private var dayLayout: LinearLayout? = null
+    private var classLayout: LinearLayout? = null
+    private var dayRangeBar: RangeBar? = null
+    private var classRangeBar: RangeBar? = null
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_timetable, container, false)
+        mSwitch = rootView.findViewById<View>(R.id.switch1) as SwitchCompat
+        dayLayout = rootView.findViewById<View>(R.id.day_layout) as LinearLayout
+        classLayout = rootView.findViewById<View>(R.id.class_layout) as LinearLayout
+        dayRangeBar = rootView.findViewById<View>(R.id.day_range_bar) as RangeBar
+        classRangeBar = rootView.findViewById<View>(R.id.class_range_bar) as RangeBar
+        mSwitch!!.isChecked = PrefManager.instance!!.autoTrim
+        initRangeBar()
+        updateRangeBarStatus(PrefManager.instance!!.autoTrim)
+        mSwitch!!.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d(TAG, "on checked changed listener called.")
+            PrefManager.instance!!.autoTrim = isChecked
+            updateRangeBarStatus(isChecked)
+        }
+        return rootView
     }
 
-    private void initRangeBar() {
-        dayRangeBar.setRangePinsByIndices(PrefManager.getInstance().getTrimWidthStart(),
-                PrefManager.getInstance().getTrimWidthStart() + PrefManager.getInstance().getTrimWidthNum() - 1);
-        dayRangeBar.setFormatter(new IRangeBarFormatter() {
-            @Override
-            public String format(String value) {
-                int wday = Integer.parseInt(value);
-                return SNUTTUtils.numberToWday(wday);
-            }
-        });
-        dayRangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-            @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                int start = leftPinIndex;
-                int num = rightPinIndex - leftPinIndex + 1;
-                PrefManager.getInstance().setTrimWidthStart(start);
-                PrefManager.getInstance().setTrimWidthNum(num);
-            }
-        });
-        classRangeBar.setRangePinsByIndices(PrefManager.getInstance().getTrimHeightStart(),
-                PrefManager.getInstance().getTrimHeightStart() + PrefManager.getInstance().getTrimHeightNum() - 1);
-        classRangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-            @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                int start = leftPinIndex;
-                int num = rightPinIndex - leftPinIndex + 1;
-                PrefManager.getInstance().setTrimHeightStart(start);
-                PrefManager.getInstance().setTrimHeightNum(num);
-            }
-        });
-
+    private fun initRangeBar() {
+        dayRangeBar!!.setRangePinsByIndices(PrefManager.instance!!.trimWidthStart,
+                PrefManager.instance!!.trimWidthStart + PrefManager.instance!!.trimWidthNum - 1)
+        dayRangeBar!!.setFormatter { value ->
+            val wday = value.toInt()
+            numberToWday(wday)!!
+        }
+        dayRangeBar!!.setOnRangeBarChangeListener { rangeBar, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue ->
+            val num = rightPinIndex - leftPinIndex + 1
+            PrefManager.instance!!.trimWidthStart = leftPinIndex
+            PrefManager.instance!!.trimWidthNum = num
+        }
+        classRangeBar!!.setRangePinsByIndices(PrefManager.instance!!.trimHeightStart,
+                PrefManager.instance!!.trimHeightStart + PrefManager.instance!!.trimHeightNum - 1)
+        classRangeBar!!.setOnRangeBarChangeListener { rangeBar, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue ->
+            val num = rightPinIndex - leftPinIndex + 1
+            PrefManager.instance!!.trimHeightStart = leftPinIndex
+            PrefManager.instance!!.trimHeightNum = num
+        }
     }
 
-    private void updateRangeBarStatus(boolean b) {
-        dayLayout.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
-        classLayout.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
+    private fun updateRangeBarStatus(b: Boolean) {
+        dayLayout!!.visibility = if (b) View.INVISIBLE else View.VISIBLE
+        classLayout!!.visibility = if (b) View.INVISIBLE else View.VISIBLE
     }
 
+    companion object {
+        private const val TAG = "TIMETABLE_FRAGMENT"
+    }
 }

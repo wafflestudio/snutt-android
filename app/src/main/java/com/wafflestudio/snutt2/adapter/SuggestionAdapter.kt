@@ -65,7 +65,7 @@ class SuggestionAdapter(private val tagList: List<Tag>) : RecyclerView.Adapter<R
         notifyDataSetChanged()
     }
 
-    fun toggleButton(filterType: TagType) {
+    fun toggleButton(filterType: TagType?) {
         if (this.filterType === filterType) return
         this.filterType = filterType
         filter(query)

@@ -1,124 +1,71 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseFragment;
-import com.wafflestudio.snutt2.manager.UserManager;
-import com.wafflestudio.snutt2.model.SettingsItem;
-import com.wafflestudio.snutt2.adapter.SettingsAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import de.psdev.licensesdialog.LicensesDialog;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_ACCOUNT;
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_DEVELOPER;
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_PRIVACY;
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_REPORT;
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_TERMS;
-import static com.wafflestudio.snutt2.ui.SettingsMainActivity.FRAGMENT_TIMETABLE;
+import android.app.ProgressDialog
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseFragment
+import com.wafflestudio.snutt2.adapter.SettingsAdapter
+import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
+import com.wafflestudio.snutt2.model.SettingsItem
+import de.psdev.licensesdialog.LicensesDialog
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
+import java.util.*
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public class SettingsFragment extends SNUTTBaseFragment {
-    /**
-      * The fragment argument representing the section number for this
-      * fragment.
-      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String TAG = "SETTINGS_FRAGMENT";
-    private List<SettingsItem> lists;
-    private SettingsAdapter adapter;
-    private SettingsAdapter.ClickListener clickListener;
-
-    public SettingsFragment() {
-    }
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static SettingsFragment newInstance(int sectionNumber) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        lists = new ArrayList<>();
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("계정관리", SettingsItem.Type.Account));
-        lists.add(new SettingsItem("시간표 설정",  SettingsItem.Type.Timetable));
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("버전 정보", SettingsItem.Type.Version));
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("개발자 정보", SettingsItem.Type.Developer));
-        lists.add(new SettingsItem("개발자 괴롭히기", SettingsItem.Type.BugReport));
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("라이센스 정보", SettingsItem.Type.License));
-        lists.add(new SettingsItem("서비스 약관", SettingsItem.Type.Terms));
-        lists.add(new SettingsItem("개인정보처리방침", SettingsItem.Type.Private));
-        lists.add(new SettingsItem(SettingsItem.Type.Header));
-        lists.add(new SettingsItem("로그아웃", SettingsItem.Type.Logout));
+class SettingsFragment : SNUTTBaseFragment() {
+    private var lists: MutableList<SettingsItem>? = null
+    private var adapter: SettingsAdapter? = null
+    private var clickListener: SettingsAdapter.ClickListener? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lists = ArrayList()
+        lists!!.add(SettingsItem(SettingsItem.Type.Header))
+        lists!!.add(SettingsItem("계정관리", SettingsItem.Type.Account))
+        lists!!.add(SettingsItem("시간표 설정", SettingsItem.Type.Timetable))
+        lists!!.add(SettingsItem(SettingsItem.Type.Header))
+        lists!!.add(SettingsItem("버전 정보", SettingsItem.Type.Version))
+        lists!!.add(SettingsItem(SettingsItem.Type.Header))
+        lists!!.add(SettingsItem("개발자 정보", SettingsItem.Type.Developer))
+        lists!!.add(SettingsItem("개발자 괴롭히기", SettingsItem.Type.BugReport))
+        lists!!.add(SettingsItem(SettingsItem.Type.Header))
+        lists!!.add(SettingsItem("라이센스 정보", SettingsItem.Type.License))
+        lists!!.add(SettingsItem("서비스 약관", SettingsItem.Type.Terms))
+        lists!!.add(SettingsItem("개인정보처리방침", SettingsItem.Type.Private))
+        lists!!.add(SettingsItem(SettingsItem.Type.Header))
+        lists!!.add(SettingsItem("로그아웃", SettingsItem.Type.Logout))
         //lists.add(new SettingsItem(SettingsItem.Type.Header));
-
-        adapter = new SettingsAdapter(lists);
-        clickListener = new SettingsAdapter.ClickListener() {
-            @Override
-            public void onClick(View v, int position) {
-                Log.d(TAG, String.valueOf(position) + "-th item clicked!");
-                SettingsItem.Type type = lists.get(position).getType();
-                switch (type) {
-                    case Account: // account setting
-                        getMainActivity().startSettingsMain(FRAGMENT_ACCOUNT);
-                        break;
-                    case Timetable: // timetable setting
-                        getMainActivity().startSettingsMain(FRAGMENT_TIMETABLE);
-                        break;
-                    case Developer: // developer
-                        getMainActivity().startSettingsMain(FRAGMENT_DEVELOPER);
-                        break;
-                    case BugReport: // bug report
-                        getMainActivity().startSettingsMain(FRAGMENT_REPORT);
-                        break;
-                    case License: // license
-                        showLicenseDialog();
-                        break;
-                    case Terms: // terms
-                        getMainActivity().startSettingsMain(FRAGMENT_TERMS);
-                        break;
-                    case Private: // private
-                        getMainActivity().startSettingsMain(FRAGMENT_PRIVACY);
-                        break;
-                    case Logout: // logout
-                        performLogout();
-                        break;
-                    default:
-                        break;
+        adapter = SettingsAdapter(lists!!)
+        clickListener = object : SettingsAdapter.ClickListener {
+            override fun onClick(v: View?, position: Int) {
+                Log.d(TAG, "$position-th item clicked!")
+                val type = lists!!.get(position).type
+                when (type) {
+                    SettingsItem.Type.Account -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_ACCOUNT)
+                    SettingsItem.Type.Timetable -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_TIMETABLE)
+                    SettingsItem.Type.Developer -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_DEVELOPER)
+                    SettingsItem.Type.BugReport -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_REPORT)
+                    SettingsItem.Type.License -> showLicenseDialog()
+                    SettingsItem.Type.Terms -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_TERMS)
+                    SettingsItem.Type.Private -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_PRIVACY)
+                    SettingsItem.Type.Logout -> performLogout()
+                    else -> {
+                    }
                 }
             }
-        };
+        }
 
         /*
         // 서버에서 version name 가져옴
@@ -132,85 +79,96 @@ public class SettingsFragment extends SNUTTBaseFragment {
 
             }
         });
-        */
-        try {
-            String packageName = getApp().getPackageName();
-            String appVersion = getApp().getPackageManager().getPackageInfo(packageName, 0).versionName;
-            updateVersion(appVersion);
-        } catch (PackageManager.NameNotFoundException e) {
-            updateVersion("2.0.0");
+        */try {
+            val packageName = app.packageName
+            val appVersion = app.packageManager.getPackageInfo(packageName, 0).versionName
+            updateVersion(appVersion)
+        } catch (e: PackageManager.NameNotFoundException) {
+            updateVersion("2.0.0")
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
         //ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
         //listView.setAdapter(adapter);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.settings_recyclerView);
+        val recyclerView = rootView.findViewById<View>(R.id.settings_recyclerView) as RecyclerView
         //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-        return rootView;
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
+        return rootView
     }
 
-    @Override
-    public void onResume() {
-        Log.d(TAG, "on resume called!");
-        super.onResume();
-        adapter.setOnItemClickListener(clickListener);
+    override fun onResume() {
+        Log.d(TAG, "on resume called!")
+        super.onResume()
+        adapter!!.setOnItemClickListener(clickListener!!)
     }
 
-    private void updateVersion(String version) {
-        int position = -1;
-        for (int i = 0;i < lists.size();i ++) {
-            if (lists.get(i).getType() == SettingsItem.Type.Version) position = i;
+    private fun updateVersion(version: String) {
+        var position = -1
+        for (i in lists!!.indices) {
+            if (lists!![i].type === SettingsItem.Type.Version) position = i
         }
         if (position == -1) {
-            Log.e(TAG, "Version item does not exists!");
-            return;
+            Log.e(TAG, "Version item does not exists!")
+            return
         }
-        lists.get(position).setDetail(version);
-        adapter.notifyItemChanged(position);
+        lists!![position].detail = version
+        adapter!!.notifyItemChanged(position)
     }
 
-    private void performLogout() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("로그아웃");
-        alert.setMessage("로그아웃 하시겠습니까?");
-        alert.setPositiveButton("로그아웃", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                final ProgressDialog progressDialog = ProgressDialog.show(getContext(), "로그아웃", "잠시만 기다려 주세요", true, false);
-                UserManager.getInstance().deleteFirebaseToken(new Callback() {
-                    @Override
-                    public void success(Object o, Response response) {
-                        UserManager.getInstance().performLogout();
-                        getMainActivity().startIntro();
-                        getMainActivity().finishAll();
-                        progressDialog.dismiss();
-                    }
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Toast.makeText(getApp(), "로그아웃에 실패하였습니다.",Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
-                });
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = alert.create();
-        dialog.show();
+    private fun performLogout() {
+        val alert = AlertDialog.Builder(context!!)
+        alert.setTitle("로그아웃")
+        alert.setMessage("로그아웃 하시겠습니까?")
+        alert.setPositiveButton("로그아웃") { dialog, whichButton ->
+            val progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false)
+            instance!!.deleteFirebaseToken(object : Callback<Any> {
+                override fun success(o: Any?, response: Response) {
+                    instance!!.performLogout()
+                    mainActivity!!.startIntro()
+                    mainActivity!!.finishAll()
+                    progressDialog.dismiss()
+                }
+
+                override fun failure(error: RetrofitError) {
+                    Toast.makeText(app, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                    progressDialog.dismiss()
+                }
+            })
+        }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 
-    private void showLicenseDialog() {
-        new LicensesDialog.Builder(getContext())
+    private fun showLicenseDialog() {
+        LicensesDialog.Builder(context)
                 .setNotices(R.raw.notices)
                 .setIncludeOwnLicense(true)
                 .build()
-                .show();
+                .show()
+    }
+
+    companion object {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private const val ARG_SECTION_NUMBER = "section_number"
+        private const val TAG = "SETTINGS_FRAGMENT"
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        fun newInstance(sectionNumber: Int): SettingsFragment {
+            val fragment = SettingsFragment()
+            val args = Bundle()
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

@@ -1,374 +1,303 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.viewpager.widget.ViewPager
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.ViewPagerOnTabSelectedListener
+import com.google.common.base.Strings
+import com.google.gson.Gson
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseActivity
+import com.wafflestudio.snutt2.adapter.SectionsPagerAdapter
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.manager.NotiManager
+import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListener
+import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.manager.TableManager
+import com.wafflestudio.snutt2.model.Table
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
 
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseActivity;
-import com.wafflestudio.snutt2.adapter.SectionsPagerAdapter;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.manager.NotiManager;
-import com.wafflestudio.snutt2.manager.PrefManager;
-import com.wafflestudio.snutt2.manager.TableManager;
-import com.wafflestudio.snutt2.model.Table;
-
-import java.util.List;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import static com.google.android.gms.common.ConnectionResult.SUCCESS;
-import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.NOTIFICATION;
-import static com.wafflestudio.snutt2.ui.MainActivity.MainTab.TIMETABLE;
-
-public class MainActivity extends SNUTTBaseActivity implements NotiManager.OnNotificationReceivedListener {
-
-    enum MainTab {
-        TIMETABLE("시간표"),
-        SEARCH("검색"),
-        MY_LECTURE("내 강의"),
-        NOTIFICATION("알림"),
-        SETTING("설정");
-
-        private String title;
-        MainTab(String title) {
-            this.title = title;
-        }
+class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
+    internal enum class MainTab(val title: String) {
+        TIMETABLE("시간표"), SEARCH("검색"), MY_LECTURE("내 강의"), NOTIFICATION("알림"), SETTING("설정");
     }
 
-    private static final String TAG = "MainActivity" ;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-
     /**
-     * The {@link PagerAdapter} that will provide
+     * The [PagerAdapter] that will provide
      * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * [FragmentPagerAdapter] derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link FragmentStatePagerAdapter}.
+     * [FragmentStatePagerAdapter].
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
 
     /**
-     * The {@link ViewPager} that will host the section contents.
+     * The [ViewPager] that will host the section contents.
      */
-    protected TabLayout tabLayout;
-    private ViewPager mViewPager;
-    private ImageView notiCircle;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "MainActivity onCreate called!");
-
-        activityList.add(this);
-        NotiManager.getInstance().addListener(this);
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    protected var tabLayout: TabLayout? = null
+    private var mViewPager: ViewPager? = null
+    private var notiCircle: ImageView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "MainActivity onCreate called!")
+        activityList.add(this)
+        NotiManager.instance!!.addListener(this)
+        setContentView(R.layout.activity_main)
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         // Set up the ViewPager with the sections adapter.
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-        setTabLayoutView(tabLayout);
-        setUpAppBarLayout(appBarLayout);
+        val appBarLayout = findViewById<View>(R.id.appbar) as AppBarLayout
+        mViewPager = findViewById<View>(R.id.container) as ViewPager
+        mViewPager!!.adapter = mSectionsPagerAdapter
+        tabLayout = findViewById<View>(R.id.tabs) as TabLayout
+        tabLayout!!.setupWithViewPager(mViewPager)
+        setTabLayoutView(tabLayout)
+        setUpAppBarLayout(appBarLayout)
 
         // 1. token 의 유무 검사
-        if (PrefManager.getInstance().getPrefKeyXAccessToken() == null) {
+        if (PrefManager.instance!!.prefKeyXAccessToken == null) {
             // 로그인 창으로 이동
             //startWelcome();
-            startIntro();
-            finish();
-            return;
+            startIntro()
+            finish()
+            return
         }
 
         // 2. colorList 받아오기
-        LectureManager.getInstance().fetchColorList("vivid_ios", null);
+        LectureManager.instance!!.fetchColorList("vivid_ios", null)
 
         // 3. 앱 내부에 저장된 시간표 뛰어주기
         // TODO : 저장된 정보를 불러와 보여주기, 없으면 empty상태로 띄어준다.
-        String json = PrefManager.getInstance().getCurrentTable();
+        val json: String? = PrefManager.instance!!.currentTable
         if (json != null) {
-            Table table = new Gson().fromJson(json, Table.class);
-            getSupportActionBar().setTitle(table.getTitle());
-            LectureManager.getInstance().setLectures(table.getLecture_list());
+            val table = Gson().fromJson(json, Table::class.java)
+            supportActionBar!!.setTitle(table.title)
+            LectureManager.instance!!.setLectures(table.lecture_list!!)
         }
 
         // 4. 서버에서 시간표 정보 얻어오기
         // TODO : 서버에서 마지막에 본 시간표 정보 받아오기
-        String id = PrefManager.getInstance().getLastViewTableId();
+        val id: String? = PrefManager.instance!!.lastViewTableId
         if (id != null) {
-            TableManager.getInstance().getTableById(id, new Callback<Table>() {
-                @Override
-                public void success(Table table, Response response) {
-                    getSupportActionBar().setTitle(table.getTitle());
+            TableManager.instance!!.getTableById(id, object : Callback<Table> {
+                override fun success(table: Table, response: Response) {
+                    supportActionBar!!.setTitle(table.title)
                 }
-                @Override
-                public void failure(RetrofitError error) {
+
+                override fun failure(error: RetrofitError) {
                     // invalid token -> 로그인 화면으로
                     // invalid id -> 없어진 테이블
                 }
-            });
+            })
         } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
-            TableManager.getInstance().getDefaultTable(new Callback<Table>() {
-                @Override
-                public void success(Table table, Response response) {
+            TableManager.instance!!.getDefaultTable(object : Callback<Table> {
+                override fun success(table: Table, response: Response) {
                     // default 가 존재하는 경우
-                    getSupportActionBar().setTitle(table.getTitle());
+                    supportActionBar!!.setTitle(table.title)
                 }
 
-                @Override
-                public void failure(RetrofitError error) {
+                override fun failure(error: RetrofitError) {
                     // default가 존재하지 않거나, network error 인 경우
-                    getSupportActionBar().setTitle("empty table");
+                    supportActionBar!!.setTitle("empty table")
                 }
-            });
+            })
         }
 
         // noti check
-        NotiManager.getInstance().getNotificationCount(new Callback<Map<String,Integer>>() {
-            @Override
-            public void success(Map<String,Integer> map, Response response) {
-                int count = map.get("count");
-                Log.d(TAG, "notification count : " + count);
+        NotiManager.instance!!.getNotificationCount(object : Callback<Map<String?, Int?>> {
+            override fun success(map: Map<String?, Int?>, response: Response) {
+                val count = map["count"]!!
+                Log.d(TAG, "notification count : $count")
                 if (notiCircle != null) {
-                    notiCircle.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+                    notiCircle!!.visibility = if (count > 0) View.VISIBLE else View.GONE
                 }
             }
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
 
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainTab type = MainTab.values()[mViewPager.getCurrentItem()];
-                if (type == TIMETABLE) {
-                    showEditDialog(PrefManager.getInstance().getLastViewTableId());
-                }
+            override fun failure(error: RetrofitError) {}
+        })
+        toolbar.setOnClickListener {
+            val type = MainTab.values()[mViewPager!!.currentItem]
+            if (type == MainTab.TIMETABLE) {
+                showEditDialog(PrefManager.instance!!.lastViewTableId!!)
             }
-        });
+        }
     }
 
-    @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+    public override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         // TableListActivity에서 들어 오는 경우 -> 선택한 table 을 보여줘야 함
-        String id = null;
-        if (intent.getExtras() != null) { // intent의 강의 id 받아오기
-            id = intent.getExtras().getString(INTENT_KEY_TABLE_ID);
+        var id: String? = null
+        if (intent.extras != null) { // intent의 강의 id 받아오기
+            id = intent.extras!!.getString(INTENT_KEY_TABLE_ID)
         }
         if (id == null) {
-            Log.e(TAG, "intent has no table id!!");
-            return ;
+            Log.e(TAG, "intent has no table id!!")
+            return
         }
         // 서버에서 받아와서 다시 그리기
-        TableManager.getInstance().getTableById(id, new Callback<Table>() {
-            @Override
-            public void success(Table table, Response response) {
-                getSupportActionBar().setTitle(table.getTitle());
+        TableManager.instance!!.getTableById(id, object : Callback<Table> {
+            override fun success(table: Table, response: Response) {
+                supportActionBar!!.setTitle(table.title)
             }
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
+
+            override fun failure(error: RetrofitError) {}
+        })
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return true
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        activityList.remove(this);
-        NotiManager.getInstance().removeListener(this);
+    override fun onDestroy() {
+        super.onDestroy()
+        activityList.remove(this)
+        NotiManager.instance!!.removeListener(this)
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        checkGoogleServiceVersion();
-        updateTableTitle();
+    public override fun onResume() {
+        super.onResume()
+        checkGoogleServiceVersion()
+        updateTableTitle()
     }
 
-    private void updateTableTitle() {
-        String id = PrefManager.getInstance().getLastViewTableId();
-        if (id == null) return;
-        String title = TableManager.getInstance().getTableTitleById(id);
+    private fun updateTableTitle() {
+        val id: String = PrefManager.instance?.lastViewTableId ?: return
+        val title = TableManager.instance!!.getTableTitleById(id)
         if (!Strings.isNullOrEmpty(title)) {
-            getSupportActionBar().setTitle(title);
+            supportActionBar!!.setTitle(title)
         }
     }
 
-    private boolean checkGoogleServiceVersion() {
-        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
-        if (resultCode == SUCCESS) {
-            Log.d(TAG, "google play service is available.");
-            return true;
+    private fun checkGoogleServiceVersion(): Boolean {
+        val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(applicationContext)
+        if (resultCode == ConnectionResult.SUCCESS) {
+            Log.d(TAG, "google play service is available.")
+            return true
         }
         if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)) {
-            Log.d(TAG, "google play service is user resolvable error.");
-            GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST, new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    checkGoogleServiceVersion();
-                }
-            }).show();
+            Log.d(TAG, "google play service is user resolvable error.")
+            GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST) { checkGoogleServiceVersion() }.show()
         } else {
-            Log.e(TAG, "google play service is not supported in this device.");
+            Log.e(TAG, "google play service is not supported in this device.")
         }
-        return false;
+        return false
     }
 
-    private void setTabLayoutView(final TabLayout tabLayout) {
-        for (int i = 0; i < tabLayout.getTabCount(); i ++) {
-            FrameLayout layout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-            TextView textView = (TextView) layout.findViewById(R.id.tab_title);
-            textView.setText(getPageTitle(i));
-
-            ImageView imageView = (ImageView) layout.findViewById(R.id.noti);
-            imageView.setVisibility(View.GONE);
-            tabLayout.getTabAt(i).setCustomView(layout);
-
-            MainTab type = MainTab.values()[i];
-            if (type == NOTIFICATION) {
-                notiCircle = imageView;
+    private fun setTabLayoutView(tabLayout: TabLayout?) {
+        for (i in 0 until tabLayout!!.tabCount) {
+            val layout = LayoutInflater.from(this).inflate(R.layout.custom_tab, null) as FrameLayout
+            val textView = layout.findViewById<View>(R.id.tab_title) as TextView
+            textView.text = getPageTitle(i)
+            val imageView = layout.findViewById<View>(R.id.noti) as ImageView
+            imageView.visibility = View.GONE
+            tabLayout.getTabAt(i)!!.customView = layout
+            val type = MainTab.values()[i]
+            if (type == MainTab.NOTIFICATION) {
+                notiCircle = imageView
             }
         }
         // for initial state
-        tabLayout.getTabAt(TIMETABLE.ordinal()).getCustomView().setSelected(true);
-        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                super.onTabSelected(tab);
-
-                Log.d(TAG, "on tab selected!");
-                MainTab type = MainTab.values()[tab.getPosition()];
-                if (type == NOTIFICATION) {
-                    onNotificationChecked();
+        tabLayout.getTabAt(MainTab.TIMETABLE.ordinal)!!.customView!!.isSelected = true
+        tabLayout.setOnTabSelectedListener(object : ViewPagerOnTabSelectedListener(mViewPager) {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                super.onTabSelected(tab)
+                Log.d(TAG, "on tab selected!")
+                val type = MainTab.values()[tab.position]
+                if (type == MainTab.NOTIFICATION) {
+                    onNotificationChecked()
                 }
             }
-        });
+        })
     }
 
-    private void showEditDialog(final String id) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = inflater.inflate(R.layout.dialog_change_title, null);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("시간표 이름 변경");
-        alert.setView(layout);
-        alert.setPositiveButton("변경", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // do nothing in here. because we override this button listener later
-            }
-        }).setNegativeButton("취소",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
+    private fun showEditDialog(id: String) {
+        val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = inflater.inflate(R.layout.dialog_change_title, null)
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle("시간표 이름 변경")
+        alert.setView(layout)
+        alert.setPositiveButton("변경") { dialog, whichButton ->
+            // do nothing in here. because we override this button listener later
+        }.setNegativeButton("취소"
+        ) { dialog, whichButton -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
+            if (!Strings.isNullOrEmpty(title)) {
+                TableManager.instance!!.putTable(id, title, object : Callback<List<Table>> {
+                    override fun success(tables: List<Table>?, response: Response) {
+                        supportActionBar!!.setTitle(title)
+                        dialog.dismiss()
                     }
-                });
-        final AlertDialog dialog = alert.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String title = ((EditText) layout.findViewById(R.id.title)).getText().toString();
-                if (!Strings.isNullOrEmpty(title)) {
-                    TableManager.getInstance().putTable(id, title, new Callback<List<Table>>() {
-                        @Override
-                        public void success(List<Table> tables, Response response) {
-                            getSupportActionBar().setTitle(title);
-                            dialog.dismiss();
-                        }
-                        @Override
-                        public void failure(RetrofitError error) {
-                            //show error message
-                        }
-                    });
-                } else {
-                    Toast.makeText(getApp(), "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                }
+
+                    override fun failure(error: RetrofitError) {
+                        //show error message
+                    }
+                })
+            } else {
+                Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
-        });
+        }
     }
 
-    private void setUpAppBarLayout(AppBarLayout appBarLayout) {
+    private fun setUpAppBarLayout(appBarLayout: AppBarLayout) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // for pre-lollipop device
-            appBarLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_background));
+            appBarLayout.setBackgroundDrawable(resources.getDrawable(R.drawable.actionbar_background))
         }
-
     }
 
-    protected void showTabLayout() {
-        tabLayout.setVisibility(View.VISIBLE);
+    fun showTabLayout() {
+        tabLayout!!.visibility = View.VISIBLE
     }
 
-    protected void hideTabLayout() {
-        tabLayout.setVisibility(View.GONE);
+    fun hideTabLayout() {
+        tabLayout!!.visibility = View.GONE
     }
 
-
-    public String getPageTitle(int position) {
-        MainTab type = MainTab.values()[position];
-        return type.title;
+    fun getPageTitle(position: Int): String {
+        val type = MainTab.values()[position]
+        return type.title
     }
 
-    public void onNotificationChecked() {
-        Log.d(TAG, "on notification checked!");
+    fun onNotificationChecked() {
+        Log.d(TAG, "on notification checked!")
         if (notiCircle != null) {
-            notiCircle.setVisibility(View.GONE);
+            notiCircle!!.visibility = View.GONE
         }
     }
 
-    @Override
-    public void notifyNotificationReceived() {
-        Log.d(TAG, "on notification received");
-        MainTab type = MainTab.values()[tabLayout.getSelectedTabPosition()];
-        if (notiCircle != null && type != NOTIFICATION) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notiCircle.setVisibility(View.VISIBLE);
-                }
-            });
+    override fun notifyNotificationReceived() {
+        Log.d(TAG, "on notification received")
+        val type = MainTab.values()[tabLayout!!.selectedTabPosition]
+        if (notiCircle != null && type != MainTab.NOTIFICATION) {
+            runOnUiThread { notiCircle!!.visibility = View.VISIBLE }
         }
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
+        private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
     }
 }

@@ -1,54 +1,40 @@
-package com.wafflestudio.snutt2.ui;
+package com.wafflestudio.snutt2.ui
 
-import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import android.view.View;
-import android.widget.Button;
-
-import com.viewpagerindicator.CirclePageIndicator;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTBaseActivity;
-import com.wafflestudio.snutt2.adapter.IntroPagerAdapter;
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import androidx.viewpager.widget.ViewPager
+import com.viewpagerindicator.CirclePageIndicator
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTBaseActivity
+import com.wafflestudio.snutt2.adapter.IntroPagerAdapter
 
 /**
  * Created by makesource on 2017. 6. 22..
  */
-
-public class IntroActivity extends SNUTTBaseActivity {
-    private IntroPagerAdapter mIntroPagerAdapter;
-    private ViewPager mViewPager;
-    private CirclePageIndicator mIndicator;
-    private Button signIn, signUp;
-
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        activityList.add(this);
-        setContentView(R.layout.activity_intro);
-        mIntroPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mIntroPagerAdapter);
-        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setViewPager(mViewPager);
-        signIn = (Button) findViewById(R.id.sign_in);
-        signUp = (Button) findViewById(R.id.sign_up);
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWelcome(0);
-            }
-        });
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWelcome(1);
-            }
-        });
+class IntroActivity : SNUTTBaseActivity() {
+    private var mIntroPagerAdapter: IntroPagerAdapter? = null
+    private var mViewPager: ViewPager? = null
+    private var mIndicator: CirclePageIndicator? = null
+    private var signIn: Button? = null
+    private var signUp: Button? = null
+    public override fun onCreate(bundle: Bundle?) {
+        super.onCreate(bundle)
+        activityList.add(this)
+        setContentView(R.layout.activity_intro)
+        mIntroPagerAdapter = IntroPagerAdapter(supportFragmentManager)
+        mViewPager = findViewById<View>(R.id.container) as ViewPager
+        mViewPager!!.adapter = mIntroPagerAdapter
+        mIndicator = findViewById<View>(R.id.indicator) as CirclePageIndicator
+        mIndicator!!.setViewPager(mViewPager)
+        signIn = findViewById<View>(R.id.sign_in) as Button
+        signUp = findViewById<View>(R.id.sign_up) as Button
+        signIn!!.setOnClickListener { startWelcome(0) }
+        signUp!!.setOnClickListener { startWelcome(1) }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        activityList.remove(this);
+    override fun onDestroy() {
+        super.onDestroy()
+        activityList.remove(this)
     }
 }
