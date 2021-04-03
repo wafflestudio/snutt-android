@@ -1,6 +1,23 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "com.google.gms.google-services"
+apply plugin: "org.jlleitschuh.gradle.ktlint-idea"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+ktlint {
+    android = true
+    reporters {
+        reporter "plain"
+        reporter "checkstyle"
+        reporter "html"
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/java/**")
+    }
+    // See https://github.com/pinterest/ktlint/issues/527
+    disabledRules = ["import-ordering", "no-wildcard-imports"]
+}
 
 android {
     compileSdkVersion 30
