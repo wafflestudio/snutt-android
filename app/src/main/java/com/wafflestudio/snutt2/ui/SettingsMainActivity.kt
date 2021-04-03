@@ -156,13 +156,13 @@ class SettingsMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackCha
         private const val TAG_FRAGMENT_TERMS = "TAG_FRAGMENT_TERMS"
         private const val TAG_FRAGMENT_PRIVACY = "TAG_FRAGMENT_PRIVACY"
         private val FRAGMENT_TAGS = arrayOf(
-                TAG_FRAGMENT_ACCOUNT,
-                TAG_FRAGMENT_TIMETABLE,
-                TAG_FRAGMENT_DEVELOPER,
-                TAG_FRAGMENT_REPORT,
-                TAG_FRAGMENT_LICENSE,
-                TAG_FRAGMENT_TERMS,
-                TAG_FRAGMENT_PRIVACY
+            TAG_FRAGMENT_ACCOUNT,
+            TAG_FRAGMENT_TIMETABLE,
+            TAG_FRAGMENT_DEVELOPER,
+            TAG_FRAGMENT_REPORT,
+            TAG_FRAGMENT_LICENSE,
+            TAG_FRAGMENT_TERMS,
+            TAG_FRAGMENT_PRIVACY
         )
         const val FRAGMENT_ERROR = -1
         const val FRAGMENT_ACCOUNT = 0

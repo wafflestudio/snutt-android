@@ -16,7 +16,10 @@ import java.util.*
 /**
  * Created by makesource on 2016. 1. 24..
  */
-class ExpandableTableListAdapter(c: TableListActivity?, private val groupList: ArrayList<String>? = null, private val childList: ArrayList<ArrayList<Table>>? = null
+class ExpandableTableListAdapter(
+    c: TableListActivity?,
+    private val groupList: ArrayList<String>? = null,
+    private val childList: ArrayList<ArrayList<Table>>? = null
 ) : BaseExpandableListAdapter() {
     private var viewHolder: ViewHolder? = null
 
@@ -36,8 +39,12 @@ class ExpandableTableListAdapter(c: TableListActivity?, private val groupList: A
     }
 
     // 그룹뷰 각각의 ROW
-    override fun getGroupView(groupPosition: Int, isExpanded: Boolean,
-                              convertView: View, parent: ViewGroup): View {
+    override fun getGroupView(
+        groupPosition: Int,
+        isExpanded: Boolean,
+        convertView: View,
+        parent: ViewGroup
+    ): View {
         val inflater = LayoutInflater.from(parent.context)
         var v = convertView
         if (v == null) {
@@ -54,7 +61,9 @@ class ExpandableTableListAdapter(c: TableListActivity?, private val groupList: A
             viewHolder.iv_image.setBackgroundColor(Color.GREEN);
         }else{
             viewHolder.iv_image.setBackgroundColor(Color.WHITE);
-        }*/viewHolder!!.tableSectionName!!.text = getGroup(groupPosition)
+        }*/viewHolder!!.tableSectionName!!.text = getGroup(
+            groupPosition
+        )
         return v
     }
 
@@ -74,8 +83,13 @@ class ExpandableTableListAdapter(c: TableListActivity?, private val groupList: A
     }
 
     // 차일드뷰 각각의 ROW
-    override fun getChildView(groupPosition: Int, childPosition: Int,
-                              isLastChild: Boolean, convertView: View, parent: ViewGroup): View {
+    override fun getChildView(
+        groupPosition: Int,
+        childPosition: Int,
+        isLastChild: Boolean,
+        convertView: View,
+        parent: ViewGroup
+    ): View {
         val inflater = LayoutInflater.from(parent.context)
         var v = convertView
         if (v == null) {
@@ -116,5 +130,4 @@ class ExpandableTableListAdapter(c: TableListActivity?, private val groupList: A
         var tableSectionName: TextView? = null
         var checked: ImageView? = null
     }
-
 }

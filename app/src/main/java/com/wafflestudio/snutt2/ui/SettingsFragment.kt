@@ -46,20 +46,32 @@ class SettingsFragment : SNUTTBaseFragment() {
         lists!!.add(SettingsItem("개인정보처리방침", SettingsItem.Type.Private))
         lists!!.add(SettingsItem(SettingsItem.Type.Header))
         lists!!.add(SettingsItem("로그아웃", SettingsItem.Type.Logout))
-        //lists.add(new SettingsItem(SettingsItem.Type.Header));
+        // lists.add(new SettingsItem(SettingsItem.Type.Header));
         adapter = SettingsAdapter(lists!!)
         clickListener = object : SettingsAdapter.ClickListener {
             override fun onClick(v: View?, position: Int) {
                 Log.d(TAG, "$position-th item clicked!")
                 val type = lists!!.get(position).type
                 when (type) {
-                    SettingsItem.Type.Account -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_ACCOUNT)
-                    SettingsItem.Type.Timetable -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_TIMETABLE)
-                    SettingsItem.Type.Developer -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_DEVELOPER)
-                    SettingsItem.Type.BugReport -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_REPORT)
+                    SettingsItem.Type.Account -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_ACCOUNT
+                    )
+                    SettingsItem.Type.Timetable -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_TIMETABLE
+                    )
+                    SettingsItem.Type.Developer -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_DEVELOPER
+                    )
+                    SettingsItem.Type.BugReport -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_REPORT
+                    )
                     SettingsItem.Type.License -> showLicenseDialog()
-                    SettingsItem.Type.Terms -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_TERMS)
-                    SettingsItem.Type.Private -> mainActivity!!.startSettingsMain(SettingsMainActivity.FRAGMENT_PRIVACY)
+                    SettingsItem.Type.Terms -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_TERMS
+                    )
+                    SettingsItem.Type.Private -> mainActivity!!.startSettingsMain(
+                        SettingsMainActivity.FRAGMENT_PRIVACY
+                    )
                     SettingsItem.Type.Logout -> performLogout()
                     else -> {
                     }
@@ -88,13 +100,16 @@ class SettingsFragment : SNUTTBaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
-        //ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
-        //listView.setAdapter(adapter);
+        // ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
+        // listView.setAdapter(adapter);
         val recyclerView = rootView.findViewById<View>(R.id.settings_recyclerView) as RecyclerView
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        // recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         return rootView
@@ -125,19 +140,21 @@ class SettingsFragment : SNUTTBaseFragment() {
         alert.setMessage("로그아웃 하시겠습니까?")
         alert.setPositiveButton("로그아웃") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false)
-            instance!!.deleteFirebaseToken(object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    instance!!.performLogout()
-                    mainActivity!!.startIntro()
-                    mainActivity!!.finishAll()
-                    progressDialog.dismiss()
-                }
+            instance!!.deleteFirebaseToken(
+                object : Callback<Any> {
+                    override fun success(o: Any?, response: Response) {
+                        instance!!.performLogout()
+                        mainActivity!!.startIntro()
+                        mainActivity!!.finishAll()
+                        progressDialog.dismiss()
+                    }
 
-                override fun failure(error: RetrofitError) {
-                    Toast.makeText(app, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                    progressDialog.dismiss()
+                    override fun failure(error: RetrofitError) {
+                        Toast.makeText(app, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        progressDialog.dismiss()
+                    }
                 }
-            })
+            )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -145,10 +162,10 @@ class SettingsFragment : SNUTTBaseFragment() {
 
     private fun showLicenseDialog() {
         LicensesDialog.Builder(context)
-                .setNotices(R.raw.notices)
-                .setIncludeOwnLicense(true)
-                .build()
-                .show()
+            .setNotices(R.raw.notices)
+            .setIncludeOwnLicense(true)
+            .build()
+            .show()
     }
 
     companion object {

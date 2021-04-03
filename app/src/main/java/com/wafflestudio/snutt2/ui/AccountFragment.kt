@@ -27,7 +27,6 @@ import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
 import com.wafflestudio.snutt2.model.Facebook
 import com.wafflestudio.snutt2.model.SettingsItem
 import com.wafflestudio.snutt2.model.User
-import com.wafflestudio.snutt2.ui.AccountFragment
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -46,39 +45,49 @@ class AccountFragment : SNUTTBaseFragment() {
         registerFacebookCallback()
         lists = ArrayList()
         adapter = SettingsAdapter(lists!!)
-        adapter!!.setOnItemClickListener(object : SettingsAdapter.ClickListener {
-            override fun onClick(v: View?, position: Int) {
-                Log.d(TAG, "$position-th item clicked!")
-                val type = lists!!.get(position).type
-                when (type) {
-                    SettingsItem.Type.ChangePassword -> performChangePassword()
-                    SettingsItem.Type.ChangeEmail -> performChangeEmail()
-                    SettingsItem.Type.AddIdPassword -> performAddIdPassword()
-                    SettingsItem.Type.LinkFacebook -> LoginManager.getInstance().logInWithReadPermissions(this@AccountFragment, null)
-                    SettingsItem.Type.DeleteFacebook -> performDeleteFacebook()
-                    SettingsItem.Type.Leave -> performLeave()
-                    else -> {
+        adapter!!.setOnItemClickListener(
+            object : SettingsAdapter.ClickListener {
+                override fun onClick(v: View?, position: Int) {
+                    Log.d(TAG, "$position-th item clicked!")
+                    val type = lists!!.get(position).type
+                    when (type) {
+                        SettingsItem.Type.ChangePassword -> performChangePassword()
+                        SettingsItem.Type.ChangeEmail -> performChangeEmail()
+                        SettingsItem.Type.AddIdPassword -> performAddIdPassword()
+                        SettingsItem.Type.LinkFacebook -> LoginManager.getInstance().logInWithReadPermissions(
+                            this@AccountFragment,
+                            null
+                        )
+                        SettingsItem.Type.DeleteFacebook -> performDeleteFacebook()
+                        SettingsItem.Type.Leave -> performLeave()
+                        else -> {
+                        }
                     }
                 }
             }
-        })
+        )
         addSettingsList(instance!!.user)
         adapter!!.notifyDataSetChanged()
-        instance!!.getUserInfo(object : Callback<User> {
-            override fun success(user: User, response: Response) {
-                addSettingsList(user)
-                adapter!!.notifyDataSetChanged()
-            }
+        instance!!.getUserInfo(
+            object : Callback<User> {
+                override fun success(user: User, response: Response) {
+                    addSettingsList(user)
+                    adapter!!.notifyDataSetChanged()
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_account, container, false)
         val recyclerView = rootView.findViewById<View>(R.id.account_recyclerView) as RecyclerView
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        // recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         this.inflater = inflater
@@ -97,7 +106,8 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setView(layout)
         alert.setPositiveButton("변경") { dialog, whichButton ->
             // do nothing in here. because we override this button listener later
-        }.setNegativeButton("취소"
+        }.setNegativeButton(
+            "취소"
         ) { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -109,14 +119,22 @@ class AccountFragment : SNUTTBaseFragment() {
             if (newPassword != newPasswordConfirm) {
                 Toast.makeText(app, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.putUserPassword(oldPassword, newPassword, object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        Toast.makeText(app, "비밀번호를 변경하였습니다.", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }
+                instance!!.putUserPassword(
+                    oldPassword,
+                    newPassword,
+                    object : Callback<Any> {
+                        override fun success(o: Any?, response: Response) {
+                            Toast.makeText(
+                                app,
+                                "비밀번호를 변경하였습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            dialog.dismiss()
+                        }
 
-                    override fun failure(error: RetrofitError) {}
-                })
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
             }
         }
     }
@@ -129,21 +147,25 @@ class AccountFragment : SNUTTBaseFragment() {
         alert2.setView(layout2)
         alert2.setPositiveButton("변경") { dialog, whichButton ->
             // do nothing in here. because we override this button listener later
-        }.setNegativeButton("취소"
+        }.setNegativeButton(
+            "취소"
         ) { dialog, whichButton -> dialog.cancel() }
         val dialog2 = alert2.create()
         dialog2.show()
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(email)) {
-                instance!!.putUserInfo(email, object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        emailItem!!.detail = email
-                        adapter!!.notifyDataSetChanged()
-                    }
+                instance!!.putUserInfo(
+                    email,
+                    object : Callback<Any> {
+                        override fun success(o: Any?, response: Response) {
+                            emailItem!!.detail = email
+                            adapter!!.notifyDataSetChanged()
+                        }
 
-                    override fun failure(error: RetrofitError) {}
-                })
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
                 dialog2.dismiss()
             } else {
                 Toast.makeText(app, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -158,7 +180,8 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setView(layout)
         alert.setPositiveButton("추가") { dialog, whichButton ->
             // do nothing in here. because we override this button listener later
-        }.setNegativeButton("취소"
+        }.setNegativeButton(
+            "취소"
         ) { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -170,15 +193,19 @@ class AccountFragment : SNUTTBaseFragment() {
             if (password != passwordConfirm) {
                 Toast.makeText(app, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.postUserPassword(id, password, object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        Toast.makeText(app, "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show()
-                        updateNewId(id)
-                        dialog.dismiss()
-                    }
+                instance!!.postUserPassword(
+                    id,
+                    password,
+                    object : Callback<Any> {
+                        override fun success(o: Any?, response: Response) {
+                            Toast.makeText(app, "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show()
+                            updateNewId(id)
+                            dialog.dismiss()
+                        }
 
-                    override fun failure(error: RetrofitError) {}
-                })
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
             }
         }
     }
@@ -188,15 +215,17 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setTitle("페이스북 연동 끊기")
         alert.setMessage("페이스북 연동을 끊겠습니까?")
         alert.setPositiveButton("끊기") { dialog, whichButton ->
-            instance!!.deleteUserFacebook(object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    Toast.makeText(app, "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show()
-                    LoginManager.getInstance().logOut()
-                    updateDeleteFacebook()
-                }
+            instance!!.deleteUserFacebook(
+                object : Callback<Any> {
+                    override fun success(o: Any?, response: Response) {
+                        Toast.makeText(app, "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show()
+                        LoginManager.getInstance().logOut()
+                        updateDeleteFacebook()
+                    }
 
-                override fun failure(error: RetrofitError) {}
-            })
+                    override fun failure(error: RetrofitError) {}
+                }
+            )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -208,28 +237,32 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?")
         alert.setPositiveButton("회원탈퇴") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "회원탈퇴", "잠시만 기다려 주세요", true, false)
-            instance!!.deleteFirebaseToken(object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    instance!!.deleteUserAccount(object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
-                            instance!!.performLogout()
-                            sNUTTBaseActivity!!.startIntro()
-                            sNUTTBaseActivity!!.finishAll()
-                            progressDialog.dismiss()
-                        }
+            instance!!.deleteFirebaseToken(
+                object : Callback<Any> {
+                    override fun success(o: Any?, response: Response) {
+                        instance!!.deleteUserAccount(
+                            object : Callback<Any> {
+                                override fun success(o: Any?, response: Response) {
+                                    instance!!.performLogout()
+                                    sNUTTBaseActivity!!.startIntro()
+                                    sNUTTBaseActivity!!.finishAll()
+                                    progressDialog.dismiss()
+                                }
 
-                        override fun failure(error: RetrofitError) {
-                            Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                            progressDialog.dismiss()
-                        }
-                    })
-                }
+                                override fun failure(error: RetrofitError) {
+                                    Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                    progressDialog.dismiss()
+                                }
+                            }
+                        )
+                    }
 
-                override fun failure(error: RetrofitError) {
-                    Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                    progressDialog.dismiss()
+                    override fun failure(error: RetrofitError) {
+                        Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        progressDialog.dismiss()
+                    }
                 }
-            })
+            )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -268,14 +301,16 @@ class AccountFragment : SNUTTBaseFragment() {
         lists!!.add(position, SettingsItem("페이스북 이름", "", SettingsItem.Type.FacebookName))
         adapter!!.notifyItemInserted(position)
         val pos = position
-        instance!!.getUserFacebook(object : Callback<Facebook> {
-            override fun success(facebook: Facebook, response: Response) {
-                facebookNameItem!!.detail = facebook.name
-                adapter!!.notifyItemChanged(pos)
-            }
+        instance!!.getUserFacebook(
+            object : Callback<Facebook> {
+                override fun success(facebook: Facebook, response: Response) {
+                    facebookNameItem!!.detail = facebook.name
+                    adapter!!.notifyItemChanged(pos)
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     private fun updateDeleteFacebook() {
@@ -315,34 +350,46 @@ class AccountFragment : SNUTTBaseFragment() {
     private fun registerFacebookCallback() {
         Log.d(TAG, "register facebook callback called.")
         callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-                // App code
-                val id = loginResult.accessToken.userId
-                val token = loginResult.accessToken.token
-                Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
-                Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
-                instance!!.postUserFacebook(id, token, object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        updateLinkFacebook()
-                    }
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    // App code
+                    val id = loginResult.accessToken.userId
+                    val token = loginResult.accessToken.token
+                    Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
+                    Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
+                    instance!!.postUserFacebook(
+                        id,
+                        token,
+                        object : Callback<Any> {
+                            override fun success(
+                                o: Any?,
+                                response: Response
+                            ) {
+                                updateLinkFacebook()
+                            }
 
-                    override fun failure(error: RetrofitError) {}
-                })
-            }
+                            override fun failure(
+                                error: RetrofitError
+                            ) {}
+                        }
+                    )
+                }
 
-            override fun onCancel() {
-                // App code
-                Log.w(TAG, "Cancel")
-                Toast.makeText(app, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
-            }
+                override fun onCancel() {
+                    // App code
+                    Log.w(TAG, "Cancel")
+                    Toast.makeText(app, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
+                }
 
-            override fun onError(exception: FacebookException) {
-                // App code
-                Log.e(TAG, "Error", exception)
-                Toast.makeText(app, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
+                override fun onError(exception: FacebookException) {
+                    // App code
+                    Log.e(TAG, "Error", exception)
+                    Toast.makeText(app, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
+                }
             }
-        })
+        )
     }
 
     private fun addSettingsList(user: User) {
@@ -362,7 +409,7 @@ class AccountFragment : SNUTTBaseFragment() {
             lists!!.add(SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail))
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
             lists!!.add(SettingsItem("회원탈퇴", SettingsItem.Type.Leave))
-            //lists.add(new SettingsItem(SettingsItem.Type.Header));
+            // lists.add(new SettingsItem(SettingsItem.Type.Header));
         } else {
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
             lists!!.add(SettingsItem("아이디", user.local_id, SettingsItem.Type.Id))
@@ -379,7 +426,7 @@ class AccountFragment : SNUTTBaseFragment() {
             lists!!.add(SettingsItem("이메일 변경", SettingsItem.Type.ChangeEmail))
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
             lists!!.add(SettingsItem("회원탈퇴", SettingsItem.Type.Leave))
-            //lists.add(new SettingsItem(SettingsItem.Type.Header));
+            // lists.add(new SettingsItem(SettingsItem.Type.Header));
         }
     }
 

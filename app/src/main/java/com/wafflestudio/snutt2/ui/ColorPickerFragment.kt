@@ -30,8 +30,11 @@ class ColorPickerFragment : SNUTTBaseFragment() {
         fun onColorChanged(index: Int, color: Color?)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_color_picker, container, false)
         val colors = instance!!.colorList
         val names = instance!!.colorNameList
@@ -41,44 +44,49 @@ class ColorPickerFragment : SNUTTBaseFragment() {
         listView!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             if (position == colors.size) {
                 ColorPickerDialogBuilder
-                        .with(context)
-                        .setTitle("배경색")
-                        .initialColor(instance!!.defaultBgColor)
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setOnColorSelectedListener { selectedColor ->
-                            Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor))
-                            //Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
-                        }
-                        .setPositiveButton("ok") { dialog, selectedColor, allColors ->
-                            val bgColor = selectedColor
-                            ColorPickerDialogBuilder
-                                    .with(context)
-                                    .setTitle("텍스트색")
-                                    .initialColor(instance!!.defaultFgColor)
-                                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                                    .density(12)
-                                    .setOnColorSelectedListener { selectedColor -> Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor)) }
-                                    .setPositiveButton("ok") { dialog, selectedColor, allColors ->
-                                        val fgColor = selectedColor
-                                        mCallback!!.onColorChanged(0, Color(bgColor, fgColor))
-                                        //LectureManager.getInstance().updateLecture(lecture, bgColor, fgColor);
-                                        activity!!.onBackPressed()
-                                    }
-                                    .setNegativeButton("cancel") { dialog, which -> }
-                                    .build()
-                                    .show()
-                        }
-                        .setNegativeButton("cancel") { dialog, which -> }
-                        .build()
-                        .show()
+                    .with(context)
+                    .setTitle("배경색")
+                    .initialColor(instance!!.defaultBgColor)
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .setOnColorSelectedListener { selectedColor ->
+                        Log.d(TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor))
+                        // Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor),Toast.LENGTH_SHORT).show();
+                    }
+                    .setPositiveButton("ok") { dialog, selectedColor, allColors ->
+                        val bgColor = selectedColor
+                        ColorPickerDialogBuilder
+                            .with(context)
+                            .setTitle("텍스트색")
+                            .initialColor(instance!!.defaultFgColor)
+                            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                            .density(12)
+                            .setOnColorSelectedListener { selectedColor ->
+                                Log.d(
+                                    TAG,
+                                    "onColorSelected: 0x" + Integer.toHexString(selectedColor)
+                                )
+                            }
+                            .setPositiveButton("ok") { dialog, selectedColor, allColors ->
+                                val fgColor = selectedColor
+                                mCallback!!.onColorChanged(0, Color(bgColor, fgColor))
+                                // LectureManager.getInstance().updateLecture(lecture, bgColor, fgColor);
+                                activity!!.onBackPressed()
+                            }
+                            .setNegativeButton("cancel") { dialog, which -> }
+                            .build()
+                            .show()
+                    }
+                    .setNegativeButton("cancel") { dialog, which -> }
+                    .build()
+                    .show()
             } else {
                 mCallback!!.onColorChanged(position + 1, null)
                 activity!!.onBackPressed()
             }
         }
-        //setDefaultColor();
-        //setListener();
+        // setDefaultColor();
+        // setListener();
         return rootView
     }
 

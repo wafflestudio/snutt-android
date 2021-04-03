@@ -43,8 +43,11 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         adapter = LectureDetailAdapter(lectureMainActivity!!, this, lists!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false)
         detailView = rootView.findViewById<View>(R.id.lecture_detail_view) as RecyclerView
         detailView!!.adapter = adapter
@@ -78,23 +81,27 @@ class LectureDetailFragment : SNUTTBaseFragment() {
     @Synchronized
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_edit -> if (editable) {
-                item.isEnabled = false
-                adapter!!.updateLecture(instance!!.currentLecture, object : Callback<Table> {
-                    override fun success(table: Table?, response: Response) {
-                        item.title = "편집"
-                        item.isEnabled = true
-                        setNormalMode()
-                    }
+            R.id.action_edit ->
+                if (editable) {
+                    item.isEnabled = false
+                    adapter!!.updateLecture(
+                        instance!!.currentLecture,
+                        object : Callback<Table> {
+                            override fun success(table: Table?, response: Response) {
+                                item.title = "편집"
+                                item.isEnabled = true
+                                setNormalMode()
+                            }
 
-                    override fun failure(error: RetrofitError) {
-                        item.isEnabled = true
-                    }
-                })
-            } else {
-                item.title = "완료"
-                setEditMode()
-            }
+                            override fun failure(error: RetrofitError) {
+                                item.isEnabled = true
+                            }
+                        }
+                    )
+                } else {
+                    item.title = "완료"
+                    setEditMode()
+                }
             R.id.home -> if (editable) {
                 refreshFragment()
                 return true
@@ -206,7 +213,9 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem("강의명", lecture!!.course_title, LectureItem.Type.Title))
         lists!!.add(LectureItem("교수", lecture.instructor, LectureItem.Type.Instructor))
-        lists!!.add(LectureItem("색상", lecture.colorIndex, lecture.getColor(), LectureItem.Type.Color))
+        lists!!.add(
+            LectureItem("색상", lecture.colorIndex, lecture.getColor(), LectureItem.Type.Color)
+        )
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))

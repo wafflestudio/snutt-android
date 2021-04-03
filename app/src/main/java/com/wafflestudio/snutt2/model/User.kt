@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.model
 
-import com.google.common.base.Strings
-
 /**
  * Created by makesource on 2017. 1. 23..
  */

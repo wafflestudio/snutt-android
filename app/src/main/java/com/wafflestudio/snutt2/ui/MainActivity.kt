@@ -75,7 +75,7 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         // 1. token 의 유무 검사
         if (PrefManager.instance!!.prefKeyXAccessToken == null) {
             // 로그인 창으로 이동
-            //startWelcome();
+            // startWelcome();
             startIntro()
             finish()
             return
@@ -97,43 +97,50 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         // TODO : 서버에서 마지막에 본 시간표 정보 받아오기
         val id: String? = PrefManager.instance!!.lastViewTableId
         if (id != null) {
-            TableManager.instance!!.getTableById(id, object : Callback<Table> {
-                override fun success(table: Table, response: Response) {
-                    supportActionBar!!.setTitle(table.title)
-                }
+            TableManager.instance!!.getTableById(
+                id,
+                object : Callback<Table> {
+                    override fun success(table: Table, response: Response) {
+                        supportActionBar!!.setTitle(table.title)
+                    }
 
-                override fun failure(error: RetrofitError) {
-                    // invalid token -> 로그인 화면으로
-                    // invalid id -> 없어진 테이블
+                    override fun failure(error: RetrofitError) {
+                        // invalid token -> 로그인 화면으로
+                        // invalid id -> 없어진 테이블
+                    }
                 }
-            })
+            )
         } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
-            TableManager.instance!!.getDefaultTable(object : Callback<Table> {
-                override fun success(table: Table, response: Response) {
-                    // default 가 존재하는 경우
-                    supportActionBar!!.setTitle(table.title)
-                }
+            TableManager.instance!!.getDefaultTable(
+                object : Callback<Table> {
+                    override fun success(table: Table, response: Response) {
+// default 가 존재하는 경우
+                        supportActionBar!!.setTitle(table.title)
+                    }
 
-                override fun failure(error: RetrofitError) {
-                    // default가 존재하지 않거나, network error 인 경우
-                    supportActionBar!!.setTitle("empty table")
+                    override fun failure(error: RetrofitError) {
+// default가 존재하지 않거나, network error 인 경우
+                        supportActionBar!!.setTitle("empty table")
+                    }
                 }
-            })
+            )
         }
 
         // noti check
-        NotiManager.instance!!.getNotificationCount(object : Callback<Map<String?, Int?>> {
-            override fun success(map: Map<String?, Int?>, response: Response) {
-                val count = map["count"]!!
-                Log.d(TAG, "notification count : $count")
-                if (notiCircle != null) {
-                    notiCircle!!.visibility = if (count > 0) View.VISIBLE else View.GONE
+        NotiManager.instance!!.getNotificationCount(
+            object : Callback<Map<String?, Int?>> {
+                override fun success(map: Map<String?, Int?>, response: Response) {
+                    val count = map["count"]!!
+                    Log.d(TAG, "notification count : $count")
+                    if (notiCircle != null) {
+                        notiCircle!!.visibility = if (count > 0) View.VISIBLE else View.GONE
+                    }
                 }
-            }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
         toolbar.setOnClickListener {
             val type = MainTab.values()[mViewPager!!.currentItem]
             if (type == MainTab.TIMETABLE) {
@@ -154,18 +161,21 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
             return
         }
         // 서버에서 받아와서 다시 그리기
-        TableManager.instance!!.getTableById(id, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
-                supportActionBar!!.setTitle(table.title)
-            }
+        TableManager.instance!!.getTableById(
+            id,
+            object : Callback<Table> {
+                override fun success(table: Table, response: Response) {
+                    supportActionBar!!.setTitle(table.title)
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        // getMenuInflater().inflate(R.menu.menu_main, menu);
         return true
     }
 
@@ -190,14 +200,20 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
     }
 
     private fun checkGoogleServiceVersion(): Boolean {
-        val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(applicationContext)
+        val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
+            applicationContext
+        )
         if (resultCode == ConnectionResult.SUCCESS) {
             Log.d(TAG, "google play service is available.")
             return true
         }
         if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)) {
             Log.d(TAG, "google play service is user resolvable error.")
-            GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST) { checkGoogleServiceVersion() }.show()
+            GoogleApiAvailability.getInstance().getErrorDialog(
+                this,
+                resultCode,
+                PLAY_SERVICES_RESOLUTION_REQUEST
+            ) { checkGoogleServiceVersion() }.show()
         } else {
             Log.e(TAG, "google play service is not supported in this device.")
         }
@@ -219,16 +235,18 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         }
         // for initial state
         tabLayout.getTabAt(MainTab.TIMETABLE.ordinal)!!.customView!!.isSelected = true
-        tabLayout.setOnTabSelectedListener(object : ViewPagerOnTabSelectedListener(mViewPager) {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                super.onTabSelected(tab)
-                Log.d(TAG, "on tab selected!")
-                val type = MainTab.values()[tab.position]
-                if (type == MainTab.NOTIFICATION) {
-                    onNotificationChecked()
+        tabLayout.setOnTabSelectedListener(
+            object : ViewPagerOnTabSelectedListener(mViewPager) {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    super.onTabSelected(tab)
+                    Log.d(TAG, "on tab selected!")
+                    val type = MainTab.values()[tab.position]
+                    if (type == MainTab.NOTIFICATION) {
+                        onNotificationChecked()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun showEditDialog(id: String) {
@@ -239,23 +257,31 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         alert.setView(layout)
         alert.setPositiveButton("변경") { dialog, whichButton ->
             // do nothing in here. because we override this button listener later
-        }.setNegativeButton("취소"
+        }.setNegativeButton(
+            "취소"
         ) { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
-                TableManager.instance!!.putTable(id, title, object : Callback<List<Table>> {
-                    override fun success(tables: List<Table>?, response: Response) {
-                        supportActionBar!!.setTitle(title)
-                        dialog.dismiss()
-                    }
+                TableManager.instance!!.putTable(
+                    id,
+                    title,
+                    object : Callback<List<Table>> {
+                        override fun success(
+                            tables: List<Table>?,
+                            response: Response
+                        ) {
+                            supportActionBar!!.setTitle(title)
+                            dialog.dismiss()
+                        }
 
-                    override fun failure(error: RetrofitError) {
-                        //show error message
+                        override fun failure(error: RetrofitError) {
+                            // show error message
+                        }
                     }
-                })
+                )
             } else {
                 Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -264,7 +290,9 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
 
     private fun setUpAppBarLayout(appBarLayout: AppBarLayout) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // for pre-lollipop device
-            appBarLayout.setBackgroundDrawable(resources.getDrawable(R.drawable.actionbar_background))
+            appBarLayout.setBackgroundDrawable(
+                resources.getDrawable(R.drawable.actionbar_background)
+            )
         }
     }
 

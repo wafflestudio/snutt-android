@@ -12,8 +12,11 @@ import com.wafflestudio.snutt2.view.TableView
  * Created by makesource on 2016. 1. 16..
  */
 class TableFragment : SNUTTBaseFragment(), OnLectureChangedListener {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_table, container, false)
         mInstance = rootView.findViewById<View>(R.id.timetable) as TableView
         setHasOptionsMenu(true)

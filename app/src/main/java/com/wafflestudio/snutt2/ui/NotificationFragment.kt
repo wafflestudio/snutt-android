@@ -31,8 +31,11 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
     private var placeholder: LinearLayout? = null
     private var layout: SwipeRefreshLayout? = null
     private var refreshListener: OnRefreshListener? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_notification, container, false)
         val recyclerView = rootView.findViewById<View>(R.id.notification_recyclerView) as RecyclerView
         placeholder = rootView.findViewById<View>(R.id.placeholder) as LinearLayout
@@ -55,17 +58,19 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         layout = rootView.findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
-            NotiManager.instance!!.refreshNotification(object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    scrollListener!!.init()
-                    layout!!.isRefreshing = false
-                    adapter!!.notifyDataSetChanged()
-                    NotiManager.instance!!.fetched = true
-                    placeholder!!.visibility = if (NotiManager.instance!!.hasNotifications()) View.GONE else View.VISIBLE
-                }
+            NotiManager.instance!!.refreshNotification(
+                object : Callback<Any> {
+                    override fun success(o: Any?, response: Response) {
+                        scrollListener!!.init()
+                        layout!!.isRefreshing = false
+                        adapter!!.notifyDataSetChanged()
+                        NotiManager.instance!!.fetched = true
+                        placeholder!!.visibility = if (NotiManager.instance!!.hasNotifications()) View.GONE else View.VISIBLE
+                    }
 
-                override fun failure(error: RetrofitError) {}
-            })
+                    override fun failure(error: RetrofitError) {}
+                }
+            )
         }
         layout!!.setOnRefreshListener(refreshListener)
         return rootView
@@ -101,13 +106,16 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         NotiManager.instance!!.addProgressBar()
         adapter!!.notifyDataSetChanged()
-        NotiManager.instance!!.loadData(totalItemsCount, object : Callback<List<Notification>> {
-            override fun success(notifications: List<Notification>?, response: Response) {
-                adapter!!.notifyDataSetChanged()
-            }
+        NotiManager.instance!!.loadData(
+            totalItemsCount,
+            object : Callback<List<Notification>> {
+                override fun success(notifications: List<Notification>?, response: Response) {
+                    adapter!!.notifyDataSetChanged()
+                }
 
-            override fun failure(error: RetrofitError) {}
-        })
+                override fun failure(error: RetrofitError) {}
+            }
+        )
     }
 
     private fun autoFetch(layout: SwipeRefreshLayout?, refreshListener: OnRefreshListener?) {

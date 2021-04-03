@@ -14,8 +14,11 @@ import com.wafflestudio.snutt2.SNUTTBaseFragment
 class IntroFragment : SNUTTBaseFragment() {
     private var title: ImageView? = null
     private var detail: ImageView? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_intro, container, false)
         val section = arguments!!.getInt(ARG_SECTION_NUMBER)
         title = rootView.findViewById<View>(R.id.intro_title) as ImageView

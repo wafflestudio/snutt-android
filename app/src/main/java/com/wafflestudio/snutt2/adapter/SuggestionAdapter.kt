@@ -21,7 +21,7 @@ class SuggestionAdapter(private val tagList: List<Tag>) : RecyclerView.Adapter<R
     private var query = ""
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.cell_suggestion, parent, false)
+            .inflate(R.layout.cell_suggestion, parent, false)
         return SuggestionViewHolder(view)
     }
 

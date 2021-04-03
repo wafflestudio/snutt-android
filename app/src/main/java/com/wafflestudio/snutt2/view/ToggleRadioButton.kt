@@ -8,7 +8,10 @@ import androidx.appcompat.widget.AppCompatRadioButton
 /**
  * Created by makesource on 2017. 8. 27..
  */
-class ToggleRadioButton(context: Context?, attrs: AttributeSet?) : AppCompatRadioButton(context, attrs) {
+class ToggleRadioButton(context: Context?, attrs: AttributeSet?) : AppCompatRadioButton(
+    context,
+    attrs
+) {
     override fun toggle() {
         if (isChecked) {
             if (parent is RadioGroup) {

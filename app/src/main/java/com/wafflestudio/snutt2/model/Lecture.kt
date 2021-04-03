@@ -17,8 +17,7 @@ class Lecture {
     var lecture_number: String? = null
     var course_title: String? = null
     var credit = 0
-    var class_time // lecture 검색시 띄어주는 class time
-            : String? = null
+    var class_time: String? = null // lecture 검색시 띄어주는 class time
     var class_time_mask: JsonArray? = null
     var class_time_json: JsonArray? = null
     var location: String? = null
@@ -27,8 +26,7 @@ class Lecture {
     var enrollment = 0
     var remark: String? = null
     var category: String? = null
-    var colorIndex //색상
-            = 0
+    var colorIndex = 0 // 색상
     private var color: Color
 
     constructor() {
@@ -59,7 +57,8 @@ class Lecture {
 
     val isCustom: Boolean
         get() = if (Strings.isNullOrEmpty(course_number) &&
-                Strings.isNullOrEmpty(lecture_number)) true else false
+            Strings.isNullOrEmpty(lecture_number)
+        ) true else false
 
     fun setColor(color: Color) {
         colorIndex = 0
@@ -81,7 +80,7 @@ class Lecture {
             color.fgColor = fgColor
         }
 
-    //간소화된 강의 시간
+    // 간소화된 강의 시간
     val simplifiedClassTime: String?
         get() {
             var text = ""

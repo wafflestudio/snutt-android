@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
  * Created by makesource on 2017. 2. 27..
  */
 abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
-    //set visibleThreshold   default: 5
+    // set visibleThreshold   default: 5
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     val visibleThreshold = 5
@@ -22,7 +22,7 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
     // True if we are still waiting for the last set of data to load.
     private var loading = true
 
-    //set startingPageIndex   default: 0
+    // set startingPageIndex   default: 0
     // Sets the starting page index
     val startingPageIndex = 0
 
@@ -32,7 +32,7 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
     private val mTag = "scroll-listener"
     var mLayoutManager: RecyclerView.LayoutManager
 
-    //init from  self-define
+    // init from  self-define
     fun init() {
         footerViewType = getFooterViewType(defaultNoFooterViewType)
         currentPage = 0
@@ -45,7 +45,7 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
     // but first we check if we are waiting for the previous load to finish.
     override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
 
-        ////when dy=0---->list is clear totalItemCount == 0 or init load  previousTotalItemCount=0
+        // //when dy=0---->list is clear totalItemCount == 0 or init load  previousTotalItemCount=0
         if (dy <= 0) return
         //        Log.i(mTag, "onScrolled-------dy:" + dy);
         val adapter = view.adapter
@@ -57,7 +57,7 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
                 if (!isFooterView(adapter)) {
                     if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change list size ,reset page index
                         currentPage = startingPageIndex
-                    } else if (totalItemCount == previousTotalItemCount) { //if load failure or load empty data , we rollback  page index
+                    } else if (totalItemCount == previousTotalItemCount) { // if load failure or load empty data , we rollback  page index
                         currentPage = if (currentPage == startingPageIndex) startingPageIndex else --currentPage
                     }
                     loading = false

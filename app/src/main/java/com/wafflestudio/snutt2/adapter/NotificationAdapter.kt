@@ -22,17 +22,16 @@ import java.util.*
 class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class VIEW_TYPE(val value: Int) {
         Notification(0), ProgressBar(1);
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE.Notification.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_notification, parent, false)
+                .inflate(R.layout.cell_notification, parent, false)
             NotificationViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_progressbar, parent, false)
+                .inflate(R.layout.cell_progressbar, parent, false)
             ProgressBarViewHolder(view)
         }
     }
@@ -54,7 +53,7 @@ class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.
     }
 
     override fun getItemCount(): Int {
-        //Log.d(TAG, "notification list size : " + lists.size());
+        // Log.d(TAG, "notification list size : " + lists.size());
         return lists.size
     }
 

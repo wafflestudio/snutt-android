@@ -19,7 +19,11 @@ class TagListAdapter(private val context: Context, private val tags: List<Tag>) 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cellLayoutView: View
         val viewHolder: ViewHolder
-        cellLayoutView = LayoutInflater.from(parent.context).inflate(R.layout.cell_tag, parent, false)
+        cellLayoutView = LayoutInflater.from(parent.context).inflate(
+            R.layout.cell_tag,
+            parent,
+            false
+        )
         viewHolder = ViewHolder(cellLayoutView)
         return viewHolder
     }
@@ -29,12 +33,14 @@ class TagListAdapter(private val context: Context, private val tags: List<Tag>) 
         val bgShape = holder.itemView.background as GradientDrawable
         bgShape.setColor(SNUTTUtils.getTagColor(tag.tagType))
         holder.tagTitle.text = tag.name
-        holder.setClickListener(object : ViewHolder.ClickListener {
-            override fun onClick(v: View?, position: Int) {
-                instance!!.removeTag(position)
-                notifyItemRemoved(position)
+        holder.setClickListener(
+            object : ViewHolder.ClickListener {
+                override fun onClick(v: View?, position: Int) {
+                    instance!!.removeTag(position)
+                    notifyItemRemoved(position)
+                }
             }
-        })
+        )
     }
 
     override fun getItemCount(): Int {

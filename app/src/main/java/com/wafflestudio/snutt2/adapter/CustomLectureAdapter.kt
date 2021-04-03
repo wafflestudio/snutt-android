@@ -34,54 +34,57 @@ import java.util.*
 /**
  * Created by makesource on 2017. 3. 17..
  */
-class CustomLectureAdapter(private val activity: Activity, private val lists: ArrayList<LectureItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+class CustomLectureAdapter(
+    private val activity: Activity,
+    private val lists: ArrayList<LectureItem>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
     private var fromTime = 0
     private var toTime = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == LectureItem.ViewType.ItemShortHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_short_header, parent, false)
+                .inflate(R.layout.cell_lecture_short_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemLongHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_long_header, parent, false)
+                .inflate(R.layout.cell_lecture_long_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClassTimeHeader.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_class_header, parent, false)
+                .inflate(R.layout.cell_lecture_class_header, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemMargin.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_margin, parent, false)
+                .inflate(R.layout.cell_lecture_margin, parent, false)
             return HeaderViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemTitle.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_title, parent, false)
+                .inflate(R.layout.cell_lecture_item_title, parent, false)
             return TitleViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemButton.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_button, parent, false)
+                .inflate(R.layout.cell_lecture_item_button, parent, false)
             return ButtonViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_color, parent, false)
+                .inflate(R.layout.cell_lecture_item_color, parent, false)
             return ColorViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_class, parent, false)
+                .inflate(R.layout.cell_lecture_item_class, parent, false)
             return ClassViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemRemark.value) {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.cell_lecture_item_remark, parent, false)
+                .inflate(R.layout.cell_lecture_item_remark, parent, false)
             return RemarkViewHolder(view)
         }
         throw IllegalStateException("OLD CODE PROBLEM")
@@ -164,17 +167,26 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
         val alert = AlertDialog.Builder(activity)
         alert.setTitle("강좌 삭제")
         alert.setMessage("강좌를 삭제하시겠습니까")
-        alert.setPositiveButton("삭제", DialogInterface.OnClickListener { dialog, whichButton ->
-            if (instance!!.currentLecture == null) return@OnClickListener
-            val lectureId = instance!!.currentLecture!!.id
-            instance!!.removeLecture(lectureId, object : Callback<Any> {
-                override fun success(o: Any?, response: Response) {
-                    activity.finish()
-                }
+        alert.setPositiveButton(
+            "삭제",
+            DialogInterface.OnClickListener { dialog, whichButton ->
+                if (instance!!.currentLecture == null) return@OnClickListener
+                val lectureId = instance!!.currentLecture!!.id
+                instance!!.removeLecture(
+                    lectureId,
+                    object : Callback<Any> {
+                        override fun success(
+                            o: Any?,
+                            response: Response
+                        ) {
+                            activity.finish()
+                        }
 
-                override fun failure(error: RetrofitError) {}
-            })
-        }).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+                        override fun failure(error: RetrofitError) {}
+                    }
+                )
+            }
+        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
     }
@@ -189,13 +201,15 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
             value.isClickable = item.isEditable
             value.isFocusable = item.isEditable
             value.isFocusableInTouchMode = item.isEditable
-            value.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    textChangedListener!!.onTextChanged(s.toString(), position)
+            value.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable) {
+                        textChangedListener!!.onTextChanged(s.toString(), position)
+                    }
                 }
-            })
+            )
             when (item.type) {
                 LectureItem.Type.Credit -> {
                     value.inputType = InputType.TYPE_CLASS_NUMBER
@@ -276,13 +290,15 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
         private val editText1: EditText
         fun bindData(item: LectureItem) {
             editText1.setText(item.value1)
-            editText1.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    textChangedListener!!.onTextChanged(s.toString(), position)
+            editText1.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable) {
+                        textChangedListener!!.onTextChanged(s.toString(), position)
+                    }
                 }
-            })
+            )
             editText1.hint = if (item.isEditable) "비고를 입력해주세요" else "(없음)"
             editText1.isClickable = item.isEditable
             editText1.isFocusable = item.isEditable
@@ -305,8 +321,8 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
         fun bindData(item: LectureItem, listener: View.OnClickListener) {
             title1.hint = "시간"
             val time = SNUTTUtils.numberToWday(item.classTime!!.day) + " " +
-                    SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
-                    SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
+                SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
+                SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
             editText1.setText(time)
             editText1.isClickable = false
             editText1.isFocusable = false
@@ -314,13 +330,15 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
             editText1.setOnClickListener(listener)
             title2.hint = "장소"
             editText2.setText(item.classTime!!.place)
-            editText2.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    textChangedListener!!.onLocationChanged(s.toString(), position)
+            editText2.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable) {
+                        textChangedListener!!.onLocationChanged(s.toString(), position)
+                    }
                 }
-            })
+            )
             editText2.isClickable = item.isEditable
             editText2.isFocusable = item.isEditable
             editText2.isFocusableInTouchMode = item.isEditable
@@ -429,12 +447,13 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
             when (type) {
                 LectureItem.Type.Title -> target.course_title = item.value1
                 LectureItem.Type.Instructor -> target.instructor = item.value1
-                LectureItem.Type.Color -> if (item.colorIndex > 0) {
-                    target.colorIndex = item.colorIndex
-                } else {
-                    target.bgColor = item.getColor()!!.bgColor
-                    target.fgColor = item.getColor()!!.fgColor
-                }
+                LectureItem.Type.Color ->
+                    if (item.colorIndex > 0) {
+                        target.colorIndex = item.colorIndex
+                    } else {
+                        target.bgColor = item.getColor()!!.bgColor
+                        target.fgColor = item.getColor()!!.fgColor
+                    }
                 LectureItem.Type.Credit -> {
                     val value = getIntegerValue(item.value1)
                     target.credit = value
@@ -470,12 +489,13 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
             when (type) {
                 LectureItem.Type.Title -> lecture.course_title = item.value1
                 LectureItem.Type.Instructor -> lecture.instructor = item.value1
-                LectureItem.Type.Color -> if (item.colorIndex > 0) {
-                    lecture.colorIndex = item.colorIndex
-                } else {
-                    lecture.bgColor = item.getColor()!!.bgColor
-                    lecture.fgColor = item.getColor()!!.fgColor
-                }
+                LectureItem.Type.Color ->
+                    if (item.colorIndex > 0) {
+                        lecture.colorIndex = item.colorIndex
+                    } else {
+                        lecture.bgColor = item.getColor()!!.bgColor
+                        lecture.fgColor = item.getColor()!!.fgColor
+                    }
                 LectureItem.Type.Credit -> {
                     val value = getIntegerValue(item.value1)
                     lecture.credit = value
@@ -517,19 +537,23 @@ class CustomLectureAdapter(private val activity: Activity, private val lists: Ar
     }
 
     init {
-        setOnTextChangedListener(object : TextChangedListener {
-            override fun onTextChanged(text: String?, position: Int) {
-                getItem(position).value1 = text
-            }
+        setOnTextChangedListener(
+            object : TextChangedListener {
+                override fun onTextChanged(text: String?, position: Int) {
+                    getItem(position).value1 = text
+                }
 
-            override fun onLocationChanged(text: String?, position: Int) {
-                getItem(position).classTime!!.place = text!!
+                override fun onLocationChanged(text: String?, position: Int) {
+                    getItem(position).classTime!!.place = text!!
+                }
             }
-        })
-        setOnDeleteClickListener(object : DeleteClickListener {
-            override fun onDeleteClick(view: View?, position: Int) {
-                showDeleteDialog(position)
+        )
+        setOnDeleteClickListener(
+            object : DeleteClickListener {
+                override fun onDeleteClick(view: View?, position: Int) {
+                    showDeleteDialog(position)
+                }
             }
-        })
+        )
     }
 }

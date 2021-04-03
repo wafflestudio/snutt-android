@@ -60,19 +60,19 @@ class TextRect(paint: Paint) {
                     // 강의명만 생각
                     paint!!.getTextBounds(text, start, stop, bounds)
                     if (start <= lowest && lowest < stop || bounds.width() > maxWidth) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
-                    {
-                        --stop
-                        if (lowest < start || lowest > stop) {
-                            val blank = text.lastIndexOf(" ", stop)
-                            if (blank > start) lowest = blank
+                        {
+                            --stop
+                            if (lowest < start || lowest > stop) {
+                                val blank = text.lastIndexOf(" ", stop)
+                                if (blank > start) lowest = blank
+                            }
+                            if (start <= lowest && lowest <= stop) {
+                                val ch = text[stop]
+                                if (ch != '\n' && ch != ' ') ++lowest
+                                stop = lowest
+                            }
+                            continue
                         }
-                        if (start <= lowest && lowest <= stop) {
-                            val ch = text[stop]
-                            if (ch != '\n' && ch != ' ') ++lowest
-                            stop = lowest
-                        }
-                        continue
-                    }
                     break
                 }
                 if (start >= stop) break
@@ -82,7 +82,8 @@ class TextRect(paint: Paint) {
                 if (stop < length) {
                     val ch = text[stop - 1]
                     if (ch == '\n' ||
-                            ch == ' ') minus = 1
+                        ch == ' '
+                    ) minus = 1
                 }
                 if (textHeight + lineHeight > maxHeight) {
                     wasCut = true
@@ -120,9 +121,12 @@ class TextRect(paint: Paint) {
         for (n in 0..lines) {
             var t: String
             y += before
-            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) text!!.substring(starts[n], stops[n] - 3) + "..." else text!!.substring(starts[n], stops[n])
+            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) text!!.substring(
+                starts[n],
+                stops[n] - 3
+            ) + "..." else text!!.substring(starts[n], stops[n])
 
-            //텍스트 가운데 정렬
+            // 텍스트 가운데 정렬
             var leftResult = left
             paint!!.getTextBounds(t, 0, t.length, bounds)
             val textWidth = bounds.right - bounds.left

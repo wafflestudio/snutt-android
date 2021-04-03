@@ -5,13 +5,15 @@ package com.wafflestudio.snutt2.model
  */
 class SettingsItem {
     enum class Type(val value: Int) {
-        Account(0), Timetable(1), Developer(2), BugReport(3), License(4), Terms(5), Logout(6), Version(7), Header(8), Id(9), ChangePassword(10), LinkFacebook(11), Email(12), ChangeEmail(13), Leave(14), AddIdPassword(15), FacebookName(16), DeleteFacebook(17), Private(18);
-
+        Account(0), Timetable(1), Developer(2), BugReport(3), License(4), Terms(5), Logout(6), Version(
+            7
+        ), Header(8), Id(9), ChangePassword(10), LinkFacebook(11), Email(12), ChangeEmail(13), Leave(
+            14
+        ), AddIdPassword(15), FacebookName(16), DeleteFacebook(17), Private(18);
     }
 
     enum class ViewType(val value: Int) {
         Header(0), ItemTitle(1);
-
     }
 
     var title: String? = null
@@ -19,7 +21,7 @@ class SettingsItem {
 
     /*public void setViewType(ViewType viewType) {
          this.viewType = viewType;
-     }*/  var type: Type
+     }*/ var type: Type
 
     constructor(type: Type) {
         this.type = type

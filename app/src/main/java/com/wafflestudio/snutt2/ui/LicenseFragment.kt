@@ -11,10 +11,13 @@ import com.wafflestudio.snutt2.SNUTTBaseFragment
  * Created by makesource on 2017. 1. 24..
  */
 class LicenseFragment : SNUTTBaseFragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+        // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
         return inflater.inflate(R.layout.fragment_license, container, false)
     }
 }

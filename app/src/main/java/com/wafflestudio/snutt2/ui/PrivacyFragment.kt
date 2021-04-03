@@ -17,8 +17,11 @@ import java.util.*
 class PrivacyFragment : SNUTTBaseFragment() {
     private var webView: WebView? = null
     private var headers: MutableMap<String, String>? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_webview, container, false)
         headers = HashMap<String, String>()
         headers!!["x-access-apikey"] = resources.getString(R.string.api_key)

@@ -65,7 +65,7 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         setTitle()
     }
 
-    //public
+    // public
     private val currentFragmentIndex: Int
         private get() {
             var fragment: Fragment?
@@ -111,8 +111,11 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         fragment!!.arguments = bundle
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-                R.anim.layout_rightin, R.anim.layout_leftout,
-                R.anim.layout_leftin, R.anim.layout_rightout)
+            R.anim.layout_rightin,
+            R.anim.layout_leftout,
+            R.anim.layout_leftin,
+            R.anim.layout_rightout
+        )
         transaction.replace(R.id.activity_lecture_main, fragment, fragmentTag)
         if (withBackStackPush) {
             transaction.addToBackStack(null)
@@ -142,7 +145,9 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
                 alert.setPositiveButton("확인") { dialog, which ->
                     fragment.refreshFragment()
                     dialog.dismiss()
-                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle("편집을 취소하시겠습니까?")
+                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
+                    "편집을 취소하시겠습니까?"
+                )
                 alert.show()
                 return
             }
@@ -153,7 +158,9 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
                 alert.setPositiveButton("확인") { dialog, which ->
                     fragment.refreshFragment()
                     dialog.dismiss()
-                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle("편집을 취소하시겠습니까?")
+                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
+                    "편집을 취소하시겠습니까?"
+                )
                 alert.show()
                 return
             }
@@ -183,18 +190,18 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         const val TAG_FRAGMENT_COLOR_PICKER = "TAG_FRAGMENT_COLOR_PICKER"
         const val TAG_FRAGMENT_CUSTOM_DETAIL = "TAG_FRAGMENT_CUSTOM_DETAIL"
 
-        //public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
+        // public final static String TAG_FRAGMENT_TEST = "TAG_FRAGMENT_TEST";
         private val FRAGMENT_TAGS = arrayOf(
-                TAG_FRAGMENT_LECTURE_DETAIL,
-                TAG_FRAGMENT_COLOR_PICKER,
-                TAG_FRAGMENT_CUSTOM_DETAIL //TAG_FRAGMENT_TEST
+            TAG_FRAGMENT_LECTURE_DETAIL,
+            TAG_FRAGMENT_COLOR_PICKER,
+            TAG_FRAGMENT_CUSTOM_DETAIL // TAG_FRAGMENT_TEST
         )
         const val FRAGMENT_ERROR = -1
         const val FRAGMENT_LECTURE_DETAIL = 0
         const val FRAGMENT_COLOR_PICKER = 1
         const val FRAGMENT_CUSTOM_DETAIL = 2
 
-        //public final static int FRAGMENT_TEST = 2;
+        // public final static int FRAGMENT_TEST = 2;
         const val FRAGMENT_ROOM_NUM = 3 // Number of fragments
     }
 }
