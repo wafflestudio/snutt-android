@@ -1,718 +1,582 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.method.ArrowKeyMovementMethod;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.model.ClassTime;
-import com.wafflestudio.snutt2.model.Lecture;
-import com.wafflestudio.snutt2.model.LectureItem;
-import com.wafflestudio.snutt2.model.Table;
-import com.wafflestudio.snutt2.ui.LectureDetailFragment;
-import com.wafflestudio.snutt2.ui.LectureMainActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import static com.wafflestudio.snutt2.model.LectureItem.ViewType.ItemClassTimeHeader;
-import static com.wafflestudio.snutt2.model.LectureItem.ViewType.ItemLongHeader;
-import static com.wafflestudio.snutt2.model.LectureItem.ViewType.ItemMargin;
-import static com.wafflestudio.snutt2.model.LectureItem.ViewType.ItemShortHeader;
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.text.method.ArrowKeyMovementMethod
+import android.text.method.LinkMovementMethod
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnLongClickListener
+import android.view.ViewGroup
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.model.ClassTime
+import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.model.LectureItem
+import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.ui.LectureDetailFragment
+import com.wafflestudio.snutt2.ui.LectureMainActivity
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
+import java.util.*
 
 /**
  * Created by makesource on 2017. 3. 17..
  */
-
-public class LectureDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "LECTURE_DETAIL_ADAPTER";
-    private static TextChangedListener textChangedListener;
-    private static DeleteClickListener deleteClickListener;
-
-    private List<LectureItem> lists;
-    private LectureMainActivity activity;
-    private LectureDetailFragment fragment;
-
-    private int day;
-    private int fromTime;
-    private int toTime;
-
-    public LectureDetailAdapter(LectureMainActivity activity, LectureDetailFragment fragment, ArrayList<LectureItem> lists) {
-        this.activity = activity;
-        this.fragment = fragment;
-        this.lists = lists;
-        this.setOnTextChangedListener(new TextChangedListener() {
-            @Override
-            public void onText1Changed(String text, int position) {
-                Log.d(TAG, "position : " + position + ", text : " + text);
-                getItem(position).setValue1(text);
-            }
-
-            @Override
-            public void onText2Changed(String text, int position) {
-                getItem(position).setValue2(text);
-            }
-
-            @Override
-            public void onLocationChanged(String text, int position) {
-                getItem(position).getClassTime().setPlace(text);
-            }
-        });
-        this.setOnDeleteClickListener(new DeleteClickListener() {
-            @Override
-            public void onDeleteClick(View view, int position) {
-                showDeleteDialog(position);
-            }
-        });
+class LectureDetailAdapter(private val activity: LectureMainActivity, private val fragment: LectureDetailFragment, lists: ArrayList<LectureItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+    private val lists: MutableList<LectureItem>
+    private var day = 0
+    private var fromTime = 0
+    private var toTime = 0
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Log.d(TAG, "On create view holder called.")
+        if (viewType == LectureItem.ViewType.ItemShortHeader.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_short_header, parent, false)
+            return HeaderViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemLongHeader.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_long_header, parent, false)
+            return HeaderViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemClassTimeHeader.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_class_header, parent, false)
+            return HeaderViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemMargin.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_margin, parent, false)
+            return HeaderViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemTitle.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_item_title, parent, false)
+            return TitleViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemButton.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_item_button, parent, false)
+            return ButtonViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemColor.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_item_color, parent, false)
+            return ColorViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemClass.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_item_class, parent, false)
+            return ClassViewHolder(view)
+        }
+        if (viewType == LectureItem.ViewType.ItemRemark.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_item_remark, parent, false)
+            return RemarkViewHolder(view)
+        }
+        throw IllegalStateException("illegal viewType")
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "On create view holder called.");
-        if (viewType == ItemShortHeader.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_short_header, parent, false);
-            return new HeaderViewHolder(view);
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        Log.d(TAG, "On bind view holder called.")
+        val viewType = getItemViewType(position)
+        val item = getItem(position)
+        if (viewType == LectureItem.ViewType.ItemTitle.value) {
+            val viewHolder = holder as TitleViewHolder?
+            viewHolder!!.bindData(item)
         }
-        if (viewType == ItemLongHeader.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_long_header, parent, false);
-            return new HeaderViewHolder(view);
-        }
-        if (viewType == ItemClassTimeHeader.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_class_header, parent, false);
-            return new HeaderViewHolder(view);
-        }
-        if (viewType == ItemMargin.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_margin, parent, false);
-            return new HeaderViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_title, parent, false);
-            return new TitleViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_button, parent, false);
-            return new ButtonViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemColor.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_color, parent, false);
-            return new ColorViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemClass.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_class, parent, false);
-            return new ClassViewHolder(view);
-        }
-        if (viewType == LectureItem.ViewType.ItemRemark.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_item_remark, parent, false);
-            return new RemarkViewHolder(view);
-        }
-        return null;
-    }
-
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "On bind view holder called.");
-        int viewType = getItemViewType(position);
-        final LectureItem item = getItem(position);
-        if (viewType == LectureItem.ViewType.ItemTitle.getValue()) {
-            TitleViewHolder viewHolder = (TitleViewHolder) holder;
-            viewHolder.bindData(item);
-        }
-        if (viewType == LectureItem.ViewType.ItemButton.getValue()) {
-            ButtonViewHolder viewHolder = (ButtonViewHolder) holder;
-            viewHolder.bindData(item, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switch (item.getType()) {
-                        case Syllabus:
-                            startSyllabus();
-                            break;
-                        case RemoveLecture:
-                            startRemoveAlertView();
-                            break;
-                        case AddClassTime:
-                            addClassItem();
-                            notifyItemInserted(getLastClassItemPosition());
-                            break;
-                        case ResetLecture:
-                            startResetAlertView();
-                            break;
-                        default:
-                            break;
+        if (viewType == LectureItem.ViewType.ItemButton.value) {
+            val viewHolder = holder as ButtonViewHolder?
+            viewHolder!!.bindData(item) {
+                when (item.type) {
+                    LectureItem.Type.Syllabus -> startSyllabus()
+                    LectureItem.Type.RemoveLecture -> startRemoveAlertView()
+                    LectureItem.Type.AddClassTime -> {
+                        addClassItem()
+                        notifyItemInserted(lastClassItemPosition)
+                    }
+                    LectureItem.Type.ResetLecture -> startResetAlertView()
+                    else -> {
                     }
                 }
-            });
+            }
         }
-        if (viewType == LectureItem.ViewType.ItemColor.getValue()) {
-            ColorViewHolder viewHolder = (ColorViewHolder) holder;
-            viewHolder.bindData(item, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (item.isEditable()) {
-                        activity.setColorPickerFragment(item);
-                    }
+        if (viewType == LectureItem.ViewType.ItemColor.value) {
+            val viewHolder = holder as ColorViewHolder?
+            viewHolder!!.bindData(item) {
+                if (item.isEditable) {
+                    activity.setColorPickerFragment(item)
                 }
-            });
+            }
         }
-        if (viewType == LectureItem.ViewType.ItemClass.getValue()) {
-            ClassViewHolder viewHolder = (ClassViewHolder) holder;
-            viewHolder.bindData(item, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (item.isEditable()) {
-                        showDialog(item);
-                    }
+        if (viewType == LectureItem.ViewType.ItemClass.value) {
+            val viewHolder = holder as ClassViewHolder?
+            viewHolder!!.bindData(item) {
+                if (item.isEditable) {
+                    showDialog(item)
                 }
-            });
+            }
         }
-        if (viewType == LectureItem.ViewType.ItemRemark.getValue()) {
-            RemarkViewHolder viewHolder = (RemarkViewHolder) holder;
-            viewHolder.bindData(item);
+        if (viewType == LectureItem.ViewType.ItemRemark.value) {
+            val viewHolder = holder as RemarkViewHolder?
+            viewHolder!!.bindData(item)
         }
     }
 
-    private void addClassItem() {
-        int pos = getLastClassItemPosition() + 1;
-        lists.add(pos, new LectureItem(new ClassTime(0,0,1,""), LectureItem.Type.ClassTime, true));
+    private fun addClassItem() {
+        val pos = lastClassItemPosition + 1
+        lists.add(pos, LectureItem(ClassTime(0, 0f, 1f, ""), LectureItem.Type.ClassTime, true))
     }
 
-    private int getLastClassItemPosition() {
-        for (int i = 0;i < getItemCount();i ++) {
-            if (isLastClassItem(i)) return i;
+    private val lastClassItemPosition: Int
+        private get() {
+            for (i in 0 until itemCount) {
+                if (isLastClassItem(i)) return i
+            }
+            Log.e(TAG, "can't find class time item")
+            return -1
         }
-        Log.e(TAG, "can't find class time item");
-        return -1;
+
+    private fun isLastClassItem(position: Int): Boolean {
+        return if (position == itemCount - 1) false else getItem(position + 1).type === LectureItem.Type.AddClassTime
     }
 
-    private boolean isLastClassItem(int position) {
-        if (position == getItemCount() - 1) return false;
-        return (getItem(position + 1).getType() == LectureItem.Type.AddClassTime);
+    override fun getItemCount(): Int {
+        return lists.size
     }
 
-    @Override
-    public int getItemCount() {
-        return lists.size();
+    override fun getItemViewType(position: Int): Int {
+        return lists[position].viewType.value
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return lists.get(position).getViewType().getValue();
+    fun getItem(position: Int): LectureItem {
+        return lists[position]
     }
 
-    public LectureItem getItem(int position) {
-        return lists.get(position);
-    }
-
-    public void updateLecture(Lecture lecture, Callback<Table> callback) {
+    fun updateLecture(lecture: Lecture?, callback: Callback<Table?>?) {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        Log.d(TAG, "update lecture called.");
-        Lecture current = LectureManager.getInstance().getCurrentLecture();
-        Lecture target = new Lecture();
-        JsonArray ja = new JsonArray();
-        for (LectureItem item : lists) {
-            LectureItem.Type type = item.getType();
-
-            switch (type) {
-                case Title: // 강의명
-                    target.setCourse_title(item.getValue1());
-                    break;
-                case Instructor: // 교수
-                    target.setInstructor(item.getValue1());
-                    break;
-                case Color: // 색상
-                    if (item.getColorIndex() > 0) {
-                        target.setColorIndex(item.getColorIndex());
-                    } else {
-                        target.setBgColor(item.getColor().getBgColor());
-                        target.setFgColor(item.getColor().getFgColor());
-                    }
-                    break;
-                case Department: // 학과
-                    target.setDepartment(item.getValue1());
-                    break;
-                case AcademicYear: // 학년
-                    target.setAcademic_year(item.getValue1());
-                    break;
-                case Credit: // 학점
-                    int value = getIntegerValue(item.getValue1());
-                    target.setCredit(value);
-                    break;
-                case Classification: // 분류
-                    target.setClassification(item.getValue1());
-                    break;
-                case Category: // 구분
-                    target.setCategory(item.getValue1());
-                    break;
-                case CourseNumber: // 강좌번호, 분반번호
-                case LectureNumber:
-                    break;
-                case ClassTime:
-                    JsonElement je = new Gson().toJsonTree(item.getClassTime());
-                    ja.add(je);
-                    break;
-                case Remark: // 비고
-                    target.setRemark(item.getValue1());
-                    break;
-                default:
-                    break;
-            }
-        }
-        target.setClass_time_json(ja);
-        LectureManager.getInstance().updateLecture(current.getId(), target, callback);
-    }
-
-    private int getIntegerValue(String s) {
-        try {
-            return Integer.parseInt(s);
-        } catch(Exception e) {
-            return 0;
-        }
-    }
-
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        private HeaderViewHolder(View view) {
-            super(view);
-        }
-    }
-
-    private static class TitleViewHolder extends RecyclerView.ViewHolder {
-        private TextView title;
-        private EditText value;
-
-        private TitleViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.text_title);
-            value = (EditText) view.findViewById(R.id.text_value);
-        }
-        private void bindData(final LectureItem item) {
-            Log.d(TAG, item.getTitle1() + " " + item.getValue1());
-            title.setText(item.getTitle1());
-            value.setText(item.getValue1());
-            value.setClickable(item.isEditable());
-            value.setFocusable(item.isEditable());
-            value.setFocusableInTouchMode(item.isEditable());
-            value.setTextColor(Color.BLACK);
-            // set text watcher
-            switch (item.getType()) {
-                case LectureNumber:
-                case CourseNumber:
-                    value.setClickable(false);
-                    value.setFocusable(false);
-                    value.setFocusableInTouchMode(false);
-                    value.setTextColor(Color.argb(item.isEditable() ? 51 : 255, 0, 0, 0));
-                    break;
-                default:
-                    value.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                            textChangedListener.onText1Changed(s.toString(), getPosition());
-                        }
-                    });
-                    if (item.getType() == LectureItem.Type.Credit) { // 학점
-                        value.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    }
-                    break;
-            }
-            // set input type & hint
-            switch(item.getType()) {
-                case Credit:
-                    value.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    value.setHint("0");
-                    break;
-                case Title:
-                    value.setInputType(InputType.TYPE_CLASS_TEXT);
-                    value.setHint(item.isEditable() ? "예) 기초 영어" : "(없음)");
-                    break;
-                case Instructor:
-                    value.setInputType(InputType.TYPE_CLASS_TEXT);
-                    value.setHint(item.isEditable() ? "예) 홍길동" : "(없음)");
-                    break;
-                default:
-                    value.setInputType(InputType.TYPE_CLASS_TEXT);
-                    value.setHint("(없음)");
-                    break;
-            }
-        }
-    }
-
-    private static class ButtonViewHolder extends RecyclerView.ViewHolder {
-        private FrameLayout layout;
-        private TextView textView;
-        private ButtonViewHolder(View view) {
-            super(view);
-            layout = (FrameLayout) view.findViewById(R.id.layout);
-            textView = (TextView) view.findViewById(R.id.text_button);
-        }
-        private void bindData(final LectureItem item, View.OnClickListener listener) {
-            layout.setOnClickListener(listener);
-            switch (item.getType()) {
-                case Syllabus:
-                    textView.setText("강의계획서");
-                    textView.setTextColor(Color.parseColor("#000000"));
-                    break;
-                case RemoveLecture:
-                    textView.setText("삭제");
-                    textView.setTextColor(Color.parseColor("#FF0000"));
-                    break;
-                case AddClassTime:
-                    textView.setText("+ 시간 및 장소 추가");
-                    textView.setTextColor(Color.argb(154,0,0,0));
-                    break;
-                case ResetLecture:
-                    textView.setText("초기화");
-                    textView.setTextColor(Color.parseColor("#FF0000"));
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    private static class ColorViewHolder extends RecyclerView.ViewHolder {
-        private LinearLayout layout;
-        private TextView title;
-        private View fgColor;
-        private View bgColor;
-        private View arrow;
-
-        private ColorViewHolder(View view) {
-            super(view);
-            layout = (LinearLayout) view.findViewById(R.id.layout);
-            title = (TextView) view.findViewById(R.id.text_title);
-            fgColor = (View) view.findViewById(R.id.fgColor);
-            bgColor = (View) view.findViewById(R.id.bgColor);
-            arrow = view.findViewById(R.id.arrow);
-        }
-        private void bindData(final LectureItem item, View.OnClickListener listener) {
-            title.setText("색상");
-            layout.setOnClickListener(listener);
-            if (item.getColorIndex() > 0) {
-                bgColor.setBackgroundColor(LectureManager.getInstance().getBgColorByIndex(item.getColorIndex()));
-                fgColor.setBackgroundColor(LectureManager.getInstance().getFgColorByIndex(item.getColorIndex()));
-            } else {
-                bgColor.setBackgroundColor(item.getColor().getBgColor());
-                fgColor.setBackgroundColor(item.getColor().getFgColor());
-            }
-            arrow.setVisibility(item.isEditable() ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private static class RemarkViewHolder extends RecyclerView.ViewHolder {
-        private TextView title1;
-        private EditText editText1;
-
-        private RemarkViewHolder(View view) {
-            super(view);
-            title1 = (TextView) view.findViewById(R.id.text_title);
-            editText1 = (EditText) view.findViewById(R.id.text_value);
-        }
-        private void bindData(final LectureItem item) {
-            editText1.setText(item.getValue1());
-            editText1.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    textChangedListener.onText1Changed(s.toString(), getPosition());
+        Log.d(TAG, "update lecture called.")
+        val current = instance!!.currentLecture
+        val target = Lecture()
+        val ja = JsonArray()
+        for (item in lists) {
+            val type = item.type
+            when (type) {
+                LectureItem.Type.Title -> target.course_title = item.value1
+                LectureItem.Type.Instructor -> target.instructor = item.value1
+                LectureItem.Type.Color -> if (item.colorIndex > 0) {
+                    target.colorIndex = item.colorIndex
+                } else {
+                    target.bgColor = item.getColor()!!.bgColor
+                    target.fgColor = item.getColor()!!.fgColor
                 }
-            });
-            editText1.setHint(item.isEditable() ? "비고를 입력해주세요" : "(없음)");
-            editText1.setMovementMethod(null);
-            editText1.setClickable(item.isEditable());
-            editText1.setFocusable(item.isEditable());
-            editText1.setFocusableInTouchMode(item.isEditable());
-            editText1.setMovementMethod(item.isEditable() ? ArrowKeyMovementMethod.getInstance() : LinkMovementMethod.getInstance());
+                LectureItem.Type.Department -> target.department = item.value1
+                LectureItem.Type.AcademicYear -> target.academic_year = item.value1
+                LectureItem.Type.Credit -> {
+                    val value = getIntegerValue(item.value1)
+                    target.credit = value
+                }
+                LectureItem.Type.Classification -> target.classification = item.value1
+                LectureItem.Type.Category -> target.category = item.value1
+                LectureItem.Type.CourseNumber, LectureItem.Type.LectureNumber -> {
+                }
+                LectureItem.Type.ClassTime -> {
+                    val je = Gson().toJsonTree(item.classTime)
+                    ja.add(je)
+                }
+                LectureItem.Type.Remark -> target.remark = item.value1
+                else -> {
+                }
+            }
+        }
+        target.class_time_json = ja
+        instance!!.updateLecture(current!!.id!!, target, callback)
+    }
+
+    private fun getIntegerValue(s: String?): Int {
+        return try {
+            s!!.toInt()
+        } catch (e: Exception) {
+            0
         }
     }
 
-    private static class ClassViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
-        private TextView title1;
-        private TextView title2;
-        private EditText editText1;
-        private EditText editText2;
-        private LinearLayout remove;
-
-        private ClassViewHolder(View view) {
-            super(view);
-            title1 = (TextView) view.findViewById(R.id.input_title1);
-            title2 = (TextView) view.findViewById(R.id.input_title2);
-            editText1 = (EditText) view.findViewById(R.id.input_time);
-            editText2 = (EditText) view.findViewById(R.id.input_location);
-            remove = (LinearLayout) view.findViewById(R.id.remove);
-            title1.setOnLongClickListener(this);
-            editText1.setOnLongClickListener(this);
-            title2.setOnLongClickListener(this);
-            editText2.setOnLongClickListener(this);
-            view.setOnLongClickListener(this);
-            remove.setOnClickListener(this);
+    private class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    private class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val title: TextView
+        private val value: EditText
+        fun bindData(item: LectureItem) {
+            Log.d(TAG, item.title1 + " " + item.value1)
+            title.text = item.title1
+            value.setText(item.value1)
+            value.isClickable = item.isEditable
+            value.isFocusable = item.isEditable
+            value.isFocusableInTouchMode = item.isEditable
+            value.setTextColor(Color.BLACK)
+            when (item.type) {
+                LectureItem.Type.LectureNumber, LectureItem.Type.CourseNumber -> {
+                    value.isClickable = false
+                    value.isFocusable = false
+                    value.isFocusableInTouchMode = false
+                    value.setTextColor(Color.argb(if (item.isEditable) 51 else 255, 0, 0, 0))
+                }
+                else -> {
+                    value.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                        override fun afterTextChanged(s: Editable) {
+                            textChangedListener!!.onText1Changed(s.toString(), position)
+                        }
+                    })
+                    if (item.type === LectureItem.Type.Credit) { // 학점
+                        value.inputType = InputType.TYPE_CLASS_NUMBER
+                    }
+                }
+            }
+            when (item.type) {
+                LectureItem.Type.Credit -> {
+                    value.inputType = InputType.TYPE_CLASS_NUMBER
+                    value.hint = "0"
+                }
+                LectureItem.Type.Title -> {
+                    value.inputType = InputType.TYPE_CLASS_TEXT
+                    value.hint = if (item.isEditable) "예) 기초 영어" else "(없음)"
+                }
+                LectureItem.Type.Instructor -> {
+                    value.inputType = InputType.TYPE_CLASS_TEXT
+                    value.hint = if (item.isEditable) "예) 홍길동" else "(없음)"
+                }
+                else -> {
+                    value.inputType = InputType.TYPE_CLASS_TEXT
+                    value.hint = "(없음)"
+                }
+            }
         }
-        private void bindData(final LectureItem item, View.OnClickListener listener) {
-            title1.setHint("시간");
-            String time = SNUTTUtils.numberToWday(item.getClassTime().getDay()) + " " +
-                    SNUTTUtils.numberToTime(item.getClassTime().getStart()) + "~" +
-                    SNUTTUtils.numberToTime(item.getClassTime().getStart() + item.getClassTime().getLen());
-            editText1.setText(time);
-            editText1.setClickable(false);
-            editText1.setFocusable(false);
-            editText1.setOnClickListener(listener);
-            title2.setHint("장소");
-            editText2.setText(item.getClassTime().getPlace());
-            editText2.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    textChangedListener.onLocationChanged(s.toString(), getPosition());
+
+        init {
+            title = view.findViewById<View>(R.id.text_title) as TextView
+            value = view.findViewById<View>(R.id.text_value) as EditText
+        }
+    }
+
+    private class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val layout: FrameLayout
+        private val textView: TextView
+        fun bindData(item: LectureItem, listener: View.OnClickListener) {
+            layout.setOnClickListener(listener)
+            when (item.type) {
+                LectureItem.Type.Syllabus -> {
+                    textView.text = "강의계획서"
+                    textView.setTextColor(Color.parseColor("#000000"))
+                }
+                LectureItem.Type.RemoveLecture -> {
+                    textView.text = "삭제"
+                    textView.setTextColor(Color.parseColor("#FF0000"))
+                }
+                LectureItem.Type.AddClassTime -> {
+                    textView.text = "+ 시간 및 장소 추가"
+                    textView.setTextColor(Color.argb(154, 0, 0, 0))
+                }
+                LectureItem.Type.ResetLecture -> {
+                    textView.text = "초기화"
+                    textView.setTextColor(Color.parseColor("#FF0000"))
+                }
+                else -> {
+                }
+            }
+        }
+
+        init {
+            layout = view.findViewById<View>(R.id.layout) as FrameLayout
+            textView = view.findViewById<View>(R.id.text_button) as TextView
+        }
+    }
+
+    private class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val layout: LinearLayout
+        private val title: TextView
+        private val fgColor: View
+        private val bgColor: View
+        private val arrow: View
+        fun bindData(item: LectureItem, listener: View.OnClickListener) {
+            title.text = "색상"
+            layout.setOnClickListener(listener)
+            if (item.colorIndex > 0) {
+                bgColor.setBackgroundColor(instance!!.getBgColorByIndex(item.colorIndex))
+                fgColor.setBackgroundColor(instance!!.getFgColorByIndex(item.colorIndex))
+            } else {
+                bgColor.setBackgroundColor(item.getColor()!!.bgColor)
+                fgColor.setBackgroundColor(item.getColor()!!.fgColor)
+            }
+            arrow.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+        }
+
+        init {
+            layout = view.findViewById<View>(R.id.layout) as LinearLayout
+            title = view.findViewById<View>(R.id.text_title) as TextView
+            fgColor = view.findViewById(R.id.fgColor) as View
+            bgColor = view.findViewById(R.id.bgColor) as View
+            arrow = view.findViewById(R.id.arrow)
+        }
+    }
+
+    private class RemarkViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val title1: TextView
+        private val editText1: EditText
+        fun bindData(item: LectureItem) {
+            editText1.setText(item.value1)
+            editText1.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable) {
+                    textChangedListener!!.onText1Changed(s.toString(), position)
+                }
+            })
+            editText1.hint = if (item.isEditable) "비고를 입력해주세요" else "(없음)"
+            editText1.movementMethod = null
+            editText1.isClickable = item.isEditable
+            editText1.isFocusable = item.isEditable
+            editText1.isFocusableInTouchMode = item.isEditable
+            editText1.movementMethod = if (item.isEditable) ArrowKeyMovementMethod.getInstance() else LinkMovementMethod.getInstance()
+        }
+
+        init {
+            title1 = view.findViewById<View>(R.id.text_title) as TextView
+            editText1 = view.findViewById<View>(R.id.text_value) as EditText
+        }
+    }
+
+    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener, OnLongClickListener {
+        private val title1: TextView
+        private val title2: TextView
+        private val editText1: EditText
+        private val editText2: EditText
+        private val remove: LinearLayout
+        fun bindData(item: LectureItem, listener: View.OnClickListener) {
+            title1.hint = "시간"
+            val time = SNUTTUtils.numberToWday(item.classTime!!.day) + " " +
+                    SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
+                    SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
+            editText1.setText(time)
+            editText1.isClickable = false
+            editText1.isFocusable = false
+            editText1.setOnClickListener(listener)
+            title2.hint = "장소"
+            editText2.setText(item.classTime!!.place)
+            editText2.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable) {
+                    textChangedListener!!.onLocationChanged(s.toString(), position)
                     //item.getClassTime().setPlace(s.toString());
                 }
-            });
-            editText2.setClickable(item.isEditable());
-            editText2.setFocusable(item.isEditable());
-            editText2.setFocusableInTouchMode(item.isEditable());
-            remove.setVisibility(item.isEditable() ? View.VISIBLE : View.GONE);
+            })
+            editText2.isClickable = item.isEditable
+            editText2.isFocusable = item.isEditable
+            editText2.isFocusableInTouchMode = item.isEditable
+            remove.visibility = if (item.isEditable) View.VISIBLE else View.GONE
         }
 
-        @Override
-        public boolean onLongClick(View v) {
+        override fun onLongClick(v: View): Boolean {
             if (deleteClickListener != null) {
-                deleteClickListener.onDeleteClick(v, getPosition());
-                return true;
+                deleteClickListener!!.onDeleteClick(v, position)
+                return true
             }
-            return false;
+            return false
         }
 
-        @Override
-        public void onClick(View v) {
+        override fun onClick(v: View) {
             if (deleteClickListener != null) {
-                deleteClickListener.onDeleteClick(v, getPosition());
+                deleteClickListener!!.onDeleteClick(v, position)
             }
+        }
+
+        init {
+            title1 = view.findViewById<View>(R.id.input_title1) as TextView
+            title2 = view.findViewById<View>(R.id.input_title2) as TextView
+            editText1 = view.findViewById<View>(R.id.input_time) as EditText
+            editText2 = view.findViewById<View>(R.id.input_location) as EditText
+            remove = view.findViewById<View>(R.id.remove) as LinearLayout
+            title1.setOnLongClickListener(this)
+            editText1.setOnLongClickListener(this)
+            title2.setOnLongClickListener(this)
+            editText2.setOnLongClickListener(this)
+            view.setOnLongClickListener(this)
+            remove.setOnClickListener(this)
         }
     }
 
-    private void showDialog(final LectureItem item) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // item's class time update
-                ClassTime t = new ClassTime(day, fromTime / 2f, (toTime-fromTime) / 2f, item.getClassTime().getPlace());
-                item.setClassTime(t);
-                notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        LayoutInflater inflater = LayoutInflater.from(activity);
-        View layout = inflater.inflate(R.layout.dialog_time_picker, null);
-        alert.setView(layout);
-        alert.show();
-
-        NumberPicker dayPicker = (NumberPicker) layout.findViewById(R.id.dayPicker);
-        NumberPicker fromPicker = (NumberPicker) layout.findViewById(R.id.timeFrom);
-        final NumberPicker toPicker = (NumberPicker) layout.findViewById(R.id.timeTo);
-
-        day = item.getClassTime().getDay();
-        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
-        dayPicker.setMinValue(0);
-        dayPicker.setMaxValue(6);
-        dayPicker.setDisplayedValues(days);
-        dayPicker.setValue(day);
-        dayPicker.setWrapSelectorWheel(false);
-        dayPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                day = newVal;
-            }
-        });
+    private fun showDialog(item: LectureItem) {
+        val alert = AlertDialog.Builder(activity)
+        alert.setPositiveButton("확인") { dialog, which -> // item's class time update
+            val t = ClassTime(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
+            item.classTime = t
+            notifyDataSetChanged()
+            dialog.dismiss()
+        }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
+        val inflater = LayoutInflater.from(activity)
+        val layout = inflater.inflate(R.layout.dialog_time_picker, null)
+        alert.setView(layout)
+        alert.show()
+        val dayPicker = layout.findViewById<View>(R.id.dayPicker) as NumberPicker
+        val fromPicker = layout.findViewById<View>(R.id.timeFrom) as NumberPicker
+        val toPicker = layout.findViewById<View>(R.id.timeTo) as NumberPicker
+        day = item.classTime!!.day
+        val days = arrayOf("월", "화", "수", "목", "금", "토", "일")
+        dayPicker.minValue = 0
+        dayPicker.maxValue = 6
+        dayPicker.displayedValues = days
+        dayPicker.value = day
+        dayPicker.wrapSelectorWheel = false
+        dayPicker.setOnValueChangedListener { picker, oldVal, newVal -> day = newVal }
 
         // used integer interval (origin value * 2) to use number picker
-        fromTime = (int) (item.getClassTime().getStart() * 2);
-        String[] from = SNUTTUtils.getTimeList(0, 27);
-        fromPicker.setMinValue(0);
-        fromPicker.setMaxValue(27);
-        fromPicker.setDisplayedValues(from);
-        fromPicker.setValue(fromTime);
-        fromPicker.setWrapSelectorWheel(false);
-        fromPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                fromTime = newVal;
-                /* set DisplayedValues as null to avoid out of bound index error */
-                toPicker.setDisplayedValues(null);
-                toPicker.setValue(fromTime + 1);
-                toPicker.setMinValue(fromTime + 1);
-                toPicker.setMaxValue(28);
-                toPicker.setDisplayedValues(SNUTTUtils.getTimeList(fromTime + 1, 28));
-                /* setValue method does not call listener, so we have to change the value manually */
-                toTime = fromTime + 1;
-            }
-        });
-
-        toTime = (int) (item.getClassTime().getStart()+item.getClassTime().getLen())*2;
-        String[] to = SNUTTUtils.getTimeList(fromTime+1, 28);
-        toPicker.setMinValue(fromTime+1);
-        toPicker.setMaxValue(28);
-        toPicker.setDisplayedValues(to);
-        toPicker.setValue(toTime);
-        toPicker.setWrapSelectorWheel(false);
-        toPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                toTime = newVal;
-            }
-        });
+        fromTime = (item.classTime!!.start * 2).toInt()
+        val from = SNUTTUtils.getTimeList(0, 27)
+        fromPicker.minValue = 0
+        fromPicker.maxValue = 27
+        fromPicker.displayedValues = from
+        fromPicker.value = fromTime
+        fromPicker.wrapSelectorWheel = false
+        fromPicker.setOnValueChangedListener { picker, oldVal, newVal ->
+            fromTime = newVal
+            /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues = null
+            toPicker.value = fromTime + 1
+            toPicker.minValue = fromTime + 1
+            toPicker.maxValue = 28
+            toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)
+            /* setValue method does not call listener, so we have to change the value manually */toTime = fromTime + 1
+        }
+        toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
+        val to = SNUTTUtils.getTimeList(fromTime + 1, 28)
+        toPicker.minValue = fromTime + 1
+        toPicker.maxValue = 28
+        toPicker.displayedValues = to
+        toPicker.value = toTime
+        toPicker.wrapSelectorWheel = false
+        toPicker.setOnValueChangedListener { picker, oldVal, newVal -> toTime = newVal }
     }
 
-    private void showDeleteDialog(final int position) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                lists.remove(position);
-                notifyItemRemoved(position);
-                dialog.dismiss();
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).setTitle("시간을 삭제하시겠습니까?");
-        alert.show();
+    private fun showDeleteDialog(position: Int) {
+        val alert = AlertDialog.Builder(activity)
+        alert.setPositiveButton("확인") { dialog, which ->
+            lists.removeAt(position)
+            notifyItemRemoved(position)
+            dialog.dismiss()
+        }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle("시간을 삭제하시겠습니까?")
+        alert.show()
     }
 
-    private void startSyllabus() {
-        if (LectureManager.getInstance().getCurrentLecture() == null) return;
-        Lecture lecture = LectureManager.getInstance().getCurrentLecture();
-        LectureManager.getInstance().getCoursebookUrl(lecture.getCourse_number(), lecture.getLecture_number(), new Callback<Map>() {
-            public void success(Map map, Response response) {
-                String url = (String) map.get("url");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                activity.startActivity(intent);
+    private fun startSyllabus() {
+        if (instance!!.currentLecture == null) return
+        val lecture = instance!!.currentLecture
+        instance!!.getCoursebookUrl(lecture!!.course_number, lecture.lecture_number, object : Callback<Map<*, *>> {
+            override fun success(map: Map<*, *>, response: Response) {
+                val url = map["url"] as String?
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                activity.startActivity(intent)
             }
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
+
+            override fun failure(error: RetrofitError) {}
+        })
     }
 
-    private void startRemoveAlertView() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setTitle("강좌 삭제");
-        alert.setMessage("강좌를 삭제하시겠습니까");
-        alert.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                if (LectureManager.getInstance().getCurrentLecture() == null) return;
-                String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
-                LectureManager.getInstance().removeLecture(lectureId, new Callback() {
-                    @Override
-                    public void success(Object o, Response response) {
-                        activity.finish();
-                    }
-                    @Override
-                    public void failure(RetrofitError error) {}
-                });
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = alert.create();
-        dialog.show();
+    private fun startRemoveAlertView() {
+        val alert = AlertDialog.Builder(activity)
+        alert.setTitle("강좌 삭제")
+        alert.setMessage("강좌를 삭제하시겠습니까")
+        alert.setPositiveButton("삭제", DialogInterface.OnClickListener { dialog, whichButton ->
+            if (instance!!.currentLecture == null) return@OnClickListener
+            val lectureId = instance!!.currentLecture!!.id
+            instance!!.removeLecture(lectureId, object : Callback<Any> {
+                override fun success(o: Any?, response: Response) {
+                    activity.finish()
+                }
+
+                override fun failure(error: RetrofitError) {}
+            })
+        }).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 
-    private void startResetAlertView() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setTitle("강좌 초기화");
-        alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까");
-        alert.setPositiveButton("초기화", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                if (LectureManager.getInstance().getCurrentLecture() == null) return;
-                String lectureId = LectureManager.getInstance().getCurrentLecture().getId();
-                LectureManager.getInstance().resetLecture(lectureId, new Callback() {
-                    @Override
-                    public void success(Object o, Response response) {
-                        fragment.refreshFragment();
-                    }
-                    @Override
-                    public void failure(RetrofitError error) {
-                    }
-                });
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = alert.create();
-        dialog.show();
+    private fun startResetAlertView() {
+        val alert = AlertDialog.Builder(activity)
+        alert.setTitle("강좌 초기화")
+        alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까")
+        alert.setPositiveButton("초기화", DialogInterface.OnClickListener { dialog, whichButton ->
+            if (instance!!.currentLecture == null) return@OnClickListener
+            val lectureId = instance!!.currentLecture!!.id
+            instance!!.resetLecture(lectureId!!, object : Callback<Any> {
+                override fun success(o: Any?, response: Response) {
+                    fragment.refreshFragment()
+                }
+
+                override fun failure(error: RetrofitError) {}
+            })
+        }).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 
     private interface TextChangedListener {
-        public void onText1Changed(String text, int position);
-        public void onText2Changed(String text, int position);
-        public void onLocationChanged(String text, int position);
+        fun onText1Changed(text: String, position: Int)
+        fun onText2Changed(text: String?, position: Int)
+        fun onLocationChanged(text: String?, position: Int)
     }
 
-    private void setOnTextChangedListener(TextChangedListener textChangedListener) {
-        this.textChangedListener = textChangedListener;
+    private fun setOnTextChangedListener(_textChangedListener: TextChangedListener) {
+        textChangedListener = _textChangedListener
     }
 
     private interface DeleteClickListener {
-        public void onDeleteClick(View view, int position);
+        fun onDeleteClick(view: View?, position: Int)
     }
 
-    private void setOnDeleteClickListener(DeleteClickListener listener) {
-        this.deleteClickListener = listener;
+    private fun setOnDeleteClickListener(listener: DeleteClickListener) {
+        deleteClickListener = listener
     }
 
+    companion object {
+        private const val TAG = "LECTURE_DETAIL_ADAPTER"
+        private var textChangedListener: TextChangedListener? = null
+        private var deleteClickListener: DeleteClickListener? = null
+    }
+
+    init {
+        this.lists = lists
+        setOnTextChangedListener(object : TextChangedListener {
+            override fun onText1Changed(text: String, position: Int) {
+                Log.d(TAG, "position : $position, text : $text")
+                getItem(position).value1 = text
+            }
+
+            override fun onText2Changed(text: String?, position: Int) {
+                getItem(position).value2 = text
+            }
+
+            override fun onLocationChanged(text: String?, position: Int) {
+                getItem(position).classTime!!.place = text!!
+            }
+        })
+        setOnDeleteClickListener(object : DeleteClickListener {
+            override fun onDeleteClick(view: View?, position: Int) {
+                showDeleteDialog(position)
+            }
+        })
+    }
 }

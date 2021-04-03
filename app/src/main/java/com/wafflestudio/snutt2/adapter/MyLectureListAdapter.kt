@@ -1,151 +1,129 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.google.common.base.Strings;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.model.Lecture;
-
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnLongClickListener
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.google.common.base.Strings
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.model.Lecture
 
 /**
  * Created by makesource on 2016. 2. 23..
  */
-public class MyLectureListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "MY_LECTURE_LIST_ADAPTER";
-    private static ClickListener clickListener;
-    private static LongClickListener longClickListener;
-    private List<Lecture> myLecture;
-
-    public MyLectureListAdapter(List<Lecture> myLecture) {
-        this.myLecture = myLecture;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View cellLayoutView;
-        ViewHolder viewHolder;
-
-        cellLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cell_my_lecture, parent, false);
+class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val cellLayoutView: View
+        val viewHolder: ViewHolder
+        cellLayoutView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.cell_my_lecture, parent, false)
         // create ViewHolder
-        viewHolder = new ViewHolder(cellLayoutView);
-        return viewHolder;
+        viewHolder = ViewHolder(cellLayoutView)
+        return viewHolder
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Lecture lecture = myLecture.get(position);
-        ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.bindData(lecture);
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val lecture = myLecture!![position]
+        val viewHolder = holder as ViewHolder
+        viewHolder.bindData(lecture)
     }
 
-    @Override
-    public int getItemCount() {
-        if (myLecture != null) {
-            return myLecture.size();
-        }
-        return 0;
+    override fun getItemCount(): Int {
+        return myLecture?.size ?: 0
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private TextView title;
-        private TextView subTitle;
-        private TextView tag;
-        private TextView classTime;
-        private TextView location;
-
-        private ViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            subTitle = (TextView) itemView.findViewById(R.id.sub_title);
-            tag = (TextView) itemView.findViewById(R.id.tag);
-            classTime = (TextView) itemView.findViewById(R.id.time);
-            location = (TextView) itemView.findViewById(R.id.location);
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        private void bindData(Lecture lecture) {
-            String titleText = lecture.getCourse_title();
-            String subTitleText =  "(" + lecture.getInstructor() + " / " + String.valueOf(lecture.getCredit()) + "학점)";
-            title.setText(titleText);
-            subTitle.setText(subTitleText);
-
-            int maxWidth = (int) (SNUTTUtils.getDisplayWidth() - SNUTTUtils.dpTopx(20 + 20 + 10));
-            int subTitleWidth = (int) Math.min(getTextViewWidth(subTitle), maxWidth / 2);
-            int titleWidth = (int) Math.min(getTextViewWidth(title), maxWidth - subTitleWidth);
+    class ViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
+        private val title: TextView
+        private val subTitle: TextView
+        private val tag: TextView
+        private val classTime: TextView
+        private val location: TextView
+        fun bindData(lecture: Lecture) {
+            val titleText = lecture.course_title
+            val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(lecture.credit) + "학점)"
+            title.text = titleText
+            subTitle.text = subTitleText
+            val maxWidth = (SNUTTUtils.displayWidth - SNUTTUtils.dpTopx((20 + 20 + 10).toFloat())).toInt()
+            var subTitleWidth = Math.min(getTextViewWidth(subTitle), (maxWidth / 2).toFloat()).toInt()
+            val titleWidth = Math.min(getTextViewWidth(title), (maxWidth - subTitleWidth).toFloat()).toInt()
             if (titleWidth + subTitleWidth < maxWidth) {
-                subTitleWidth = maxWidth - titleWidth;
+                subTitleWidth = maxWidth - titleWidth
             }
-
-            subTitle.setLayoutParams(new LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-            title.setLayoutParams(new LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            String tagText = "";
-            if (!Strings.isNullOrEmpty(lecture.getCategory())) {
-                tagText += lecture.getCategory() + ", ";
+            subTitle.layoutParams = LinearLayout.LayoutParams(subTitleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            title.layoutParams = LinearLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            var tagText: String? = ""
+            if (!Strings.isNullOrEmpty(lecture.category)) {
+                tagText += lecture.category + ", "
             }
-            if (!Strings.isNullOrEmpty(lecture.getDepartment())) {
-                tagText += lecture.getDepartment() + ", ";
+            if (!Strings.isNullOrEmpty(lecture.department)) {
+                tagText += lecture.department + ", "
             }
-            if (!Strings.isNullOrEmpty(lecture.getAcademic_year())) {
-                tagText += lecture.getAcademic_year();
+            if (!Strings.isNullOrEmpty(lecture.academic_year)) {
+                tagText += lecture.academic_year
             }
-            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)";
-            tag.setText(tagText);
-
-            String classTimeText = lecture.getSimplifiedClassTime();
-            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)";
-            classTime.setText(classTimeText);
-
-            String locationText = lecture.getSimplifiedLocation();
-            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)";
-            location.setText(locationText);
-
+            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
+            tag.text = tagText
+            var classTimeText = lecture.simplifiedClassTime
+            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
+            classTime.text = classTimeText
+            var locationText = lecture.simplifiedLocation
+            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
+            location.text = locationText
         }
 
-        private float getTextViewWidth(TextView textView) {
-            textView.measure(0, 0);
-            return textView.getMeasuredWidth();
+        private fun getTextViewWidth(textView: TextView): Float {
+            textView.measure(0, 0)
+            return textView.measuredWidth.toFloat()
         }
 
-        @Override
-        public void onClick(View v) {
+        override fun onClick(v: View) {
             if (clickListener != null) {
-                clickListener.onClick(v,getPosition());
+                clickListener!!.onClick(v, position)
             }
         }
 
-        @Override
-        public boolean onLongClick(View v) {
+        override fun onLongClick(v: View): Boolean {
             if (longClickListener != null) {
-                longClickListener.onLongClick(v, getPosition());
+                longClickListener!!.onLongClick(v, position)
             }
-            return true;
+            return true
+        }
+
+        init {
+            title = itemView.findViewById<View>(R.id.title) as TextView
+            subTitle = itemView.findViewById<View>(R.id.sub_title) as TextView
+            tag = itemView.findViewById<View>(R.id.tag) as TextView
+            classTime = itemView.findViewById<View>(R.id.time) as TextView
+            location = itemView.findViewById<View>(R.id.location) as TextView
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
     }
 
-    public interface ClickListener {
-        public void onClick(View v, int position);
+    interface ClickListener {
+        fun onClick(v: View?, position: Int)
     }
 
-    public interface LongClickListener {
-        public void onLongClick(View v, int position);
+    interface LongClickListener {
+        fun onLongClick(v: View?, position: Int)
     }
 
-    public void setOnItemClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    fun setOnItemClickListener(_clickListener: ClickListener) {
+        clickListener = _clickListener
     }
 
-    public void setOnItemLongClickListener(LongClickListener longClickListener) {
-        this.longClickListener = longClickListener;
+    fun setOnItemLongClickListener(_longClickListener: LongClickListener) {
+        longClickListener = _longClickListener
+    }
+
+    companion object {
+        private const val TAG = "MY_LECTURE_LIST_ADAPTER"
+        private var clickListener: ClickListener? = null
+        private var longClickListener: LongClickListener? = null
     }
 }

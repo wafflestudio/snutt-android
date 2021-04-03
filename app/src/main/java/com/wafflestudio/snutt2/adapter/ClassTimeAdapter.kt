@@ -1,131 +1,102 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.google.common.base.Strings;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.model.ClassTime;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.EditText
+import android.widget.TextView
+import com.google.common.base.Strings
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.model.ClassTime
+import java.util.*
 
 /**
  * Created by makesource on 2016. 3. 6..
  */
-public class ClassTimeAdapter extends BaseAdapter {
-    private static final String TAG = "CLASS_TIME_ADAPTER" ;
+class ClassTimeAdapter(private val context: Context, private val times: List<ClassTime>) : BaseAdapter() {
+    private val places: MutableList<String>
+    private var watcher: MyWatcher? = null
+    override fun getCount(): Int {
+        return times.size
+    }
 
-    private Context context;
-    private List<ClassTime> times;
-    private List<String> places;
-    private MyWatcher watcher;
+    override fun getItem(position: Int): Any {
+        return times[position]
+    }
 
-    public ClassTimeAdapter(Context context, List<ClassTime> times) {
-        this.context = context;
-        this.times = times;
-        this.places = new ArrayList<>();
-        for (ClassTime time : times) {
-            this.places.add(time.getPlace());
+    override fun getItemId(position: Int): Long {
+        return 0
+    }
+
+    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+        var v = convertView
+        if (v == null) {
+            val inflater = context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            v = inflater.inflate(R.layout.cell_time, null)
         }
+        val classTime = times[position]
+        val tv_time = v.findViewById<View>(R.id.class_time) as TextView
+        val et_place = v.findViewById<View>(R.id.class_place) as EditText
+        val time = SNUTTUtils.numberToWday(classTime.day) + " " +
+                SNUTTUtils.numberToTime(classTime.start) + "~" +
+                SNUTTUtils.numberToTime(classTime.start + classTime.len)
+        tv_time.text = time
+        if (watcher != null) et_place.removeTextChangedListener(watcher)
+        et_place.setText(places[position])
+        et_place.hint = classTime.place
+        watcher = MyWatcher(position)
+        et_place.addTextChangedListener(watcher)
+        Log.d(TAG, "getView is called : $position")
+        return v
     }
 
-    @Override
-    public int getCount() {
-        return times.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return times.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        if(v == null){
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            v = inflater.inflate(R.layout.cell_time, null);
-        }
-
-        ClassTime classTime = times.get(position);
-        TextView tv_time = (TextView) v.findViewById(R.id.class_time);
-        EditText et_place = (EditText) v.findViewById(R.id.class_place);
-
-        String time = SNUTTUtils.numberToWday(classTime.getDay()) + " " +
-                SNUTTUtils.numberToTime(classTime.getStart()) + "~" +
-                SNUTTUtils.numberToTime(classTime.getStart() + classTime.getLen());
-        tv_time.setText(time);
-
-        if (watcher != null) et_place.removeTextChangedListener(watcher);
-        et_place.setText(places.get(position));
-        et_place.setHint(classTime.getPlace());
-        watcher = new MyWatcher(position);
-        et_place.addTextChangedListener(watcher);
-
-        Log.d(TAG, "getView is called : " + String.valueOf(position));
-        return v;
-    }
-
-    public JsonArray getClassTimeJson() {
-        JsonArray ja = new JsonArray();
-        for (int i=0;i<times.size();i++) {
-            ClassTime time = times.get(i);
-            JsonObject object = new JsonObject();
-            object.addProperty("day", time.getDay());
-            object.addProperty("start", time.getStart());
-            object.addProperty("len", time.getLen());
-            object.addProperty("_id", time.get_id());
-
-            if (!Strings.isNullOrEmpty(places.get(i))) {
-                object.addProperty("place", places.get(i));
-            } else {
-                object.addProperty("place", time.getPlace());
+    val classTimeJson: JsonArray
+        get() {
+            val ja = JsonArray()
+            for (i in times.indices) {
+                val time = times[i]
+                val `object` = JsonObject()
+                `object`.addProperty("day", time.day)
+                `object`.addProperty("start", time.start)
+                `object`.addProperty("len", time.len)
+                `object`.addProperty("_id", time.get_id())
+                if (!Strings.isNullOrEmpty(places[i])) {
+                    `object`.addProperty("place", places[i])
+                } else {
+                    `object`.addProperty("place", time.place)
+                }
+                ja.add(`object`)
             }
-
-            ja.add(object);
+            return ja
         }
-        return ja;
+
+    private inner class MyWatcher(private val position: Int) : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable) {
+            val text = s.toString()
+            Log.d(TAG, "$position : $text")
+            places[position] = text
+        }
     }
-    private class MyWatcher implements TextWatcher {
-        private int position;
-        public MyWatcher(int position) {
-            this.position = position;
-        }
 
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+    companion object {
+        private const val TAG = "CLASS_TIME_ADAPTER"
+    }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            String text = s.toString();
-
-            Log.d(TAG, String.valueOf(position) + " : " + text);
-            places.set (position, text);
+    init {
+        places = ArrayList()
+        for (time in times) {
+            places.add(time.place)
         }
     }
 }
-

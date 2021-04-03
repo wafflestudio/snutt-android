@@ -1,146 +1,119 @@
-package com.wafflestudio.snutt2;
+package com.wafflestudio.snutt2
 
-import com.wafflestudio.snutt2.model.ColorList;
-import com.wafflestudio.snutt2.model.Coursebook;
-import com.wafflestudio.snutt2.model.Facebook;
-import com.wafflestudio.snutt2.model.Lecture;
-import com.wafflestudio.snutt2.model.Notification;
-import com.wafflestudio.snutt2.model.Table;
-import com.wafflestudio.snutt2.model.TagList;
-import com.wafflestudio.snutt2.model.Token;
-import com.wafflestudio.snutt2.model.User;
-import com.wafflestudio.snutt2.model.Version;
-
-import java.util.List;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
+import com.wafflestudio.snutt2.model.*
+import retrofit.Callback
+import retrofit.client.Response
+import retrofit.http.*
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-public interface SNUTTRestApi {
-
+interface SNUTTRestApi {
     // API Basics and Auth
-
     @POST("/auth/register_local")
-    public void postSignUp(@Body Map query, Callback<Token> callback);
+    fun postSignUp(@Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @POST("/auth/login_local")
-    public void postSignIn(@Body Map query, Callback<Token> callback);
+    fun postSignIn(@Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @POST("/auth/login_fb")
-    public void postLoginFacebook(@Body Map query, Callback<Token> callback);
+    fun postLoginFacebook(@Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @POST("/auth/logout")
-    public void postForceLogout(@Body Map query, Callback<Response> callback);
+    fun postForceLogout(@Body query: Map<*, *>?, callback: Callback<Response?>?)
 
     @POST("/search_query")
-    public void postSearchQuery(@Body Map query, Callback<List<Lecture>> callback);
+    fun postSearchQuery(@Body query: Map<*, *>?, callback: Callback<List<Lecture?>?>?)
 
     @GET("/app_version")
-    public void getAppVersion(Callback<Version> callback);
+    fun getAppVersion(callback: Callback<Version?>?)
 
     @GET("/colors/{name}")
-    public void getColorList(@Path("name") String name, Callback<ColorList> callback);
+    fun getColorList(@Path("name") name: String?, callback: Callback<ColorList?>?)
 
     // API Feedback
-
     @POST("/feedback")
-    public void postFeedback(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    fun postFeedback(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<Response?>?)
 
     // API Coursebook
     @GET("/course_books")
-    public void getCoursebook(Callback<List<Coursebook>> callback);
+    fun getCoursebook(callback: Callback<List<Coursebook?>?>?)
 
     @GET("/course_books/official")
-    public void getCoursebooksOfficial(@QueryMap Map query, Callback<Map> callback);
+    fun getCoursebooksOfficial(@QueryMap query: Map<*, *>?, callback: Callback<Map<*, *>?>?)
 
     // API Timetable
-
     @GET("/tables")
-    public void getTableList(@Header("x-access-token") String token, Callback<List<Table>> callback);
+    fun getTableList(@Header("x-access-token") token: String?, callback: Callback<List<Table?>?>?)
 
     @POST("/tables")
-    public void postTable(@Header("x-access-token") String token, @Body Map query, Callback<List<Table>> callback);
+    fun postTable(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<List<Table?>?>?)
 
     @GET("/tables/{id}")
-    public void getTableById(@Header("x-access-token") String token, @Path("id") String id, Callback<Table> callback);
+    fun getTableById(@Header("x-access-token") token: String?, @Path("id") id: String?, callback: Callback<Table?>?)
 
     @GET("/tables/recent")
-    public void getRecentTable(@Header("x-access-token") String token, Callback<Table> callback);
+    fun getRecentTable(@Header("x-access-token") token: String?, callback: Callback<Table?>?)
 
     @DELETE("/tables/{id}")
-    public void deleteTable(@Header("x-access-token") String token, @Path("id") String id, Callback<List<Table>> callback);
+    fun deleteTable(@Header("x-access-token") token: String?, @Path("id") id: String?, callback: Callback<List<Table?>?>?)
 
     @PUT("/tables/{id}")
-    public void putTable(@Header("x-access-token") String token, @Path("id") String id, @Body Map query, Callback<List<Table>> callback);
+    fun putTable(@Header("x-access-token") token: String?, @Path("id") id: String?, @Body query: Map<*, *>?, callback: Callback<List<Table?>?>?)
 
     @POST("/tables/{id}/lecture")
-    public void postLecture(@Header("x-access-token") String token, @Path("id") String id, @Body Lecture lecture, Callback<Table> callback);
+    fun postLecture(@Header("x-access-token") token: String?, @Path("id") id: String?, @Body lecture: Lecture?, callback: Callback<Table?>?)
 
     @POST("/tables/{id}/lecture/{lecture_id}")
-    public void postLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, Callback<Table> callback);
+    fun postLecture(@Header("x-access-token") token: String?, @Path("id") id: String?, @Path("lecture_id") lecture_id: String?, callback: Callback<Table?>?)
 
     @DELETE("/tables/{id}/lecture/{lecture_id}")
-    public void deleteLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, Callback<Table> callback);
+    fun deleteLecture(@Header("x-access-token") token: String?, @Path("id") id: String?, @Path("lecture_id") lecture_id: String?, callback: Callback<Table?>?)
 
     @PUT("/tables/{id}/lecture/{lecture_id}")
-    public void putLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, @Body Lecture lecture, Callback<Table> callback);
+    fun putLecture(@Header("x-access-token") token: String?, @Path("id") id: String?, @Path("lecture_id") lecture_id: String?, @Body lecture: Lecture?, callback: Callback<Table?>?)
 
     @PUT("/tables/{id}/lecture/{lecture_id}/reset")
-    public void resetLecture(@Header("x-access-token") String token, @Path("id") String id, @Path("lecture_id") String lecture_id, Callback<Table> callback);
+    fun resetLecture(@Header("x-access-token") token: String?, @Path("id") id: String?, @Path("lecture_id") lecture_id: String?, callback: Callback<Table?>?)
 
     @GET("/tags/{year}/{semester}")
-    public void getTagList(@Path("year") int year, @Path("semester") int semester, Callback<TagList> callback);
+    fun getTagList(@Path("year") year: Int, @Path("semester") semester: Int, callback: Callback<TagList?>?)
 
     // API for User
-
     @GET("/user/info")
-    public void getUserInfo(@Header("x-access-token") String token, Callback<User> callback);
+    fun getUserInfo(@Header("x-access-token") token: String?, callback: Callback<User?>?)
 
     @PUT("/user/info")
-    public void putUserInfo(@Header("x-access-token") String token, @Body Map query, Callback<Response> callback);
+    fun putUserInfo(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<Response?>?)
 
     @PUT("/user/password")
-    public void putUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
+    fun putUserPassword(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @POST("/user/password")
-    public void postUserPassword(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
+    fun postUserPassword(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @POST("/user/facebook")
-    public void postUserFacebook(@Header("x-access-token") String token, @Body Map query, Callback<Token> callback);
+    fun postUserFacebook(@Header("x-access-token") token: String?, @Body query: Map<*, *>?, callback: Callback<Token?>?)
 
     @DELETE("/user/facebook")
-    public void deleteUserFacebook(@Header("x-access-token") String token, Callback<Token> callback);
+    fun deleteUserFacebook(@Header("x-access-token") token: String?, callback: Callback<Token?>?)
 
     @GET("/user/facebook")
-    public void getUserFacebook(@Header("x-access-token") String token, Callback<Facebook> callback);
+    fun getUserFacebook(@Header("x-access-token") token: String?, callback: Callback<Facebook?>?)
 
     @POST("/user/device/{registration_id}")
-    public void registerFirebaseToken(@Header("x-access-token") String token, @Path("registration_id") String id, Callback<Response> callback);
+    fun registerFirebaseToken(@Header("x-access-token") token: String?, @Path("registration_id") id: String?, callback: Callback<Response?>?)
 
     @DELETE("/user/device/{registration_id}")
-    public void deleteFirebaseToken(@Header("x-access-token") String token, @Path("registration_id") String id, Callback<Response> callback);
+    fun deleteFirebaseToken(@Header("x-access-token") token: String?, @Path("registration_id") id: String?, callback: Callback<Response?>?)
 
     @DELETE("/user/account")
-    public void deleteUserAccount(@Header("x-access-token") String token, Callback<Response> callback);
+    fun deleteUserAccount(@Header("x-access-token") token: String?, callback: Callback<Response?>?)
 
     // API for Notification
-
     @GET("/notification")
-    public void getNotification(@Header("x-access-token") String token, @QueryMap Map query, Callback<List<Notification>> callback);
+    fun getNotification(@Header("x-access-token") token: String?, @QueryMap query: Map<*, *>?, callback: Callback<List<Notification?>?>?)
 
     @GET("/notification/count")
-    public void getNotificationCount(@Header("x-access-token") String token, Callback<Map<String,Integer>> callback);
-
+    fun getNotificationCount(@Header("x-access-token") token: String?, callback: Callback<Map<String?, Int?>?>?)
 }

@@ -130,10 +130,10 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
         val lectureId = lec.id
-        app.restService.postLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
+        app.restService.postLecture(token, id, lectureId, object : Callback<Table?> {
+            override fun success(table: Table?, response: Response) {
                 Log.d(TAG, "post lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table)
+                PrefManager.instance!!.updateNewTable(table!!)
                 setLectures(table.lecture_list!!)
                 notifyLecturesChanged()
                 callback.success(table, response)
@@ -162,9 +162,9 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         Log.d(TAG, "create lecture method called!!")
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService.postLecture(token, id, lecture, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
-                PrefManager.instance!!.updateNewTable(table)
+        app.restService.postLecture(token, id, lecture, object : Callback<Table?> {
+            override fun success(table: Table?, response: Response) {
+                PrefManager.instance!!.updateNewTable(table!!)
                 setLectures(table.lecture_list!!)
                 notifyLecturesChanged()
                 callback?.success(table, response)
@@ -180,10 +180,10 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     fun removeLecture(lectureId: String?, callback: Callback<Any>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService.deleteLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
+        app.restService.deleteLecture(token, id, lectureId, object : Callback<Table?> {
+            override fun success(table: Table?, response: Response) {
                 Log.d(TAG, "remove lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table)
+                PrefManager.instance!!.updateNewTable(table!!)
                 setLectures(table.lecture_list!!)
                 currentLecture = null
                 notifyLecturesChanged()
@@ -202,10 +202,10 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
     fun resetLecture(lectureId: String, callback: Callback<Any>) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService.resetLecture(token, id, lectureId, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
+        app.restService.resetLecture(token, id, lectureId, object : Callback<Table?> {
+            override fun success(table: Table?, response: Response) {
                 Log.d(TAG, "reset lecture request success!!")
-                PrefManager.instance!!.updateNewTable(table)
+                PrefManager.instance!!.updateNewTable(table!!)
                 setLectures(table.lecture_list!!)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
@@ -223,9 +223,9 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         Log.d(TAG, "update lecture method called!!")
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService.putLecture(token, id, lectureId, target, object : Callback<Table> {
-            override fun success(table: Table, response: Response) {
-                PrefManager.instance!!.updateNewTable(table)
+        app.restService.putLecture(token, id, lectureId, target, object : Callback<Table?> {
+            override fun success(table: Table?, response: Response) {
+                PrefManager.instance!!.updateNewTable(table!!)
                 setLectures(table.lecture_list!!)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
@@ -239,7 +239,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         })
     }
 
-    fun getCoursebookUrl(courseNumber: String?, lectureNumber: String?, callback: Callback<Any>) {
+    fun getCoursebookUrl(courseNumber: String?, lectureNumber: String?, callback: Callback<Map<*, *>>) {
         val year = PrefManager.instance!!.currentYear
         val semester = PrefManager.instance!!.currentSemester
         val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
@@ -307,10 +307,10 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             query["time_mask"] = classTimeMask
         }
         searchedQuery = text
-        app.restService.postSearchQuery(query, object : Callback<List<Lecture?>> {
-            override fun success(lectures: List<Lecture?>, response: Response) {
+        app.restService.postSearchQuery(query, object : Callback<List<Lecture?>?> {
+            override fun success(lectures: List<Lecture?>?, response: Response) {
                 Log.d(TAG, "post search query success!!")
-                setSearchedLectures(lectures)
+                setSearchedLectures(lectures!!)
                 callback.success(lectures, response)
             }
 
@@ -345,11 +345,11 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         if (TagManager.instance!!.searchEmptyClass) {
             query["time_mask"] = classTimeMask
         }
-        app.restService.postSearchQuery(query, object : Callback<List<Lecture?>> {
-            override fun success(lectureList: List<Lecture?>, response: Response) {
+        app.restService.postSearchQuery(query, object : Callback<List<Lecture?>?> {
+            override fun success(lectureList: List<Lecture?>?, response: Response) {
                 Log.d(TAG, "post search query success!!")
                 removeProgressBar()
-                for (lecture in lectureList) {
+                for (lecture in lectureList!!) {
                     searchedLectures.add(lecture)
                 }
                 callback.success(lectureList, response)
@@ -393,10 +393,10 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
 
     // for color list
     fun fetchColorList(name: String?, callback: Callback<Any>) {
-        app.restService.getColorList(name, object : Callback<ColorList> {
-            override fun success(colorList: ColorList, response: Response) {
+        app.restService.getColorList(name, object : Callback<ColorList?> {
+            override fun success(colorList: ColorList?, response: Response) {
                 Log.d(TAG, "get color list request success")
-                setColors(colorList.colors!!)
+                setColors(colorList!!.colors!!)
                 setColorNames(colorList.names!!)
                 val colorListJson = Gson().toJson(this@LectureManager.colorList)
                 val colorNameListJson = Gson().toJson(colorNameList)

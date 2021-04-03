@@ -1,101 +1,78 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.manager.TagManager;
-import com.wafflestudio.snutt2.model.Tag;
-
-import java.util.List;
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.manager.TagManager.Companion.instance
+import com.wafflestudio.snutt2.model.Tag
 
 /**
  * Created by makesource on 2016. 2. 21..
  */
-public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.ViewHolder> {
-
-    private static final String TAG = "TAG_LIST_ADAPTER" ;
-
-    private Context context;
-    private List<Tag> tags;
-
-    public TagListAdapter(Context context, List<Tag> tags) {
-        this.context = context;
-        this.tags = tags;
+class TagListAdapter(private val context: Context, private val tags: List<Tag>) : RecyclerView.Adapter<TagListAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val cellLayoutView: View
+        val viewHolder: ViewHolder
+        cellLayoutView = LayoutInflater.from(parent.context).inflate(R.layout.cell_tag, parent, false)
+        viewHolder = ViewHolder(cellLayoutView)
+        return viewHolder
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View cellLayoutView;
-        ViewHolder viewHolder;
-
-        cellLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_tag, parent, false);
-        viewHolder = new ViewHolder(cellLayoutView);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Tag tag = tags.get(position);
-
-        GradientDrawable bgShape = (GradientDrawable) holder.itemView.getBackground();
-        bgShape.setColor(SNUTTUtils.getTagColor(tag.getTagType()));
-        holder.tagTitle.setText(tag.getName());
-        holder.setClickListener(new ViewHolder.ClickListener() {
-            @Override
-            public void onClick(View v, final int position) {
-                TagManager.getInstance().removeTag(position);
-                notifyItemRemoved(position);
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val tag = tags[position]
+        val bgShape = holder.itemView.background as GradientDrawable
+        bgShape.setColor(SNUTTUtils.getTagColor(tag.tagType))
+        holder.tagTitle.text = tag.name
+        holder.setClickListener(object : ViewHolder.ClickListener {
+            override fun onClick(v: View?, position: Int) {
+                instance!!.removeTag(position)
+                notifyItemRemoved(position)
             }
-        });
+        })
     }
 
-    @Override
-    public int getItemCount() {
-        return tags.size();
+    override fun getItemCount(): Int {
+        return tags.size
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public View tagLayout;
-        public TextView tagTitle;
+    class ViewHolder(var tagLayout: View) : RecyclerView.ViewHolder(tagLayout), View.OnClickListener {
+        var tagTitle: TextView
+        private var clickListener: ClickListener? = null
 
-        private ClickListener clickListener;
-
-        public ViewHolder(View view) {
-            super(view);
-            this.tagLayout = view;
-            this.tagTitle = (TextView) view.findViewById(R.id.tag_title);
-            view.setOnClickListener(this);
-        }
-
-        public interface ClickListener {
+        interface ClickListener {
             /**
              * Called when the view is clicked.
              *
              * @param v view that is clicked
              * @param position of the clicked item
              */
-
-            public void onClick(View v, int position);
+            fun onClick(v: View?, position: Int)
         }
 
-        public void setClickListener(ClickListener clickListener) {
-            this.clickListener = clickListener;
+        fun setClickListener(clickListener: ClickListener?) {
+            this.clickListener = clickListener
         }
 
-        @Override
-        public void onClick(View v) {
+        override fun onClick(v: View) {
             if (clickListener != null) {
-                clickListener.onClick(v,getPosition());
+                clickListener!!.onClick(v, position)
             }
+        }
+
+        init {
+            tagTitle = tagLayout.findViewById<View>(R.id.tag_title) as TextView
+            tagLayout.setOnClickListener(this)
         }
     }
 
+    companion object {
+        private const val TAG = "TAG_LIST_ADAPTER"
+    }
 }

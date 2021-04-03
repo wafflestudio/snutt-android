@@ -1,73 +1,63 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.manager.LectureManager;
-import com.wafflestudio.snutt2.model.Color;
-
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.model.Color
 
 /**
  * Created by makesource on 2017. 5. 28..
  */
-
-public class ColorListAdapter extends BaseAdapter {
-    private static final String TAG = "COLOR_LIST_ADAPTER";
-    private List<Color> colorList;
-    private List<String> colorNameList;
-    private int selected;
-
-    public ColorListAdapter(List<Color> colors, List<String> colorNames, int index) {
-        this.colorList = colors;
-        this.colorNameList = colorNames;
-        this.selected = (index == 0) ? colors.size() : index - 1;
+class ColorListAdapter(private val colorList: List<Color>, private val colorNameList: List<String>, index: Int) : BaseAdapter() {
+    private val selected: Int
+    override fun getCount(): Int {
+        return colorList.size + 1
     }
 
-    @Override
-    public int getCount() {
-        return colorList.size() + 1;
+    // Refactor FIXME: Whaaaat? null to Any()
+    override fun getItem(position: Int): Any {
+        return Any()
     }
 
-    @Override
-    public Object getItem(int position) {
-        return null;
+    override fun getItemId(position: Int): Long {
+        return 0
     }
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        if(v == null){
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_lecture_color, parent, false);
+    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+        var v = convertView
+        if (v == null) {
+            v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_lecture_color, parent, false)
         }
-        TextView nameText = (TextView) v.findViewById(R.id.name);
-        View fgColor = v.findViewById(R.id.fgColor);
-        View bgColor = v.findViewById(R.id.bgColor);
-        ImageView checked = (ImageView) v.findViewById(R.id.checked);
-        checked.setVisibility(position == selected ? View.VISIBLE : View.INVISIBLE);
-
-        if (position == colorList.size()) { // for custom color
-            nameText.setText(LectureManager.getInstance().getDefaultColorName());
-            fgColor.setBackgroundColor(LectureManager.getInstance().getDefaultFgColor());
-            bgColor.setBackgroundColor(LectureManager.getInstance().getDefaultBgColor());
+        val nameText = v.findViewById<View>(R.id.name) as TextView
+        val fgColor = v.findViewById<View>(R.id.fgColor)
+        val bgColor = v.findViewById<View>(R.id.bgColor)
+        val checked = v.findViewById<View>(R.id.checked) as ImageView
+        checked.visibility = if (position == selected) View.VISIBLE else View.INVISIBLE
+        if (position == colorList.size) { // for custom color
+            nameText.text = instance!!.defaultColorName
+            fgColor.setBackgroundColor(instance!!.defaultFgColor)
+            bgColor.setBackgroundColor(instance!!.defaultBgColor)
         } else {
-            Color color = colorList.get(position);
-            String name = colorNameList.get(position);
-            nameText.setText(name);
-            fgColor.setBackgroundColor(color.getFgColor());
-            bgColor.setBackgroundColor(color.getBgColor());
+            val color = colorList[position]
+            val name = colorNameList[position]
+            nameText.text = name
+            fgColor.setBackgroundColor(color.fgColor)
+            bgColor.setBackgroundColor(color.bgColor)
         }
-        return v;
+        return v
+    }
+
+    companion object {
+        private const val TAG = "COLOR_LIST_ADAPTER"
+    }
+
+    init {
+        selected = if (index == 0) colorList.size else index - 1
     }
 }

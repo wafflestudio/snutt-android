@@ -1,136 +1,120 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.SNUTTUtils;
-import com.wafflestudio.snutt2.model.Tag;
-import com.wafflestudio.snutt2.model.TagType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.model.Tag
+import com.wafflestudio.snutt2.model.TagType
+import java.util.*
 
 /**
  * Created by makesource on 2017. 4. 9..
  */
-
-public class SuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SUGGESTION_ADAPTER";
-    private static ClickListener clickListener;
-
-    private List<Tag> tagList;
-    private List<Tag> filteredList;
-    private TagType filterType;
-    private String query = "";
-
-    public SuggestionAdapter(List<Tag> lists) {
-        this.tagList = lists;
-        this.filteredList = new ArrayList<>();
-        this.filterType = null;
-        this.query = "";
+class SuggestionAdapter(private val tagList: List<Tag>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val filteredList: MutableList<Tag>
+    private var filterType: TagType?
+    private var query = ""
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.cell_suggestion, parent, false)
+        return SuggestionViewHolder(view)
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cell_suggestion, parent, false);
-        return new SuggestionViewHolder(view);
+    fun getItem(position: Int): Tag {
+        return filteredList[position]
     }
 
-    public Tag getItem(int position) {
-        return filteredList.get(position);
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as SuggestionViewHolder).bindData(getItem(position))
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((SuggestionViewHolder) holder).bindData(getItem(position));
+    override fun getItemCount(): Int {
+        return filteredList.size
     }
 
-    @Override
-    public int getItemCount() {
-        return filteredList.size();
-    }
-
-    public void filter(String query) {
-        Log.d(TAG, "query : " + query);
-        this.query = query;
-        String constraintString = query.toLowerCase(Locale.ROOT);
-        filteredList.clear();
-
+    fun filter(query: String) {
+        Log.d(TAG, "query : $query")
+        this.query = query
+        val constraintString = query.toLowerCase(Locale.ROOT)
+        filteredList.clear()
         if (filterType == null) {
-            for (Tag tag : tagList) {
-                if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
-                    filteredList.add(tag);
+            for (tag in tagList) {
+                if (tag.name.toLowerCase(Locale.ROOT).startsWith(constraintString)) {
+                    filteredList.add(tag)
                 }
             }
         } else {
-            for (Tag tag : tagList) {
-                TagType type = tag.getTagType();
-                if (type == null) continue;
-
-                if (type == TagType.ACADEMIC_YEAR   && filterType != TagType.ACADEMIC_YEAR)     continue;
-                if (type == TagType.CATEGORY        && filterType != TagType.CATEGORY)          continue;
-                if (type == TagType.CLASSIFICATION  && filterType != TagType.CLASSIFICATION)    continue;
-                if (type == TagType.CREDIT          && filterType != TagType.CREDIT)            continue;
-                if (type == TagType.DEPARTMENT      && filterType != TagType.DEPARTMENT)        continue;
-                if (type == TagType.INSTRUCTOR      && filterType != TagType.INSTRUCTOR)        continue;
-
-                if (tag.getName().toLowerCase(Locale.ROOT).startsWith(constraintString)) {
-                    filteredList.add(tag);
+            for (tag in tagList) {
+                val type = tag.tagType ?: continue
+                if (type === TagType.ACADEMIC_YEAR && filterType !== TagType.ACADEMIC_YEAR) continue
+                if (type === TagType.CATEGORY && filterType !== TagType.CATEGORY) continue
+                if (type === TagType.CLASSIFICATION && filterType !== TagType.CLASSIFICATION) continue
+                if (type === TagType.CREDIT && filterType !== TagType.CREDIT) continue
+                if (type === TagType.DEPARTMENT && filterType !== TagType.DEPARTMENT) continue
+                if (type === TagType.INSTRUCTOR && filterType !== TagType.INSTRUCTOR) continue
+                if (tag.name.toLowerCase(Locale.ROOT).startsWith(constraintString)) {
+                    filteredList.add(tag)
                 }
             }
         }
-        notifyDataSetChanged();
+        notifyDataSetChanged()
     }
 
-    public void toggleButton(TagType filterType) {
-        if (this.filterType == filterType) return;
-        this.filterType = filterType;
-        filter(query);
+    fun toggleButton(filterType: TagType) {
+        if (this.filterType === filterType) return
+        this.filterType = filterType
+        filter(query)
     }
 
-    public void resetState() {
-        query = "";
-        filterType = null;
+    fun resetState() {
+        query = ""
+        filterType = null
     }
 
-    protected static class SuggestionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView suggestionTag;
-        private TextView suggestion;
-        private Tag tag;
-
-        public SuggestionViewHolder(View itemView) {
-            super(itemView);
-            suggestionTag = (TextView) itemView.findViewById(R.id.suggestion_tag);
-            suggestion = (TextView) itemView.findViewById(R.id.suggestion_text);
-            itemView.setOnClickListener(this);
+    protected class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private val suggestionTag: TextView
+        private val suggestion: TextView
+        private var tag: Tag? = null
+        fun bindData(tag: Tag) {
+            this.tag = tag
+            suggestionTag.setTextColor(SNUTTUtils.getTagColor(tag.tagType))
+            suggestion.text = tag.name
         }
 
-        private void bindData(Tag tag) {
-            this.tag = tag;
-            suggestionTag.setTextColor(SNUTTUtils.getTagColor(tag.getTagType()));
-            suggestion.setText(tag.getName());
-        }
-
-        @Override
-        public void onClick(View v) {
+        override fun onClick(v: View) {
             if (clickListener != null) {
-                clickListener.onClick(v, tag);
+                clickListener!!.onClick(v, tag)
             }
         }
+
+        init {
+            suggestionTag = itemView.findViewById<View>(R.id.suggestion_tag) as TextView
+            suggestion = itemView.findViewById<View>(R.id.suggestion_text) as TextView
+            itemView.setOnClickListener(this)
+        }
     }
 
-    public interface ClickListener {
-        public void onClick(View v, Tag tag);
+    interface ClickListener {
+        fun onClick(v: View?, tag: Tag?)
     }
 
-    public void setClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    fun setClickListener(_clickListener: ClickListener) {
+        clickListener = _clickListener
+    }
+
+    companion object {
+        private const val TAG = "SUGGESTION_ADAPTER"
+        private var clickListener: ClickListener? = null
+    }
+
+    init {
+        filteredList = ArrayList()
+        filterType = null
+        query = ""
     }
 }

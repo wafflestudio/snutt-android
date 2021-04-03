@@ -1,154 +1,121 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.model.Notification;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import android.text.Html
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.model.Notification
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by makesource on 2017. 2. 27..
  */
+class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    enum class VIEW_TYPE(val value: Int) {
+        Notification(0), ProgressBar(1);
 
-public class NotificationAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    public enum VIEW_TYPE {
-        Notification(0),
-        ProgressBar(1);
-        private final int value;
-        VIEW_TYPE(int value) {
-            this.value = value;
-        }
-        public final int getValue() {
-            return value;
-        }
-    }
-    private static final String TAG = "NOTIFICATION_ADAPTER";
-    private List<Notification> lists;
-
-
-    public NotificationAdapter(List<Notification> lists) {
-        this.lists = lists;
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE.Notification.getValue()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_notification, parent, false);
-            return new NotificationViewHolder(view);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE.Notification.value) {
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_notification, parent, false)
+            NotificationViewHolder(view)
         } else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cell_progressbar, parent, false);
-            return new ProgressBarViewHolder(view);
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.cell_progressbar, parent, false)
+            ProgressBarViewHolder(view)
         }
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int itemType = getItemViewType(position);
-        if (itemType == VIEW_TYPE.Notification.getValue()) {
-            ((NotificationViewHolder) holder).bindData(getItem(position));
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val itemType = getItemViewType(position)
+        if (itemType == VIEW_TYPE.Notification.value) {
+            (holder as NotificationViewHolder).bindData(getItem(position))
         }
     }
 
-    public Notification getItem(int position) {
-        return lists.get(position);
+    fun getItem(position: Int): Notification {
+        return lists[position]
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        Notification item = lists.get(position);
-        return (item == null) ? VIEW_TYPE.ProgressBar.getValue() : VIEW_TYPE.Notification.getValue();
+    override fun getItemViewType(position: Int): Int {
+        val item = lists[position]
+        return if (item == null) VIEW_TYPE.ProgressBar.value else VIEW_TYPE.Notification.value
     }
 
-    @Override
-    public int getItemCount() {
+    override fun getItemCount(): Int {
         //Log.d(TAG, "notification list size : " + lists.size());
-        return lists.size();
+        return lists.size
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    private static class NotificationViewHolder extends RecyclerView.ViewHolder {
-        private TextView message;
-        private ImageView image;
-
-        private NotificationViewHolder(View view) {
-            super(view);
-            image = (ImageView) view.findViewById(R.id.notification_image);
-            message = (TextView) view.findViewById(R.id.notification_text);
-        }
-
-        private void bindData(Notification notification) {
-           // Log.d(TAG, "notification message : " + notification.getMessage());
-            String text = notification.getMessage();
-            switch (notification.getType()) {
-                case 0:
-                    image.setImageResource(R.drawable.noticewarning);
-                    break;
-                case 1:
-                    image.setImageResource(R.drawable.noticetimetable);
-                    break;
-                case 2:
-                    image.setImageResource(R.drawable.noticeupdate);
-                    break;
-                case 3:
-                    image.setImageResource(R.drawable.noticetrash);
-                    break;
-                default:
-                    Log.e(TAG, "notification type is out of bound!!");
+    class NotificationViewHolder constructor(view: View) : RecyclerView.ViewHolder(view) {
+        private val message: TextView
+        private val image: ImageView
+        fun bindData(notification: Notification) {
+            // Log.d(TAG, "notification message : " + notification.getMessage());
+            var text = notification.message
+            when (notification.type) {
+                0 -> image.setImageResource(R.drawable.noticewarning)
+                1 -> image.setImageResource(R.drawable.noticetimetable)
+                2 -> image.setImageResource(R.drawable.noticeupdate)
+                3 -> image.setImageResource(R.drawable.noticetrash)
+                else -> Log.e(TAG, "notification type is out of bound!!")
             }
             try {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Date date1 = format.parse(notification.getCreated_at());
-                Date date2 = new Date();
-                long diff = date2.getTime() - date1.getTime();
-                long hours = diff / (1000 * 60 * 60);
-                long days = hours / 24;
-                long months = days / 30;
-                long years = months / 12;
-                text += " ";
-
-                if (years > 0) {
-                    text += "<font color='#808080'>" + years + "년 전</font>";
+                val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                format.timeZone = TimeZone.getTimeZone("UTC")
+                val date1 = format.parse(notification.created_at)
+                val date2 = Date()
+                val diff = date2.time - date1.time
+                val hours = diff / (1000 * 60 * 60)
+                val days = hours / 24
+                val months = days / 30
+                val years = months / 12
+                text += " "
+                text += if (years > 0) {
+                    "<font color='#808080'>" + years + "년 전</font>"
                 } else if (months > 0) {
-                    text += "<font color='#808080'>" + months + "달 전</font>";
+                    "<font color='#808080'>" + months + "달 전</font>"
                 } else if (days > 0) {
-                    text += "<font color='#808080'>" + days + "일 전</font>";
+                    "<font color='#808080'>" + days + "일 전</font>"
                 } else if (hours > 0) {
-                    text += "<font color='#808080'>" + hours + "시간 전</font>";
+                    "<font color='#808080'>" + hours + "시간 전</font>"
                 } else {
-                    text += "<font color='#808080'>방금</font>";
+                    "<font color='#808080'>방금</font>"
                 }
-            } catch (ParseException e) {
-                Log.e(TAG, "notification created time parse error!");
-                e.printStackTrace();
+            } catch (e: ParseException) {
+                Log.e(TAG, "notification created time parse error!")
+                e.printStackTrace()
             }
-            message.setText(Html.fromHtml(text));
+            message.text = Html.fromHtml(text)
+        }
+
+        init {
+            image = view.findViewById<View>(R.id.notification_image) as ImageView
+            message = view.findViewById<View>(R.id.notification_text) as TextView
         }
     }
 
-    private static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar progressBar;
+    class ProgressBarViewHolder constructor(view: View) : RecyclerView.ViewHolder(view) {
+        private val progressBar: ProgressBar
 
-        private ProgressBarViewHolder(View view) {
-            super(view);
-            progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        init {
+            progressBar = view.findViewById<View>(R.id.progressBar) as ProgressBar
         }
+    }
+
+    companion object {
+        private const val TAG = "NOTIFICATION_ADAPTER"
     }
 }

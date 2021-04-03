@@ -1,125 +1,95 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.model.SettingsItem;
-
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.model.SettingsItem
 
 /**
  * Created by makesource on 2016. 11. 21..
  */
-
-public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private static ClickListener clickListener;
-    private List<SettingsItem> lists;
-
-    public SettingsAdapter(List<SettingsItem> lists) {
-        this.lists = lists;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == SettingsItem.ViewType.Header.getValue()) {
-            View view = inflater.inflate(R.layout.cell_setting_header, parent, false);
-            return new HeaderViewHolder(view);
+class SettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == SettingsItem.ViewType.Header.value) {
+            val view = inflater.inflate(R.layout.cell_setting_header, parent, false)
+            HeaderViewHolder(view)
         } else {
-            View view = inflater.inflate(R.layout.cell_settings, parent, false);
-            return new TitleViewHolder(view); // view holder for header items
+            val view = inflater.inflate(R.layout.cell_settings, parent, false)
+            TitleViewHolder(view) // view holder for header items
         }
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final int itemType = getItemViewType(position);
-
-        if (itemType == SettingsItem.ViewType.ItemTitle.getValue()) {
-            ((TitleViewHolder)holder).bindData(getItem(position));
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val itemType = getItemViewType(position)
+        if (itemType == SettingsItem.ViewType.ItemTitle.value) {
+            (holder as TitleViewHolder).bindData(getItem(position))
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return lists.size();
+    override fun getItemCount(): Int {
+        return lists.size
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        SettingsItem item = getItem(position);
-        return item.getViewType().getValue();
+    override fun getItemViewType(position: Int): Int {
+        val item = getItem(position)
+        return item.viewType.value
     }
 
-    public SettingsItem getItem(int position) {
-        return lists.get(position);
+    fun getItem(position: Int): SettingsItem {
+        return lists[position]
     }
 
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout layout;
-        public HeaderViewHolder(View view) {
-            super(view);
-            layout = (LinearLayout) view.findViewById(R.id.cell_header);
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var layout: LinearLayout
+
+        init {
+            layout = view.findViewById<View>(R.id.cell_header) as LinearLayout
             //layout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5));
         }
     }
 
-    private static class TitleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
-        private View view;
-        private TextView title;
-        private TextView detail;
-        private ImageView arrow;
-
-        private TitleViewHolder(View view) {
-            super(view);
-            this.view = view;
-            this.title = (TextView) view.findViewById(R.id.settings_text);
-            this.detail = (TextView) view.findViewById(R.id.settings_detail);
-            this.arrow = (ImageView) view.findViewById(R.id.settings_arrow);
-            this.view.setOnClickListener(this);
-        }
-
-        private void bindData(SettingsItem item) {
-            title.setText(item.getTitle());
-            detail.setText(item.getDetail());
-
-            switch (item.getType()) {
-                case AddIdPassword:
-                case ChangePassword:
-                case LinkFacebook:
-                case DeleteFacebook:
-                case ChangeEmail:
-                case Leave:
-                    arrow.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    arrow.setVisibility(View.GONE);
-                    break;
+    class TitleViewHolder constructor(private val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+        private val title: TextView
+        private val detail: TextView
+        private val arrow: ImageView
+        fun bindData(item: SettingsItem) {
+            title.text = item.title
+            detail.text = item.detail
+            when (item.type) {
+                SettingsItem.Type.AddIdPassword, SettingsItem.Type.ChangePassword, SettingsItem.Type.LinkFacebook, SettingsItem.Type.DeleteFacebook, SettingsItem.Type.ChangeEmail, SettingsItem.Type.Leave -> arrow.visibility = View.VISIBLE
+                else -> arrow.visibility = View.GONE
             }
         }
 
-        @Override
-        public void onClick(View v) {
+        override fun onClick(v: View) {
             if (clickListener != null) {
-                clickListener.onClick(v, getPosition());
+                clickListener!!.onClick(v, position)
             }
+        }
+
+        init {
+            title = view.findViewById<View>(R.id.settings_text) as TextView
+            detail = view.findViewById<View>(R.id.settings_detail) as TextView
+            arrow = view.findViewById<View>(R.id.settings_arrow) as ImageView
+            view.setOnClickListener(this)
         }
     }
 
-    public interface ClickListener {
-        public void onClick(View v, int position);
+    interface ClickListener {
+        fun onClick(v: View?, position: Int)
     }
 
-    public void setOnItemClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    fun setOnItemClickListener(_clickListener: ClickListener) {
+        clickListener = _clickListener
+    }
+
+    companion object {
+        private var clickListener: ClickListener? = null
     }
 }
-
-

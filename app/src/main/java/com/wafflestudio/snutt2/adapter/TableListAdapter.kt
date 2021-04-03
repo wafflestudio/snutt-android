@@ -1,105 +1,88 @@
-package com.wafflestudio.snutt2.adapter;
+package com.wafflestudio.snutt2.adapter
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.wafflestudio.snutt2.R;
-import com.wafflestudio.snutt2.manager.PrefManager;
-import com.wafflestudio.snutt2.model.Table;
-
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.model.Table
+import java.lang.IllegalStateException
 
 /**
  * Created by makesource on 2016. 1. 20..
  */
-public class TableListAdapter extends RecyclerView.Adapter<TableListAdapter.ViewHolder> {
-
-    public static final String TABLE_SECTION_STRING = "table_section_string";
-
-    private static final int TYPE_TABLE_SECTION = 0;
-    private static final int TYPE_TABLE_CELL = 1;
-
-    private List<Table> tables;
-
-    public TableListAdapter(List<Table> tables) {
-        this.tables = tables;
-    }
-
-    @Override
-    public TableListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View cellLayoutView;
-        ViewHolder viewHolder;
-
-        switch(viewType) {
-            case TYPE_TABLE_SECTION:
+class TableListAdapter(private val tables: List<Table>) : RecyclerView.Adapter<TableListAdapter.ViewHolder?>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val cellLayoutView: View
+        val viewHolder: ViewHolder
+        when (viewType) {
+            TYPE_TABLE_SECTION -> {
                 // create a new view
-                cellLayoutView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.cell_table_section, parent, false);
+                cellLayoutView = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.cell_table_section, parent, false)
                 // create ViewHolder
-                viewHolder = new ViewHolder(cellLayoutView);
-                return viewHolder;
-            case TYPE_TABLE_CELL:
-                cellLayoutView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.cell_table, parent, false);
+                viewHolder = ViewHolder(cellLayoutView)
+                return viewHolder
+            }
+            TYPE_TABLE_CELL -> {
+                cellLayoutView = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.cell_table, parent, false)
                 // create ViewHolder
-                viewHolder = new ViewHolder(cellLayoutView);
-                return viewHolder;
-
+                viewHolder = ViewHolder(cellLayoutView)
+                return viewHolder
+            }
         }
-        return null;
+        throw IllegalStateException("WTF")
     }
 
-    @Override
-    public int getItemViewType(int position) {
+    override fun getItemViewType(position: Int): Int {
         // Just as an example, return 0 or 2 depending on position
         // Note that unlike in ListView adapters, types don't have to be contiguous
-
-        String id = tables.get(position).getId();
-
-        if (id.equals(TABLE_SECTION_STRING)) {
-            return TYPE_TABLE_SECTION;
+        val id = tables[position].id
+        return if (id == TABLE_SECTION_STRING) {
+            TYPE_TABLE_SECTION
         } else {
-            return TYPE_TABLE_CELL;
+            TYPE_TABLE_CELL
         }
     }
 
-    @Override
-    public void onBindViewHolder(TableListAdapter.ViewHolder holder, int position) {
-        Table table = tables.get(position);
-        switch (holder.getItemViewType()) {
-            case TYPE_TABLE_SECTION:
-                holder.tableSectionName.setText(table.getTitle());
-                break;
-            case TYPE_TABLE_CELL:
-                holder.tableName.setText(table.getTitle());
-                if (PrefManager.getInstance().getLastViewTableId().equals(table.getId())) {
-                    holder.checked.setVisibility(View.VISIBLE);
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val table = tables[position]
+        when (holder!!.itemViewType) {
+            TYPE_TABLE_SECTION -> holder.tableSectionName.text = table.title
+            TYPE_TABLE_CELL -> {
+                holder.tableName.text = table.title
+                if (PrefManager.instance!!.lastViewTableId.equals(table.id)) {
+                    holder.checked.visibility = View.VISIBLE
                 } else {
-                    holder.checked.setVisibility(View.INVISIBLE);
+                    holder.checked.visibility = View.INVISIBLE
                 }
-                break;
+            }
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return tables.size();
+    override fun getItemCount(): Int {
+        return tables.size
     }
 
-    public final static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tableSectionName;
-        public TextView tableName;
-        public ImageView checked;
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var tableSectionName: TextView
+        var tableName: TextView
+        var checked: ImageView
 
-        public ViewHolder(View view) {
-            super(view);
-            tableSectionName = (TextView) view.findViewById(R.id.cell_table_section);
-            tableName = (TextView) view.findViewById(R.id.cell_table);
-            checked = (ImageView) view.findViewById(R.id.checked);
+        init {
+            tableSectionName = view.findViewById<View>(R.id.cell_table_section) as TextView
+            tableName = view.findViewById<View>(R.id.cell_table) as TextView
+            checked = view.findViewById<View>(R.id.checked) as ImageView
         }
+    }
+
+    companion object {
+        const val TABLE_SECTION_STRING = "table_section_string"
+        private const val TYPE_TABLE_SECTION = 0
+        private const val TYPE_TABLE_CELL = 1
     }
 }

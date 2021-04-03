@@ -1,125 +1,110 @@
-package com.wafflestudio.snutt2;
+package com.wafflestudio.snutt2
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.DisplayMetrics;
-
-import com.wafflestudio.snutt2.model.TagType;
+import android.content.Context
+import android.graphics.Color
+import android.net.ConnectivityManager
+import android.util.DisplayMetrics
+import com.wafflestudio.snutt2.model.TagType
 
 /**
  * Created by makesource on 2016. 1. 24..
  */
-public class SNUTTUtils {
-
-    public static Context context;
-
-    public static int wdayToNumber(String wday){
-        if (wday.equals("월")) return 0;
-        if (wday.equals("화")) return 1;
-        if (wday.equals("수")) return 2;
-        if (wday.equals("목")) return 3;
-        if (wday.equals("금")) return 4;
-        if (wday.equals("토")) return 5;
-        if (wday.equals("일")) return 6;
-        return -1;
+object SNUTTUtils {
+    @JvmField
+    var context: Context? = null
+    fun wdayToNumber(wday: String): Int {
+        if (wday == "월") return 0
+        if (wday == "화") return 1
+        if (wday == "수") return 2
+        if (wday == "목") return 3
+        if (wday == "금") return 4
+        if (wday == "토") return 5
+        return if (wday == "일") 6 else -1
     }
 
-    public static String numberToWday(int wday){
-        switch (wday){
-            case 0: return "월";
-            case 1: return "화";
-            case 2: return "수";
-            case 3: return "목";
-            case 4: return "금";
-            case 5: return "토";
-            case 6: return "일";
+    @JvmStatic
+    fun numberToWday(wday: Int): String? {
+        when (wday) {
+            0 -> return "월"
+            1 -> return "화"
+            2 -> return "수"
+            3 -> return "목"
+            4 -> return "금"
+            5 -> return "토"
+            6 -> return "일"
         }
-        return null;
+        return null
     }
 
-    public static String numberToTime(float num) {
-
-        int hour =  8 + (int) num;
-        String minute;
-
-        if ( Math.floor(num) == num ) minute = "00";
-        else minute = "30";
-
-        String time = String.valueOf(hour) + ":" + minute;
-        return time;
+    fun numberToTime(num: Float): String {
+        val hour = 8 + num.toInt()
+        val minute: String
+        minute = if (Math.floor(num.toDouble()) == num.toDouble()) "00" else "30"
+        return "$hour:$minute"
     }
 
-    public static String[] getTimeList(int from, int to) {
-        String[] list = new String[to-from+1];
-        for (int i=from;i<=to;i++) list[i-from] = numberToTime(i / 2f);
-        return list;
+    fun getTimeList(from: Int, to: Int): Array<String?> {
+        val list = arrayOfNulls<String>(to - from + 1)
+        for (i in from..to) list[i - from] = numberToTime(i / 2f)
+        return list
     }
 
-    public static String zeroStr(int number){
-        if (number < 10) return "0" + number;
-        return "" + number;
+    @JvmStatic
+    fun zeroStr(number: Int): String {
+        return if (number < 10) "0$number" else "" + number
     }
 
     //dp to px
-    public static float dpTopx(float dp){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return px;
+    @JvmStatic
+    fun dpTopx(dp: Float): Float {
+        val resources = context!!.resources
+        val metrics = resources.displayMetrics
+        return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
+
     //px to dp
-    public static float pxTodp(float px){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return dp;
+    fun pxTodp(px: Float): Float {
+        val resources = context!!.resources
+        val metrics = resources.displayMetrics
+        return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
+
     //sp to px
-    public static float spTopx(float sp) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return sp*scaledDensity;
+    @JvmStatic
+    fun spTopx(sp: Float): Float {
+        val scaledDensity = context!!.resources.displayMetrics.scaledDensity
+        return sp * scaledDensity
     }
 
     //px to sp
-    public static float pxTosp(float px) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return px/scaledDensity;
+    fun pxTosp(px: Float): Float {
+        val scaledDensity = context!!.resources.displayMetrics.scaledDensity
+        return px / scaledDensity
     }
 
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+    fun isNetworkAvailable(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = cm.activeNetworkInfo
         return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+                activeNetwork.isConnectedOrConnecting
     }
 
-    public static float getDisplayWidth() {
-        return context.getResources().getDisplayMetrics().widthPixels;
-    }
+    @JvmStatic
+    val displayWidth: Float
+        get() = context!!.resources.displayMetrics.widthPixels.toFloat()
+    @JvmStatic
+    val displayHeight: Float
+        get() = context!!.resources.displayMetrics.heightPixels.toFloat()
 
-    public static float getDisplayHeight() {
-        return context.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    public static int getTagColor(TagType type) {
-        switch (type) {
-            case ACADEMIC_YEAR:
-                return Color.rgb(229, 68, 89);
-            case CLASSIFICATION:
-                return Color.rgb(245, 141, 61);
-            case CREDIT:
-                return Color.rgb(166, 217, 48);
-            case DEPARTMENT:
-                return Color.rgb(27, 208, 200);
-            case INSTRUCTOR:
-                return Color.rgb(29, 153, 232);
-            case CATEGORY:
-                return Color.rgb(175, 86, 179);
+    fun getTagColor(type: TagType?): Int {
+        when (type) {
+            TagType.ACADEMIC_YEAR -> return Color.rgb(229, 68, 89)
+            TagType.CLASSIFICATION -> return Color.rgb(245, 141, 61)
+            TagType.CREDIT -> return Color.rgb(166, 217, 48)
+            TagType.DEPARTMENT -> return Color.rgb(27, 208, 200)
+            TagType.INSTRUCTOR -> return Color.rgb(29, 153, 232)
+            TagType.CATEGORY -> return Color.rgb(175, 86, 179)
         }
-        return Color.RED;
+        return Color.RED
     }
 }
