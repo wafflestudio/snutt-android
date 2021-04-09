@@ -130,7 +130,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
         val lectureId = lec.id
-        app.restService!!.postLecture(
+        app.restService!!.postCustomLecture(
             token,
             id,
             lectureId,
@@ -167,7 +167,7 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         Log.d(TAG, "create lecture method called!!")
         val token = PrefManager.instance!!.prefKeyXAccessToken
         val id = PrefManager.instance!!.lastViewTableId
-        app.restService!!.postLecture(
+        app.restService!!.postCustomLecture(
             token,
             id,
             lecture,
