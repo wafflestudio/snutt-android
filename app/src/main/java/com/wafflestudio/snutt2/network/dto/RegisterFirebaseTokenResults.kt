@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class RegisterFirebaseTokenResults (
-    @Json(name = "message") val message: String 
+data class RegisterFirebaseTokenResults(
+    @Json(name = "message") val message: String
 )

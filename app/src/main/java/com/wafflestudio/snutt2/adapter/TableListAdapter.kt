@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.PrefManager
 import com.wafflestudio.snutt2.model.Table
-import java.lang.IllegalStateException
 
 /**
  * Created by makesource on 2016. 1. 20..

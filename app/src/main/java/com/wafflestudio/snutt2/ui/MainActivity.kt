@@ -27,9 +27,6 @@ import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListene
 import com.wafflestudio.snutt2.manager.PrefManager
 import com.wafflestudio.snutt2.manager.TableManager
 import com.wafflestudio.snutt2.model.Table
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
     internal enum class MainTab(val title: String) {
@@ -82,7 +79,8 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         }
 
         // 2. colorList 받아오기
-        LectureManager.instance!!.fetchColorList("vivid_ios", null)
+        LectureManager.instance!!.fetchColorList("vivid_ios")
+            .bindUi(this, {}, {})
 
         // 3. 앱 내부에 저장된 시간표 뛰어주기
         // TODO : 저장된 정보를 불러와 보여주기, 없으면 empty상태로 띄어준다.
@@ -97,50 +95,46 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         // TODO : 서버에서 마지막에 본 시간표 정보 받아오기
         val id: String? = PrefManager.instance!!.lastViewTableId
         if (id != null) {
-            TableManager.instance!!.getTableById(
-                id,
-                object : Callback<Table> {
-                    override fun success(table: Table, response: Response) {
-                        supportActionBar!!.setTitle(table.title)
-                    }
-
-                    override fun failure(error: RetrofitError) {
+            TableManager.instance!!.getTableById(id)
+                .bindUi(this,
+                    onSuccess = {
+                        supportActionBar!!.setTitle(it.title)
+                    },
+                    onError = {
                         // invalid token -> 로그인 화면으로
                         // invalid id -> 없어진 테이블
-                    }
-                }
-            )
+                        // do nothing
+                    })
+
         } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
-            TableManager.instance!!.getDefaultTable(
-                object : Callback<Table> {
-                    override fun success(table: Table, response: Response) {
-// default 가 존재하는 경우
-                        supportActionBar!!.setTitle(table.title)
-                    }
-
-                    override fun failure(error: RetrofitError) {
-// default가 존재하지 않거나, network error 인 경우
+            TableManager.instance!!.getDefaultTable()
+                .bindUi(this,
+                    onSuccess = {
+                        supportActionBar!!.setTitle(it.title)
+                    },
+                    onError = {
+                        // default가 존재하지 않거나, network error 인 경우
+                        // do nothing
                         supportActionBar!!.setTitle("empty table")
                     }
-                }
-            )
+                )
         }
 
         // noti check
-        NotiManager.instance!!.getNotificationCount(
-            object : Callback<Map<String?, Int?>> {
-                override fun success(map: Map<String?, Int?>, response: Response) {
-                    val count = map["count"]!!
+        NotiManager.instance!!.getNotificationCount()
+            .bindUi(this,
+                onSuccess = {
+                    val count = it.count
                     Log.d(TAG, "notification count : $count")
                     if (notiCircle != null) {
                         notiCircle!!.visibility = if (count > 0) View.VISIBLE else View.GONE
                     }
-                }
+                },
+                onError = {
+                    // do nothing
+                })
 
-                override fun failure(error: RetrofitError) {}
-            }
-        )
         toolbar.setOnClickListener {
             val type = MainTab.values()[mViewPager!!.currentItem]
             if (type == MainTab.TIMETABLE) {
@@ -161,16 +155,12 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
             return
         }
         // 서버에서 받아와서 다시 그리기
-        TableManager.instance!!.getTableById(
-            id,
-            object : Callback<Table> {
-                override fun success(table: Table, response: Response) {
-                    supportActionBar!!.setTitle(table.title)
-                }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+        TableManager.instance!!.getTableById(id)
+            .bindUi(this,
+                onSuccess = { supportActionBar!!.setTitle(it.title) },
+                onError = {
+                    // do nothing
+                })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -265,23 +255,17 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
-                TableManager.instance!!.putTable(
-                    id,
-                    title,
-                    object : Callback<List<Table>> {
-                        override fun success(
-                            tables: List<Table>?,
-                            response: Response
-                        ) {
+                TableManager.instance!!.putTable(id, title)
+                    .bindUi(this,
+                        onSuccess = {
                             supportActionBar!!.setTitle(title)
                             dialog.dismiss()
-                        }
-
-                        override fun failure(error: RetrofitError) {
+                        },
+                        onError = {
                             // show error message
+                            // do nothing
                         }
-                    }
-                )
+                    )
             } else {
                 Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
             }

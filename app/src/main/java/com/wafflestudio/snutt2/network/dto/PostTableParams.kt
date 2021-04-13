@@ -8,5 +8,5 @@ import com.squareup.moshi.JsonClass
 data class PostTableParams(
     @Json(name = "year") val year: Long,
     @Json(name = "semester") val semester: Long,
-    @Json(name = "title") val title: String
+    @Json(name = "title") val title: String? = null
 )

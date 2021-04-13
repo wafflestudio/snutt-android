@@ -34,14 +34,10 @@ import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
 import com.wafflestudio.snutt2.manager.TagManager
 import com.wafflestudio.snutt2.manager.TagManager.OnTagChangedListener
-import com.wafflestudio.snutt2.model.Lecture
 import com.wafflestudio.snutt2.model.Tag
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.view.DividerItemDecoration
 import com.wafflestudio.snutt2.view.TableView
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -182,22 +178,19 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         }
     }
 
+    // Refactoring FIXME: ??? ㅋㅋㅋㅋㅋ
     private fun loadNextDataFromApi(page: Int, totalItemsCount: Int) {
         LectureManager.instance!!.addProgressBar()
         lectureAdapter!!.notifyDataSetChanged()
-        LectureManager.instance!!.loadData(
-            totalItemsCount,
-            object : Callback<List<Lecture>> {
-                override fun success(
-                    searchedLectureList: List<Lecture>?,
-                    response: Response
-                ) {
+        LectureManager.instance!!.loadData(totalItemsCount)
+            .bindUi(this,
+                onSuccess = {
                     lectureAdapter!!.notifyDataSetChanged()
+                },
+                onError = {
+                    // do nothing
                 }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+            )
     }
 
     private fun setTagHelper() {
@@ -427,20 +420,18 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
 
     private fun postQuery(text: String) {
         isSearching = true
-        LectureManager.instance!!.postSearchQuery(
-            text,
-            object : Callback<List<Lecture>> {
-                override fun success(lectures: List<Lecture>?, response: Response) {
+        LectureManager.instance!!.postSearchQuery(text)
+            .bindUi(this,
+                onSuccess = {
+                    isSearching = false
+                    showMainContainer(false)
+                },
+                onError = {
+                    // do nothing (??)
                     isSearching = false
                     showMainContainer(false)
                 }
-
-                override fun failure(error: RetrofitError) {
-                    isSearching = false
-                    showMainContainer(false)
-                }
-            }
-        )
+            )
     }
 
     private fun enableTagMode(contains: Boolean) {

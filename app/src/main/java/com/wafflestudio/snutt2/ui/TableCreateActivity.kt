@@ -13,10 +13,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.manager.TableManager.Companion.instance
 import com.wafflestudio.snutt2.model.Coursebook
-import com.wafflestudio.snutt2.model.Table
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 3. 1..
@@ -33,9 +29,9 @@ class TableCreateActivity : SNUTTBaseActivity() {
         title = "새로운 시간표"
         semesterSpinner = findViewById<View>(R.id.spinner) as Spinner
         titleText = findViewById<View>(R.id.table_title) as EditText
-        instance!!.getCoursebook(
-            object : Callback<List<Coursebook>> {
-                override fun success(coursebooks: List<Coursebook>, response: Response) {
+        instance!!.getCoursebook()
+            .bindUi(this,
+                onSuccess = { coursebooks ->
                     val displays = getDisplayList(coursebooks)
                     val years = getYearList(coursebooks)
                     val semesters = getSemesterList(coursebooks)
@@ -51,11 +47,11 @@ class TableCreateActivity : SNUTTBaseActivity() {
 
                         override fun onNothingSelected(parent: AdapterView<*>?) {}
                     }
+                },
+                onError = {
+                    // do nothing
                 }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+            )
     }
 
     override fun onDestroy() {
@@ -68,7 +64,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
         val list = arrayOfNulls<String>(size)
         for (i in 0 until size) {
             val year: String = coursebooks[i].year.toString() + " 년"
-            val semester = getSemester(coursebooks[i].semester)
+            val semester = getSemester(coursebooks[i].semester.toInt())
             list[i] = "$year $semester"
         }
         return list
@@ -83,18 +79,11 @@ class TableCreateActivity : SNUTTBaseActivity() {
         val id = item.itemId
         if (id == R.id.action_create) {
             val title = titleText!!.text.toString()
-            instance!!.postTable(
-                year,
-                semester,
-                title,
-                object : Callback<List<Table>> {
-                    override fun success(tables: List<Table>?, response: Response) {
-                        finish()
-                    }
-
-                    override fun failure(error: RetrofitError) {}
+            // Refactoring FIXME: error handling
+            instance!!.postTable(year.toLong(), semester.toLong(), title)
+                .bindUi(this) {
+                    finish()
                 }
-            )
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -114,7 +103,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
         val size = coursebooks.size
         val list = IntArray(size)
         for (i in 0 until size) {
-            list[i] = coursebooks[i].year
+            list[i] = coursebooks[i].year.toInt()
         }
         return list
     }
@@ -123,7 +112,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
         val size = coursebooks.size
         val list = IntArray(size)
         for (i in 0 until size) {
-            list[i] = coursebooks[i].semester
+            list[i] = coursebooks[i].semester.toInt()
         }
         return list
     }

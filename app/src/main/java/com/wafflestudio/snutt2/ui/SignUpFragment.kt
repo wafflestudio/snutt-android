@@ -17,10 +17,6 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
-import com.wafflestudio.snutt2.model.Token
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 3. 26..
@@ -60,22 +56,18 @@ class SignUpFragment : SNUTTBaseFragment() {
                     return@OnClickListener
                 }
                 val progressDialog = ProgressDialog.show(context, "회원가입", "잠시만 기다려 주세요", true, false)
-                instance!!.postSingUp(
-                    id,
-                    password,
-                    email,
-                    object : Callback<Token> {
-                        override fun success(token: Token?, response: Response) {
+                instance!!.postSingUp(id, password, email)
+                    .bindUi(
+                        this,
+                        onSuccess = {
                             baseActivity!!.startMain()
                             baseActivity!!.finishAll()
                             progressDialog.dismiss()
-                        }
-
-                        override fun failure(error: RetrofitError) {
+                        },
+                        onError = {
                             progressDialog.dismiss()
                         }
-                    }
-                )
+                    )
             }
         )
         facebookButton!!.setOnClickListener {
@@ -104,26 +96,17 @@ class SignUpFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    instance!!.postLoginFacebook(
-                        id,
-                        token,
-                        object : Callback<Any> {
-                            override fun success(
-                                o: Any?,
-                                response: Response
-                            ) {
+                    instance!!.postLoginFacebook(id, token)
+                        .bindUi(this@SignUpFragment,
+                            onSuccess = {
                                 baseActivity!!.startMain()
                                 baseActivity!!.finishAll()
                                 progressDialog.dismiss()
-                            }
-
-                            override fun failure(
-                                error: RetrofitError
-                            ) {
+                            },
+                            onError = {
                                 progressDialog.dismiss()
                             }
-                        }
-                    )
+                        )
                 }
 
                 override fun onCancel() {
@@ -153,6 +136,7 @@ class SignUpFragment : SNUTTBaseFragment() {
 
     companion object {
         private const val TAG = "SIGN_UP_FRAGMENT"
+
         @JvmStatic
         fun newInstance(): SignUpFragment {
             return SignUpFragment()

@@ -8,9 +8,6 @@ import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2017. 1. 24..
@@ -47,20 +44,16 @@ class ReportFragment : SNUTTBaseFragment() {
                 val email = emailText!!.text.toString()
                 val detail = detailText!!.text.toString()
                 item.isEnabled = false
-                instance!!.postFeedback(
-                    email,
-                    detail,
-                    object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
+                instance!!.postFeedback(email, detail)
+                    .bindUi(this,
+                        onSuccess = {
                             Toast.makeText(app, "전송하였습니다", Toast.LENGTH_SHORT).show()
                             activity!!.finish()
-                        }
-
-                        override fun failure(error: RetrofitError) {
+                        },
+                        onError = {
                             item.isEnabled = true
                         }
-                    }
-                )
+                    )
             }
             return true
         }

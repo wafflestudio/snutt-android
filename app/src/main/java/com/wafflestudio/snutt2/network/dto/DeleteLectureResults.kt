@@ -1,15 +1,6 @@
 package com.wafflestudio.snutt2.network.dto
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 
 
-@JsonClass(generateAdapter = true)
-data class DeleteLectureResults(
-    @Json(name = "year") val year: Long,
-    @Json(name = "semester") val semester: Long,
-    @Json(name = "title") val title: String,
-    @Json(name = "_id") val _id: String,
-    @Json(name = "lecture_list") val lectureList: List<Any>,
-    @Json(name = "updated_at") val updated_at: String
-)
+typealias DeleteLectureResults = TableDto

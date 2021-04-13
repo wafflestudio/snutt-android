@@ -24,12 +24,8 @@ import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
 import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
-import com.wafflestudio.snutt2.model.Facebook
 import com.wafflestudio.snutt2.model.SettingsItem
 import com.wafflestudio.snutt2.model.User
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.util.*
 
 /**
@@ -68,16 +64,15 @@ class AccountFragment : SNUTTBaseFragment() {
         )
         addSettingsList(instance!!.user)
         adapter!!.notifyDataSetChanged()
-        instance!!.getUserInfo(
-            object : Callback<User> {
-                override fun success(user: User, response: Response) {
-                    addSettingsList(user)
+        instance!!.getUserInfo()
+            .bindUi(this,
+                onSuccess = {
+                    addSettingsList(it)
                     adapter!!.notifyDataSetChanged()
-                }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+                },
+                onError = {
+                    // do nothing
+                })
     }
 
     override fun onCreateView(
@@ -119,22 +114,19 @@ class AccountFragment : SNUTTBaseFragment() {
             if (newPassword != newPasswordConfirm) {
                 Toast.makeText(app, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.putUserPassword(
-                    oldPassword,
-                    newPassword,
-                    object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
+                instance!!.putUserPassword(oldPassword, newPassword)
+                    .bindUi(this,
+                        onSuccess = {
                             Toast.makeText(
                                 app,
                                 "비밀번호를 변경하였습니다.",
                                 Toast.LENGTH_SHORT
                             ).show()
                             dialog.dismiss()
-                        }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                        },
+                        onError = {
+                            // do nothing
+                        })
             }
         }
     }
@@ -155,17 +147,16 @@ class AccountFragment : SNUTTBaseFragment() {
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(email)) {
-                instance!!.putUserInfo(
-                    email,
-                    object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
+                instance!!.putUserInfo(email)
+                    .bindUi(this,
+                        onSuccess = {
                             emailItem!!.detail = email
                             adapter!!.notifyDataSetChanged()
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
                 dialog2.dismiss()
             } else {
                 Toast.makeText(app, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -193,19 +184,17 @@ class AccountFragment : SNUTTBaseFragment() {
             if (password != passwordConfirm) {
                 Toast.makeText(app, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.postUserPassword(
-                    id,
-                    password,
-                    object : Callback<Any> {
-                        override fun success(o: Any?, response: Response) {
+                instance!!.postUserPassword(id, password)
+                    .bindUi(this,
+                        onSuccess = {
                             Toast.makeText(app, "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show()
                             updateNewId(id)
                             dialog.dismiss()
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
             }
         }
     }
@@ -215,17 +204,15 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setTitle("페이스북 연동 끊기")
         alert.setMessage("페이스북 연동을 끊겠습니까?")
         alert.setPositiveButton("끊기") { dialog, whichButton ->
-            instance!!.deleteUserFacebook(
-                object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
+            instance!!.deleteUserFacebook()
+                .bindUi(this,
+                    onSuccess = {
                         Toast.makeText(app, "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show()
                         LoginManager.getInstance().logOut()
                         updateDeleteFacebook()
-                    }
-
-                    override fun failure(error: RetrofitError) {}
-                }
-            )
+                    }, onError = {
+                    // do nothing
+                })
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -237,32 +224,22 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?")
         alert.setPositiveButton("회원탈퇴") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "회원탈퇴", "잠시만 기다려 주세요", true, false)
-            instance!!.deleteFirebaseToken(
-                object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
-                        instance!!.deleteUserAccount(
-                            object : Callback<Any> {
-                                override fun success(o: Any?, response: Response) {
-                                    instance!!.performLogout()
-                                    sNUTTBaseActivity!!.startIntro()
-                                    sNUTTBaseActivity!!.finishAll()
-                                    progressDialog.dismiss()
-                                }
-
-                                override fun failure(error: RetrofitError) {
-                                    Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                                    progressDialog.dismiss()
-                                }
-                            }
-                        )
-                    }
-
-                    override fun failure(error: RetrofitError) {
+            instance!!.deleteFirebaseToken()
+                .flatMap {
+                    instance!!.deleteUserAccount()
+                }
+                .bindUi(this,
+                    onSuccess = {
+                        instance!!.performLogout()
+                        sNUTTBaseActivity!!.startIntro()
+                        sNUTTBaseActivity!!.finishAll()
+                        progressDialog.dismiss()
+                    },
+                    onError = {
                         Toast.makeText(app, "회원탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         progressDialog.dismiss()
                     }
-                }
-            )
+                )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -301,16 +278,15 @@ class AccountFragment : SNUTTBaseFragment() {
         lists!!.add(position, SettingsItem("페이스북 이름", "", SettingsItem.Type.FacebookName))
         adapter!!.notifyItemInserted(position)
         val pos = position
-        instance!!.getUserFacebook(
-            object : Callback<Facebook> {
-                override fun success(facebook: Facebook, response: Response) {
-                    facebookNameItem!!.detail = facebook.name
+        instance!!.getUserFacebook()
+            .bindUi(this,
+                onSuccess = {
+                    facebookNameItem!!.detail = it.name
                     adapter!!.notifyItemChanged(pos)
-                }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+                },
+                onError = {
+                    // do nothing
+                })
     }
 
     private fun updateDeleteFacebook() {
@@ -359,22 +335,14 @@ class AccountFragment : SNUTTBaseFragment() {
                     val token = loginResult.accessToken.token
                     Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
                     Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
-                    instance!!.postUserFacebook(
-                        id,
-                        token,
-                        object : Callback<Any> {
-                            override fun success(
-                                o: Any?,
-                                response: Response
-                            ) {
+                    instance!!.postUserFacebook(id, token)
+                        .bindUi(this@AccountFragment,
+                            onSuccess = {
                                 updateLinkFacebook()
-                            }
-
-                            override fun failure(
-                                error: RetrofitError
-                            ) {}
-                        }
-                    )
+                            },
+                            onError = {
+                                // do nothing
+                            })
                 }
 
                 override fun onCancel() {

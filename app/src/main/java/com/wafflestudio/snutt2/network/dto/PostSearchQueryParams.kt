@@ -18,6 +18,6 @@ data class PostSearchQueryParams(
     @Json(name = "category") val category: List<String>? = null,
     @Json(name = "etc") val etc: List<String>? = null,
     @Json(name = "time_mask") val time_mask: List<Long>? = null,
-    @Json(name = "offset") val offset: Long,
-    @Json(name = "limit") val limit: Long
+    @Json(name = "offset") val offset: Long? = null,
+    @Json(name = "limit") val limit: Long? = null
 )

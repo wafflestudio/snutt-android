@@ -16,10 +16,6 @@ import com.wafflestudio.snutt2.adapter.NotificationAdapter
 import com.wafflestudio.snutt2.listener.EndlessRecyclerViewScrollListener
 import com.wafflestudio.snutt2.manager.NotiManager
 import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListener
-import com.wafflestudio.snutt2.model.Notification
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -58,19 +54,19 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         layout = rootView.findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
-            NotiManager.instance!!.refreshNotification(
-                object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
+            NotiManager.instance!!.refreshNotification()
+                .bindUi(this,
+                    onSuccess = {
                         scrollListener!!.init()
                         layout!!.isRefreshing = false
                         adapter!!.notifyDataSetChanged()
                         NotiManager.instance!!.fetched = true
                         placeholder!!.visibility = if (NotiManager.instance!!.hasNotifications()) View.GONE else View.VISIBLE
+                    },
+                    onError = {
+                        // do nothing
                     }
-
-                    override fun failure(error: RetrofitError) {}
-                }
-            )
+                )
         }
         layout!!.setOnRefreshListener(refreshListener)
         return rootView
@@ -106,16 +102,15 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         NotiManager.instance!!.addProgressBar()
         adapter!!.notifyDataSetChanged()
-        NotiManager.instance!!.loadData(
-            totalItemsCount,
-            object : Callback<List<Notification>> {
-                override fun success(notifications: List<Notification>?, response: Response) {
+        NotiManager.instance!!.loadData(totalItemsCount)
+            .bindUi(this,
+                onSuccess = {
                     adapter!!.notifyDataSetChanged()
+                },
+                onError = {
+                    // do nothing
                 }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+            )
     }
 
     private fun autoFetch(layout: SwipeRefreshLayout?, refreshListener: OnRefreshListener?) {

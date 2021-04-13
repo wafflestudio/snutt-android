@@ -19,9 +19,6 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 3. 26..
@@ -48,21 +45,18 @@ class SignInFragment : SNUTTBaseFragment() {
             val password = passwordEditText!!.text.toString()
             hideSoftKeyboard(view!!)
             val progressDialog = ProgressDialog.show(context, "로그인", "잠시만 기다려 주세요", true, false)
-            instance!!.postSignIn(
-                id,
-                password,
-                object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
+
+            instance!!.postSignIn(id, password)
+                .bindUi(this,
+                    onSuccess = {
                         baseActivity!!.startMain()
                         baseActivity!!.finishAll()
                         progressDialog.dismiss()
-                    }
-
-                    override fun failure(error: RetrofitError) {
+                    },
+                    onError = {
                         progressDialog.dismiss()
                     }
-                }
-            )
+                )
         }
         facebookButton!!.setOnClickListener {
             LoginManager.getInstance().logInWithReadPermissions(
@@ -85,26 +79,17 @@ class SignInFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    instance!!.postLoginFacebook(
-                        id,
-                        token,
-                        object : Callback<Any> {
-                            override fun success(
-                                o: Any?,
-                                response: Response
-                            ) {
+                    instance!!.postLoginFacebook(id, token)
+                        .bindUi(this@SignInFragment,
+                            onSuccess = {
                                 baseActivity!!.startMain()
                                 baseActivity!!.finishAll()
                                 progressDialog.dismiss()
-                            }
-
-                            override fun failure(
-                                error: RetrofitError
-                            ) {
+                            },
+                            onError = {
                                 progressDialog.dismiss()
                             }
-                        }
-                    )
+                        )
                 }
 
                 override fun onCancel() {
