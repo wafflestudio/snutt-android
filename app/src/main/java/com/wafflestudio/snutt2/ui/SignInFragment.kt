@@ -18,12 +18,23 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
-import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.UserManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 3. 26..
  */
+@AndroidEntryPoint
 class SignInFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var idEditText: EditText? = null
     private var passwordEditText: EditText? = null
     private var signinButton: Button? = null
@@ -43,10 +54,10 @@ class SignInFragment : SNUTTBaseFragment() {
         signinButton!!.setOnClickListener {
             val id = idEditText!!.text.toString()
             val password = passwordEditText!!.text.toString()
-            hideSoftKeyboard(view!!)
+            hideSoftKeyboard(requireView())
             val progressDialog = ProgressDialog.show(context, "로그인", "잠시만 기다려 주세요", true, false)
 
-            instance!!.postSignIn(id, password)
+            userManager.postSignIn(id, password)
                 .bindUi(this,
                     onSuccess = {
                         baseActivity!!.startMain()
@@ -55,6 +66,7 @@ class SignInFragment : SNUTTBaseFragment() {
                     },
                     onError = {
                         progressDialog.dismiss()
+                        apiOnError.invoke(it)
                     }
                 )
         }
@@ -79,7 +91,7 @@ class SignInFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    instance!!.postLoginFacebook(id, token)
+                    userManager.postLoginFacebook(id, token)
                         .bindUi(this@SignInFragment,
                             onSuccess = {
                                 baseActivity!!.startMain()
@@ -108,13 +120,13 @@ class SignInFragment : SNUTTBaseFragment() {
         return rootView
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager!!.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setTitle(title: String) {
-        activity!!.title = title
+        requireActivity().title = title
     }
 
     companion object {

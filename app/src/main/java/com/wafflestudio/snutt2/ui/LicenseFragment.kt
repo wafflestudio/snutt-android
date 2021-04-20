@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2017. 1. 24..
  */
+@AndroidEntryPoint
 class LicenseFragment : SNUTTBaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -13,16 +13,25 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.SNUTTUtils.dp2px
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.rx.RxBindable
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 /**
  * Created by makesource on 2017. 3. 7..
  */
-class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class LectureListAdapter(
+    private val lectures: List<LectureDto?>,
+    private val lectureManager: LectureManager,
+    private val apiOnError: ApiOnError,
+    private val bindable: RxBindable
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class VIEW_TYPE(val value: Int) {
         Lecture(0), ProgressBar(1);
     }
@@ -32,7 +41,7 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture, parent, false)
             // create ViewHolder
-            LectureViewHolder(view)
+            LectureViewHolder(view, lectureManager)
         } else {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_progressbar, parent, false)
@@ -45,11 +54,11 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
         if (itemType == VIEW_TYPE.ProgressBar.value) return
         val lecture = lectures[position]
         val holder = viewHolder as LectureViewHolder
-        val selectedPosition = instance!!.selectedPosition
-        holder.bindData(lecture)
+        val selectedPosition = lectureManager.selectedPosition
+        holder.bindData(lecture!!)
         if (selectedPosition == position) {
             holder.layout.setBackgroundColor(Color.parseColor("#33000000"))
-            if (instance!!.alreadyOwned(lecture)) {
+            if (lectureManager.alreadyOwned(lecture)) {
                 holder.add.visibility = View.GONE
                 holder.margin.visibility = View.GONE
                 holder.remove.visibility = View.VISIBLE
@@ -75,40 +84,38 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
                         Log.d(TAG, "$position item Clicked!!")
                         if (selectedPosition == position) {
                             notifyItemChanged(position)
-                            instance!!.setSelectedLecture(null)
+                            lectureManager.setSelectedLecture(null)
                         } else {
                             notifyItemChanged(selectedPosition)
                             notifyItemChanged(position)
-                            instance!!.setSelectedLecture(getItem(position))
+                            lectureManager.setSelectedLecture(getItem(position))
                         }
                     } else if (v.id == holder.add.id) {
                         Log.d(TAG, "View ID : " + v.id)
                         Log.d(TAG, "$position add Clicked!!")
-                        // Refactoring FIXME: Unbounded
-                        instance!!.addLecture(getItem(position))
+                        lectureManager.addLecture(getItem(position)!!)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(
                                 onSuccess = {
                                     notifyItemChanged(position)
                                 },
                                 onError = {
-                                    // do nothing
+                                    apiOnError(it)
                                 }
-                            )
+                            ).let { bindable.bindDisposable(it) }
                     } else {
                         Log.d(TAG, "View ID : " + v.id)
                         Log.d(TAG, "$position remove Clicked!!")
-                        // Refactoring FIXME: Unbounded
-                        instance!!.removeLecture(getItem(position))
+                        lectureManager.removeLecture(getItem(position)!!)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(
                                 onSuccess = {
                                     notifyItemChanged(position)
                                 },
                                 onError = {
-                                    // do nothing
+                                    apiOnError(it)
                                 }
-                            )
+                            ).let { bindable.bindDisposable(it) }
                     }
                 }
             }
@@ -124,11 +131,11 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
         return lectures.size
     }
 
-    fun getItem(position: Int): Lecture {
+    fun getItem(position: Int): LectureDto? {
         return lectures[position]
     }
 
-    class LectureViewHolder constructor(var layout: View) : RecyclerView.ViewHolder(layout), View.OnClickListener {
+    class LectureViewHolder constructor(var layout: View, val lectureManager: LectureManager) : RecyclerView.ViewHolder(layout), View.OnClickListener {
         protected var title: TextView
         protected var subTitle: TextView
         protected var tag: TextView
@@ -137,8 +144,8 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
         var add: Button
         var remove: Button
         var margin: View
-        fun bindData(lecture: Lecture) {
-            val selectedPosition = instance!!.selectedPosition
+        fun bindData(lecture: LectureDto) {
+            val selectedPosition = lectureManager.selectedPosition
             val titleText = lecture.course_title
             val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(
                 lecture.credit
@@ -148,7 +155,7 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
             subTitle.text = subTitleText
             val selected = position == selectedPosition
             val margin = 20 + 20 + 10 + if (selected) 80 else 0
-            val maxWidth = (SNUTTUtils.displayWidth - SNUTTUtils.dpTopx(margin.toFloat())).toInt()
+            val maxWidth = (itemView.context.displayWidth - itemView.context.dp2px(margin.toFloat())).toInt()
             var subTitleWidth = Math.min(getTextViewWidth(subTitle), (maxWidth / 2).toFloat()).toInt()
             val titleWidth = Math.min(getTextViewWidth(title), (maxWidth - subTitleWidth).toFloat()).toInt()
             if (titleWidth + subTitleWidth < maxWidth) {
@@ -166,11 +173,12 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             var tagText: String? = ""
-            if (!Strings.isNullOrEmpty(lecture.category)) {
-                tagText += lecture.category + ", "
+            lecture.category?.let {
+                tagText += "$it, "
+
             }
-            if (!Strings.isNullOrEmpty(lecture.department)) {
-                tagText += lecture.department + ", "
+            lecture.department?.let {
+                tagText += "$it, "
             }
             tagText += lecture.academic_year
             if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
@@ -187,10 +195,10 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
                 tag.isSelected = false
                 tag.ellipsize = TextUtils.TruncateAt.END
             }
-            var classTimeText = lecture.simplifiedClassTime
+            var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
             if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
             classTime.text = classTimeText
-            var locationText = lecture.simplifiedLocation
+            var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
             if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
             location.text = locationText
         }

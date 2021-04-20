@@ -1,22 +1,31 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
-import com.wafflestudio.snutt2.SNUTTApplication
 import com.wafflestudio.snutt2.model.Coursebook
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.network.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostTableParams
 import com.wafflestudio.snutt2.network.dto.PutTableParams
-import com.wafflestudio.snutt2.network.dto.core.TempUtil
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.collections.HashMap
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-class TableManager private constructor(private val app: SNUTTApplication) {
-    private var tables: MutableList<Table>?
-    private var tableMap: MutableMap<String, Table>
+@Singleton
+class TableManager @Inject constructor(
+    private val snuttRestApi: SNUTTRestApi,
+    private val lectureManager: LectureManager,
+    private val tagManager: TagManager,
+    private val prefStorage: PrefStorage
+) {
+    private var tables: MutableList<TableDto>? = ArrayList()
+    private var tableMap: MutableMap<String, TableDto> = HashMap()
+
     fun reset() {
         tables = ArrayList()
         tableMap = HashMap()
@@ -26,15 +35,10 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         return if (tables == null || tables!!.size == 0) false else true
     }
 
-    fun getTableList(): Single<List<Table>> {
-        val token: String = PrefManager.instance!!.prefKeyXAccessToken!!
-        return app.restService!!.getTableList(token)
+    fun getTableList(): Single<List<TableDto>> {
+        val token: String = prefStorage.prefKeyXAccessToken!!
+        return snuttRestApi.getTableList(token)
             .subscribeOn(Schedulers.io())
-            .map { result ->
-                result.map {
-                    Table(it._id, it.title)
-                }
-            }
             .doOnSuccess { result ->
                 Log.d(TAG, "get table list request success!")
                 tables!!.clear()
@@ -46,17 +50,12 @@ class TableManager private constructor(private val app: SNUTTApplication) {
             }
     }
 
-    fun postTable(year: Long, semester: Long, title: String?): Single<List<Table>> {
-        val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        return app.restService!!.postTable(
+    fun postTable(year: Long, semester: Long, title: String?): Single<List<TableDto>> {
+        val token: String? = prefStorage.prefKeyXAccessToken
+        return snuttRestApi.postTable(
             token!!,
             PostTableParams(year, semester, title))
             .subscribeOn(Schedulers.io())
-            .map { result ->
-                result.map {
-                    Table(it._id, it.title)
-                }
-            }
             .doOnSuccess {
                 Log.d(TAG, "post new table request success!!")
                 tables!!.clear()
@@ -68,36 +67,34 @@ class TableManager private constructor(private val app: SNUTTApplication) {
             }
     }
 
-    fun getTableById(id: String?): Single<Table> {
-        val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        return app.restService!!.getTableById(
+    fun getTableById(id: String?): Single<TableDto> {
+        val token: String? = prefStorage.prefKeyXAccessToken
+        return snuttRestApi.getTableById(
             token!!,
             id!!)
-            .map { TempUtil.toLegacyModel(it) }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get table by id success")
-                LectureManager.instance!!.setLectures(it.lecture_list!!)
-                LectureManager.instance!!.clearSearchedLectures()
-                PrefManager.instance!!.updateNewTable(it)
-                TagManager.instance!!.updateNewTag(it.year, it.semester)
+                lectureManager.setLectures(it.lectureList)
+                lectureManager.clearSearchedLectures()
+                prefStorage.updateNewTable(it)
+                tagManager.updateNewTag(it.year.toInt(), it.semester.toInt())
             }
             .doOnError {
                 Log.d(TAG, "get table by id is failed!")
             }
     }
 
-    fun getDefaultTable(): Single<Table> {
-        val token: String = PrefManager.instance!!.prefKeyXAccessToken!!
-        return app.restService!!.getRecentTable(token)
+    fun getDefaultTable(): Single<TableDto> {
+        val token: String = prefStorage.prefKeyXAccessToken!!
+        return snuttRestApi.getRecentTable(token)
             .subscribeOn(Schedulers.io())
-            .map { TempUtil.toLegacyModel(it) }
             .doOnSuccess {
                 Log.d(TAG, "get recent table request success")
-                LectureManager.instance!!.setLectures(it.lecture_list!!)
-                LectureManager.instance!!.clearSearchedLectures()
-                PrefManager.instance!!.updateNewTable(it)
-                TagManager.instance!!.updateNewTag(it.year, it.semester)
+                lectureManager.setLectures(it.lectureList)
+                lectureManager.clearSearchedLectures()
+                prefStorage.updateNewTable(it)
+                tagManager.updateNewTag(it.year.toInt(), it.semester.toInt())
 
             }
             .doOnError {
@@ -107,7 +104,7 @@ class TableManager private constructor(private val app: SNUTTApplication) {
 
     fun getCoursebook(): Single<List<Coursebook>> {
         // String token = PrefManager.getInstance().getPrefKeyXAccessToken();
-        return app.restService!!.getCoursebook()
+        return snuttRestApi.getCoursebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get coursebook request success.")
@@ -122,12 +119,11 @@ class TableManager private constructor(private val app: SNUTTApplication) {
             }
     }
 
-    fun deleteTable(id: String?): Single<List<Table>> {
-        val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        return app.restService!!.deleteTable(
+    fun deleteTable(id: String?): Single<List<TableDto>> {
+        val token: String? = prefStorage.prefKeyXAccessToken
+        return snuttRestApi.deleteTable(
             token!!,
             id!!)
-            .map { it.map { TempUtil.toLegacyModel(it) } }
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")
                 tables!!.clear()
@@ -139,14 +135,13 @@ class TableManager private constructor(private val app: SNUTTApplication) {
             }
     }
 
-    fun putTable(id: String?, title: String?): Single<List<Table>> {
-        val token: String? = PrefManager.instance!!.prefKeyXAccessToken
-        return app.restService!!.putTable(
+    fun putTable(id: String?, title: String?): Single<List<TableDto>> {
+        val token: String? = prefStorage.prefKeyXAccessToken
+        return snuttRestApi.putTable(
             token!!,
             id!!,
             PutTableParams(title!!)
         )
-            .map { it.map { TempUtil.toLegacyModel(it) } }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")
@@ -159,7 +154,7 @@ class TableManager private constructor(private val app: SNUTTApplication) {
             }
     }
 
-    fun addTable(table: Table) {
+    fun addTable(table: TableDto) {
         tables!!.add(table)
         tableMap[table.id!!] = table
         Collections.sort(tables)
@@ -174,33 +169,11 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         return table.title
     }
 
-    fun updateTables(table: Table?) {
+    fun updateTables(table: TableDto?) {
         // TODO : (SeongWon) server에 update 요청 날리기
     }
 
     companion object {
         private const val TAG = "TABLE_MANAGER"
-        private var singleton: TableManager? = null
-        fun getInstance(app: SNUTTApplication): TableManager? {
-            if (singleton == null) {
-                singleton = TableManager(app)
-            }
-            return singleton
-        }
-
-        @JvmStatic
-        val instance: TableManager?
-            get() {
-                if (singleton == null) Log.e(TAG, "This method should not be called at this time!!")
-                return singleton
-            }
-    }
-
-    /**
-     * TableManager 싱글톤
-     */
-    init {
-        tables = ArrayList()
-        tableMap = HashMap()
     }
 }

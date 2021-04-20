@@ -11,12 +11,20 @@ import com.appyvet.rangebar.RangeBar
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.SNUTTUtils.numberToWday
-import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.manager.PrefStorage
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by makesource on 2017. 1. 24..
  */
+@AndroidEntryPoint
 class TimetableFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var prefStorage: PrefStorage
+
     private var mSwitch: SwitchCompat? = null
     private var dayLayout: LinearLayout? = null
     private var classLayout: LinearLayout? = null
@@ -33,12 +41,12 @@ class TimetableFragment : SNUTTBaseFragment() {
         classLayout = rootView.findViewById<View>(R.id.class_layout) as LinearLayout
         dayRangeBar = rootView.findViewById<View>(R.id.day_range_bar) as RangeBar
         classRangeBar = rootView.findViewById<View>(R.id.class_range_bar) as RangeBar
-        mSwitch!!.isChecked = PrefManager.instance!!.autoTrim
+        mSwitch!!.isChecked = prefStorage.autoTrim
         initRangeBar()
-        updateRangeBarStatus(PrefManager.instance!!.autoTrim)
+        updateRangeBarStatus(prefStorage.autoTrim)
         mSwitch!!.setOnCheckedChangeListener { buttonView, isChecked ->
             Log.d(TAG, "on checked changed listener called.")
-            PrefManager.instance!!.autoTrim = isChecked
+            prefStorage.autoTrim = isChecked
             updateRangeBarStatus(isChecked)
         }
         return rootView
@@ -46,8 +54,8 @@ class TimetableFragment : SNUTTBaseFragment() {
 
     private fun initRangeBar() {
         dayRangeBar!!.setRangePinsByIndices(
-            PrefManager.instance!!.trimWidthStart,
-            PrefManager.instance!!.trimWidthStart + PrefManager.instance!!.trimWidthNum - 1
+            prefStorage.trimWidthStart,
+            prefStorage.trimWidthStart + prefStorage.trimWidthNum - 1
         )
         dayRangeBar!!.setFormatter { value ->
             val wday = value.toInt()
@@ -55,17 +63,17 @@ class TimetableFragment : SNUTTBaseFragment() {
         }
         dayRangeBar!!.setOnRangeBarChangeListener { rangeBar, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue ->
             val num = rightPinIndex - leftPinIndex + 1
-            PrefManager.instance!!.trimWidthStart = leftPinIndex
-            PrefManager.instance!!.trimWidthNum = num
+            prefStorage.trimWidthStart = leftPinIndex
+            prefStorage.trimWidthNum = num
         }
         classRangeBar!!.setRangePinsByIndices(
-            PrefManager.instance!!.trimHeightStart,
-            PrefManager.instance!!.trimHeightStart + PrefManager.instance!!.trimHeightNum - 1
+            prefStorage.trimHeightStart,
+            prefStorage.trimHeightStart + prefStorage.trimHeightNum - 1
         )
         classRangeBar!!.setOnRangeBarChangeListener { rangeBar, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue ->
             val num = rightPinIndex - leftPinIndex + 1
-            PrefManager.instance!!.trimHeightStart = leftPinIndex
-            PrefManager.instance!!.trimHeightNum = num
+            prefStorage.trimHeightStart = leftPinIndex
+            prefStorage.trimHeightNum = num
         }
     }
 

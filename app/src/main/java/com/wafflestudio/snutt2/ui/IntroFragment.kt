@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2017. 6. 23..
  */
+@AndroidEntryPoint
 class IntroFragment : SNUTTBaseFragment() {
+
     private var title: ImageView? = null
     private var detail: ImageView? = null
     override fun onCreateView(
@@ -20,7 +23,7 @@ class IntroFragment : SNUTTBaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_intro, container, false)
-        val section = arguments!!.getInt(ARG_SECTION_NUMBER)
+        val section = requireArguments().getInt(ARG_SECTION_NUMBER)
         title = rootView.findViewById<View>(R.id.intro_title) as ImageView
         detail = rootView.findViewById<View>(R.id.intro_detail) as ImageView
         when (section) {

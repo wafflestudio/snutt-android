@@ -17,18 +17,33 @@ import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.adapter.ExpandableTableListAdapter
-import com.wafflestudio.snutt2.manager.PrefManager
-import com.wafflestudio.snutt2.manager.TableManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.PrefStorage
+import com.wafflestudio.snutt2.manager.TableManager
 import com.wafflestudio.snutt2.model.Coursebook
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.network.dto.core.TableDto
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 1. 17..
  */
+@AndroidEntryPoint
 class TableListActivity : SNUTTBaseActivity() {
+
+    @Inject
+    lateinit var tableManager: TableManager
+
+    @Inject
+    lateinit var prefStorage: PrefStorage
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var mGroupList: ArrayList<String>? = null
-    private var mChildList: ArrayList<ArrayList<Table>>? = null
+    private var mChildList: ArrayList<ArrayList<TableDto>>? = null
     private var placeholder: LinearLayout? = null
     private var coursebookList: List<Coursebook>? = null
     private var mListView: ExpandableListView? = null
@@ -45,7 +60,7 @@ class TableListActivity : SNUTTBaseActivity() {
                 if (mChildList!![groupPosition].isEmpty()) {
                     val coursebook = coursebookList!![groupPosition]
                     // Refactoring FIXME: error handling
-                    instance!!.postTable(
+                    tableManager.postTable(
                         coursebook.year,
                         coursebook.semester,
                         "내 시간표")
@@ -94,17 +109,17 @@ class TableListActivity : SNUTTBaseActivity() {
     // Refactoring FIXME: error handle
     private val tableList: Unit
         get() {
-            instance!!.getCoursebook()
+            tableManager.getCoursebook()
                 .bindUi(this) {
                     coursebookList = it
-                    instance!!.getTableList()
+                    tableManager.getTableList()
                         .bindUi(this@TableListActivity) {
                             mAdapter = getAdapter(it)
                             mListView!!.setAdapter(mAdapter)
                             for (i in mGroupList!!.indices) {
                                 mListView!!.expandGroup(i)
                             }
-                            placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                            placeholder!!.visibility = if (tableManager.hasTimetables()) View.GONE else View.VISIBLE
                         }
                 }
         }
@@ -126,7 +141,7 @@ class TableListActivity : SNUTTBaseActivity() {
         return "$yearString-$semesterString"
     }
 
-    private fun showEditDialog(table: Table) {
+    private fun showEditDialog(table: TableDto) {
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val layout = inflater.inflate(R.layout.dialog_change_title, null)
         val alert = AlertDialog.Builder(this)
@@ -142,7 +157,7 @@ class TableListActivity : SNUTTBaseActivity() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
-                instance!!.putTable(table.id, title)
+                tableManager.putTable(table.id, title)
                     .bindUi(this,
                         onSuccess = { tables ->
                             mAdapter = getAdapter(tables)
@@ -150,11 +165,12 @@ class TableListActivity : SNUTTBaseActivity() {
                             for (i in mGroupList!!.indices) {
                                 mListView!!.expandGroup(i)
                             }
-                            placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                            placeholder!!.visibility = if (tableManager.hasTimetables()) View.GONE else View.VISIBLE
 
-                        }, onError = {
-                        // do nothing
-                    })
+                        },
+                        onError = {
+                            apiOnError(it)
+                        })
                 dialog.dismiss()
             } else {
                 Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -162,12 +178,12 @@ class TableListActivity : SNUTTBaseActivity() {
         }
     }
 
-    private fun performDelete(table: Table) {
-        if (PrefManager.instance!!.lastViewTableId.equals(table.id)) {
+    private fun performDelete(table: TableDto) {
+        if (prefStorage.lastViewTableId.equals(table.id)) {
             Toast.makeText(app, "현재 보고있는 테이블은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show()
             return
         }
-        instance!!.deleteTable(table.id)
+        tableManager.deleteTable(table.id)
             .bindUi(this,
                 onSuccess = { tables ->
                     mAdapter = getAdapter(tables)
@@ -175,14 +191,15 @@ class TableListActivity : SNUTTBaseActivity() {
                     for (i in mGroupList!!.indices) {
                         mListView!!.expandGroup(i)
                     }
-                    placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                    placeholder!!.visibility = if (tableManager.hasTimetables()) View.GONE else View.VISIBLE
 
-                }, onError = {
-                // do nothing
-            })
+                },
+                onError = {
+                    apiOnError(it)
+                })
     }
 
-    private fun getAdapter(tables: List<Table>): ExpandableTableListAdapter {
+    private fun getAdapter(tables: List<TableDto>): ExpandableTableListAdapter {
         mGroupList = ArrayList()
         mChildList = ArrayList()
         for (coursebook in coursebookList!!) {
@@ -191,11 +208,11 @@ class TableListActivity : SNUTTBaseActivity() {
         }
         var index = 0
         for (table in tables) {
-            while (index < mGroupList!!.size && mGroupList!![index] != table.fullSemester) index++
+            while (index < mGroupList!!.size && mGroupList!![index] != SNUTTStringUtils.getFullSemester(table)) index++
             if (index >= mGroupList!!.size) break
             mChildList!![index].add(table)
         }
-        return ExpandableTableListAdapter(this, mGroupList, mChildList)
+        return ExpandableTableListAdapter(this, mGroupList, mChildList, prefStorage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

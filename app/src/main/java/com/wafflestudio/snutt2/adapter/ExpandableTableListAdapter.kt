@@ -8,8 +8,8 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.PrefManager
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.manager.PrefStorage
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.TableListActivity
 import java.util.*
 
@@ -17,9 +17,10 @@ import java.util.*
  * Created by makesource on 2016. 1. 24..
  */
 class ExpandableTableListAdapter(
-    c: TableListActivity?,
-    private val groupList: ArrayList<String>? = null,
-    private val childList: ArrayList<ArrayList<Table>>? = null
+        c: TableListActivity?,
+        private val groupList: ArrayList<String>? = null,
+        private val childList: ArrayList<ArrayList<TableDto>>? = null,
+        private val prefStorage: PrefStorage
 ) : BaseExpandableListAdapter() {
     private var viewHolder: ViewHolder? = null
 
@@ -42,7 +43,7 @@ class ExpandableTableListAdapter(
     override fun getGroupView(
         groupPosition: Int,
         isExpanded: Boolean,
-        convertView: View,
+        convertView: View?,
         parent: ViewGroup
     ): View {
         val inflater = LayoutInflater.from(parent.context)
@@ -64,7 +65,7 @@ class ExpandableTableListAdapter(
         }*/viewHolder!!.tableSectionName!!.text = getGroup(
             groupPosition
         )
-        return v
+        return v!!
     }
 
     // 차일드뷰를 반환한다.
@@ -87,7 +88,7 @@ class ExpandableTableListAdapter(
         groupPosition: Int,
         childPosition: Int,
         isLastChild: Boolean,
-        convertView: View,
+        convertView: View?,
         parent: ViewGroup
     ): View {
         val inflater = LayoutInflater.from(parent.context)
@@ -108,13 +109,13 @@ class ExpandableTableListAdapter(
         } else {
             viewHolder!!.tableName!!.setTextColor(Color.BLACK)
             val id = childList[groupPosition][childPosition].id
-            if (PrefManager.instance!!.lastViewTableId.equals(id)) {
+            if (prefStorage.lastViewTableId.equals(id)) {
                 viewHolder!!.checked!!.visibility = View.VISIBLE
             } else {
                 viewHolder!!.checked!!.visibility = View.INVISIBLE
             }
         }
-        return v
+        return v!!
     }
 
     override fun hasStableIds(): Boolean {

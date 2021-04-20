@@ -12,18 +12,29 @@ import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.LectureDetailAdapter
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.ClassTime
-import com.wafflestudio.snutt2.model.Color
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.LectureItem
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.String
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 9. 4..
  */
+@AndroidEntryPoint
 class LectureDetailFragment : SNUTTBaseFragment() {
+    
+    @Inject
+    lateinit var lectureManager: LectureManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+    
     private var detailView: RecyclerView? = null
     private var lists: ArrayList<LectureItem>? = null
     private var adapter: LectureDetailAdapter? = null
@@ -33,14 +44,14 @@ class LectureDetailFragment : SNUTTBaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        val lecture = instance!!.currentLecture
+        val lecture = lectureManager.currentLecture
         if (lecture == null) {
             Log.e(TAG, "lecture refers to null point!!")
             return
         }
         lists = ArrayList()
         attachLectureDetailList(lecture)
-        adapter = LectureDetailAdapter(lectureMainActivity!!, this, lists!!)
+        adapter = LectureDetailAdapter(lectureMainActivity!!, this, lists!!, lectureManager, apiOnError, this)
     }
 
     override fun onCreateView(
@@ -84,7 +95,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             R.id.action_edit ->
                 if (editable) {
                     item.isEnabled = false
-                    adapter!!.updateLecture(instance!!.currentLecture)
+                    adapter!!.updateLecture(lectureManager.currentLecture)
                         .bindUi(this,
                             onSuccess = {
                                 item.title = "편집"
@@ -107,7 +118,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun setLectureColor(index: Int, color: Color?) {
+    fun setLectureColor(index: Int, color: ColorDto?) {
         if (index > 0) {
             colorItem!!.colorIndex = index
         } else {
@@ -127,10 +138,10 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
     fun refreshFragment() {
         editable = false
-        hideSoftKeyboard(view!!)
+        hideSoftKeyboard(requireView())
         ActivityCompat.invalidateOptionsMenu(activity)
         lists!!.clear()
-        attachLectureDetailList(instance!!.currentLecture)
+        attachLectureDetailList(lectureManager.currentLecture)
         adapter!!.notifyDataSetChanged()
     }
 
@@ -143,7 +154,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
     private fun setNormalMode() {
         try {
-            hideSoftKeyboard(view!!)
+            hideSoftKeyboard(requireView())
             editable = false
             for (i in lists!!.indices) {
                 val it = lists!![i]
@@ -167,7 +178,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             adapter!!.notifyItemChanged(pos)
         } catch (e: Exception) {
             Toast.makeText(app, "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
-            activity!!.finish()
+            requireActivity().finish()
         }
     }
 
@@ -201,17 +212,17 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             adapter!!.notifyItemChanged(removePosition)
         } catch (e: Exception) {
             Toast.makeText(app, "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
-            activity!!.finish()
+            requireActivity().finish()
         }
     }
 
-    private fun attachLectureDetailList(lecture: Lecture?) {
+    private fun attachLectureDetailList(lecture: LectureDto?) {
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem("강의명", lecture!!.course_title, LectureItem.Type.Title))
         lists!!.add(LectureItem("교수", lecture.instructor, LectureItem.Type.Instructor))
         lists!!.add(
-            LectureItem("색상", lecture.colorIndex, lecture.getColor(), LectureItem.Type.Color)
+            LectureItem("색상", lecture.colorIndex.toInt(), lecture.color, LectureItem.Type.Color)
         )
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
@@ -228,9 +239,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem(LectureItem.Type.ClassTimeHeader))
-        for (element in lecture.class_time_json!!) {
-            val jsonObject = element.asJsonObject
-            val classTime = ClassTime(jsonObject)
+        for (classTime in lecture.class_time_json) {
             lists!!.add(LectureItem(classTime, LectureItem.Type.ClassTime))
         }
         lists!!.add(LectureItem(LectureItem.Type.Margin))

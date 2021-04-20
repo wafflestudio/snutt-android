@@ -11,18 +11,27 @@ import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.CustomLectureAdapter
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.ClassTime
-import com.wafflestudio.snutt2.model.Color
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
-import java.lang.String
+import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 11. 10..
  */
+@AndroidEntryPoint
 class CustomDetailFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var detailView: RecyclerView? = null
     private var lists: ArrayList<LectureItem>? = null
     private var adapter: CustomLectureAdapter? = null
@@ -31,12 +40,12 @@ class CustomDetailFragment : SNUTTBaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        val lecture = instance!!.currentLecture
+        val lecture = lectureManager.currentLecture
         if (lecture == null) add = true
         lists = ArrayList()
         attachLectureDetailList(lecture)
         for (it in lists!!) it.isEditable = add
-        adapter = CustomLectureAdapter(activity!!, lists!!)
+        adapter = CustomLectureAdapter(requireActivity(), lists!!, lectureManager, apiOnError, this)
     }
 
     override fun onCreateView(
@@ -74,11 +83,12 @@ class CustomDetailFragment : SNUTTBaseFragment() {
                             },
                             onError = {
                                 item.isEnabled = true
+                                apiOnError(it)
                             }
                         )
                 } else if (editable) {
                     item.isEnabled = false
-                    adapter!!.updateLecture(instance!!.currentLecture)
+                    adapter!!.updateLecture(lectureManager.currentLecture)
                         .bindUi(this,
                             onSuccess = {
                                 item.title = "편집"
@@ -87,6 +97,7 @@ class CustomDetailFragment : SNUTTBaseFragment() {
                             },
                             onError = {
                                 item.isEnabled = true
+                                apiOnError(it)
                             }
                         )
                 } else {
@@ -97,11 +108,12 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun setLectureColor(index: Int, color: Color?) {
+    fun setLectureColor(index: Int, color: ColorDto?) {
         if (index > 0) {
             colorItem!!.colorIndex = index
         } else {
             colorItem!!.setColor(color) // 색상
+            colorItem!!.colorIndex = 0
         }
         adapter!!.notifyDataSetChanged()
     }
@@ -110,7 +122,7 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         editable = false
         ActivityCompat.invalidateOptionsMenu(activity)
         lists!!.clear()
-        attachLectureDetailList(instance!!.currentLecture)
+        attachLectureDetailList(lectureManager.currentLecture)
         adapter!!.notifyDataSetChanged()
     }
 
@@ -118,7 +130,7 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         return !add && editable
     }
 
-    private fun attachLectureDetailList(lecture: Lecture?) {
+    private fun attachLectureDetailList(lecture: LectureDto?) {
         lists!!.add(LectureItem(LectureItem.Type.ShortHeader))
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(
@@ -130,15 +142,15 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         lists!!.add(
             LectureItem(
                 "색상",
-                if (add) 0 else lecture!!.colorIndex,
-                if (add) Color() else lecture!!.getColor(),
+                if (add) 0 else lecture!!.colorIndex.toInt(),
+                if (add) ColorDto() else lecture!!.color,
                 LectureItem.Type.Color
             )
         )
         lists!!.add(
             LectureItem(
                 "학점",
-                if (add) "0" else String.valueOf(lecture!!.credit),
+                if (add) "0" else lecture!!.credit.toString(),
                 LectureItem.Type.Credit
             )
         )
@@ -151,9 +163,7 @@ class CustomDetailFragment : SNUTTBaseFragment() {
         lists!!.add(LectureItem(LectureItem.Type.Margin))
         lists!!.add(LectureItem(LectureItem.Type.ClassTimeHeader))
         if (!add) {
-            for (element in lecture!!.class_time_json!!) {
-                val jsonObject = element.asJsonObject
-                val classTime = ClassTime(jsonObject)
+            for (classTime in lecture!!.class_time_json) {
                 lists!!.add(LectureItem(classTime, LectureItem.Type.ClassTime))
             }
             lists!!.add(LectureItem(LectureItem.Type.Margin))
@@ -168,7 +178,7 @@ class CustomDetailFragment : SNUTTBaseFragment() {
 
     private fun setNormalMode() {
         editable = false
-        hideSoftKeyboard(view!!)
+        hideSoftKeyboard(requireView())
         for (i in lists!!.indices) {
             val it = lists!![i]
             it.isEditable = false

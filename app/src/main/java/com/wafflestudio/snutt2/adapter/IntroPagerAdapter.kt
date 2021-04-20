@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.ui.IntroFragment
 /**
  * Created by makesource on 2017. 6. 23..
  */
-class IntroPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+class IntroPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).

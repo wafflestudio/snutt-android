@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.os.Handler
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2017. 4. 1..
  */
+
+@AndroidEntryPoint
 class SplashActivity : SNUTTBaseActivity() {
     private val SPLASH_DISPLAY_LENGTH = 1000
     public override fun onCreate(bundle: Bundle?) {

@@ -1,73 +1,68 @@
 package com.wafflestudio.snutt2.view
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.*
-import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import com.google.gson.Gson
+import com.wafflestudio.snutt2.ColorConst
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
-import com.wafflestudio.snutt2.SNUTTUtils.dpTopx
-import com.wafflestudio.snutt2.SNUTTUtils.spTopx
+import com.wafflestudio.snutt2.SNUTTUtils.dp2px
+import com.wafflestudio.snutt2.SNUTTUtils.sp2px
 import com.wafflestudio.snutt2.SNUTTUtils.zeroStr
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.manager.PrefManager
-import com.wafflestudio.snutt2.model.Lecture
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.manager.PrefStorage
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.ui.LectureMainActivity
 
 /**
  * Created by makesource on 2016. 1. 24..
  */
-class TableView : View {
+// Refactoring FIXME:
+// @AndroidEntryPoint 를 위젯에서 사용할 수 없어서 programmatic 하게 뷰 인플레이트 시키는 방향으로 변경
+// constructor 그래서 전부 고려해서 만들지 않음 (귀찮)
+// 사실 애초에 View 에 있는 도메인 로직을 바깥으로 뺄 방법 부터 생각해봐야 할 듯.
+class TableView(
+    context: Context,
+    private val export: Boolean,
+    private val lectureManager: LectureManager,
+    private val prefStorage: PrefStorage
+) : View(context) {
+
     private var backgroundPaint: Paint? = null
     private var linePaint: Paint? = null
     private var linePaint2: Paint? = null
     private var topLabelTextPaint: Paint? = null
     private var leftLabelTextPaint: Paint? = null
-    private var mContext: Context
+    private var mContext: Context = context
     private var wdays: Array<String?> = emptyArray()
-    private val leftLabelWidth = dpTopx(24.5f)
-    private val topLabelHeight = dpTopx(28.5f)
+    private val leftLabelWidth = context.dp2px(24.5f)
+    private val topLabelHeight = context.dp2px(28.5f)
     private var unitWidth = 0f
     private var unitHeight = 0f
     private var titleTextRect: TextRect? = null
     private var locationTextRect: TextRect? = null
     private var titleTextPaint: Paint? = null
     private var locationTextPaint: Paint? = null
-    private var lectures: List<Lecture>?
-    private var export: Boolean // 현재 선택한 강의를 보여줄지 말지?
+    private var lectures: List<LectureDto>?
+
+    init {
+        prefStorage.currentTable?.let {
+            lectureManager.setLectures(it.lectureList)
+        }
+        lectures = lectureManager.getLectures()
+        init()
+    }
 
     // 시간표 trim 용
     private var numWidth = 0
     private var startWidth = 0
     private var numHeight = 0
     private var startHeight = 0
-
-    constructor(context: Context) : super(context) {
-        export = true
-        val json: String? = PrefManager.instance!!.currentTable
-        if (json != null) {
-            val table = Gson().fromJson(json, Table::class.java)
-            instance!!.setLectures(table.lecture_list!!)
-        }
-        lectures = instance!!.getLectures()
-        mContext = context
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
-            R.styleable.TimeTableView_export,
-            false
-        )
-        lectures = instance!!.getLectures()
-        mContext = context
-        init()
-    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         unitHeight = (height - topLabelHeight) / (numHeight * 2).toFloat()
@@ -77,6 +72,7 @@ class TableView : View {
 
     private fun init() {
         isDrawingCacheEnabled = true
+        setBackgroundColor(0xFFFFFFFF.toInt())
         backgroundPaint = Paint()
         backgroundPaint!!.color = -0x1
         linePaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -87,11 +83,11 @@ class TableView : View {
         linePaint2!!.strokeWidth = 1f
         topLabelTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         topLabelTextPaint!!.color = Color.argb(180, 0, 0, 0)
-        topLabelTextPaint!!.textSize = spTopx(12f)
+        topLabelTextPaint!!.textSize = context.sp2px(12f)
         topLabelTextPaint!!.textAlign = Paint.Align.CENTER
         leftLabelTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         leftLabelTextPaint!!.color = Color.argb(180, 0, 0, 0)
-        leftLabelTextPaint!!.textSize = spTopx(12f)
+        leftLabelTextPaint!!.textSize = context.sp2px(12f)
         leftLabelTextPaint!!.textAlign = Paint.Align.CENTER
         wdays = arrayOfNulls(7)
         wdays[0] = mContext.resources.getString(R.string.wday_mon)
@@ -102,10 +98,10 @@ class TableView : View {
         wdays[5] = mContext.resources.getString(R.string.wday_sat)
         wdays[6] = mContext.resources.getString(R.string.wday_sun)
         titleTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        titleTextPaint!!.textSize = spTopx(10f)
+        titleTextPaint!!.textSize = context.sp2px(10f)
         titleTextRect = TextRect(titleTextPaint!!)
         locationTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        locationTextPaint!!.textSize = spTopx(11f)
+        locationTextPaint!!.textSize = context.sp2px(11f)
         locationTextPaint!!.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         locationTextRect = TextRect(locationTextPaint!!)
         numWidth = 7
@@ -137,8 +133,10 @@ class TableView : View {
             Log.d(TAG, "time : $time")
             for (i in lectures!!.indices) {
                 val lecture = lectures!![i]
-                if (instance!!.contains(lecture, wday, time)) {
-                    activity.startLectureMain(i)
+                if (lectureManager.contains(lecture, wday, time)) {
+                    val intent = Intent(context, LectureMainActivity::class.java)
+                    intent.putExtra(SNUTTBaseActivity.INTENT_KEY_LECTURE_POSITION, i)
+                    context.startActivity(intent)
                 }
             }
         }
@@ -156,32 +154,29 @@ class TableView : View {
         startTime = 14
         endTime = 0
         for (lecture in lectures!!) {
-            for (element in lecture.class_time_json!!) {
-                val classTime = element.asJsonObject
-                val wday = classTime["day"].asInt
-                val start = classTime["start"].asFloat
-                val duration = classTime["len"].asFloat
+            for (classTimeDto in lecture.class_time_json) {
+                val wday = classTimeDto.day.toInt()
+                val start = classTimeDto.start
+                val duration = classTimeDto.len
                 startWday = Math.min(startWday, wday)
                 endWday = Math.max(endWday, wday)
                 startTime = Math.min(startTime, start.toInt()) // 버림
                 endTime = Math.max(endTime, (start + duration + 0.5f).toInt()) // 반올림
             }
         }
-        val lec = instance!!.getSelectedLecture()
-        val selected = !export && lec != null
-        if (selected) {
-            for (element in lec!!.class_time_json!!) {
-                val classTime = element.asJsonObject
-                val wday = classTime["day"].asInt
-                val start = classTime["start"].asFloat
-                val duration = classTime["len"].asFloat
+        val lec = lectureManager.getSelectedLecture()
+        if (!export && lec != null) {
+            for (classTimeDto in lec.class_time_json) {
+                val wday = classTimeDto.day.toInt()
+                val start = classTimeDto.start
+                val duration = classTimeDto.len
                 startWday = Math.min(startWday, wday)
                 endWday = Math.max(endWday, wday)
                 startTime = Math.min(startTime, start.toInt()) // 버림
                 endTime = Math.max(endTime, (start + duration + 0.5f).toInt()) // 반올림
             }
         }
-        if (PrefManager.instance!!.autoTrim || !export) {
+        if (prefStorage.autoTrim || !export) {
             // 월 : 0 , 화 : 1 , ... 금 : 4, 토 : 5
             startWidth = 0
             numWidth = Math.max(5, endWday + 1)
@@ -189,18 +184,18 @@ class TableView : View {
             startHeight = Math.min(1, startTime)
             numHeight = Math.max(10, endTime - startHeight)
         } else {
-            startWidth = PrefManager.instance!!.trimWidthStart
-            numWidth = PrefManager.instance!!.trimWidthNum
-            startHeight = PrefManager.instance!!.trimHeightStart
-            numHeight = PrefManager.instance!!.trimHeightNum
+            startWidth = prefStorage.trimWidthStart
+            numWidth = prefStorage.trimWidthNum
+            startHeight = prefStorage.trimHeightStart
+            numHeight = prefStorage.trimHeightNum
         }
 
         // FIX: #13. Fatal Exception: java.lang.ArrayIndexOutOfBoundsException
         if (startWidth + numWidth - 1 > wdays.size - 1) {
             startWidth = 0
             numWidth = 5
-            PrefManager.instance!!.trimWidthStart = startWidth
-            PrefManager.instance!!.trimWidthNum = numWidth
+            prefStorage.trimWidthStart = startWidth
+            prefStorage.trimWidthNum = numWidth
         }
         unitHeight = (canvasHeight - topLabelHeight) / (numHeight * 2).toFloat()
         unitWidth = (canvasWidth - leftLabelWidth) / numWidth.toFloat()
@@ -260,7 +255,7 @@ class TableView : View {
             // float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
             // canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
             // canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
-            val padding = dpTopx(5f)
+            val padding = context.dp2px(5f)
             canvas.drawText(
                 str,
                 leftLabelWidth / 2f,
@@ -272,33 +267,33 @@ class TableView : View {
         if (lectures != null) {
             for (i in lectures!!.indices) {
                 val lecture = lectures!![i]
-                if (lecture.colorIndex == 0) drawLecture(
+                if (lecture.colorIndex == 0L) drawLecture(
                     canvas,
                     canvasWidth.toFloat(),
                     canvasHeight.toFloat(),
                     lecture,
-                    lecture.bgColor,
-                    lecture.fgColor
+                    lecture.color.bgColor,
+                    lecture.color.fgColor
                 ) else drawLecture(
                     canvas,
                     canvasWidth.toFloat(),
                     canvasHeight.toFloat(),
                     lecture,
-                    lecture.colorIndex
+                    lecture.colorIndex.toInt()
                 )
             }
         }
         if (!export) {
             // 현재 선택한 강의 그리기
-            val selectedLecture = instance!!.getSelectedLecture()
-            if (selectedLecture != null && !instance!!.alreadyOwned(selectedLecture)) {
+            val selectedLecture = lectureManager.getSelectedLecture()
+            if (selectedLecture != null && !lectureManager.alreadyOwned(selectedLecture)) {
                 drawLecture(
                     canvas,
                     canvasWidth.toFloat(),
                     canvasHeight.toFloat(),
                     selectedLecture,
-                    instance!!.defaultBgColor,
-                    instance!!.defaultFgColor
+                    ColorConst.defaultBgColor,
+                    ColorConst.defaultFgColor
                 )
             }
         }
@@ -316,17 +311,16 @@ class TableView : View {
         canvas: Canvas,
         canvasWidth: Float,
         canvasHeight: Float,
-        lecture: Lecture,
+        lecture: LectureDto,
         bgColor: Int,
         fgColor: Int
     ) {
         // class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
-        for (element in lecture.class_time_json!!) {
-            val classTime = element.asJsonObject
-            val wday = classTime["day"].asInt
-            val startTime = classTime["start"].asFloat
-            val duration = classTime["len"].asFloat
-            val location = classTime["place"].asString
+        for (classTimeDto in lecture.class_time_json) {
+            val wday = classTimeDto.day.toInt()
+            val startTime = classTimeDto.start
+            val duration = classTimeDto.len
+            val location = classTimeDto.place
             drawClass(canvas, canvasWidth, canvasHeight, lecture.course_title, location, wday, startTime, duration, bgColor, fgColor)
         }
     }
@@ -335,18 +329,17 @@ class TableView : View {
         canvas: Canvas,
         canvasWidth: Float,
         canvasHeight: Float,
-        lecture: Lecture,
+        lecture: LectureDto,
         colorIndex: Int
     ) {
         // class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
-        for (element in lecture.class_time_json!!) {
-            val classTime = element.asJsonObject
-            val wday = classTime["day"].asInt
-            val startTime = classTime["start"].asFloat
-            val duration = classTime["len"].asFloat
-            val location = classTime["place"].asString
-            val bgColor = instance!!.getBgColorByIndex(colorIndex)
-            val fgColor = instance!!.getFgColorByIndex(colorIndex)
+        for (classTimeDto in lecture.class_time_json) {
+            val wday = classTimeDto.day
+            val startTime = classTimeDto.start
+            val duration = classTimeDto.len
+            val location = classTimeDto.place
+            val bgColor = lectureManager.getBgColorByIndex(colorIndex)
+            val fgColor = lectureManager.getFgColorByIndex(colorIndex)
             drawClass(canvas, canvasWidth, canvasHeight, lecture.course_title, location, wday, startTime, duration, bgColor, fgColor)
         }
     }
@@ -374,7 +367,7 @@ class TableView : View {
         val right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth
         val top = topLabelHeight + Math.max(0f, startTime - startHeight) * unitHeight * 2
         val bottom = topLabelHeight + (startTime - startHeight) * unitHeight * 2 + unitHeight * duration * 2
-        val borderWidth = dpTopx(3f)
+        val borderWidth = context.dp2px(3f)
         val r = RectF(left, top, right, bottom)
         val p = Paint()
         p.color = bgColor
@@ -476,8 +469,6 @@ class TableView : View {
             tabBarHeight = mContext.resources.getDimensionPixelSize(R.dimen.tab_bar_height)
             return tabBarHeight
         }
-    private val activity: SNUTTBaseActivity
-        private get() = mContext as SNUTTBaseActivity
 
     companion object {
         private const val TAG = "VIEW_TAG_TABLE_VIEW"

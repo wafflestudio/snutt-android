@@ -15,13 +15,13 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.model.ClassTime
+import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
 import java.util.*
 
 /**
  * Created by makesource on 2016. 3. 6..
  */
-class ClassTimeAdapter(private val context: Context, private val times: List<ClassTime>) : BaseAdapter() {
+class ClassTimeAdapter(private val context: Context, private val times: List<ClassTimeDto>) : BaseAdapter() {
     private val places: MutableList<String>
     private var watcher: MyWatcher? = null
     override fun getCount(): Int {
@@ -46,7 +46,7 @@ class ClassTimeAdapter(private val context: Context, private val times: List<Cla
         val classTime = times[position]
         val tv_time = v.findViewById<View>(R.id.class_time) as TextView
         val et_place = v.findViewById<View>(R.id.class_place) as EditText
-        val time = SNUTTUtils.numberToWday(classTime.day) + " " +
+        val time = SNUTTUtils.numberToWday(classTime.day.toInt()) + " " +
             SNUTTUtils.numberToTime(classTime.start) + "~" +
             SNUTTUtils.numberToTime(classTime.start + classTime.len)
         tv_time.text = time
@@ -68,7 +68,7 @@ class ClassTimeAdapter(private val context: Context, private val times: List<Cla
                 `object`.addProperty("day", time.day)
                 `object`.addProperty("start", time.start)
                 `object`.addProperty("len", time.len)
-                `object`.addProperty("_id", time.get_id())
+                `object`.addProperty("_id", time.id)
                 if (!Strings.isNullOrEmpty(places[i])) {
                     `object`.addProperty("place", places[i])
                 } else {

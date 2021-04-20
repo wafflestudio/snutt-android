@@ -13,14 +13,25 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.NotificationAdapter
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.listener.EndlessRecyclerViewScrollListener
 import com.wafflestudio.snutt2.manager.NotiManager
 import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListener
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
+@AndroidEntryPoint
 class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener {
+
+    @Inject
+    lateinit var notiManager: NotiManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+    
     private var scrollListener: EndlessRecyclerViewScrollListener? = null
     private var adapter: NotificationAdapter? = null
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -35,9 +46,9 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         val rootView = inflater.inflate(R.layout.fragment_notification, container, false)
         val recyclerView = rootView.findViewById<View>(R.id.notification_recyclerView) as RecyclerView
         placeholder = rootView.findViewById<View>(R.id.placeholder) as LinearLayout
-        placeholder!!.visibility = if (NotiManager.instance!!.hasNotifications()) View.GONE else View.VISIBLE
+        placeholder!!.visibility = if (notiManager.hasNotifications()) View.GONE else View.VISIBLE
         linearLayoutManager = LinearLayoutManager(context)
-        adapter = NotificationAdapter(NotiManager.instance!!.getNotifications()!!)
+        adapter = NotificationAdapter(notiManager.getNotifications())
         scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager!!) {
             override fun getFooterViewType(defaultNoFooterViewType: Int): Int {
                 return NotificationAdapter.VIEW_TYPE.ProgressBar.value
@@ -54,17 +65,17 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         layout = rootView.findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
-            NotiManager.instance!!.refreshNotification()
+            notiManager.refreshNotification()
                 .bindUi(this,
                     onSuccess = {
                         scrollListener!!.init()
                         layout!!.isRefreshing = false
                         adapter!!.notifyDataSetChanged()
-                        NotiManager.instance!!.fetched = true
-                        placeholder!!.visibility = if (NotiManager.instance!!.hasNotifications()) View.GONE else View.VISIBLE
+                        notiManager.fetched = true
+                        placeholder!!.visibility = if (notiManager.hasNotifications()) View.GONE else View.VISIBLE
                     },
                     onError = {
-                        // do nothing
+                        apiOnError(it)
                     }
                 )
         }
@@ -75,16 +86,16 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume called")
-        if (!NotiManager.instance!!.fetched) {
+        if (!notiManager.fetched) {
             autoFetch(layout, refreshListener)
         }
-        NotiManager.instance!!.addListener(this)
+        notiManager.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause called")
-        NotiManager.instance!!.removeListener(this)
+        notiManager.removeListener(this)
     }
 
     override fun notifyNotificationReceived() {
@@ -100,15 +111,15 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
-        NotiManager.instance!!.addProgressBar()
-        adapter!!.notifyDataSetChanged()
-        NotiManager.instance!!.loadData(totalItemsCount)
+//        Refactoring FIXME: dirty progress
+//        notiManager.addProgressBar()
+        notiManager.loadData(totalItemsCount)
             .bindUi(this,
                 onSuccess = {
                     adapter!!.notifyDataSetChanged()
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }

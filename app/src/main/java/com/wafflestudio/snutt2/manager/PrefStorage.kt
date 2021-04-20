@@ -5,123 +5,132 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import android.util.Log
-import com.google.common.base.Preconditions
-import com.google.gson.Gson
-import com.wafflestudio.snutt2.model.Table
+import com.squareup.moshi.Moshi
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by makesource on 2016. 1. 24..
  */
-class PrefManager private constructor(context: Context) {
-    private val context: Context
-    private val sp: SharedPreferences
+@Singleton
+class PrefStorage @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val sharedPreferences: SharedPreferences,
+    private val moshi: Moshi
+) {
     fun resetPrefValue() {
-        sp.edit().clear().commit()
+        this.sharedPreferences.edit().clear().apply()
         sendWidgetUpdateIntent()
     }
 
-    fun updateNewTable(table: Table) {
-        val json = Gson().toJson(table)
+    fun updateNewTable(table: TableDto) {
         lastViewTableId = table.id
-        currentTable = json
-        currentYear = table.year
-        currentSemester = table.semester
+        currentTable = table
+        currentYear = table.year.toInt()
+        currentSemester = table.semester.toInt()
         sendWidgetUpdateIntent()
-        Log.d(TAG, "update new table : $json")
+        Log.d(TAG, "update new table : $table")
     }
 
     var lastViewTableId: String?
-        get() = sp.getString(PREF_KEY_LAST_VIEW_TABLE_ID, null)
+        get() = this.sharedPreferences.getString(PREF_KEY_LAST_VIEW_TABLE_ID, null)
         set(id) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putString(PREF_KEY_LAST_VIEW_TABLE_ID, id)
             editor.apply()
         }
     var prefKeyXAccessToken: String?
-        get() = sp.getString(PREF_KEY_X_ACCESS_TOKEN, null)
+        get() = this.sharedPreferences.getString(PREF_KEY_X_ACCESS_TOKEN, null)
         set(token) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putString(PREF_KEY_X_ACCESS_TOKEN, token)
             editor.apply()
         }
     var prefKeyUserId: String?
-        get() = sp.getString(PREF_KEY_USER_ID, null)
+        get() = this.sharedPreferences.getString(PREF_KEY_USER_ID, null)
         set(user_id) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putString(PREF_KEY_USER_ID, user_id)
             editor.apply()
         }
     var currentYear: Int
-        get() = sp.getInt(PREF_KEY_CURRENT_YEAR, 0)
+        get() = this.sharedPreferences.getInt(PREF_KEY_CURRENT_YEAR, 0)
         set(year) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_CURRENT_YEAR, year)
             editor.apply()
         }
     var currentSemester: Int
-        get() = sp.getInt(PREF_KEY_CURRENT_SEMESTER, 0)
+        get() = this.sharedPreferences.getInt(PREF_KEY_CURRENT_SEMESTER, 0)
         set(semester) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_CURRENT_SEMESTER, semester)
             editor.apply()
         }
-    var currentTable: String?
-        get() = sp.getString(PREF_KEY_CURRENT_TABLE, null)
+    var currentTable: TableDto?
+        get() {
+            return this.sharedPreferences.getString(PREF_KEY_CURRENT_TABLE, null)?.let {
+                moshi.adapter(TableDto::class.java).fromJson(it)
+            }
+        }
         set(table) {
-            val editor = sp.edit()
-            editor.putString(PREF_KEY_CURRENT_TABLE, table)
+            val editor = this.sharedPreferences.edit()
+            editor.putString(PREF_KEY_CURRENT_TABLE,
+                moshi.adapter(TableDto::class.java).toJson(table)
+            )
             editor.apply()
             sendWidgetUpdateIntent()
         }
     var trimWidthStart: Int
-        get() = sp.getInt(PREF_KEY_TRIM_WIDTH_START, 0)
+        get() = this.sharedPreferences.getInt(PREF_KEY_TRIM_WIDTH_START, 0)
         set(start) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_TRIM_WIDTH_START, start)
             editor.apply()
         }
     var trimWidthNum: Int
-        get() = sp.getInt(PREF_KEY_TRIM_WIDTH_NUM, 7)
+        get() = this.sharedPreferences.getInt(PREF_KEY_TRIM_WIDTH_NUM, 7)
         set(num) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_TRIM_WIDTH_NUM, num)
             editor.apply()
         }
     var trimHeightStart: Int
-        get() = sp.getInt(PREF_KEY_TRIM_HEIGHT_START, 0)
+        get() = this.sharedPreferences.getInt(PREF_KEY_TRIM_HEIGHT_START, 0)
         set(start) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_TRIM_HEIGHT_START, start)
             editor.apply()
         }
     var trimHeightNum: Int
-        get() = sp.getInt(PREF_KEY_TRIM_HEIGHT_NUM, 14)
+        get() = this.sharedPreferences.getInt(PREF_KEY_TRIM_HEIGHT_NUM, 14)
         set(num) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putInt(PREF_KEY_TRIM_HEIGHT_NUM, num)
             editor.apply()
         }
     var autoTrim: Boolean
-        get() = sp.getBoolean(PREF_KEY_AUTO_TRIM, true)
+        get() = this.sharedPreferences.getBoolean(PREF_KEY_AUTO_TRIM, true)
         set(autoTrim) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putBoolean(PREF_KEY_AUTO_TRIM, autoTrim)
             editor.apply()
         }
     var lectureColors: String?
-        get() = sp.getString(PREF_KEY_LECTURE_COLORS, null)
+        get() = this.sharedPreferences.getString(PREF_KEY_LECTURE_COLORS, null)
         set(colors) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putString(PREF_KEY_LECTURE_COLORS, colors)
             editor.apply()
         }
     var lectureColorNames: String?
-        get() = sp.getString(PREF_KEY_LECTURE_COLOR_NAMES, null)
+        get() = this.sharedPreferences.getString(PREF_KEY_LECTURE_COLOR_NAMES, null)
         set(names) {
-            val editor = sp.edit()
+            val editor = this.sharedPreferences.edit()
             editor.putString(PREF_KEY_LECTURE_COLOR_NAMES, names)
             editor.apply()
         }
@@ -138,8 +147,6 @@ class PrefManager private constructor(context: Context) {
 
     companion object {
         private const val TAG = "PrefManager"
-        var instance: PrefManager? = null
-            private set
         private const val PREF_KEY_LAST_VIEW_TABLE_ID = "pref_key_last_view_table_id"
         private const val PREF_KEY_X_ACCESS_TOKEN = "pref_key_x_access_token"
         private const val PREF_KEY_USER_ID = "pref_key_user_id"
@@ -153,15 +160,5 @@ class PrefManager private constructor(context: Context) {
         private const val PREF_KEY_AUTO_TRIM = "pref_key_auto_trim"
         private const val PREF_KEY_LECTURE_COLORS = "pref_key_lecture_colors"
         private const val PREF_KEY_LECTURE_COLOR_NAMES = "pref_key_lecture_color_names"
-        fun getInstance(context: Context): PrefManager? {
-            instance = PrefManager(context)
-            return instance
-        }
-    }
-
-    init {
-        Preconditions.checkNotNull(context)
-        this.context = context
-        sp = PreferenceManager.getDefaultSharedPreferences(context)
     }
 }

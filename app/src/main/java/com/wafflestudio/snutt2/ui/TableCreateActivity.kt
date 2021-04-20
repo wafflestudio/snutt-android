@@ -11,13 +11,23 @@ import android.widget.EditText
 import android.widget.Spinner
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
-import com.wafflestudio.snutt2.manager.TableManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.TableManager
 import com.wafflestudio.snutt2.model.Coursebook
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 3. 1..
  */
+@AndroidEntryPoint
 class TableCreateActivity : SNUTTBaseActivity() {
+    @Inject
+    lateinit var tableManager: TableManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var year = -1
     private var semester = -1
     private var titleText: EditText? = null
@@ -29,7 +39,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
         title = "새로운 시간표"
         semesterSpinner = findViewById<View>(R.id.spinner) as Spinner
         titleText = findViewById<View>(R.id.table_title) as EditText
-        instance!!.getCoursebook()
+        tableManager.getCoursebook()
             .bindUi(this,
                 onSuccess = { coursebooks ->
                     val displays = getDisplayList(coursebooks)
@@ -49,7 +59,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
                     }
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }
@@ -80,7 +90,7 @@ class TableCreateActivity : SNUTTBaseActivity() {
         if (id == R.id.action_create) {
             val title = titleText!!.text.toString()
             // Refactoring FIXME: error handling
-            instance!!.postTable(year.toLong(), semester.toLong(), title)
+            tableManager.postTable(year.toLong(), semester.toLong(), title)
                 .bindUi(this) {
                     finish()
                 }

@@ -16,15 +16,17 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.ClassTime
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.rx.RxBindable
+import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.LectureMainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -36,7 +38,10 @@ import java.util.*
  */
 class CustomLectureAdapter(
     private val activity: Activity,
-    private val lists: ArrayList<LectureItem>
+    private val lists: ArrayList<LectureItem>,
+    private val lectureManager: LectureManager,
+    private val apiOnError: ApiOnError,
+    private val bindable: RxBindable
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
     private var fromTime = 0
@@ -75,7 +80,7 @@ class CustomLectureAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_item_color, parent, false)
-            return ColorViewHolder(view)
+            return ColorViewHolder(view, lectureManager)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
@@ -147,7 +152,7 @@ class CustomLectureAdapter(
 
     private fun addClassItem() {
         val pos = lastClassItemPosition + 1
-        lists.add(pos, LectureItem(ClassTime(0, 0f, 1f, ""), LectureItem.Type.ClassTime, true))
+        lists.add(pos, LectureItem(ClassTimeDto(0, 0f, 1f, ""), LectureItem.Type.ClassTime, true))
     }
 
     private val lastClassItemPosition: Int
@@ -170,19 +175,18 @@ class CustomLectureAdapter(
         alert.setPositiveButton(
             "삭제",
             DialogInterface.OnClickListener { dialog, whichButton ->
-                if (instance!!.currentLecture == null) return@OnClickListener
-                val lectureId = instance!!.currentLecture!!.id
-                // Refactoring FIXME
-                instance!!.removeLecture(lectureId)
+                if (lectureManager.currentLecture == null) return@OnClickListener
+                val lectureId = lectureManager.currentLecture!!.id
+                lectureManager.removeLecture(lectureId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
                             activity.finish()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
-                    )
+                    ).let { bindable.bindDisposable(it) }
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -255,7 +259,7 @@ class CustomLectureAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class ColorViewHolder(view: View, private val lectureManager: LectureManager) : RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
         private val fgColor: View
@@ -265,8 +269,8 @@ class CustomLectureAdapter(
             title.text = "색상"
             layout.setOnClickListener(listener)
             if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(instance!!.getBgColorByIndex(item.colorIndex))
-                fgColor.setBackgroundColor(instance!!.getFgColorByIndex(item.colorIndex))
+                bgColor.setBackgroundColor(lectureManager.getBgColorByIndex(item.colorIndex))
+                fgColor.setBackgroundColor(lectureManager.getFgColorByIndex(item.colorIndex))
             } else {
                 bgColor.setBackgroundColor(item.getColor()!!.bgColor)
                 fgColor.setBackgroundColor(item.getColor()!!.fgColor)
@@ -375,7 +379,7 @@ class CustomLectureAdapter(
     private fun showDialog(item: LectureItem) {
         val alert = AlertDialog.Builder(activity)
         alert.setPositiveButton("확인") { dialog, which -> // item's class time update
-            val t = ClassTime(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
+            val t = ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
             item.classTime = t
             notifyDataSetChanged()
             dialog.dismiss()
@@ -397,10 +401,11 @@ class CustomLectureAdapter(
         dayPicker.setOnValueChangedListener { picker, oldVal, newVal -> day = newVal }
 
         // used integer interval (origin value * 2) to use number picker
+        val maxTimeIndex = 32
         fromTime = (item.classTime!!.start * 2).toInt()
-        val from = SNUTTUtils.getTimeList(0, 27)
+        val from = SNUTTUtils.getTimeList(0, maxTimeIndex - 1)
         fromPicker.minValue = 0
-        fromPicker.maxValue = 27
+        fromPicker.maxValue = maxTimeIndex - 1
         fromPicker.displayedValues = from
         fromPicker.value = fromTime
         fromPicker.wrapSelectorWheel = false
@@ -409,14 +414,14 @@ class CustomLectureAdapter(
             /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues = null
             toPicker.value = fromTime + 1
             toPicker.minValue = fromTime + 1
-            toPicker.maxValue = 28
-            toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)
+            toPicker.maxValue = maxTimeIndex
+            toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, maxTimeIndex)
             /* setValue method does not call listener, so we have to change the value manually */toTime = fromTime + 1
         }
         toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
-        val to = SNUTTUtils.getTimeList(fromTime + 1, 28)
+        val to = SNUTTUtils.getTimeList(fromTime + 1, maxTimeIndex)
         toPicker.minValue = fromTime + 1
-        toPicker.maxValue = 28
+        toPicker.maxValue = maxTimeIndex
         toPicker.displayedValues = to
         toPicker.value = toTime
         toPicker.wrapSelectorWheel = false
@@ -433,41 +438,39 @@ class CustomLectureAdapter(
         alert.show()
     }
 
-    fun updateLecture(lecture: Lecture?): Single<Table> {
+    fun updateLecture(lecture: LectureDto?): Single<TableDto> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.")
-        val current = instance!!.currentLecture
-        val target = Lecture()
-        val ja = JsonArray()
+        val current = lectureManager.currentLecture
+        val target = PutLectureParams()
+        val classTimeList = mutableListOf<ClassTimeDto>()
+
         for (item in lists) {
             if (item.viewType === LectureItem.ViewType.ItemShortHeader || item.viewType === LectureItem.ViewType.ItemLongHeader || item.viewType === LectureItem.ViewType.ItemButton) continue
             val type = item.type
             when (type) {
                 LectureItem.Type.Title -> target.course_title = item.value1
                 LectureItem.Type.Instructor -> target.instructor = item.value1
-                LectureItem.Type.Color ->
-                    if (item.colorIndex > 0) {
-                        target.colorIndex = item.colorIndex
-                    } else {
-                        target.bgColor = item.getColor()!!.bgColor
-                        target.fgColor = item.getColor()!!.fgColor
-                    }
+                LectureItem.Type.Color -> {
+                    target.colorIndex = item.colorIndex.toLong()
+                    target.color = item.getColor()
+                }
                 LectureItem.Type.Credit -> {
                     val value = getIntegerValue(item.value1)
-                    target.credit = value
+                    target.credit = value.toLong()
                 }
                 LectureItem.Type.Remark -> target.remark = item.value1
                 LectureItem.Type.ClassTime -> {
-                    val je = Gson().toJsonTree(item.classTime)
-                    ja.add(je)
+                    item.classTime?.let {
+                        classTimeList.add(it)
+                    }
                 }
                 else -> {
                 }
             }
         }
-        target.class_time_json = ja
-        return instance!!.updateLecture(current!!.id!!, target)
-            .observeOn(AndroidSchedulers.mainThread())
+        target.class_time_json = classTimeList
+        return lectureManager.updateLecture(current!!.id, target)
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -478,10 +481,11 @@ class CustomLectureAdapter(
         }
     }
 
-    fun createLecture(): Single<Table> {
+    fun createLecture(): Single<TableDto> {
         Log.d(TAG, "create lecture called.")
-        val lecture = Lecture()
-        val ja = JsonArray()
+        val lecture = PostCustomLectureParams()
+        val classTimeList = mutableListOf<ClassTimeDto>()
+
         for (i in lists.indices) {
             val item = lists[i]
             val type = item.type
@@ -490,26 +494,26 @@ class CustomLectureAdapter(
                 LectureItem.Type.Instructor -> lecture.instructor = item.value1
                 LectureItem.Type.Color ->
                     if (item.colorIndex > 0) {
-                        lecture.colorIndex = item.colorIndex
+                        lecture.colorIndex = item.colorIndex.toLong()
                     } else {
-                        lecture.bgColor = item.getColor()!!.bgColor
-                        lecture.fgColor = item.getColor()!!.fgColor
+                        lecture.color = item.getColor()
                     }
                 LectureItem.Type.Credit -> {
                     val value = getIntegerValue(item.value1)
-                    lecture.credit = value
+                    lecture.credit = value.toLong()
                 }
                 LectureItem.Type.Remark -> lecture.remark = item.value1
                 LectureItem.Type.ClassTime -> {
-                    val je = Gson().toJsonTree(item.classTime)
-                    ja.add(je)
+                    item.classTime?.let {
+                        classTimeList.add(it)
+                    }
                 }
                 else -> {
                 }
             }
         }
-        lecture.class_time_json = ja
-        return instance!!.createLecture(lecture)
+        lecture.class_time_json = classTimeList
+        return lectureManager.createLecture(lecture)
     }
 
     private interface TextChangedListener {
@@ -543,12 +547,14 @@ class CustomLectureAdapter(
                 }
 
                 override fun onLocationChanged(text: String?, position: Int) {
-                    getItem(position).classTime!!.place = text!!
+                    getItem(position).classTime = getItem(position).classTime?.copy(place = text
+                        ?: "")
                 }
             }
         )
         setOnDeleteClickListener(
             object : DeleteClickListener {
+
                 override fun onDeleteClick(view: View?, position: Int) {
                     showDeleteDialog(position)
                 }

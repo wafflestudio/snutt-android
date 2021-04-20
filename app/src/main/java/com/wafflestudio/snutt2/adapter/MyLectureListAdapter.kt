@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.model.Lecture
-
+import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.SNUTTUtils.dp2px
+import com.wafflestudio.snutt2.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
 /**
  * Created by makesource on 2016. 2. 23..
  */
-class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyLectureListAdapter(private val myLecture: List<LectureDto>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cellLayoutView: View
         val viewHolder: ViewHolder
@@ -43,14 +45,14 @@ class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView
         private val tag: TextView
         private val classTime: TextView
         private val location: TextView
-        fun bindData(lecture: Lecture) {
+        fun bindData(lecture: LectureDto) {
             val titleText = lecture.course_title
             val subTitleText = "(" + lecture.instructor + " / " + java.lang.String.valueOf(
                 lecture.credit
             ) + "학점)"
             title.text = titleText
             subTitle.text = subTitleText
-            val maxWidth = (SNUTTUtils.displayWidth - SNUTTUtils.dpTopx((20 + 20 + 10).toFloat())).toInt()
+            val maxWidth = (itemView.context.displayWidth - itemView.context.dp2px((20 + 20 + 10).toFloat())).toInt()
             var subTitleWidth = Math.min(getTextViewWidth(subTitle), (maxWidth / 2).toFloat()).toInt()
             val titleWidth = Math.min(getTextViewWidth(title), (maxWidth - subTitleWidth).toFloat()).toInt()
             if (titleWidth + subTitleWidth < maxWidth) {
@@ -65,21 +67,21 @@ class MyLectureListAdapter(private val myLecture: List<Lecture>?) : RecyclerView
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             var tagText: String? = ""
-            if (!Strings.isNullOrEmpty(lecture.category)) {
-                tagText += lecture.category + ", "
+            lecture.category?.let {
+                tagText += "$it, "
             }
-            if (!Strings.isNullOrEmpty(lecture.department)) {
-                tagText += lecture.department + ", "
+            lecture.department?.let {
+                tagText += "$it, "
             }
-            if (!Strings.isNullOrEmpty(lecture.academic_year)) {
-                tagText += lecture.academic_year
+            lecture.academic_year?.let {
+                tagText += "$it, "
             }
             if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
             tag.text = tagText
-            var classTimeText = lecture.simplifiedClassTime
+            var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
             if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
             classTime.text = classTimeText
-            var locationText = lecture.simplifiedLocation
+            var locationText =  SNUTTStringUtils.getSimplifiedLocation(lecture)
             if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
             location.text = locationText
         }

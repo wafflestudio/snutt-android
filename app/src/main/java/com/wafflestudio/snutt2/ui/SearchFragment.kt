@@ -12,10 +12,7 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
@@ -29,20 +26,39 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.adapter.LectureListAdapter
 import com.wafflestudio.snutt2.adapter.SuggestionAdapter
 import com.wafflestudio.snutt2.adapter.TagListAdapter
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.listener.EndlessRecyclerViewScrollListener
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
+import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.manager.TagManager
 import com.wafflestudio.snutt2.manager.TagManager.OnTagChangedListener
 import com.wafflestudio.snutt2.model.Tag
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.view.DividerItemDecoration
 import com.wafflestudio.snutt2.view.TableView
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
+@AndroidEntryPoint
 class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChangedListener {
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
+    @Inject
+    lateinit var tagManager: TagManager
+
+    @Inject
+    lateinit var prefStorage: PrefStorage
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var tagRecyclerView: RecyclerView? = null
     private var lectureRecyclerView: RecyclerView? = null
     private var lectureLayoutManager: LinearLayoutManager? = null
@@ -100,14 +116,19 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         lectureRecyclerView = rootView.findViewById<View>(R.id.search_recyclerView) as RecyclerView
         suggestionRecyclerView = rootView.findViewById<View>(R.id.suggestion_recyclerView) as RecyclerView
         tagRecyclerView = rootView.findViewById<View>(R.id.tag_recyclerView) as RecyclerView
-        mInstance = rootView.findViewById<View>(R.id.timetable) as TableView
+
+        mInstance = TableView(requireContext(), false, lectureManager, prefStorage).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+        rootView.findViewById<ScrollView>(R.id.temp_scroll)?.addView(mInstance)
+
         lectureLayoutManager = LinearLayoutManager(context)
-        lectureAdapter = LectureListAdapter(LectureManager.instance!!.getSearchedLectures())
+        lectureAdapter = LectureListAdapter(lectureManager.getSearchedLectures(), lectureManager, apiOnError, this)
         lectureRecyclerView!!.layoutManager = lectureLayoutManager
         lectureRecyclerView!!.itemAnimator = null
         lectureRecyclerView!!.adapter = lectureAdapter
         lectureRecyclerView!!.addItemDecoration(
-            DividerItemDecoration(context!!, R.drawable.search_lecture_divider)
+            DividerItemDecoration(requireContext(), R.drawable.search_lecture_divider)
         )
         lectureRecyclerView!!.addOnScrollListener(
             object : EndlessRecyclerViewScrollListener(lectureLayoutManager!!) {
@@ -121,12 +142,12 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
                 }
             }
         )
-        suggestionAdapter = SuggestionAdapter(TagManager.instance!!.getTags())
+        suggestionAdapter = SuggestionAdapter(tagManager.getTags())
         suggestionAdapter!!.setClickListener(
             object : SuggestionAdapter.ClickListener {
                 override fun onClick(v: View?, tag: Tag?) {
                     Log.d(TAG, "suggestion item clicked!")
-                    TagManager.instance!!.addTag(tag)
+                    tagManager.addTag(tag)
                     tagAdapter!!.notifyItemInserted(0)
                     tagRecyclerView!!.scrollToPosition(0)
                     enableDefaultMode()
@@ -141,9 +162,9 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
             false
         )
         tagRecyclerView!!.layoutManager = horizontalLayoutManager
-        tagAdapter = TagListAdapter(context!!, TagManager.instance!!.getMyTags())
+        tagAdapter = TagListAdapter(requireContext(), tagManager.getMyTags(), tagManager)
         tagRecyclerView!!.adapter = tagAdapter
-        if (TagManager.instance!!.getMyTags().size > 0) {
+        if (tagManager.getMyTags().size > 0) {
             tagRecyclerView!!.visibility = View.VISIBLE
         }
         lectureLayout = rootView.findViewById<View>(R.id.lecture_layout) as LinearLayout
@@ -178,17 +199,17 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         }
     }
 
-    // Refactoring FIXME: ??? ㅋㅋㅋㅋㅋ
     private fun loadNextDataFromApi(page: Int, totalItemsCount: Int) {
-        LectureManager.instance!!.addProgressBar()
-        lectureAdapter!!.notifyDataSetChanged()
-        LectureManager.instance!!.loadData(totalItemsCount)
+//        Refactoring FIXME: dirty progress
+//        lectureManager.addProgressBar()
+        lectureManager.loadData(totalItemsCount)
+            .delay(3000L, TimeUnit.MILLISECONDS)
             .bindUi(this,
                 onSuccess = {
                     lectureAdapter!!.notifyDataSetChanged()
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }
@@ -211,7 +232,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         emptyClass = tagHelper!!.findViewById<View>(R.id.empty_class) as LinearLayout
         emptyClassStatus = tagHelper!!.findViewById<View>(R.id.status) as TextView
         emptyClass!!.setOnClickListener {
-            val b = TagManager.instance!!.toggleSearchEmptyClass()
+            val b = tagManager.toggleSearchEmptyClass()
             emptyClassStatus!!.text = if (b) "ON" else "OFF"
             emptyClassStatus!!.setTextColor(if (b) Color.rgb(0, 0, 0) else Color.argb(76, 0, 0, 0))
         }
@@ -221,7 +242,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         help!!.findViewById<View>(R.id.search_icon).setOnClickListener {
             searchMenuItem!!.expandActionView()
             searchView!!.requestFocus()
-            val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
         }
         help!!.findViewById<View>(R.id.help_text).setOnClickListener {
@@ -238,7 +259,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         emptyPlaceholder!!.findViewById<View>(R.id.search_icon_empty).setOnClickListener {
             searchMenuItem!!.expandActionView()
             searchView!!.requestFocus()
-            val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -253,7 +274,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
     private fun showMainContainer(isKeyboardUp: Boolean) {
         placeholder!!.visibility = View.GONE
         mainContainer!!.visibility = View.VISIBLE
-        if (isDefaultMode && !isKeyboardUp && !isSearching && LectureManager.instance!!.getSearchedLectures().size == 0) {
+        if (isDefaultMode && !isKeyboardUp && !isSearching && lectureManager.getSearchedLectures().size == 0) {
             lectureRecyclerView!!.visibility = View.GONE
             emptyPlaceholder!!.visibility = View.VISIBLE
         } else {
@@ -269,8 +290,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         clearButton = searchView!!.findViewById<View>(R.id.search_close_btn) as ImageView
         clearButton!!.setImageResource(R.drawable.ic_close)
         editText = searchView!!.findViewById<View>(R.id.search_src_text) as SearchAutoComplete
-        //         Refactoring FIXME: error on lint
-//        editText.setThreshold(0);
+        editText!!.setThreshold(0)
         editText!!.setOnEditorActionListener { v, actionId, event -> // to handle empty query
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val text = searchView!!.query.toString()
@@ -290,12 +310,12 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         searchView!!.setOnSuggestionListener(suggestionListener)
         searchView!!.setOnQueryTextListener(queryTextListener)
         searchView!!.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-        val width = displayWidth.toInt()
+        val width = requireContext().displayWidth.toInt()
         searchView!!.maxWidth = width // handle some high density devices and landscape mode
-        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
         if (searchManager != null) {
             searchView!!.setSearchableInfo(
-                searchManager.getSearchableInfo(activity!!.componentName)
+                searchManager.getSearchableInfo(requireActivity().componentName)
             )
         }
         enableDefaultMode()
@@ -322,27 +342,31 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
-        LectureManager.instance!!.removeListener(this)
-        TagManager.instance!!.unregisterListener()
+        lectureManager.removeListener(this)
+        tagManager.unregisterListener()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        LectureManager.instance!!.addListener(this)
-        TagManager.instance!!.registerListener(this)
+        lectureManager.addListener(this)
+        tagManager.registerListener(this)
         showPlaceholder()
     }
 
     override fun notifyLecturesChanged() {
-        mInstance!!.invalidate()
-        lectureAdapter!!.notifyDataSetChanged()
+        requireActivity().runOnUiThread {
+            mInstance!!.invalidate()
+            lectureAdapter!!.notifyDataSetChanged()
+        }
     }
 
     override fun notifySearchedLecturesChanged() {
         Log.d(TAG, "notify Searched Lectures Changed")
-        lectureAdapter!!.notifyDataSetChanged()
-        lectureRecyclerView!!.scrollToPosition(0)
+        requireActivity().runOnUiThread {
+            lectureAdapter!!.notifyDataSetChanged()
+            lectureRecyclerView!!.scrollToPosition(0)
+        }
     }
 
     /**
@@ -351,14 +375,14 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
      */
     override fun notifyMyTagChanged(anim: Boolean) {
         Log.d(TAG, "notifyMyTagChanged called")
-        if (TagManager.instance!!.getMyTags().size == 0 && tagRecyclerView!!.visibility == View.VISIBLE) {
+        if (tagManager.getMyTags().size == 0 && tagRecyclerView!!.visibility == View.VISIBLE) {
             tagRecyclerView!!.visibility = View.GONE
             if (anim) {
                 val animation = AnimationUtils.loadAnimation(app, R.anim.slide_up)
                 tagRecyclerView!!.startAnimation(animation)
             }
             tagAdapter!!.notifyDataSetChanged()
-        } else if (TagManager.instance!!.getMyTags().size > 0 && tagRecyclerView!!.visibility == View.GONE) {
+        } else if (tagManager.getMyTags().size > 0 && tagRecyclerView!!.visibility == View.GONE) {
             tagRecyclerView!!.visibility = View.VISIBLE
             if (anim) {
                 val animation = AnimationUtils.loadAnimation(app, R.anim.slide_down)
@@ -395,7 +419,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
                 searchView!!.clearFocus()
                 false
             } else {
-                if (TagManager.instance!!.addTag(query)) {
+                if (tagManager.addTag(query)) {
                     tagAdapter!!.notifyItemInserted(0)
                     tagRecyclerView!!.scrollToPosition(0)
                 }
@@ -420,14 +444,14 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
 
     private fun postQuery(text: String) {
         isSearching = true
-        LectureManager.instance!!.postSearchQuery(text)
+        lectureManager.postSearchQuery(text)
             .bindUi(this,
                 onSuccess = {
                     isSearching = false
                     showMainContainer(false)
                 },
                 onError = {
-                    // do nothing (??)
+                    apiOnError(it)
                     isSearching = false
                     showMainContainer(false)
                 }

@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.ui.*
 /**
  * Created by makesource on 2016. 1. 16..
  */
-class SectionsPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         // getItem is called to instantiate the fragment for the given page.
         when (position) {
