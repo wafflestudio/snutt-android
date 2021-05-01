@@ -13,11 +13,11 @@
             android:id="@+id/temp_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <!--            FIXME: code 로 넘어감 -->
-            <!--            <com.wafflestudio.snutt2.view.TableView-->
-            <!--                android:id="@+id/timetable"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content" />-->
+
+            <com.wafflestudio.snutt2.view.TableView
+                android:id="@+id/timetable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </ScrollView>
 
         <LinearLayout

@@ -61,7 +61,7 @@ class TimetableWidgetProvider : AppWidgetProvider() {
         if (prefStorage.currentTable != null) {
             val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resultBitmap)
-            val table = TableView(context, false, lectureManager, prefStorage)
+            val table = TableView(context)
             table.drawWidget(canvas, width, height)
             views.setViewVisibility(R.id.placeholder, View.GONE)
             views.setImageViewBitmap(R.id.table, resultBitmap)

@@ -12,7 +12,10 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
@@ -116,11 +119,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         lectureRecyclerView = rootView.findViewById<View>(R.id.search_recyclerView) as RecyclerView
         suggestionRecyclerView = rootView.findViewById<View>(R.id.suggestion_recyclerView) as RecyclerView
         tagRecyclerView = rootView.findViewById<View>(R.id.tag_recyclerView) as RecyclerView
-
-        mInstance = TableView(requireContext(), false, lectureManager, prefStorage).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-        rootView.findViewById<ScrollView>(R.id.temp_scroll)?.addView(mInstance)
+        mInstance = rootView.findViewById(R.id.timetable)
 
         lectureLayoutManager = LinearLayoutManager(context)
         lectureAdapter = LectureListAdapter(lectureManager.getSearchedLectures(), lectureManager, apiOnError, this)

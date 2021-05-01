@@ -1,12 +1,7 @@
 <resources>
-    <string name="terms">/terms_of_service</string>
-    <string name="privacy">/privacy_policy</string>
-    <string name="member">/member</string>
-
-<!--    Should Fix -->
-    <string name="api_server">api_server</string>
-    <string name="api_key">api_key</string>
-    <string name="facebook_app_id">facebook_app_id</string>
+    <string name="terms" translatable="false">terms_of_service</string>
+    <string name="privacy" translatable="false">privacy_policy</string>
+    <string name="member" translatable="false">member</string>
 
     <string name="action_timetable_list">시간표 목록</string>
     <string name="action_settings">설정</string>
@@ -76,4 +71,5 @@
     <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
     <string name="error_unknown">알수없는 에러입니다</string>
+    <string name="action_capture_timetable">시간표 캡쳐</string>
 </resources>

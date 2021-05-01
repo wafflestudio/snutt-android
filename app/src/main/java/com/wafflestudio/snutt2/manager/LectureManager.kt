@@ -165,7 +165,7 @@ class LectureManager @Inject constructor(
         return snuttRestApi.postCustomLecture(token!!, id!!, lecture)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                prefStorage.updateNewTable(result!!)
+                prefStorage.updateNewTable(result)
                 setLectures(result.lectureList)
                 notifyLecturesChanged()
             }
@@ -182,7 +182,7 @@ class LectureManager @Inject constructor(
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 Log.d(TAG, "remove lecture request success!!")
-                prefStorage.updateNewTable(result!!)
+                prefStorage.updateNewTable(result)
                 setLectures(result.lectureList)
                 currentLecture = null
                 notifyLecturesChanged()
@@ -226,7 +226,7 @@ class LectureManager @Inject constructor(
             target)
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                prefStorage.updateNewTable(it!!)
+                prefStorage.updateNewTable(it)
                 setLectures(it.lectureList)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()

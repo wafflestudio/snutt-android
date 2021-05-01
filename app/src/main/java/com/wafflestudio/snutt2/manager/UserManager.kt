@@ -259,8 +259,8 @@ class UserManager @Inject constructor(
         val user_id: String? = prefStorage.prefKeyUserId
         val firebaseToken = FirebaseInstanceId.getInstance().token
         val param = PostForceLogoutParams(
-            userId = user_id!!,
-            registrationId = firebaseToken!!
+            userId = user_id ?: "",
+            registrationId = firebaseToken ?: ""
         )
         return snuttRestApi.postForceLogout(param)
             .subscribeOn(Schedulers.io())
@@ -269,6 +269,9 @@ class UserManager @Inject constructor(
             }
             .doOnError {
                 Log.w(TAG, "post force logout failed..")
+            }
+            .doOnTerminate {
+                performLogout()
             }
     }
 

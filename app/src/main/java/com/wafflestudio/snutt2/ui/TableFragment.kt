@@ -48,10 +48,7 @@ class TableFragment : SNUTTBaseFragment(), OnLectureChangedListener {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_table, container, false)
 
-        mInstance = TableView(requireContext(), false, lectureManager, prefStorage).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-        rootView.findViewById<LinearLayout>(R.id.temp_linear)?.addView(mInstance)
+        mInstance = rootView.findViewById(R.id.timetable)
 
         setHasOptionsMenu(true)
         return rootView

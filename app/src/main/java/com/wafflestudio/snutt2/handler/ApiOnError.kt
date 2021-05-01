@@ -125,23 +125,14 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_wrong_user_token),
                             Toast.LENGTH_SHORT
                         ).show()
-                        val progressDialog = ProgressDialog.show(
-                            context,
-                            "로그아웃",
-                            "잠시만 기다려 주세요",
-                            true,
-                            false
-                        )
                         // Refactoring FIXME: Unbounded
                         userManager.postForceLogout()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(onSuccess = {
                                 userManager.performLogout()
                                 startIntro()
-                                progressDialog?.dismiss()
                             }, onError = {
                                 Toast.makeText(context, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                                progressDialog?.dismiss()
                             })
                     }
                     ErrorCode.NO_ADMIN_PRIVILEGE -> Toast.makeText(

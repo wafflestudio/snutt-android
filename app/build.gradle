@@ -60,7 +60,7 @@ android {
         staging {
             applicationIdSuffix ".staging"
             versionCode 14
-            versionName "2.1.4"
+            versionName "2.1.5"
         }
 
         live {

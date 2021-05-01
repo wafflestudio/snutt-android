@@ -4,14 +4,45 @@
     android:viewportWidth="90"
     android:viewportHeight="90">
   <path
-      android:pathData="M19.5,16.5h51.2907v51.6771h-51.2907z"
-      android:strokeWidth="3"
-      android:fillColor="#00000000"
-      android:strokeColor="#000000"/>
+      android:pathData="M22.5242,18H21V19.5564H18V15H22.5242V18Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M36.0969,15H27.0484V18H36.0969V15Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M49.6696,18H40.6211V15H49.6696V18Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M63.2422,18H54.1938V15H63.2422V18Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M69.2907,18H67.7664V15H72.2907V19.5564H69.2907V18Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M69.2907,33.2257V24.1128H72.2907V33.2257H69.2907Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M69.2907,46.895V37.7821H72.2907V46.895H69.2907Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M27.0484,66.6771H36.0969V69.6771H27.0484V66.6771Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M21,66.6771H22.5242V69.6771H18V65.1206H21V66.6771Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M21,51.4514V60.5642H18V51.4514H21Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M21,37.7821V46.895H18V37.7821H21Z"
+      android:fillColor="#000000"/>
+  <path
+      android:pathData="M21,24.1128V33.2257H18V24.1128H21Z"
+      android:fillColor="#000000"/>
   <path
       android:strokeWidth="1"
       android:pathData="M46.5393,51.3542H36.053V76.4994H78.997V51.3542L68.5107,50.3484L63.5172,46.3252H51.5328L46.5393,51.3542Z"
-      android:fillColor="#ffffff"
+      android:fillColor="#00000000"
       android:strokeColor="#000000"/>
   <path
       android:pathData="M65.0139,63.4243C65.0139,67.6054 61.6513,70.9766 57.5256,70.9766C53.4,70.9766 50.0374,67.6054 50.0374,63.4243C50.0374,59.2433 53.4,55.8721 57.5256,55.8721C61.6513,55.8721 65.0139,59.2433 65.0139,63.4243Z"
