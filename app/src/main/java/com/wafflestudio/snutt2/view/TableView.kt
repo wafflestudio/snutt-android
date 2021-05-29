@@ -81,7 +81,7 @@ class TableView : View {
     private var titleTextPaint: Paint? = null
     private var locationTextPaint: Paint? = null
     private var lectures: List<LectureDto>?
-    private var export // 현재 선택한 강의를 보여줄지 말지?: Boolean
+    private var export: Boolean // 현재 선택한 강의를 보여줄지 말지?
 
     // 시간표 trim 용
     private var numWidth = 0
