@@ -51,13 +51,13 @@ jobs:
         run: ./gradlew clean
       - name: Setup google-services.json
         run: |
-          mkdir ./app/src/staging
+          mkdir -p ./app/src/staging
           cat << EOF > ./app/src/staging/google-services.json
           ${{ secrets.google_services_json }}
           EOF
       - name: Setup secrets.xml
         run: |
-          mkdir ./app/src/staging/res/values
+          mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
           ${{ secrets.secrets_xml }}
           EOF
