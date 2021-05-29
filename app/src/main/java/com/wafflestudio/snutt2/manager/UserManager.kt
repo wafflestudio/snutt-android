@@ -87,7 +87,8 @@ class UserManager private constructor(private val app: SNUTTApplication) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         return app.restService!!.putUserInfo(
             token!!,
-            PutUserInfoParams(email))
+            PutUserInfoParams(email)
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "put user info success")

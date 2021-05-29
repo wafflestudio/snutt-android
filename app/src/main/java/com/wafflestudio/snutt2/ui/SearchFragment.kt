@@ -183,7 +183,8 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         LectureManager.instance!!.addProgressBar()
         lectureAdapter!!.notifyDataSetChanged()
         LectureManager.instance!!.loadData(totalItemsCount)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     lectureAdapter!!.notifyDataSetChanged()
                 },
@@ -421,7 +422,8 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
     private fun postQuery(text: String) {
         isSearching = true
         LectureManager.instance!!.postSearchQuery(text)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     isSearching = false
                     showMainContainer(false)

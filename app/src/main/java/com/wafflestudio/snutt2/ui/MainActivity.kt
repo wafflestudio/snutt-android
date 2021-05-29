@@ -96,7 +96,8 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         val id: String? = PrefManager.instance!!.lastViewTableId
         if (id != null) {
             TableManager.instance!!.getTableById(id)
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         supportActionBar!!.setTitle(it.title)
                     },
@@ -104,12 +105,13 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
                         // invalid token -> 로그인 화면으로
                         // invalid id -> 없어진 테이블
                         // do nothing
-                    })
-
+                    }
+                )
         } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
             TableManager.instance!!.getDefaultTable()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         supportActionBar!!.setTitle(it.title)
                     },
@@ -123,7 +125,8 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
 
         // noti check
         NotiManager.instance!!.getNotificationCount()
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     val count = it.count
                     Log.d(TAG, "notification count : $count")
@@ -133,7 +136,8 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
                 },
                 onError = {
                     // do nothing
-                })
+                }
+            )
 
         toolbar.setOnClickListener {
             val type = MainTab.values()[mViewPager!!.currentItem]
@@ -156,11 +160,13 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         }
         // 서버에서 받아와서 다시 그리기
         TableManager.instance!!.getTableById(id)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = { supportActionBar!!.setTitle(it.title) },
                 onError = {
                     // do nothing
-                })
+                }
+            )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -256,7 +262,8 @@ class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
                 TableManager.instance!!.putTable(id, title)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             supportActionBar!!.setTitle(title)
                             dialog.dismiss()

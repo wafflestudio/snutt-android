@@ -136,7 +136,8 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
         return app.restService!!.postAddLecture(
             token!!,
             id!!,
-            lectureId!!)
+            lectureId!!
+        )
             .subscribeOn(Schedulers.io())
             .map { TempUtil.toLegacyModel(it) }
             .doOnSuccess {
@@ -234,7 +235,8 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             token!!,
             id!!,
             lectureId,
-            TempUtil.toDto(target!!))
+            TempUtil.toDto(target!!)
+        )
             .subscribeOn(Schedulers.io())
             .map { TempUtil.toLegacyModel(it) }
             .doOnSuccess {
@@ -259,7 +261,8 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             year = year,
             semester = semester,
             courseNumber = courseNumber,
-            lectureNumber = lectureNumber)
+            lectureNumber = lectureNumber
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get coursebook official request success!")
@@ -324,7 +327,6 @@ class LectureManager private constructor(private val app: SNUTTApplication) {
             }
             .doOnError {
                 Log.d(TAG, "post search query failed!!")
-
             }
     }
 

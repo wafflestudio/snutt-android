@@ -30,7 +30,8 @@ class TableCreateActivity : SNUTTBaseActivity() {
         semesterSpinner = findViewById<View>(R.id.spinner) as Spinner
         titleText = findViewById<View>(R.id.table_title) as EditText
         instance!!.getCoursebook()
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = { coursebooks ->
                     val displays = getDisplayList(coursebooks)
                     val years = getYearList(coursebooks)

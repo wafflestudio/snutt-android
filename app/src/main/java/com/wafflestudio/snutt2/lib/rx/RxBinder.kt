@@ -64,7 +64,8 @@ interface RxBinder {
             this.subscribeBy(
                 onError = onError,
                 onComplete = onComplete,
-                onNext = onNext)
+                onNext = onNext
+            )
 
         )
     }

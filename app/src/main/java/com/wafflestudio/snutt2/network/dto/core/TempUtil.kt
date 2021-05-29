@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.network.dto.core
 
 import com.wafflestudio.snutt2.model.*
 
-
 object TempUtil {
     fun toLegacyModel(dto: LectureDto): Lecture =
         Lecture()
@@ -50,4 +49,3 @@ object TempUtil {
         updated_at = ""
     )
 }
-

@@ -85,7 +85,8 @@ class LectureDetailFragment : SNUTTBaseFragment() {
                 if (editable) {
                     item.isEnabled = false
                     adapter!!.updateLecture(instance!!.currentLecture)
-                        .bindUi(this,
+                        .bindUi(
+                            this,
                             onSuccess = {
                                 item.title = "편집"
                                 item.isEnabled = true

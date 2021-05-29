@@ -50,7 +50,8 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         return app.restService!!.postTable(
             token!!,
-            PostTableParams(year, semester, title))
+            PostTableParams(year, semester, title)
+        )
             .subscribeOn(Schedulers.io())
             .map { result ->
                 result.map {
@@ -72,7 +73,8 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         return app.restService!!.getTableById(
             token!!,
-            id!!)
+            id!!
+        )
             .map { TempUtil.toLegacyModel(it) }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
@@ -98,7 +100,6 @@ class TableManager private constructor(private val app: SNUTTApplication) {
                 LectureManager.instance!!.clearSearchedLectures()
                 PrefManager.instance!!.updateNewTable(it)
                 TagManager.instance!!.updateNewTag(it.year, it.semester)
-
             }
             .doOnError {
                 Log.d(TAG, "get recent table request failed!")
@@ -126,7 +127,8 @@ class TableManager private constructor(private val app: SNUTTApplication) {
         val token: String? = PrefManager.instance!!.prefKeyXAccessToken
         return app.restService!!.deleteTable(
             token!!,
-            id!!)
+            id!!
+        )
             .map { it.map { TempUtil.toLegacyModel(it) } }
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")

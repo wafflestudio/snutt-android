@@ -97,7 +97,8 @@ class SignUpFragment : SNUTTBaseFragment() {
                         false
                     )
                     instance!!.postLoginFacebook(id, token)
-                        .bindUi(this@SignUpFragment,
+                        .bindUi(
+                            this@SignUpFragment,
                             onSuccess = {
                                 baseActivity!!.startMain()
                                 baseActivity!!.finishAll()

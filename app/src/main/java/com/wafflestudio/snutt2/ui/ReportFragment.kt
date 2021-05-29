@@ -45,7 +45,8 @@ class ReportFragment : SNUTTBaseFragment() {
                 val detail = detailText!!.text.toString()
                 item.isEnabled = false
                 instance!!.postFeedback(email, detail)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             Toast.makeText(app, "전송하였습니다", Toast.LENGTH_SHORT).show()
                             activity!!.finish()

@@ -55,7 +55,8 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
             NotiManager.instance!!.refreshNotification()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         scrollListener!!.init()
                         layout!!.isRefreshing = false
@@ -103,7 +104,8 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         NotiManager.instance!!.addProgressBar()
         adapter!!.notifyDataSetChanged()
         NotiManager.instance!!.loadData(totalItemsCount)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     adapter!!.notifyDataSetChanged()
                 },

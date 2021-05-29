@@ -138,7 +138,8 @@ class SettingsFragment : SNUTTBaseFragment() {
         alert.setPositiveButton("로그아웃") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false)
             instance!!.deleteFirebaseToken()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         instance!!.performLogout()
                         mainActivity!!.startIntro()

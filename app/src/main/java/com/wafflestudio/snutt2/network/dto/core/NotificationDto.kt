@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.network.dto.core
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
 data class NotificationDto(
     @Json(name = "_id") val id: String,

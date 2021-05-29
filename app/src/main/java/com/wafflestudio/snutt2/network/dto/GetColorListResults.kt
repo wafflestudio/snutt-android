@@ -4,7 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.network.dto.core.ColorDto
 
-
 @JsonClass(generateAdapter = true)
 data class GetColorListResults(
     @Json(name = "message") val message: String,

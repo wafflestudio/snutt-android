@@ -498,7 +498,8 @@ class LectureDetailAdapter(
         // FIXME: no scope
         instance!!.getCoursebookUrl(
             lecture!!.course_number!!,
-            lecture.lecture_number!!)
+            lecture.lecture_number!!
+        )
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { result ->
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
@@ -524,7 +525,8 @@ class LectureDetailAdapter(
                         },
                         onError = {
                             // do nothing
-                        })
+                        }
+                    )
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -549,7 +551,8 @@ class LectureDetailAdapter(
                         },
                         onError = {
                             // do nothing
-                        })
+                        }
+                    )
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
