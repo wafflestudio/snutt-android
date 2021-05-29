@@ -9,7 +9,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.text.method.ArrowKeyMovementMethod
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -17,15 +16,16 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.ClassTime
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.rx.RxBindable
+import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.LectureDetailFragment
 import com.wafflestudio.snutt2.ui.LectureMainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -39,14 +39,16 @@ import java.util.*
 class LectureDetailAdapter(
     private val activity: LectureMainActivity,
     private val fragment: LectureDetailFragment,
-    lists: ArrayList<LectureItem>
+    lists: ArrayList<LectureItem>,
+    private val lectureManager: LectureManager,
+    private val apiOnError: ApiOnError,
+    private val bindable: RxBindable
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private val lists: MutableList<LectureItem>
     private var day = 0
     private var fromTime = 0
     private var toTime = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        Log.d(TAG, "On create view holder called.")
         if (viewType == LectureItem.ViewType.ItemShortHeader.value) {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_short_header, parent, false)
@@ -80,7 +82,7 @@ class LectureDetailAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_item_color, parent, false)
-            return ColorViewHolder(view)
+            return ColorViewHolder(view, lectureManager)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
@@ -96,7 +98,6 @@ class LectureDetailAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d(TAG, "On bind view holder called.")
         val viewType = getItemViewType(position)
         val item = getItem(position)
         if (viewType == LectureItem.ViewType.ItemTitle.value) {
@@ -143,7 +144,7 @@ class LectureDetailAdapter(
 
     private fun addClassItem() {
         val pos = lastClassItemPosition + 1
-        lists.add(pos, LectureItem(ClassTime(0, 0f, 1f, ""), LectureItem.Type.ClassTime, true))
+        lists.add(pos, LectureItem(ClassTimeDto(0, 0f, 1f, ""), LectureItem.Type.ClassTime, true))
     }
 
     private val lastClassItemPosition: Int
@@ -151,7 +152,6 @@ class LectureDetailAdapter(
             for (i in 0 until itemCount) {
                 if (isLastClassItem(i)) return i
             }
-            Log.e(TAG, "can't find class time item")
             return -1
         }
 
@@ -171,45 +171,43 @@ class LectureDetailAdapter(
         return lists[position]
     }
 
-    fun updateLecture(lecture: Lecture?): Single<Table> {
+    fun updateLecture(lecture: LectureDto?): Single<TableDto> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        Log.d(TAG, "update lecture called.")
-        val current = instance!!.currentLecture
-        val target = Lecture()
-        val ja = JsonArray()
+        val current = lectureManager.currentLecture
+        val target = PutLectureParams()
+        val classTimeList = mutableListOf<ClassTimeDto>()
+
         for (item in lists) {
             val type = item.type
             when (type) {
                 LectureItem.Type.Title -> target.course_title = item.value1
                 LectureItem.Type.Instructor -> target.instructor = item.value1
-                LectureItem.Type.Color ->
-                    if (item.colorIndex > 0) {
-                        target.colorIndex = item.colorIndex
-                    } else {
-                        target.bgColor = item.getColor()!!.bgColor
-                        target.fgColor = item.getColor()!!.fgColor
-                    }
+                LectureItem.Type.Color -> {
+                    target.colorIndex = item.colorIndex.toLong()
+                    target.color = item.getColor()
+                }
                 LectureItem.Type.Department -> target.department = item.value1
                 LectureItem.Type.AcademicYear -> target.academic_year = item.value1
                 LectureItem.Type.Credit -> {
                     val value = getIntegerValue(item.value1)
-                    target.credit = value
+                    target.credit = value.toLong()
                 }
                 LectureItem.Type.Classification -> target.classification = item.value1
                 LectureItem.Type.Category -> target.category = item.value1
                 LectureItem.Type.CourseNumber, LectureItem.Type.LectureNumber -> {
                 }
                 LectureItem.Type.ClassTime -> {
-                    val je = Gson().toJsonTree(item.classTime)
-                    ja.add(je)
+                    item.classTime?.let {
+                        classTimeList.add(it)
+                    }
                 }
                 LectureItem.Type.Remark -> target.remark = item.value1
                 else -> {
                 }
             }
         }
-        target.class_time_json = ja
-        return instance!!.updateLecture(current!!.id!!, target)
+        target.class_time_json = classTimeList
+        return lectureManager.updateLecture(current!!.id, target)
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -225,7 +223,6 @@ class LectureDetailAdapter(
         private val title: TextView
         private val value: EditText
         fun bindData(item: LectureItem) {
-            Log.d(TAG, item.title1 + " " + item.value1)
             title.text = item.title1
             value.setText(item.value1)
             value.isClickable = item.isEditable
@@ -313,7 +310,7 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class ColorViewHolder(view: View, val lectureManager: LectureManager) : RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
         private val fgColor: View
@@ -323,8 +320,8 @@ class LectureDetailAdapter(
             title.text = "색상"
             layout.setOnClickListener(listener)
             if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(instance!!.getBgColorByIndex(item.colorIndex))
-                fgColor.setBackgroundColor(instance!!.getFgColorByIndex(item.colorIndex))
+                bgColor.setBackgroundColor(lectureManager.getBgColorByIndex(item.colorIndex))
+                fgColor.setBackgroundColor(lectureManager.getFgColorByIndex(item.colorIndex))
             } else {
                 bgColor.setBackgroundColor(item.getColor()!!.bgColor)
                 fgColor.setBackgroundColor(item.getColor()!!.fgColor)
@@ -434,7 +431,7 @@ class LectureDetailAdapter(
     private fun showDialog(item: LectureItem) {
         val alert = AlertDialog.Builder(activity)
         alert.setPositiveButton("확인") { dialog, which -> // item's class time update
-            val t = ClassTime(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
+            val t = ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
             item.classTime = t
             notifyDataSetChanged()
             dialog.dismiss()
@@ -493,10 +490,10 @@ class LectureDetailAdapter(
     }
 
     private fun startSyllabus() {
-        if (instance!!.currentLecture == null) return
-        val lecture = instance!!.currentLecture
+        if (lectureManager.currentLecture == null) return
+        val lecture = lectureManager.currentLecture
         // FIXME: no scope
-        instance!!.getCoursebookUrl(
+        lectureManager.getCoursebookUrl(
             lecture!!.course_number!!,
             lecture.lecture_number!!
         )
@@ -514,19 +511,19 @@ class LectureDetailAdapter(
         alert.setPositiveButton(
             "삭제",
             DialogInterface.OnClickListener { dialog, whichButton ->
-                if (instance!!.currentLecture == null) return@OnClickListener
-                val lectureId = instance!!.currentLecture!!.id
+                if (lectureManager.currentLecture == null) return@OnClickListener
+                val lectureId = lectureManager.currentLecture!!.id
                 // Refactoring FIXME: Unbounded
-                instance!!.removeLecture(lectureId)
+                lectureManager.removeLecture(lectureId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
                             activity.finish()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
-                    )
+                    ).let { bindable.bindDisposable(it) }
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -540,19 +537,19 @@ class LectureDetailAdapter(
         alert.setPositiveButton(
             "초기화",
             DialogInterface.OnClickListener { dialog, whichButton ->
-                if (instance!!.currentLecture == null) return@OnClickListener
-                val lectureId = instance!!.currentLecture!!.id
+                if (lectureManager.currentLecture == null) return@OnClickListener
+                val lectureId = lectureManager.currentLecture!!.id
                 // Refactoring FIXME: Unbounded
-                instance!!.resetLecture(lectureId!!)
+                lectureManager.resetLecture(lectureId!!)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
                             fragment.refreshFragment()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
-                    )
+                    ).let { bindable.bindDisposable(it) }
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -588,7 +585,6 @@ class LectureDetailAdapter(
         setOnTextChangedListener(
             object : TextChangedListener {
                 override fun onText1Changed(text: String, position: Int) {
-                    Log.d(TAG, "position : $position, text : $text")
                     getItem(position).value1 = text
                 }
 
@@ -597,7 +593,10 @@ class LectureDetailAdapter(
                 }
 
                 override fun onLocationChanged(text: String?, position: Int) {
-                    getItem(position).classTime!!.place = text!!
+                    getItem(position).classTime = getItem(position).classTime?.copy(
+                        place = text
+                            ?: ""
+                    )
                 }
             }
         )

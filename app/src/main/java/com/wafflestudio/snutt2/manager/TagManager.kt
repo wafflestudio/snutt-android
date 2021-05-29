@@ -1,32 +1,36 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
-import com.wafflestudio.snutt2.SNUTTApplication
 import com.wafflestudio.snutt2.model.Tag
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.network.SNUTTRestApi
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by makesource on 2016. 2. 23..
  */
-class TagManager private constructor(app: SNUTTApplication) {
+@Singleton
+class TagManager @Inject constructor(
+    private val snuttRestApi: SNUTTRestApi
+) {
     // for search
-    private val tags: MutableList<Tag>
-    private val tagsMap: MutableMap<String, Tag>
-    var searchEmptyClass: Boolean
+    private val tags: MutableList<Tag> = ArrayList()
+    private val tagsMap: MutableMap<String, Tag> = HashMap()
+    var searchEmptyClass: Boolean = false
 
     // for api post
-    private var classification: MutableList<String>
-    private var credit: MutableList<String>
-    private var academic_year: MutableList<String>
-    private var instructor: MutableList<String>
-    private var department: MutableList<String>
-    private var category: MutableList<String>
-    private var time: MutableList<String>
-    private val myTags: MutableList<Tag>
-    private val app: SNUTTApplication
+    private var classification: MutableList<String> = ArrayList()
+    private var credit: MutableList<String> = ArrayList()
+    private var academic_year: MutableList<String> = ArrayList()
+    private var instructor: MutableList<String> = ArrayList()
+    private var department: MutableList<String> = ArrayList()
+    private var category: MutableList<String> = ArrayList()
+    private var time: MutableList<String> = ArrayList()
+    private val myTags: MutableList<Tag> = ArrayList()
 
     interface OnTagChangedListener {
         fun notifyMyTagChanged(anim: Boolean)
@@ -101,7 +105,7 @@ class TagManager private constructor(app: SNUTTApplication) {
     }
 
     fun updateNewTag(year: Int, semester: Int) {
-        app.restService!!.getTagList(year, semester)
+        snuttRestApi.getTagList(year, semester)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
@@ -225,37 +229,5 @@ class TagManager private constructor(app: SNUTTApplication) {
 
     companion object {
         private const val TAG = "TAG_MANAGER"
-        private var singleton: TagManager? = null
-        fun getInstance(app: SNUTTApplication): TagManager? {
-            if (singleton == null) {
-                singleton = TagManager(app)
-            }
-            return singleton
-        }
-
-        @JvmStatic
-        val instance: TagManager?
-            get() {
-                if (singleton == null) Log.e(TAG, "This method should not be called at this time!!")
-                return singleton
-            }
-    }
-
-    /**
-     * TableManager 싱글톤
-     */
-    init {
-        tags = ArrayList()
-        classification = ArrayList()
-        credit = ArrayList()
-        academic_year = ArrayList()
-        instructor = ArrayList()
-        department = ArrayList()
-        category = ArrayList()
-        time = ArrayList()
-        tagsMap = HashMap()
-        myTags = ArrayList()
-        searchEmptyClass = false
-        this.app = app
     }
 }

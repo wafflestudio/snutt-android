@@ -23,15 +23,26 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
-import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.UserManager
 import com.wafflestudio.snutt2.model.SettingsItem
-import com.wafflestudio.snutt2.model.User
+import com.wafflestudio.snutt2.network.dto.core.UserDto
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2017. 1. 24..
  */
+@AndroidEntryPoint
 class AccountFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var lists: MutableList<SettingsItem>? = null
     private var adapter: SettingsAdapter? = null
     private var inflater: LayoutInflater? = null
@@ -62,9 +73,9 @@ class AccountFragment : SNUTTBaseFragment() {
                 }
             }
         )
-        addSettingsList(instance!!.user)
+        addSettingsList(userManager.user)
         adapter!!.notifyDataSetChanged()
-        instance!!.getUserInfo()
+        userManager.getUserInfo()
             .bindUi(
                 this,
                 onSuccess = {
@@ -72,7 +83,7 @@ class AccountFragment : SNUTTBaseFragment() {
                     adapter!!.notifyDataSetChanged()
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }
@@ -91,14 +102,14 @@ class AccountFragment : SNUTTBaseFragment() {
         return rootView
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager!!.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun performChangePassword() {
         val layout = inflater!!.inflate(R.layout.dialog_change_password, null)
-        val alert = AlertDialog.Builder(context!!)
+        val alert = AlertDialog.Builder(requireContext())
         alert.setTitle("비밀번호 변경")
         alert.setView(layout)
         alert.setPositiveButton("변경") { dialog, whichButton ->
@@ -116,7 +127,7 @@ class AccountFragment : SNUTTBaseFragment() {
             if (newPassword != newPasswordConfirm) {
                 Toast.makeText(app, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.putUserPassword(oldPassword, newPassword)
+                userManager.putUserPassword(oldPassword, newPassword)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -128,7 +139,7 @@ class AccountFragment : SNUTTBaseFragment() {
                             dialog.dismiss()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
                     )
             }
@@ -136,9 +147,9 @@ class AccountFragment : SNUTTBaseFragment() {
     }
 
     private fun performChangeEmail() {
-        val inflater = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val layout2 = inflater.inflate(R.layout.dialog_change_email, null)
-        val alert2 = AlertDialog.Builder(context!!)
+        val alert2 = AlertDialog.Builder(requireContext())
         alert2.setTitle("이메일 변경")
         alert2.setView(layout2)
         alert2.setPositiveButton("변경") { dialog, whichButton ->
@@ -151,7 +162,7 @@ class AccountFragment : SNUTTBaseFragment() {
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(email)) {
-                instance!!.putUserInfo(email)
+                userManager.putUserInfo(email)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -159,7 +170,7 @@ class AccountFragment : SNUTTBaseFragment() {
                             adapter!!.notifyDataSetChanged()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
                     )
                 dialog2.dismiss()
@@ -171,7 +182,7 @@ class AccountFragment : SNUTTBaseFragment() {
 
     private fun performAddIdPassword() {
         val layout = inflater!!.inflate(R.layout.dialog_add_id, null)
-        val alert = AlertDialog.Builder(context!!)
+        val alert = AlertDialog.Builder(requireContext())
         alert.setTitle("아이디 비빌번호 추가")
         alert.setView(layout)
         alert.setPositiveButton("추가") { dialog, whichButton ->
@@ -189,7 +200,7 @@ class AccountFragment : SNUTTBaseFragment() {
             if (password != passwordConfirm) {
                 Toast.makeText(app, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
-                instance!!.postUserPassword(id, password)
+                userManager.postUserPassword(id, password)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -198,7 +209,7 @@ class AccountFragment : SNUTTBaseFragment() {
                             dialog.dismiss()
                         },
                         onError = {
-                            // do nothing
+                            apiOnError(it)
                         }
                     )
             }
@@ -206,11 +217,11 @@ class AccountFragment : SNUTTBaseFragment() {
     }
 
     private fun performDeleteFacebook() {
-        val alert = AlertDialog.Builder(context!!)
+        val alert = AlertDialog.Builder(requireContext())
         alert.setTitle("페이스북 연동 끊기")
         alert.setMessage("페이스북 연동을 끊겠습니까?")
         alert.setPositiveButton("끊기") { dialog, whichButton ->
-            instance!!.deleteUserFacebook()
+            userManager.deleteUserFacebook()
                 .bindUi(
                     this,
                     onSuccess = {
@@ -219,7 +230,7 @@ class AccountFragment : SNUTTBaseFragment() {
                         updateDeleteFacebook()
                     },
                     onError = {
-                        // do nothing
+                        apiOnError(it)
                     }
                 )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
@@ -228,19 +239,19 @@ class AccountFragment : SNUTTBaseFragment() {
     }
 
     private fun performLeave() {
-        val alert = AlertDialog.Builder(context!!)
+        val alert = AlertDialog.Builder(requireContext())
         alert.setTitle("회원탈퇴")
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?")
         alert.setPositiveButton("회원탈퇴") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "회원탈퇴", "잠시만 기다려 주세요", true, false)
-            instance!!.deleteFirebaseToken()
+            userManager.deleteFirebaseToken()
                 .flatMap {
-                    instance!!.deleteUserAccount()
+                    userManager.deleteUserAccount()
                 }
                 .bindUi(
                     this,
                     onSuccess = {
-                        instance!!.performLogout()
+                        userManager.performLogout()
                         sNUTTBaseActivity!!.startIntro()
                         sNUTTBaseActivity!!.finishAll()
                         progressDialog.dismiss()
@@ -288,7 +299,7 @@ class AccountFragment : SNUTTBaseFragment() {
         lists!!.add(position, SettingsItem("페이스북 이름", "", SettingsItem.Type.FacebookName))
         adapter!!.notifyItemInserted(position)
         val pos = position
-        instance!!.getUserFacebook()
+        userManager.getUserFacebook()
             .bindUi(
                 this,
                 onSuccess = {
@@ -296,7 +307,7 @@ class AccountFragment : SNUTTBaseFragment() {
                     adapter!!.notifyItemChanged(pos)
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }
@@ -347,14 +358,14 @@ class AccountFragment : SNUTTBaseFragment() {
                     val token = loginResult.accessToken.token
                     Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
                     Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
-                    instance!!.postUserFacebook(id, token)
+                    userManager.postUserFacebook(id, token)
                         .bindUi(
                             this@AccountFragment,
                             onSuccess = {
                                 updateLinkFacebook()
                             },
                             onError = {
-                                // do nothing
+                                apiOnError(it)
                             }
                         )
                 }
@@ -374,16 +385,16 @@ class AccountFragment : SNUTTBaseFragment() {
         )
     }
 
-    private fun addSettingsList(user: User) {
+    private fun addSettingsList(user: UserDto) {
         lists!!.clear()
-        if (Strings.isNullOrEmpty(user.local_id)) {
+        if (Strings.isNullOrEmpty(user.localId)) {
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
-            lists!!.add(SettingsItem("아이디 비밀번호 추가", user.local_id, SettingsItem.Type.AddIdPassword))
+            lists!!.add(SettingsItem("아이디 비밀번호 추가", user.localId, SettingsItem.Type.AddIdPassword))
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
-            if (Strings.isNullOrEmpty(user.fb_name)) { // 연동 x
-                lists!!.add(SettingsItem("페이스북 연동", user.fb_name, SettingsItem.Type.LinkFacebook))
+            if (Strings.isNullOrEmpty(user.fbName)) { // 연동 x
+                lists!!.add(SettingsItem("페이스북 연동", user.fbName, SettingsItem.Type.LinkFacebook))
             } else {
-                lists!!.add(SettingsItem("페이스북 이름", user.fb_name, SettingsItem.Type.FacebookName))
+                lists!!.add(SettingsItem("페이스북 이름", user.fbName, SettingsItem.Type.FacebookName))
                 lists!!.add(SettingsItem("페이스북 연동 취소", SettingsItem.Type.DeleteFacebook))
             }
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
@@ -394,13 +405,13 @@ class AccountFragment : SNUTTBaseFragment() {
             // lists.add(new SettingsItem(SettingsItem.Type.Header));
         } else {
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
-            lists!!.add(SettingsItem("아이디", user.local_id, SettingsItem.Type.Id))
+            lists!!.add(SettingsItem("아이디", user.localId, SettingsItem.Type.Id))
             lists!!.add(SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword))
             lists!!.add(SettingsItem(SettingsItem.Type.Header))
-            if (Strings.isNullOrEmpty(user.fb_name)) { // 연동 x
+            if (Strings.isNullOrEmpty(user.fbName)) { // 연동 x
                 lists!!.add(SettingsItem("페이스북 연동", SettingsItem.Type.LinkFacebook))
             } else {
-                lists!!.add(SettingsItem("페이스북 이름", user.fb_name, SettingsItem.Type.FacebookName))
+                lists!!.add(SettingsItem("페이스북 이름", user.fbName, SettingsItem.Type.FacebookName))
                 lists!!.add(SettingsItem("페이스북 연동 취소", SettingsItem.Type.DeleteFacebook))
             }
             lists!!.add(SettingsItem(SettingsItem.Type.Header))

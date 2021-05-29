@@ -7,13 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.PrefManager
-import com.wafflestudio.snutt2.model.Table
+import com.wafflestudio.snutt2.manager.PrefStorage
+import com.wafflestudio.snutt2.network.dto.core.TableDto
 
 /**
  * Created by makesource on 2016. 1. 20..
  */
-class TableListAdapter(private val tables: List<Table>) : RecyclerView.Adapter<TableListAdapter.ViewHolder?>() {
+class TableListAdapter(private val tables: List<TableDto>, private val prefStorage: PrefStorage) : RecyclerView.Adapter<TableListAdapter.ViewHolder?>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cellLayoutView: View
         val viewHolder: ViewHolder
@@ -54,7 +54,7 @@ class TableListAdapter(private val tables: List<Table>) : RecyclerView.Adapter<T
             TYPE_TABLE_SECTION -> holder.tableSectionName.text = table.title
             TYPE_TABLE_CELL -> {
                 holder.tableName.text = table.title
-                if (PrefManager.instance!!.lastViewTableId.equals(table.id)) {
+                if (prefStorage.lastViewTableId.equals(table.id)) {
                     holder.checked.visibility = View.VISIBLE
                 } else {
                     holder.checked.visibility = View.INVISIBLE

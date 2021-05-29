@@ -9,18 +9,27 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
 import android.widget.RemoteViews
-import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
-import com.wafflestudio.snutt2.manager.PrefManager
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.ui.SplashActivity
 import com.wafflestudio.snutt2.view.TableView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2017. 8. 19..
  */
+@AndroidEntryPoint
 class TimetableWidgetProvider : AppWidgetProvider() {
+    @Inject
+    lateinit var prefStorage: PrefStorage
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
     }
@@ -47,9 +56,9 @@ class TimetableWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         views: RemoteViews
     ) {
-        val width = displayWidth.toInt()
-        val height = displayHeight.toInt()
-        if (!Strings.isNullOrEmpty(PrefManager.instance!!.currentTable)) {
+        val width = context.displayWidth.toInt()
+        val height = context.displayHeight.toInt()
+        if (prefStorage.currentTable != null) {
             val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resultBitmap)
             val table = TableView(context)

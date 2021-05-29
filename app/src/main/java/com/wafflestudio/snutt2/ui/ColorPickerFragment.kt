@@ -10,16 +10,24 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+import com.wafflestudio.snutt2.ColorConst
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.ColorListAdapter
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.Color
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 4. 5..
  */
+@AndroidEntryPoint
 class ColorPickerFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
     private var listView: ListView? = null
 
     // Activity 로 데이터를 전달할 커스텀 리스너
@@ -27,7 +35,7 @@ class ColorPickerFragment : SNUTTBaseFragment() {
 
     // Activity 로 데이터를 전달할 커스텀 리스너의 인터페이스
     interface ColorChangedListener {
-        fun onColorChanged(index: Int, color: Color?)
+        fun onColorChanged(index: Int, color: ColorDto?)
     }
 
     override fun onCreateView(
@@ -36,17 +44,17 @@ class ColorPickerFragment : SNUTTBaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_color_picker, container, false)
-        val colors = instance!!.colorList
-        val names = instance!!.colorNameList
-        val index = arguments!!.getInt("index")
+        val colors = lectureManager.colorList
+        val names = lectureManager.colorNameList
+        val index = requireArguments().getInt("index")
         listView = rootView.findViewById<View>(R.id.listView) as ListView
-        listView!!.adapter = ColorListAdapter(colors!!, names!!, index)
+        listView!!.adapter = ColorListAdapter(colors!!, names!!, lectureManager, index)
         listView!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             if (position == colors.size) {
                 ColorPickerDialogBuilder
                     .with(context)
                     .setTitle("배경색")
-                    .initialColor(instance!!.defaultBgColor)
+                    .initialColor(ColorConst.defaultBgColor)
                     .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                     .density(12)
                     .setOnColorSelectedListener { selectedColor ->
@@ -58,7 +66,7 @@ class ColorPickerFragment : SNUTTBaseFragment() {
                         ColorPickerDialogBuilder
                             .with(context)
                             .setTitle("텍스트색")
-                            .initialColor(instance!!.defaultFgColor)
+                            .initialColor(ColorConst.defaultFgColor)
                             .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                             .density(12)
                             .setOnColorSelectedListener { selectedColor ->
@@ -69,9 +77,9 @@ class ColorPickerFragment : SNUTTBaseFragment() {
                             }
                             .setPositiveButton("ok") { dialog, selectedColor, allColors ->
                                 val fgColor = selectedColor
-                                mCallback!!.onColorChanged(0, Color(bgColor, fgColor))
+                                mCallback!!.onColorChanged(0, ColorDto(bgColor, fgColor))
                                 // LectureManager.getInstance().updateLecture(lecture, bgColor, fgColor);
-                                activity!!.onBackPressed()
+                                requireActivity().onBackPressed()
                             }
                             .setNegativeButton("cancel") { dialog, which -> }
                             .build()
@@ -82,7 +90,7 @@ class ColorPickerFragment : SNUTTBaseFragment() {
                     .show()
             } else {
                 mCallback!!.onColorChanged(position + 1, null)
-                activity!!.onBackPressed()
+                requireActivity().onBackPressed()
             }
         }
         // setDefaultColor();

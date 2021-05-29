@@ -16,12 +16,23 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
-import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.UserManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 3. 26..
  */
+@AndroidEntryPoint
 class SignUpFragment : SNUTTBaseFragment() {
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var idEditText: EditText? = null
     private var passwordEditText: EditText? = null
     private var passwordConfirmEditText: EditText? = null
@@ -50,13 +61,13 @@ class SignUpFragment : SNUTTBaseFragment() {
                 val password = passwordEditText!!.text.toString()
                 val passwordConfirm = passwordConfirmEditText!!.text.toString()
                 val email = emailEditText!!.text.toString()
-                hideSoftKeyboard(view!!)
+                hideSoftKeyboard(requireView())
                 if (password != passwordConfirm) {
                     Toast.makeText(app, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                     return@OnClickListener
                 }
                 val progressDialog = ProgressDialog.show(context, "회원가입", "잠시만 기다려 주세요", true, false)
-                instance!!.postSingUp(id, password, email)
+                userManager.postSingUp(id, password, email)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -66,6 +77,7 @@ class SignUpFragment : SNUTTBaseFragment() {
                         },
                         onError = {
                             progressDialog.dismiss()
+                            apiOnError.invoke(it)
                         }
                     )
             }
@@ -96,7 +108,7 @@ class SignUpFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    instance!!.postLoginFacebook(id, token)
+                    userManager.postLoginFacebook(id, token)
                         .bindUi(
                             this@SignUpFragment,
                             onSuccess = {
@@ -106,6 +118,7 @@ class SignUpFragment : SNUTTBaseFragment() {
                             },
                             onError = {
                                 progressDialog.dismiss()
+                                apiOnError.invoke(it)
                             }
                         )
                 }
@@ -126,13 +139,13 @@ class SignUpFragment : SNUTTBaseFragment() {
         return rootView
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager!!.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setTitle(title: String) {
-        activity!!.title = title
+        requireActivity().title = title
     }
 
     companion object {
