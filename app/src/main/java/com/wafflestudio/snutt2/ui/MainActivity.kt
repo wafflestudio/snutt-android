@@ -47,7 +47,6 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
     @Inject
     lateinit var apiOnError: ApiOnError
 
-
     internal enum class MainTab(val title: String) {
         TIMETABLE("시간표"), SEARCH("검색"), MY_LECTURE("내 강의"), NOTIFICATION("알림"), SETTING("설정");
     }
@@ -97,7 +96,7 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         // TODO : 저장된 정보를 불러와 보여주기, 없으면 empty상태로 띄어준다.
         prefStorage.currentTable?.let {
             supportActionBar?.setTitle(it.title)
-            lectureManager.setLectures(it.lectureList?: emptyList())
+            lectureManager.setLectures(it.lectureList ?: emptyList())
         }
 
         // 4. 서버에서 시간표 정보 얻어오기
@@ -105,7 +104,8 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         val id: String? = prefStorage.lastViewTableId
         if (id != null) {
             tableManager.getTableById(id)
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         supportActionBar?.setTitle(it.title)
                     },
@@ -113,12 +113,13 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
                         // invalid token -> 로그인 화면으로
                         // invalid id -> 없어진 테이블
                         apiOnError(it)
-                    })
-
+                    }
+                )
         } else {
             // 처음 로그인한 경우 -> 서버에서 default값을 요청
             tableManager.getDefaultTable()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         supportActionBar?.setTitle(it.title)
                     },
@@ -132,7 +133,8 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
 
         // noti check
         notiManager.getNotificationCount()
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     val count = it.count
                     Log.d(TAG, "notification count : $count")
@@ -142,7 +144,8 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
                 },
                 onError = {
                     apiOnError(it)
-                })
+                }
+            )
 
         toolbar.setOnClickListener {
             val type = MainTab.values()[mViewPager.currentItem]
@@ -159,11 +162,13 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
 
         // 서버에서 받아와서 다시 그리기
         tableManager.getTableById(id)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = { supportActionBar?.title = it.title },
                 onError = {
                     apiOnError(it)
-                })
+                }
+            )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -259,7 +264,8 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
                 tableManager.putTable(id, title)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             supportActionBar!!.setTitle(title)
                             dialog.dismiss()

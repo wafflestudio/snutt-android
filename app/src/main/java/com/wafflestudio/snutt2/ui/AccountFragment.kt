@@ -76,14 +76,16 @@ class AccountFragment : SNUTTBaseFragment() {
         addSettingsList(userManager.user)
         adapter!!.notifyDataSetChanged()
         userManager.getUserInfo()
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     addSettingsList(it)
                     adapter!!.notifyDataSetChanged()
                 },
                 onError = {
                     apiOnError(it)
-                })
+                }
+            )
     }
 
     override fun onCreateView(
@@ -126,7 +128,8 @@ class AccountFragment : SNUTTBaseFragment() {
                 Toast.makeText(app, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 userManager.putUserPassword(oldPassword, newPassword)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             Toast.makeText(
                                 app,
@@ -137,7 +140,8 @@ class AccountFragment : SNUTTBaseFragment() {
                         },
                         onError = {
                             apiOnError(it)
-                        })
+                        }
+                    )
             }
         }
     }
@@ -159,7 +163,8 @@ class AccountFragment : SNUTTBaseFragment() {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(email)) {
                 userManager.putUserInfo(email)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             emailItem!!.detail = email
                             adapter!!.notifyDataSetChanged()
@@ -196,7 +201,8 @@ class AccountFragment : SNUTTBaseFragment() {
                 Toast.makeText(app, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
                 userManager.postUserPassword(id, password)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = {
                             Toast.makeText(app, "아이디를 추가하였습니다", Toast.LENGTH_SHORT).show()
                             updateNewId(id)
@@ -216,14 +222,17 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setMessage("페이스북 연동을 끊겠습니까?")
         alert.setPositiveButton("끊기") { dialog, whichButton ->
             userManager.deleteUserFacebook()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         Toast.makeText(app, "페이스북 연동이 끊어졌습니다", Toast.LENGTH_SHORT).show()
                         LoginManager.getInstance().logOut()
                         updateDeleteFacebook()
-                    }, onError = {
-                    apiOnError(it)
-                })
+                    },
+                    onError = {
+                        apiOnError(it)
+                    }
+                )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
@@ -239,7 +248,8 @@ class AccountFragment : SNUTTBaseFragment() {
                 .flatMap {
                     userManager.deleteUserAccount()
                 }
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         userManager.performLogout()
                         sNUTTBaseActivity!!.startIntro()
@@ -290,14 +300,16 @@ class AccountFragment : SNUTTBaseFragment() {
         adapter!!.notifyItemInserted(position)
         val pos = position
         userManager.getUserFacebook()
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     facebookNameItem!!.detail = it.name
                     adapter!!.notifyItemChanged(pos)
                 },
                 onError = {
                     apiOnError(it)
-                })
+                }
+            )
     }
 
     private fun updateDeleteFacebook() {
@@ -347,13 +359,15 @@ class AccountFragment : SNUTTBaseFragment() {
                     Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
                     Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
                     userManager.postUserFacebook(id, token)
-                        .bindUi(this@AccountFragment,
+                        .bindUi(
+                            this@AccountFragment,
                             onSuccess = {
                                 updateLinkFacebook()
                             },
                             onError = {
                                 apiOnError(it)
-                            })
+                            }
+                        )
                 }
 
                 override fun onCancel() {

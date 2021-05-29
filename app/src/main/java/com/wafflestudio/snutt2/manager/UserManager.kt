@@ -95,7 +95,8 @@ class UserManager @Inject constructor(
         val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.putUserInfo(
             token!!,
-            PutUserInfoParams(email))
+            PutUserInfoParams(email)
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "put user info success")

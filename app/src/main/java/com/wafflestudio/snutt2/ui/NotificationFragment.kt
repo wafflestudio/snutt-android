@@ -31,7 +31,7 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
 
     @Inject
     lateinit var apiOnError: ApiOnError
-    
+
     private var scrollListener: EndlessRecyclerViewScrollListener? = null
     private var adapter: NotificationAdapter? = null
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -66,7 +66,8 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
             notiManager.refreshNotification()
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         scrollListener!!.init()
                         layout!!.isRefreshing = false
@@ -114,7 +115,8 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
 //        Refactoring FIXME: dirty progress
 //        notiManager.addProgressBar()
         notiManager.loadData(totalItemsCount)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = {
                     adapter!!.notifyDataSetChanged()
                 },

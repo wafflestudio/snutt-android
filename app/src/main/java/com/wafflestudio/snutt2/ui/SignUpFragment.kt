@@ -26,13 +26,13 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class SignUpFragment : SNUTTBaseFragment() {
-    
+
     @Inject
     lateinit var userManager: UserManager
 
     @Inject
     lateinit var apiOnError: ApiOnError
-    
+
     private var idEditText: EditText? = null
     private var passwordEditText: EditText? = null
     private var passwordConfirmEditText: EditText? = null
@@ -109,7 +109,8 @@ class SignUpFragment : SNUTTBaseFragment() {
                         false
                     )
                     userManager.postLoginFacebook(id, token)
-                        .bindUi(this@SignUpFragment,
+                        .bindUi(
+                            this@SignUpFragment,
                             onSuccess = {
                                 baseActivity!!.startMain()
                                 baseActivity!!.finishAll()

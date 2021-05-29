@@ -77,7 +77,8 @@ class CustomDetailFragment : SNUTTBaseFragment() {
                 if (add) {
                     item.isEnabled = false
                     adapter!!.createLecture()
-                        .bindUi(this,
+                        .bindUi(
+                            this,
                             onSuccess = {
                                 lectureMainActivity!!.finish()
                             },
@@ -89,7 +90,8 @@ class CustomDetailFragment : SNUTTBaseFragment() {
                 } else if (editable) {
                     item.isEnabled = false
                     adapter!!.updateLecture(lectureManager.currentLecture)
-                        .bindUi(this,
+                        .bindUi(
+                            this,
                             onSuccess = {
                                 item.title = "편집"
                                 item.isEnabled = true

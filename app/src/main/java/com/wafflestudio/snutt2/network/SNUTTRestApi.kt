@@ -206,5 +206,4 @@ interface SNUTTRestApi {
     fun getNotificationCount(
         @Header("x-access-token") token: String
     ): Single<GetNotificationCountResults>
-
 }

@@ -58,7 +58,8 @@ class SignInFragment : SNUTTBaseFragment() {
             val progressDialog = ProgressDialog.show(context, "로그인", "잠시만 기다려 주세요", true, false)
 
             userManager.postSignIn(id, password)
-                .bindUi(this,
+                .bindUi(
+                    this,
                     onSuccess = {
                         baseActivity!!.startMain()
                         baseActivity!!.finishAll()
@@ -92,7 +93,8 @@ class SignInFragment : SNUTTBaseFragment() {
                         false
                     )
                     userManager.postLoginFacebook(id, token)
-                        .bindUi(this@SignInFragment,
+                        .bindUi(
+                            this@SignInFragment,
                             onSuccess = {
                                 baseActivity!!.startMain()
                                 baseActivity!!.finishAll()

@@ -11,9 +11,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
@@ -22,8 +20,6 @@ import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
 import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.view.TableView
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -127,7 +123,6 @@ class TableFragment : SNUTTBaseFragment(), OnLectureChangedListener {
             val image = File(imagesDir, filename)
             fos = FileOutputStream(image)
         }
-
 
         fos?.use {
             // Finally writing the bitmap to the output stream that we opened

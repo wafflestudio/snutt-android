@@ -59,7 +59,9 @@ class TableView : View {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         inject()
         export = context.obtainStyledAttributes(attrs, R.styleable.TimeTableView).getBoolean(
-            R.styleable.TimeTableView_export, false)
+            R.styleable.TimeTableView_export,
+            false
+        )
         lectures = lectureManager.getLectures()
         init()
     }
@@ -79,15 +81,13 @@ class TableView : View {
     private var titleTextPaint: Paint? = null
     private var locationTextPaint: Paint? = null
     private var lectures: List<LectureDto>?
-    private var export // 현재 선택한 강의를 보여줄지 말지?
-        : Boolean
+    private var export // 현재 선택한 강의를 보여줄지 말지?: Boolean
 
     // 시간표 trim 용
     private var numWidth = 0
     private var startWidth = 0
     private var numHeight = 0
     private var startHeight = 0
-
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         unitHeight = (height - topLabelHeight) / (numHeight * 2).toFloat()
@@ -167,7 +167,7 @@ class TableView : View {
         return true
     }
 
-    //주어진 canvas에 시간표를 그림
+    // 주어진 canvas에 시간표를 그림
     private fun drawTimetable(canvas: Canvas, canvasWidth: Int, canvasHeight: Int, export: Boolean) {
         var startWday: Int
         var endWday: Int
@@ -224,7 +224,7 @@ class TableView : View {
         unitHeight = (canvasHeight - topLabelHeight) / (numHeight * 2).toFloat()
         unitWidth = (canvasWidth - leftLabelWidth) / numWidth.toFloat()
 
-        //가로 줄 28개
+        // 가로 줄 28개
         canvas.drawLine(0f, 0f, canvasWidth.toFloat(), 0f, linePaint!!)
         canvas.drawLine(0f, canvasHeight.toFloat(), canvasWidth.toFloat(), canvasHeight.toFloat(), linePaint!!)
         for (i in 0 until numHeight * 2) {
@@ -235,7 +235,7 @@ class TableView : View {
                 canvas.drawLine(leftLabelWidth / 3f, height, canvasWidth.toFloat(), height, linePaint!!)
             }
         }
-        //세로 줄 그리기
+        // 세로 줄 그리기
         for (i in 0 until numWidth) {
             val width = leftLabelWidth + unitWidth * i
             val textHeight = getTextHeight(wdays[0], topLabelTextPaint)
@@ -244,22 +244,22 @@ class TableView : View {
         }
         canvas.drawLine(0f, 0f, 0f, canvasHeight.toFloat(), linePaint!!)
         canvas.drawLine(canvasWidth.toFloat(), 0f, canvasWidth.toFloat(), canvasHeight.toFloat(), linePaint!!)
-        //교시 텍스트 그리기
+        // 교시 텍스트 그리기
         for (i in 0 until numHeight) {
             val str1: String = (i + startHeight).toString() + "교시"
             val str2 = zeroStr(i + startHeight + 8) + ":00~" + zeroStr(i + startHeight + 9) + ":00"
             val str = (i + startHeight + 8).toString()
-            //float textHeight = getTextHeight(str1, leftLabelTextPaint);
-            //float textHeight2 = getTextHeight(str2, leftLabelTextPaint);
-            //float padding = SNUTTApplication.dpTopx(5);
-            //if (canvasWidth > canvasHeight) padding = 0;
-            //float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
-            //canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
-            //canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
+            // float textHeight = getTextHeight(str1, leftLabelTextPaint);
+            // float textHeight2 = getTextHeight(str2, leftLabelTextPaint);
+            // float padding = SNUTTApplication.dpTopx(5);
+            // if (canvasWidth > canvasHeight) padding = 0;
+            // float height = topLabelHeight + unitHeight * (i * 2 + 1) + (textHeight + textHeight2 + padding) / 2f;
+            // canvas.drawText(str1, leftLabelWidth/2f, height - textHeight2 - padding, leftLabelTextPaint);
+            // canvas.drawText(str2, leftLabelWidth/2f, height, leftLabelTextPaint);
             val padding = context.dp2px(5f)
             canvas.drawText(str, leftLabelWidth / 2f, topLabelHeight + unitHeight * (i * 2) + unitHeight / 2f + padding, leftLabelTextPaint!!)
         }
-        //내 강의 그리기
+        // 내 강의 그리기
         if (lectures != null) {
             for (i in lectures!!.indices) {
                 val lecture = lectures!![i]
@@ -267,7 +267,7 @@ class TableView : View {
             }
         }
         if (!export) {
-            //현재 선택한 강의 그리기
+            // 현재 선택한 강의 그리기
             val selectedLecture = lectureManager.getSelectedLecture()
             if (selectedLecture != null && !lectureManager.alreadyOwned(selectedLecture)) {
                 drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), selectedLecture, ColorConst.defaultBgColor, ColorConst.defaultFgColor)
@@ -284,7 +284,7 @@ class TableView : View {
     }
 
     private fun drawLecture(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, lecture: LectureDto, bgColor: Int, fgColor: Int) {
-        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
+        // class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
         for (classTime in lecture.class_time_json) {
             val wday = classTime.day
             val startTime = classTime.start
@@ -295,7 +295,7 @@ class TableView : View {
     }
 
     private fun drawLecture(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, lecture: LectureDto, colorIndex: Int) {
-        //class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
+        // class_time : 수(6-2) -> {"day":2,"start":6,"len":2,"place":"301-118","_id":"569f967697f670df460ed3d8"}
         for (classTime in lecture.class_time_json) {
             val wday = classTime.day
             val startTime = classTime.start
@@ -307,14 +307,14 @@ class TableView : View {
         }
     }
 
-    //사각형 하나를 그림
+    // 사각형 하나를 그림
     private fun drawClass(canvas: Canvas, canvasWidth: Float, canvasHeight: Float, course_title: String?, location: String, wday: Int, startTime: Float, duration: Float, bgColor: Int, fgColor: Int) {
         val unitHeight = (canvasHeight - topLabelHeight) / (numHeight * 2).toFloat()
         val unitWidth = (canvasWidth - leftLabelWidth) / numWidth.toFloat()
-        if (wday - startWidth < 0) return  // 날자가 잘리는 경우
-        if ((startTime - startHeight) * unitHeight * 2 + unitHeight * duration * 2 < 0) return  // 교시가 잘리는 경우
+        if (wday - startWidth < 0) return // 날자가 잘리는 경우
+        if ((startTime - startHeight) * unitHeight * 2 + unitHeight * duration * 2 < 0) return // 교시가 잘리는 경우
 
-        //startTime : 시작 교시
+        // startTime : 시작 교시
         val left = leftLabelWidth + (wday - startWidth) * unitWidth
         val right = leftLabelWidth + (wday - startWidth) * unitWidth + unitWidth
         val top = topLabelHeight + Math.max(0f, startTime - startHeight) * unitHeight * 2
@@ -330,7 +330,7 @@ class TableView : View {
         s.strokeWidth = 2f
         canvas.drawRect(r, s)
 
-        //강의명, 강의실 기록
+        // 강의명, 강의실 기록
         val padding = 5
         val width = (right - left).toInt() - padding * 2
         val height = (bottom - top).toInt() - padding * 2
@@ -341,7 +341,7 @@ class TableView : View {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         val dm = context.resources.displayMetrics
         val w = dm.widthPixels
         val h = dm.heightPixels
@@ -353,30 +353,30 @@ class TableView : View {
         val width: Int
         val height: Int
 
-        //Measure Width
+        // Measure Width
         width = if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
+            // Must be this size
             widthSize
         } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
+            // Can't be bigger than...
             Math.min(w, widthSize)
         } else {
-            //Be whatever you want
+            // Be whatever you want
             w
         }
 
-        //Measure Height
+        // Measure Height
         height = if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
+            // Must be this size
             heightSize
         } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
+            // Can't be bigger than...
             Math.min(desiredHeight, heightSize)
         } else {
-            //Be whatever you want
+            // Be whatever you want
             desiredHeight
         }
-        //MUST CALL THIS
+        // MUST CALL THIS
         setMeasuredDimension(width, height)
     }
 

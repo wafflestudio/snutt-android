@@ -54,7 +54,8 @@ class TableManager @Inject constructor(
         val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.postTable(
             token!!,
-            PostTableParams(year, semester, title))
+            PostTableParams(year, semester, title)
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "post new table request success!!")
@@ -71,7 +72,8 @@ class TableManager @Inject constructor(
         val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.getTableById(
             token!!,
-            id!!)
+            id!!
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get table by id success")
@@ -95,7 +97,6 @@ class TableManager @Inject constructor(
                 lectureManager.clearSearchedLectures()
                 prefStorage.updateNewTable(it)
                 tagManager.updateNewTag(it.year.toInt(), it.semester.toInt())
-
             }
             .doOnError {
                 Log.d(TAG, "get recent table request failed!")
@@ -123,7 +124,8 @@ class TableManager @Inject constructor(
         val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.deleteTable(
             token!!,
-            id!!)
+            id!!
+        )
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")
                 tables!!.clear()

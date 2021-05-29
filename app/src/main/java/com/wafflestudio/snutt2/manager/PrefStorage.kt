@@ -79,7 +79,8 @@ class PrefStorage @Inject constructor(
         }
         set(table) {
             val editor = this.sharedPreferences.edit()
-            editor.putString(PREF_KEY_CURRENT_TABLE,
+            editor.putString(
+                PREF_KEY_CURRENT_TABLE,
                 moshi.adapter(TableDto::class.java).toJson(table)
             )
             editor.apply()

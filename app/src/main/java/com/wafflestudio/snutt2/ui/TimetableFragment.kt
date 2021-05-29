@@ -14,7 +14,6 @@ import com.wafflestudio.snutt2.SNUTTUtils.numberToWday
 import com.wafflestudio.snutt2.manager.PrefStorage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by makesource on 2017. 1. 24..

@@ -134,7 +134,8 @@ class LectureManager @Inject constructor(
         return snuttRestApi.postAddLecture(
             token!!,
             id!!,
-            lectureId)
+            lectureId
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "post lecture request success!!")
@@ -223,7 +224,8 @@ class LectureManager @Inject constructor(
             token!!,
             id!!,
             lectureId,
-            target)
+            target
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 prefStorage.updateNewTable(it)
@@ -246,7 +248,8 @@ class LectureManager @Inject constructor(
             year = year,
             semester = semester,
             courseNumber = courseNumber,
-            lectureNumber = lectureNumber)
+            lectureNumber = lectureNumber
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get coursebook official request success!")
@@ -313,7 +316,7 @@ class LectureManager @Inject constructor(
     }
 
 //    fun addProgressBar() {
-////        Refactoring FIXME: 더러운 코드
+// //        Refactoring FIXME: 더러운 코드
 //        searchedLectures.add(null)
 //    }
 

@@ -5,7 +5,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.ColorConst
 
-
 @JsonClass(generateAdapter = true)
 data class ColorDto(
     @Json(name = "fg") val fgRaw: String? = null,

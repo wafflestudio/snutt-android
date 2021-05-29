@@ -63,7 +63,8 @@ class TableListActivity : SNUTTBaseActivity() {
                     tableManager.postTable(
                         coursebook.year,
                         coursebook.semester,
-                        "내 시간표")
+                        "내 시간표"
+                    )
                         .bindUi(this@TableListActivity) {
                             mAdapter = getAdapter(it)
                             mListView!!.setAdapter(mAdapter)
@@ -158,7 +159,8 @@ class TableListActivity : SNUTTBaseActivity() {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
                 tableManager.putTable(table.id, title)
-                    .bindUi(this,
+                    .bindUi(
+                        this,
                         onSuccess = { tables ->
                             mAdapter = getAdapter(tables)
                             mListView!!.setAdapter(mAdapter)
@@ -166,11 +168,11 @@ class TableListActivity : SNUTTBaseActivity() {
                                 mListView!!.expandGroup(i)
                             }
                             placeholder!!.visibility = if (tableManager.hasTimetables()) View.GONE else View.VISIBLE
-
                         },
                         onError = {
                             apiOnError(it)
-                        })
+                        }
+                    )
                 dialog.dismiss()
             } else {
                 Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -184,7 +186,8 @@ class TableListActivity : SNUTTBaseActivity() {
             return
         }
         tableManager.deleteTable(table.id)
-            .bindUi(this,
+            .bindUi(
+                this,
                 onSuccess = { tables ->
                     mAdapter = getAdapter(tables)
                     mListView!!.setAdapter(mAdapter)
@@ -192,11 +195,11 @@ class TableListActivity : SNUTTBaseActivity() {
                         mListView!!.expandGroup(i)
                     }
                     placeholder!!.visibility = if (tableManager.hasTimetables()) View.GONE else View.VISIBLE
-
                 },
                 onError = {
                     apiOnError(it)
-                })
+                }
+            )
     }
 
     private fun getAdapter(tables: List<TableDto>): ExpandableTableListAdapter {

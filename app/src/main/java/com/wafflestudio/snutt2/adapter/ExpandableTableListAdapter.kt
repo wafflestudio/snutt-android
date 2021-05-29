@@ -17,10 +17,10 @@ import java.util.*
  * Created by makesource on 2016. 1. 24..
  */
 class ExpandableTableListAdapter(
-        c: TableListActivity?,
-        private val groupList: ArrayList<String>? = null,
-        private val childList: ArrayList<ArrayList<TableDto>>? = null,
-        private val prefStorage: PrefStorage
+    c: TableListActivity?,
+    private val groupList: ArrayList<String>? = null,
+    private val childList: ArrayList<ArrayList<TableDto>>? = null,
+    private val prefStorage: PrefStorage
 ) : BaseExpandableListAdapter() {
     private var viewHolder: ViewHolder? = null
 

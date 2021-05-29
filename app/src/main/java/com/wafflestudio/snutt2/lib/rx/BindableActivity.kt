@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.rx
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 

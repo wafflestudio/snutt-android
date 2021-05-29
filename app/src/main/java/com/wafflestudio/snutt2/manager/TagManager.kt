@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
-import com.wafflestudio.snutt2.SNUTTApplication
 import com.wafflestudio.snutt2.model.Tag
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.network.SNUTTRestApi
@@ -108,46 +107,46 @@ class TagManager @Inject constructor(
     fun updateNewTag(year: Int, semester: Int) {
         snuttRestApi.getTagList(year, semester)
             .subscribeOn(Schedulers.io())
-            .subscribeBy(onSuccess = {
-                Log.d(TAG, "update new tags Success!!")
-                reset()
-                for (name in it.classification) {
-                    val tag = Tag(name, TagType.CLASSIFICATION)
-                    tagsMap[name.toLowerCase()] = tag
-                    tags.add(tag)
-                }
-                for (name in it.credit) {
-                    val tag = Tag(name, TagType.CREDIT)
-                    tagsMap[name.toLowerCase()] = tag
-                    tags.add(tag)
-                }
-                for (name in it.academicYear) {
-                    val tag = Tag(name, TagType.ACADEMIC_YEAR)
-                    tagsMap[name.toLowerCase()] = tag
-                    tags.add(tag)
-                }
-                for (name in it.instructor) {
-                    val tag = Tag(name, TagType.INSTRUCTOR)
-                    tagsMap[name.toLowerCase()] = tag
-                    tags.add(tag)
-                }
-                for (name in it.department) {
-                    val tag = Tag(name, TagType.DEPARTMENT)
-                    tagsMap[name.toLowerCase()] = tag
-                    tags.add(tag)
-                }
-                for (name in it.category) {
-                    val tag = Tag(name.toLowerCase(), TagType.CATEGORY)
-                    tagsMap[name] = tag
-                    tags.add(tag)
-                }
-                notifyMyTagChanged(false)
-                notifyTagListChanged()
-            },
+            .subscribeBy(
+                onSuccess = {
+                    Log.d(TAG, "update new tags Success!!")
+                    reset()
+                    for (name in it.classification) {
+                        val tag = Tag(name, TagType.CLASSIFICATION)
+                        tagsMap[name.toLowerCase()] = tag
+                        tags.add(tag)
+                    }
+                    for (name in it.credit) {
+                        val tag = Tag(name, TagType.CREDIT)
+                        tagsMap[name.toLowerCase()] = tag
+                        tags.add(tag)
+                    }
+                    for (name in it.academicYear) {
+                        val tag = Tag(name, TagType.ACADEMIC_YEAR)
+                        tagsMap[name.toLowerCase()] = tag
+                        tags.add(tag)
+                    }
+                    for (name in it.instructor) {
+                        val tag = Tag(name, TagType.INSTRUCTOR)
+                        tagsMap[name.toLowerCase()] = tag
+                        tags.add(tag)
+                    }
+                    for (name in it.department) {
+                        val tag = Tag(name, TagType.DEPARTMENT)
+                        tagsMap[name.toLowerCase()] = tag
+                        tags.add(tag)
+                    }
+                    for (name in it.category) {
+                        val tag = Tag(name.toLowerCase(), TagType.CATEGORY)
+                        tagsMap[name] = tag
+                        tags.add(tag)
+                    }
+                    notifyMyTagChanged(false)
+                    notifyTagListChanged()
+                },
                 onError = {
 
                     Log.d(TAG, "update new tags failed...")
-
                 }
             )
     }

@@ -26,7 +26,6 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
     @Inject
     lateinit var lectureManager: LectureManager
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityList.add(this)

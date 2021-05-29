@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2
 
 import android.app.Application
-import android.content.Context
 import com.facebook.FacebookSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber

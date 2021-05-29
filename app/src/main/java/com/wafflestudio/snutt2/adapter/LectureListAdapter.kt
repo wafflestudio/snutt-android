@@ -175,7 +175,6 @@ class LectureListAdapter(
             var tagText: String? = ""
             lecture.category?.let {
                 tagText += "$it, "
-
             }
             lecture.department?.let {
                 tagText += "$it, "

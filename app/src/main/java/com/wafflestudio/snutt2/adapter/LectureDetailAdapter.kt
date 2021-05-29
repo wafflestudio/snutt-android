@@ -495,7 +495,8 @@ class LectureDetailAdapter(
         // FIXME: no scope
         lectureManager.getCoursebookUrl(
             lecture!!.course_number!!,
-            lecture.lecture_number!!)
+            lecture.lecture_number!!
+        )
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { result ->
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
@@ -521,7 +522,8 @@ class LectureDetailAdapter(
                         },
                         onError = {
                             apiOnError(it)
-                        }).let { bindable.bindDisposable(it) }
+                        }
+                    ).let { bindable.bindDisposable(it) }
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -546,7 +548,8 @@ class LectureDetailAdapter(
                         },
                         onError = {
                             apiOnError(it)
-                        }).let { bindable.bindDisposable(it) }
+                        }
+                    ).let { bindable.bindDisposable(it) }
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -590,8 +593,10 @@ class LectureDetailAdapter(
                 }
 
                 override fun onLocationChanged(text: String?, position: Int) {
-                    getItem(position).classTime = getItem(position).classTime?.copy(place = text
-                        ?: "")
+                    getItem(position).classTime = getItem(position).classTime?.copy(
+                        place = text
+                            ?: ""
+                    )
                 }
             }
         )

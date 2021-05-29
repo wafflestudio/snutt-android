@@ -71,11 +71,13 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
                                 startSyllabus(lecture.course_number!!, lecture.lecture_number!!)
                             } else {
                                 lectureManager.removeLecture(lecture.id)
-                                    .bindUi(this@MyLectureFragment,
+                                    .bindUi(
+                                        this@MyLectureFragment,
                                         onSuccess = {},
                                         onError = {
                                             apiOnError(it)
-                                        })
+                                        }
+                                    )
                             }
                         }
                     val dialog = builder.create()
@@ -138,14 +140,18 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
     private fun startSyllabus(courseNumber: String, lectureNumber: String) {
         lectureManager.getCoursebookUrl(
             courseNumber,
-            lectureNumber)
-            .bindUi(this, onSuccess = { result ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
-                startActivity(intent)
-            }, onError = {
-                apiOnError(it)
-            })
-
+            lectureNumber
+        )
+            .bindUi(
+                this,
+                onSuccess = { result ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                    startActivity(intent)
+                },
+                onError = {
+                    apiOnError(it)
+                }
+            )
     }
 
     companion object {

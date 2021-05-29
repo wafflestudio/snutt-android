@@ -547,8 +547,10 @@ class CustomLectureAdapter(
                 }
 
                 override fun onLocationChanged(text: String?, position: Int) {
-                    getItem(position).classTime = getItem(position).classTime?.copy(place = text
-                        ?: "")
+                    getItem(position).classTime = getItem(position).classTime?.copy(
+                        place = text
+                            ?: ""
+                    )
                 }
             }
         )

@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.network.dto.core
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
 data class LectureDto(
     @Json(name = "_id") val id: String,
@@ -25,5 +24,4 @@ data class LectureDto(
 
     val isCustom: Boolean
         get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
-
 }

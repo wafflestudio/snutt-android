@@ -14,7 +14,6 @@ import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.LectureDetailAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.LectureItem
@@ -28,13 +27,13 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class LectureDetailFragment : SNUTTBaseFragment() {
-    
+
     @Inject
     lateinit var lectureManager: LectureManager
 
     @Inject
     lateinit var apiOnError: ApiOnError
-    
+
     private var detailView: RecyclerView? = null
     private var lists: ArrayList<LectureItem>? = null
     private var adapter: LectureDetailAdapter? = null
@@ -96,7 +95,8 @@ class LectureDetailFragment : SNUTTBaseFragment() {
                 if (editable) {
                     item.isEnabled = false
                     adapter!!.updateLecture(lectureManager.currentLecture)
-                        .bindUi(this,
+                        .bindUi(
+                            this,
                             onSuccess = {
                                 item.title = "편집"
                                 item.isEnabled = true

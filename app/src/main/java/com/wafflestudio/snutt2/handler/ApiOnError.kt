@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.handler
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -8,7 +7,6 @@ import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.UserManager
 import com.wafflestudio.snutt2.ui.IntroActivity
@@ -128,12 +126,15 @@ class ApiOnError @Inject constructor(
                         // Refactoring FIXME: Unbounded
                         userManager.postForceLogout()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(onSuccess = {
-                                userManager.performLogout()
-                                startIntro()
-                            }, onError = {
-                                Toast.makeText(context, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                            })
+                            .subscribeBy(
+                                onSuccess = {
+                                    userManager.performLogout()
+                                    startIntro()
+                                },
+                                onError = {
+                                    Toast.makeText(context, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            )
                     }
                     ErrorCode.NO_ADMIN_PRIVILEGE -> Toast.makeText(
                         context,
@@ -268,7 +269,6 @@ class ApiOnError @Inject constructor(
                     context.getString(R.string.error_unknown),
                     Toast.LENGTH_SHORT
                 ).show()
-
             }
         }
     }
@@ -285,7 +285,7 @@ class ApiOnError @Inject constructor(
     }
 }
 
-//val asdf = ErrorCode.values().firstOrNull { it.value == value }
+// val asdf = ErrorCode.values().firstOrNull { it.value == value }
 
 private object ErrorCode {
     const val SERVER_FAULT = 0x0000

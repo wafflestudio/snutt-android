@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.SNUTTUtils.dp2px
 import com.wafflestudio.snutt2.network.SNUTTStringUtils
@@ -81,7 +80,7 @@ class MyLectureListAdapter(private val myLecture: List<LectureDto>?) : RecyclerV
             var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
             if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
             classTime.text = classTimeText
-            var locationText =  SNUTTStringUtils.getSimplifiedLocation(lecture)
+            var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
             if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
             location.text = locationText
         }
