@@ -4,14 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import com.wafflestudio.snutt2.lib.rx.BindableActivity
+import com.wafflestudio.snutt2.lib.rx.RxBinder
 import com.wafflestudio.snutt2.ui.*
 import java.util.*
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-open class SNUTTBaseActivity : AppCompatActivity() {
+open class SNUTTBaseActivity : BindableActivity(), RxBinder {
     fun startMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
@@ -81,6 +82,7 @@ open class SNUTTBaseActivity : AppCompatActivity() {
         const val INTENT_KEY_TABLE_ID = "INTENT_KEY_TABLE_ID"
         const val INTENT_KEY_LECTURE_POSITION = "INTENT_KEY_LECTURE_POSITION"
         const val INTENT_KEY_SETTINGS_TYPE = "INTENT_KEY_SETTINGS_TYPE"
+
         @JvmField
         var activityList = ArrayList<Activity>()
     }

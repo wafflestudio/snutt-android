@@ -3,11 +3,9 @@ package com.wafflestudio.snutt2.manager
 import android.util.Log
 import com.wafflestudio.snutt2.SNUTTApplication
 import com.wafflestudio.snutt2.model.Tag
-import com.wafflestudio.snutt2.model.TagList
 import com.wafflestudio.snutt2.model.TagType
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -103,52 +101,50 @@ class TagManager private constructor(app: SNUTTApplication) {
     }
 
     fun updateNewTag(year: Int, semester: Int) {
-        app.restService!!.getTagList(
-            year,
-            semester,
-            object : Callback<TagList> {
-                override fun success(tagList: TagList, response: Response) {
+        app.restService!!.getTagList(year, semester)
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = {
                     Log.d(TAG, "update new tags Success!!")
                     reset()
-                    for (name in tagList.classification!!) {
+                    for (name in it.classification) {
                         val tag = Tag(name, TagType.CLASSIFICATION)
                         tagsMap[name.toLowerCase()] = tag
                         tags.add(tag)
                     }
-                    for (name in tagList.credit!!) {
+                    for (name in it.credit) {
                         val tag = Tag(name, TagType.CREDIT)
                         tagsMap[name.toLowerCase()] = tag
                         tags.add(tag)
                     }
-                    for (name in tagList.academic_year!!) {
+                    for (name in it.academicYear) {
                         val tag = Tag(name, TagType.ACADEMIC_YEAR)
                         tagsMap[name.toLowerCase()] = tag
                         tags.add(tag)
                     }
-                    for (name in tagList.instructor!!) {
+                    for (name in it.instructor) {
                         val tag = Tag(name, TagType.INSTRUCTOR)
                         tagsMap[name.toLowerCase()] = tag
                         tags.add(tag)
                     }
-                    for (name in tagList.department!!) {
+                    for (name in it.department) {
                         val tag = Tag(name, TagType.DEPARTMENT)
                         tagsMap[name.toLowerCase()] = tag
                         tags.add(tag)
                     }
-                    for (name in tagList.category!!) {
+                    for (name in it.category) {
                         val tag = Tag(name.toLowerCase(), TagType.CATEGORY)
                         tagsMap[name] = tag
                         tags.add(tag)
                     }
                     notifyMyTagChanged(false)
                     notifyTagListChanged()
-                }
+                },
+                onError = {
 
-                override fun failure(error: RetrofitError) {
                     Log.d(TAG, "update new tags failed...")
                 }
-            }
-        )
+            )
     }
 
     /* Below method will used when post query */
