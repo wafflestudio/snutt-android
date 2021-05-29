@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.manager.TagManager.Companion.instance
+import com.wafflestudio.snutt2.manager.TagManager
 import com.wafflestudio.snutt2.model.Tag
 
 /**
  * Created by makesource on 2016. 2. 21..
  */
-class TagListAdapter(private val context: Context, private val tags: List<Tag>) : RecyclerView.Adapter<TagListAdapter.ViewHolder>() {
+class TagListAdapter(private val context: Context, private val tags: List<Tag>, private val tagManager: TagManager) : RecyclerView.Adapter<TagListAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cellLayoutView: View
         val viewHolder: ViewHolder
@@ -36,7 +36,7 @@ class TagListAdapter(private val context: Context, private val tags: List<Tag>) 
         holder.setClickListener(
             object : ViewHolder.ClickListener {
                 override fun onClick(v: View?, position: Int) {
-                    instance!!.removeTag(position)
+                    tagManager.removeTag(position)
                     notifyItemRemoved(position)
                 }
             }

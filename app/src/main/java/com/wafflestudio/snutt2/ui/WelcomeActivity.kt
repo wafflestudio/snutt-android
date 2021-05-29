@@ -6,10 +6,12 @@ import androidx.viewpager.widget.ViewPager
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.adapter.IntroAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2016. 3. 18..
  */
+@AndroidEntryPoint
 class WelcomeActivity : SNUTTBaseActivity() {
     private val mViewPager: ViewPager? = null
     private val adapter: IntroAdapter? = null

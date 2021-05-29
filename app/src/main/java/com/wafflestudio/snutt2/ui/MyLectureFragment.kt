@@ -13,19 +13,30 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.MyLectureListAdapter
 import com.wafflestudio.snutt2.adapter.MyLectureListAdapter.LongClickListener
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
-import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.view.DividerItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
+@AndroidEntryPoint
 class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
     private var placeholder: LinearLayout? = null
     private var recyclerView: RecyclerView? = null
     private var mAdapter: MyLectureListAdapter? = null
-    private var lectures: List<Lecture>? = null
+    private var lectures: List<LectureDto>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,7 +46,7 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
         setHasOptionsMenu(true)
         placeholder = rootView.findViewById<View>(R.id.placeholder) as LinearLayout
         recyclerView = rootView.findViewById<View>(R.id.my_lecture_recyclerView) as RecyclerView
-        lectures = instance!!.getLectures()
+        lectures = lectureManager.getLectures()
         mAdapter = MyLectureListAdapter(lectures)
         mAdapter!!.setOnItemClickListener(
             object : MyLectureListAdapter.ClickListener {
@@ -59,12 +70,12 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
                             } else if (items[index] == DIALOG_SYLLABUS) {
                                 startSyllabus(lecture.course_number!!, lecture.lecture_number!!)
                             } else {
-                                instance!!.removeLecture(lecture.id)
+                                lectureManager.removeLecture(lecture.id)
                                     .bindUi(
                                         this@MyLectureFragment,
-                                        {},
-                                        {
-                                            // do nothing
+                                        onSuccess = {},
+                                        onError = {
+                                            apiOnError(it)
                                         }
                                     )
                             }
@@ -75,7 +86,7 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
             }
         )
         recyclerView!!.addItemDecoration(
-            DividerItemDecoration(context!!, R.drawable.lecture_divider)
+            DividerItemDecoration(requireContext(), R.drawable.lecture_divider)
         )
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = mAdapter
@@ -85,8 +96,10 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
 
     override fun notifyLecturesChanged() {
         Log.d(TAG, "notify lecture changed called")
-        mAdapter!!.notifyDataSetChanged()
-        placeholder!!.visibility = if (lectures!!.size == 0) View.VISIBLE else View.GONE
+        requireActivity().runOnUiThread {
+            mAdapter!!.notifyDataSetChanged()
+            placeholder!!.visibility = if (lectures!!.size == 0) View.VISIBLE else View.GONE
+        }
     }
 
     override fun notifySearchedLecturesChanged() {}
@@ -111,12 +124,12 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
 
     override fun onPause() {
         super.onPause()
-        instance!!.removeListener(this)
+        lectureManager.removeListener(this)
     }
 
     override fun onResume() {
         super.onResume()
-        instance!!.addListener(this)
+        lectureManager.addListener(this)
         if (mAdapter != null) {
             // 강의 색상 변경시 fragment 이동 발생!
             mAdapter!!.notifyDataSetChanged()
@@ -125,7 +138,7 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
     }
 
     private fun startSyllabus(courseNumber: String, lectureNumber: String) {
-        instance!!.getCoursebookUrl(
+        lectureManager.getCoursebookUrl(
             courseNumber,
             lectureNumber
         )
@@ -136,7 +149,7 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
                     startActivity(intent)
                 },
                 onError = {
-                    // do nothing
+                    apiOnError(it)
                 }
             )
     }

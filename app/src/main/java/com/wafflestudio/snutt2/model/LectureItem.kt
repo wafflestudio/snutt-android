@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.model
 
+import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.network.dto.core.ColorDto
+
 /**
  * Created by makesource on 2016. 9. 4..
  */
@@ -28,8 +31,8 @@ class LectureItem {
     var title2: String? = null
     var value2: String? = null
     var colorIndex = 0
-    private var color: Color? = null
-    var classTime: ClassTime? = null
+    private var color: ColorDto? = null
+    var classTime: ClassTimeDto? = null
     var type: Type
     var isEditable = false
 
@@ -49,7 +52,7 @@ class LectureItem {
         isEditable = false
     }
 
-    constructor(title1: String?, index: Int, color: Color?, type: Type) {
+    constructor(title1: String?, index: Int, color: ColorDto?, type: Type) {
         this.title1 = title1
         colorIndex = index
         this.color = color
@@ -57,13 +60,13 @@ class LectureItem {
         isEditable = false
     }
 
-    constructor(classTime: ClassTime?, type: Type, editable: Boolean) {
+    constructor(classTime: ClassTimeDto?, type: Type, editable: Boolean) {
         this.classTime = classTime
         this.type = type
         isEditable = editable
     }
 
-    constructor(classTime: ClassTime?, type: Type) {
+    constructor(classTime: ClassTimeDto?, type: Type) {
         this.classTime = classTime
         this.type = type
         isEditable = false
@@ -91,11 +94,11 @@ class LectureItem {
             else -> ViewType.ItemButton
         }
 
-    fun getColor(): Color? {
+    fun getColor(): ColorDto? {
         return color
     }
 
-    fun setColor(color: Color?) {
+    fun setColor(color: ColorDto?) {
         colorIndex = 0
         this.color = color
     }

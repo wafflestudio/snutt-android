@@ -10,15 +10,22 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Verify
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
-import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.Color
+import com.wafflestudio.snutt2.manager.LectureManager
+import com.wafflestudio.snutt2.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.LectureItem
 import com.wafflestudio.snutt2.ui.ColorPickerFragment.ColorChangedListener
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 3. 1..
  */
+@AndroidEntryPoint
 class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChangedListener, ColorChangedListener {
+
+    @Inject
+    lateinit var lectureManager: LectureManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityList.add(this)
@@ -26,11 +33,11 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         supportFragmentManager.addOnBackStackChangedListener(this)
         val position = intent.getIntExtra(INTENT_KEY_LECTURE_POSITION, -1)
         if (position == -1) { // create custom lecture
-            instance!!.currentLecture = null
+            lectureManager.currentLecture = null
             setCustomDetailFragment()
         } else {
-            val lecture = instance!!.getLectures()[position]
-            instance!!.currentLecture = lecture
+            val lecture = lectureManager.getLectures()[position]
+            this.lectureManager.currentLecture = lecture
             if (lecture.isCustom) setCustomDetailFragment() else setMainFragment()
         }
     }
@@ -54,7 +61,7 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.activity_lecture_main, fragment, TAG_FRAGMENT_CUSTOM_DETAIL)
         transaction.commit()
-        val lecture = instance!!.currentLecture
+        val lecture = lectureManager.currentLecture
         if (lecture == null) supportActionBar!!.title = "커스텀 강의 추가" else supportActionBar!!.title = "강의 상세 보기"
     }
 
@@ -81,7 +88,7 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         }
 
     private fun setTitle() {
-        val lecture = instance!!.currentLecture
+        val lecture = lectureManager.currentLecture
         val index = currentFragmentIndex
         when (index) {
             FRAGMENT_LECTURE_DETAIL -> supportActionBar!!.setTitle("강의 상세 보기")
@@ -168,8 +175,8 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         super.onBackPressed()
     }
 
-    override fun onColorChanged(index: Int, color: Color?) {
-        val lecture = instance!!.currentLecture
+    override fun onColorChanged(index: Int, color: ColorDto?) {
+        val lecture = lectureManager.currentLecture
         if (lecture == null || lecture.isCustom) {
             val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL) as CustomDetailFragment?
             fragment!!.setLectureColor(index, color)

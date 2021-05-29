@@ -10,8 +10,8 @@ import com.wafflestudio.snutt2.model.TagType
  * Created by makesource on 2016. 1. 24..
  */
 object SNUTTUtils {
-    @JvmField
-    var context: Context? = null
+    //    @JvmField
+//    var context: Context? = null
     fun wdayToNumber(wday: String): Int {
         if (wday == "월") return 0
         if (wday == "화") return 1
@@ -56,29 +56,28 @@ object SNUTTUtils {
 
     // dp to px
     @JvmStatic
-    fun dpTopx(dp: Float): Float {
-        val resources = context!!.resources
+    fun Context.dp2px(dp: Float): Float {
+        val resources = this.resources
         val metrics = resources.displayMetrics
         return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     // px to dp
-    fun pxTodp(px: Float): Float {
-        val resources = context!!.resources
+    fun Context.px2dp(px: Float): Float {
+        val resources = this.resources
         val metrics = resources.displayMetrics
         return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     // sp to px
-    @JvmStatic
-    fun spTopx(sp: Float): Float {
-        val scaledDensity = context!!.resources.displayMetrics.scaledDensity
+    fun Context.sp2px(sp: Float): Float {
+        val scaledDensity = this.resources.displayMetrics.scaledDensity
         return sp * scaledDensity
     }
 
     // px to sp
-    fun pxTosp(px: Float): Float {
-        val scaledDensity = context!!.resources.displayMetrics.scaledDensity
+    fun Context.px2sp(px: Float): Float {
+        val scaledDensity = this.resources.displayMetrics.scaledDensity
         return px / scaledDensity
     }
 
@@ -90,12 +89,12 @@ object SNUTTUtils {
     }
 
     @JvmStatic
-    val displayWidth: Float
-        get() = context!!.resources.displayMetrics.widthPixels.toFloat()
+    val Context.displayWidth: Float
+        get() = this.resources.displayMetrics.widthPixels.toFloat()
 
     @JvmStatic
-    val displayHeight: Float
-        get() = context!!.resources.displayMetrics.heightPixels.toFloat()
+    val Context.displayHeight: Float
+        get() = this.resources.displayMetrics.heightPixels.toFloat()
 
     fun getTagColor(type: TagType?): Int {
         when (type) {

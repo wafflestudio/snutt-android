@@ -11,11 +11,18 @@ import com.google.firebase.messaging.RemoteMessage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.NotiManager
 import com.wafflestudio.snutt2.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 11. 19..
  */
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var notiManager: NotiManager
+
     /**
      * Called when message is received.
      *
@@ -78,7 +85,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
-        NotiManager.instance!!.notifyNotificationReceived()
+        notiManager.notifyNotificationReceived()
     }
 
     companion object {

@@ -1,163 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="vertical"
-    android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
+        android:layout_height="match_parent"
+        android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar"
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="51dp"
-                android:layout_height="52dp"
-                android:src="@drawable/logo" />
-
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="SNUTT"
-                style="@style/Text.AppTitle"/>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
-            android:orientation="vertical"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp">
-
-            <EditText
-                android:id="@+id/input_id"
+                style="@style/Text.AppTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:paddingBottom="15dp"
-                android:hint="아이디"
-                android:maxLines="1"
-                android:textSize="17sp"
-                android:inputType="text"/>
-
-            <EditText
-                android:id="@+id/input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:paddingBottom="15dp"
-                android:inputType="textPassword"
-                android:hint="비밀번호"
-                android:textSize="17sp"
-                android:maxLines="1"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp" />
+                android:drawableTop="@drawable/logo"
+                android:layout_marginTop="40dp"
+                android:textAlignment="center"
+                android:drawablePadding="15dp"
+                android:text="SNUTT" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/border_gray">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
 
-                <Button
-                    android:id="@+id/button_sign_in"
+                <EditText
+                    android:id="@+id/input_id"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="로그인"
-                    android:textSize="16sp"
-                    android:background="?selectableItemBackground"/>
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#1A000000"/>
-
-                <TextView
-                    android:padding="5dp"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="or"
-                    android:textColor="#1A000000"/>
+                    android:layout_marginBottom="5dp"
+                    android:hint="아이디"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:textSize="17sp" />
+
+                <EditText
+                    android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:hint="비밀번호"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:textSize="17sp" />
 
                 <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#1A000000"/>
-            </LinearLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <LinearLayout
-                android:id="@+id/button_facebook"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:background="?selectableItemBackground">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:background="@drawable/border_blue">
+                    android:layout_height="45dp"
+                    android:background="@drawable/border_gray">
 
-                <ImageView
-                    android:layout_width="9.5dp"
-                    android:layout_height="18dp"
-                    android:layout_marginRight="7dp"
-                    android:src="@drawable/iconfacebook"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="#3c5dd4"
-                    android:text="페이스북으로 시작하기" />
+                    <Button
+                        android:id="@+id/button_sign_in"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?selectableItemBackground"
+                        android:text="로그인"
+                        android:textSize="16sp" />
                 </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="#1A000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="or"
+                        android:textColor="#1A000000" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="#1A000000" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:id="@+id/button_facebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="?selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_blue"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="9.5dp"
+                            android:layout_height="18dp"
+                            android:layout_marginRight="7dp"
+                            android:src="@drawable/iconfacebook" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="페이스북으로 시작하기"
+                            android:textColor="#3c5dd4"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8" />
+    </ScrollView>
+</FrameLayout>
 
-    </LinearLayout>
-
-</ScrollView>

@@ -5,10 +5,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserDto(
-    @Json(name = "isAdmin") val isAdmin: Boolean,
-    @Json(name = "regDate") val regDate: String,
-    @Json(name = "notificationCheckedAt") val notificationCheckedAt: String,
-    @Json(name = "email") val email: String,
-    @Json(name = "local_id") val localId: String,
-    @Json(name = "fb_name") val fbName: String
+    @Json(name = "isAdmin") val isAdmin: Boolean = false,
+    @Json(name = "regDate") val regDate: String? = null,
+    @Json(name = "notificationCheckedAt") val notificationCheckedAt: String? = null,
+    @Json(name = "email") val email: String? = null,
+    @Json(name = "local_id") val localId: String? = null,
+    @Json(name = "fb_name") val fbName: String? = null
 )

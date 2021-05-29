@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.ui.SignUpFragment
 /**
  * Created by makesource on 2016. 3. 26..
  */
-class IntroAdapter(fm: FragmentManager?) : FragmentStatePagerAdapter(fm) {
+class IntroAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
     /**
      * Return the Fragment associated with a specified position.
      *

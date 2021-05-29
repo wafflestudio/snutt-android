@@ -50,9 +50,16 @@ jobs:
       - name: Clean build
         run: ./gradlew clean
       - name: Setup google-services.json
-        run:  |
-          cat << EOF > ./app/google-services.json
+        run: |
+          mkdir -p ./app/src/staging
+          cat << EOF > ./app/src/staging/google-services.json
           ${{ secrets.google_services_json }}
+          EOF
+      - name: Setup secrets.xml
+        run: |
+          mkdir -p ./app/src/staging/res/values
+          cat << EOF > ./app/src/staging/res/values/secrets.xml
+          ${{ secrets.secrets_xml }}
           EOF
       - name: Build debug APK
         run: ./gradlew assembleStagingDebug --stacktrace

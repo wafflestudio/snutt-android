@@ -10,7 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.model.Notification
+import com.wafflestudio.snutt2.network.dto.core.NotificationDto
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -19,7 +19,7 @@ import java.util.*
 /**
  * Created by makesource on 2017. 2. 27..
  */
-class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotificationAdapter(private val lists: List<NotificationDto?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class VIEW_TYPE(val value: Int) {
         Notification(0), ProgressBar(1);
     }
@@ -39,11 +39,11 @@ class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemType = getItemViewType(position)
         if (itemType == VIEW_TYPE.Notification.value) {
-            (holder as NotificationViewHolder).bindData(getItem(position))
+            (holder as NotificationViewHolder).bindData(getItem(position)!!)
         }
     }
 
-    fun getItem(position: Int): Notification {
+    fun getItem(position: Int): NotificationDto? {
         return lists[position]
     }
 
@@ -61,7 +61,7 @@ class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.
     class NotificationViewHolder constructor(view: View) : RecyclerView.ViewHolder(view) {
         private val message: TextView
         private val image: ImageView
-        fun bindData(notification: Notification) {
+        fun bindData(notification: NotificationDto) {
             // Log.d(TAG, "notification message : " + notification.getMessage());
             var text = notification.message
             when (notification.type) {
@@ -74,7 +74,7 @@ class NotificationAdapter(private val lists: List<Notification>) : RecyclerView.
             try {
                 val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 format.timeZone = TimeZone.getTimeZone("UTC")
-                val date1 = format.parse(notification.created_at)
+                val date1 = format.parse(notification.createdAt)
                 val date2 = Date()
                 val diff = date2.time - date1.time
                 val hours = diff / (1000 * 60 * 60)

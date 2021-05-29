@@ -8,10 +8,12 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Verify
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2016. 11. 20..
  */
+@AndroidEntryPoint
 class SettingsMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChangedListener {
     private val currentFragmentIndex: Int
         private get() {

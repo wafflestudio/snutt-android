@@ -1,4 +1,5 @@
 #Build Setting
+#Build Setting
 /app/src/live/
 /app/src/staging/
 
@@ -58,7 +59,7 @@ captures/
 *.keystore
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+google-services.json
 
 # Android Patch
 gen-external-apklibs

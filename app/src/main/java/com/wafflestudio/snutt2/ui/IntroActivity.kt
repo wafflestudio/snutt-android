@@ -8,11 +8,14 @@ import com.viewpagerindicator.CirclePageIndicator
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.adapter.IntroPagerAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by makesource on 2017. 6. 22..
  */
+@AndroidEntryPoint
 class IntroActivity : SNUTTBaseActivity() {
+
     private var mIntroPagerAdapter: IntroPagerAdapter? = null
     private var mViewPager: ViewPager? = null
     private var mIndicator: CirclePageIndicator? = null
