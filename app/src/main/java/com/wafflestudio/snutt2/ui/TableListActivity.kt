@@ -21,9 +21,6 @@ import com.wafflestudio.snutt2.manager.PrefManager
 import com.wafflestudio.snutt2.manager.TableManager.Companion.instance
 import com.wafflestudio.snutt2.model.Coursebook
 import com.wafflestudio.snutt2.model.Table
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.util.*
 
 /**
@@ -47,22 +44,19 @@ class TableListActivity : SNUTTBaseActivity() {
             OnChildClickListener { parent, v, groupPosition, childPosition, id ->
                 if (mChildList!![groupPosition].isEmpty()) {
                     val coursebook = coursebookList!![groupPosition]
+                    // Refactoring FIXME: error handling
                     instance!!.postTable(
                         coursebook.year,
                         coursebook.semester,
-                        "내 시간표",
-                        object : Callback<List<Table>> {
-                            override fun success(tables: List<Table>, response: Response) {
-                                mAdapter = getAdapter(tables)
-                                mListView!!.setAdapter(mAdapter)
-                                for (i in mGroupList!!.indices) {
-                                    mListView!!.expandGroup(i)
-                                }
-                            }
-
-                            override fun failure(error: RetrofitError) {}
-                        }
+                        "내 시간표"
                     )
+                        .bindUi(this@TableListActivity) {
+                            mAdapter = getAdapter(it)
+                            mListView!!.setAdapter(mAdapter)
+                            for (i in mGroupList!!.indices) {
+                                mListView!!.expandGroup(i)
+                            }
+                        }
                     return@OnChildClickListener true
                 }
                 val tableId = mChildList!![groupPosition][childPosition].id
@@ -98,31 +92,22 @@ class TableListActivity : SNUTTBaseActivity() {
         tableList
     }
 
+    // Refactoring FIXME: error handle
     private val tableList: Unit
-        private get() {
-            instance!!.getCoursebook(
-                object : Callback<List<Coursebook>> {
-                    override fun success(coursebooks: List<Coursebook>?, response: Response) {
-                        coursebookList = coursebooks
-                        instance!!.getTableList(
-                            object : Callback<List<Table>> {
-                                override fun success(tables: List<Table>, response: Response) {
-                                    mAdapter = getAdapter(tables)
-                                    mListView!!.setAdapter(mAdapter)
-                                    for (i in mGroupList!!.indices) {
-                                        mListView!!.expandGroup(i)
-                                    }
-                                    placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
-                                }
-
-                                override fun failure(error: RetrofitError) {}
+        get() {
+            instance!!.getCoursebook()
+                .bindUi(this) {
+                    coursebookList = it
+                    instance!!.getTableList()
+                        .bindUi(this@TableListActivity) {
+                            mAdapter = getAdapter(it)
+                            mListView!!.setAdapter(mAdapter)
+                            for (i in mGroupList!!.indices) {
+                                mListView!!.expandGroup(i)
                             }
-                        )
-                    }
-
-                    override fun failure(error: RetrofitError) {}
+                            placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                        }
                 }
-            )
         }
 
     private fun getFullSemester(year: Int, semester: Int): String {
@@ -158,25 +143,21 @@ class TableListActivity : SNUTTBaseActivity() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val title = (layout.findViewById<View>(R.id.title) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(title)) {
-                instance!!.putTable(
-                    table.id,
-                    title,
-                    object : Callback<List<Table>> {
-                        override fun success(
-                            tables: List<Table>,
-                            response: Response
-                        ) {
+                instance!!.putTable(table.id, title)
+                    .bindUi(
+                        this,
+                        onSuccess = { tables ->
                             mAdapter = getAdapter(tables)
                             mListView!!.setAdapter(mAdapter)
                             for (i in mGroupList!!.indices) {
                                 mListView!!.expandGroup(i)
                             }
                             placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
                 dialog.dismiss()
             } else {
                 Toast.makeText(app, "시간표 제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -189,28 +170,28 @@ class TableListActivity : SNUTTBaseActivity() {
             Toast.makeText(app, "현재 보고있는 테이블은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show()
             return
         }
-        instance!!.deleteTable(
-            table.id,
-            object : Callback<List<Table>> {
-                override fun success(tables: List<Table>, response: Response) {
+        instance!!.deleteTable(table.id)
+            .bindUi(
+                this,
+                onSuccess = { tables ->
                     mAdapter = getAdapter(tables)
                     mListView!!.setAdapter(mAdapter)
                     for (i in mGroupList!!.indices) {
                         mListView!!.expandGroup(i)
                     }
                     placeholder!!.visibility = if (instance!!.hasTimetables()) View.GONE else View.VISIBLE
+                },
+                onError = {
+                    // do nothing
                 }
-
-                override fun failure(error: RetrofitError) {}
-            }
-        )
+            )
     }
 
     private fun getAdapter(tables: List<Table>): ExpandableTableListAdapter {
         mGroupList = ArrayList()
         mChildList = ArrayList()
         for (coursebook in coursebookList!!) {
-            mGroupList!!.add(getFullSemester(coursebook.year, coursebook.semester))
+            mGroupList!!.add(getFullSemester(coursebook.year.toInt(), coursebook.semester.toInt()))
             mChildList!!.add(ArrayList())
         }
         var index = 0

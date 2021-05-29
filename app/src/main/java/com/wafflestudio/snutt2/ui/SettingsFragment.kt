@@ -17,9 +17,6 @@ import com.wafflestudio.snutt2.adapter.SettingsAdapter
 import com.wafflestudio.snutt2.manager.UserManager.Companion.instance
 import com.wafflestudio.snutt2.model.SettingsItem
 import de.psdev.licensesdialog.LicensesDialog
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.util.*
 
 /**
@@ -140,21 +137,20 @@ class SettingsFragment : SNUTTBaseFragment() {
         alert.setMessage("로그아웃 하시겠습니까?")
         alert.setPositiveButton("로그아웃") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false)
-            instance!!.deleteFirebaseToken(
-                object : Callback<Any> {
-                    override fun success(o: Any?, response: Response) {
+            instance!!.deleteFirebaseToken()
+                .bindUi(
+                    this,
+                    onSuccess = {
                         instance!!.performLogout()
                         mainActivity!!.startIntro()
                         mainActivity!!.finishAll()
                         progressDialog.dismiss()
-                    }
-
-                    override fun failure(error: RetrofitError) {
+                    },
+                    onError = {
                         Toast.makeText(app, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         progressDialog.dismiss()
                     }
-                }
-            )
+                )
         }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()

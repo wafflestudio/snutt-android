@@ -16,9 +16,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
 import com.wafflestudio.snutt2.model.Lecture
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
 
 /**
  * Created by makesource on 2017. 3. 7..
@@ -85,29 +84,31 @@ class LectureListAdapter(private val lectures: List<Lecture>) : RecyclerView.Ada
                     } else if (v.id == holder.add.id) {
                         Log.d(TAG, "View ID : " + v.id)
                         Log.d(TAG, "$position add Clicked!!")
-                        instance!!.addLecture(
-                            getItem(position),
-                            object : Callback<Any> {
-                                override fun success(o: Any?, response: Response) {
+                        // Refactoring FIXME: Unbounded
+                        instance!!.addLecture(getItem(position))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onSuccess = {
                                     notifyItemChanged(position)
+                                },
+                                onError = {
+                                    // do nothing
                                 }
-
-                                override fun failure(error: RetrofitError) {}
-                            }
-                        )
+                            )
                     } else {
                         Log.d(TAG, "View ID : " + v.id)
                         Log.d(TAG, "$position remove Clicked!!")
-                        instance!!.removeLecture(
-                            getItem(position),
-                            object : Callback<Any> {
-                                override fun success(o: Any?, response: Response) {
+                        // Refactoring FIXME: Unbounded
+                        instance!!.removeLecture(getItem(position))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onSuccess = {
                                     notifyItemChanged(position)
+                                },
+                                onError = {
+                                    // do nothing
                                 }
-
-                                override fun failure(error: RetrofitError) {}
-                            }
-                        )
+                            )
                     }
                 }
             }

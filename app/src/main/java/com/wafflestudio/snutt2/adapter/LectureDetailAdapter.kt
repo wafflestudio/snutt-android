@@ -28,9 +28,9 @@ import com.wafflestudio.snutt2.model.LectureItem
 import com.wafflestudio.snutt2.model.Table
 import com.wafflestudio.snutt2.ui.LectureDetailFragment
 import com.wafflestudio.snutt2.ui.LectureMainActivity
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.util.*
 
 /**
@@ -171,7 +171,7 @@ class LectureDetailAdapter(
         return lists[position]
     }
 
-    fun updateLecture(lecture: Lecture?, callback: Callback<Table>?) {
+    fun updateLecture(lecture: Lecture?): Single<Table> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.")
         val current = instance!!.currentLecture
@@ -209,7 +209,7 @@ class LectureDetailAdapter(
             }
         }
         target.class_time_json = ja
-        instance!!.updateLecture(current!!.id!!, target, callback)
+        return instance!!.updateLecture(current!!.id!!, target)
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -495,19 +495,16 @@ class LectureDetailAdapter(
     private fun startSyllabus() {
         if (instance!!.currentLecture == null) return
         val lecture = instance!!.currentLecture
+        // FIXME: no scope
         instance!!.getCoursebookUrl(
-            lecture!!.course_number,
-            lecture.lecture_number,
-            object : Callback<Map<*, *>> {
-                override fun success(map: Map<*, *>, response: Response) {
-                    val url = map["url"] as String?
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    activity.startActivity(intent)
-                }
-
-                override fun failure(error: RetrofitError) {}
-            }
+            lecture!!.course_number!!,
+            lecture.lecture_number!!
         )
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy { result ->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                activity.startActivity(intent)
+            }
     }
 
     private fun startRemoveAlertView() {
@@ -519,19 +516,17 @@ class LectureDetailAdapter(
             DialogInterface.OnClickListener { dialog, whichButton ->
                 if (instance!!.currentLecture == null) return@OnClickListener
                 val lectureId = instance!!.currentLecture!!.id
-                instance!!.removeLecture(
-                    lectureId,
-                    object : Callback<Any> {
-                        override fun success(
-                            o: Any?,
-                            response: Response
-                        ) {
+                // Refactoring FIXME: Unbounded
+                instance!!.removeLecture(lectureId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onSuccess = {
                             activity.finish()
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -547,19 +542,17 @@ class LectureDetailAdapter(
             DialogInterface.OnClickListener { dialog, whichButton ->
                 if (instance!!.currentLecture == null) return@OnClickListener
                 val lectureId = instance!!.currentLecture!!.id
-                instance!!.resetLecture(
-                    lectureId!!,
-                    object : Callback<Any> {
-                        override fun success(
-                            o: Any?,
-                            response: Response
-                        ) {
+                // Refactoring FIXME: Unbounded
+                instance!!.resetLecture(lectureId!!)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onSuccess = {
                             fragment.refreshFragment()
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()

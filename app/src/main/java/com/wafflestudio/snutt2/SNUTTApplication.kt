@@ -3,38 +3,48 @@ package com.wafflestudio.snutt2
 import android.app.Application
 import android.content.Context
 import com.facebook.FacebookSdk
-import com.squareup.okhttp.Cache
-import com.squareup.okhttp.OkHttpClient
-import com.wafflestudio.snutt2.handler.RetrofitErrorHandler
 import com.wafflestudio.snutt2.manager.*
-import retrofit.RequestInterceptor
-import retrofit.RestAdapter
-import retrofit.client.OkClient
+import com.wafflestudio.snutt2.network.SNUTTRestApi
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 
 /**
  * Created by makesource on 2016. 1. 17..
  */
 class SNUTTApplication : Application() {
-    private var restAdapter: RestAdapter? = null
     val restService: SNUTTRestApi? by lazy {
-        val requestInterceptor = RequestInterceptor { request ->
-            request.addHeader(
-                "x-access-apikey",
-                resources.getString(R.string.api_key)
-            )
-        }
+//        val requestInterceptor = RequestInterceptor { request ->
+//            request.addHeader(
+//                "x-access-apikey",
+//                resources.getString(R.string.api_key)
+//            )
+//        }
+//        val okHttpClient = OkHttpClient()
+//        okHttpClient.cache = cache
+//        restAdapter = RestAdapter.Builder()
+//            .setEndpoint(restUrl)
+//            .setLogLevel(RestAdapter.LogLevel.FULL)
+//            .setRequestInterceptor(requestInterceptor)
+//            .setClient(OkClient(okHttpClient))
+//            .setErrorHandler(RetrofitErrorHandler(applicationContext))
+//            .build()
         val cache = Cache(File(context!!.cacheDir, "http"), SIZE_OF_CACHE)
-        val okHttpClient = OkHttpClient()
-        okHttpClient.cache = cache
-        restAdapter = RestAdapter.Builder()
-            .setEndpoint(restUrl)
-            .setLogLevel(RestAdapter.LogLevel.FULL)
-            .setRequestInterceptor(requestInterceptor)
-            .setClient(OkClient(okHttpClient))
-            .setErrorHandler(RetrofitErrorHandler(applicationContext))
+        val okHttpClient = OkHttpClient.Builder()
+            .cache(cache)
             .build()
-        restAdapter?.create(SNUTTRestApi::class.java)
+
+        val retrofit = Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(restUrl!!)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+
+        retrofit.create(SNUTTRestApi::class.java)
     }
 
     private var restUrl: String? = null

@@ -97,6 +97,7 @@ class ColorPickerFragment : SNUTTBaseFragment() {
 
     companion object {
         private const val TAG = "COLOR_PICKER_FRAGMENT"
+
         @JvmStatic
         fun newInstance(): ColorPickerFragment {
             return ColorPickerFragment()

@@ -13,10 +13,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.LectureDetailAdapter
 import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
-import com.wafflestudio.snutt2.model.*
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import com.wafflestudio.snutt2.model.ClassTime
+import com.wafflestudio.snutt2.model.Color
+import com.wafflestudio.snutt2.model.Lecture
+import com.wafflestudio.snutt2.model.LectureItem
 import java.lang.String
 import java.util.*
 
@@ -84,20 +84,18 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             R.id.action_edit ->
                 if (editable) {
                     item.isEnabled = false
-                    adapter!!.updateLecture(
-                        instance!!.currentLecture,
-                        object : Callback<Table> {
-                            override fun success(table: Table?, response: Response) {
+                    adapter!!.updateLecture(instance!!.currentLecture)
+                        .bindUi(
+                            this,
+                            onSuccess = {
                                 item.title = "편집"
                                 item.isEnabled = true
                                 setNormalMode()
-                            }
-
-                            override fun failure(error: RetrofitError) {
+                            },
+                            onError = {
                                 item.isEnabled = true
                             }
-                        }
-                    )
+                        )
                 } else {
                     item.title = "완료"
                     setEditMode()
@@ -294,6 +292,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
     companion object {
         private const val TAG = "LECTURE_DETAIL_FRAGMENT"
+
         @JvmStatic
         fun newInstance(): LectureDetailFragment {
             return LectureDetailFragment()

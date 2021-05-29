@@ -7,9 +7,11 @@ class SettingsItem {
     enum class Type(val value: Int) {
         Account(0), Timetable(1), Developer(2), BugReport(3), License(4), Terms(5), Logout(6), Version(
             7
-        ), Header(8), Id(9), ChangePassword(10), LinkFacebook(11), Email(12), ChangeEmail(13), Leave(
+        ),
+        Header(8), Id(9), ChangePassword(10), LinkFacebook(11), Email(12), ChangeEmail(13), Leave(
             14
-        ), AddIdPassword(15), FacebookName(16), DeleteFacebook(17), Private(18);
+        ),
+        AddIdPassword(15), FacebookName(16), DeleteFacebook(17), Private(18);
     }
 
     enum class ViewType(val value: Int) {

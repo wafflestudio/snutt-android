@@ -4,9 +4,10 @@ import android.util.Log
 import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.SNUTTApplication
 import com.wafflestudio.snutt2.model.Notification
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import com.wafflestudio.snutt2.network.dto.GetNotificationCountResults
+import com.wafflestudio.snutt2.network.dto.core.TempUtil
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -56,34 +57,26 @@ class NotiManager private constructor(app: SNUTTApplication) {
         return if (notifications == null || notifications!!.size > 0) true else false
     }
 
-    fun loadData(offset: Int, callback: Callback<List<Notification>>) {
+    fun loadData(offset: Int): Single<List<Notification>> {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
-        query["limit"] = 20
-        query["offset"] = offset
-        query["explicit"] = 1 // for unread count update
-        app.restService!!.getNotification(
-            token,
-            query,
-            object : Callback<List<Notification>> {
-                override fun success(
-                    notificationList: List<Notification>,
-                    response: Response
-                ) {
-                    Log.d(TAG, "get notification success!")
-                    removeProgressBar()
-                    for (notification in notificationList) {
-                        notifications!!.add(notification)
-                    }
-                    callback.success(notificationList, response)
-                }
-
-                override fun failure(error: RetrofitError) {
-                    Log.e(TAG, "get notification failed.")
-                    callback.failure(error)
+        return app.restService!!.getNotification(
+            token!!,
+            limit = 20,
+            offset = offset.toLong(),
+            explicit = 1
+        )
+            .map { it.map { TempUtil.toLegacyModel(it) } }
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess {
+                Log.d(TAG, "get notification success!")
+                removeProgressBar()
+                for (notification in it) {
+                    notifications!!.add(notification)
                 }
             }
-        )
+            .doOnError {
+                Log.e(TAG, "get notification failed.")
+            }
     }
 
     fun addProgressBar() {
@@ -95,52 +88,38 @@ class NotiManager private constructor(app: SNUTTApplication) {
         notifications!!.removeAt(notifications!!.size - 1)
     }
 
-    fun refreshNotification(callback: Callback<Any>) {
+    fun refreshNotification(): Single<List<Notification>> {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        val query: MutableMap<Any?, Any?> = HashMap<Any?, Any?>()
-        query["limit"] = 20
-        query["offset"] = 0
-        query["explicit"] = 1
-        app.restService!!.getNotification(
-            token,
-            query,
-            object : Callback<List<Notification>> {
-                override fun success(
-                    notificationList: List<Notification>,
-                    response: Response
-                ) {
-                    Log.d(TAG, "get notification success!")
-                    notifications!!.clear()
-                    for (notification in notificationList) {
-                        notifications!!.add(notification)
-                    }
-                    callback.success(notificationList, response)
-                }
-
-                override fun failure(error: RetrofitError) {
-                    Log.e(TAG, "get notification failed.")
-                    callback.failure(error)
+        return app.restService!!.getNotification(
+            token!!,
+            limit = 20,
+            offset = 0,
+            explicit = 1
+        )
+            .map { it.map { TempUtil.toLegacyModel(it) } }
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess {
+                Log.d(TAG, "get notification success!")
+                notifications!!.clear()
+                for (notification in it) {
+                    notifications!!.add(notification)
                 }
             }
-        )
+            .doOnError {
+                Log.e(TAG, "get notification failed.")
+            }
     }
 
-    fun getNotificationCount(callback: Callback<Map<String?, Int?>>) {
+    fun getNotificationCount(): Single<GetNotificationCountResults> {
         val token = PrefManager.instance!!.prefKeyXAccessToken
-        app.restService!!.getNotificationCount(
-            token,
-            object : Callback<Map<String?, Int?>> {
-                override fun success(map: Map<String?, Int?>?, response: Response) {
-                    Log.d(TAG, "get notification count success!")
-                    callback.success(map, response)
-                }
-
-                override fun failure(error: RetrofitError) {
-                    Log.e(TAG, "get notification count failed.")
-                    callback.failure(error)
-                }
+        return app.restService!!.getNotificationCount(token!!)
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess {
+                Log.d(TAG, "get notification count success!")
             }
-        )
+            .doOnError {
+                Log.e(TAG, "get notification count failed.")
+            }
     }
 
     fun notifyNotificationReceived() {

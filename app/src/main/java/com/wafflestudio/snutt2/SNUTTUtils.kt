@@ -92,6 +92,7 @@ object SNUTTUtils {
     @JvmStatic
     val displayWidth: Float
         get() = context!!.resources.displayMetrics.widthPixels.toFloat()
+
     @JvmStatic
     val displayHeight: Float
         get() = context!!.resources.displayMetrics.heightPixels.toFloat()

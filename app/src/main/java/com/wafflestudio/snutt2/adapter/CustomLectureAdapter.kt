@@ -26,9 +26,9 @@ import com.wafflestudio.snutt2.model.Lecture
 import com.wafflestudio.snutt2.model.LectureItem
 import com.wafflestudio.snutt2.model.Table
 import com.wafflestudio.snutt2.ui.LectureMainActivity
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.util.*
 
 /**
@@ -172,19 +172,17 @@ class CustomLectureAdapter(
             DialogInterface.OnClickListener { dialog, whichButton ->
                 if (instance!!.currentLecture == null) return@OnClickListener
                 val lectureId = instance!!.currentLecture!!.id
-                instance!!.removeLecture(
-                    lectureId,
-                    object : Callback<Any> {
-                        override fun success(
-                            o: Any?,
-                            response: Response
-                        ) {
+                // Refactoring FIXME
+                instance!!.removeLecture(lectureId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onSuccess = {
                             activity.finish()
+                        },
+                        onError = {
+                            // do nothing
                         }
-
-                        override fun failure(error: RetrofitError) {}
-                    }
-                )
+                    )
             }
         ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
@@ -435,7 +433,7 @@ class CustomLectureAdapter(
         alert.show()
     }
 
-    fun updateLecture(lecture: Lecture?, callback: Callback<Table>?) {
+    fun updateLecture(lecture: Lecture?): Single<Table> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         Log.d(TAG, "update lecture called.")
         val current = instance!!.currentLecture
@@ -468,7 +466,8 @@ class CustomLectureAdapter(
             }
         }
         target.class_time_json = ja
-        instance!!.updateLecture(current!!.id!!, target, callback)
+        return instance!!.updateLecture(current!!.id!!, target)
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -479,7 +478,7 @@ class CustomLectureAdapter(
         }
     }
 
-    fun createLecture(callback: Callback<Table>?) {
+    fun createLecture(): Single<Table> {
         Log.d(TAG, "create lecture called.")
         val lecture = Lecture()
         val ja = JsonArray()
@@ -510,7 +509,7 @@ class CustomLectureAdapter(
             }
         }
         lecture.class_time_json = ja
-        instance!!.createLecture(lecture, callback)
+        return instance!!.createLecture(lecture)
     }
 
     private interface TextChangedListener {

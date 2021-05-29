@@ -17,9 +17,6 @@ import com.wafflestudio.snutt2.manager.LectureManager.Companion.instance
 import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
 import com.wafflestudio.snutt2.model.Lecture
 import com.wafflestudio.snutt2.view.DividerItemDecoration
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -60,9 +57,16 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
                             if (items[index] == DIALOG_DETAIL) {
                                 mainActivity!!.startLectureMain(position)
                             } else if (items[index] == DIALOG_SYLLABUS) {
-                                startSyllabus(lecture.course_number, lecture.lecture_number)
+                                startSyllabus(lecture.course_number!!, lecture.lecture_number!!)
                             } else {
-                                instance!!.removeLecture(lecture.id, null)
+                                instance!!.removeLecture(lecture.id)
+                                    .bindUi(
+                                        this@MyLectureFragment,
+                                        {},
+                                        {
+                                            // do nothing
+                                        }
+                                    )
                             }
                         }
                     val dialog = builder.create()
@@ -120,20 +124,21 @@ class MyLectureFragment : SNUTTBaseFragment(), OnLectureChangedListener {
         placeholder!!.visibility = if (lectures!!.size == 0) View.VISIBLE else View.GONE
     }
 
-    private fun startSyllabus(courseNumber: String?, lectureNumber: String?) {
+    private fun startSyllabus(courseNumber: String, lectureNumber: String) {
         instance!!.getCoursebookUrl(
             courseNumber,
-            lectureNumber,
-            object : Callback<Map<*, *>> {
-                override fun success(map: Map<*, *>, response: Response) {
-                    val url = map["url"] as String?
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    startActivity(intent)
-                }
-
-                override fun failure(error: RetrofitError) {}
-            }
+            lectureNumber
         )
+            .bindUi(
+                this,
+                onSuccess = { result ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                    startActivity(intent)
+                },
+                onError = {
+                    // do nothing
+                }
+            )
     }
 
     companion object {

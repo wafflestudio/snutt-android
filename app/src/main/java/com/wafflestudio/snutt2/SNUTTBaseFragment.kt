@@ -4,15 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
 import com.google.common.base.Preconditions
+import com.wafflestudio.snutt2.lib.rx.BindableFragment
+import com.wafflestudio.snutt2.lib.rx.RxBinder
 import com.wafflestudio.snutt2.ui.MainActivity
 
 /**
  * Created by makesource on 2016. 1. 16..
  */
-open class SNUTTBaseFragment : Fragment() {
+open class SNUTTBaseFragment : BindableFragment(), RxBinder {
     private var mActivity: Activity? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) {
