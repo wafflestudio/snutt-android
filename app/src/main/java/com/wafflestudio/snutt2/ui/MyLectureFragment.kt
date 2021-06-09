@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.adapter.MyLectureListAdapter.LongClickListener
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.LectureManager.OnLectureChangedListener
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.view.DividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

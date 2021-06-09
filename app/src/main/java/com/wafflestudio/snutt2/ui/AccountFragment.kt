@@ -26,7 +26,7 @@ import com.wafflestudio.snutt2.adapter.SettingsAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.UserManager
 import com.wafflestudio.snutt2.model.SettingsItem
-import com.wafflestudio.snutt2.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject

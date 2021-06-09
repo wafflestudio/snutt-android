@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
-import com.wafflestudio.snutt2.network.dto.core.NotificationDto
-import com.wafflestudio.snutt2.network.SNUTTRestApi
-import com.wafflestudio.snutt2.network.dto.GetNotificationCountResults
+import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.GetNotificationCountResults
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject

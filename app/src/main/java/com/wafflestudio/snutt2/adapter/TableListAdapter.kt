@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.PrefStorage
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 
 /**
  * Created by makesource on 2016. 1. 20..

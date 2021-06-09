@@ -14,8 +14,8 @@ import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.LectureDetailAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.String

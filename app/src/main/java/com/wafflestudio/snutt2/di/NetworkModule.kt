@@ -2,10 +2,9 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,13 +21,6 @@ import java.io.File
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-    @Provides
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
 
     @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {

@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.manager
 import android.util.Log
 import com.wafflestudio.snutt2.model.Tag
 import com.wafflestudio.snutt2.model.TagType
-import com.wafflestudio.snutt2.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.model
 
-import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 
 /**
  * Created by makesource on 2016. 9. 4..

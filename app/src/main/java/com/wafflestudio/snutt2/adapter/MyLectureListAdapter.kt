@@ -11,8 +11,8 @@ import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.SNUTTUtils.dp2px
-import com.wafflestudio.snutt2.network.SNUTTStringUtils
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 /**
  * Created by makesource on 2016. 2. 23..
  */

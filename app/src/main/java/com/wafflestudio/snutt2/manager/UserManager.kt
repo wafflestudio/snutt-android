@@ -3,9 +3,9 @@ package com.wafflestudio.snutt2.manager
 import android.util.Log
 import com.facebook.login.LoginManager
 import com.google.firebase.iid.FirebaseInstanceId
-import com.wafflestudio.snutt2.network.SNUTTRestApi
-import com.wafflestudio.snutt2.network.dto.*
-import com.wafflestudio.snutt2.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*

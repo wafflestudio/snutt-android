@@ -17,7 +17,7 @@ import com.wafflestudio.snutt2.SNUTTUtils.sp2px
 import com.wafflestudio.snutt2.SNUTTUtils.zeroStr
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.PrefStorage
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.LectureMainActivity
 import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints

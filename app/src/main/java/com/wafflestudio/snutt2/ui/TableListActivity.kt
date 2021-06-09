@@ -21,8 +21,8 @@ import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.manager.TableManager
 import com.wafflestudio.snutt2.model.Coursebook
-import com.wafflestudio.snutt2.network.SNUTTStringUtils
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject

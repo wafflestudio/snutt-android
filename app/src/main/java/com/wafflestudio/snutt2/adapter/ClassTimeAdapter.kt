@@ -15,7 +15,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import java.util.*
 
 /**

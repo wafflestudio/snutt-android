@@ -11,7 +11,7 @@ import com.google.common.base.Verify
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.LectureItem
 import com.wafflestudio.snutt2.ui.ColorPickerFragment.ColorChangedListener
 import dagger.hilt.android.AndroidEntryPoint

@@ -10,7 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat

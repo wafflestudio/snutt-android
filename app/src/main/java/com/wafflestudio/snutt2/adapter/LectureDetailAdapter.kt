@@ -22,10 +22,10 @@ import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.network.dto.PutLectureParams
-import com.wafflestudio.snutt2.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.LectureDetailFragment
 import com.wafflestudio.snutt2.ui.LectureMainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

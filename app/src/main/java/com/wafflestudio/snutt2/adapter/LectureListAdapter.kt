@@ -18,8 +18,8 @@ import com.wafflestudio.snutt2.SNUTTUtils.dp2px
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.SNUTTStringUtils
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 

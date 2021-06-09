@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.wafflestudio.snutt2.ColorConst
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 
 /**
  * Created by makesource on 2017. 5. 28..

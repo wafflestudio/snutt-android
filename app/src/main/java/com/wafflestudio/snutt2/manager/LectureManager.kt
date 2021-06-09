@@ -3,11 +3,11 @@ package com.wafflestudio.snutt2.manager
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.wafflestudio.snutt2.network.SNUTTRestApi
-import com.wafflestudio.snutt2.network.dto.*
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*

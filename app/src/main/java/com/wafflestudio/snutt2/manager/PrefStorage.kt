@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import com.squareup.moshi.Moshi
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

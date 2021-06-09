@@ -15,7 +15,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.ColorListAdapter
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.manager.PrefStorage
-import com.wafflestudio.snutt2.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.TableListActivity
 import java.util.*
 
