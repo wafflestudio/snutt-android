@@ -11,8 +11,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.ViewPagerOnTabSelectedListener
@@ -185,7 +183,6 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
 
     public override fun onResume() {
         super.onResume()
-        checkGoogleServiceVersion()
         updateTableTitle()
     }
 
@@ -195,27 +192,6 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         if (!Strings.isNullOrEmpty(title)) {
             supportActionBar!!.setTitle(title)
         }
-    }
-
-    private fun checkGoogleServiceVersion(): Boolean {
-        val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-            applicationContext
-        )
-        if (resultCode == ConnectionResult.SUCCESS) {
-            Log.d(TAG, "google play service is available.")
-            return true
-        }
-        if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)) {
-            Log.d(TAG, "google play service is user resolvable error.")
-            GoogleApiAvailability.getInstance().getErrorDialog(
-                this,
-                resultCode,
-                PLAY_SERVICES_RESOLUTION_REQUEST
-            ) { checkGoogleServiceVersion() }.show()
-        } else {
-            Log.e(TAG, "google play service is not supported in this device.")
-        }
-        return false
     }
 
     private fun setTabLayoutView() {

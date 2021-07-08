@@ -72,4 +72,6 @@
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <string name="action_capture_timetable">시간표 캡쳐</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

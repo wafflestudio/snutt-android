@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.manager
 
 import android.util.Log
 import com.facebook.login.LoginManager
-import com.google.firebase.iid.FirebaseInstanceId
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
@@ -181,7 +180,10 @@ class UserManager @Inject constructor(
     }
 
     // facebook 계정 연동
-    fun postUserFacebook(facebookId: String, facebookToken: String): Single<PostUserFacebookResults> {
+    fun postUserFacebook(
+        facebookId: String,
+        facebookToken: String
+    ): Single<PostUserFacebookResults> {
         val token: String? = prefStorage.prefKeyXAccessToken
         val param = PostUserFacebookParams(
             facebookId = facebookId,
@@ -230,8 +232,12 @@ class UserManager @Inject constructor(
 
     fun registerFirebaseToken(): Single<RegisterFirebaseTokenResults> {
         val token: String? = prefStorage.prefKeyXAccessToken
-        val firebaseToken = FirebaseInstanceId.getInstance().token
-        return snuttRestApi.registerFirebaseToken(token!!, firebaseToken!!, RegisterFirebaseTokenParams())
+        val firebaseToken = "temp"
+        return snuttRestApi.registerFirebaseToken(
+            token!!,
+            firebaseToken!!,
+            RegisterFirebaseTokenParams()
+        )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "register firebase token success!")
@@ -244,7 +250,7 @@ class UserManager @Inject constructor(
 
     fun deleteFirebaseToken(): Single<DeleteFirebaseTokenResults> {
         val token: String? = prefStorage.prefKeyXAccessToken
-        val firebaseToken = FirebaseInstanceId.getInstance().token
+        val firebaseToken = "temp"
         return snuttRestApi.deleteFirebaseToken(token!!, firebaseToken!!)
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
@@ -258,7 +264,7 @@ class UserManager @Inject constructor(
 
     fun postForceLogout(): Single<PostForceLogoutResults> {
         val user_id: String? = prefStorage.prefKeyUserId
-        val firebaseToken = FirebaseInstanceId.getInstance().token
+        val firebaseToken = "temp"
         val param = PostForceLogoutParams(
             userId = user_id ?: "",
             registrationId = firebaseToken ?: ""
