@@ -113,7 +113,7 @@ class SearchFragment : SNUTTBaseFragment(), OnLectureChangedListener, OnTagChang
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "onCreateView called!")
-        val rootView = inflater.inflate(R.layout.fragment_search, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_search_legacy, container, false)
         setHasOptionsMenu(true)
         tagHelper = rootView.findViewById<View>(R.id.tag_suggestion) as LinearLayout
         lectureRecyclerView = rootView.findViewById<View>(R.id.search_recyclerView) as RecyclerView

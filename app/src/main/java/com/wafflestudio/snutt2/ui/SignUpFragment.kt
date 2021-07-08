@@ -46,7 +46,7 @@ class SignUpFragment : SNUTTBaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_signup, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_signup_legacy, container, false)
         setTitle("회원가입")
         idEditText = rootView.findViewById<View>(R.id.input_id) as EditText
         passwordEditText = rootView.findViewById<View>(R.id.input_password) as EditText

@@ -58,7 +58,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_lecture_detail, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_lecture_detail_legacy, container, false)
         detailView = rootView.findViewById<View>(R.id.lecture_detail_view) as RecyclerView
         detailView!!.adapter = adapter
         detailView!!.layoutManager = LinearLayoutManager(context)

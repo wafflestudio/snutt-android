@@ -8,13 +8,28 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.wafflestudio.snutt2.SNUTTApplication"
+        android:name=".SNUTTApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true">
+
+        <activity android:name=".views.RootActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -23,30 +38,23 @@
             android:resource="@drawable/ic_notification" />
 
         <activity
-            android:name="com.wafflestudio.snutt2.ui.SplashActivity"
+            android:name=".ui.SplashActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name="com.wafflestudio.snutt2.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name="com.wafflestudio.snutt2.ui.TableListActivity"
+            android:name=".ui.TableListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <meta-data
@@ -54,7 +62,7 @@
                 android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt2.ui.LectureMainActivity"
+            android:name=".ui.LectureMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize">
@@ -63,7 +71,7 @@
                 android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt2.ui.SettingsMainActivity"
+            android:name=".ui.SettingsMainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
@@ -72,7 +80,7 @@
                 android:value="com.wafflestudio.snutt2.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt2.ui.TableCreateActivity"
+            android:name=".ui.TableCreateActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <meta-data
@@ -80,35 +88,37 @@
                 android:value="com.wafflestudio.snutt2.ui.TableListActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt2.ui.WelcomeActivity"
+            android:name=".ui.WelcomeActivity"
             android:label="@string/app_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.wafflestudio.snutt2.ui.IntroActivity" />
         </activity>
         <activity
-            android:name="com.wafflestudio.snutt2.ui.IntroActivity"
+            android:name=".ui.IntroActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <service android:name="com.wafflestudio.snutt2.service.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
-        <receiver android:name="com.wafflestudio.snutt2.provider.TimetableWidgetProvider">
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- <service android:name="com.wafflestudio.snutt2.service.MyFirebaseMessagingService"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.google.firebase.MESSAGING_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
+        <!--
+        <service andro
+id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
+        -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.google.firebase.INSTANCE_ID_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
+        <receiver android:name=".provider.TimetableWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
     </application>
+
 </manifest>

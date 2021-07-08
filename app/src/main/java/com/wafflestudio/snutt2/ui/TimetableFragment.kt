@@ -34,7 +34,7 @@ class TimetableFragment : SNUTTBaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_timetable, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_timetable_legacy, container, false)
         mSwitch = rootView.findViewById<View>(R.id.switch1) as SwitchCompat
         dayLayout = rootView.findViewById<View>(R.id.day_layout) as LinearLayout
         classLayout = rootView.findViewById<View>(R.id.class_layout) as LinearLayout

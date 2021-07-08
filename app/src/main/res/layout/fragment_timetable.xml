@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
-    android:animateLayoutChanges="true">
+    tools:context=".views.logged_in.home.TimetableFragment">
 
-    <include
-        layout="@layout/cell_setting_header"/>
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="타임테이블" />
 
-    <include
-        layout="@layout/cell_switch"/>
-
-    <include
-        layout="@layout/cell_setting_header"/>
-
-    <include
-        layout="@layout/cell_day_range_bar"/>
-
-    <include
-        layout="@layout/cell_setting_header"/>
-
-    <include
-        layout="@layout/cell_class_range_bar"/>
-
-    <include
-        layout="@layout/cell_setting_header"/>
-
-
-</LinearLayout>
+</FrameLayout>

@@ -109,7 +109,7 @@ class SettingsFragment : SNUTTBaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_settings_legacy, container, false)
         // ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
         // listView.setAdapter(adapter);
         val recyclerView = rootView.findViewById<View>(R.id.settings_recyclerView) as RecyclerView

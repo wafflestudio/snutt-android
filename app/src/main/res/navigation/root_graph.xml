@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_graph"
+    app:startDestination="@id/tutorialFragment">
+
+    <fragment
+        android:id="@+id/tutorialFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.TutorialFragment"
+        android:label="fragment_tutorial"
+        tools:layout="@layout/fragment_tutorial">
+        <action
+            android:id="@+id/action_tutorialFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_tutorialFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/tutorialFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.SignUpFragment"
+        android:label="SignUpFragment">
+
+        <action
+            android:id="@+id/action_signUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/tutorialFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_lectureDetailFragment"
+            app:destination="@id/lectureDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_tableLecturesFragment"
+            app:destination="@id/tableLecturesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_termsInfoFragment"
+            app:destination="@id/termsInfoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tableLecturesFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.TableLecturesFragment"
+        android:label="@layout/fragment_table_lectures"
+        tools:layout="@layout/fragment_table_lectures" >
+        <action
+            android:id="@+id/action_tableLecturesFragment_to_lectureDetailFragment"
+            app:destination="@id/lectureDetailFragment" />
+        <action
+            android:id="@+id/action_tableLecturesFragment_to_lectureCreateFragment"
+            app:destination="@id/lectureCreateFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.NotificationsFragment"
+        android:label="@layout/fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/lectureDetailFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.LectureDetailFragment"
+        android:label="fragment_lecture_detail"
+        tools:layout="@layout/fragment_lecture_detail" />
+
+    <fragment
+        android:id="@+id/lectureCreateFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.LectureCreateFragment"
+        android:label="fragment_lecture_create"
+        tools:layout="@layout/fragment_lecture_create" />
+
+    <fragment
+        android:id="@+id/termsInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TermsInfoFragment"
+        android:label="fragment_terms_info"
+        tools:layout="@layout/fragment_terms_info" />
+
+</navigation>
