@@ -91,4 +91,12 @@
     <string name="sign_in_button_divider">or</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
+    <string name="common_day_mon">월</string>
+    <string name="common_day_tue">화</string>
+    <string name="common_day_wed">수</string>
+    <string name="common_day_thu">목</string>
+    <string name="common_day_fri">금</string>
+    <string name="common_day_sat">토</string>
+    <string name="common_day_sun">일</string>
+    <string name="timetable_app_bar_title">나의 시간표</string>
 </resources>
