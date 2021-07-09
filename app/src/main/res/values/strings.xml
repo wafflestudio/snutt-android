@@ -76,4 +76,19 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_up_button">가입하기</string>
     <string name="login_button">로그인하기</string>
+    <string name="sign_up_logo_title">SNUTT</string>
+    <string name="sign_up_id_hint">아이디</string>
+    <string name="sign_up_password_hint">비밀번호</string>
+    <string name="sign_up_password_confirm_hint">비밀번호 확인</string>
+    <string name="sign_up_eamil_input_hint">이메일 입력</string>
+    <string name="sign_up_sign_up_button">회원가입</string>
+    <string name="sign_up_button_divider">or</string>
+    <string name="sign_up_sign_up_facebook_button">페이스북으로 시작하기</string>
+    <string name="sign_up_sign_up_facebook_logo">facebook_logo</string>
+    <string name="sign_in_sign_in_button">로그인</string>
+    <string name="sign_in_id_hint">아이디</string>
+    <string name="sign_in_password_hint">비밀번호</string>
+    <string name="sign_in_button_divider">or</string>
+    <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
+    <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
 </resources>

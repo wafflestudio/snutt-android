@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.manager
 
 import android.util.Log
 import com.facebook.login.LoginManager
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
@@ -231,17 +233,17 @@ class UserManager @Inject constructor(
     }
 
     fun registerFirebaseToken(): Single<RegisterFirebaseTokenResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        val firebaseToken = "temp"
-        return snuttRestApi.registerFirebaseToken(
-            token!!,
-            firebaseToken!!,
-            RegisterFirebaseTokenParams()
-        )
+        return getFirebaseToken().flatMap { firebaseToken ->
+            val token: String = prefStorage.prefKeyXAccessToken ?: ""
+            snuttRestApi.registerFirebaseToken(
+                token,
+                firebaseToken,
+                RegisterFirebaseTokenParams()
+            )
+        }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "register firebase token success!")
-                Log.d(TAG, "token : $firebaseToken")
             }
             .doOnError {
                 Log.w(TAG, "register firebase token failed.")
@@ -249,13 +251,13 @@ class UserManager @Inject constructor(
     }
 
     fun deleteFirebaseToken(): Single<DeleteFirebaseTokenResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        val firebaseToken = "temp"
-        return snuttRestApi.deleteFirebaseToken(token!!, firebaseToken!!)
+        return getFirebaseToken().flatMap { firebaseToken ->
+            val token: String = prefStorage.prefKeyXAccessToken ?: ""
+            snuttRestApi.deleteFirebaseToken(token, firebaseToken)
+        }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "delete firebase token success!")
-                Log.d(TAG, "token : $firebaseToken")
             }
             .doOnError {
                 Log.w(TAG, "delete firebase token failed.")
@@ -263,13 +265,14 @@ class UserManager @Inject constructor(
     }
 
     fun postForceLogout(): Single<PostForceLogoutResults> {
-        val user_id: String? = prefStorage.prefKeyUserId
-        val firebaseToken = "temp"
-        val param = PostForceLogoutParams(
-            userId = user_id ?: "",
-            registrationId = firebaseToken ?: ""
-        )
-        return snuttRestApi.postForceLogout(param)
+        return getFirebaseToken().flatMap { firebaseToken ->
+            val user_id: String? = prefStorage.prefKeyUserId
+            val param = PostForceLogoutParams(
+                userId = user_id ?: "",
+                registrationId = firebaseToken
+            )
+            snuttRestApi.postForceLogout(param)
+        }
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "post force logout success")
@@ -291,6 +294,19 @@ class UserManager @Inject constructor(
         prefStorage.resetPrefValue()
         LoginManager.getInstance().logOut() // for facebook sdk
         user = UserDto()
+    }
+
+    fun getFirebaseToken(): Single<String> {
+        return Single.create {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    it.onError(RuntimeException("cannot get firebase token"))
+                    return@OnCompleteListener
+                }
+                val token = task.result
+                it.onSuccess(token)
+            })
+        }
     }
 
     companion object {
