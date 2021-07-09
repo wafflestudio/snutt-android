@@ -13,9 +13,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Created by makesource on 2016. 1. 24..
- */
 @Singleton
 class PrefStorage @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -50,6 +47,7 @@ class PrefStorage @Inject constructor(
             editor.putString(PREF_KEY_X_ACCESS_TOKEN, token)
             editor.apply()
         }
+
     var prefKeyUserId: String?
         get() = this.sharedPreferences.getString(PREF_KEY_USER_ID, null)
         set(user_id) {
@@ -57,6 +55,7 @@ class PrefStorage @Inject constructor(
             editor.putString(PREF_KEY_USER_ID, user_id)
             editor.apply()
         }
+
     var currentYear: Int
         get() = this.sharedPreferences.getInt(PREF_KEY_CURRENT_YEAR, 0)
         set(year) {
@@ -64,6 +63,7 @@ class PrefStorage @Inject constructor(
             editor.putInt(PREF_KEY_CURRENT_YEAR, year)
             editor.apply()
         }
+
     var currentSemester: Int
         get() = this.sharedPreferences.getInt(PREF_KEY_CURRENT_SEMESTER, 0)
         set(semester) {
@@ -71,6 +71,7 @@ class PrefStorage @Inject constructor(
             editor.putInt(PREF_KEY_CURRENT_SEMESTER, semester)
             editor.apply()
         }
+
     var currentTable: TableDto?
         get() {
             return this.sharedPreferences.getString(PREF_KEY_CURRENT_TABLE, null)?.let {
