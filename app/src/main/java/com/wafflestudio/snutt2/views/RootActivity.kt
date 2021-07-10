@@ -1,14 +1,41 @@
 package com.wafflestudio.snutt2.views
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.lib.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class RootActivity : AppCompatActivity() {
+class RootActivity : BaseActivity() {
+
+    @Inject
+    lateinit var snuttStorage: SNUTTStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
+
+        val navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        val navGraph = navController.navInflater.inflate(R.navigation.root_graph)
+
+        navGraph.startDestination = if (snuttStorage.accessToken.getValue().isEmpty()) {
+            R.id.tutorialFragment
+        } else {
+            R.id.homeFragment
+        }
+
+        navController.graph = navGraph
+
+        snuttStorage.accessToken.asObservable()
+            .filter { it.isEmpty() }
+            .distinctUntilChanged()
+            .bindUi(this) {
+                navController.navigate(R.id.startTutorial)
+            }
     }
 }

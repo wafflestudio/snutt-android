@@ -11,6 +11,6 @@ data class TableTrimParam(
     val forceFitLectures: Boolean
 ) {
     companion object {
-        val Default = TableTrimParam(0, 4, 8, 20, false)
+        val Default = TableTrimParam(0, 4, 8, 24, false)
     }
 }

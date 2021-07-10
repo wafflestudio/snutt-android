@@ -8,7 +8,7 @@ import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ReportFragment : SNUTTBaseFragment() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var userRepository: UserRepository
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -55,7 +55,7 @@ class ReportFragment : SNUTTBaseFragment() {
                 val email = emailText!!.text.toString()
                 val detail = detailText!!.text.toString()
                 item.isEnabled = false
-                userManager.postFeedback(email, detail)
+                userRepository.postFeedback(email, detail)
                     .bindUi(
                         this,
                         onSuccess = {

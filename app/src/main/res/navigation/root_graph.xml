@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_graph"
-    app:startDestination="@id/tutorialFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/tutorialFragment"
@@ -64,9 +64,9 @@
 
     <fragment
         android:id="@+id/tableLecturesFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.TableLecturesFragment"
-        android:label="@layout/fragment_table_lectures"
-        tools:layout="@layout/fragment_table_lectures" >
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragment"
+        android:label="@layout/fragment_lecture_list"
+        tools:layout="@layout/fragment_lecture_list" >
         <action
             android:id="@+id/action_tableLecturesFragment_to_lectureDetailFragment"
             app:destination="@id/lectureDetailFragment" />
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.NotificationsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.notifications.NotificationsFragment"
         android:label="@layout/fragment_notifications"
         tools:layout="@layout/fragment_notifications" />
 
@@ -98,5 +98,10 @@
         android:name="com.wafflestudio.snutt2.views.logged_in.settings.TermsInfoFragment"
         android:label="fragment_terms_info"
         tools:layout="@layout/fragment_terms_info" />
+    <action
+        android:id="@+id/startTutorial"
+        app:destination="@id/tutorialFragment"
+        app:popUpTo="@id/root_graph"
+        app:popUpToInclusive="true" />
 
 </navigation>

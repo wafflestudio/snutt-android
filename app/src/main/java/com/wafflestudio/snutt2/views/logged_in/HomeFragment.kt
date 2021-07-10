@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.views.logged_in.home.ReviewsFragment
-import com.wafflestudio.snutt2.views.logged_in.home.SearchFragment
-import com.wafflestudio.snutt2.views.logged_in.home.SettingsFragment
-import com.wafflestudio.snutt2.views.logged_in.home.TimetableFragment
+import com.wafflestudio.snutt2.views.logged_in.home.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentHomeBinding
+
+    private val vm: TimetableViewModel by activityViewModels()
 
     private val fragmentMap = mapOf(
         R.id.action_timetable to TimetableFragment(),
@@ -45,5 +45,7 @@ class HomeFragment : BaseFragment() {
             }
             true
         }
+
+        vm.loadTable()
     }
 }

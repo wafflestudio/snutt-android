@@ -19,7 +19,7 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class SignInFragment : SNUTTBaseFragment() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var userRepository: UserRepository
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -57,7 +57,7 @@ class SignInFragment : SNUTTBaseFragment() {
             hideSoftKeyboard(requireView())
             val progressDialog = ProgressDialog.show(context, "로그인", "잠시만 기다려 주세요", true, false)
 
-            userManager.postSignIn(id, password)
+            userRepository.postSignIn(id, password)
                 .bindUi(
                     this,
                     onSuccess = {
@@ -92,7 +92,7 @@ class SignInFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    userManager.postLoginFacebook(id, token)
+                    userRepository.postLoginFacebook(id, token)
                         .bindUi(
                             this@SignInFragment,
                             onSuccess = {

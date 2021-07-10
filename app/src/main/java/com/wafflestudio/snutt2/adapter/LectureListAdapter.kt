@@ -39,7 +39,7 @@ class LectureListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE.Lecture.value) {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.cell_lecture, parent, false)
+                .inflate(R.layout.item_lecture_list, parent, false)
             // create ViewHolder
             LectureViewHolder(view, lectureManager)
         } else {
@@ -220,8 +220,8 @@ class LectureListAdapter(
             classTime = itemView.findViewById<View>(R.id.time) as TextView
             location = itemView.findViewById<View>(R.id.location) as TextView
             add = itemView.findViewById<View>(R.id.add) as Button
-            remove = itemView.findViewById<View>(R.id.remove) as Button
-            margin = itemView.findViewById(R.id.margin)
+            remove = itemView.findViewById<View>(R.id.add) as Button
+            margin = itemView.findViewById(R.id.add)
             layout.setOnClickListener(this)
             add.setOnClickListener(this)
             remove.setOnClickListener(this)

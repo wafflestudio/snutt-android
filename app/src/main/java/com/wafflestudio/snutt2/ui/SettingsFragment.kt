@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import com.wafflestudio.snutt2.model.SettingsItem
 import dagger.hilt.android.AndroidEntryPoint
 import de.psdev.licensesdialog.LicensesDialog
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class SettingsFragment : SNUTTBaseFragment() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var userRepository: UserRepository
 
     private var lists: MutableList<SettingsItem>? = null
     private var adapter: SettingsAdapter? = null
@@ -144,11 +144,11 @@ class SettingsFragment : SNUTTBaseFragment() {
         alert.setMessage("로그아웃 하시겠습니까?")
         alert.setPositiveButton("로그아웃") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "로그아웃", "잠시만 기다려 주세요", true, false)
-            userManager.deleteFirebaseToken()
+            userRepository.deleteFirebaseToken()
                 .bindUi(
                     this,
                     onSuccess = {
-                        userManager.performLogout()
+                        userRepository.performLogout()
                         mainActivity!!.startIntro()
                         mainActivity!!.finishAll()
                         progressDialog.dismiss()

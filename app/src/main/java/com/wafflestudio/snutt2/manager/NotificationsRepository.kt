@@ -1,9 +1,15 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.rxjava3.flowable
+import com.wafflestudio.snutt2.data.NotificationsPagingSource
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.GetNotificationCountResults
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
@@ -13,9 +19,10 @@ import javax.inject.Singleton
  * Created by makesource on 2017. 2. 27..
  */
 @Singleton
-class NotiManager @Inject constructor(
+class NotificationsRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
-    private val prefStorage: PrefStorage
+    private val prefStorage: PrefStorage,
+    private val pagingSource: NotificationsPagingSource
 ) {
     private var notifications: MutableList<NotificationDto?> = ArrayList()
     var fetched: Boolean = false
@@ -70,8 +77,6 @@ class NotiManager @Inject constructor(
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get notification success!")
-//                Refactoring FIXME: dirty progress
-//                removeProgressBar()
                 for (notification in it) {
                     notifications!!.add(notification)
                 }
@@ -80,15 +85,6 @@ class NotiManager @Inject constructor(
                 Log.e(TAG, "get notification failed.")
             }
     }
-
-//    fun addProgressBar() {
-//        // Refactoring FIXME: 더러운 코드
-//        notifications!!.add(null)
-//    }
-
-//    fun removeProgressBar() {
-//        notifications!!.removeAt(notifications!!.size - 1)
-//    }
 
     fun refreshNotification(): Single<List<NotificationDto>> {
         val token = prefStorage.prefKeyXAccessToken
@@ -121,11 +117,15 @@ class NotiManager @Inject constructor(
             }
     }
 
-    fun notifyNotificationReceived() {
-        fetched = false
-        for (listener in listeners) {
-            listener.notifyNotificationReceived()
-        }
+    fun getPagedNotifications(): Flowable<PagingData<NotificationDto>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true,
+                prefetchDistance = 5,
+            ),
+            pagingSourceFactory = { pagingSource }
+        ).flowable
     }
 
     companion object {

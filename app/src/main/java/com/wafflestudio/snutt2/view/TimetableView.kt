@@ -15,6 +15,8 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
+import kotlin.math.max
+import kotlin.math.min
 
 class TimetableView : View {
 
@@ -222,12 +224,22 @@ class TimetableView : View {
         bgColor: Int,
         fgColor: Int,
     ) {
-        val left = hourLabelWidth + (classTime.day - trimParam.dayOfWeekFrom) * unitWidth
+        val dayOffset = classTime.day - trimParam.dayOfWeekFrom
+        val hourRangeOffset = Pair(
+            max(classTime.start - trimParam.hourFrom + 8, 0f),
+            min(
+                classTime.start + classTime.len - trimParam.hourFrom + 8,
+                trimParam.hourTo - trimParam.hourFrom.toFloat()
+            )
+        )
+
+
+        val left = hourLabelWidth + (dayOffset) * unitWidth
         val right =
-            hourLabelWidth + (classTime.day - trimParam.dayOfWeekFrom) * unitWidth + unitWidth
-        val top = dayLabelHeight + (classTime.start - trimParam.hourFrom) * unitHeight
+            hourLabelWidth + (dayOffset) * unitWidth + unitWidth
+        val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
         val bottom =
-            dayLabelHeight + (classTime.start + classTime.len - trimParam.hourFrom) * unitHeight
+            dayLabelHeight + (hourRangeOffset.second) * unitHeight
 
         val rect = RectF(left, top, right, bottom)
 

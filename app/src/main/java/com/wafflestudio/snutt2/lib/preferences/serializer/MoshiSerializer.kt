@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib.preferences.serializer
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import java.lang.reflect.Type
 import javax.inject.Inject

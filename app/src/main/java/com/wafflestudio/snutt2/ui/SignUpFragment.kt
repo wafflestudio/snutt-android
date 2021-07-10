@@ -17,7 +17,7 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class SignUpFragment : SNUTTBaseFragment() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var userRepository: UserRepository
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -67,7 +67,7 @@ class SignUpFragment : SNUTTBaseFragment() {
                     return@OnClickListener
                 }
                 val progressDialog = ProgressDialog.show(context, "회원가입", "잠시만 기다려 주세요", true, false)
-                userManager.postSingUp(id, password, email)
+                userRepository.postSingUp(id, password, email)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -108,7 +108,7 @@ class SignUpFragment : SNUTTBaseFragment() {
                         true,
                         false
                     )
-                    userManager.postLoginFacebook(id, token)
+                    userRepository.postLoginFacebook(id, token)
                         .bindUi(
                             this@SignUpFragment,
                             onSuccess = {

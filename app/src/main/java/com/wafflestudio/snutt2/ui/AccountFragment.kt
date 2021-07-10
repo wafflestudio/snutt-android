@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import com.wafflestudio.snutt2.model.SettingsItem
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +38,7 @@ import javax.inject.Inject
 class AccountFragment : SNUTTBaseFragment() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var userRepository: UserRepository
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -73,9 +73,8 @@ class AccountFragment : SNUTTBaseFragment() {
                 }
             }
         )
-        addSettingsList(userManager.user)
         adapter!!.notifyDataSetChanged()
-        userManager.getUserInfo()
+        userRepository.getUserInfo()
             .bindUi(
                 this,
                 onSuccess = {
@@ -127,7 +126,7 @@ class AccountFragment : SNUTTBaseFragment() {
             if (newPassword != newPasswordConfirm) {
                 Toast.makeText(app, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
-                userManager.putUserPassword(oldPassword, newPassword)
+                userRepository.putUserPassword(oldPassword, newPassword)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -162,7 +161,7 @@ class AccountFragment : SNUTTBaseFragment() {
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
             if (!Strings.isNullOrEmpty(email)) {
-                userManager.putUserInfo(email)
+                userRepository.putUserInfo(email)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -200,7 +199,7 @@ class AccountFragment : SNUTTBaseFragment() {
             if (password != passwordConfirm) {
                 Toast.makeText(app, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
-                userManager.postUserPassword(id, password)
+                userRepository.postUserPassword(id, password)
                     .bindUi(
                         this,
                         onSuccess = {
@@ -221,7 +220,7 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setTitle("페이스북 연동 끊기")
         alert.setMessage("페이스북 연동을 끊겠습니까?")
         alert.setPositiveButton("끊기") { dialog, whichButton ->
-            userManager.deleteUserFacebook()
+            userRepository.deleteUserFacebook()
                 .bindUi(
                     this,
                     onSuccess = {
@@ -244,14 +243,14 @@ class AccountFragment : SNUTTBaseFragment() {
         alert.setMessage("SNUTT 회원 탈퇴를 하겠습니까?")
         alert.setPositiveButton("회원탈퇴") { dialog, whichButton ->
             val progressDialog = ProgressDialog.show(context, "회원탈퇴", "잠시만 기다려 주세요", true, false)
-            userManager.deleteFirebaseToken()
+            userRepository.deleteFirebaseToken()
                 .flatMap {
-                    userManager.deleteUserAccount()
+                    userRepository.deleteUserAccount()
                 }
                 .bindUi(
                     this,
                     onSuccess = {
-                        userManager.performLogout()
+                        userRepository.performLogout()
                         sNUTTBaseActivity!!.startIntro()
                         sNUTTBaseActivity!!.finishAll()
                         progressDialog.dismiss()
@@ -299,7 +298,7 @@ class AccountFragment : SNUTTBaseFragment() {
         lists!!.add(position, SettingsItem("페이스북 이름", "", SettingsItem.Type.FacebookName))
         adapter!!.notifyItemInserted(position)
         val pos = position
-        userManager.getUserFacebook()
+        userRepository.getUserFacebook()
             .bindUi(
                 this,
                 onSuccess = {
@@ -358,7 +357,7 @@ class AccountFragment : SNUTTBaseFragment() {
                     val token = loginResult.accessToken.token
                     Log.i(TAG, "User ID: " + loginResult.accessToken.userId)
                     Log.i(TAG, "Auth Token: " + loginResult.accessToken.token)
-                    userManager.postUserFacebook(id, token)
+                    userRepository.postUserFacebook(id, token)
                         .bindUi(
                             this@AccountFragment,
                             onSuccess = {

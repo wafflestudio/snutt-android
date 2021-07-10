@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SNUTTStorage @Inject constructor(prefStorage: PrefStorage) {
+class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
 
     val lastViewedTable: PrefValue<Optional<TableDto>> = PrefValue.defineNullableStorageValue(
         "last_table",
@@ -24,4 +24,22 @@ class SNUTTStorage @Inject constructor(prefStorage: PrefStorage) {
         prefStorage,
         TableTrimParam::class
     )
+
+    val accessToken = PrefValue.defineNonNullStorageValue(
+        "pref_key_x_access_token",
+        "",
+        prefStorage,
+        String::class
+    )
+
+    val prefKeyUserId = PrefValue.defineNullableStorageValue(
+        "pref_key_user_id",
+        null,
+        prefStorage,
+        String::class
+    )
+
+    fun clearAll() {
+        prefStorage.clear()
+    }
 }

@@ -20,8 +20,8 @@ import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.adapter.SectionsPagerAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.manager.NotiManager
-import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListener
+import com.wafflestudio.snutt2.manager.NotificationsRepository
+import com.wafflestudio.snutt2.manager.NotificationsRepository.OnNotificationReceivedListener
 import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.manager.TableManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +37,7 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
     lateinit var lectureManager: LectureManager
 
     @Inject
-    lateinit var notiManager: NotiManager
+    lateinit var notificationsRepository: NotificationsRepository
 
     @Inject
     lateinit var tableManager: TableManager
@@ -61,7 +61,7 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity onCreate called!")
         activityList.add(this)
-        notiManager.addListener(this)
+        notificationsRepository.addListener(this)
         setContentView(R.layout.activity_main)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -130,7 +130,7 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
         }
 
         // noti check
-        notiManager.getNotificationCount()
+        notificationsRepository.getNotificationCount()
             .bindUi(
                 this,
                 onSuccess = {
@@ -178,7 +178,7 @@ open class MainActivity : SNUTTBaseActivity(), OnNotificationReceivedListener {
     override fun onDestroy() {
         super.onDestroy()
         activityList.remove(this)
-        notiManager.removeListener(this)
+        notificationsRepository.removeListener(this)
     }
 
     public override fun onResume() {

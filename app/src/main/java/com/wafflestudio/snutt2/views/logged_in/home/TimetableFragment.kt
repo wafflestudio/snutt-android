@@ -68,27 +68,6 @@ class TimetableFragment : BaseFragment() {
                 routeNotifications()
             }
 
-//        binding.timetable.lectures = listOf(
-//            LectureDto(
-//                "asdf",
-//                "asdf",
-//                "asdf",
-//                "asdf",
-//                "asdf",
-//                "asdf",
-//                "sdfg",
-//                0,
-//                listOf(),
-//                listOf(
-//                    ClassTimeDto(3, 8f, 1.5f, "asdf", "asdf")
-//                ),
-//                "asdf",
-//                "asdf",
-//                "sadf",
-//                0,
-//                ColorDto("#111111", "#dddddd")
-//            )
-//        )
     }
 
     private fun routeLectureDetail() {

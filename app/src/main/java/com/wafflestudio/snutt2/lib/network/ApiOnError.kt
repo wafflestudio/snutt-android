@@ -8,7 +8,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.UserManager
+import com.wafflestudio.snutt2.manager.UserRepository
 import com.wafflestudio.snutt2.ui.IntroActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -26,7 +26,7 @@ import javax.inject.Singleton
 class ApiOnError @Inject constructor(
     @ApplicationContext private val context: Context,
     private val moshi: Moshi,
-    private val userManager: UserManager
+    private val userRepository: UserRepository
 ) : (Throwable) -> Unit {
 
     override fun invoke(error: Throwable) {
@@ -124,15 +124,15 @@ class ApiOnError @Inject constructor(
                             Toast.LENGTH_SHORT
                         ).show()
                         // Refactoring FIXME: Unbounded
-                        userManager.postForceLogout()
+                        userRepository.postForceLogout()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(
                                 onSuccess = {
-                                    userManager.performLogout()
-                                    startIntro()
+                                    userRepository.performLogout()
                                 },
                                 onError = {
-                                    Toast.makeText(context, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "로그아웃에 실패하였습니다.", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                             )
                     }
@@ -271,13 +271,6 @@ class ApiOnError @Inject constructor(
                 ).show()
             }
         }
-    }
-
-    private fun startIntro() {
-        val intent = Intent(context, IntroActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        context.startActivity(intent)
     }
 
     companion object {

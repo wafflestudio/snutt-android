@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -19,7 +20,8 @@ import java.util.*
 /**
  * Created by makesource on 2017. 2. 27..
  */
-class NotificationAdapter(private val lists: List<NotificationDto?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotificationAdapter(private val lists: List<NotificationDto?>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class VIEW_TYPE(val value: Int) {
         Notification(0), ProgressBar(1);
     }
@@ -61,8 +63,8 @@ class NotificationAdapter(private val lists: List<NotificationDto?>) : RecyclerV
     class NotificationViewHolder constructor(view: View) : RecyclerView.ViewHolder(view) {
         private val message: TextView
         private val image: ImageView
+
         fun bindData(notification: NotificationDto) {
-            // Log.d(TAG, "notification message : " + notification.getMessage());
             var text = notification.message
             when (notification.type) {
                 0 -> image.setImageResource(R.drawable.noticewarning)

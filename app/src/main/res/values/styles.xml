@@ -265,4 +265,28 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="Typo.SubHeading">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Typo.SubHeading2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Typo.Details">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Typo.Details2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

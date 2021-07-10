@@ -15,8 +15,8 @@ import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.NotificationAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.listener.EndlessRecyclerViewScrollListener
-import com.wafflestudio.snutt2.manager.NotiManager
-import com.wafflestudio.snutt2.manager.NotiManager.OnNotificationReceivedListener
+import com.wafflestudio.snutt2.manager.NotificationsRepository
+import com.wafflestudio.snutt2.manager.NotificationsRepository.OnNotificationReceivedListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener {
 
     @Inject
-    lateinit var notiManager: NotiManager
+    lateinit var notificationsRepository: NotificationsRepository
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -46,9 +46,9 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         val rootView = inflater.inflate(R.layout.fragment_notification, container, false)
         val recyclerView = rootView.findViewById<View>(R.id.notification_recyclerView) as RecyclerView
         placeholder = rootView.findViewById<View>(R.id.placeholder) as LinearLayout
-        placeholder!!.visibility = if (notiManager.hasNotifications()) View.GONE else View.VISIBLE
+        placeholder!!.visibility = if (notificationsRepository.hasNotifications()) View.GONE else View.VISIBLE
         linearLayoutManager = LinearLayoutManager(context)
-        adapter = NotificationAdapter(notiManager.getNotifications())
+        adapter = NotificationAdapter(notificationsRepository.getNotifications())
         scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager!!) {
             override fun getFooterViewType(defaultNoFooterViewType: Int): Int {
                 return NotificationAdapter.VIEW_TYPE.ProgressBar.value
@@ -65,15 +65,15 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         layout = rootView.findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         refreshListener = OnRefreshListener {
             Log.d(TAG, "swipe refreshed called.")
-            notiManager.refreshNotification()
+            notificationsRepository.refreshNotification()
                 .bindUi(
                     this,
                     onSuccess = {
                         scrollListener!!.init()
                         layout!!.isRefreshing = false
                         adapter!!.notifyDataSetChanged()
-                        notiManager.fetched = true
-                        placeholder!!.visibility = if (notiManager.hasNotifications()) View.GONE else View.VISIBLE
+                        notificationsRepository.fetched = true
+                        placeholder!!.visibility = if (notificationsRepository.hasNotifications()) View.GONE else View.VISIBLE
                     },
                     onError = {
                         apiOnError(it)
@@ -87,16 +87,16 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume called")
-        if (!notiManager.fetched) {
+        if (!notificationsRepository.fetched) {
             autoFetch(layout, refreshListener)
         }
-        notiManager.addListener(this)
+        notificationsRepository.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause called")
-        notiManager.removeListener(this)
+        notificationsRepository.removeListener(this)
     }
 
     override fun notifyNotificationReceived() {
@@ -114,7 +114,7 @@ class NotificationFragment : SNUTTBaseFragment(), OnNotificationReceivedListener
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
 //        Refactoring FIXME: dirty progress
 //        notiManager.addProgressBar()
-        notiManager.loadData(totalItemsCount)
+        notificationsRepository.loadData(totalItemsCount)
             .bindUi(
                 this,
                 onSuccess = {
