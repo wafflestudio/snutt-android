@@ -1,11 +1,13 @@
 package com.wafflestudio.snutt2.manager
 
 import android.util.Log
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.model.Coursebook
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
+import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
@@ -21,18 +23,17 @@ class TableManager @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
     private val lectureManager: LectureManager,
     private val tagManager: TagManager,
-    private val prefStorage: PrefStorage
+    private val prefStorage: PrefStorage,
+    private val storage: SNUTTStorage
 ) {
-    private var tables: MutableList<TableDto>? = ArrayList()
     private var tableMap: MutableMap<String, TableDto> = HashMap()
 
     fun reset() {
-        tables = ArrayList()
         tableMap = HashMap()
     }
 
     fun hasTimetables(): Boolean {
-        return if (tables == null || tables!!.size == 0) false else true
+        return false
     }
 
     fun getTableList(): Single<List<TableDto>> {
@@ -40,9 +41,8 @@ class TableManager @Inject constructor(
         return snuttRestApi.getTableList(token)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                Log.d(TAG, "get table list request success!")
-                tables!!.clear()
                 tableMap.clear()
+                storage.tables.setValue(result)
                 result.forEach { addTable(it) }
             }
             .doOnError {
@@ -58,8 +58,6 @@ class TableManager @Inject constructor(
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                Log.d(TAG, "post new table request success!!")
-                tables!!.clear()
                 tableMap.clear()
                 it.forEach { addTable(it) }
             }
@@ -98,25 +96,14 @@ class TableManager @Inject constructor(
                 prefStorage.updateNewTable(it)
                 tagManager.updateNewTag(it.year.toInt(), it.semester.toInt())
             }
-            .doOnError {
-                Log.d(TAG, "get recent table request failed!")
-            }
     }
 
-    fun getCoursebook(): Single<List<Coursebook>> {
+    fun getCoursebook(): Single<List<CourseBookDto>> {
         // String token = PrefManager.getInstance().getPrefKeyXAccessToken();
         return snuttRestApi.getCoursebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                Log.d(TAG, "get coursebook request success.")
-            }
-            .doOnError {
-                Log.d(TAG, "get coursebook request failed.")
-            }
-            .map { it ->
-                it.map { item ->
-                    Coursebook(item.semester, item.year)
-                }
+                storage.courseBooks.setValue(it)
             }
     }
 
@@ -128,7 +115,6 @@ class TableManager @Inject constructor(
         )
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")
-                tables!!.clear()
                 tableMap.clear()
                 for (table in it) addTable(table)
             }
@@ -147,7 +133,6 @@ class TableManager @Inject constructor(
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "delete table request success.")
-                tables!!.clear()
                 tableMap.clear()
                 for (table in it) addTable(table)
             }
@@ -157,9 +142,7 @@ class TableManager @Inject constructor(
     }
 
     fun addTable(table: TableDto) {
-        tables!!.add(table)
-        tableMap[table.id!!] = table
-        Collections.sort(tables)
+        tableMap[table.id] = table
     }
 
     fun getTableTitleById(id: String): String? {

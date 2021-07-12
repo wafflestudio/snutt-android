@@ -2,14 +2,16 @@ package com.wafflestudio.snutt2.manager
 
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.toOptional
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,7 +24,7 @@ import kotlin.collections.ArrayList
 class LectureManager @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
     private val tagManager: TagManager,
-    private val prefStorage: PrefStorage
+    private val storage: SNUTTStorage
 ) {
     private var lectures: MutableList<LectureDto> = ArrayList()
     private var selectedLecture: LectureDto? = null
@@ -33,27 +35,27 @@ class LectureManager @Inject constructor(
     private var searchedLectures: MutableList<LectureDto?> = ArrayList()
 
     // color list
-    var colorList: List<ColorDto>? = null
+    var colorList: List<ColorDto> = listOf()
         private set
-    var colorNameList: List<String>? = null
+    var colorNameList: List<String> = listOf()
         private set
 
-    init {
-        loadColorData()
-    }
-
-    private fun loadColorData() {
-        val type1 = object : TypeToken<List<ColorDto?>?>() {}.type
-        colorList = Gson().fromJson(prefStorage.lectureColors, type1)
-        val type2 = object : TypeToken<List<String?>?>() {}.type
-        colorNameList = Gson().fromJson(prefStorage.lectureColorNames, type2)
-        if (colorList == null) {
-            colorList = ArrayList()
-        }
-        if (colorNameList == null) {
-            colorNameList = ArrayList()
-        }
-    }
+//    init {
+//        loadColorData()
+//    }
+//
+//    private fun loadColorData() {
+//        val type1 = object : TypeToken<List<ColorDto?>?>() {}.type
+//        colorList = Gson().fromJson(storage.lectureColors, type1)
+//        val type2 = object : TypeToken<List<String?>?>() {}.type
+//        colorNameList = Gson().fromJson(storage.lectureColorNames, type2)
+//        if (colorList == null) {
+//            colorList = ArrayList()
+//        }
+//        if (colorNameList == null) {
+//            colorNameList = ArrayList()
+//        }
+//    }
 
     interface OnLectureChangedListener {
         fun notifyLecturesChanged()
@@ -128,18 +130,20 @@ class LectureManager @Inject constructor(
 
     // this is for searched lecture
     fun addLecture(lec: LectureDto): Single<TableDto> {
-        val token = prefStorage.prefKeyXAccessToken
-        val id = prefStorage.lastViewTableId
+        val token = storage.accessToken.getValue()
+        val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
+
         val lectureId = lec.id
         return snuttRestApi.postAddLecture(
-            token!!,
-            id!!,
+            token,
+            id,
             lectureId
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                Log.d(TAG, "post lecture request success!!")
-                prefStorage.updateNewTable(it)
+                storage.lastViewedTable.setValue(it.toOptional())
                 setLectures(it.lectureList)
                 notifyLecturesChanged()
             }
@@ -160,81 +164,77 @@ class LectureManager @Inject constructor(
 
     // this is for custom lecture
     fun createLecture(lecture: PostCustomLectureParams): Single<TableDto> {
-        Log.d(TAG, "create lecture method called!!")
-        val token = prefStorage.prefKeyXAccessToken
-        val id = prefStorage.lastViewTableId
-        return snuttRestApi.postCustomLecture(token!!, id!!, lecture)
+        val token = storage.accessToken.getValue()
+        val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
+
+        return snuttRestApi.postCustomLecture(token, id, lecture)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                prefStorage.updateNewTable(result)
+                storage.lastViewedTable.setValue(result.toOptional())
                 setLectures(result.lectureList)
                 notifyLecturesChanged()
             }
     }
 
-    fun removeLecture(lectureId: String?): Single<TableDto> {
-        val token = prefStorage.prefKeyXAccessToken
-        val id = prefStorage.lastViewTableId
+    fun removeLecture(lectureId: String): Single<TableDto> {
+        val token = storage.accessToken.getValue()
+        val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
         return snuttRestApi.deleteLecture(
-            token!!,
-            id!!,
-            lectureId!!
+            token,
+            id,
+            lectureId
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                Log.d(TAG, "remove lecture request success!!")
-                prefStorage.updateNewTable(result)
+                storage.lastViewedTable.setValue(result.toOptional())
                 setLectures(result.lectureList)
                 currentLecture = null
                 notifyLecturesChanged()
-            }
-            .doOnError {
-                Log.e(TAG, "remove lecture request failed ...")
             }
     }
 
     // reset lecture from my lecture list
     // _id 는 유지된다
     fun resetLecture(lectureId: String): Single<TableDto> {
-        val token = prefStorage.prefKeyXAccessToken
-        val id = prefStorage.lastViewTableId
+        val token = storage.accessToken.getValue()
+        val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
         return snuttRestApi.resetLecture(
-            token!!,
-            id!!,
+            token,
+            id,
             lectureId
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                Log.d(TAG, "reset lecture request success!!")
-                prefStorage.updateNewTable(result)
+                storage.lastViewedTable.setValue(result.toOptional())
                 setLectures(result.lectureList)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
             }
-            .doOnError {
-                Log.e(TAG, "reset lecture request failed ...")
-            }
     }
 
     fun updateLecture(lectureId: String, target: PutLectureParams): Single<TableDto> {
-        Log.d(TAG, "update lecture method called!!")
-        val token = prefStorage.prefKeyXAccessToken
-        val id = prefStorage.lastViewTableId
+        val token = storage.accessToken.getValue()
+        val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
         return snuttRestApi.putLecture(
-            token!!,
-            id!!,
+            token,
+            id,
             lectureId,
             target
         )
             .subscribeOn(Schedulers.io())
-            .doOnSuccess {
-                prefStorage.updateNewTable(it)
-                setLectures(it.lectureList)
+            .doOnSuccess { result ->
+                storage.lastViewedTable.setValue(result.toOptional())
+                setLectures(result.lectureList)
                 currentLecture = getLectureById(lectureId)
                 notifyLecturesChanged()
-            }
-            .doOnError {
-                Log.e(TAG, "put lecture request failed..")
             }
     }
 
@@ -242,8 +242,13 @@ class LectureManager @Inject constructor(
         courseNumber: String,
         lectureNumber: String,
     ): Single<GetCoursebooksOfficialResults> {
-        val year = prefStorage.currentYear.toLong()
-        val semester = prefStorage.currentSemester.toLong()
+        val year = storage.lastViewedTable.getValue().get()?.year ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
+        val semester = storage.lastViewedTable.getValue().get()?.semester ?: return Single.error(
+            RuntimeException("no last viewed table")
+        )
+
         return snuttRestApi.getCoursebooksOfficial(
             year = year,
             semester = semester,
@@ -251,12 +256,6 @@ class LectureManager @Inject constructor(
             lectureNumber = lectureNumber
         )
             .subscribeOn(Schedulers.io())
-            .doOnSuccess {
-                Log.d(TAG, "get coursebook official request success!")
-            }
-            .doOnError {
-                Log.e(TAG, "get coursebook official request failed..")
-            }
     }
 
     // 내 강의에 이미 들어있는지 -> course_number, lecture_number 비교
@@ -267,34 +266,11 @@ class LectureManager @Inject constructor(
         return false
     }
 
-    // 이미 내 강의에 존재하는 시간인지
-    fun alreadyExistClassTime(lec: LectureDto): Boolean {
-        for (lecture in lectures) {
-            if (isDuplicatedClassTime(lecture, lec)) return true
-        }
-        return false
-    }
-
-    // 주어진 요일, 시각을 포함하고 있는지
-    fun contains(lec1: LectureDto, given_day: Int, given_time: Float): Boolean {
-        for (classTimeDto in lec1.class_time_json) {
-            val day1 = classTimeDto.day
-            val start1 = classTimeDto.start
-            val len1 = classTimeDto.len
-            val end1 = start1 + len1
-            val len2 = 0.5f
-            val end2 = given_time + len2
-            if (day1 != given_day) continue
-            if (!(end1 <= given_time || end2 <= start1)) return true
-        }
-        return false
-    }
-
     fun postSearchQuery(text: String?): Single<List<LectureDto>> {
         searchedQuery = text
         val param = PostSearchQueryParams(
-            year = prefStorage.currentYear.toLong(),
-            semester = prefStorage.currentSemester.toLong(),
+            year = 1, // storage.currentYear.toLong(),
+            semester = 1, // storage.currentSemester.toLong(),
             title = text,
             classification = tagManager.getClassification(),
             credit = tagManager.getCredit().map { it.toLong() },
@@ -326,8 +302,8 @@ class LectureManager @Inject constructor(
 
     fun loadData(offset: Int): Single<List<LectureDto>> {
         val param = PostSearchQueryParams(
-            year = prefStorage.currentYear.toLong(),
-            semester = prefStorage.currentSemester.toLong(),
+            year = 1, // storage.currentYear.toLong(),
+            semester = 1, // storage.currentSemester.toLong(),
             title = searchedQuery,
             classification = tagManager.getClassification(),
             credit = tagManager.getCredit().map { it.toLong() },
@@ -390,8 +366,8 @@ class LectureManager @Inject constructor(
                 setColorNames(it.names)
                 val colorListJson = Gson().toJson(this@LectureManager.colorList)
                 val colorNameListJson = Gson().toJson(colorNameList)
-                prefStorage.lectureColors = colorListJson
-                prefStorage.lectureColorNames = colorNameListJson
+//                storage.lectureColors = colorListJson
+//                storage.lectureColorNames = colorNameListJson
                 notifyLecturesChanged()
             }
             .doOnError {
@@ -408,15 +384,15 @@ class LectureManager @Inject constructor(
     }
 
     fun getBgColorByIndex(index: Int): Int {
-        return if (colorList!!.size == 0) DEFAULT_BG[index - 1] else colorList!![index - 1].bgColor
+        return if (colorList.size == 0) DEFAULT_BG[index - 1] else colorList[index - 1].bgColor
     }
 
     fun getFgColorByIndex(index: Int): Int {
-        return if (colorList!!.size == 0) DEFAULT_FG[index - 1] else colorList!![index - 1].fgColor
+        return if (colorList.size == 0) DEFAULT_FG[index - 1] else colorList[index - 1].fgColor
     }
 
     fun getColorNameByIndex(index: Int): String {
-        return if (colorNameList!!.size == 0) DEFAULT_NAME[index - 1] else colorNameList!![index - 1]
+        return if (colorNameList.size == 0) DEFAULT_NAME[index - 1] else colorNameList[index - 1]
     }
 
     private fun isEqualLecture(lec1: LectureDto, lec2: LectureDto): Boolean {
@@ -470,7 +446,19 @@ class LectureManager @Inject constructor(
             "자수정",
             "직접 지정하기"
         )
-        private val DEFAULT_FG = intArrayOf(-0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0xcccccd)
-        private val DEFAULT_BG = intArrayOf(-0x1abba7, -0xa72c3, -0x53ad3, -0x5926d0, -0xd43c9a, -0xe42f37, -0xe26617, -0xb0b73c, -0x50a94d, -0x1f1f20)
+        private val DEFAULT_FG =
+            intArrayOf(-0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0xcccccd)
+        private val DEFAULT_BG = intArrayOf(
+            -0x1abba7,
+            -0xa72c3,
+            -0x53ad3,
+            -0x5926d0,
+            -0xd43c9a,
+            -0xe42f37,
+            -0xe26617,
+            -0xb0b73c,
+            -0x50a94d,
+            -0x1f1f20
+        )
     }
 }

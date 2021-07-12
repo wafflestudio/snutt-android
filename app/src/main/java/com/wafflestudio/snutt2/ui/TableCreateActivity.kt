@@ -40,6 +40,11 @@ class TableCreateActivity : SNUTTBaseActivity() {
         semesterSpinner = findViewById<View>(R.id.spinner) as Spinner
         titleText = findViewById<View>(R.id.table_title) as EditText
         tableManager.getCoursebook()
+            .map { it ->
+                it.map { item ->
+                    Coursebook(item.semester, item.year)
+                }
+            }
             .bindUi(
                 this,
                 onSuccess = { coursebooks ->

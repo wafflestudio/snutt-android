@@ -55,7 +55,26 @@ class PrefValue<T : Any> private constructor(
             prefStorage: PrefStorage,
             type: KClass<T>
         ): PrefValue<Optional<T>> {
-            return PrefValue(key, Optional.ofNullable(defaultValue), prefStorage, Types.newParameterizedType(Optional::class.java, type.javaObjectType))
+            return PrefValue(
+                key,
+                Optional.ofNullable(defaultValue),
+                prefStorage,
+                Types.newParameterizedType(Optional::class.java, type.javaObjectType)
+            )
+        }
+
+        fun <T : Any> defineListStorageValue(
+            key: String,
+            defaultValue: List<T>,
+            prefStorage: PrefStorage,
+            type: KClass<T>
+        ): PrefValue<List<T>> {
+            return PrefValue(
+                key,
+                defaultValue,
+                prefStorage,
+                Types.newParameterizedType(List::class.java, type.javaObjectType)
+            )
         }
     }
 }

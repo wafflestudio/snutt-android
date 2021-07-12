@@ -111,6 +111,11 @@ class TableListActivity : SNUTTBaseActivity() {
     private val tableList: Unit
         get() {
             tableManager.getCoursebook()
+                .map { it ->
+                    it.map { item ->
+                        Coursebook(item.semester, item.year)
+                    }
+                }
                 .bindUi(this) {
                     coursebookList = it
                     tableManager.getTableList()

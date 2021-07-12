@@ -157,7 +157,7 @@ class TableView : View {
             Log.d(TAG, "time : $time")
             for (i in lectures!!.indices) {
                 val lecture = lectures!![i]
-                if (lectureManager.contains(lecture, wday, time)) {
+                if (true) {
                     val intent = Intent(context, LectureMainActivity::class.java)
                     intent.putExtra(SNUTTBaseActivity.INTENT_KEY_LECTURE_POSITION, i)
                     context.startActivity(intent)

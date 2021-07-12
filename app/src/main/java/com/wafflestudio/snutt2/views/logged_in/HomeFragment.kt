@@ -31,6 +31,14 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        childFragmentManager.commit {
+            replace(
+                R.id.contents,
+                fragmentMap[R.id.action_timetable]!!
+            )
+        }
+
         return binding.root
     }
 

@@ -60,6 +60,15 @@
         <action
             android:id="@+id/action_homeFragment_to_termsInfoFragment"
             app:destination="@id/termsInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_userSettingsFragment"
+            app:destination="@id/userSettingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_timetableSettingsFragment"
+            app:destination="@id/timetableSettingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_teamInfoFragment"
+            app:destination="@id/teamInfoFragment" />
     </fragment>
 
     <fragment
@@ -83,7 +92,7 @@
 
     <fragment
         android:id="@+id/lectureDetailFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.LectureDetailFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragment"
         android:label="fragment_lecture_detail"
         tools:layout="@layout/fragment_lecture_detail" />
 
@@ -103,5 +112,20 @@
         app:destination="@id/tutorialFragment"
         app:popUpTo="@id/root_graph"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/userSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.settings.UserSettingsFragment"
+        android:label="fragment_user_settings"
+        tools:layout="@layout/fragment_user_settings" />
+    <fragment
+        android:id="@+id/timetableSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TimetableSettingsFragment"
+        android:label="fragment_timetable_settings"
+        tools:layout="@layout/fragment_timetable_settings" />
+    <fragment
+        android:id="@+id/teamInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TeamInfoFragment"
+        android:label="fragment_team_info"
+        tools:layout="@layout/fragment_team_info" />
 
 </navigation>

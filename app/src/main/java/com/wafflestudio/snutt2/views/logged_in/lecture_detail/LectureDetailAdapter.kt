@@ -1,5 +1,6 @@
-package com.wafflestudio.snutt2.adapter
+package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -15,6 +16,7 @@ import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
@@ -26,20 +28,17 @@ import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.ui.LectureDetailFragment
-import com.wafflestudio.snutt2.ui.LectureMainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import java.util.*
 
 /**
  * Created by makesource on 2017. 3. 17..
  */
 class LectureDetailAdapter(
-    private val activity: LectureMainActivity,
     private val fragment: LectureDetailFragment,
-    lists: ArrayList<LectureItem>,
+    lists: MutableList<LectureItem>,
     private val lectureManager: LectureManager,
     private val apiOnError: ApiOnError,
     private val bindable: RxBindable
@@ -108,13 +107,13 @@ class LectureDetailAdapter(
             val viewHolder = holder as ButtonViewHolder?
             viewHolder!!.bindData(item) {
                 when (item.type) {
-                    LectureItem.Type.Syllabus -> startSyllabus()
-                    LectureItem.Type.RemoveLecture -> startRemoveAlertView()
+                    LectureItem.Type.Syllabus -> startSyllabus(it.context)
+                    LectureItem.Type.RemoveLecture -> startRemoveAlertView(it.context)
                     LectureItem.Type.AddClassTime -> {
                         addClassItem()
                         notifyItemInserted(lastClassItemPosition)
                     }
-                    LectureItem.Type.ResetLecture -> startResetAlertView()
+                    LectureItem.Type.ResetLecture -> startResetAlertView(it.context)
                     else -> {
                     }
                 }
@@ -124,7 +123,8 @@ class LectureDetailAdapter(
             val viewHolder = holder as ColorViewHolder?
             viewHolder!!.bindData(item) {
                 if (item.isEditable) {
-                    activity.setColorPickerFragment(item)
+//                      TODO
+//                    activity.setColorPickerFragment(item)
                 }
             }
         }
@@ -132,7 +132,7 @@ class LectureDetailAdapter(
             val viewHolder = holder as ClassViewHolder?
             viewHolder!!.bindData(item) {
                 if (item.isEditable) {
-                    showDialog(item)
+                    showDialog(item, it.context)
                 }
             }
         }
@@ -239,8 +239,22 @@ class LectureDetailAdapter(
                 else -> {
                     value.addTextChangedListener(
                         object : TextWatcher {
-                            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                            override fun beforeTextChanged(
+                                s: CharSequence,
+                                start: Int,
+                                count: Int,
+                                after: Int
+                            ) {
+                            }
+
+                            override fun onTextChanged(
+                                s: CharSequence,
+                                start: Int,
+                                before: Int,
+                                count: Int
+                            ) {
+                            }
+
                             override fun afterTextChanged(s: Editable) {
                                 textChangedListener!!.onText1Changed(s.toString(), position)
                             }
@@ -310,7 +324,8 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View, val lectureManager: LectureManager) : RecyclerView.ViewHolder(view) {
+    private class ColorViewHolder(view: View, val lectureManager: LectureManager) :
+        RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
         private val fgColor: View
@@ -345,8 +360,22 @@ class LectureDetailAdapter(
             editText1.setText(item.value1)
             editText1.addTextChangedListener(
                 object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
                     override fun afterTextChanged(s: Editable) {
                         textChangedListener!!.onText1Changed(s.toString(), position)
                     }
@@ -357,7 +386,8 @@ class LectureDetailAdapter(
             editText1.isClickable = item.isEditable
             editText1.isFocusable = item.isEditable
             editText1.isFocusableInTouchMode = item.isEditable
-            editText1.movementMethod = if (item.isEditable) ArrowKeyMovementMethod.getInstance() else LinkMovementMethod.getInstance()
+            editText1.movementMethod =
+                if (item.isEditable) ArrowKeyMovementMethod.getInstance() else LinkMovementMethod.getInstance()
         }
 
         init {
@@ -366,7 +396,8 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener, OnLongClickListener {
+    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
+        OnLongClickListener {
         private val title1: TextView
         private val title2: TextView
         private val editText1: EditText
@@ -385,8 +416,22 @@ class LectureDetailAdapter(
             editText2.setText(item.classTime!!.place)
             editText2.addTextChangedListener(
                 object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
                     override fun afterTextChanged(s: Editable) {
                         textChangedListener!!.onLocationChanged(s.toString(), position)
 // item.getClassTime().setPlace(s.toString());
@@ -428,15 +473,16 @@ class LectureDetailAdapter(
         }
     }
 
-    private fun showDialog(item: LectureItem) {
-        val alert = AlertDialog.Builder(activity)
+    private fun showDialog(item: LectureItem, context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setPositiveButton("확인") { dialog, which -> // item's class time update
-            val t = ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
+            val t =
+                ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
             item.classTime = t
             notifyDataSetChanged()
             dialog.dismiss()
         }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
-        val inflater = LayoutInflater.from(activity)
+        val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.dialog_time_picker, null)
         alert.setView(layout)
         alert.show()
@@ -462,12 +508,14 @@ class LectureDetailAdapter(
         fromPicker.wrapSelectorWheel = false
         fromPicker.setOnValueChangedListener { picker, oldVal, newVal ->
             fromTime = newVal
-            /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues = null
+            /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
+            null
             toPicker.value = fromTime + 1
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = 28
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)
-            /* setValue method does not call listener, so we have to change the value manually */toTime = fromTime + 1
+            /* setValue method does not call listener, so we have to change the value manually */toTime =
+            fromTime + 1
         }
         toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
         val to = SNUTTUtils.getTimeList(fromTime + 1, 28)
@@ -479,8 +527,8 @@ class LectureDetailAdapter(
         toPicker.setOnValueChangedListener { picker, oldVal, newVal -> toTime = newVal }
     }
 
-    private fun showDeleteDialog(position: Int) {
-        val alert = AlertDialog.Builder(activity)
+    private fun showDeleteDialog(position: Int, context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setPositiveButton("확인") { dialog, which ->
             lists.removeAt(position)
             notifyItemRemoved(position)
@@ -489,7 +537,7 @@ class LectureDetailAdapter(
         alert.show()
     }
 
-    private fun startSyllabus() {
+    private fun startSyllabus(context: Context) {
         if (lectureManager.currentLecture == null) return
         val lecture = lectureManager.currentLecture
         // FIXME: no scope
@@ -500,12 +548,12 @@ class LectureDetailAdapter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { result ->
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
-                activity.startActivity(intent)
+                context.startActivity(intent)
             }
     }
 
-    private fun startRemoveAlertView() {
-        val alert = AlertDialog.Builder(activity)
+    private fun startRemoveAlertView(context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setTitle("강좌 삭제")
         alert.setMessage("강좌를 삭제하시겠습니까")
         alert.setPositiveButton(
@@ -518,7 +566,7 @@ class LectureDetailAdapter(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
-                            activity.finish()
+                            fragment.findNavController().popBackStack()
                         },
                         onError = {
                             apiOnError(it)
@@ -530,8 +578,8 @@ class LectureDetailAdapter(
         dialog.show()
     }
 
-    private fun startResetAlertView() {
-        val alert = AlertDialog.Builder(activity)
+    private fun startResetAlertView(context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setTitle("강좌 초기화")
         alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까")
         alert.setPositiveButton(
@@ -603,7 +651,7 @@ class LectureDetailAdapter(
         setOnDeleteClickListener(
             object : DeleteClickListener {
                 override fun onDeleteClick(view: View?, position: Int) {
-                    showDeleteDialog(position)
+                    showDeleteDialog(position, view?.context!!)
                 }
             }
         )

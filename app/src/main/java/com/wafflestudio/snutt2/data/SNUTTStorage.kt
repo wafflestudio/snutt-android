@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.data
 
+import com.google.common.collect.Table
 import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefValue
@@ -37,6 +39,20 @@ class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
         null,
         prefStorage,
         String::class
+    )
+
+    val tables: PrefValue<List<TableDto>> = PrefValue.defineListStorageValue(
+        "pref_tables",
+        listOf(),
+        prefStorage,
+        TableDto::class
+    )
+
+    val courseBooks: PrefValue<List<CourseBookDto>> = PrefValue.defineListStorageValue(
+        "pref_course_books",
+        listOf(),
+        prefStorage,
+        CourseBookDto::class
     )
 
     fun clearAll() {

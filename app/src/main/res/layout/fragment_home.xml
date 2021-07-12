@@ -23,23 +23,118 @@
             android:layout_height="wrap_content"
             app:itemBackground="@color/white"
             app:itemIconSize="30dp"
-            app:itemIconTint="@color/test"
+            app:itemIconTint="@color/bottom_nav_tint"
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/home_navigation_items" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="240dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/com_facebook_blue">
+        android:background="@color/white"
+        android:padding="20dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/drawer_logo"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/drawer_title"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="todo드로어" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/spoqa_han_sans_bold"
+            android:text="SNUTT"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@id/drawer_logo"
+            app:layout_constraintStart_toEndOf="@id/drawer_logo"
+            app:layout_constraintTop_toTopOf="@id/drawer_logo" />
 
-    </LinearLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/close_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_exit"
+            app:layout_constraintBottom_toBottomOf="@id/drawer_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/drawer_logo" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/close_button" />
+
+        <TextView
+            android:id="@+id/coursebook_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spoqa_han_sans_bold"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/coursebook_select_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/coursebook_select_button"
+            tools:text="2021 2학기" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/coursebook_select_button"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_arrow_down"
+            app:layout_constraintStart_toEndOf="@id/coursebook_title"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_divider"
+            app:layout_constraintTop_toBottomOf="@id/coursebook_select_button"
+            tools:listitem="@layout/item_table" />
+
+        <View
+            android:id="@+id/bottom_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@id/theme_button" />
+
+        <LinearLayout
+            android:id="@+id/theme_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_setting" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/spoqa_han_sans_bold"
+                android:maxLines="1"
+                android:text="시간표 테마 변경"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

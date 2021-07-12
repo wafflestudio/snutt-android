@@ -107,4 +107,9 @@
     <string name="notifications_placeholder_description">넣은 강좌의 수강편람이 바뀌거나, 새로운 수강편람이 뜨면 알림을 줍니다</string>
     <string name="notifications_placeholder_title">알림이 없습니다</string>
     <string name="common_network_failure">네트워크 연결 상태를 확인해주세요.</string>
+    <string name="settings_app_bar_title">설정</string>
+    <string name="course_book_spring_semster">1학기</string>
+    <string name="course_book_summer_semester">여름학기</string>
+    <string name="course_book_authum">2학기</string>
+    <string name="course_book_winter">겨울학기</string>
 </resources>

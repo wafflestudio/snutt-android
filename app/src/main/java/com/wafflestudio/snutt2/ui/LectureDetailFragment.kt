@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
-import com.wafflestudio.snutt2.adapter.LectureDetailAdapter
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -50,7 +50,6 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         }
         lists = ArrayList()
         attachLectureDetailList(lecture)
-        adapter = LectureDetailAdapter(lectureMainActivity!!, this, lists!!, lectureManager, apiOnError, this)
     }
 
     override fun onCreateView(
