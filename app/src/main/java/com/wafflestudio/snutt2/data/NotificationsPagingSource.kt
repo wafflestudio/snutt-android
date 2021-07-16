@@ -22,11 +22,9 @@ class NotificationsPagingSource @Inject constructor(
 
     override fun loadSingle(params: LoadParams<Long>): Single<LoadResult<Long, NotificationDto>> {
         val offset = params.key ?: 0
-        val token = storage.accessToken.getValue()
         val loadSize = params.loadSize.toLong()
 
         return api.getNotification(
-            token,
             limit = loadSize,
             offset = offset,
             explicit = 1

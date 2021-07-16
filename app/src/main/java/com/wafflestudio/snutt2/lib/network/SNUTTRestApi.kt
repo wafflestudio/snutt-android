@@ -45,7 +45,6 @@ interface SNUTTRestApi {
     // API Feedback
     @POST("/feedback")
     fun postFeedback(
-        @Header("x-access-token") token: String,
         @Body body: PostFeedbackParams
     ): Single<PostFeedbackResults>
 
@@ -64,61 +63,57 @@ interface SNUTTRestApi {
     // API Timetable
     @GET("/tables")
     fun getTableList(
-        @Header("x-access-token") token: String
     ): Single<GetTableListResults>
 
     @POST("/tables")
     fun postTable(
-        @Header("x-access-token") token: String,
         @Body body: PostTableParams,
     ): Single<PostTableResults>
 
     @GET("/tables/{id}")
     fun getTableById(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
     ): Single<GetTableByIdResults>
 
     @GET("/tables/recent")
-    fun getRecentTable(@Header("x-access-token") token: String): Single<GetRecentTableResults>
+    fun getRecentTable(): Single<GetRecentTableResults>
 
     @DELETE("/tables/{id}")
     fun deleteTable(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
     ): Single<DeleteTableResults>
 
     @PUT("/tables/{id}")
     fun putTable(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Body body: PutTableParams
     ): Single<PutTableResults>
 
+    @POST("/tables/{id}/copy")
+    fun copyTable(
+        @Path("id") id: String,
+    ): Single<PostCopyTableResults>
+
     @POST("/tables/{id}/lecture")
     fun postCustomLecture(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Body body: PostCustomLectureParams,
     ): Single<PostCustomLectureResults>
 
     @POST("/tables/{id}/lecture/{lecture_id}")
     fun postAddLecture(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
     ): Single<PostCustomLectureResults>
 
     @DELETE("/tables/{id}/lecture/{lecture_id}")
     fun deleteLecture(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
     ): Single<DeleteLectureResults>
 
     @PUT("/tables/{id}/lecture/{lecture_id}")
     fun putLecture(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
         @Body body: PutLectureParams,
@@ -126,7 +121,6 @@ interface SNUTTRestApi {
 
     @PUT("/tables/{id}/lecture/{lecture_id}/reset")
     fun resetLecture(
-        @Header("x-access-token") token: String,
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
     ): Single<ResetLectureResults>
@@ -140,63 +134,53 @@ interface SNUTTRestApi {
     // API for User
     @GET("/user/info")
     fun getUserInfo(
-        @Header("x-access-token") token: String
     ): Single<GetUserInfoResults>
 
     @PUT("/user/info")
     fun putUserInfo(
-        @Header("x-access-token") token: String,
         @Body body: PutUserInfoParams,
     ): Single<PutUserInfoResults>
 
     @PUT("/user/password")
     fun putUserPassword(
-        @Header("x-access-token") token: String,
         @Body body: PutUserPasswordParams,
     ): Single<PutUserPasswordResults>
 
     @POST("/user/password")
     fun postUserPassword(
-        @Header("x-access-token") token: String,
         @Body body: PostUserPasswordParams,
     ): Single<PostUserPasswordResults>
 
     @POST("/user/facebook")
     fun postUserFacebook(
-        @Header("x-access-token") token: String,
         @Body body: PostUserFacebookParams,
     ): Single<PostUserFacebookResults>
 
     @DELETE("/user/facebook")
     fun deleteUserFacebook(
-        @Header("x-access-token") token: String
     ): Single<DeleteUserFacebookResults>
 
     @GET("/user/facebook")
     fun getUserFacebook(
-        @Header("x-access-token") token: String
     ): Single<GetUserFacebookResults>
 
     @POST("/user/device/{registration_id}")
     fun registerFirebaseToken(
-        @Header("x-access-token") token: String,
         @Path("registration_id") id: String,
         @Body body: RegisterFirebaseTokenParams
     ): Single<RegisterFirebaseTokenResults>
 
     @DELETE("/user/device/{registration_id}")
     fun deleteFirebaseToken(
-        @Header("x-access-token") token: String,
         @Path("registration_id") id: String,
     ): Single<DeleteFirebaseTokenResults>
 
     @DELETE("/user/account")
-    fun deleteUserAccount(@Header("x-access-token") token: String): Single<DeleteUserAccountResults>
+    fun deleteUserAccount(): Single<DeleteUserAccountResults>
 
     // API for Notification
     @GET("/notification")
     fun getNotification(
-        @Header("x-access-token") token: String,
         @Query(value = "limit") limit: Long,
         @Query(value = "offset") offset: Long,
         @Query(value = "explicit") explicit: Long,
@@ -204,6 +188,5 @@ interface SNUTTRestApi {
 
     @GET("/notification/count")
     fun getNotificationCount(
-        @Header("x-access-token") token: String
     ): Single<GetNotificationCountResults>
 }

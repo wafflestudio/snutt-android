@@ -130,14 +130,12 @@ class LectureManager @Inject constructor(
 
     // this is for searched lecture
     fun addLecture(lec: LectureDto): Single<TableDto> {
-        val token = storage.accessToken.getValue()
         val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
             RuntimeException("no last viewed table")
         )
 
         val lectureId = lec.id
         return snuttRestApi.postAddLecture(
-            token,
             id,
             lectureId
         )
@@ -164,12 +162,11 @@ class LectureManager @Inject constructor(
 
     // this is for custom lecture
     fun createLecture(lecture: PostCustomLectureParams): Single<TableDto> {
-        val token = storage.accessToken.getValue()
         val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
             RuntimeException("no last viewed table")
         )
 
-        return snuttRestApi.postCustomLecture(token, id, lecture)
+        return snuttRestApi.postCustomLecture(id, lecture)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 storage.lastViewedTable.setValue(result.toOptional())
@@ -179,12 +176,10 @@ class LectureManager @Inject constructor(
     }
 
     fun removeLecture(lectureId: String): Single<TableDto> {
-        val token = storage.accessToken.getValue()
         val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
             RuntimeException("no last viewed table")
         )
         return snuttRestApi.deleteLecture(
-            token,
             id,
             lectureId
         )
@@ -200,12 +195,10 @@ class LectureManager @Inject constructor(
     // reset lecture from my lecture list
     // _id 는 유지된다
     fun resetLecture(lectureId: String): Single<TableDto> {
-        val token = storage.accessToken.getValue()
         val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
             RuntimeException("no last viewed table")
         )
         return snuttRestApi.resetLecture(
-            token,
             id,
             lectureId
         )
@@ -219,12 +212,10 @@ class LectureManager @Inject constructor(
     }
 
     fun updateLecture(lectureId: String, target: PutLectureParams): Single<TableDto> {
-        val token = storage.accessToken.getValue()
         val id = storage.lastViewedTable.getValue().get()?.id ?: return Single.error(
             RuntimeException("no last viewed table")
         )
         return snuttRestApi.putLecture(
-            token,
             id,
             lectureId,
             target

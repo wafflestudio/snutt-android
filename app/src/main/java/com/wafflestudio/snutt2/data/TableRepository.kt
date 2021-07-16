@@ -1,79 +1,86 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.GetTableListResults
-import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
+import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TableRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
-    private val storage: SNUTTStorage,
-    private val apiOnError: ApiOnError
+    private val storage: SNUTTStorage
 ) {
-    private val tableMap = BehaviorSubject.createDefault<Map<String, TableDto>>(mapOf())
+    private var _tableMap: Map<String, TableDto>
+        get() = storage.tableMap.getValue()
+        set(value) {
+            storage.tableMap.setValue(value)
+        }
+    val tableMap = storage.tableMap.asObservable()
+
+    fun getCurrentTable(): TableDto? {
+        return storage.lastViewedTable.getValue().get()
+    }
 
     fun refreshTable(tableId: String): Single<TableDto> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.getTableById(token, tableId)
+        return snuttRestApi.getTableById(tableId)
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
+                _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
                 storage.lastViewedTable.setValue(it.toOptional())
             }
     }
 
     fun getDefaultTable(): Single<TableDto> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.getRecentTable(token)
+        return snuttRestApi.getRecentTable()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
+                _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
                 storage.lastViewedTable.setValue(it.toOptional())
-
             }
-
     }
 
     fun getTableList(): Single<GetTableListResults> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.getTableList(token)
+        return snuttRestApi.getTableList()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                tableMap.onNext(result.map { it.id to it }.toMap())
+                _tableMap = result.map { it.id to it }.toMap()
             }
     }
 
     fun createTable(year: Long, semester: Long, title: String?): Single<List<TableDto>> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.postTable(token, PostTableParams(year, semester, title))
+        return snuttRestApi.postTable(PostTableParams(year, semester, title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                tableMap.onNext(result.map { it.id to it }.toMap())
+                _tableMap = result.map { it.id to it }.toMap()
             }
     }
 
     fun deleteTable(id: String): Single<List<TableDto>> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.deleteTable(token, id)
+        return snuttRestApi.deleteTable(id)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                tableMap.onNext(result.map { it.id to it }.toMap())
+                _tableMap = result.map { it.id to it }.toMap()
             }
     }
 
     fun putTable(id: String, title: String): Single<List<TableDto>> {
-        val token: String = storage.accessToken.getValue()
-        return snuttRestApi.putTable(token, id, PutTableParams(title))
+        return snuttRestApi.putTable(id, PutTableParams(title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                tableMap.onNext(result.map { it.id to it }.toMap())
+                _tableMap = result.map { it.id to it }.toMap()
+            }
+    }
+
+    fun copyTable(id: String): Single<PostCopyTableResults> {
+        return snuttRestApi.copyTable(id)
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess { result ->
+                _tableMap = result.map { it.id to it }.toMap()
             }
     }
 }

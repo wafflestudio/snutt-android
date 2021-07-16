@@ -16,7 +16,7 @@ class PrefValue<T : Any> private constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun asObservable(): Observable<T> {
-        return Observable.create { emitter ->
+        return Observable.create<T> { emitter ->
             emitter.onNext(getValue())
             val listener = object : DataStorage.KeyValueChangeListener {
                 override fun onChange(value: Any?) {
@@ -28,6 +28,7 @@ class PrefValue<T : Any> private constructor(
                 prefStorage.removeKeyChangeListener(key, listener)
             })
         }
+            .distinctUntilChanged()
     }
 
 
@@ -74,6 +75,25 @@ class PrefValue<T : Any> private constructor(
                 defaultValue,
                 prefStorage,
                 Types.newParameterizedType(List::class.java, type.javaObjectType)
+            )
+        }
+
+        fun <T : Any, R : Any> defineMapStorageValue(
+            key: String,
+            defaultValue: Map<T, R>,
+            prefStorage: PrefStorage,
+            keyType: KClass<T>,
+            valueType: KClass<R>
+        ): PrefValue<Map<T, R>> {
+            return PrefValue(
+                key,
+                defaultValue,
+                prefStorage,
+                Types.newParameterizedType(
+                    Map::class.java,
+                    keyType.javaObjectType,
+                    valueType.javaObjectType
+                )
             )
         }
     }

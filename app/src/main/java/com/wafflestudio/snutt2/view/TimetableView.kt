@@ -15,7 +15,6 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
-import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
@@ -135,7 +134,6 @@ class TimetableView : View {
         val y = event.y
         val day = ((x - hourLabelWidth) / unitWidth).toInt() + trimParam.dayOfWeekFrom
         val time = ((y - dayLabelHeight) / unitHeight) + trimParam.hourFrom - 8
-        Timber.d("$day $time")
 
         if (event.action == MotionEvent.ACTION_UP) {
             for (lec in lectures) {

@@ -67,9 +67,7 @@ class NotificationsRepository @Inject constructor(
     }
 
     fun loadData(offset: Int): Single<List<NotificationDto>> {
-        val token = prefStorage.prefKeyXAccessToken
         return snuttRestApi.getNotification(
-            token!!,
             limit = 20,
             offset = offset.toLong(),
             explicit = 1
@@ -87,9 +85,7 @@ class NotificationsRepository @Inject constructor(
     }
 
     fun refreshNotification(): Single<List<NotificationDto>> {
-        val token = prefStorage.prefKeyXAccessToken
         return snuttRestApi.getNotification(
-            token!!,
             limit = 20,
             offset = 0,
             explicit = 1
@@ -106,8 +102,7 @@ class NotificationsRepository @Inject constructor(
     }
 
     fun getNotificationCount(): Single<GetNotificationCountResults> {
-        val token = prefStorage.prefKeyXAccessToken
-        return snuttRestApi.getNotificationCount(token!!)
+        return snuttRestApi.getNotificationCount()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get notification count success!")

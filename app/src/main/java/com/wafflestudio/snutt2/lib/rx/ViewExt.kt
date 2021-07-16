@@ -12,7 +12,6 @@ fun View.throttledClicks(): Observable<Unit> {
         .throttleFirst(2000, TimeUnit.MILLISECONDS)
 }
 
-
 fun Int.dp(context: Context): Float {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,

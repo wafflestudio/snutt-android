@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in
+package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

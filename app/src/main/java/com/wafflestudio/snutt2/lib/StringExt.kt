@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 
 
 fun Int.toDayString(context: Context): String {

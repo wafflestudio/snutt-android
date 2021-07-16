@@ -131,6 +131,7 @@ dependencies {
     implementation "androidx.drawerlayout:drawerlayout:1.1.1"
     implementation 'com.facebook.android:facebook-login:11.1.0'
     implementation "de.psdev.licensesdialog:licensesdialog:2.1.0"
+    implementation "com.uber.rxdogtag2:rxdogtag:2.0.1"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

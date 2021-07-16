@@ -70,8 +70,7 @@ class UserRepository @Inject constructor(
     }
 
     fun getUserInfo(): Single<UserDto> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        return snuttRestApi.getUserInfo(token!!)
+        return snuttRestApi.getUserInfo()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 userSubject.onNext(it)
@@ -79,9 +78,7 @@ class UserRepository @Inject constructor(
     }
 
     fun putUserInfo(email: String): Single<PutUserInfoResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.putUserInfo(
-            token!!,
             PutUserInfoParams(email)
         )
             .subscribeOn(Schedulers.io())
@@ -91,19 +88,17 @@ class UserRepository @Inject constructor(
     }
 
     fun deleteUserAccount(): Single<DeleteUserAccountResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        return snuttRestApi.deleteUserAccount(token!!)
+        return snuttRestApi.deleteUserAccount()
             .subscribeOn(Schedulers.io())
     }
 
     fun putUserPassword(oldPassword: String, newPassword: String): Single<PutUserPasswordResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         val param = PutUserPasswordParams(
             newPassword = newPassword,
             oldPassword = oldPassword
         )
 
-        return snuttRestApi.putUserPassword(token!!, param)
+        return snuttRestApi.putUserPassword(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 snuttStorage.accessToken.setValue(result.token)
@@ -111,19 +106,17 @@ class UserRepository @Inject constructor(
     }
 
     fun getUserFacebook(): Single<GetUserFacebookResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        return snuttRestApi.getUserFacebook(token!!)
+        return snuttRestApi.getUserFacebook()
             .subscribeOn(Schedulers.io())
     }
 
     // 새로운 local_id 추가
     fun postUserPassword(id: String, password: String): Single<PostUserPasswordResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         val param = PostUserPasswordParams(
             id = id,
             password = password
         )
-        return snuttRestApi.postUserPassword(token!!, param)
+        return snuttRestApi.postUserPassword(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 snuttStorage.accessToken.setValue(result.token)
@@ -131,8 +124,7 @@ class UserRepository @Inject constructor(
     }
 
     fun deleteUserFacebook(): Single<DeleteUserFacebookResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
-        return snuttRestApi.deleteUserFacebook(token!!)
+        return snuttRestApi.deleteUserFacebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 snuttStorage.accessToken.setValue(result.token)
@@ -144,12 +136,11 @@ class UserRepository @Inject constructor(
         facebookId: String,
         facebookToken: String
     ): Single<PostUserFacebookResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         val param = PostUserFacebookParams(
             facebookId = facebookId,
             facebookToken = facebookToken
         )
-        return snuttRestApi.postUserFacebook(token!!, param)
+        return snuttRestApi.postUserFacebook(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 snuttStorage.accessToken.setValue(result.token)
@@ -157,13 +148,11 @@ class UserRepository @Inject constructor(
     }
 
     fun postFeedback(email: String, detail: String): Single<PostFeedbackResults> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         val param = PostFeedbackParams(
             email = email,
             message = detail
         )
         return snuttRestApi.postFeedback(
-            token!!,
             param
         )
             .subscribeOn(Schedulers.io())
@@ -171,8 +160,7 @@ class UserRepository @Inject constructor(
 
     fun deleteFirebaseToken(): Single<DeleteFirebaseTokenResults> {
         return getFirebaseToken().flatMap { firebaseToken ->
-            val token: String = prefStorage.prefKeyXAccessToken ?: ""
-            snuttRestApi.deleteFirebaseToken(token, firebaseToken)
+            snuttRestApi.deleteFirebaseToken(firebaseToken)
         }
             .subscribeOn(Schedulers.io())
     }
@@ -200,9 +188,7 @@ class UserRepository @Inject constructor(
 
     private fun registerFirebaseToken(): Single<RegisterFirebaseTokenResults> {
         return getFirebaseToken().flatMap { firebaseToken ->
-            val token: String = prefStorage.prefKeyXAccessToken ?: ""
             snuttRestApi.registerFirebaseToken(
-                token,
                 firebaseToken,
                 RegisterFirebaseTokenParams()
             )

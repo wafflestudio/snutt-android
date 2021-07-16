@@ -37,8 +37,7 @@ class TableManager @Inject constructor(
     }
 
     fun getTableList(): Single<List<TableDto>> {
-        val token: String = prefStorage.prefKeyXAccessToken!!
-        return snuttRestApi.getTableList(token)
+        return snuttRestApi.getTableList()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 tableMap.clear()
@@ -51,9 +50,7 @@ class TableManager @Inject constructor(
     }
 
     fun postTable(year: Long, semester: Long, title: String?): Single<List<TableDto>> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.postTable(
-            token!!,
             PostTableParams(year, semester, title)
         )
             .subscribeOn(Schedulers.io())
@@ -67,9 +64,7 @@ class TableManager @Inject constructor(
     }
 
     fun getTableById(id: String?): Single<TableDto> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.getTableById(
-            token!!,
             id!!
         )
             .subscribeOn(Schedulers.io())
@@ -86,8 +81,7 @@ class TableManager @Inject constructor(
     }
 
     fun getDefaultTable(): Single<TableDto> {
-        val token: String = prefStorage.prefKeyXAccessToken!!
-        return snuttRestApi.getRecentTable(token)
+        return snuttRestApi.getRecentTable()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 Log.d(TAG, "get recent table request success")
@@ -108,9 +102,7 @@ class TableManager @Inject constructor(
     }
 
     fun deleteTable(id: String?): Single<List<TableDto>> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.deleteTable(
-            token!!,
             id!!
         )
             .doOnSuccess {
@@ -124,9 +116,7 @@ class TableManager @Inject constructor(
     }
 
     fun putTable(id: String?, title: String?): Single<List<TableDto>> {
-        val token: String? = prefStorage.prefKeyXAccessToken
         return snuttRestApi.putTable(
-            token!!,
             id!!,
             PutTableParams(title!!)
         )

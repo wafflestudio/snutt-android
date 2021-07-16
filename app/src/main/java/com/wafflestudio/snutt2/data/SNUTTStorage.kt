@@ -7,11 +7,20 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefValue
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.model.TagDto
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
+
+    val tableMap: PrefValue<Map<String, TableDto>> = PrefValue.defineMapStorageValue(
+        "pref_tables",
+        mapOf(),
+        prefStorage,
+        String::class,
+        TableDto::class
+    )
 
     val lastViewedTable: PrefValue<Optional<TableDto>> = PrefValue.defineNullableStorageValue(
         "last_table",
@@ -53,6 +62,13 @@ class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
         listOf(),
         prefStorage,
         CourseBookDto::class
+    )
+
+    val tags: PrefValue<List<TagDto>> = PrefValue.defineListStorageValue(
+        "pref_tags",
+        listOf(),
+        prefStorage,
+        TagDto::class
     )
 
     fun clearAll() {

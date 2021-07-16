@@ -64,6 +64,9 @@ class LoginFragment : BaseFragment() {
                     is ApiStatus.Loading -> {
 //                        TODO: loading spinner?
                     }
+                    else -> {
+
+                    }
                 }
             }
 

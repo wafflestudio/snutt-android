@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
+import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -16,34 +17,24 @@ import javax.inject.Inject
 @HiltViewModel
 class TimetableViewModel @Inject constructor(
     private val tableRepository: TableRepository,
+    private val myLectureRepository: MyLectureRepository,
     private val storage: SNUTTStorage,
     private val apiOnError: ApiOnError
 ) : ViewModel() {
 
     val currentTimetable: Observable<TableDto>
-        get() = storage.lastViewedTable
-            .asObservable()
-            .filterEmpty()
+        get() = myLectureRepository.currentTable
 
     val trimParam: Observable<TableTrimParam>
-        get() = storage.tableTrimParam
-            .asObservable()
+        get() = storage.tableTrimParam.asObservable()
 
-    fun loadTable() {
-        storage.lastViewedTable.getValue().get()?.id.let { tableId ->
-            if (tableId == null) {
+    fun fetchLastViewedTable() {
+        storage.lastViewedTable.getValue().let { table ->
+            if (table.isEmpty()) {
                 tableRepository.getDefaultTable()
-            } else {
-                tableRepository.refreshTable(tableId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(onError = apiOnError)
             }
         }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-    }
-
-    fun setTable(tableId: String) {
-        tableRepository.refreshTable(tableId)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
     }
 }

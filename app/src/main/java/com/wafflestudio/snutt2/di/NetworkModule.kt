@@ -4,6 +4,7 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.Header
 import java.io.File
 
 @Module
@@ -23,10 +25,22 @@ import java.io.File
 object NetworkModule {
 
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+    fun provideOkHttpClient(
+        @ApplicationContext context: Context,
+        storage: SNUTTStorage
+    ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
+            .addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader(
+                        "x-access-token",
+                        storage.accessToken.getValue()
+                    )
+                    .build()
+                chain.proceed(newRequest)
+            }
             .addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
@@ -46,7 +60,11 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideRetrofit(@ApplicationContext context: Context, okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
+    fun provideRetrofit(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient,
+        moshi: Moshi
+    ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(context.getString(R.string.api_server))

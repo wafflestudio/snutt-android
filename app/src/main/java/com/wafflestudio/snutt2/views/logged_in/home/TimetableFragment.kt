@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TimetableFragment : BaseFragment() {
@@ -35,11 +36,13 @@ class TimetableFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         vm.currentTimetable
+            .distinctUntilChanged()
             .bindUi(this) {
                 binding.timetable.lectures = it.lectureList
             }
 
         vm.trimParam
+            .distinctUntilChanged()
             .bindUi(this) {
                 binding.timetable.trimParam = it
             }

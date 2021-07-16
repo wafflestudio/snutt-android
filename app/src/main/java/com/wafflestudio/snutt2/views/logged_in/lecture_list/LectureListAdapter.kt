@@ -9,23 +9,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.databinding.ItemAddLectureListBinding
 import com.wafflestudio.snutt2.databinding.ItemLectureListBinding
+import com.wafflestudio.snutt2.lib.base.BaseAdapter
+import com.wafflestudio.snutt2.lib.base.BaseViewHolder
 import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.rx.throttledClicks
 
 class LectureListAdapter(
     private val onClickAdd: () -> Unit,
     private val onClickLecture: (lecture: LectureDto) -> Unit
-) :
-    ListAdapter<LectureListAdapter.Data, LectureListAdapter.ViewHolder>(diffCallback) {
+) : BaseAdapter<LectureListAdapter.Data>(diffCallback) {
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is Data.Lecture -> 0
+            is Data.Add -> 1
+        }
+    }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<out Data> {
         return when (viewType) {
-            0 -> ViewHolder.DataViewHolder(
+            0 -> DataViewHolder(
                 ItemLectureListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            1 -> ViewHolder.AddButtonViewHolder(
+            1 -> AddButtonViewHolder(
                 ItemAddLectureListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -36,59 +43,60 @@ class LectureListAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is Data.Lecture -> 0
-            is Data.Add -> 1
-        }
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<out Data>, position: Int) {
         when (holder) {
-            is ViewHolder.DataViewHolder -> {
-                val lecture = (getItem(position) as Data.Lecture).lecture
-                val binding = holder.binding
-
-                binding.title.text = lecture.course_title
-                binding.subTitle.text = lecture.instructor + " / " + lecture.credit
-
-                var tagText: String? = ""
-                lecture.category?.let {
-                    tagText += "$it, "
-                }
-                lecture.department?.let {
-                    tagText += "$it, "
-                }
-                lecture.academic_year?.let {
-                    tagText += "$it, "
-                }
-                if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
-                binding.tag.text = tagText
-                var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
-                if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
-                binding.time.text = classTimeText
-                var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
-                if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
-                binding.location.text = locationText
-                binding.root.setOnClickListener {
-                    onClickLecture.invoke(lecture)
-                }
+            is DataViewHolder -> {
+                holder.bindData(getItem(position) as Data.Lecture)
             }
-            is ViewHolder.AddButtonViewHolder -> {
-                val binding = holder.binding
-                binding.root.setOnClickListener {
-                    onClickAdd.invoke()
-                }
+            is AddButtonViewHolder -> {
+                holder.bindData(getItem(position) as Data.Add)
             }
         }
     }
 
 
-    sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DataViewHolder(override val binding: ItemLectureListBinding) :
+        BaseViewHolder<Data.Lecture>(binding) {
 
-        class DataViewHolder(val binding: ItemLectureListBinding) : ViewHolder(binding.root)
+        override fun bindData(data: Data.Lecture) {
+            val lecture = data.lecture
 
-        class AddButtonViewHolder(val binding: ItemAddLectureListBinding) : ViewHolder(binding.root)
+            binding.title.text = lecture.course_title
+            binding.subTitle.text = lecture.instructor + " / " + lecture.credit
+
+            var tagText: String? = ""
+            lecture.category?.let {
+                tagText += "$it, "
+            }
+            lecture.department?.let {
+                tagText += "$it, "
+            }
+            lecture.academic_year?.let {
+                tagText += "$it, "
+            }
+            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
+            binding.tag.text = tagText
+            var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
+            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
+            binding.time.text = classTimeText
+            var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
+            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
+            binding.location.text = locationText
+            binding.root.setOnClickListener {
+                onClickLecture.invoke(lecture)
+            }
+        }
+    }
+
+
+    inner class AddButtonViewHolder(override val binding: ItemAddLectureListBinding) :
+        BaseViewHolder<Data.Add>(binding) {
+
+        override fun bindData(data: Data.Add) {
+            binding.root.setOnClickListener {
+                onClickAdd.invoke()
+            }
+        }
     }
 
     sealed class Data {

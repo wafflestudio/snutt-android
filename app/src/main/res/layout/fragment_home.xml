@@ -34,7 +34,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/white"
-        android:padding="20dp">
+        android:clickable="true"
+        android:padding="20dp"
+        android:focusable="true">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drawer_logo"
@@ -73,32 +75,37 @@
             android:background="@color/gray"
             app:layout_constraintTop_toBottomOf="@id/close_button" />
 
-        <TextView
-            android:id="@+id/coursebook_title"
+        <LinearLayout
+            android:id="@+id/coursebook_select_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/spoqa_han_sans_bold"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/coursebook_select_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/coursebook_select_button"
-            tools:text="2021 2학기" />
-
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/coursebook_select_button"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_marginStart="6dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/ic_arrow_down"
-            app:layout_constraintStart_toEndOf="@id/coursebook_title"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider">
+
+            <TextView
+                android:id="@+id/coursebook_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/spoqa_han_sans_bold"
+                android:textSize="16sp"
+                tools:text="2021 2학기" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tables_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/bottom_divider"
             app:layout_constraintTop_toBottomOf="@id/coursebook_select_button"
             tools:listitem="@layout/item_table" />
