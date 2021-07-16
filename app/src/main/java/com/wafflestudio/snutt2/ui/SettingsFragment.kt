@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
-import com.wafflestudio.snutt2.manager.UserRepository
+import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.model.SettingsItem
 import dagger.hilt.android.AndroidEntryPoint
 import de.psdev.licensesdialog.LicensesDialog

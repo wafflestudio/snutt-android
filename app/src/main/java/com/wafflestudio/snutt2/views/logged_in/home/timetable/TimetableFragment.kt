@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home
+package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentTimetableBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class TimetableFragment : BaseFragment() {

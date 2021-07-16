@@ -13,7 +13,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.view.DividerItemDecoration
-import com.wafflestudio.snutt2.views.logged_in.home.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

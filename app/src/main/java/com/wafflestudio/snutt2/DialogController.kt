@@ -17,6 +17,7 @@ class DialogController @Inject constructor(@ActivityContext private val context:
     fun <T> showSelectorDialog(
         @StringRes title: Int,
         items: List<T>,
+        defaultValue: Int? = null,
         textMapper: (T) -> String
     ): Maybe<T> {
         return Maybe.create { emitter ->
@@ -25,6 +26,8 @@ class DialogController @Inject constructor(@ActivityContext private val context:
             binding.selector.displayedValues = items.map(textMapper).toTypedArray()
             binding.selector.minValue = 0
             binding.selector.maxValue = items.size - 1
+            binding.selector.wrapSelectorWheel = false
+            defaultValue?.let { binding.selector.value = it }
 
             AlertDialog.Builder(context).apply {
                 setView(binding.root)
@@ -44,13 +47,12 @@ class DialogController @Inject constructor(@ActivityContext private val context:
 
     fun showTextDialog(
         @StringRes title: Int,
-        @StringRes defaultValue: Int? = null,
+        defaultValue: String? = null,
         @StringRes hint: Int? = null,
     ): Maybe<String> {
         return Maybe.create { emitter ->
 
             val binding = DialogTextInputBinding.inflate(LayoutInflater.from(context))
-
             defaultValue?.let { binding.input.setText(it) }
             hint?.let { binding.input.setHint(it) }
 

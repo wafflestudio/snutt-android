@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home
+package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.content.pm.PackageManager
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home
+package com.wafflestudio.snutt2.views.logged_in.home.reviews
 
 import android.os.Bundle
 import android.view.LayoutInflater

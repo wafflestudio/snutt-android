@@ -8,7 +8,7 @@ import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserRepository
+import com.wafflestudio.snutt2.data.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

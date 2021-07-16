@@ -1,7 +1,8 @@
-package com.wafflestudio.snutt2.views.logged_in
+package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
@@ -14,9 +15,13 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.views.logged_in.home.*
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewsFragment
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchFragment
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableFragment
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,7 +33,9 @@ class HomeFragment : BaseFragment() {
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
 
-    private val courseBookAndTablesViewModel: CourseBookAndTablesViewModel by activityViewModels()
+    private val tableListViewModel: TableListViewModel by activityViewModels()
+
+    private val bottomSheetFragment = TableBottomSheetDialogFragment()
 
     @Inject
     lateinit var dialogController: DialogController
@@ -60,7 +67,7 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         timetableViewModel.fetchLastViewedTable()
-        courseBookAndTablesViewModel.refresh()
+        tableListViewModel.refresh()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             childFragmentManager.commit {
@@ -72,45 +79,56 @@ class HomeFragment : BaseFragment() {
             true
         }
 
-        Observable.combineLatest(
-            binding.coursebookSelectButton.throttledClicks(),
-            courseBookAndTablesViewModel.courseBooks,
-            { _, courseBooks -> courseBooks }
-        )
+        binding.coursebookSelectButton.throttledClicks()
+            .flatMapSingle {
+                tableListViewModel.selectedCourseBooks.firstOrError()
+            }
+            .flatMapSingle { current ->
+                tableListViewModel.courseBooks.firstOrError().map { Pair(current, it) }
+            }
             .observeOn(AndroidSchedulers.mainThread())
-            .flatMapMaybe { list ->
+            .flatMapMaybe { (current, list) ->
                 dialogController.showSelectorDialog(
-                    R.string.home_drawer_selector_dialog_title, list
+                    R.string.home_drawer_selector_dialog_title,
+                    list,
+                    list.indexOf(current),
                 ) { it.toFormattedString(requireContext()) }
             }
             .bindEvent(this) {
-                courseBookAndTablesViewModel.selectCurrentCourseBook(it)
+                tableListViewModel.selectCurrentCourseBook(it)
             }
 
-        courseBookAndTablesViewModel.selectedCourseBooks.bindUi(this) {
+        tableListViewModel.selectedCourseBooks.bindUi(this) {
             binding.coursebookTitle.text = it.toFormattedString(requireContext())
         }
 
         adapter = TableListAdapter(
             onCreateItem = {
-                dialogController.showTextDialog(R.string.home_drawer_create_table_dialog_title, hint = R.string.home_drawer_create_table_dialog_hint)
+                dialogController.showTextDialog(
+                    R.string.home_drawer_create_table_dialog_title,
+                    hint = R.string.home_drawer_create_table_dialog_hint
+                )
                     .bindUi(this) {
-                        courseBookAndTablesViewModel.createTable(it)
+                        tableListViewModel.createTable(it)
                     }
             },
             onSelectItem = {
                 binding.root.close()
-                courseBookAndTablesViewModel.changeCurrentTable(it)
+                tableListViewModel.changeCurrentTable(it.id)
             },
-            onDuplicateItem = {},
-            onShowMoreItem = {},
+            onDuplicateItem = {
+                tableListViewModel.copyTable(it.id)
+            },
+            onShowMoreItem = {
+                bottomSheetFragment.show(childFragmentManager, it)
+            },
             selectedTableId = timetableViewModel.currentTimetable.map { it.id },
             bindable = this
         )
 
         binding.tablesContent.adapter = adapter
 
-        courseBookAndTablesViewModel.currentCourseBooksTable
+        tableListViewModel.currentCourseBooksTable
             .bindUi(this) { list ->
                 adapter.submitList(
                     list.map<TableDto, TableListAdapter.Data> { TableListAdapter.Data.Table(it) }

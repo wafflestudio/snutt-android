@@ -1,15 +1,13 @@
 package com.wafflestudio.snutt2.handler
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.UserRepository
-import com.wafflestudio.snutt2.ui.IntroActivity
+import com.wafflestudio.snutt2.data.UserRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy

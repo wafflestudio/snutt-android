@@ -1,9 +1,7 @@
-package com.wafflestudio.snutt2.views.logged_in
+package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.CourseBookRepository
-import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -16,7 +14,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 @HiltViewModel
-class CourseBookAndTablesViewModel @Inject constructor(
+class TableListViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val courseBookRepository: CourseBookRepository,
     private val apiOnError: ApiOnError,
@@ -24,9 +22,9 @@ class CourseBookAndTablesViewModel @Inject constructor(
     private val selectedCourseBooksSubject = BehaviorSubject.createDefault(
         tableRepository.getCurrentTable()?.let { CourseBookDto(it.semester, it.year) })
 
-    val selectedCourseBooks = selectedCourseBooksSubject.hide()
+    val selectedCourseBooks: Observable<CourseBookDto> = selectedCourseBooksSubject.hide()
     val courseBooks = courseBookRepository.courseBooks
-    val tableMap = tableRepository.tableMap
+    private val tableMap = tableRepository.tableMap
 
     val currentCourseBooksTable: Observable<List<TableDto>> =
         Observable.combineLatest(tableMap, selectedCourseBooksSubject, { map, courseBook ->
@@ -66,6 +64,18 @@ class CourseBookAndTablesViewModel @Inject constructor(
 
     fun copyTable(tableId: String) {
         tableRepository.copyTable(tableId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(onError = apiOnError)
+    }
+
+    fun deleteTable(tableId: String) {
+        tableRepository.deleteTable(tableId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(onError = apiOnError)
+    }
+
+    fun changeNameTable(tableId: String, name: String) {
+        tableRepository.putTable(tableId, name)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onError = apiOnError)
     }

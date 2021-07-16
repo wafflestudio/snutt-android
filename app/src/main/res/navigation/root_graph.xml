@@ -45,9 +45,9 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.HomeFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_lectureDetailFragment"
             app:destination="@id/lectureDetailFragment" />
@@ -75,7 +75,7 @@
         android:id="@+id/tableLecturesFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragment"
         android:label="@layout/fragment_lecture_list"
-        tools:layout="@layout/fragment_lecture_list" >
+        tools:layout="@layout/fragment_lecture_list">
         <action
             android:id="@+id/action_tableLecturesFragment_to_lectureDetailFragment"
             app:destination="@id/lectureDetailFragment" />
@@ -98,13 +98,13 @@
 
     <fragment
         android:id="@+id/lectureCreateFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.LectureCreateFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureCreateFragment"
         android:label="fragment_lecture_create"
         tools:layout="@layout/fragment_lecture_create" />
 
     <fragment
         android:id="@+id/termsInfoFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TermsInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TermsInfoFragment"
         android:label="fragment_terms_info"
         tools:layout="@layout/fragment_terms_info" />
     <action
@@ -114,17 +114,17 @@
         app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/userSettingsFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.settings.UserSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.UserSettingsFragment"
         android:label="fragment_user_settings"
         tools:layout="@layout/fragment_user_settings" />
     <fragment
         android:id="@+id/timetableSettingsFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TimetableSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TimetableSettingsFragment"
         android:label="fragment_timetable_settings"
         tools:layout="@layout/fragment_timetable_settings" />
     <fragment
         android:id="@+id/teamInfoFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.settings.TeamInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoFragment"
         android:label="fragment_team_info"
         tools:layout="@layout/fragment_team_info" />
 

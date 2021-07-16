@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.adapter.SettingsAdapter
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.UserRepository
+import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.model.SettingsItem
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import dagger.hilt.android.AndroidEntryPoint

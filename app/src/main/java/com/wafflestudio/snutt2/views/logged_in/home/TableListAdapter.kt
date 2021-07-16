@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in
+package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +15,9 @@ import io.reactivex.rxjava3.core.Observable
 
 class TableListAdapter(
     private val onCreateItem: () -> Unit,
-    private val onSelectItem: (tableId: String) -> Unit,
-    private val onShowMoreItem: (tableId: String) -> Unit,
-    private val onDuplicateItem: (tableId: String) -> Unit,
+    private val onSelectItem: (table: TableDto) -> Unit,
+    private val onShowMoreItem: (table: TableDto) -> Unit,
+    private val onDuplicateItem: (table: TableDto) -> Unit,
     private val selectedTableId: Observable<String>,
     private val bindable: RxBindable
 ) : BaseAdapter<TableListAdapter.Data>(diffCallback) {
@@ -73,13 +73,13 @@ class TableListAdapter(
             val table = data.table
 
             binding.clickArea.throttledClicks()
-                .bindUi(bindable) { onSelectItem(table.id) }
+                .bindUi(bindable) { onSelectItem(table) }
 
             binding.moreButton.throttledClicks()
-                .bindUi(bindable) { onShowMoreItem(table.id) }
+                .bindUi(bindable) { onShowMoreItem(table) }
 
             binding.duplicateButton.throttledClicks()
-                .bindUi(bindable) { onDuplicateItem(table.id) }
+                .bindUi(bindable) { onDuplicateItem(table) }
 
             binding.name.text = table.title
 

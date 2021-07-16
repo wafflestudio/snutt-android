@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.views.logged_out
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.lib.network.ApiStatus
 import com.wafflestudio.snutt2.lib.network.bindStatus
-import com.wafflestudio.snutt2.manager.UserRepository
+import com.wafflestudio.snutt2.data.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
