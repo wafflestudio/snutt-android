@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.wafflestudio.snutt2.ui.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
 
 /**
  * Created by makesource on 2016. 1. 16..

@@ -18,6 +18,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.*
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewsFragment
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchFragment
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableFragment
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,8 @@ class HomeFragment : BaseFragment() {
     private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
+
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     private val bottomSheetFragment = TableBottomSheetDialogFragment()
 
@@ -68,6 +71,7 @@ class HomeFragment : BaseFragment() {
 
         timetableViewModel.fetchLastViewedTable()
         tableListViewModel.refresh()
+        settingsViewModel.refreshUserInfo()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             childFragmentManager.commit {

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.adapter
+package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,7 @@ import com.wafflestudio.snutt2.model.SettingsItem
 /**
  * Created by makesource on 2016. 11. 21..
  */
-class SettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UserSettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == SettingsItem.ViewType.Header.value) {
@@ -54,7 +54,7 @@ class SettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adap
         }
     }
 
-    class TitleViewHolder constructor(private val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    class TitleViewHolder constructor(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private val title: TextView
         private val detail: TextView
         private val arrow: ImageView

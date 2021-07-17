@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Verify
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserSettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -80,7 +81,7 @@ class SettingsMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackCha
 
     private fun newFragment(fragmentIdx: Int): Fragment? {
         return when (fragmentIdx) {
-            FRAGMENT_ACCOUNT -> AccountFragment()
+            FRAGMENT_ACCOUNT -> UserSettingsFragment()
             FRAGMENT_TIMETABLE -> TimetableFragment()
             FRAGMENT_DEVELOPER -> DeveloperFragment()
             FRAGMENT_REPORT -> ReportFragment()

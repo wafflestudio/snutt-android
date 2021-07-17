@@ -70,4 +70,25 @@ class DialogController @Inject constructor(@ActivityContext private val context:
                 .show()
         }
     }
+
+    fun showConfirm(
+        @StringRes title: Int,
+        @StringRes message: Int,
+        @StringRes positiveText: Int? = null
+    ): Maybe<Unit> {
+        return Maybe.create { emitter ->
+            AlertDialog.Builder(context).apply {
+                setTitle(title)
+                setMessage(message)
+                setPositiveButton(context.getString(positiveText ?: R.string.common_ok)) { _, _ ->
+                    emitter.onSuccess(Unit)
+                }
+                setNegativeButton(context.getString(R.string.common_cancel), null)
+            }
+                .setOnCancelListener { emitter.onComplete() }
+                .setOnDismissListener { emitter.onComplete() }
+                .create()
+                .show()
+        }
+    }
 }

@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.manager.PrefStorage
 import io.reactivex.rxjava3.core.Observable
@@ -24,10 +25,9 @@ class UserRepository @Inject constructor(
     private val snuttStorage: SNUTTStorage,
     private val prefStorage: PrefStorage
 ) {
-    private val userSubject = BehaviorSubject.create<UserDto>()
-
-    val user: Observable<UserDto>
-        get() = userSubject.hide()
+    val user: Observable<UserDto> = snuttStorage.user
+        .asObservable()
+        .filterEmpty()
 
     // login with local id
     fun postSignIn(id: String, password: String): Single<*> {
@@ -72,7 +72,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.getUserInfo()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                userSubject.onNext(it)
+                snuttStorage.user.setValue(it.toOptional())
             }
     }
 
@@ -82,7 +82,9 @@ class UserRepository @Inject constructor(
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                userSubject.onNext(userSubject.value.copy(email = email))
+                snuttStorage.user.setValue(
+                    snuttStorage.user.getValue().get()?.copy(email = email).toOptional()
+                )
             }
     }
 

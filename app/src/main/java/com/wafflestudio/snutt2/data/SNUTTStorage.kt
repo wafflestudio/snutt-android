@@ -4,6 +4,7 @@ import com.google.common.collect.Table
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefValue
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -41,6 +42,13 @@ class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
         "",
         prefStorage,
         String::class
+    )
+
+    val user = PrefValue.defineNullableStorageValue(
+        "pref_user",
+        null,
+        prefStorage,
+        UserDto::class
     )
 
     val prefKeyUserId = PrefValue.defineNullableStorageValue(
