@@ -9,6 +9,8 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
+import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.dp
@@ -194,8 +196,8 @@ class TimetableView : View {
                 classTime,
                 classTime.place,
                 lecture.course_title,
-                lecture.color.bgColor,
-                lecture.color.fgColor
+                lecture.color.bgColor ?: lecture.colorIndex.getDefaultBgColorHex(),
+                lecture.color.fgColor ?: lecture.colorIndex.getDefaultFgColorHex()
             )
         }
     }
@@ -205,6 +207,7 @@ class TimetableView : View {
         selectedLecture: LectureDto
     ) {
         for (classTime in selectedLecture.class_time_json) {
+            selectedLecture.color.bgRaw
             drawClassTime(
                 canvas,
                 classTime,

@@ -38,7 +38,8 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         } else {
             val lecture = lectureManager.getLectures()[position]
             this.lectureManager.currentLecture = lecture
-            if (lecture.isCustom) setCustomDetailFragment() else setMainFragment()
+            // isCustom
+            if (true) setCustomDetailFragment() else setMainFragment()
         }
     }
 
@@ -177,7 +178,8 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
 
     override fun onColorChanged(index: Int, color: ColorDto?) {
         val lecture = lectureManager.currentLecture
-        if (lecture == null || lecture.isCustom) {
+        // isCustom
+        if (lecture == null || true) {
             val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL) as CustomDetailFragment?
             fragment!!.setLectureColor(index, color)
         } else {

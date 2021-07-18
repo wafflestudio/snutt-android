@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="10dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/check_icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/ic_vivid_check" />
+
+    <TextView
+        android:id="@+id/tag_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:maxLines="1"
+        android:textColor="#000000"
+        android:textSize="14dp"
+        tools:text="교양" />
+
+</LinearLayout>

@@ -338,8 +338,8 @@ class LectureDetailAdapter(
                 bgColor.setBackgroundColor(lectureManager.getBgColorByIndex(item.colorIndex))
                 fgColor.setBackgroundColor(lectureManager.getFgColorByIndex(item.colorIndex))
             } else {
-                bgColor.setBackgroundColor(item.getColor()!!.bgColor)
-                fgColor.setBackgroundColor(item.getColor()!!.fgColor)
+                bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
+                fgColor.setBackgroundColor(item.getColor()!!.fgColor!!)
             }
             arrow.visibility = if (item.isEditable) View.VISIBLE else View.GONE
         }

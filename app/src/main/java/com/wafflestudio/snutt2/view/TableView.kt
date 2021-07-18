@@ -263,7 +263,7 @@ class TableView : View {
         if (lectures != null) {
             for (i in lectures!!.indices) {
                 val lecture = lectures!![i]
-                if (lecture.colorIndex.toInt() == 0) drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.color.bgColor, lecture.color.fgColor) else drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.colorIndex.toInt())
+                if (lecture.colorIndex.toInt() == 0) drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.color.bgColor!!, lecture.color.fgColor!!) else drawLecture(canvas, canvasWidth.toFloat(), canvasHeight.toFloat(), lecture, lecture.colorIndex.toInt())
             }
         }
         if (!export) {

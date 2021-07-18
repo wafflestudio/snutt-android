@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.views.logged_in.home.*
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewsFragment
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchFragment
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableFragment
@@ -37,6 +38,8 @@ class HomeFragment : BaseFragment() {
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
     private val settingsViewModel: SettingsViewModel by activityViewModels()
+
+    private val searchViewModel: SearchViewModel by activityViewModels()
 
     private val bottomSheetFragment = TableBottomSheetDialogFragment()
 
@@ -72,6 +75,7 @@ class HomeFragment : BaseFragment() {
         timetableViewModel.fetchLastViewedTable()
         tableListViewModel.refresh()
         settingsViewModel.refreshUserInfo()
+        searchViewModel.refreshTags()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             childFragmentManager.commit {

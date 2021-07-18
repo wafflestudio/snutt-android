@@ -375,11 +375,11 @@ class LectureManager @Inject constructor(
     }
 
     fun getBgColorByIndex(index: Int): Int {
-        return if (colorList.size == 0) DEFAULT_BG[index - 1] else colorList[index - 1].bgColor
+        return if (colorList.size == 0) DEFAULT_BG[index - 1] else colorList[index - 1].bgColor!!
     }
 
     fun getFgColorByIndex(index: Int): Int {
-        return if (colorList.size == 0) DEFAULT_FG[index - 1] else colorList[index - 1].fgColor
+        return if (colorList.size == 0) DEFAULT_FG[index - 1] else colorList[index - 1].fgColor!!
     }
 
     fun getColorNameByIndex(index: Int): String {
@@ -387,7 +387,8 @@ class LectureManager @Inject constructor(
     }
 
     private fun isEqualLecture(lec1: LectureDto, lec2: LectureDto): Boolean {
-        if (lec1.isCustom) { // custom lecture 면 id 로 비교
+        // is custom
+        if (true) { // custom lecture 면 id 로 비교
             return if (lec1.id == lec2.id) true else false
         }
         return if (lec1.course_number == lec2.course_number && lec1.lecture_number == lec2.lecture_number) true else false

@@ -44,6 +44,5 @@ class NotificationsPagingSource @Inject constructor(
             prevKey = if (offset == 0L) null else offset - loadSize,
             nextKey = if (data.isEmpty()) null else offset + loadSize
         )
-
     }
 }

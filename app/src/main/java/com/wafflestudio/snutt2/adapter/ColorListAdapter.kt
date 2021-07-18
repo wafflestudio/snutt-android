@@ -50,8 +50,8 @@ class ColorListAdapter(
             val color = colorList[position]
             val name = colorNameList[position]
             nameText.text = name
-            fgColor.setBackgroundColor(color.fgColor)
-            bgColor.setBackgroundColor(color.bgColor)
+            fgColor.setBackgroundColor(color.fgColor!!)
+            bgColor.setBackgroundColor(color.bgColor!!)
         }
         return v
     }

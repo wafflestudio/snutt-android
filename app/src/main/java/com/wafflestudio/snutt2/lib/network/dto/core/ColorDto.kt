@@ -15,21 +15,9 @@ data class ColorDto(
         "#%06X".format(0xFFFFFF and bgColor)
     )
 
-    val fgColor: Int
-        get() {
-            return if (fgRaw == null) {
-                ColorConst.defaultFgColor
-            } else {
-                Color.parseColor(fgRaw)
-            }
-        }
+    val fgColor: Int?
+        get() = if (fgRaw != null) Color.parseColor(fgRaw) else null
 
-    val bgColor: Int
-        get() {
-            return if (bgRaw == null) {
-                ColorConst.defaultBgColor
-            } else {
-                Color.parseColor(bgRaw)
-            }
-        }
+    val bgColor: Int?
+        get() = if (bgRaw != null) Color.parseColor(bgRaw) else null
 }

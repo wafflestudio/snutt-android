@@ -19,11 +19,7 @@ class MyLectureRepository @Inject constructor(
 ) {
     private var _currentTable: TableDto
         get() = storage.lastViewedTable.getValue().get()!!
-        set(value) = storage.tableMap.setValue(
-            storage.tableMap.getValue().toMutableMap()
-                .apply { put(value.id, value) }
-                .toMap()
-        )
+        set(value) = storage.lastViewedTable.setValue(value.toOptional())
 
     val currentTable: Observable<TableDto> =
         storage.lastViewedTable.asObservable().distinctUntilChanged()

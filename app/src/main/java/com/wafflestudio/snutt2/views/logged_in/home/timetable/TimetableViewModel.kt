@@ -5,10 +5,14 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.isRegularlyEquals
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
@@ -35,5 +39,17 @@ class TimetableViewModel @Inject constructor(
                     .subscribeBy(onError = apiOnError)
             }
         }
+    }
+
+    fun toggleLecture(lecture: LectureDto): Completable {
+        return myLectureRepository.currentTable
+            .firstOrError()
+            .flatMap {
+                val target = it.lectureList.findLast { lec -> lec.isRegularlyEquals(lecture) }
+                if (target != null) myLectureRepository.removeLecture(lectureId = target.id)
+                else myLectureRepository.addLecture(lectureId = lecture.id)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .ignoreElement()
     }
 }
