@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -29,7 +30,25 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/timetable_app_bar_title" />
+            android:text="@string/lecture_detail_app_bar_title" />
+
+        <TextView
+            android:id="@+id/complete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:padding="8dp"
+            android:text="@string/lecture_detail_top_bar_complete"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:padding="8dp"
+            android:text="@string/lecture_detail_top_bar_edit"
+            android:visibility="gone" />
 
     </LinearLayout>
 

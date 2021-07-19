@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class LectureDto(
     @Json(name = "_id") val id: String,
     @Json(name = "classification") val classification: String?,
@@ -20,4 +23,4 @@ data class LectureDto(
     @Json(name = "category") val category: String?,
     @Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
     @Json(name = "color") val color: ColorDto = ColorDto()
-)
+) : Parcelable

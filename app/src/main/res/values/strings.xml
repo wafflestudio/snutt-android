@@ -124,4 +124,7 @@
     <string name="home_drawer_change_name_dialog_hint">이름 변경하기</string>
     <string name="search_result_item_add_button">+ 추가하기</string>
     <string name="search_result_item_remove_button">- 삭제하기</string>
+    <string name="lecture_detail_app_bar_title">강의 상세 보기</string>
+    <string name="lecture_detail_top_bar_complete">완료</string>
+    <string name="lecture_detail_top_bar_edit">편집</string>
 </resources>

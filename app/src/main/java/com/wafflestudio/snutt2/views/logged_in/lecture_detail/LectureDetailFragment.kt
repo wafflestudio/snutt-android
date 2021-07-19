@@ -1,29 +1,41 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
+import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.ui.LectureMainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by makesource on 2016. 9. 4..
  */
+// FIXME: 리팩토링이 많이 필요할 듯, UI 변경이 된다면 그 떄 같이 건드리면 좋을 것 같음
 @AndroidEntryPoint
 class LectureDetailFragment : SNUTTBaseFragment() {
+
+    private lateinit var binding: FragmentLectureDetailLegacyBinding
+
+    val args: LectureDetailFragmentArgs by navArgs()
 
     @Inject
     lateinit var lectureManager: LectureManager
@@ -31,90 +43,73 @@ class LectureDetailFragment : SNUTTBaseFragment() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
-    private var detailView: RecyclerView? = null
-
     private var lists: MutableList<LectureItem> = mutableListOf()
 
     private lateinit var adapter: LectureDetailAdapter
 
-    var editable = false
-        private set
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        val lecture = lectureManager.currentLecture ?: return
-        attachLectureDetailList(lecture)
-        adapter = LectureDetailAdapter(
-            this,
-            lists,
-            lectureManager,
-            apiOnError,
-            this
-        )
-    }
+    private val vm: LectureDetailViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_lecture_detail_legacy, container, false)
-        detailView = rootView.findViewById<View>(R.id.lecture_detail_view) as RecyclerView
-        detailView!!.adapter = adapter
-        detailView!!.layoutManager = LinearLayoutManager(context)
-        return rootView
+    ): View {
+        binding = FragmentLectureDetailLegacyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_lecture_detail, menu)
-        val item = menu.getItem(0)
-        if (editable) {
-            item.title = "완료"
-        } else {
-            item.title = "편집"
-        }
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        val item = menu.getItem(0)
-        if (editable) {
-            item.title = "완료"
-        } else {
-            item.title = "편집"
-        }
-    }
+        vm.setLecture(args.selectedLecture)
 
-    @Synchronized
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_edit ->
-                if (editable) {
-                    item.isEnabled = false
-                    adapter.updateLecture(lectureManager.currentLecture)
-                        .bindUi(
-                            this,
-                            onSuccess = {
-                                item.title = "편집"
-                                item.isEnabled = true
-                                setNormalMode()
-                            },
-                            onError = {
-                                item.isEnabled = true
-                            }
-                        )
-                } else {
-                    item.title = "완료"
-                    setEditMode()
-                }
-            R.id.home -> if (editable) {
-                refreshFragment()
-                return true
+        adapter = LectureDetailAdapter(
+            lists,
+            onSyllabus = { startSyllabus() },
+            onRemoveLecture = { startRemoveAlertView() },
+            onResetLecture = { startResetAlertView() },
+            onColorChange = {
+//                TODO
             }
-        }
-        return super.onOptionsItemSelected(item)
+        )
+
+        binding.lectureDetailView.adapter = adapter
+        binding.lectureDetailView.layoutManager = LinearLayoutManager(context)
+
+        vm.selectedLecture
+            .bindUi(this) {
+                attachLectureDetailList(it)
+            }
+
+        vm.isEditMode
+            .distinctUntilChanged()
+            .bindUi(this) {
+                binding.completeButton.isVisible = it
+                binding.editButton.isVisible = it.not()
+            }
+
+        binding.completeButton.throttledClicks()
+            .flatMapSingle {
+                vm.updateLecture(adapter.getUpdateParam())
+            }
+            .bindUi(
+                this,
+                onNext = {
+                    setNormalMode()
+                },
+                onError = apiOnError
+            )
+
+        binding.backButton.throttledClicks()
+            .bindUi(this) {
+                findNavController().popBackStack()
+            }
+
+        binding.editButton.throttledClicks()
+            .bindUi(this) {
+                setEditMode()
+            }
+
     }
 
     fun setLectureColor(index: Int, color: ColorDto?) {
@@ -135,18 +130,16 @@ class LectureDetailFragment : SNUTTBaseFragment() {
         }
 
     fun refreshFragment() {
-        editable = false
+        vm.setEditMode(false)
         hideSoftKeyboard(requireView())
-        ActivityCompat.invalidateOptionsMenu(activity)
         lists.clear()
-        attachLectureDetailList(lectureManager.currentLecture)
         adapter.notifyDataSetChanged()
     }
 
     private fun setNormalMode() {
         try {
             hideSoftKeyboard(requireView())
-            editable = false
+            vm.setEditMode(false)
             for (i in lists.indices) {
                 val it = lists[i]
                 it.isEditable = false
@@ -175,7 +168,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
     private fun setEditMode() {
         try {
-            editable = true
+            vm.setEditMode(true)
             for (i in lists.indices) {
                 val it = lists[i]
                 it.isEditable = true
@@ -241,7 +234,60 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             add(LectureItem(LectureItem.Type.RemoveLecture))
             add(LectureItem(LectureItem.Type.LongHeader))
         }
+    }
 
+    private fun startSyllabus() {
+        vm.getCourseBookUrl()
+            .bindUi(
+                this,
+                onSuccess = { result ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                    requireContext().startActivity(intent)
+                },
+                onError = apiOnError
+            )
+    }
+
+    private fun startRemoveAlertView() {
+        val alert = AlertDialog.Builder(context)
+        alert.setTitle("강좌 삭제")
+            .setMessage("강좌를 삭제하시겠습니까")
+            .setPositiveButton("삭제") { _, _ ->
+                vm
+                    .removeLecture()
+                    .bindUi(
+                        this,
+                        onComplete = {
+                            findNavController().popBackStack()
+                        },
+                        onError = apiOnError
+                    )
+            }
+            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
+    }
+
+    private fun startResetAlertView() {
+        val alert = AlertDialog.Builder(context)
+        alert.setTitle("강좌 초기화")
+            .setMessage("강좌를 원래 상태로 초기화하시겠습니까")
+            .setPositiveButton(
+                "초기화"
+            ) { _, _ ->
+                vm
+                    .resetLecture()
+                    .bindUi(
+                        this,
+                        onComplete = {
+                            refreshFragment()
+                        },
+                        onError = apiOnError
+                    )
+            }
+            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 
     private val syllabusItemPosition: Int

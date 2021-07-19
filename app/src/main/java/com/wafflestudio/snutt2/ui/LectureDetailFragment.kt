@@ -93,18 +93,6 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             R.id.action_edit ->
                 if (editable) {
                     item.isEnabled = false
-                    adapter!!.updateLecture(lectureManager.currentLecture)
-                        .bindUi(
-                            this,
-                            onSuccess = {
-                                item.title = "편집"
-                                item.isEnabled = true
-                                setNormalMode()
-                            },
-                            onError = {
-                                item.isEnabled = true
-                            }
-                        )
                 } else {
                     item.title = "완료"
                     setEditMode()

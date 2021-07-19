@@ -11,19 +11,14 @@ import com.wafflestudio.snutt2.databinding.FragmentLectureListBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.view.DividerItemDecoration
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TableLecturesFragment : BaseFragment() {
     private lateinit var binding: FragmentLectureListBinding
-
-    // TODO dirty
-    @Inject
-    lateinit var lectureManager: LectureManager
 
     private val vm: TimetableViewModel by activityViewModels()
 
@@ -75,7 +70,10 @@ class TableLecturesFragment : BaseFragment() {
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
-        lectureManager.currentLecture = lecture
-        findNavController().navigate(R.id.action_tableLecturesFragment_to_lectureDetailFragment)
+        val action =
+            TableLecturesFragmentDirections.actionTableLecturesFragmentToLectureDetailFragment(
+                lecture
+            )
+        findNavController().navigate(action)
     }
 }

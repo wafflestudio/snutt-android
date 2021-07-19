@@ -94,7 +94,12 @@
         android:id="@+id/lectureDetailFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragment"
         android:label="fragment_lecture_detail"
-        tools:layout="@layout/fragment_lecture_detail" />
+        tools:layout="@layout/fragment_lecture_detail">
+        <argument
+            android:name="selectedLecture"
+            app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
+            app:nullable="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/lectureCreateFragment"

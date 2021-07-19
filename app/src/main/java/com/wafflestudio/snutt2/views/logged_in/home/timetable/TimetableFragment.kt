@@ -10,7 +10,10 @@ import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentTimetableBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
+import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
+import com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -44,7 +47,7 @@ class TimetableFragment : BaseFragment() {
             }
 
         binding.timetable.setOnLectureClickListener {
-            routeLectureDetail()
+            routeLectureDetail(it)
         }
 
         binding.drawerButton.throttledClicks()
@@ -69,8 +72,9 @@ class TimetableFragment : BaseFragment() {
 
     }
 
-    private fun routeLectureDetail() {
-        findNavController().navigate(R.id.action_homeFragment_to_lectureDetailFragment)
+    private fun routeLectureDetail(lecture: LectureDto) {
+        val action = HomeFragmentDirections.actionHomeFragmentToLectureDetailFragment(lecture)
+        findNavController().navigate(action)
     }
 
     private fun routeNotifications() {

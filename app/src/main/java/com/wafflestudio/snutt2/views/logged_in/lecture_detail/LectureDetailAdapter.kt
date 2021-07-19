@@ -37,13 +37,12 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
  * Created by makesource on 2017. 3. 17..
  */
 class LectureDetailAdapter(
-    private val fragment: LectureDetailFragment,
-    lists: MutableList<LectureItem>,
-    private val lectureManager: LectureManager,
-    private val apiOnError: ApiOnError,
-    private val bindable: RxBindable
+    private val lists: MutableList<LectureItem>,
+    private val onSyllabus: () -> Unit,
+    private val onRemoveLecture: () -> Unit,
+    private val onResetLecture: () -> Unit,
+    private val onColorChange: () -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-    private val lists: MutableList<LectureItem>
     private var day = 0
     private var fromTime = 0
     private var toTime = 0
@@ -81,7 +80,7 @@ class LectureDetailAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_item_color, parent, false)
-            return ColorViewHolder(view, lectureManager)
+            return ColorViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
@@ -107,13 +106,13 @@ class LectureDetailAdapter(
             val viewHolder = holder as ButtonViewHolder?
             viewHolder!!.bindData(item) {
                 when (item.type) {
-                    LectureItem.Type.Syllabus -> startSyllabus(it.context)
-                    LectureItem.Type.RemoveLecture -> startRemoveAlertView(it.context)
+                    LectureItem.Type.Syllabus -> onSyllabus()
+                    LectureItem.Type.RemoveLecture -> onRemoveLecture()
+                    LectureItem.Type.ResetLecture -> onResetLecture()
                     LectureItem.Type.AddClassTime -> {
                         addClassItem()
                         notifyItemInserted(lastClassItemPosition)
                     }
-                    LectureItem.Type.ResetLecture -> startResetAlertView(it.context)
                     else -> {
                     }
                 }
@@ -121,12 +120,7 @@ class LectureDetailAdapter(
         }
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val viewHolder = holder as ColorViewHolder?
-            viewHolder!!.bindData(item) {
-                if (item.isEditable) {
-//                      TODO
-//                    activity.setColorPickerFragment(item)
-                }
-            }
+            viewHolder!!.bindData()
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val viewHolder = holder as ClassViewHolder?
@@ -171,9 +165,8 @@ class LectureDetailAdapter(
         return lists[position]
     }
 
-    fun updateLecture(lecture: LectureDto?): Single<TableDto> {
+    fun getUpdateParam(): PutLectureParams {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        val current = lectureManager.currentLecture
         val target = PutLectureParams()
         val classTimeList = mutableListOf<ClassTimeDto>()
 
@@ -207,7 +200,8 @@ class LectureDetailAdapter(
             }
         }
         target.class_time_json = classTimeList
-        return lectureManager.updateLecture(current!!.id, target)
+
+        return target
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -218,8 +212,8 @@ class LectureDetailAdapter(
         }
     }
 
-    private class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
-    private class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val title: TextView
         private val value: EditText
         fun bindData(item: LectureItem) {
@@ -291,7 +285,7 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val layout: FrameLayout
         private val textView: TextView
         fun bindData(item: LectureItem, listener: View.OnClickListener) {
@@ -324,24 +318,17 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View, val lectureManager: LectureManager) :
+    inner class ColorViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
         private val fgColor: View
         private val bgColor: View
         private val arrow: View
-        fun bindData(item: LectureItem, listener: View.OnClickListener) {
+
+        fun bindData() {
             title.text = "색상"
-            layout.setOnClickListener(listener)
-            if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(lectureManager.getBgColorByIndex(item.colorIndex))
-                fgColor.setBackgroundColor(lectureManager.getFgColorByIndex(item.colorIndex))
-            } else {
-                bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
-                fgColor.setBackgroundColor(item.getColor()!!.fgColor!!)
-            }
-            arrow.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+            layout.setOnClickListener { onColorChange() }
         }
 
         init {
@@ -353,7 +340,7 @@ class LectureDetailAdapter(
         }
     }
 
-    private class RemarkViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class RemarkViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val title1: TextView
         private val editText1: EditText
         fun bindData(item: LectureItem) {
@@ -396,7 +383,7 @@ class LectureDetailAdapter(
         }
     }
 
-    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
+    inner class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
         OnLongClickListener {
         private val title1: TextView
         private val title2: TextView
@@ -537,72 +524,6 @@ class LectureDetailAdapter(
         alert.show()
     }
 
-    private fun startSyllabus(context: Context) {
-        if (lectureManager.currentLecture == null) return
-        val lecture = lectureManager.currentLecture
-        // FIXME: no scope
-        lectureManager.getCoursebookUrl(
-            lecture!!.course_number!!,
-            lecture.lecture_number!!
-        )
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { result ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
-                context.startActivity(intent)
-            }
-    }
-
-    private fun startRemoveAlertView(context: Context) {
-        val alert = AlertDialog.Builder(context)
-        alert.setTitle("강좌 삭제")
-        alert.setMessage("강좌를 삭제하시겠습니까")
-        alert.setPositiveButton(
-            "삭제",
-            DialogInterface.OnClickListener { dialog, whichButton ->
-                if (lectureManager.currentLecture == null) return@OnClickListener
-                val lectureId = lectureManager.currentLecture!!.id
-                // Refactoring FIXME: Unbounded
-                lectureManager.removeLecture(lectureId)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onSuccess = {
-                            fragment.findNavController().popBackStack()
-                        },
-                        onError = {
-                            apiOnError(it)
-                        }
-                    ).let { bindable.bindDisposable(it) }
-            }
-        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
-        val dialog = alert.create()
-        dialog.show()
-    }
-
-    private fun startResetAlertView(context: Context) {
-        val alert = AlertDialog.Builder(context)
-        alert.setTitle("강좌 초기화")
-        alert.setMessage("강좌를 원래 상태로 초기화하시겠습니까")
-        alert.setPositiveButton(
-            "초기화",
-            DialogInterface.OnClickListener { dialog, whichButton ->
-                if (lectureManager.currentLecture == null) return@OnClickListener
-                val lectureId = lectureManager.currentLecture!!.id
-                // Refactoring FIXME: Unbounded
-                lectureManager.resetLecture(lectureId!!)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onSuccess = {
-                            fragment.refreshFragment()
-                        },
-                        onError = {
-                            apiOnError(it)
-                        }
-                    ).let { bindable.bindDisposable(it) }
-            }
-        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
-        val dialog = alert.create()
-        dialog.show()
-    }
 
     private interface TextChangedListener {
         fun onText1Changed(text: String, position: Int)
@@ -629,7 +550,6 @@ class LectureDetailAdapter(
     }
 
     init {
-        this.lists = lists
         setOnTextChangedListener(
             object : TextChangedListener {
                 override fun onText1Changed(text: String, position: Int) {
