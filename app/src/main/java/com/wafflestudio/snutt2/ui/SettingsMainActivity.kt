@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Verify
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseActivity
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ReportFragment
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserSettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -14,7 +14,7 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.PrefStorage
-import com.wafflestudio.snutt2.ui.SplashActivity
+import com.wafflestudio.snutt2.views.SplashActivity
 import com.wafflestudio.snutt2.view.TableView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
