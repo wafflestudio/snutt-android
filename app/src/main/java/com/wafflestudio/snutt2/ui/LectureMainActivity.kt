@@ -13,7 +13,6 @@ import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.ui.ColorPickerFragment.ColorChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,7 +20,7 @@ import javax.inject.Inject
  * Created by makesource on 2016. 3. 1..
  */
 @AndroidEntryPoint
-class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChangedListener, ColorChangedListener {
+class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChangedListener {
 
     @Inject
     lateinit var lectureManager: LectureManager
@@ -58,12 +57,12 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
     }
 
     fun setCustomDetailFragment() {
-        val fragment: Fragment = CustomDetailFragment.newInstance()
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.activity_lecture_main, fragment, TAG_FRAGMENT_CUSTOM_DETAIL)
-        transaction.commit()
-        val lecture = lectureManager.currentLecture
-        if (lecture == null) supportActionBar!!.title = "커스텀 강의 추가" else supportActionBar!!.title = "강의 상세 보기"
+//        val fragment: Fragment = CustomDetailFragment.newInstance()
+//        val transaction = supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.activity_lecture_main, fragment, TAG_FRAGMENT_CUSTOM_DETAIL)
+//        transaction.commit()
+//        val lecture = lectureManager.currentLecture
+//        if (lecture == null) supportActionBar!!.title = "커스텀 강의 추가" else supportActionBar!!.title = "강의 상세 보기"
     }
 
     /**
@@ -94,7 +93,8 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
         when (index) {
             FRAGMENT_LECTURE_DETAIL -> supportActionBar!!.setTitle("강의 상세 보기")
             FRAGMENT_COLOR_PICKER -> supportActionBar!!.setTitle("강의 색상 변경")
-            FRAGMENT_CUSTOM_DETAIL -> if (lecture == null) supportActionBar!!.title = "커스텀 강의 추가" else supportActionBar!!.title = "강의 상세 보기"
+            FRAGMENT_CUSTOM_DETAIL -> if (lecture == null) supportActionBar!!.title =
+                "커스텀 강의 추가" else supportActionBar!!.title = "강의 상세 보기"
             else -> Log.e(TAG, "Fragment error!!!!")
         }
     }
@@ -102,8 +102,7 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
     private fun newFragment(fragmentIdx: Int): Fragment? {
         return when (fragmentIdx) {
             FRAGMENT_LECTURE_DETAIL -> LectureDetailFragment.newInstance()
-            FRAGMENT_COLOR_PICKER -> ColorPickerFragment.newInstance()
-            FRAGMENT_CUSTOM_DETAIL -> CustomDetailFragment.newInstance()
+//            FRAGMENT_CUSTOM_DETAIL -> CustomDetailFragment.newInstance()
             else -> {
                 Log.e(TAG, "Fragment index is out of range!!!")
                 null
@@ -144,49 +143,49 @@ class LectureMainActivity : SNUTTBaseActivity(), FragmentManager.OnBackStackChan
     }
 
     override fun onBackPressed() {
-        Log.d(TAG, "on back pressed called")
-        val index = currentFragmentIndex
-        if (index == FRAGMENT_LECTURE_DETAIL) {
-            val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) as LectureDetailFragment?
-            if (fragment!!.editable) {
-                val alert = AlertDialog.Builder(this)
-                alert.setPositiveButton("확인") { dialog, which ->
-                    fragment.refreshFragment()
-                    dialog.dismiss()
-                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
-                    "편집을 취소하시겠습니까?"
-                )
-                alert.show()
-                return
-            }
-        } else if (index == FRAGMENT_CUSTOM_DETAIL) {
-            val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) as CustomDetailFragment?
-            if (fragment!!.getEditable()) {
-                val alert = AlertDialog.Builder(this)
-                alert.setPositiveButton("확인") { dialog, which ->
-                    fragment.refreshFragment()
-                    dialog.dismiss()
-                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
-                    "편집을 취소하시겠습니까?"
-                )
-                alert.show()
-                return
-            }
-        }
+//        Log.d(TAG, "on back pressed called")
+//        val index = currentFragmentIndex
+//        if (index == FRAGMENT_LECTURE_DETAIL) {
+//            val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) as LectureDetailFragment?
+//            if (fragment!!.editable) {
+//                val alert = AlertDialog.Builder(this)
+//                alert.setPositiveButton("확인") { dialog, which ->
+//                    fragment.refreshFragment()
+//                    dialog.dismiss()
+//                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
+//                    "편집을 취소하시겠습니까?"
+//                )
+//                alert.show()
+//                return
+//            }
+//        } else if (index == FRAGMENT_CUSTOM_DETAIL) {
+//            val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) as CustomDetailFragment?
+//            if (fragment!!.getEditable()) {
+//                val alert = AlertDialog.Builder(this)
+//                alert.setPositiveButton("확인") { dialog, which ->
+//                    fragment.refreshFragment()
+//                    dialog.dismiss()
+//                }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle(
+//                    "편집을 취소하시겠습니까?"
+//                )
+//                alert.show()
+//                return
+//            }
+//        }
         super.onBackPressed()
     }
 
-    override fun onColorChanged(index: Int, color: ColorDto?) {
-        val lecture = lectureManager.currentLecture
-        // isCustom
-        if (lecture == null || true) {
-            val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL) as CustomDetailFragment?
-            fragment!!.setLectureColor(index, color)
-        } else {
-            val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL) as LectureDetailFragment?
-            fragment!!.setLectureColor(index, color)
-        }
-    }
+//    override fun onColorChanged(index: Int, color: ColorDto?) {
+//        val lecture = lectureManager.currentLecture
+//        // isCustom
+//        if (lecture == null || true) {
+//            val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_CUSTOM_DETAIL) as CustomDetailFragment?
+//            fragment!!.setLectureColor(index, color)
+//        } else {
+//            val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_LECTURE_DETAIL) as LectureDetailFragment?
+//            fragment!!.setLectureColor(index, color)
+//        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

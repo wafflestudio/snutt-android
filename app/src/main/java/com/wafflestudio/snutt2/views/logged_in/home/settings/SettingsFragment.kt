@@ -60,17 +60,17 @@ class SettingsFragment : BaseFragment() {
                     SettingsItem.Type.Account -> routeUserSettings()
                     SettingsItem.Type.Timetable -> routeTimetableSettings()
                     SettingsItem.Type.Developer -> {
-                        // TODO
+                        routeTeamInfo()
                     }
                     SettingsItem.Type.BugReport -> {
                         // TODO
                     }
                     SettingsItem.Type.License -> showLicenseDialog()
                     SettingsItem.Type.Terms -> {
-                        // TODO
+                        routeTermsInfo()
                     }
                     SettingsItem.Type.Private -> {
-                        // TODO
+                        routeServiceInfo()
                     }
                     SettingsItem.Type.Logout -> performLogout()
                     else -> {
@@ -156,6 +156,14 @@ class SettingsFragment : BaseFragment() {
 
     private fun routeTeamInfo() {
         findNavController().navigate(R.id.action_homeFragment_to_teamInfoFragment)
+    }
+
+    private fun routeServiceInfo() {
+        findNavController().navigate(R.id.action_homeFragment_to_serviceInfoFragment)
+    }
+
+    private fun routeTermsInfo() {
+        findNavController().navigate(R.id.action_homeFragment_to_termsInfoFragment)
     }
 
     private fun showLicenseDialog() {

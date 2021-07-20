@@ -5,56 +5,47 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.databinding.FragmentBrowserBinding
+import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.rx.throttledClicks
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.HashMap
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class TermsInfoFragment : BaseFragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TermsInfoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class TermsInfoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentBrowserBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    @Inject
+    lateinit var storage: SNUTTStorage
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_terms_info, container, false)
-    }
+    ): View {
+        binding = FragmentBrowserBinding.inflate(inflater, container, false)
+        val headers = HashMap<String, String>()
+        headers["x-access-apikey"] = resources.getString(R.string.api_key)
+        headers["x-access-token"] = storage.accessToken.getValue()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TermsInfoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TermsInfoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        binding.title.text = "개인정보처리방침"
+
+        binding.backButton.throttledClicks()
+            .bindUi(this) {
+                findNavController().popBackStack()
             }
+        binding.webView.webViewClient = WebViewClient() // 이걸 안해주면 새창이 뜸
+        binding.webView.loadUrl(
+            getString(R.string.api_server) + getString(R.string.terms),
+            headers
+        )
+
+        return binding.root
     }
 }

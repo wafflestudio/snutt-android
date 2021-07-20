@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
@@ -11,7 +12,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -51,5 +51,9 @@ class TimetableViewModel @Inject constructor(
             }
             .observeOn(AndroidSchedulers.mainThread())
             .ignoreElement()
+    }
+
+    fun setColorTheme(theme: TimetableColorTheme) {
+
     }
 }

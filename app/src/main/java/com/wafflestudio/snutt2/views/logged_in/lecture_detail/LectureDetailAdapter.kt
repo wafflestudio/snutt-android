@@ -18,9 +18,14 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
+import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
@@ -32,6 +37,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import timber.log.Timber
 
 /**
  * Created by makesource on 2017. 3. 17..
@@ -41,7 +47,6 @@ class LectureDetailAdapter(
     private val onSyllabus: () -> Unit,
     private val onRemoveLecture: () -> Unit,
     private val onResetLecture: () -> Unit,
-    private val onColorChange: () -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
     private var fromTime = 0
@@ -120,7 +125,7 @@ class LectureDetailAdapter(
         }
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val viewHolder = holder as ColorViewHolder?
-            viewHolder!!.bindData()
+            viewHolder!!.bindData(item)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val viewHolder = holder as ClassViewHolder?
@@ -318,7 +323,7 @@ class LectureDetailAdapter(
         }
     }
 
-    inner class ColorViewHolder(view: View) :
+    inner class ColorViewHolder(val view: View) :
         RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
@@ -326,9 +331,27 @@ class LectureDetailAdapter(
         private val bgColor: View
         private val arrow: View
 
-        fun bindData() {
+        fun bindData(item: LectureItem) {
             title.text = "색상"
-            layout.setOnClickListener { onColorChange() }
+
+            if (item.colorIndex > 0) {
+                bgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultBgColorHex())
+                fgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultFgColorHex())
+            } else {
+                bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
+                fgColor.setBackgroundColor(item.getColor()!!.fgColor!!)
+            }
+            arrow.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+            layout.setOnClickListener {
+                ColorPickerDialog.Builder(view.context)
+                    .setTitle("색상 선택")
+                    .setPositiveButton(R.string.common_ok, object : ColorEnvelopeListener {
+                        override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                            Timber.d(envelope?.color.toString())
+                        }
+                    })
+                    .show()
+            }
         }
 
         init {

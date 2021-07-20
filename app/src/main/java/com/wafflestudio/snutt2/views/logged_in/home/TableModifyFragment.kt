@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.databinding.DialogTableMoreBinding
+import com.wafflestudio.snutt2.databinding.DialogTableModifyBinding
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,9 +18,9 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TableBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class TableModifyFragment : BottomSheetDialogFragment() {
 
-    private lateinit var binding: DialogTableMoreBinding
+    private lateinit var binding: DialogTableModifyBinding
 
     private lateinit var tableDto: TableDto
 
@@ -34,7 +34,7 @@ class TableBottomSheetDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogTableMoreBinding.inflate(inflater, container, false)
+        binding = DialogTableModifyBinding.inflate(inflater, container, false)
         return binding.root
     }
 

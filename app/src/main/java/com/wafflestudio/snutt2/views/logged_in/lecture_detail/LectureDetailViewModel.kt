@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.MyLectureRepository
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
@@ -10,11 +11,13 @@ import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.manager.LectureManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.annotations.Nullable
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.lang.Error
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -22,8 +25,8 @@ import javax.inject.Inject
 class LectureDetailViewModel @Inject constructor(
     private val myLectureRepository: MyLectureRepository,
 ) : ViewModel() {
-    private val _selectedLecture = BehaviorSubject.create<LectureDto>()
-    val selectedLecture: Observable<LectureDto> = _selectedLecture.hide()
+    private val _selectedLecture = BehaviorSubject.create<Optional<LectureDto>>()
+    val selectedLecture: Observable<Optional<LectureDto>> = _selectedLecture.hide()
 
     private val _isEditMode = BehaviorSubject.createDefault(false)
     val isEditMode: Observable<Boolean> = _isEditMode.hide()
@@ -32,33 +35,41 @@ class LectureDetailViewModel @Inject constructor(
         _isEditMode.onNext(edit)
     }
 
-    fun setLecture(lectureDto: LectureDto) {
-        _selectedLecture.onNext(lectureDto)
+    fun setLecture(lectureDto: LectureDto?) {
+        _selectedLecture.onNext(lectureDto.toOptional())
     }
 
     fun updateLecture(param: PutLectureParams): Single<PutLectureResults> {
-        return myLectureRepository.updateLecture(_selectedLecture.value.id, param)
+        val lectureId = _selectedLecture.value.get()?.id
+            ?: return Single.error(IllegalStateException("no selected lecture"))
+        return myLectureRepository.updateLecture(lectureId, param)
     }
 
     fun removeLecture(): Completable {
-        return myLectureRepository.removeLecture(_selectedLecture.value.id)
+        val lectureId = _selectedLecture.value.get()?.id
+            ?: return Completable.error(IllegalStateException("no selected lecture"))
+        return myLectureRepository.removeLecture(lectureId)
             .ignoreElement()
     }
 
     fun resetLecture(): Completable {
-        return myLectureRepository.resetLecture(_selectedLecture.value.id)
+        val lectureId = _selectedLecture.value.get()?.id
+            ?: return Completable.error(IllegalStateException("no selected lecture"))
+        return myLectureRepository.resetLecture(lectureId)
             .ignoreElement()
     }
 
     fun getCourseBookUrl(): Single<GetCoursebooksOfficialResults> {
-        val courseNumber = _selectedLecture.value.course_number ?: return Single.error(
+        val courseNumber = _selectedLecture.value.get()?.course_number ?: return Single.error(
             IllegalStateException("lecture with no course number")
         )
-        val lectureNumber = _selectedLecture.value.lecture_number ?: return Single.error(
+        val lectureNumber = _selectedLecture.value.get()?.lecture_number ?: return Single.error(
             IllegalStateException("lecture with no lecture number")
         )
         return myLectureRepository.getLectureCourseBookUrl(courseNumber, lectureNumber)
     }
 
-
+    fun getSelectedLecture(): Optional<LectureDto> {
+        return _selectedLecture.value
+    }
 }

@@ -23,4 +23,8 @@ data class LectureDto(
     @Json(name = "category") val category: String?,
     @Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
     @Json(name = "color") val color: ColorDto = ColorDto()
-) : Parcelable
+) : Parcelable {
+
+    val isCustom: Boolean
+        get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
+}

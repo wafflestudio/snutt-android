@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -24,6 +25,10 @@ class MyLectureRepository @Inject constructor(
     val currentTable: Observable<TableDto> =
         storage.lastViewedTable.asObservable().distinctUntilChanged()
             .filterEmpty()
+
+    fun getCurrentTable(): Optional<TableDto> {
+        return storage.lastViewedTable.getValue()
+    }
 
 
     fun addLecture(lectureId: String): Single<PostCustomLectureResults> {

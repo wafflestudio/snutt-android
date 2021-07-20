@@ -4,26 +4,23 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -36,9 +33,6 @@ class LectureDetailFragment : SNUTTBaseFragment() {
     private lateinit var binding: FragmentLectureDetailLegacyBinding
 
     val args: LectureDetailFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var lectureManager: LectureManager
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -67,10 +61,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             lists,
             onSyllabus = { startSyllabus() },
             onRemoveLecture = { startRemoveAlertView() },
-            onResetLecture = { startResetAlertView() },
-            onColorChange = {
-//                TODO
-            }
+            onResetLecture = { startResetAlertView() }
         )
 
         binding.lectureDetailView.adapter = adapter
@@ -78,7 +69,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
         vm.selectedLecture
             .bindUi(this) {
-                attachLectureDetailList(it)
+                attachLectureDetailList(it.get())
             }
 
         vm.isEditMode

@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.adapter
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.text.Editable
@@ -15,10 +16,15 @@ import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
+import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.model.LectureItem
@@ -37,9 +43,9 @@ import java.util.*
  * Created by makesource on 2017. 3. 17..
  */
 class CustomLectureAdapter(
-    private val activity: Activity,
+    private val fragment: BaseFragment,
     private val lists: ArrayList<LectureItem>,
-    private val lectureManager: LectureManager,
+    private val myLectureRepository: MyLectureRepository,
     private val apiOnError: ApiOnError,
     private val bindable: RxBindable
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
@@ -80,7 +86,7 @@ class CustomLectureAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell_lecture_item_color, parent, false)
-            return ColorViewHolder(view, lectureManager)
+            return ColorViewHolder(view)
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val view = LayoutInflater.from(parent.context)
@@ -110,7 +116,7 @@ class CustomLectureAdapter(
                         addClassItem()
                         notifyItemInserted(lastClassItemPosition)
                     }
-                    LectureItem.Type.RemoveLecture -> startAlertView()
+                    LectureItem.Type.RemoveLecture -> startAlertView(holder.itemView.context)
                     else -> {
                     }
                 }
@@ -119,16 +125,14 @@ class CustomLectureAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val viewHolder = holder as ColorViewHolder?
             viewHolder!!.bindData(item) {
-                if (item.isEditable) {
-                    (activity as LectureMainActivity).setColorPickerFragment(item)
-                }
+                // TODO
             }
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val viewHolder = holder as ClassViewHolder?
             viewHolder!!.bindData(item) {
                 if (item.isEditable) {
-                    showDialog(item)
+                    showDialog(item, holder.itemView.context)
                 }
             }
         }
@@ -168,20 +172,24 @@ class CustomLectureAdapter(
         return if (position == itemCount - 1) false else getItem(position + 1).type === LectureItem.Type.AddClassTime
     }
 
-    private fun startAlertView() {
-        val alert = AlertDialog.Builder(activity)
+    private fun startAlertView(context: Context) {
+        val alert = AlertDialog.Builder(context)
+        val lectureId = myLectureRepository.getCurrentTable().get()?.id
+        if (lectureId == null) {
+            Toast.makeText(context, "선택된 강좌가 없습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         alert.setTitle("강좌 삭제")
         alert.setMessage("강좌를 삭제하시겠습니까")
         alert.setPositiveButton(
             "삭제",
             DialogInterface.OnClickListener { dialog, whichButton ->
-                if (lectureManager.currentLecture == null) return@OnClickListener
-                val lectureId = lectureManager.currentLecture!!.id
-                lectureManager.removeLecture(lectureId)
+                myLectureRepository.removeLecture(lectureId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
-                            activity.finish()
+                            fragment.findNavController().popBackStack()
                         },
                         onError = {
                             apiOnError(it)
@@ -205,8 +213,22 @@ class CustomLectureAdapter(
             value.isFocusableInTouchMode = item.isEditable
             value.addTextChangedListener(
                 object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
                     override fun afterTextChanged(s: Editable) {
                         textChangedListener!!.onTextChanged(s.toString(), position)
                     }
@@ -259,7 +281,8 @@ class CustomLectureAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View, private val lectureManager: LectureManager) : RecyclerView.ViewHolder(view) {
+    private class ColorViewHolder(view: View) :
+        RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
         private val fgColor: View
@@ -269,8 +292,8 @@ class CustomLectureAdapter(
             title.text = "색상"
             layout.setOnClickListener(listener)
             if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(lectureManager.getBgColorByIndex(item.colorIndex))
-                fgColor.setBackgroundColor(lectureManager.getFgColorByIndex(item.colorIndex))
+                bgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultBgColorHex())
+                fgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultFgColorHex())
             } else {
                 bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
                 fgColor.setBackgroundColor(item.getColor()!!.fgColor!!)
@@ -294,8 +317,22 @@ class CustomLectureAdapter(
             editText1.setText(item.value1)
             editText1.addTextChangedListener(
                 object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
                     override fun afterTextChanged(s: Editable) {
                         textChangedListener!!.onTextChanged(s.toString(), position)
                     }
@@ -305,7 +342,8 @@ class CustomLectureAdapter(
             editText1.isClickable = item.isEditable
             editText1.isFocusable = item.isEditable
             editText1.isFocusableInTouchMode = item.isEditable
-            editText1.movementMethod = if (item.isEditable) ArrowKeyMovementMethod.getInstance() else LinkMovementMethod.getInstance()
+            editText1.movementMethod =
+                if (item.isEditable) ArrowKeyMovementMethod.getInstance() else LinkMovementMethod.getInstance()
         }
 
         init {
@@ -314,7 +352,8 @@ class CustomLectureAdapter(
         }
     }
 
-    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener, OnLongClickListener {
+    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
+        OnLongClickListener {
         private val title1: TextView
         private val title2: TextView
         private val editText1: EditText
@@ -334,8 +373,22 @@ class CustomLectureAdapter(
             editText2.setText(item.classTime!!.place)
             editText2.addTextChangedListener(
                 object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
                     override fun afterTextChanged(s: Editable) {
                         textChangedListener!!.onLocationChanged(s.toString(), position)
                     }
@@ -376,15 +429,16 @@ class CustomLectureAdapter(
         }
     }
 
-    private fun showDialog(item: LectureItem) {
-        val alert = AlertDialog.Builder(activity)
+    private fun showDialog(item: LectureItem, context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setPositiveButton("확인") { dialog, which -> // item's class time update
-            val t = ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
+            val t =
+                ClassTimeDto(day, fromTime / 2f, (toTime - fromTime) / 2f, item.classTime!!.place)
             item.classTime = t
             notifyDataSetChanged()
             dialog.dismiss()
         }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
-        val inflater = LayoutInflater.from(activity)
+        val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.dialog_time_picker, null)
         alert.setView(layout)
         alert.show()
@@ -411,12 +465,14 @@ class CustomLectureAdapter(
         fromPicker.wrapSelectorWheel = false
         fromPicker.setOnValueChangedListener { picker, oldVal, newVal ->
             fromTime = newVal
-            /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues = null
+            /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
+            null
             toPicker.value = fromTime + 1
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = maxTimeIndex
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, maxTimeIndex)
-            /* setValue method does not call listener, so we have to change the value manually */toTime = fromTime + 1
+            /* setValue method does not call listener, so we have to change the value manually */toTime =
+            fromTime + 1
         }
         toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
         val to = SNUTTUtils.getTimeList(fromTime + 1, maxTimeIndex)
@@ -428,8 +484,8 @@ class CustomLectureAdapter(
         toPicker.setOnValueChangedListener { picker, oldVal, newVal -> toTime = newVal }
     }
 
-    private fun showDeleteDialog(position: Int) {
-        val alert = AlertDialog.Builder(activity)
+    private fun showDeleteDialog(position: Int, context: Context) {
+        val alert = AlertDialog.Builder(context)
         alert.setPositiveButton("확인") { dialog, which ->
             lists.removeAt(position)
             notifyItemRemoved(position)
@@ -438,10 +494,11 @@ class CustomLectureAdapter(
         alert.show()
     }
 
-    fun updateLecture(lecture: LectureDto?): Single<TableDto> {
+    fun updateLecture(): Single<TableDto> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        Log.d(TAG, "update lecture called.")
-        val current = lectureManager.currentLecture
+        val lectureId = myLectureRepository.getCurrentTable().get()?.id
+            ?: return Single.error(Error("no selected lecture"))
+
         val target = PutLectureParams()
         val classTimeList = mutableListOf<ClassTimeDto>()
 
@@ -470,7 +527,8 @@ class CustomLectureAdapter(
             }
         }
         target.class_time_json = classTimeList
-        return lectureManager.updateLecture(current!!.id, target)
+        myLectureRepository.getCurrentTable().get()?.id
+        return myLectureRepository.updateLecture(lectureId, target)
     }
 
     private fun getIntegerValue(s: String?): Int {
@@ -513,7 +571,7 @@ class CustomLectureAdapter(
             }
         }
         lecture.class_time_json = classTimeList
-        return lectureManager.createLecture(lecture)
+        return myLectureRepository.createLecture(lecture)
     }
 
     private interface TextChangedListener {
@@ -558,7 +616,7 @@ class CustomLectureAdapter(
             object : DeleteClickListener {
 
                 override fun onDeleteClick(view: View?, position: Int) {
-                    showDeleteDialog(position)
+                    showDeleteDialog(position, view!!.context)
                 }
             }
         )

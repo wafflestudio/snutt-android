@@ -73,7 +73,13 @@ class TimetableFragment : BaseFragment() {
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
-        val action = HomeFragmentDirections.actionHomeFragmentToLectureDetailFragment(lecture)
+        val action =
+            if (lecture.isCustom) HomeFragmentDirections.actionHomeFragmentToCustomLectureDetailFragment(
+                lecture
+            )
+            else HomeFragmentDirections.actionHomeFragmentToLectureDetailFragment(
+                lecture
+            )
         findNavController().navigate(action)
     }
 

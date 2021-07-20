@@ -52,6 +52,9 @@
             android:id="@+id/action_homeFragment_to_lectureDetailFragment"
             app:destination="@id/lectureDetailFragment" />
         <action
+            android:id="@+id/action_homeFragment_to_customLectureDetailFragment"
+            app:destination="@id/customLectureDetailFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_tableLecturesFragment"
             app:destination="@id/tableLecturesFragment" />
         <action
@@ -69,6 +72,9 @@
         <action
             android:id="@+id/action_homeFragment_to_teamInfoFragment"
             app:destination="@id/teamInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_serviceInfoFragment"
+            app:destination="@id/serviceInfoFragment" />
     </fragment>
 
     <fragment
@@ -80,8 +86,8 @@
             android:id="@+id/action_tableLecturesFragment_to_lectureDetailFragment"
             app:destination="@id/lectureDetailFragment" />
         <action
-            android:id="@+id/action_tableLecturesFragment_to_lectureCreateFragment"
-            app:destination="@id/lectureCreateFragment" />
+            android:id="@+id/action_tableLecturesFragment_to_customLectureDetailFragment"
+            app:destination="@id/customLectureDetailFragment" />
     </fragment>
 
     <fragment
@@ -102,10 +108,16 @@
     </fragment>
 
     <fragment
-        android:id="@+id/lectureCreateFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureCreateFragment"
+        android:id="@+id/customLectureDetailFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.CustomLectureDetailFragment"
         android:label="fragment_lecture_create"
-        tools:layout="@layout/fragment_lecture_create" />
+        tools:layout="@layout/fragment_lecture_create">
+
+        <argument
+            android:name="selectedLecture"
+            app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
+            app:nullable="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/termsInfoFragment"
@@ -132,5 +144,9 @@
         android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoFragment"
         android:label="fragment_team_info"
         tools:layout="@layout/fragment_team_info" />
+    <fragment
+        android:id="@+id/serviceInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoFragment"
+        android:label="ServiceInfoFragment" />
 
 </navigation>

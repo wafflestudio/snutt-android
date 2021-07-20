@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment() {
 
     private val searchViewModel: SearchViewModel by activityViewModels()
 
-    private val bottomSheetFragment = TableBottomSheetDialogFragment()
+    private val bottomSheetFragment = TableModifyFragment()
 
     @Inject
     lateinit var dialogController: DialogController
@@ -143,6 +143,12 @@ class HomeFragment : BaseFragment() {
                         .apply { add(TableListAdapter.Data.Add) }
                         .toList()
                 )
+            }
+
+        binding.themeButton
+            .throttledClicks()
+            .bindUi(this) {
+                TableThemeFragment().show(childFragmentManager, "theme")
             }
     }
 }

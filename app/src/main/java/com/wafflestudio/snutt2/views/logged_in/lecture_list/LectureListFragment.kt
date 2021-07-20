@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.view.DividerItemDecoration
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TableLecturesFragment : BaseFragment() {
@@ -61,17 +62,22 @@ class TableLecturesFragment : BaseFragment() {
                     }.toMutableList().apply { add(LectureListAdapter.Data.Add) }
                 )
             }
-
-
     }
 
     private fun routeLectureCreate() {
-        findNavController().navigate(R.id.action_tableLecturesFragment_to_lectureCreateFragment)
+        val action =
+            TableLecturesFragmentDirections.actionTableLecturesFragmentToCustomLectureDetailFragment(
+                null
+            )
+        findNavController().navigate(action)
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
         val action =
-            TableLecturesFragmentDirections.actionTableLecturesFragmentToLectureDetailFragment(
+            if (lecture.isCustom) TableLecturesFragmentDirections.actionTableLecturesFragmentToCustomLectureDetailFragment(
+                lecture
+            )
+            else TableLecturesFragmentDirections.actionTableLecturesFragmentToLectureDetailFragment(
                 lecture
             )
         findNavController().navigate(action)
