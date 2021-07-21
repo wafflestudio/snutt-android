@@ -1,21 +1,16 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentNotificationsBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.views.logged_in.lecture_list.LectureListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

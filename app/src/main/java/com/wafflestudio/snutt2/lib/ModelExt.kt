@@ -2,14 +2,10 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
-import androidx.annotation.ColorRes
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagType
-import com.wafflestudio.snutt2.ui.TableListActivity
 
 
 fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {

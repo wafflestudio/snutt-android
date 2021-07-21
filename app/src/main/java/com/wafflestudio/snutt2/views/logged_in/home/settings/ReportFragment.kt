@@ -1,17 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.os.Bundle
-import android.view.*
-import android.widget.EditText
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.common.base.Strings
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTBaseFragment
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.databinding.FragmentReportBinding
-import com.wafflestudio.snutt2.lib.base.BaseActivity
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint

@@ -19,11 +19,11 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.data.UserRepository
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.model.SettingsItem
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.SettingsItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*

@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.wafflestudio.snutt2.databinding.FragmentBrowserBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint

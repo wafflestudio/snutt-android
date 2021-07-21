@@ -25,7 +25,11 @@
 
         <activity
             android:name=".views.RootActivity"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".views.SplashActivity"
+            android:label="@string/app_name">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,10 +42,6 @@
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name=".views.SplashActivity"
-            android:label="@string/app_name" />
 
 
         <!-- <service android:name="com.wafflestudio.snutt2.service.MyFirebaseMessagingService"> -->

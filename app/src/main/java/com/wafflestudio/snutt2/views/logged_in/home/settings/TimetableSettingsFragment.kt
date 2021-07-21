@@ -1,14 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.jakewharton.rxbinding4.widget.checkedChanges
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.databinding.FragmentTimetableSettingsBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.toDayString

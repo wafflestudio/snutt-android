@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.view
+package com.wafflestudio.snutt2.components
 
 import android.content.Context
 import android.util.AttributeSet

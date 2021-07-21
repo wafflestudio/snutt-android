@@ -6,9 +6,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava3.flowable
 import com.wafflestudio.snutt2.data.NotificationsPagingSource
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.GetNotificationCountResults
+import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers

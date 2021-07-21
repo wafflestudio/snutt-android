@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data
 
-import com.google.common.collect.Table
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto

@@ -10,27 +10,37 @@ abstract class DataStorage {
     fun <T : Any> get(key: String, type: Type): T? = getInternal(key, type)
 
     fun <T : Any> put(key: String, value: T?, type: Type) {
-        putInternal(key, value, type)
-        listeners.get(key).forEach {
+        val listenerList = synchronized(listeners) {
+            listeners[key]
+        }
+        listenerList.forEach {
             it.onChange(value)
         }
+
+        putInternal(key, value, type)
     }
 
     fun clear() {
-        clearInternal()
-        listeners.values().forEach {
-            it.onChange(null)
+        synchronized(listeners) {
+            listeners.values().forEach {
+                it.onChange(null)
+            }
         }
+        clearInternal()
     }
 
     private val listeners = ArrayListMultimap.create<String, KeyValueChangeListener>()
 
     fun <T : Any> addKeyChangeListener(key: String, listener: KeyValueChangeListener) {
-        listeners.put(key, listener)
+        synchronized(listener) {
+            listeners.put(key, listener)
+        }
     }
 
     fun removeKeyChangeListener(key: String, listener: KeyValueChangeListener) {
-        listeners.remove(key, listener)
+        synchronized(listener) {
+            listeners.remove(key, listener)
+        }
     }
 
     interface KeyValueChangeListener {

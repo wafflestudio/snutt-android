@@ -4,7 +4,6 @@ import com.squareup.moshi.Types
 import com.wafflestudio.snutt2.lib.Optional
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
-import timber.log.Timber
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
 

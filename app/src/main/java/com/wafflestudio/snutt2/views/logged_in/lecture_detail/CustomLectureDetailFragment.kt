@@ -6,15 +6,12 @@ import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Preconditions
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.adapter.CustomLectureAdapter
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -23,11 +20,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
-import com.wafflestudio.snutt2.ui.LectureMainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -244,12 +240,6 @@ class CustomLectureDetailFragment : BaseFragment() {
             }
             Log.e(TAG, "can't find color item")
             return null
-        }
-    private val lectureMainActivity: LectureMainActivity?
-        private get() {
-            val activity: Activity? = activity
-            Preconditions.checkArgument(activity is LectureMainActivity)
-            return activity as LectureMainActivity?
         }
     private val addClassTimeItemPosition: Int
         private get() {

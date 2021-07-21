@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.isRegularlyEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto

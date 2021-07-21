@@ -1,11 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_list
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.google.common.base.Strings
 import com.wafflestudio.snutt2.databinding.ItemAddLectureListBinding
 import com.wafflestudio.snutt2.databinding.ItemLectureListBinding

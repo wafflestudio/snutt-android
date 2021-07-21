@@ -18,7 +18,6 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSignUpBinding
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiStatus
 import com.wafflestudio.snutt2.lib.network.Quadruple

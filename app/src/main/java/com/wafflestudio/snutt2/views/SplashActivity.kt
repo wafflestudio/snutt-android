@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTBaseActivity
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 

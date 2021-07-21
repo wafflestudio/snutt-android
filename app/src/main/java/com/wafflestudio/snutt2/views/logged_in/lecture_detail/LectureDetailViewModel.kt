@@ -8,17 +8,11 @@ import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.manager.LectureManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.annotations.NonNull
-import io.reactivex.rxjava3.annotations.Nullable
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import java.lang.Error
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @HiltViewModel

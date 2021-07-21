@@ -12,10 +12,10 @@ import android.widget.RemoteViews
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.components.TimetableView
 import com.wafflestudio.snutt2.manager.LectureManager
 import com.wafflestudio.snutt2.manager.PrefStorage
 import com.wafflestudio.snutt2.views.SplashActivity
-import com.wafflestudio.snutt2.view.TableView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -61,8 +61,7 @@ class TimetableWidgetProvider : AppWidgetProvider() {
         if (prefStorage.currentTable != null) {
             val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resultBitmap)
-            val table = TableView(context)
-            table.drawWidget(canvas, width, height)
+            val table = TimetableView(context)
             views.setViewVisibility(R.id.placeholder, View.GONE)
             views.setImageViewBitmap(R.id.table, resultBitmap)
         }

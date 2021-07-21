@@ -7,15 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.DividerItemDecoration
 import com.wafflestudio.snutt2.databinding.FragmentLectureListBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.view.DividerItemDecoration
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class TableLecturesFragment : BaseFragment() {

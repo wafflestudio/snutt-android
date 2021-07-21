@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.lib.preferences.storage
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.google.common.collect.Multimap
 import com.wafflestudio.snutt2.lib.preferences.serializer.Serializer
 import java.lang.reflect.Type
 

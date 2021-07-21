@@ -56,7 +56,7 @@
             android:layout_weight="18"
             custom:tickStart="8"
             custom:tickInterval="1"
-            custom:tickEnd="23"
+            custom:tickEnd="24"
             custom:pinMaxFont="10sp"
             custom:connectingLineWeight="1dp"
             custom:pinColor="@color/colorAccent"

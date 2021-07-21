@@ -1,10 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -16,27 +13,17 @@ import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
-import com.wafflestudio.snutt2.lib.rx.RxBindable
-import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.model.LectureItem
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import com.wafflestudio.snutt2.model.LectureItem
 import timber.log.Timber
 
 /**

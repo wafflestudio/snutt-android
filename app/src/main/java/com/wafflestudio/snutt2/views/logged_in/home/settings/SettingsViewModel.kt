@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.SettingsRepository
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.handler.ApiOnError

@@ -12,8 +12,6 @@ import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 class NotificationsAdapter : PagingDataAdapter<NotificationDto, NotificationsAdapter.ViewHolder>(

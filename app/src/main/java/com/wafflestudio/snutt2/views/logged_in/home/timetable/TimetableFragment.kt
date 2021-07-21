@@ -13,7 +13,6 @@ import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
-import com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

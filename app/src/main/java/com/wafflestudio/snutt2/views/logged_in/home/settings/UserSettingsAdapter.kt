@@ -13,7 +13,8 @@ import com.wafflestudio.snutt2.model.SettingsItem
 /**
  * Created by makesource on 2016. 11. 21..
  */
-class UserSettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UserSettingsAdapter(private val lists: List<SettingsItem>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == SettingsItem.ViewType.Header.value) {
@@ -54,7 +55,8 @@ class UserSettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.
         }
     }
 
-    class TitleViewHolder constructor(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    class TitleViewHolder constructor(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
         private val title: TextView
         private val detail: TextView
         private val arrow: ImageView
@@ -62,7 +64,8 @@ class UserSettingsAdapter(private val lists: List<SettingsItem>) : RecyclerView.
             title.text = item.title
             detail.text = item.detail
             when (item.type) {
-                SettingsItem.Type.AddIdPassword, SettingsItem.Type.ChangePassword, SettingsItem.Type.LinkFacebook, SettingsItem.Type.DeleteFacebook, SettingsItem.Type.ChangeEmail, SettingsItem.Type.Leave -> arrow.visibility = View.VISIBLE
+                SettingsItem.Type.AddIdPassword, SettingsItem.Type.ChangePassword, SettingsItem.Type.LinkFacebook, SettingsItem.Type.DeleteFacebook, SettingsItem.Type.ChangeEmail, SettingsItem.Type.Leave -> arrow.visibility =
+                    View.VISIBLE
                 else -> arrow.visibility = View.GONE
             }
         }

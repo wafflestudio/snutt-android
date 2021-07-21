@@ -2,18 +2,14 @@ package com.wafflestudio.snutt2.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.rxjava3.RxPagingSource
-import androidx.paging.rxjava3.flowable
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.toCreditNumber
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject

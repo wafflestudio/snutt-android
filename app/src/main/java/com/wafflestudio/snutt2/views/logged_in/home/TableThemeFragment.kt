@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TableThemeFragment : BottomSheetDialogFragment() {

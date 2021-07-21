@@ -13,4 +13,4 @@ data class ClassTimeDto(
     @Json(name = "len") val len: Float,
     @Json(name = "place") val place: String,
     @Json(name = "_id") val id: String? = null
-): Parcelable
+) : Parcelable

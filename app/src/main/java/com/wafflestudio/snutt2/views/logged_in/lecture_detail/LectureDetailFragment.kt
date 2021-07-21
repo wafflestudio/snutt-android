@@ -13,9 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wafflestudio.snutt2.SNUTTBaseFragment
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 // FIXME: 리팩토링이 많이 필요할 듯, UI 변경이 된다면 그 떄 같이 건드리면 좋을 것 같음
 @AndroidEntryPoint
-class LectureDetailFragment : SNUTTBaseFragment() {
+class LectureDetailFragment : BaseFragment() {
 
     private lateinit var binding: FragmentLectureDetailLegacyBinding
 
@@ -122,14 +122,12 @@ class LectureDetailFragment : SNUTTBaseFragment() {
 
     fun refreshFragment() {
         vm.setEditMode(false)
-        hideSoftKeyboard(requireView())
         lists.clear()
         adapter.notifyDataSetChanged()
     }
 
     private fun setNormalMode() {
         try {
-            hideSoftKeyboard(requireView())
             vm.setEditMode(false)
             for (i in lists.indices) {
                 val it = lists[i]
@@ -152,7 +150,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             lists.add(pos, LectureItem(LectureItem.Type.RemoveLecture, false))
             adapter.notifyItemChanged(pos)
         } catch (e: Exception) {
-            Toast.makeText(app, "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
             requireActivity().finish()
         }
     }
@@ -186,7 +184,7 @@ class LectureDetailFragment : SNUTTBaseFragment() {
             lists.add(removePosition, LectureItem(LectureItem.Type.ResetLecture, true))
             adapter.notifyItemChanged(removePosition)
         } catch (e: Exception) {
-            Toast.makeText(app, "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
             requireActivity().finish()
         }
     }

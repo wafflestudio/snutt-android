@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage

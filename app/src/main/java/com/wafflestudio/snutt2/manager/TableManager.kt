@@ -2,18 +2,15 @@ package com.wafflestudio.snutt2.manager
 
 import android.util.Log
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.model.Coursebook
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.HashMap
 
 /**
  * Created by makesource on 2016. 1. 16..
