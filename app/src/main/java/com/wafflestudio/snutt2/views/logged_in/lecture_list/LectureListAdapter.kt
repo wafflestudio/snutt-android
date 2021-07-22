@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.google.common.base.Strings
 import com.wafflestudio.snutt2.databinding.ItemAddLectureListBinding
 import com.wafflestudio.snutt2.databinding.ItemLectureListBinding
 import com.wafflestudio.snutt2.lib.base.BaseAdapter
@@ -71,13 +70,13 @@ class LectureListAdapter(
             lecture.academic_year?.let {
                 tagText += "$it, "
             }
-            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
+            if (tagText.isNullOrEmpty()) tagText = "(없음)"
             binding.tag.text = tagText
             var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
-            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
+            if (classTimeText.isNullOrEmpty()) classTimeText = "(없음)"
             binding.time.text = classTimeText
             var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
-            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
+            if (locationText.isNullOrEmpty()) locationText = "(없음)"
             binding.location.text = locationText
             binding.root.setOnClickListener {
                 onClickLecture.invoke(lecture)

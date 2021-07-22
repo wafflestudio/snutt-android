@@ -67,7 +67,7 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun getUserInfo(): Single<UserDto> {
+    fun fetchUserInfo(): Single<UserDto> {
         return snuttRestApi.getUserInfo()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {

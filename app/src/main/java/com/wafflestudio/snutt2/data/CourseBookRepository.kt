@@ -14,7 +14,7 @@ class CourseBookRepository @Inject constructor(
 ) {
     val courseBooks = storage.courseBooks.asObservable()
 
-    fun loadCourseBook(): Single<GetCoursebookResults> {
+    fun fetchCourseBook(): Single<GetCoursebookResults> {
         return api.getCoursebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {

@@ -6,9 +6,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
@@ -43,17 +41,23 @@ class TableRepository @Inject constructor(
             }
     }
 
-    fun getDefaultTable(): Single<TableDto> {
-        return snuttRestApi.getRecentTable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .doOnSuccess {
-                _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
-                storage.lastViewedTable.setValue(it.toOptional())
+    fun fetchDefaultTable(): Single<TableDto> {
+        return storage.lastViewedTable.getValue().let { table ->
+            if (table.isEmpty()) {
+                snuttRestApi.getRecentTable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .doOnSuccess {
+                        _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
+                        storage.lastViewedTable.setValue(it.toOptional())
+                    }
+            } else {
+                Single.just(table.get())
             }
+        }
     }
 
-    fun getTableList(): Single<GetTableListResults> {
+    fun fetchTableList(): Single<GetTableListResults> {
         return snuttRestApi.getTableList()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->

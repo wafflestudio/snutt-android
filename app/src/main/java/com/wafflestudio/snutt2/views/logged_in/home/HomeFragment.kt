@@ -36,9 +36,9 @@ class HomeFragment : BaseFragment() {
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
-    private val settingsViewModel: SettingsViewModel by activityViewModels()
-
     private val searchViewModel: SearchViewModel by activityViewModels()
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val bottomSheetFragment = TableModifyFragment()
 
@@ -71,10 +71,7 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        timetableViewModel.fetchLastViewedTable()
-        tableListViewModel.refresh()
-        settingsViewModel.refreshUserInfo()
-        searchViewModel.refreshTags()
+        homeViewModel.refreshData()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             childFragmentManager.commit {

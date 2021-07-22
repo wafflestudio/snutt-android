@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.ItemLectureSearchBinding
 import com.wafflestudio.snutt2.lib.DataWithState
@@ -54,13 +53,13 @@ class SearchResultAdapter(
             lecture.academic_year?.let {
                 tagText += "$it, "
             }
-            if (Strings.isNullOrEmpty(tagText)) tagText = "(없음)"
+            if (tagText.isNullOrEmpty()) tagText = "(없음)"
             binding.tag.text = tagText
             var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
-            if (Strings.isNullOrEmpty(classTimeText)) classTimeText = "(없음)"
+            if (classTimeText.isNullOrEmpty()) classTimeText = "(없음)"
             binding.time.text = classTimeText
             var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
-            if (Strings.isNullOrEmpty(locationText)) locationText = "(없음)"
+            if (locationText.isNullOrEmpty()) locationText = "(없음)"
             binding.location.text = locationText
 
             binding.root.setOnClickListener {

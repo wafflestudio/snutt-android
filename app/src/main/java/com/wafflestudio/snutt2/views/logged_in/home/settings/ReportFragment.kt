@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.google.common.base.Strings
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.databinding.FragmentReportBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -48,7 +47,7 @@ class ReportFragment : BaseFragment() {
 
         binding.buttonSend.throttledClicks()
             .bindUi(this) {
-                if (Strings.isNullOrEmpty(binding.detailEditText.text.toString())) {
+                if (binding.detailEditText.text.toString().isNullOrEmpty()) {
                     Toast.makeText(requireContext(), "내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
                 } else {
                     val email = binding.emailEditText.text.toString()

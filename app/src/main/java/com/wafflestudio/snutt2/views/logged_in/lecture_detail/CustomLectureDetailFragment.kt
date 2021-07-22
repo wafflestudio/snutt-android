@@ -1,9 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -11,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.common.base.Preconditions
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError

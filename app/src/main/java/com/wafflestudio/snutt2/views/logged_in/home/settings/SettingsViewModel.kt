@@ -14,8 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val userRepository: UserRepository,
-    private val apiOnError: ApiOnError
 ) : ViewModel() {
 
     val trimParam: Observable<TableTrimParam> = settingsRepository.tableTrimParam
@@ -31,11 +29,4 @@ class SettingsViewModel @Inject constructor(
     fun setAutoTrim(enable: Boolean) {
         settingsRepository.setTableTrim(isAuto = enable)
     }
-
-    fun refreshUserInfo() {
-        userRepository.getUserInfo()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-    }
-
 }

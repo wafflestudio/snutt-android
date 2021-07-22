@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.GetTagListResults
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import io.reactivex.rxjava3.core.Single
@@ -22,15 +23,14 @@ class TagRepository @Inject constructor(
 
     val tags = storage.tags.asObservable()
 
-    fun loadTags(): Single<GetTagListResults> {
-        val current = storage.lastViewedTable.getValue().get() ?: return Single.error(
-            IllegalStateException("no current table")
-        )
-        return api.getTagList(
-            current.year.toInt(),
-            current.semester.toInt()
-        ).subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
+    fun fetchTags(): Single<GetTagListResults> {
+        return storage.lastViewedTable.asObservable()
+            .filterEmpty()
+            .firstOrError()
+            .flatMap {
+                api.getTagList(it.year.toInt(), it.semester.toInt())
+                    .observeOn(Schedulers.io())
+            }
             .doOnSuccess {
                 val list = mutableListOf<TagDto>()
                 list.apply {

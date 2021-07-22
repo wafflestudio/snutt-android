@@ -106,10 +106,4 @@ class SearchViewModel @Inject constructor(
         _queryRefreshSignal.onNext(Unit)
     }
 
-    fun refreshTags() {
-        tagRepository.loadTags()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-    }
-
 }

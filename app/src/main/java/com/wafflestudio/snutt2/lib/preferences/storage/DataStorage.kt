@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.lib.preferences.storage
 
-import com.google.common.collect.ArrayListMultimap
+import com.wafflestudio.snutt2.lib.mutableMultiMapOf
 import java.lang.reflect.Type
 
 abstract class DataStorage {
@@ -10,10 +10,10 @@ abstract class DataStorage {
     fun <T : Any> get(key: String, type: Type): T? = getInternal(key, type)
 
     fun <T : Any> put(key: String, value: T?, type: Type) {
-        val listenerList = synchronized(listeners) {
-            listeners[key]
+        val listeners = synchronized(listeners) {
+            listeners.get(key)
         }
-        listenerList.forEach {
+        listeners.forEach {
             it.onChange(value)
         }
 
@@ -22,14 +22,15 @@ abstract class DataStorage {
 
     fun clear() {
         synchronized(listeners) {
-            listeners.values().forEach {
+            listeners.values.forEach {
                 it.onChange(null)
             }
+            listeners.clear()
         }
         clearInternal()
     }
 
-    private val listeners = ArrayListMultimap.create<String, KeyValueChangeListener>()
+    private val listeners = mutableMultiMapOf<String, KeyValueChangeListener>()
 
     fun <T : Any> addKeyChangeListener(key: String, listener: KeyValueChangeListener) {
         synchronized(listener) {

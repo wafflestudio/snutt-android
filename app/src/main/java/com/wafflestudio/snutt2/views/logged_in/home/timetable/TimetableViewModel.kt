@@ -19,10 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimetableViewModel @Inject constructor(
-    private val tableRepository: TableRepository,
     private val myLectureRepository: MyLectureRepository,
     private val storage: SNUTTStorage,
-    private val apiOnError: ApiOnError
 ) : ViewModel() {
 
     val currentTimetable: Observable<TableDto>
@@ -30,16 +28,6 @@ class TimetableViewModel @Inject constructor(
 
     val trimParam: Observable<TableTrimParam>
         get() = storage.tableTrimParam.asObservable()
-
-    fun fetchLastViewedTable() {
-        storage.lastViewedTable.getValue().let { table ->
-            if (table.isEmpty()) {
-                tableRepository.getDefaultTable()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(onError = apiOnError)
-            }
-        }
-    }
 
     fun toggleLecture(lecture: LectureDto): Completable {
         return myLectureRepository.currentTable

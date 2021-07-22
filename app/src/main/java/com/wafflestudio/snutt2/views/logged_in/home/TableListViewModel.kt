@@ -47,15 +47,6 @@ class TableListViewModel @Inject constructor(
             }
         })
 
-    fun refresh() {
-        tableRepository.getTableList()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-        courseBookRepository.loadCourseBook()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-    }
-
     fun selectCurrentCourseBook(courseBookDto: CourseBookDto) {
         courseBooks.firstElement()
             .subscribeBy {

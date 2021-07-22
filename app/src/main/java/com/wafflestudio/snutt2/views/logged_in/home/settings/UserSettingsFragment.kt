@@ -17,7 +17,6 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.common.base.Strings
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -162,7 +161,7 @@ class UserSettingsFragment : BaseFragment() {
         dialog2.show()
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
-            if (!Strings.isNullOrEmpty(email)) {
+            if (email.isNullOrEmpty().not()) {
                 userRepository.putUserInfo(email)
                     .bindUi(
                         this,
@@ -387,11 +386,11 @@ class UserSettingsFragment : BaseFragment() {
 
     private fun addSettingsList(user: UserDto) {
         lists.clear()
-        if (Strings.isNullOrEmpty(user.localId)) {
+        if (user.localId.isNullOrEmpty()) {
             lists.add(SettingsItem(SettingsItem.Type.Header))
             lists.add(SettingsItem("아이디 비밀번호 추가", user.localId, SettingsItem.Type.AddIdPassword))
             lists.add(SettingsItem(SettingsItem.Type.Header))
-            if (Strings.isNullOrEmpty(user.fbName)) { // 연동 x
+            if (user.fbName.isNullOrEmpty()) { // 연동 x
                 lists.add(SettingsItem("페이스북 연동", user.fbName, SettingsItem.Type.LinkFacebook))
             } else {
                 lists.add(SettingsItem("페이스북 이름", user.fbName, SettingsItem.Type.FacebookName))
@@ -408,7 +407,7 @@ class UserSettingsFragment : BaseFragment() {
             lists.add(SettingsItem("아이디", user.localId, SettingsItem.Type.Id))
             lists.add(SettingsItem("비밀번호 변경", SettingsItem.Type.ChangePassword))
             lists.add(SettingsItem(SettingsItem.Type.Header))
-            if (Strings.isNullOrEmpty(user.fbName)) { // 연동 x
+            if (user.fbName.isNullOrEmpty()) { // 연동 x
                 lists.add(SettingsItem("페이스북 연동", SettingsItem.Type.LinkFacebook))
             } else {
                 lists.add(SettingsItem("페이스북 이름", user.fbName, SettingsItem.Type.FacebookName))
