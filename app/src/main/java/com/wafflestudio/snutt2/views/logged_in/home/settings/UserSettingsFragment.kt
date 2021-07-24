@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -19,9 +19,11 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.UserRepository
+import com.wafflestudio.snutt2.databinding.FragmentUserSettingsBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.SettingsItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -40,6 +42,8 @@ class UserSettingsFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    private lateinit var binding: FragmentUserSettingsBinding
 
     private var lists: MutableList<SettingsItem> = mutableListOf()
     private lateinit var adapter: UserSettingsAdapter
@@ -89,12 +93,22 @@ class UserSettingsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_user_settings, container, false)
-        val recyclerView = rootView.findViewById<View>(R.id.account_recyclerView) as RecyclerView
+        binding = FragmentUserSettingsBinding.inflate(inflater, container, false)
+
+        val recyclerView = binding.accountRecyclerView
         // recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-        return rootView
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.backButton.throttledClicks()
+            .bindUi(this) {
+                findNavController().popBackStack()
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

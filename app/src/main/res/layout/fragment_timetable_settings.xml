@@ -7,6 +7,34 @@
     android:orientation="vertical"
     tools:context=".views.logged_in.home.settings.TimetableSettingsFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:elevation="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:translationZ="1dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/back_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="12dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            style="@style/Typo.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/user_settings_app_bar_title" />
+
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="10dp"
@@ -26,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="자동 맞춤" />
+            android:text="@string/timetable_settings_app_bar_title" />
 
     </LinearLayout>
 

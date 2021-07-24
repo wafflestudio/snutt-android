@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.jakewharton.rxbinding4.widget.checkedChanges
 import com.wafflestudio.snutt2.databinding.FragmentTimetableSettingsBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toDayString
 
 class TimetableSettingsFragment : BaseFragment() {
@@ -59,6 +61,10 @@ class TimetableSettingsFragment : BaseFragment() {
                 binding.timeRange.root.visibility = if (it.not()) View.VISIBLE else View.GONE
             }
 
+        binding.backButton.throttledClicks()
+            .bindUi(this) {
+                findNavController().popBackStack()
+            }
 
         binding.dayOfWeekRange.dayRangeBar.setOnRangeBarChangeListener { _, leftPinIndex, rightPinIndex, _, _ ->
             vm.setDayOfWeekRange(leftPinIndex, rightPinIndex)
