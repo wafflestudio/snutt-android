@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.databinding.FragmentLectureDetailLegacyBinding
+import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CustomLectureDetailFragment : BaseFragment() {
 
-    private lateinit var binding: FragmentLectureDetailLegacyBinding
+    private lateinit var binding: FragmentLectureDetailBinding
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -55,7 +55,7 @@ class CustomLectureDetailFragment : BaseFragment() {
     ): View? {
         vm.setLecture(args.selectedLecture)
 
-        binding = FragmentLectureDetailLegacyBinding.inflate(inflater, container, false)
+        binding = FragmentLectureDetailBinding.inflate(inflater, container, false)
         detailView = binding.lectureDetailView
 
         val lecture = args.selectedLecture

@@ -27,6 +27,7 @@ class TimetableFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTimetableBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -37,6 +38,12 @@ class TimetableFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.timetable.lectures = it.lectureList
+                binding.appBarTitle.text = it.title
+                val creditText = getString(
+                    R.string.timetable_credit,
+                    it.lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
+                )
+                binding.creditText.text = creditText
             }
 
         vm.trimParam

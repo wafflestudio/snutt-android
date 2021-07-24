@@ -36,7 +36,6 @@ class TableRepository @Inject constructor(
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
-                Timber.d(it.toString())
                 storage.lastViewedTable.setValue(it.toOptional())
             }
     }
@@ -85,6 +84,9 @@ class TableRepository @Inject constructor(
         return snuttRestApi.putTable(id, PutTableParams(title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
+                storage.lastViewedTable.getValue().get()?.let {
+                    storage.lastViewedTable.setValue(it.copy(title = title).toOptional())
+                }
                 _tableMap = result.map { it.id to it }.toMap()
             }
     }
