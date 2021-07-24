@@ -10,11 +10,10 @@
         android:title="강의찾기" />
     <item
         android:id="@+id/action_reviews"
-        android:icon="@drawable/ic_reviews"
+        android:icon="@drawable/ic_review"
         android:title="강의평" />
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_setting"
         android:title="설정" />
-
 </menu>
