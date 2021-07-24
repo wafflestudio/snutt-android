@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.ItemTagBinding
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.base.BaseAdapter
@@ -38,7 +38,8 @@ class TagSelectionAdapter(
         BaseViewHolder<Selectable<TagDto>>(binding) {
         override fun bindData(data: Selectable<TagDto>) {
             val tag = data.item
-            binding.checkIcon.visibility = if (data.state) View.VISIBLE else View.INVISIBLE
+            val context = itemView.context
+            binding.checkIcon.setImageResource(if (data.state) R.drawable.ic_vivid_checked else R.drawable.ic_vivid_unchecked)
             binding.tagName.text = tag.name
             binding.root.setOnClickListener {
                 onClickTag(tag)

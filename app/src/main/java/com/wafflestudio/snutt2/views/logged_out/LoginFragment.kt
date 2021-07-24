@@ -51,20 +51,14 @@ class LoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.loginStatus
+        vm.apiStatus
             .bindUi(this) {
                 when (it) {
                     is ApiStatus.Success -> {
                         routeHome()
                     }
-                    is ApiStatus.Failure -> {
-                        apiOnError(it.error)
-                    }
-                    is ApiStatus.Loading -> {
-//                        TODO: loading spinner?
-                    }
                     else -> {
-
+//                        TODO: loading spinner?
                     }
                 }
             }

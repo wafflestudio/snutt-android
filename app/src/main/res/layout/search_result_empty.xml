@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
@@ -12,24 +13,15 @@
         android:id="@+id/search_icon"
         android:layout_width="58dp"
         android:layout_height="56dp"
-        android:padding="10dp"
         android:src="@drawable/img_search_big" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="35dp"
         android:gravity="center"
-        android:text="tip. 줄임말로도 검색이 가능합니다!"
-        android:textColor="#B3FFFFFF"
+        android:text="검색 결과가 없습니다."
+        android:textColor="#FFFFFF"
         android:textSize="18sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="ex) 대영 Paul / 죽과이 유성호"
-        android:textColor="#80FFFFFF"
-        android:textSize="14sp" />
 
 </LinearLayout>

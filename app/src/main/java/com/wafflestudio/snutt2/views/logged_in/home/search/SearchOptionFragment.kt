@@ -1,11 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogSearchOptionBinding
@@ -15,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
+
 @AndroidEntryPoint
 class SearchOptionFragment : BottomSheetDialogFragment() {
 
@@ -23,6 +28,20 @@ class SearchOptionFragment : BottomSheetDialogFragment() {
     private lateinit var binding: DialogSearchOptionBinding
 
     private lateinit var adapter: TagSelectionAdapter
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.setOnShowListener { dialog ->
+            val d = dialog as BottomSheetDialog
+            val bottomSheet: FrameLayout =
+                d.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.isDraggable = false
+        }
+        return dialog
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

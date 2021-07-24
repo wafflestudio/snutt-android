@@ -49,7 +49,7 @@ class SignUpFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.loginStatus
+        vm.apiStatus
             .bindUi(this) {
                 when (it) {
                     is ApiStatus.Success -> {
@@ -57,6 +57,9 @@ class SignUpFragment : BaseFragment() {
                     }
                     is ApiStatus.Loading -> {
 //                        TODO: loading spinner?
+                    }
+                    else -> {
+
                     }
                 }
             }
@@ -69,18 +72,20 @@ class SignUpFragment : BaseFragment() {
                 val passwordConfirm = binding.passwordConfirmInput.text.toString()
                 Quadruple(id, email, password, passwordConfirm)
             }
-            .filter {
-                val passCheck = it.x === it.y
-                Toast.makeText(
-                    context,
-                    getString(R.string.sign_up_password_confirm_invalid_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
+            .filter { (id, email, password, passwordConfirm) ->
+                val passCheck = password == passwordConfirm
+                if (passCheck.not()) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.sign_up_password_confirm_invalid_toast),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 passCheck
             }
             .bindUi(this) { (id, email, password, _) ->
                 hideSoftKeyboard()
-                vm.signUpLocal(id, password, email)
+                vm.signUpLocal(id,  email, password)
             }
 
         binding.facebookSignUpButton.throttledClicks()

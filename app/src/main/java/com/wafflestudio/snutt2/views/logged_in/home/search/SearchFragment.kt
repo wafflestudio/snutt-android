@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.paging.LoadState
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.jakewharton.rxbinding4.view.clicks
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.rx.loadingState
+import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -105,6 +109,34 @@ class SearchFragment : BaseFragment() {
                 false
             }
         }
+
+        searchResultAdapter.loadingState()
+            .bindUi(this) {
+                if (it.refresh is LoadState.NotLoading && it.refresh.endOfPaginationReached.not() && searchResultAdapter.itemCount < 1) {
+                    binding.placeholder.root.isVisible = true
+                    binding.lectureList.isVisible = false
+                    binding.empty.root.isVisible = false
+                } else if (it.refresh is LoadState.NotLoading && it.append.endOfPaginationReached && searchResultAdapter.itemCount < 1) {
+                    binding.placeholder.root.isVisible = false
+                    binding.lectureList.isVisible = false
+                    binding.empty.root.isVisible = true
+                } else if (it.refresh is LoadState.Error) {
+                    binding.placeholder.root.isVisible = false
+                    binding.lectureList.isVisible = false
+                    binding.empty.root.isVisible = true
+
+                } else {
+                    binding.placeholder.root.isVisible = false
+                    binding.lectureList.isVisible = true
+                    binding.empty.root.isVisible = false
+
+                }
+            }
+
+        binding.placeholder.searchIcon.throttledClicks()
+            .bindUi(this) {
+                searchViewModel.refreshQuery()
+            }
 
         searchViewModel.selectedLecture
             .distinctUntilChanged()

@@ -11,7 +11,7 @@
         android:id="@+id/check_icon"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:src="@drawable/ic_vivid_check" />
+        android:src="@drawable/ic_vivid_checked" />
 
     <TextView
         android:id="@+id/tag_name"

@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.manager.PrefStorage
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -29,7 +30,7 @@ class UserRepository @Inject constructor(
         .filterEmpty()
 
     // login with local id
-    fun postSignIn(id: String, password: String): Single<*> {
+    fun postSignIn(id: String, password: String): Single<RegisterFirebaseTokenResults> {
         return snuttRestApi.postSignIn(PostSignInParams(id, password))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->

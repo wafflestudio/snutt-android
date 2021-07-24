@@ -31,8 +31,8 @@ class RootActivity : BaseActivity() {
         navController.graph = navGraph
 
         snuttStorage.accessToken.asObservable()
-            .filter { it.isEmpty() }
             .distinctUntilChanged()
+            .filter { it.isEmpty() }
             .bindUi(this) {
                 navController.navigate(R.id.startTutorial)
             }

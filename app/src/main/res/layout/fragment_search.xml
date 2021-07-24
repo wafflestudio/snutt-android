@@ -65,13 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include
-            android:id="@+id/placeholder"
-            layout="@layout/search_placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
         <LinearLayout
             android:id="@+id/main_content"
             android:layout_width="match_parent"
@@ -91,15 +84,37 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/cell_tag" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/lecture_list"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:scrollbarThumbVertical="@drawable/recyclerview_dark_scrollbar"
-                android:scrollbars="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_lecture_search" />
+                android:layout_weight="1">
+
+                <include
+                    android:id="@+id/placeholder"
+                    layout="@layout/search_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible" />
+
+                <include
+                    android:id="@+id/empty"
+                    layout="@layout/search_result_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/lecture_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:scrollbarThumbVertical="@drawable/recyclerview_dark_scrollbar"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_lecture_search" />
+
+            </FrameLayout>
+
 
             <LinearLayout
                 android:id="@+id/empty_placeholder"
