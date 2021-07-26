@@ -11,13 +11,13 @@ import com.wafflestudio.snutt2.data.SearchLectureRepository
 import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import timber.log.Timber
 import javax.inject.Inject
@@ -106,4 +106,13 @@ class SearchViewModel @Inject constructor(
         _queryRefreshSignal.onNext(Unit)
     }
 
+    fun getCourseBookUrl(): Single<GetCoursebooksOfficialResults> {
+        val courseNumber = _selectedLecture.value.get()?.course_number ?: return Single.error(
+            IllegalStateException("lecture with no course number")
+        )
+        val lectureNumber = _selectedLecture.value.get()?.lecture_number ?: return Single.error(
+            IllegalStateException("lecture with no lecture number")
+        )
+        return myLectureRepository.getLectureCourseBookUrl(courseNumber, lectureNumber)
+    }
 }

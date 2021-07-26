@@ -140,4 +140,5 @@
     <string name="user_settings_app_bar_title">계정 관리</string>
     <string name="timetable_settings_app_bar_title">시간표 설정</string>
     <string name="timetable_credit">(%d 학점)</string>
+    <string name="lecture_review_not_ready">강의평 기능 준비중입니다.</string>
 </resources>

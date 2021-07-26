@@ -86,6 +86,7 @@ class TableListAdapter(
             selectedTableId
                 .map { it == table.id }
                 .bindUi(bindable) {
+                    binding.credit.text = "(${table.totalCredit ?: 0L})"
                     binding.checkIcon.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 }
         }

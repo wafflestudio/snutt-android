@@ -1,15 +1,20 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.jakewharton.rxbinding4.view.clicks
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -19,6 +24,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment() {
@@ -61,8 +67,24 @@ class SearchFragment : BaseFragment() {
                         onComplete = { searchViewModel.toggleLectureSelection(it) }
                     )
             },
-            onShowSyllabus = { },
-            onShowReviews = { },
+            onShowSyllabus = {
+                searchViewModel.getCourseBookUrl()
+                    .bindUi(
+                        this,
+                        onSuccess = { result ->
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                            requireContext().startActivity(intent)
+                        },
+                        onError = apiOnError
+                    )
+            },
+            onShowReviews = {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.lecture_review_not_ready),
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
         )
 
         binding.tagList.adapter = tagAdapter
@@ -135,7 +157,13 @@ class SearchFragment : BaseFragment() {
 
         binding.placeholder.searchIcon.throttledClicks()
             .bindUi(this) {
-                searchViewModel.refreshQuery()
+                // TODO
+//                getSystemService(requireContext(), InputMethodManager::class.java)?.let {
+//                    it.toggleSoftInput(
+//                        binding.textEdit,
+//                        0
+//                    )
+//                }
             }
 
         searchViewModel.selectedLecture
