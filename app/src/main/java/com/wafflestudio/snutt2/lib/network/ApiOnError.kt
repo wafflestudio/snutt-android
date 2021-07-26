@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.UserRepository
+import com.wafflestudio.snutt2.lib.android.MessagingError
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -35,6 +36,13 @@ class ApiOnError @Inject constructor(
                 Toast.makeText(
                     context,
                     context.getString(R.string.error_no_network),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            is MessagingError -> {
+                Toast.makeText(
+                    context,
+                    error.message,
                     Toast.LENGTH_SHORT
                 ).show()
             }

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.GetTableListResults
 import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
@@ -9,7 +10,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -73,6 +73,9 @@ class TableRepository @Inject constructor(
     }
 
     fun deleteTable(id: String): Single<List<TableDto>> {
+        if (storage.lastViewedTable.getValue()
+                .get()?.id == id
+        ) return Single.error(MessagingError("현재 선택된 시간표를 삭제할 수 없습니다."))
         return snuttRestApi.deleteTable(id)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->

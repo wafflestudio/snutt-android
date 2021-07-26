@@ -9,6 +9,7 @@ import androidx.fragment.app.commit
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
@@ -18,7 +19,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewsFragment
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchFragment
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableFragment
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +44,9 @@ class HomeFragment : BaseFragment() {
 
     @Inject
     lateinit var dialogController: DialogController
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
 
     private val fragmentMap = mapOf(
         R.id.action_timetable to TimetableFragment(),
@@ -112,9 +115,13 @@ class HomeFragment : BaseFragment() {
                     R.string.home_drawer_create_table_dialog_title,
                     hint = R.string.home_drawer_create_table_dialog_hint
                 )
-                    .bindUi(this) {
+                    .flatMapSingle {
                         tableListViewModel.createTable(it)
                     }
+                    .bindUi(
+                        this,
+                        onError = apiOnError
+                    )
             },
             onSelectItem = {
                 binding.root.close()
@@ -122,6 +129,10 @@ class HomeFragment : BaseFragment() {
             },
             onDuplicateItem = {
                 tableListViewModel.copyTable(it.id)
+                    .bindUi(
+                        this,
+                        onError = apiOnError
+                    )
             },
             onShowMoreItem = {
                 bottomSheetFragment.show(childFragmentManager, it)

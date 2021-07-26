@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 fun View.throttledClicks(): Observable<Unit> {
     return this.clicks()
-        .throttleFirst(2000, TimeUnit.MILLISECONDS)
+        .throttleFirst(800, TimeUnit.MILLISECONDS)
 }
 
 fun Int.dp(context: Context): Float {

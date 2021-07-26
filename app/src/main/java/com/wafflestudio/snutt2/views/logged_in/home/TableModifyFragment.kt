@@ -10,6 +10,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogTableModifyBinding
+import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,9 @@ class TableModifyFragment : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var dialogController: DialogController
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
@@ -51,12 +56,18 @@ class TableModifyFragment : BottomSheetDialogFragment() {
             }
             .subscribeBy {
                 tableListViewModel.changeNameTable(tableDto.id, it)
+                    .subscribeBy(onError = apiOnError)
             }
 
         binding.deleteButton.throttledClicks()
-            .subscribeBy {
+            .flatMapSingle {
                 tableListViewModel.deleteTable(tableDto.id)
             }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(onNext = {
+                requireContext().toast("시간표가 삭제되었습니다.")
+                dismiss()
+            }, onError = apiOnError)
     }
 
     fun show(manager: FragmentManager, tableDto: TableDto) {
