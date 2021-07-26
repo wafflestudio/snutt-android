@@ -66,6 +66,17 @@ id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.wafflestudio.snutt2.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 
 </manifest>

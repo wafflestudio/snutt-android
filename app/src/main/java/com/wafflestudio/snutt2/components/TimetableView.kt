@@ -110,6 +110,7 @@ class TimetableView : View {
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
+        setBackgroundColor(Color.rgb(255, 255, 255))
     }
 
     override fun onDraw(canvas: Canvas) {
