@@ -14,7 +14,6 @@ import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
-import com.wafflestudio.snutt2.views.logged_in.home.*
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -36,7 +35,7 @@ class HomeFragment : BaseFragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private val bottomSheetFragment = TableModifyFragment()
+    private val themeSheet = TableThemeFragment()
 
     @Inject
     lateinit var dialogController: DialogController
@@ -129,7 +128,13 @@ class HomeFragment : BaseFragment() {
                     )
             },
             onShowMoreItem = {
-                bottomSheetFragment.show(childFragmentManager, it)
+                TableModifyFragment(
+                    it,
+                    onThemeChange = {
+                        TableThemeFragment().show(childFragmentManager, "theme")
+                        binding.root.close()
+                    }
+                ).show(childFragmentManager, "modify_${it.hashCode()}")
             },
             selectedTableId = timetableViewModel.currentTimetable.map { it.id },
             bindable = this
@@ -145,12 +150,6 @@ class HomeFragment : BaseFragment() {
                         .apply { add(TableListAdapter.Data.Add) }
                         .toList()
                 )
-            }
-
-        binding.themeButton
-            .throttledClicks()
-            .bindUi(this) {
-                TableThemeFragment().show(childFragmentManager, "theme")
             }
     }
 }

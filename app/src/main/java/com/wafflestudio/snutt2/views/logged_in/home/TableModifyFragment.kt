@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wafflestudio.snutt2.DialogController
@@ -20,11 +19,12 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TableModifyFragment : BottomSheetDialogFragment() {
+class TableModifyFragment(
+    private val tableDto: TableDto,
+    private val onThemeChange: () -> Unit,
+) : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogTableModifyBinding
-
-    private lateinit var tableDto: TableDto
 
     @Inject
     lateinit var dialogController: DialogController
@@ -68,10 +68,12 @@ class TableModifyFragment : BottomSheetDialogFragment() {
                 requireContext().toast("시간표가 삭제되었습니다.")
                 dismiss()
             }, onError = apiOnError)
-    }
 
-    fun show(manager: FragmentManager, tableDto: TableDto) {
-        super.show(manager, tableDto.id)
-        this.tableDto = tableDto
+        binding.themeButton.throttledClicks()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(onNext = {
+                dismiss()
+                onThemeChange()
+            })
     }
 }

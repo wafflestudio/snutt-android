@@ -35,8 +35,8 @@
         android:layout_gravity="start"
         android:background="@color/white"
         android:clickable="true"
-        android:padding="20dp"
-        android:focusable="true">
+        android:focusable="true"
+        android:padding="20dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drawer_logo"
@@ -106,41 +106,9 @@
             android:layout_height="0dp"
             android:layout_marginTop="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/bottom_divider"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/coursebook_select_button"
             tools:listitem="@layout/item_table" />
-
-        <View
-            android:id="@+id/bottom_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray"
-            app:layout_constraintBottom_toTopOf="@id/theme_button" />
-
-        <LinearLayout
-            android:id="@+id/theme_button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_setting" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:ellipsize="end"
-                android:fontFamily="@font/spoqa_han_sans_bold"
-                android:maxLines="1"
-                android:text="시간표 테마 변경"
-                android:textSize="16sp" />
-
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
