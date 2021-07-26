@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
+import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
@@ -69,6 +70,7 @@ class TimetableView : View {
 
     var trimParam: TableTrimParam = TableTrimParam.Default
         set(value) {
+            Timber.d(value.toString())
             field = value
             invalidate()
         }
@@ -232,7 +234,7 @@ class TimetableView : View {
             max(classTime.start - trimParam.hourFrom + 8, 0f),
             min(
                 classTime.start + classTime.len - trimParam.hourFrom + 8,
-                trimParam.hourTo - trimParam.hourFrom.toFloat()
+                trimParam.hourTo - trimParam.hourFrom.toFloat() + 1
             )
         )
 

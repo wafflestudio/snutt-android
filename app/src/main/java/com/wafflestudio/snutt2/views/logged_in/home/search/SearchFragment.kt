@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
@@ -18,10 +16,12 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.kotlin.Observables
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -179,10 +179,15 @@ class SearchFragment : BaseFragment() {
                 binding.timetable.lectures = it.lectureList
             }
 
-        timetableViewModel.trimParam
+        Observables.combineLatest(
+            timetableViewModel.currentTimetable,
+            timetableViewModel.trimParam
+        )
             .distinctUntilChanged()
-            .bindUi(this) {
-                binding.timetable.trimParam = it
+            .bindUi(this) { (table, trimParam) ->
+                binding.timetable.trimParam =
+                    if (trimParam.forceFitLectures) table.lectureList.getFittingTableTrimParam()
+                    else trimParam
             }
     }
 }

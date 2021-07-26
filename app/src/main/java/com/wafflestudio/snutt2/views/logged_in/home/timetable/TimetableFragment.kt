@@ -10,10 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentTimetableBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.kotlin.Observables
 
 @AndroidEntryPoint
 class TimetableFragment : BaseFragment() {
@@ -46,10 +48,15 @@ class TimetableFragment : BaseFragment() {
                 binding.creditText.text = creditText
             }
 
-        vm.trimParam
+        Observables.combineLatest(
+            vm.currentTimetable,
+            vm.trimParam
+        )
             .distinctUntilChanged()
-            .bindUi(this) {
-                binding.timetable.trimParam = it
+            .bindUi(this) { (table, trimParam) ->
+                binding.timetable.trimParam =
+                    if (trimParam.forceFitLectures) table.lectureList.getFittingTableTrimParam()
+                    else trimParam
             }
 
         binding.timetable.setOnLectureClickListener {

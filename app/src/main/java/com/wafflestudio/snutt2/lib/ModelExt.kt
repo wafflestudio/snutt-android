@@ -5,7 +5,11 @@ import android.graphics.Color
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
+import timber.log.Timber
+import kotlin.math.ceil
+import kotlin.math.floor
 
 
 fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
@@ -85,3 +89,12 @@ fun LectureDto.isRegularlyEquals(lectureDto: LectureDto): Boolean {
     return course_number != null && course_number == lectureDto.course_number
 
 }
+
+fun List<LectureDto>.getFittingTableTrimParam(): TableTrimParam = TableTrimParam(
+    dayOfWeekFrom = minOf { it.class_time_json.minOf { it.day } },
+    dayOfWeekTo = maxOf { it.class_time_json.maxOf { it.day } },
+    hourFrom = minOf { it.class_time_json.minOf { floor(it.start).toInt() } + 8 },
+    hourTo = maxOf { it.class_time_json.maxOf { ceil(it.start + it.len).toInt() } + 8 - 1 },
+    forceFitLectures = true
+)
+
