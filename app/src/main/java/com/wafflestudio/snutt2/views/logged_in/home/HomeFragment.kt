@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
+import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
@@ -15,11 +15,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.views.logged_in.home.*
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewsFragment
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchFragment
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsFragment
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableFragment
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -30,13 +25,14 @@ class HomeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
-    private lateinit var adapter: TableListAdapter
+    private lateinit var tablesAdapter: TableListAdapter
+
+    private lateinit var pageAdapter: HomeStateAdapter
+
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
-
-    private val searchViewModel: SearchViewModel by activityViewModels()
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
@@ -48,11 +44,12 @@ class HomeFragment : BaseFragment() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
-    private val fragmentMap = mapOf(
-        R.id.action_timetable to TimetableFragment(),
-        R.id.action_search to SearchFragment(),
-        R.id.action_reviews to ReviewsFragment(),
-        R.id.action_settings to SettingsFragment(),
+
+    private val fragmentIndexMap = listOf(
+        R.id.action_timetable,
+        R.id.action_search,
+        R.id.action_reviews,
+        R.id.action_settings
     )
 
     override fun onCreateView(
@@ -60,14 +57,6 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        childFragmentManager.commit {
-            replace(
-                R.id.contents,
-                fragmentMap[R.id.action_timetable]!!
-            )
-        }
-
         return binding.root
     }
 
@@ -76,15 +65,20 @@ class HomeFragment : BaseFragment() {
 
         homeViewModel.refreshData()
 
+        pageAdapter = HomeStateAdapter(this)
+
+        binding.contents.adapter = pageAdapter
+
         binding.bottomNavigation.setOnItemSelectedListener {
-            childFragmentManager.commit {
-                replace(
-                    R.id.contents,
-                    fragmentMap[it.itemId] ?: return@setOnItemSelectedListener false
-                )
-            }
+            binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
             true
         }
+
+        binding.contents.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                binding.bottomNavigation.selectedItemId = fragmentIndexMap[position]
+            }
+        })
 
         binding.coursebookSelectButton.throttledClicks()
             .flatMapSingle {
@@ -109,7 +103,7 @@ class HomeFragment : BaseFragment() {
             binding.coursebookTitle.text = it.toFormattedString(requireContext())
         }
 
-        adapter = TableListAdapter(
+        tablesAdapter = TableListAdapter(
             onCreateItem = {
                 dialogController.showTextDialog(
                     R.string.home_drawer_create_table_dialog_title,
@@ -141,11 +135,11 @@ class HomeFragment : BaseFragment() {
             bindable = this
         )
 
-        binding.tablesContent.adapter = adapter
+        binding.tablesContent.adapter = tablesAdapter
 
         tableListViewModel.currentCourseBooksTable
             .bindUi(this) { list ->
-                adapter.submitList(
+                tablesAdapter.submitList(
                     list.map<TableDto, TableListAdapter.Data> { TableListAdapter.Data.Table(it) }
                         .toMutableList()
                         .apply { add(TableListAdapter.Data.Add) }
