@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_homeFragment_to_serviceInfoFragment"
             app:destination="@id/serviceInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />
     </fragment>
 
     <fragment
@@ -148,5 +151,9 @@
         android:id="@+id/serviceInfoFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoFragment"
         android:label="ServiceInfoFragment" />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ReportFragment"
+        android:label="ReportFragment" />
 
 </navigation>

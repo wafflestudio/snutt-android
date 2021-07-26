@@ -41,19 +41,18 @@ class SearchResultAdapter(
             val lecture = data.item
 
             binding.title.text = lecture.course_title
-            binding.subTitle.text = lecture.instructor + " / " + lecture.credit
+            binding.subTitle.text = lecture.instructor + " / " + lecture.credit + "학점"
 
-            var tagText: String? = ""
-            lecture.category?.let {
-                tagText += "$it, "
-            }
-            lecture.department?.let {
-                tagText += "$it, "
-            }
-            lecture.academic_year?.let {
-                tagText += "$it, "
-            }
-            if (tagText.isNullOrEmpty()) tagText = "(없음)"
+            val tagText: String = listOf(
+                lecture.category,
+                lecture.department,
+                lecture.academic_year
+            )
+                .filter { it.isNullOrBlank().not() }
+                .let {
+                    if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+                }
+
             binding.tag.text = tagText
             var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
             if (classTimeText.isNullOrEmpty()) classTimeText = "(없음)"

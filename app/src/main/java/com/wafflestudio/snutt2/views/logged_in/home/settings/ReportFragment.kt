@@ -14,9 +14,6 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/**
- * Created by makesource on 2017. 1. 24..
- */
 @AndroidEntryPoint
 class ReportFragment : BaseFragment() {
 
@@ -58,7 +55,7 @@ class ReportFragment : BaseFragment() {
                             onSuccess = {
                                 Toast.makeText(requireContext(), "전송하였습니다", Toast.LENGTH_SHORT)
                                     .show()
-                                requireActivity().finish()
+                                findNavController().popBackStack()
                             },
                             onError = {
                                 apiOnError(it)

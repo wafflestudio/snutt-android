@@ -63,7 +63,7 @@ class SettingsFragment : BaseFragment() {
                         routeTeamInfo()
                     }
                     SettingsItem.Type.BugReport -> {
-                        // TODO
+                        routeReport()
                     }
                     SettingsItem.Type.License -> showLicenseDialog()
                     SettingsItem.Type.Terms -> {
@@ -95,10 +95,7 @@ class SettingsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
-        // ListView listView = (ListView) rootView.findViewById(R.id.settings_list);
-        // listView.setAdapter(adapter);
         val recyclerView = rootView.findViewById<View>(R.id.settings_recyclerView) as RecyclerView
-        // recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         return rootView
@@ -164,6 +161,10 @@ class SettingsFragment : BaseFragment() {
 
     private fun routeTermsInfo() {
         findNavController().navigate(R.id.action_homeFragment_to_termsInfoFragment)
+    }
+
+    private fun routeReport() {
+        findNavController().navigate(R.id.action_homeFragment_to_reportFragment)
     }
 
     private fun showLicenseDialog() {

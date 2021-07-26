@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -157,13 +159,10 @@ class SearchFragment : BaseFragment() {
 
         binding.placeholder.searchIcon.throttledClicks()
             .bindUi(this) {
-                // TODO
-//                getSystemService(requireContext(), InputMethodManager::class.java)?.let {
-//                    it.toggleSoftInput(
-//                        binding.textEdit,
-//                        0
-//                    )
-//                }
+                binding.textEdit.requestFocus()
+                val imm =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(binding.textEdit, InputMethodManager.SHOW_IMPLICIT)
             }
 
         searchViewModel.selectedLecture
