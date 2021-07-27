@@ -12,6 +12,7 @@ import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -72,6 +73,9 @@ class HomeFragment : BaseFragment() {
             binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
             true
         }
+
+        // 스크롤 감도를 낮춘다.
+        binding.contents.reduceDragSensitivity(6)
 
         binding.contents.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

@@ -41,7 +41,7 @@ class ServiceInfoFragment : BaseFragment() {
 
         binding.webView.webViewClient = WebViewClient() // 이걸 안해주면 새창이 뜸
         binding.webView.loadUrl(
-            getString(R.string.api_server) + getString(R.string.privacy),
+            getString(R.string.api_server) + getString(R.string.terms),
             headers
         )
 

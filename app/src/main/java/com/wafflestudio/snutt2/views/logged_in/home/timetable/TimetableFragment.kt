@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.facebook.FacebookSdk.getCacheDir
 import com.wafflestudio.snutt2.R
@@ -124,7 +125,15 @@ class TimetableFragment : BaseFragment() {
     }
 
     private fun routeLectureList() {
-        findNavController().navigate(R.id.action_homeFragment_to_tableLecturesFragment)
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in)
+            .setExitAnim(R.anim.fade_out)
+            .setPopExitAnim(R.anim.slide_out)
+            .setPopEnterAnim(R.anim.fade_in)
+            .build()
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToTableLecturesFragment(), navOptions
+        )
     }
 
     private fun getScreenShotFromView(v: View): Single<Bitmap> {

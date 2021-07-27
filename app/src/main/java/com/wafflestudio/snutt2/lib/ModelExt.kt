@@ -90,14 +90,10 @@ fun LectureDto.isRegularlyEquals(lectureDto: LectureDto): Boolean {
 }
 
 fun List<LectureDto>.getFittingTableTrimParam(): TableTrimParam = TableTrimParam(
-    dayOfWeekFrom = flatMap { it.class_time_json.map { it.day } }.minOfOrNull { it }
-        ?: TableTrimParam.Default.dayOfWeekFrom,
-    dayOfWeekTo = flatMap { it.class_time_json.map { it.day } }.maxOfOrNull { it }
-        ?: TableTrimParam.Default.dayOfWeekTo,
-    hourFrom = flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } }.minOfOrNull { it }
-        ?: TableTrimParam.Default.hourFrom,
-    hourTo = flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() + 8 - 1 } }.maxOfOrNull { it }
-        ?: TableTrimParam.Default.hourTo,
+    dayOfWeekFrom = (flatMap { it.class_time_json.map { it.day } } + TableTrimParam.Default.dayOfWeekFrom).minOf { it },
+    dayOfWeekTo = (flatMap { it.class_time_json.map { it.day } } + TableTrimParam.Default.dayOfWeekTo).maxOf { it },
+    hourFrom = (flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } } + TableTrimParam.Default.hourFrom).minOf { it },
+    hourTo = (flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() - 1 + 8 } } + TableTrimParam.Default.hourTo).maxOf { it },
     forceFitLectures = true
 )
 

@@ -67,10 +67,10 @@ class SettingsFragment : BaseFragment() {
                     }
                     SettingsItem.Type.License -> showLicenseDialog()
                     SettingsItem.Type.Terms -> {
-                        routeTermsInfo()
+                        routeServiceInfo()
                     }
                     SettingsItem.Type.Private -> {
-                        routeServiceInfo()
+                        routeTermsInfo()
                     }
                     SettingsItem.Type.Logout -> performLogout()
                     else -> {
