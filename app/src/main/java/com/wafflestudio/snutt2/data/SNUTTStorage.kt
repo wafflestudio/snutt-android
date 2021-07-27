@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
@@ -14,12 +15,12 @@ import javax.inject.Singleton
 @Singleton
 class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
 
-    val tableMap: PrefValue<Map<String, TableDto>> = PrefValue.defineMapStorageValue(
+    val tableMap: PrefValue<Map<String, SimpleTableDto>> = PrefValue.defineMapStorageValue(
         "pref_tables",
         mapOf(),
         prefStorage,
         String::class,
-        TableDto::class
+        SimpleTableDto::class
     )
 
     val lastViewedTable: PrefValue<Optional<TableDto>> = PrefValue.defineNullableStorageValue(
@@ -31,7 +32,7 @@ class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
 
     val tableTrimParam: PrefValue<TableTrimParam> = PrefValue.defineNonNullStorageValue(
         "table_trim_param",
-        TableTrimParam.Default,
+        TableTrimParam.Default.copy(forceFitLectures = true),
         prefStorage,
         TableTrimParam::class
     )
@@ -55,13 +56,6 @@ class SNUTTStorage @Inject constructor(private val prefStorage: PrefStorage) {
         null,
         prefStorage,
         String::class
-    )
-
-    val tables: PrefValue<List<TableDto>> = PrefValue.defineListStorageValue(
-        "pref_tables",
-        listOf(),
-        prefStorage,
-        TableDto::class
     )
 
     val courseBooks: PrefValue<List<CourseBookDto>> = PrefValue.defineListStorageValue(

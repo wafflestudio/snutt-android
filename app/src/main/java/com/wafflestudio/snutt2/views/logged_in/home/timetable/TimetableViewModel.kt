@@ -5,7 +5,6 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TimetableColorTheme
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.isRegularlyEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -14,13 +13,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 @HiltViewModel
 class TimetableViewModel @Inject constructor(
     private val myLectureRepository: MyLectureRepository,
     private val storage: SNUTTStorage,
+    private val tableRepository: TableRepository
 ) : ViewModel() {
 
     val currentTimetable: Observable<TableDto>
@@ -28,6 +28,9 @@ class TimetableViewModel @Inject constructor(
 
     val trimParam: Observable<TableTrimParam>
         get() = storage.tableTrimParam.asObservable()
+
+    private val selectedPreviewTheme = BehaviorSubject.create<TimetableColorTheme>()
+    val previewTheme = selectedPreviewTheme.hide()
 
     fun toggleLecture(lecture: LectureDto): Completable {
         return myLectureRepository.currentTable
@@ -41,7 +44,13 @@ class TimetableViewModel @Inject constructor(
             .ignoreElement()
     }
 
-    fun setColorTheme(theme: TimetableColorTheme) {
+    fun updateTheme(id: String, theme: TimetableColorTheme): Completable {
+        return tableRepository.updateTableTheme(id, theme)
+            .observeOn(AndroidSchedulers.mainThread())
+            .ignoreElement()
+    }
 
+    fun setPreviewTheme(theme: TimetableColorTheme) {
+        selectedPreviewTheme.onNext(theme)
     }
 }

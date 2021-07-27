@@ -89,6 +89,12 @@ interface SNUTTRestApi {
         @Body body: PutTableParams
     ): Single<PutTableResults>
 
+    @PUT("/tables/{id}/theme")
+    fun putTableTheme(
+        @Path("id") id: String,
+        @Body body: PutTableThemeParams
+    ): Single<PutTableThemeResult>
+
     @POST("/tables/{id}/copy")
     fun copyTable(
         @Path("id") id: String,

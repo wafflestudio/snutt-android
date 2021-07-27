@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib.network.dto
 
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 
-typealias PostCopyTableResults = List<TableDto>
+typealias PostCopyTableResults = List<SimpleTableDto>

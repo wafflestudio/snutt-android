@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 
 @JsonClass(generateAdapter = true)
 data class TableDto(
@@ -11,8 +12,10 @@ data class TableDto(
     @Json(name = "title") val title: String,
     @Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
     @Json(name = "updated_at") val updatedAt: String,
-    @Json(name = "total_credit") val totalCredit: Long?
+    @Json(name = "total_credit") val totalCredit: Long?,
+    @Json(name = "theme") val theme: TimetableColorTheme?
 ) : Comparable<TableDto> {
+
     override fun compareTo(other: TableDto): Int {
         if (year > other.year) return -1
         if (year < other.year) return 1

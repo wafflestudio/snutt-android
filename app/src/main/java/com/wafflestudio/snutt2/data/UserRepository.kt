@@ -8,8 +8,6 @@ import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.manager.PrefStorage
-import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -22,8 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class UserRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
-    private val snuttStorage: SNUTTStorage,
-    private val prefStorage: PrefStorage
+    private val snuttStorage: SNUTTStorage
 ) {
     val user: Observable<UserDto> = snuttStorage.user
         .asObservable()
@@ -168,9 +165,9 @@ class UserRepository @Inject constructor(
 
     fun postForceLogout(): Single<PostForceLogoutResults> {
         return getFirebaseToken().flatMap { firebaseToken ->
-            val user_id: String? = prefStorage.prefKeyUserId
+            val userId: String? = snuttStorage.prefKeyUserId.getValue().get()
             val param = PostForceLogoutParams(
-                userId = user_id ?: "",
+                userId = userId ?: "",
                 registrationId = firebaseToken
             )
             snuttRestApi.postForceLogout(param)

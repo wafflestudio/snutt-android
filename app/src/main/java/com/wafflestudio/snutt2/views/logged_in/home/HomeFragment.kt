@@ -11,7 +11,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
@@ -36,14 +36,11 @@ class HomeFragment : BaseFragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private val themeSheet = TableThemeFragment()
-
     @Inject
     lateinit var dialogController: DialogController
 
     @Inject
     lateinit var apiOnError: ApiOnError
-
 
     private val fragmentIndexMap = listOf(
         R.id.action_timetable,
@@ -112,7 +109,7 @@ class HomeFragment : BaseFragment() {
                     R.string.home_drawer_create_table_dialog_title,
                     hint = R.string.home_drawer_create_table_dialog_hint
                 )
-                    .flatMapSingle {
+                    .flatMapCompletable {
                         tableListViewModel.createTable(it)
                     }
                     .bindUi(
@@ -135,7 +132,7 @@ class HomeFragment : BaseFragment() {
                 TableModifyFragment(
                     it,
                     onThemeChange = {
-                        TableThemeFragment().show(childFragmentManager, "theme")
+                        TableThemeSheet(it).show(childFragmentManager, "theme")
                         binding.root.close()
                     }
                 ).show(childFragmentManager, "modify_${it.hashCode()}")
@@ -149,7 +146,7 @@ class HomeFragment : BaseFragment() {
         tableListViewModel.currentCourseBooksTable
             .bindUi(this) { list ->
                 tablesAdapter.submitList(
-                    list.map<TableDto, TableListAdapter.Data> { TableListAdapter.Data.Table(it) }
+                    list.map<SimpleTableDto, TableListAdapter.Data> { TableListAdapter.Data.Table(it) }
                         .toMutableList()
                         .apply { add(TableListAdapter.Data.Add) }
                         .toList()

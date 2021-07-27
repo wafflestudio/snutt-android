@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogTableModifyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class TableModifyFragment(
-    private val tableDto: TableDto,
+    private val tableDto: SimpleTableDto,
     private val onThemeChange: () -> Unit,
 ) : BottomSheetDialogFragment() {
 
@@ -54,17 +55,18 @@ class TableModifyFragment(
                     R.string.home_drawer_change_name_dialog_hint
                 )
             }
-            .subscribeBy {
+            .flatMapCompletable {
                 tableListViewModel.changeNameTable(tableDto.id, it)
-                    .subscribeBy(onError = apiOnError)
             }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(onError = apiOnError)
 
         binding.deleteButton.throttledClicks()
-            .flatMapSingle {
+            .flatMapCompletable {
                 tableListViewModel.deleteTable(tableDto.id)
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onNext = {
+            .subscribeBy(onComplete = {
                 requireContext().toast("시간표가 삭제되었습니다.")
                 dismiss()
             }, onError = apiOnError)

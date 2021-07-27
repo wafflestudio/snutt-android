@@ -2,10 +2,8 @@ package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.GetTableListResults
-import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
-import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
+import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import io.reactivex.rxjava3.core.Single
@@ -18,7 +16,7 @@ class TableRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
     private val storage: SNUTTStorage
 ) {
-    private var _tableMap: Map<String, TableDto>
+    private var _tableMap: Map<String, SimpleTableDto>
         get() = storage.tableMap.getValue()
         set(value) {
             storage.tableMap.setValue(value)
@@ -35,7 +33,6 @@ class TableRepository @Inject constructor(
         return snuttRestApi.getTableById(tableId)
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
                 storage.lastViewedTable.setValue(it.toOptional())
             }
     }
@@ -47,7 +44,6 @@ class TableRepository @Inject constructor(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .doOnSuccess {
-                        _tableMap = _tableMap.toMutableMap().apply { put(it.id, it) }
                         storage.lastViewedTable.setValue(it.toOptional())
                     }
             } else {
@@ -64,7 +60,7 @@ class TableRepository @Inject constructor(
             }
     }
 
-    fun createTable(year: Long, semester: Long, title: String?): Single<List<TableDto>> {
+    fun createTable(year: Long, semester: Long, title: String?): Single<List<SimpleTableDto>> {
         return snuttRestApi.postTable(PostTableParams(year, semester, title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
@@ -72,7 +68,7 @@ class TableRepository @Inject constructor(
             }
     }
 
-    fun deleteTable(id: String): Single<List<TableDto>> {
+    fun deleteTable(id: String): Single<List<SimpleTableDto>> {
         if (storage.lastViewedTable.getValue()
                 .get()?.id == id
         ) return Single.error(MessagingError("현재 선택된 시간표를 삭제할 수 없습니다."))
@@ -83,7 +79,7 @@ class TableRepository @Inject constructor(
             }
     }
 
-    fun putTable(id: String, title: String): Single<List<TableDto>> {
+    fun updateTableName(id: String, title: String): Single<List<SimpleTableDto>> {
         return snuttRestApi.putTable(id, PutTableParams(title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
@@ -92,6 +88,17 @@ class TableRepository @Inject constructor(
                 }
                 _tableMap = result.map { it.id to it }.toMap()
             }
+    }
+
+    fun updateTableTheme(id: String, theme: TimetableColorTheme): Single<PutTableThemeResult> {
+        return snuttRestApi.putTableTheme(id, PutTableThemeParams(theme))
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess { result ->
+                storage.lastViewedTable.getValue().get()?.let {
+                    storage.lastViewedTable.setValue(it.toOptional())
+                }
+            }
+
     }
 
     fun copyTable(id: String): Single<PostCopyTableResults> {

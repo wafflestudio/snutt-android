@@ -21,7 +21,6 @@ import javax.inject.Singleton
 @Singleton
 class NotificationsRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
-    private val prefStorage: PrefStorage,
     private val pagingSource: NotificationsPagingSource
 ) {
     private var notifications: MutableList<NotificationDto?> = ArrayList()

@@ -6,12 +6,14 @@ import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.android.MessagingError
+import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -42,7 +44,7 @@ class TableListViewModel @Inject constructor(
             }
     }
 
-    val currentCourseBooksTable: Observable<List<TableDto>> =
+    val currentCourseBooksTable: Observable<List<SimpleTableDto>> =
         Observable.combineLatest(tableMap, selectedCourseBooks, { map, courseBook ->
             map.toList().map { it.second }.filter { table ->
                 table.semester == courseBook.semester && table.year == courseBook.year
@@ -62,8 +64,8 @@ class TableListViewModel @Inject constructor(
             .subscribeBy(onError = apiOnError)
     }
 
-    fun createTable(tableName: String): Single<List<TableDto>> {
-        val currentCourseBook = selectedCourseBooksSubject.value.get() ?: return Single.error(
+    fun createTable(tableName: String): Completable {
+        val currentCourseBook = selectedCourseBooksSubject.value.get() ?: return Completable.error(
             MessagingError("currentCourseBook Not exists")
         )
         return tableRepository.createTable(
@@ -71,21 +73,22 @@ class TableListViewModel @Inject constructor(
             currentCourseBook.semester,
             tableName
         )
-            .observeOn(AndroidSchedulers.mainThread())
+            .ignoreElement()
+
     }
 
-    fun copyTable(tableId: String): Single<List<TableDto>> {
+    fun copyTable(tableId: String): Single<PostCopyTableResults> {
         return tableRepository.copyTable(tableId)
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun deleteTable(tableId: String): Single<List<TableDto>> {
+    fun deleteTable(tableId: String): Completable {
         return tableRepository.deleteTable(tableId)
-            .observeOn(AndroidSchedulers.mainThread())
+            .ignoreElement()
     }
 
-    fun changeNameTable(tableId: String, name: String): Single<List<TableDto>> {
-        return tableRepository.putTable(tableId, name)
-            .observeOn(AndroidSchedulers.mainThread())
+    fun changeNameTable(tableId: String, name: String): Completable {
+        return tableRepository.updateTableName(tableId, name)
+            .ignoreElement()
     }
 }

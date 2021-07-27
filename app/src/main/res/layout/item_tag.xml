@@ -21,6 +21,7 @@
         android:layout_weight="1"
         android:fontFamily="@font/spoqa_han_sans_regular"
         android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="#000000"
         android:textSize="14dp"
         tools:text="교양" />

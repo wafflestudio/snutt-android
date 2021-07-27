@@ -42,30 +42,6 @@
             android:padding="16dp">
 
             <LinearLayout
-                android:id="@+id/custom_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/theme_preview_custom" />
-
-                <TextView
-                    android:id="@+id/custom_text"
-                    style="@style/Typo.Details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"
-                    android:text="@string/home_select_theme_custom" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/snutt_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

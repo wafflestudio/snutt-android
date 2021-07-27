@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.databinding.ItemAddTableBinding
 import com.wafflestudio.snutt2.databinding.ItemTableBinding
 import com.wafflestudio.snutt2.lib.base.BaseAdapter
 import com.wafflestudio.snutt2.lib.base.BaseViewHolder
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
@@ -15,9 +16,9 @@ import io.reactivex.rxjava3.core.Observable
 
 class TableListAdapter(
     private val onCreateItem: () -> Unit,
-    private val onSelectItem: (table: TableDto) -> Unit,
-    private val onShowMoreItem: (table: TableDto) -> Unit,
-    private val onDuplicateItem: (table: TableDto) -> Unit,
+    private val onSelectItem: (table: SimpleTableDto) -> Unit,
+    private val onShowMoreItem: (table: SimpleTableDto) -> Unit,
+    private val onDuplicateItem: (table: SimpleTableDto) -> Unit,
     private val selectedTableId: Observable<String>,
     private val bindable: RxBindable
 ) : BaseAdapter<TableListAdapter.Data>(diffCallback) {
@@ -102,7 +103,7 @@ class TableListAdapter(
     }
 
     sealed class Data {
-        class Table(val table: TableDto) : Data()
+        class Table(val table: SimpleTableDto) : Data()
 
         object Add : Data()
     }
