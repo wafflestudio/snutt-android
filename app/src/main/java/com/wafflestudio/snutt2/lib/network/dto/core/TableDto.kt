@@ -13,7 +13,7 @@ data class TableDto(
     @Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
-    @Json(name = "theme") val theme: TimetableColorTheme?
+    @Json(name = "theme") val theme: TimetableColorTheme
 ) : Comparable<TableDto> {
 
     override fun compareTo(other: TableDto): Int {

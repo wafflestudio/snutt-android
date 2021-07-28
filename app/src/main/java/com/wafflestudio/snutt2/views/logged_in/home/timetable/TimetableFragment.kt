@@ -51,14 +51,18 @@ class TimetableFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.currentTimetable
+        Observables.combineLatest(
+            vm.currentTimetable,
+            vm.previewTheme
+        )
             .distinctUntilChanged()
-            .bindUi(this) {
-                binding.timetable.lectures = it.lectureList
-                binding.appBarTitle.text = it.title
+            .bindUi(this) { (table, previewTheme) ->
+                binding.timetable.lectures = table.lectureList
+                binding.timetable.theme = previewTheme.get() ?: table.theme
+                binding.appBarTitle.text = table.title
                 val creditText = getString(
                     R.string.timetable_credit,
-                    it.lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
+                    table.lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
                 )
                 binding.creditText.text = creditText
             }

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.DialogSelectThemeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,13 +44,13 @@ class TableThemeSheet(
         return binding.root
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        vm.setPreviewTheme(null)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        vm.currentTimetable.firstOrError()
-            .subscribeBy {
-                selectedPreviewTheme.onNext(it.theme)
-            }
 
         binding.confirm.throttledClicks()
             .flatMapCompletable {
@@ -66,11 +67,12 @@ class TableThemeSheet(
         selectedPreviewTheme
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
+                vm.setPreviewTheme(it)
                 mapOf(
                     TimetableColorTheme.SNUTT to binding.snuttText,
                     TimetableColorTheme.MODERN to binding.modernText,
                     TimetableColorTheme.AUTUMN to binding.autumnText,
-                    TimetableColorTheme.PINK to binding.pinkText,
+                    TimetableColorTheme.CHERRY to binding.pinkText,
                     TimetableColorTheme.ICE to binding.iceText,
                     TimetableColorTheme.JADE to binding.jadeText
                 ).forEach { (theme, view) ->
@@ -84,7 +86,7 @@ class TableThemeSheet(
             binding.snuttButton to TimetableColorTheme.SNUTT,
             binding.modernButton to TimetableColorTheme.MODERN,
             binding.autumnButton to TimetableColorTheme.AUTUMN,
-            binding.pinkButton to TimetableColorTheme.PINK,
+            binding.pinkButton to TimetableColorTheme.CHERRY,
             binding.iceButton to TimetableColorTheme.ICE,
             binding.jadeButton to TimetableColorTheme.JADE
         ).forEach { (view, theme) ->

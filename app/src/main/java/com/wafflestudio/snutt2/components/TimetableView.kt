@@ -8,9 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
-import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
-import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.dp
@@ -82,6 +81,12 @@ class TimetableView : View {
         }
 
     var selectedLecture: LectureDto? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var theme: TimetableColorTheme = TimetableColorTheme.SNUTT
         set(value) {
             field = value
             invalidate()
@@ -199,8 +204,8 @@ class TimetableView : View {
                 classTime,
                 classTime.place,
                 lecture.course_title,
-                lecture.color.bgColor ?: lecture.colorIndex.getDefaultBgColorHex(),
-                lecture.color.fgColor ?: lecture.colorIndex.getDefaultFgColorHex()
+                lecture.color.bgColor ?: theme.getColorByIndex(context, lecture.colorIndex),
+                lecture.color.fgColor ?: context.getColor(R.color.white),
             )
         }
     }

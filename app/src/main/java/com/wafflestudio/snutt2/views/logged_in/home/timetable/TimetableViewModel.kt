@@ -5,9 +5,11 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.isRegularlyEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -29,7 +31,8 @@ class TimetableViewModel @Inject constructor(
     val trimParam: Observable<TableTrimParam>
         get() = storage.tableTrimParam.asObservable()
 
-    private val selectedPreviewTheme = BehaviorSubject.create<TimetableColorTheme>()
+    private val selectedPreviewTheme =
+        BehaviorSubject.createDefault<Optional<TimetableColorTheme>>(Optional.empty())
     val previewTheme = selectedPreviewTheme.hide()
 
     fun toggleLecture(lecture: LectureDto): Completable {
@@ -50,7 +53,7 @@ class TimetableViewModel @Inject constructor(
             .ignoreElement()
     }
 
-    fun setPreviewTheme(theme: TimetableColorTheme) {
-        selectedPreviewTheme.onNext(theme)
+    fun setPreviewTheme(theme: TimetableColorTheme?) {
+        selectedPreviewTheme.onNext(theme.toOptional())
     }
 }
