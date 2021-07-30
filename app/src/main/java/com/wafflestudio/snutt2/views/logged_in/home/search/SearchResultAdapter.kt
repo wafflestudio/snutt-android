@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.ItemLectureSearchBinding
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 
 class SearchResultAdapter(

@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.databinding.ItemAddLectureListBinding
 import com.wafflestudio.snutt2.databinding.ItemLectureListBinding
 import com.wafflestudio.snutt2.lib.base.BaseAdapter
 import com.wafflestudio.snutt2.lib.base.BaseViewHolder
-import com.wafflestudio.snutt2.lib.network.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 
 class LectureListAdapter(

@@ -18,15 +18,15 @@ class MyLectureRepository @Inject constructor(
     private val storage: SNUTTStorage
 ) {
     private var _currentTable: TableDto
-        get() = storage.lastViewedTable.getValue().get()!!
-        set(value) = storage.lastViewedTable.setValue(value.toOptional())
+        get() = storage.lastViewedTable.get().get()!!
+        set(value) = storage.lastViewedTable.update(value.toOptional())
 
     val currentTable: Observable<TableDto> =
         storage.lastViewedTable.asObservable().distinctUntilChanged()
             .filterEmpty()
 
     fun getCurrentTable(): Optional<TableDto> {
-        return storage.lastViewedTable.getValue()
+        return storage.lastViewedTable.get()
     }
 
 

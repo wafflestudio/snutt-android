@@ -22,7 +22,7 @@ class SearchLectureRepository @Inject constructor(
 ) {
 
     fun getPagingSource(title: String, tags: List<TagDto>): Pager<Long, LectureDto> {
-        val current = storage.lastViewedTable.getValue().get()!!
+        val current = storage.lastViewedTable.get().get()!!
         return Pager(
             config = PagingConfig(
                 pageSize = 20,

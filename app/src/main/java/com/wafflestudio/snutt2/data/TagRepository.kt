@@ -16,9 +16,9 @@ class TagRepository @Inject constructor(
     private val storage: SNUTTStorage
 ) {
     private var _tags: List<TagDto>
-        get() = storage.tags.getValue()
+        get() = storage.tags.get()
         set(value) {
-            storage.tags.setValue(value)
+            storage.tags.update(value)
         }
 
     val tags = storage.tags.asObservable()

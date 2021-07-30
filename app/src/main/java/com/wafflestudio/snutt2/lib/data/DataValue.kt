@@ -1,11 +1,11 @@
-package com.wafflestudio.snutt2.lib.preferences.storage
+package com.wafflestudio.snutt2.lib.data
 
 import io.reactivex.rxjava3.core.Observable
 
 interface DataValue<T : Any> {
     fun asObservable(): Observable<T>
 
-    fun getValue(): T
+    fun get(): T
 
-    fun setValue(value: T)
+    fun update(value: T)
 }

@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.data.SearchLectureRepository
 import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.data.*
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto

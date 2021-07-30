@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network
+package com.wafflestudio.snutt2.lib
 
 data class Quadruple<T1, T2, T3, T4>(
     val w: T1,

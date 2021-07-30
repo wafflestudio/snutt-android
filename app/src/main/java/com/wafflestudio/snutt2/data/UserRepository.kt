@@ -31,8 +31,8 @@ class UserRepository @Inject constructor(
         return snuttRestApi.postSignIn(PostSignInParams(id, password))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
-                snuttStorage.prefKeyUserId.setValue(result.userId.toOptional())
+                snuttStorage.accessToken.update(result.token)
+                snuttStorage.prefKeyUserId.update(result.userId.toOptional())
             }
             .flatMap {
                 registerFirebaseToken()
@@ -44,8 +44,8 @@ class UserRepository @Inject constructor(
         return snuttRestApi.postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
-                snuttStorage.prefKeyUserId.setValue(result.userId.toOptional())
+                snuttStorage.accessToken.update(result.token)
+                snuttStorage.prefKeyUserId.update(result.userId.toOptional())
             }
             .flatMap {
                 registerFirebaseToken()
@@ -57,8 +57,8 @@ class UserRepository @Inject constructor(
         return snuttRestApi.postSignUp(PostSignUpParams(id, password, email))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
-                snuttStorage.prefKeyUserId.setValue(result.userId.toOptional())
+                snuttStorage.accessToken.update(result.token)
+                snuttStorage.prefKeyUserId.update(result.userId.toOptional())
             }
             .flatMap {
                 registerFirebaseToken()
@@ -69,7 +69,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.getUserInfo()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                snuttStorage.user.setValue(it.toOptional())
+                snuttStorage.user.update(it.toOptional())
             }
     }
 
@@ -79,8 +79,8 @@ class UserRepository @Inject constructor(
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                snuttStorage.user.setValue(
-                    snuttStorage.user.getValue().get()?.copy(email = email).toOptional()
+                snuttStorage.user.update(
+                    snuttStorage.user.get().get()?.copy(email = email).toOptional()
                 )
             }
     }
@@ -99,7 +99,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.putUserPassword(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
+                snuttStorage.accessToken.update(result.token)
             }
     }
 
@@ -117,7 +117,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.postUserPassword(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
+                snuttStorage.accessToken.update(result.token)
             }
     }
 
@@ -125,7 +125,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.deleteUserFacebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
+                snuttStorage.accessToken.update(result.token)
             }
     }
 
@@ -141,7 +141,7 @@ class UserRepository @Inject constructor(
         return snuttRestApi.postUserFacebook(param)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                snuttStorage.accessToken.setValue(result.token)
+                snuttStorage.accessToken.update(result.token)
             }
     }
 
@@ -165,7 +165,7 @@ class UserRepository @Inject constructor(
 
     fun postForceLogout(): Single<PostForceLogoutResults> {
         return getFirebaseToken().flatMap { firebaseToken ->
-            val userId: String? = snuttStorage.prefKeyUserId.getValue().get()
+            val userId: String? = snuttStorage.prefKeyUserId.get().get()
             val param = PostForceLogoutParams(
                 userId = userId ?: "",
                 registrationId = firebaseToken

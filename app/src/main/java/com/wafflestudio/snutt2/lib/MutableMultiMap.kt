@@ -50,7 +50,7 @@ class MutableMultiMap<K, V> {
         }
     }
 
-    fun get(key: K): Collection<V> {
+    operator fun get(key: K): Collection<V> {
         return map[key]?.toSet() ?: setOf()
     }
 

@@ -18,7 +18,7 @@ class CourseBookRepository @Inject constructor(
         return api.getCoursebook()
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                storage.courseBooks.setValue(it)
+                storage.courseBooks.update(it)
             }
     }
 }

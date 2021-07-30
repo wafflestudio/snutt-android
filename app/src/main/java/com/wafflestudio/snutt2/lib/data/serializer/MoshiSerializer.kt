@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.preferences.serializer
+package com.wafflestudio.snutt2.lib.data.serializer
 
 import com.squareup.moshi.Moshi
 import java.lang.reflect.Type

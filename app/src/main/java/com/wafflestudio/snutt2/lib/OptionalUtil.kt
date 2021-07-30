@@ -7,7 +7,7 @@ fun <T : Any> T?.toOptional(): Optional<T> {
 }
 
 @JsonClass(generateAdapter = true)
-data class Optional<T : Any>(private val value: T?) {
+data class Optional<T : Any>(val value: T?) {
     fun get(): T? = value
     fun isDefined(): Boolean = value != null
     fun isEmpty(): Boolean = value == null

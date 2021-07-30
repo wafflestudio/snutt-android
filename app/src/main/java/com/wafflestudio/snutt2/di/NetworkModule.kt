@@ -35,7 +35,7 @@ object NetworkModule {
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-access-token",
-                        storage.accessToken.getValue()
+                        storage.accessToken.get()
                     )
                     .build()
                 chain.proceed(newRequest)

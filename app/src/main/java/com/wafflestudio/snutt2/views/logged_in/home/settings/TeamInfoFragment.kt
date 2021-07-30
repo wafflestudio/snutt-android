@@ -30,7 +30,7 @@ class TeamInfoFragment : BaseFragment() {
         binding = FragmentBrowserBinding.inflate(inflater, container, false)
         val headers = HashMap<String, String>()
         headers["x-access-apikey"] = resources.getString(R.string.api_key)
-        headers["x-access-token"] = storage.accessToken.getValue()
+        headers["x-access-token"] = storage.accessToken.get()
 
         binding.title.text = "개발자 정보"
 

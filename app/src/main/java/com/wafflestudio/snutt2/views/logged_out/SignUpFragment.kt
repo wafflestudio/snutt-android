@@ -20,7 +20,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSignUpBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiStatus
-import com.wafflestudio.snutt2.lib.network.Quadruple
+import com.wafflestudio.snutt2.lib.Quadruple
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

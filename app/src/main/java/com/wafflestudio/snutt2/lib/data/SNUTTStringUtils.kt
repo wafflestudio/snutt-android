@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network
+package com.wafflestudio.snutt2.lib.data
 
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto

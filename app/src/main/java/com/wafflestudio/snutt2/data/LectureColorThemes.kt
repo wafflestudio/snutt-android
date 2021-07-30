@@ -82,7 +82,7 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_jade_7),
                 context.getColor(R.color.theme_jade_8),
             )
-        }[colorIndex.toInt() - 1]
+        }[colorIndex.toInt()]
     }
 
     companion object {

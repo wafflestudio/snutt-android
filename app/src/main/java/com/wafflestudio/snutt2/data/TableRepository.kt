@@ -17,34 +17,34 @@ class TableRepository @Inject constructor(
     private val storage: SNUTTStorage
 ) {
     private var _tableMap: Map<String, SimpleTableDto>
-        get() = storage.tableMap.getValue()
+        get() = storage.tableMap.get()
         set(value) {
-            storage.tableMap.setValue(value)
+            storage.tableMap.update(value)
         }
     val tableMap = storage.tableMap.asObservable()
 
     val currentTable = storage.lastViewedTable.asObservable()
 
     fun getCurrentTable(): TableDto? {
-        return storage.lastViewedTable.getValue().get()
+        return storage.lastViewedTable.get().get()
     }
 
     fun refreshTable(tableId: String): Single<TableDto> {
         return snuttRestApi.getTableById(tableId)
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
-                storage.lastViewedTable.setValue(it.toOptional())
+                storage.lastViewedTable.update(it.toOptional())
             }
     }
 
     fun fetchDefaultTable(): Single<TableDto> {
-        return storage.lastViewedTable.getValue().let { table ->
+        return storage.lastViewedTable.get().let { table ->
             if (table.isEmpty()) {
                 snuttRestApi.getRecentTable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .doOnSuccess {
-                        storage.lastViewedTable.setValue(it.toOptional())
+                        storage.lastViewedTable.update(it.toOptional())
                     }
             } else {
                 Single.just(table.get())
@@ -69,7 +69,7 @@ class TableRepository @Inject constructor(
     }
 
     fun deleteTable(id: String): Single<List<SimpleTableDto>> {
-        if (storage.lastViewedTable.getValue()
+        if (storage.lastViewedTable.get()
                 .get()?.id == id
         ) return Single.error(MessagingError("현재 선택된 시간표를 삭제할 수 없습니다."))
         return snuttRestApi.deleteTable(id)
@@ -83,8 +83,8 @@ class TableRepository @Inject constructor(
         return snuttRestApi.putTable(id, PutTableParams(title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                storage.lastViewedTable.getValue().get()?.let {
-                    storage.lastViewedTable.setValue(it.copy(title = title).toOptional())
+                storage.lastViewedTable.get().get()?.let {
+                    storage.lastViewedTable.update(it.copy(title = title).toOptional())
                 }
                 _tableMap = result.map { it.id to it }.toMap()
             }
@@ -94,8 +94,8 @@ class TableRepository @Inject constructor(
         return snuttRestApi.putTableTheme(id, PutTableThemeParams(theme))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                storage.lastViewedTable.getValue().get()?.let {
-                    storage.lastViewedTable.setValue(it.toOptional())
+                storage.lastViewedTable.get().get()?.let {
+                    storage.lastViewedTable.update(it.toOptional())
                 }
             }
 

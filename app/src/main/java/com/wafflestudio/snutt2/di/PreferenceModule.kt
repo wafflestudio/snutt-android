@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.wafflestudio.snutt2.lib.preferences.serializer.Serializer
+import com.wafflestudio.snutt2.lib.preferences.cache.PrefCache
+import com.wafflestudio.snutt2.lib.preferences.cache.PrefCacheImpl
+import com.wafflestudio.snutt2.lib.preferences.context.PrefContext
+import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
+import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorageImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,19 +19,22 @@ import javax.inject.Singleton
 object PreferenceModule {
     @Provides
     @Singleton
-    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(
-            context.packageName + "_preferences",
-            Context.MODE_PRIVATE
-        )
+    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext {
+        return PrefContext(prefStorage, prefCache)
     }
 
     @Provides
     @Singleton
     fun providePrefStorage(
-        sharedPreferences: SharedPreferences,
+        @ApplicationContext context: Context,
         serializer: Serializer
     ): PrefStorage {
-        return PrefStorage(sharedPreferences, serializer)
+        return PrefStorageImpl(context, serializer)
+    }
+
+    @Provides
+    @Singleton
+    fun providePrefCache(): PrefCache {
+        return PrefCacheImpl(64)
     }
 }

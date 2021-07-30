@@ -10,9 +10,9 @@ class SettingsRepository @Inject constructor(
     private val storage: SNUTTStorage
 ) {
     private var _tableTrimParam: TableTrimParam
-        get() = storage.tableTrimParam.getValue()
+        get() = storage.tableTrimParam.get()
         set(value) {
-            storage.tableTrimParam.setValue(value)
+            storage.tableTrimParam.update(value)
         }
 
     val tableTrimParam: Observable<TableTrimParam> = storage.tableTrimParam.asObservable()
