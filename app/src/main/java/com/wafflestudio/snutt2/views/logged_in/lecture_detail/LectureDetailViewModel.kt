@@ -10,11 +10,13 @@ import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.util.ArrayList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +33,9 @@ class LectureDetailViewModel @Inject constructor(
     val selectedColor: Observable<Pair<Int, ColorDto?>> = _selectedColor.hide()
 
     val colorTheme: TimetableColorTheme? = myLectureRepository.getCurrentTable().value?.theme
+
+
+    val lists: ArrayList<LectureItem> = arrayListOf()
 
 
     fun setEditMode(edit: Boolean) {

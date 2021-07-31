@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureColorSelectorBinding
 import com.wafflestudio.snutt2.databinding.ItemLectureColorBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LectureColorSelectorFragment : BaseFragment() {

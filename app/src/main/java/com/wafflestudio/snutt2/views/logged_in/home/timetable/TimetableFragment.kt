@@ -12,11 +12,12 @@ import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.facebook.FacebookSdk.getCacheDir
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.RootGraphDirections
 import com.wafflestudio.snutt2.databinding.FragmentTimetableBinding
+import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
@@ -115,28 +116,24 @@ class TimetableFragment : BaseFragment() {
 
     private fun routeLectureDetail(lecture: LectureDto) {
         val action =
-            if (lecture.isCustom) HomeFragmentDirections.actionHomeFragmentToCustomLectureDetailFragment(
+            if (lecture.isCustom) RootGraphDirections.actionGlobalCustomLectureDetailFragment(
                 lecture
             )
-            else HomeFragmentDirections.actionHomeFragmentToLectureDetailFragment(
+            else RootGraphDirections.actionGlobalLectureDetailFragment(
                 lecture
             )
-        findNavController().navigate(action)
+        findNavController().navigate(action, defaultNavOptions)
     }
 
     private fun routeNotifications() {
-        findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToNotificationsFragment(), defaultNavOptions
+        )
     }
 
     private fun routeLectureList() {
-        val navOptions = NavOptions.Builder()
-            .setEnterAnim(R.anim.slide_in)
-            .setExitAnim(R.anim.fade_out)
-            .setPopExitAnim(R.anim.slide_out)
-            .setPopEnterAnim(R.anim.fade_in)
-            .build()
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToTableLecturesFragment(), navOptions
+            HomeFragmentDirections.actionHomeFragmentToTableLecturesFragment(), defaultNavOptions
         )
     }
 

@@ -21,7 +21,6 @@ class RootActivity : BaseActivity() {
         val navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         val navGraph = navController.navInflater.inflate(R.navigation.root_graph)
-
         navGraph.startDestination = if (snuttStorage.accessToken.get().isEmpty()) {
             R.id.tutorialFragment
         } else {

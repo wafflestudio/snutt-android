@@ -49,12 +49,6 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_lectureDetailFragment"
-            app:destination="@id/lectureDetailFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_customLectureDetailFragment"
-            app:destination="@id/customLectureDetailFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_tableLecturesFragment"
             app:destination="@id/tableLecturesFragment" />
         <action
@@ -84,14 +78,7 @@
         android:id="@+id/tableLecturesFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragment"
         android:label="@layout/fragment_lecture_list"
-        tools:layout="@layout/fragment_lecture_list">
-        <action
-            android:id="@+id/action_tableLecturesFragment_to_lectureDetailFragment"
-            app:destination="@id/lectureDetailFragment" />
-        <action
-            android:id="@+id/action_tableLecturesFragment_to_customLectureDetailFragment"
-            app:destination="@id/customLectureDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_lecture_list" />
 
     <fragment
         android:id="@+id/notificationsFragment"
@@ -123,6 +110,9 @@
             android:name="selectedLecture"
             app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_customLectureDetailFragment_to_lectureColorSelectorFragment"
+            app:destination="@id/lectureColorSelectorFragment" />
     </fragment>
 
     <fragment
@@ -162,5 +152,11 @@
         android:id="@+id/lectureColorSelectorFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorFragment"
         android:label="LectureColorSelectorFragment" />
+    <action
+        android:id="@+id/action_global_lectureDetailFragment"
+        app:destination="@id/lectureDetailFragment" />
+    <action
+        android:id="@+id/action_global_customLectureDetailFragment"
+        app:destination="@id/customLectureDetailFragment" />
 
 </navigation>

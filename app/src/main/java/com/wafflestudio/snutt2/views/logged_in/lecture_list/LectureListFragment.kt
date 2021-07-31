@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.RootGraphDirections
 import com.wafflestudio.snutt2.components.DividerItemDecoration
 import com.wafflestudio.snutt2.databinding.FragmentLectureListBinding
+import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
@@ -64,20 +66,20 @@ class TableLecturesFragment : BaseFragment() {
 
     private fun routeLectureCreate() {
         val action =
-            TableLecturesFragmentDirections.actionTableLecturesFragmentToCustomLectureDetailFragment(
+            RootGraphDirections.actionGlobalCustomLectureDetailFragment(
                 null
             )
-        findNavController().navigate(action)
+        findNavController().navigate(action, defaultNavOptions)
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
         val action =
-            if (lecture.isCustom) TableLecturesFragmentDirections.actionTableLecturesFragmentToCustomLectureDetailFragment(
+            if (lecture.isCustom) RootGraphDirections.actionGlobalCustomLectureDetailFragment(
                 lecture
             )
-            else TableLecturesFragmentDirections.actionTableLecturesFragmentToLectureDetailFragment(
+            else RootGraphDirections.actionGlobalLectureDetailFragment(
                 lecture
             )
-        findNavController().navigate(action)
+        findNavController().navigate(action, defaultNavOptions)
     }
 }

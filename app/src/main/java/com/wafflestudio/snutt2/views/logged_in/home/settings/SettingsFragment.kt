@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.UserRepository
+import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.model.SettingsItem
+import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import de.psdev.licensesdialog.LicensesDialog
 import timber.log.Timber
@@ -144,27 +146,45 @@ class SettingsFragment : BaseFragment() {
     }
 
     private fun routeUserSettings() {
-        findNavController().navigate(R.id.action_homeFragment_to_userSettingsFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToUserSettingsFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun routeTimetableSettings() {
-        findNavController().navigate(R.id.action_homeFragment_to_timetableSettingsFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToTimetableSettingsFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun routeTeamInfo() {
-        findNavController().navigate(R.id.action_homeFragment_to_teamInfoFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToTeamInfoFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun routeServiceInfo() {
-        findNavController().navigate(R.id.action_homeFragment_to_serviceInfoFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToServiceInfoFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun routeTermsInfo() {
-        findNavController().navigate(R.id.action_homeFragment_to_termsInfoFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToTermsInfoFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun routeReport() {
-        findNavController().navigate(R.id.action_homeFragment_to_reportFragment)
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToReportFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun showLicenseDialog() {

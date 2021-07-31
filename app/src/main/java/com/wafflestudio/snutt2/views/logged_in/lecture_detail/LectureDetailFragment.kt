@@ -13,15 +13,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wafflestudio.snutt2.DialogController
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -38,7 +40,8 @@ class LectureDetailFragment : BaseFragment() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
-    private var lists: MutableList<LectureItem> = mutableListOf()
+    @Inject
+    lateinit var dialogController: DialogController
 
     private lateinit var adapter: LectureDetailAdapter
 
@@ -50,29 +53,37 @@ class LectureDetailFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLectureDetailBinding.inflate(inflater, container, false)
+
+        val selectedLecture = args.selectedLecture
+
+        vm.setLecture(selectedLecture)
+        vm.lists.clear()
+        attachLectureDetailList(selectedLecture)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.setLecture(args.selectedLecture)
 
         adapter = LectureDetailAdapter(
-            lists,
+            vm.lists,
             onSyllabus = { startSyllabus() },
             onRemoveLecture = { startRemoveAlertView() },
             onResetLecture = { startResetAlertView() },
-            onChangeColor = { routeColorSelector() }
+            onChangeColor = {
+                dialogController.showColorSelector(
+                    vm.colorTheme ?: TimetableColorTheme.SNUTT
+                )
+                    .bindUi(this) {
+                        setLectureColor(it.first, it.second)
+                    }
+            }
         )
 
         binding.lectureDetailView.adapter = adapter
         binding.lectureDetailView.layoutManager = LinearLayoutManager(context)
-
-        vm.selectedLecture
-            .bindUi(this) {
-                attachLectureDetailList(it.get())
-            }
 
         vm.isEditMode
             .distinctUntilChanged()
@@ -112,7 +123,6 @@ class LectureDetailFragment : BaseFragment() {
     }
 
     fun setLectureColor(index: Int, color: ColorDto?) {
-        Timber.d("___ $lists")
         if (index > 0) {
             colorItem!!.colorIndex = index
         } else {
@@ -123,7 +133,7 @@ class LectureDetailFragment : BaseFragment() {
 
     val colorItem: LectureItem?
         get() {
-            for (item in lists) {
+            for (item in vm.lists) {
                 if (item.type === LectureItem.Type.Color) return item
             }
             return null
@@ -131,32 +141,32 @@ class LectureDetailFragment : BaseFragment() {
 
     fun refreshFragment() {
         vm.setEditMode(false)
-        lists.clear()
+        vm.lists.clear()
         adapter.notifyDataSetChanged()
     }
 
     private fun setNormalMode() {
         try {
             vm.setEditMode(false)
-            for (i in lists.indices) {
-                val it = lists[i]
+            for (i in vm.lists.indices) {
+                val it = vm.lists[i]
                 it.isEditable = false
                 adapter.notifyItemChanged(i)
             }
             var pos = addClassTimeItemPosition
-            lists.removeAt(pos)
+            vm.lists.removeAt(pos)
             adapter.notifyItemRemoved(pos)
-            lists.add(pos, LectureItem(LectureItem.Type.Margin, false))
+            vm.lists.add(pos, LectureItem(LectureItem.Type.Margin, false))
             adapter.notifyItemInserted(pos)
-            lists.add(pos + 1, LectureItem(LectureItem.Type.LongHeader, false))
+            vm.lists.add(pos + 1, LectureItem(LectureItem.Type.LongHeader, false))
             adapter.notifyItemInserted(pos + 1)
-            lists.add(pos + 2, LectureItem(LectureItem.Type.Syllabus, false))
+            vm.lists.add(pos + 2, LectureItem(LectureItem.Type.Syllabus, false))
             adapter.notifyItemInserted(pos + 2)
 
             // change button
             pos = resetItemPosition
-            lists.removeAt(pos)
-            lists.add(pos, LectureItem(LectureItem.Type.RemoveLecture, false))
+            vm.lists.removeAt(pos)
+            vm.lists.add(pos, LectureItem(LectureItem.Type.RemoveLecture, false))
             adapter.notifyItemChanged(pos)
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
@@ -167,30 +177,30 @@ class LectureDetailFragment : BaseFragment() {
     private fun setEditMode() {
         try {
             vm.setEditMode(true)
-            for (i in lists.indices) {
-                val it = lists[i]
+            for (i in vm.lists.indices) {
+                val it = vm.lists[i]
                 it.isEditable = true
                 adapter.notifyItemChanged(i)
             }
             val syllabusPosition = syllabusItemPosition
             // remove syllabus
-            lists.removeAt(syllabusPosition)
+            vm.lists.removeAt(syllabusPosition)
             adapter.notifyItemRemoved(syllabusPosition)
             // remove long header
-            lists.removeAt(syllabusPosition - 1)
+            vm.lists.removeAt(syllabusPosition - 1)
             adapter.notifyItemRemoved(syllabusPosition - 1)
             // remove margin
-            lists.removeAt(syllabusPosition - 2)
+            vm.lists.removeAt(syllabusPosition - 2)
             adapter.notifyItemRemoved(syllabusPosition - 2)
             val lastPosition = lastClassItemPosition
             // add button
-            lists.add(lastPosition + 1, LectureItem(LectureItem.Type.AddClassTime, true))
+            vm.lists.add(lastPosition + 1, LectureItem(LectureItem.Type.AddClassTime, true))
             adapter.notifyItemInserted(lastPosition + 1)
 
             // change button
             val removePosition = removeItemPosition
-            lists.removeAt(removePosition)
-            lists.add(removePosition, LectureItem(LectureItem.Type.ResetLecture, true))
+            vm.lists.removeAt(removePosition)
+            vm.lists.add(removePosition, LectureItem(LectureItem.Type.ResetLecture, true))
             adapter.notifyItemChanged(removePosition)
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "편집 중 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show()
@@ -199,7 +209,7 @@ class LectureDetailFragment : BaseFragment() {
     }
 
     private fun attachLectureDetailList(lecture: LectureDto?) {
-        with(lists) {
+        with(vm.lists) {
             add(LectureItem(LectureItem.Type.ShortHeader))
             add(LectureItem(LectureItem.Type.Margin))
             add(LectureItem("강의명", lecture!!.course_title, LectureItem.Type.Title))
@@ -273,7 +283,10 @@ class LectureDetailFragment : BaseFragment() {
     }
 
     private fun routeColorSelector() {
-        findNavController().navigate(LectureDetailFragmentDirections.actionLectureDetailFragmentToLectureColorSelectorFragment())
+        findNavController().navigate(
+            LectureDetailFragmentDirections.actionLectureDetailFragmentToLectureColorSelectorFragment(),
+            defaultNavOptions
+        )
     }
 
     private fun startResetAlertView() {
@@ -300,44 +313,44 @@ class LectureDetailFragment : BaseFragment() {
 
     private val syllabusItemPosition: Int
         get() {
-            for (i in lists.indices) {
-                if (lists[i].type === LectureItem.Type.Syllabus) return i
+            for (i in vm.lists.indices) {
+                if (vm.lists[i].type === LectureItem.Type.Syllabus) return i
             }
             return -1
         }
     private val addClassTimeItemPosition: Int
         get() {
-            for (i in lists.indices) {
-                if (lists[i].type === LectureItem.Type.AddClassTime) return i
+            for (i in vm.lists.indices) {
+                if (vm.lists[i].type === LectureItem.Type.AddClassTime) return i
             }
             return -1
         }
     private val removeItemPosition: Int
         get() {
-            for (i in lists.indices) {
-                if (lists[i].type === LectureItem.Type.RemoveLecture) return i
+            for (i in vm.lists.indices) {
+                if (vm.lists[i].type === LectureItem.Type.RemoveLecture) return i
             }
             return -1
         }
     private val resetItemPosition: Int
         get() {
-            for (i in lists.indices) {
-                if (lists[i].type === LectureItem.Type.ResetLecture) return i
+            for (i in vm.lists.indices) {
+                if (vm.lists[i].type === LectureItem.Type.ResetLecture) return i
             }
             return -1
         }
     private val classTimeHeaderPosition: Int
         get() {
-            for (i in lists.indices) {
-                if (lists[i].type === LectureItem.Type.ClassTimeHeader) return i
+            for (i in vm.lists.indices) {
+                if (vm.lists[i].type === LectureItem.Type.ClassTimeHeader) return i
             }
             return -1
         }
     private val lastClassItemPosition: Int
         get() {
-            for (i in classTimeHeaderPosition + 1 until lists.size) {
-                if (lists[i].type !== LectureItem.Type.ClassTime) return i - 1
+            for (i in classTimeHeaderPosition + 1 until vm.lists.size) {
+                if (vm.lists[i].type !== LectureItem.Type.ClassTime) return i - 1
             }
-            return lists.size - 1
+            return vm.lists.size - 1
         }
 }
