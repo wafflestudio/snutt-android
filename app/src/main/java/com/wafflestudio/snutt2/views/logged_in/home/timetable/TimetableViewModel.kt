@@ -31,6 +31,10 @@ class TimetableViewModel @Inject constructor(
     val trimParam: Observable<TableTrimParam>
         get() = storage.tableTrimParam.asObservable()
 
+    fun getCurrentTimetable(): TableDto? {
+        return storage.lastViewedTable.get().value
+    }
+
     private val selectedPreviewTheme =
         BehaviorSubject.createDefault<Optional<TimetableColorTheme>>(Optional.empty())
     val previewTheme = selectedPreviewTheme.hide()

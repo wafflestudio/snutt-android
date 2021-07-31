@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.model.LectureItem
@@ -42,6 +43,8 @@ class CustomLectureAdapter(
     private val lists: ArrayList<LectureItem>,
     private val myLectureRepository: MyLectureRepository,
     private val apiOnError: ApiOnError,
+    private val lectureDto: LectureDto?,
+    private val onChangeColor: () -> Unit,
     private val bindable: RxBindable
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
@@ -120,7 +123,7 @@ class CustomLectureAdapter(
         if (viewType == LectureItem.ViewType.ItemColor.value) {
             val viewHolder = holder as ColorViewHolder?
             viewHolder!!.bindData(item) {
-                // TODO
+                if (item.isEditable) onChangeColor()
             }
         }
         if (viewType == LectureItem.ViewType.ItemClass.value) {
@@ -169,7 +172,7 @@ class CustomLectureAdapter(
 
     private fun startAlertView(context: Context) {
         val alert = AlertDialog.Builder(context)
-        val lectureId = myLectureRepository.getCurrentTable().get()?.id
+        val lectureId = lectureDto?.id
         if (lectureId == null) {
             Toast.makeText(context, "선택된 강좌가 없습니다", Toast.LENGTH_SHORT).show()
             return
@@ -498,7 +501,7 @@ class CustomLectureAdapter(
 
     fun updateLecture(): Single<TableDto> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
-        val lectureId = myLectureRepository.getCurrentTable().get()?.id
+        val lectureId = lectureDto?.id
             ?: return Single.error(Error("no selected lecture"))
 
         val target = PutLectureParams()
@@ -529,7 +532,6 @@ class CustomLectureAdapter(
             }
         }
         target.class_time_json = classTimeList
-        myLectureRepository.getCurrentTable().get()?.id
         return myLectureRepository.updateLecture(lectureId, target)
     }
 
@@ -542,7 +544,6 @@ class CustomLectureAdapter(
     }
 
     fun createLecture(): Single<TableDto> {
-        Log.d(TAG, "create lecture called.")
         val lecture = PostCustomLectureParams()
         val classTimeList = mutableListOf<ClassTimeDto>()
 

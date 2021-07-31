@@ -74,7 +74,8 @@ class LectureDetailFragment : BaseFragment() {
             onResetLecture = { startResetAlertView() },
             onChangeColor = {
                 dialogController.showColorSelector(
-                    vm.colorTheme ?: TimetableColorTheme.SNUTT
+                    vm.colorTheme ?: TimetableColorTheme.SNUTT,
+                    colorItem?.getColor()?.bgColor
                 )
                     .bindUi(this) {
                         setLectureColor(it.first, it.second)

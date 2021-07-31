@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.DialogItemPickerBinding
 import com.wafflestudio.snutt2.databinding.DialogTextInputBinding
@@ -96,7 +99,8 @@ class DialogController @Inject constructor(@ActivityContext private val context:
     }
 
     fun showColorSelector(
-        theme: TimetableColorTheme
+        theme: TimetableColorTheme,
+        customColor: Int? = null
     ): Maybe<Pair<Int, ColorDto?>> {
         var dialog: AlertDialog? = null
         return Maybe.create { emitter ->
@@ -111,6 +115,7 @@ class DialogController @Inject constructor(@ActivityContext private val context:
                     binding.colorSix,
                     binding.colorSeven,
                     binding.colorEight,
+                    binding.colorNine,
                 )
                     .forEachIndexed { index, item ->
                         item.bgColor.setBackgroundColor(
@@ -126,6 +131,31 @@ class DialogController @Inject constructor(@ActivityContext private val context:
                         }
                     }
             }
+
+            binding.colorCustom.let { item ->
+                item.bgColor.setBackgroundColor(customColor ?: context.getColor(R.color.white))
+                item.name.text = "커스텀"
+                item.root.setOnClickListener {
+                    ColorPickerDialog.Builder(context)
+                        .setPositiveButton("확인", object : ColorEnvelopeListener {
+                            override fun onColorSelected(
+                                envelope: ColorEnvelope?,
+                                fromUser: Boolean
+                            ) {
+                                emitter.onSuccess(
+                                    Pair(
+                                        0,
+                                        ColorDto(context.getColor(R.color.white), envelope?.color!!)
+                                    )
+                                )
+                                dialog?.dismiss()
+                            }
+                        })
+                        .attachAlphaSlideBar(false)
+                        .show()
+                }
+            }
+
 
             dialog = AlertDialog.Builder(context).apply {
                 setView(binding.root)

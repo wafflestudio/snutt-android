@@ -12,8 +12,8 @@ import com.wafflestudio.snutt2.databinding.DialogTableModifyBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -34,6 +34,8 @@ class TableModifyFragment(
     lateinit var apiOnError: ApiOnError
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
+
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,8 +76,12 @@ class TableModifyFragment(
         binding.themeButton.throttledClicks()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onNext = {
-                dismiss()
-                onThemeChange()
+                if (tableDto.id == timetableViewModel.getCurrentTimetable()?.id) {
+                    dismiss()
+                    onThemeChange()
+                } else {
+                    requireContext().toast("현재 선택된 강좌의 테마만 변경할 수 있습니다.")
+                }
             })
     }
 }

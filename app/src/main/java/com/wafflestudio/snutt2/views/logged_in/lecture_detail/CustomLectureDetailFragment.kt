@@ -12,7 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.data.MyLectureRepository
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -32,6 +34,9 @@ class CustomLectureDetailFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var dialogController: DialogController
 
     @Inject
     lateinit var myLectureRepository: MyLectureRepository
@@ -68,7 +73,20 @@ class CustomLectureDetailFragment : BaseFragment() {
         attachLectureDetailList(lecture)
         for (it in vm.lists) it.isEditable = add
         adapter =
-            CustomLectureAdapter(this, vm.lists, myLectureRepository, apiOnError, this)
+            CustomLectureAdapter(
+                this, vm.lists, myLectureRepository, apiOnError,
+                lecture
+                ,{
+                    dialogController.showColorSelector(
+                        vm.colorTheme ?: TimetableColorTheme.SNUTT,
+                        colorItem?.getColor()?.bgColor
+                    )
+                        .bindUi(this) {
+                            setLectureColor(it.first, it.second)
+                        }
+                },
+                this
+            )
 
         detailView.adapter = adapter
         detailView.layoutManager = LinearLayoutManager(context)

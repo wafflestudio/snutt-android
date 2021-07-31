@@ -204,7 +204,10 @@ class TimetableView : View {
                 classTime,
                 classTime.place,
                 lecture.course_title,
-                lecture.color.bgColor ?: theme.getColorByIndex(context, lecture.colorIndex),
+                if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!! else theme.getColorByIndex(
+                    context,
+                    lecture.colorIndex
+                ),
                 lecture.color.fgColor ?: context.getColor(R.color.white),
             )
         }
