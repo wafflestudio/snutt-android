@@ -157,6 +157,7 @@ class CustomLectureDetailFragment : BaseFragment() {
                 "색상",
                 if (add) 1 else lecture!!.colorIndex.toInt(),
                 if (add) ColorDto() else lecture!!.color,
+                vm.colorTheme,
                 LectureItem.Type.Color
             )
         )

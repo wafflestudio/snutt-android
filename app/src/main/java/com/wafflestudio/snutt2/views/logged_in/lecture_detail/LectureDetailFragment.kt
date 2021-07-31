@@ -21,6 +21,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -61,7 +62,8 @@ class LectureDetailFragment : BaseFragment() {
             lists,
             onSyllabus = { startSyllabus() },
             onRemoveLecture = { startRemoveAlertView() },
-            onResetLecture = { startResetAlertView() }
+            onResetLecture = { startResetAlertView() },
+            onChangeColor = { routeColorSelector() }
         )
 
         binding.lectureDetailView.adapter = adapter
@@ -77,6 +79,12 @@ class LectureDetailFragment : BaseFragment() {
             .bindUi(this) {
                 binding.completeButton.isVisible = it
                 binding.editButton.isVisible = it.not()
+            }
+
+        vm.selectedColor
+            .distinctUntilChanged()
+            .bindUi(this) {
+                setLectureColor(it.first, it.second)
             }
 
         binding.completeButton.throttledClicks()
@@ -104,6 +112,7 @@ class LectureDetailFragment : BaseFragment() {
     }
 
     fun setLectureColor(index: Int, color: ColorDto?) {
+        Timber.d("___ $lists")
         if (index > 0) {
             colorItem!!.colorIndex = index
         } else {
@@ -196,7 +205,13 @@ class LectureDetailFragment : BaseFragment() {
             add(LectureItem("강의명", lecture!!.course_title, LectureItem.Type.Title))
             add(LectureItem("교수", lecture.instructor, LectureItem.Type.Instructor))
             add(
-                LectureItem("색상", lecture.colorIndex.toInt(), lecture.color, LectureItem.Type.Color)
+                LectureItem(
+                    "색상",
+                    lecture.colorIndex.toInt(),
+                    lecture.color,
+                    vm.colorTheme,
+                    LectureItem.Type.Color
+                )
             )
             add(LectureItem(LectureItem.Type.Margin))
             add(LectureItem(LectureItem.Type.ShortHeader))
@@ -255,6 +270,10 @@ class LectureDetailFragment : BaseFragment() {
             .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
+    }
+
+    private fun routeColorSelector() {
+        findNavController().navigate(LectureDetailFragmentDirections.actionLectureDetailFragmentToLectureColorSelectorFragment())
     }
 
     private fun startResetAlertView() {

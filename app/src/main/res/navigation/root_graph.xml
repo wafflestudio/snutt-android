@@ -108,6 +108,9 @@
             android:name="selectedLecture"
             app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
             app:nullable="false" />
+        <action
+            android:id="@+id/action_lectureDetailFragment_to_lectureColorSelectorFragment"
+            app:destination="@id/lectureColorSelectorFragment" />
     </fragment>
 
     <fragment
@@ -155,5 +158,9 @@
         android:id="@+id/reportFragment"
         android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ReportFragment"
         android:label="ReportFragment" />
+    <fragment
+        android:id="@+id/lectureColorSelectorFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorFragment"
+        android:label="LectureColorSelectorFragment" />
 
 </navigation>

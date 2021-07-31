@@ -14,17 +14,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.skydoves.colorpickerview.ColorEnvelope
-import com.skydoves.colorpickerview.ColorPickerDialog
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.model.LectureItem
-import timber.log.Timber
 
 /**
  * Created by makesource on 2017. 3. 17..
@@ -34,6 +29,7 @@ class LectureDetailAdapter(
     private val onSyllabus: () -> Unit,
     private val onRemoveLecture: () -> Unit,
     private val onResetLecture: () -> Unit,
+    private val onChangeColor: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
     private var fromTime = 0
@@ -321,23 +317,24 @@ class LectureDetailAdapter(
         fun bindData(item: LectureItem) {
             title.text = "색상"
 
+            val context = view.context
+
             if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultBgColorHex())
+                bgColor.setBackgroundColor(
+                    item.theme.getColorByIndex(
+                        context,
+                        item.colorIndex.toLong()
+                    )
+                )
                 fgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultFgColorHex())
             } else {
                 bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
                 fgColor.setBackgroundColor(item.getColor()!!.fgColor!!)
             }
             arrow.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+
             layout.setOnClickListener {
-                ColorPickerDialog.Builder(view.context)
-                    .setTitle("색상 선택")
-                    .setPositiveButton(R.string.common_ok, object : ColorEnvelopeListener {
-                        override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
-                            Timber.d(envelope?.color.toString())
-                        }
-                    })
-                    .show()
+                if (item.isEditable) onChangeColor()
             }
         }
 

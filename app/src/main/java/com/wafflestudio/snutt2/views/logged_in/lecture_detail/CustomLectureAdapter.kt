@@ -22,7 +22,6 @@ import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.getDefaultBgColorHex
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -277,7 +276,7 @@ class CustomLectureAdapter(
         }
     }
 
-    private class ColorViewHolder(view: View) :
+    private class ColorViewHolder(val view: View) :
         RecyclerView.ViewHolder(view) {
         private val layout: LinearLayout
         private val title: TextView
@@ -287,8 +286,15 @@ class CustomLectureAdapter(
         fun bindData(item: LectureItem, listener: View.OnClickListener) {
             title.text = "색상"
             layout.setOnClickListener(listener)
+            val context = view.context
+
             if (item.colorIndex > 0) {
-                bgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultBgColorHex())
+                bgColor.setBackgroundColor(
+                    item.theme.getColorByIndex(
+                        context,
+                        item.colorIndex.toLong()
+                    )
+                )
                 fgColor.setBackgroundColor(item.colorIndex.toLong().getDefaultFgColorHex())
             } else {
                 bgColor.setBackgroundColor(item.getColor()!!.bgColor!!)
