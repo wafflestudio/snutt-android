@@ -24,7 +24,6 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.kotlin.Observables
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -174,7 +173,7 @@ class SearchFragment : BaseFragment() {
         timetableViewModel.currentTimetable
             .distinctUntilChanged()
             .bindUi(this) {
-                Timber.d(it.toString())
+                binding.timetable.theme = it.theme
                 binding.timetable.lectures = it.lectureList
             }
 

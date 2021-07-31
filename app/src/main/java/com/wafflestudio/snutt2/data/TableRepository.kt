@@ -95,7 +95,7 @@ class TableRepository @Inject constructor(
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
                 storage.lastViewedTable.get().get()?.let {
-                    storage.lastViewedTable.update(it.toOptional())
+                    storage.lastViewedTable.update(result.toOptional())
                 }
             }
 

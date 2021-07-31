@@ -55,12 +55,13 @@ class TableThemeSheet(
         binding.confirm.throttledClicks()
             .flatMapCompletable {
                 vm.updateTheme(tableDto.id, selectedPreviewTheme.value)
+                    .doOnComplete {
+                        vm.setPreviewTheme(null)
+                        dismiss()
+                    }
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onComplete = {
-                    dismiss()
-                },
                 onError = apiOnError
             )
 
