@@ -30,32 +30,30 @@ class TimetableSettingsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.trimParam
-            .firstOrError()
-            .bindUi(this) { trim ->
-                binding.switchAuto.isChecked = trim.forceFitLectures
-                binding.dayOfWeekRange.dayRangeBar.apply {
-                    setRangePinsByIndices(
-                        trim.dayOfWeekFrom,
-                        trim.dayOfWeekTo
-                    )
-                    setFormatter { value ->
-                        value.toInt().toDayString(requireContext())
-                    }
-                }
-
-                binding.timeRange.classRangeBar.setRangePinsByIndices(
-                    trim.hourFrom - 8,
-                    trim.hourTo - 8
+        vm.trimParam.get().let { trim ->
+            binding.switchAuto.isChecked = trim.forceFitLectures
+            binding.dayOfWeekRange.dayRangeBar.apply {
+                setRangePinsByIndices(
+                    trim.dayOfWeekFrom,
+                    trim.dayOfWeekTo
                 )
+                setFormatter { value ->
+                    value.toInt().toDayString(requireContext())
+                }
             }
+
+            binding.timeRange.classRangeBar.setRangePinsByIndices(
+                trim.hourFrom - 8,
+                trim.hourTo - 8
+            )
+        }
 
         binding.switchAuto.checkedChanges()
             .bindUi(this) {
                 vm.setAutoTrim(it)
             }
 
-        vm.trimParam.map { it.forceFitLectures }
+        vm.trimParam.asObservable().map { it.forceFitLectures }
             .bindUi(this) {
                 binding.dayOfWeekRange.root.visibility = if (it.not()) View.VISIBLE else View.GONE
                 binding.timeRange.root.visibility = if (it.not()) View.VISIBLE else View.GONE

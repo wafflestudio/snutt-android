@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.lib.data.DataValue
+import com.wafflestudio.snutt2.lib.preferences.context.PrefValue
 import com.wafflestudio.snutt2.model.TableTrimParam
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
@@ -15,7 +17,7 @@ class SettingsRepository @Inject constructor(
             storage.tableTrimParam.update(value)
         }
 
-    val tableTrimParam: Observable<TableTrimParam> = storage.tableTrimParam.asObservable()
+    val tableTrimParam: DataValue<TableTrimParam> = storage.tableTrimParam
 
     fun setTableTrim(
         dayOfWeekFrom: Int? = null,

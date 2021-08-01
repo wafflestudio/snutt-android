@@ -1,10 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.TableRepository
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.data.*
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.DataProvider
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
@@ -23,7 +20,8 @@ import javax.inject.Inject
 class SelectedTimetableViewModel @Inject constructor(
     private val myLectureRepository: MyLectureRepository,
     private val storage: SNUTTStorage,
-    private val tableRepository: TableRepository
+    private val tableRepository: TableRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val _selectedPreviewTheme =
         SubjectDataValue(myLectureRepository.lastViewedTable.get().value?.theme.toOptional())
@@ -31,11 +29,8 @@ class SelectedTimetableViewModel @Inject constructor(
 
     val lastViewedTable: DataProvider<Optional<TableDto>> = myLectureRepository.lastViewedTable
 
-    val currentTimetable: Observable<TableDto>
-        get() = myLectureRepository.currentTable
-
-    val trimParam: Observable<TableTrimParam>
-        get() = storage.tableTrimParam.asObservable()
+    val trimParam: DataProvider<TableTrimParam>
+        get() = settingsRepository.tableTrimParam
 
 
     fun toggleLecture(lecture: LectureDto): Completable {

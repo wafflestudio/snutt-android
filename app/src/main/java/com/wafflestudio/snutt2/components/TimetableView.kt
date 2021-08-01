@@ -10,13 +10,13 @@ import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
-import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
@@ -69,14 +69,16 @@ class TimetableView : View {
 
     var trimParam: TableTrimParam = TableTrimParam.Default
         set(value) {
-            Timber.d(value.toString())
-            field = value
+            field =
+                if (value.forceFitLectures) lectures.getFittingTableTrimParam()
+                else value
             invalidate()
         }
 
     var lectures: List<LectureDto> = listOf()
         set(value) {
             field = value
+            trimParam = trimParam
             invalidate()
         }
 

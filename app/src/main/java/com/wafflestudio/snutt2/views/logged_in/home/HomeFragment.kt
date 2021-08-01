@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +19,14 @@ import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
+import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.Observables
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment() {
@@ -36,6 +43,8 @@ class HomeFragment : BaseFragment() {
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
     private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     @Inject
     lateinit var dialogController: DialogController
@@ -71,6 +80,15 @@ class HomeFragment : BaseFragment() {
             binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
             true
         }
+
+        Observables.combineLatest(
+            settingsViewModel.trimParam.asObservable(),
+            selectedTimetableViewModel.lastViewedTable.asObservable()
+        )
+            .bindUi(this) {
+                refreshWidget()
+            }
+
 
         // 스크롤 감도를 낮춘다.
         binding.contents.reduceDragSensitivity(6)
@@ -135,7 +153,8 @@ class HomeFragment : BaseFragment() {
                     }
                 ).show(childFragmentManager, "modify_${it.hashCode()}")
             },
-            selectedTableId = selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty()
+            selectedTableId = selectedTimetableViewModel.lastViewedTable.asObservable()
+                .filterEmpty()
                 .map { it.id },
             bindable = this
         )
@@ -151,5 +170,20 @@ class HomeFragment : BaseFragment() {
                         .toList()
                 )
             }
+    }
+
+    private fun refreshWidget() {
+        val intent = Intent(requireContext(), TimetableWidgetProvider::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids: IntArray =
+            AppWidgetManager.getInstance(requireContext())
+                .getAppWidgetIds(
+                    ComponentName(
+                        requireContext(),
+                        TimetableWidgetProvider::class.java
+                    )
+                )
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        requireContext().sendBroadcast(intent)
     }
 }

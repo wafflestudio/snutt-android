@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -53,13 +54,29 @@ class SearchResultAdapter(
                     if (it.isEmpty()) "(없음)" else it.joinToString(", ")
                 }
 
-            binding.tag.text = tagText
-            var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
-            if (classTimeText.isNullOrEmpty()) classTimeText = "(없음)"
+            val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture).let {
+                if (it.isNullOrBlank()) "(없음)" else it
+            }
+            val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture).let {
+                if (it.isNullOrBlank()) "(없음)" else it
+            }
+
+            if (data.state.selected) {
+                binding.tag.text = lecture.remark
+                binding.tag.ellipsize = TextUtils.TruncateAt.MARQUEE
+            }
+
+            binding.tag.let { tagView ->
+                tagView.isSelected = data.state.selected
+                tagView.text =
+                    if (data.state.selected && lecture.remark.isNotBlank()) lecture.remark else tagText
+                tagView.ellipsize =
+                    if (data.state.selected) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
+            }
             binding.time.text = classTimeText
-            var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
-            if (locationText.isNullOrEmpty()) locationText = "(없음)"
             binding.location.text = locationText
+            binding.buttonGroup.isVisible = data.state.selected
+
 
             binding.root.setOnClickListener {
                 onSelectLecture.invoke(lecture)
@@ -76,8 +93,6 @@ class SearchResultAdapter(
             binding.reviewsButton.setOnClickListener {
                 onShowReviews.invoke(lecture)
             }
-
-            binding.buttonGroup.isVisible = data.state.selected
 
             binding.toggleAdditionButton.text = binding.root.context.getString(
                 if (data.state.contained) R.string.search_result_item_remove_button

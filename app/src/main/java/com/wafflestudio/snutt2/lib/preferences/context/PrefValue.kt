@@ -15,7 +15,7 @@ class PrefValue<T : Any> constructor(
             val subject = BehaviorSubject.createDefault(get())
             subject.onNext(get())
             val listener: (Any?) -> Unit = { value ->
-                subject.onNext(value as T)
+                subject.onNext((value ?: metaData.defaultValue) as T)
             }
             prefContext.addValueChangeListener(metaData.domain, metaData.key, listener)
             subject

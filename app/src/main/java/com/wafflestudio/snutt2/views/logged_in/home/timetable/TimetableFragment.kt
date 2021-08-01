@@ -14,24 +14,29 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.facebook.FacebookSdk.getCacheDir
+import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RootGraphDirections
 import com.wafflestudio.snutt2.databinding.FragmentTimetableBinding
+import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -39,7 +44,14 @@ class TimetableFragment : BaseFragment() {
 
     private lateinit var binding: FragmentTimetableBinding
 
-    private val vm: SelectedTimetableViewModel by activityViewModels()
+    @Inject
+    lateinit var dialogController: DialogController
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
+    private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
+    private val tableListViewModel: TableListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +66,8 @@ class TimetableFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Observables.combineLatest(
-            vm.lastViewedTable.asObservable().filterEmpty(),
-            vm.selectedPreviewTheme.asObservable()
+            selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty(),
+            selectedTimetableViewModel.selectedPreviewTheme.asObservable()
         )
             .distinctUntilChanged()
             .bindUi(this) { (table, previewTheme) ->
@@ -69,15 +81,10 @@ class TimetableFragment : BaseFragment() {
                 binding.creditText.text = creditText
             }
 
-        Observables.combineLatest(
-            vm.lastViewedTable.asObservable().filterEmpty(),
-            vm.trimParam
-        )
+        selectedTimetableViewModel.trimParam.asObservable()
             .distinctUntilChanged()
-            .bindUi(this) { (table, trimParam) ->
-                binding.timetable.trimParam =
-                    if (trimParam.forceFitLectures) table.lectureList.getFittingTableTrimParam()
-                    else trimParam
+            .bindUi(this) {
+                binding.timetable.trimParam = it
             }
 
         binding.timetable.setOnLectureClickListener {
@@ -111,6 +118,23 @@ class TimetableFragment : BaseFragment() {
         binding.notificationsButton.throttledClicks()
             .bindUi(this) {
                 routeNotifications()
+            }
+
+        binding.appBarTitle.throttledClicks()
+            .bindUi(this) {
+                dialogController.showTextDialog(
+                    R.string.home_drawer_change_name_dialog_title,
+                    selectedTimetableViewModel.lastViewedTable.get().value?.title,
+                    R.string.home_drawer_change_name_dialog_hint
+                )
+                    .flatMapCompletable {
+                        tableListViewModel.changeNameTable(
+                            selectedTimetableViewModel.lastViewedTable.get().value?.id!!,
+                            it
+                        )
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(onError = apiOnError)
             }
 
     }
@@ -157,7 +181,6 @@ class TimetableFragment : BaseFragment() {
             image.compress(Bitmap.CompressFormat.PNG, 90, stream)
             stream.flush()
             stream.close()
-            Timber.d(file.toURI().toString())
             return@fromCallable FileProvider.getUriForFile(
                 requireContext(),
                 "com.wafflestudio.snutt2.fileprovider",

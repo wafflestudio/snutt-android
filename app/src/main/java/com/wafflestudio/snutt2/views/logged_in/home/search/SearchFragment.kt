@@ -18,12 +18,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.kotlin.Observables
 import javax.inject.Inject
 
 
@@ -162,22 +161,17 @@ class SearchFragment : BaseFragment() {
                 binding.timetable.selectedLecture = it.get()
             }
 
-        selectedTimetableViewModel.currentTimetable
+        selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty()
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.timetable.theme = it.theme
                 binding.timetable.lectures = it.lectureList
             }
 
-        Observables.combineLatest(
-            selectedTimetableViewModel.currentTimetable,
-            selectedTimetableViewModel.trimParam
-        )
+        selectedTimetableViewModel.trimParam.asObservable()
             .distinctUntilChanged()
-            .bindUi(this) { (table, trimParam) ->
-                binding.timetable.trimParam =
-                    if (trimParam.forceFitLectures) table.lectureList.getFittingTableTrimParam()
-                    else trimParam
+            .bindUi(this) {
+                binding.timetable.trimParam = it
             }
     }
 }
