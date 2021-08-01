@@ -9,9 +9,9 @@ import androidx.paging.rxjava3.observable
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SearchLectureRepository
 import com.wafflestudio.snutt2.data.TagRepository
-import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.*
-import com.wafflestudio.snutt2.lib.data.*
+import com.wafflestudio.snutt2.lib.data.DataProvider
+import com.wafflestudio.snutt2.lib.data.SubjectDataValue
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -19,7 +19,6 @@ import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,41 +26,40 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val searchLectureRepository: SearchLectureRepository,
     private val myLectureRepository: MyLectureRepository,
-    private val tagRepository: TagRepository,
-    private val apiOnError: ApiOnError
+    tagRepository: TagRepository,
 ) : ViewModel() {
-    private val _searchTitle = BehaviorSubject.createDefault("")
-    private val _searchTags = BehaviorSubject.createDefault<List<TagDto>>(listOf())
+    private val _searchTitle = SubjectDataValue("")
+    private val _searchTags = SubjectDataValue<List<TagDto>>(listOf())
     private val _selectedLecture =
-        BehaviorSubject.createDefault<Optional<LectureDto>>(Optional.empty())
-    private val _queryRefreshSignal = BehaviorSubject.create<Unit>()
-    private val _selectedTagType = BehaviorSubject.createDefault(TagType.ACADEMIC_YEAR)
+        SubjectDataValue<Optional<LectureDto>>(Optional.empty())
+    private val _queryRefreshSignal = SubjectDataValue<Unit>()
+    private val _selectedTagType = SubjectDataValue(TagType.ACADEMIC_YEAR)
 
-    val searchTags: Observable<List<TagDto>> = _searchTags.hide()
+    val searchTags: DataProvider<List<TagDto>> = _searchTags
 
     val tagsByTagType: Observable<List<Selectable<TagDto>>> =
         Observable.combineLatest(
-            tagRepository.tags,
-            _selectedTagType.hide(),
-            _searchTags.hide()
+            tagRepository.tags.asObservable(),
+            _selectedTagType.asObservable(),
+            _searchTags.asObservable()
         ) { tags, tagType, selected ->
             tags.filter { it.type == tagType }.map { it.toDataWithState(selected.contains(it)) }
         }
 
-    val selectedTagType: Observable<TagType> = _selectedTagType.hide()
+    val selectedTagType: Observable<TagType> = _selectedTagType.asObservable()
 
-    val selectedLecture: Observable<Optional<LectureDto>> = _selectedLecture.hide()
+    val selectedLecture: Observable<Optional<LectureDto>> = _selectedLecture.asObservable()
 
     val queryResults: Observable<PagingData<DataWithState<LectureDto, LectureState>>> =
         Observable.combineLatest(
-            _queryRefreshSignal.hide()
+            _queryRefreshSignal.asObservable()
                 .switchMap {
                     searchLectureRepository.getPagingSource(
-                        _searchTitle.value,
-                        _searchTags.value
+                        _searchTitle.get(),
+                        _searchTags.get()
                     ).observable.cachedIn(viewModelScope)
                 },
-            _selectedLecture.hide(),
+            _selectedLecture.asObservable(),
             myLectureRepository.currentTable.map { it.lectureList }
         ) { list, selected, containeds ->
             list.map {
@@ -78,42 +76,39 @@ class SearchViewModel @Inject constructor(
         }
 
     fun setTitle(title: String) {
-        _searchTitle.onNext(title)
+        _searchTitle.update(title)
     }
 
     fun setTagType(tagType: TagType) {
-        _selectedTagType.onNext(tagType)
+        _selectedTagType.update(tagType)
     }
 
     fun toggleLectureSelection(lecture: LectureDto) {
-        if (_selectedLecture.value.get() == lecture) {
-            _selectedLecture.onNext(Optional.empty())
+        if (_selectedLecture.get().value == lecture) {
+            _selectedLecture.update(Optional.empty())
         } else {
-            _selectedLecture.onNext(lecture.toOptional())
+            _selectedLecture.update(lecture.toOptional())
         }
     }
 
     fun toggleTag(tag: TagDto) {
-        _searchTags.onNext(
-            if (_searchTags.value.contains(tag)) {
-                _searchTags.value.filter { it != tag }
+        _searchTags.update(
+            if (_searchTags.get().contains(tag)) {
+                _searchTags.get().filter { it != tag }
             } else {
-                concatenate(_searchTags.value, listOf(tag))
+                concatenate(_searchTags.get(), listOf(tag))
             }
         )
     }
 
     fun refreshQuery() {
-        _queryRefreshSignal.onNext(Unit)
+        _queryRefreshSignal.update(Unit)
     }
 
-    fun getCourseBookUrl(): Single<GetCoursebooksOfficialResults> {
-        val courseNumber = _selectedLecture.value.get()?.course_number ?: return Single.error(
-            IllegalStateException("lecture with no course number")
+    fun getCourseBookUrl(lecture: LectureDto): Single<GetCoursebooksOfficialResults> {
+        return myLectureRepository.getLectureCourseBookUrl(
+            lecture.course_number!!,
+            lecture.lecture_number!!
         )
-        val lectureNumber = _selectedLecture.value.get()?.lecture_number ?: return Single.error(
-            IllegalStateException("lecture with no lecture number")
-        )
-        return myLectureRepository.getLectureCourseBookUrl(courseNumber, lectureNumber)
     }
 }

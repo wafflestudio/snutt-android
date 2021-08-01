@@ -69,7 +69,7 @@ class SearchFragment : BaseFragment() {
                     )
             },
             onShowSyllabus = {
-                searchViewModel.getCourseBookUrl()
+                searchViewModel.getCourseBookUrl(it)
                     .bindUi(
                         this,
                         onSuccess = { result ->
@@ -91,7 +91,7 @@ class SearchFragment : BaseFragment() {
         binding.tagList.adapter = tagAdapter
         binding.lectureList.adapter = searchResultAdapter
 
-        searchViewModel.searchTags
+        searchViewModel.searchTags.asObservable()
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.tagList.isVisible = it.isNotEmpty()
@@ -114,14 +114,6 @@ class SearchFragment : BaseFragment() {
             .bindUi(this) {
                 bottomSheet.show(parentFragmentManager, "tag_selector")
             }
-
-        searchViewModel.searchTags
-            .distinctUntilChanged()
-            .bindUi(this) {
-                binding.tagList.isVisible = it.isNotEmpty()
-                tagAdapter.submitList(it)
-            }
-
 
         binding.textEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {

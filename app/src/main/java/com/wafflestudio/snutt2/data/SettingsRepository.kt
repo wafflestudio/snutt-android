@@ -26,11 +26,11 @@ class SettingsRepository @Inject constructor(
     ) {
         val current = _tableTrimParam
         _tableTrimParam = _tableTrimParam.copy(
-            dayOfWeekFrom ?: current.dayOfWeekFrom,
-            dayOfWeekTo ?: current.dayOfWeekTo,
-            hourFrom ?: current.hourFrom,
-            hourTo ?: current.hourTo,
-            isAuto ?: current.forceFitLectures,
+            dayOfWeekFrom = dayOfWeekFrom ?: current.dayOfWeekFrom,
+            dayOfWeekTo = dayOfWeekTo ?: current.dayOfWeekTo,
+            hourFrom = hourFrom ?: current.hourFrom,
+            hourTo = hourTo ?: current.hourTo,
+            forceFitLectures = isAuto ?: current.forceFitLectures,
         )
     }
 

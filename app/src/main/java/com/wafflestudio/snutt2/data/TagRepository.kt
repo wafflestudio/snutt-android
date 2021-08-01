@@ -15,13 +15,7 @@ class TagRepository @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage
 ) {
-    private var _tags: List<TagDto>
-        get() = storage.tags.get()
-        set(value) {
-            storage.tags.update(value)
-        }
-
-    val tags = storage.tags.asObservable()
+    val tags = storage.tags
 
     fun fetchTags(): Single<GetTagListResults> {
         return storage.lastViewedTable.asObservable()
@@ -41,7 +35,7 @@ class TagRepository @Inject constructor(
                     addAll(it.instructor.map { TagDto(TagType.INSTRUCTOR, it) })
                     addAll(it.category.map { TagDto(TagType.CATEGORY, it) })
                 }
-                _tags = list.toList()
+                storage.tags.update(list.toList())
             }
     }
 }
