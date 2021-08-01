@@ -39,6 +39,11 @@ class NotificationsFragment : BaseFragment() {
                 adapter.submitData(lifecycle, it)
             }
 
+        vm.refreshDataEvent
+            .bindUi(this) {
+                adapter.refresh()
+            }
+
         binding.backButton.throttledClicks()
             .bindUi(this) {
                 findNavController().popBackStack()

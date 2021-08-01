@@ -13,6 +13,7 @@ class NotificationsViewModel @Inject constructor(
     private val notificationsRepository: NotificationsRepository
 ) : ViewModel() {
 
+    val refreshDataEvent = notificationsRepository.refreshDataEvent
 
     fun getNotifications(): Flowable<PagingData<NotificationDto>> {
         return notificationsRepository

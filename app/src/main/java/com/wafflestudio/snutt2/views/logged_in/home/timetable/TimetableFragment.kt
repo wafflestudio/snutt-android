@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
+import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -52,6 +53,7 @@ class TimetableFragment : BaseFragment() {
 
     private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
     private val tableListViewModel: TableListViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +66,15 @@ class TimetableFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.fetchUncheckedNotifications()
+            .bindUi(
+                this,
+                onSuccess = {
+                    binding.notificationsButton.isSelected = it
+                },
+                onError = apiOnError
+            )
 
         Observables.combineLatest(
             selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty(),
