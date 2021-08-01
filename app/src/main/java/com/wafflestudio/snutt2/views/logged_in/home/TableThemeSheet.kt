@@ -13,7 +13,7 @@ import com.wafflestudio.snutt2.databinding.DialogSelectThemeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -30,7 +30,7 @@ class TableThemeSheet(
     @Inject
     lateinit var apiOnError: ApiOnError
 
-    private val vm: TimetableViewModel by activityViewModels()
+    private val vm: SelectedTimetableViewModel by activityViewModels()
 
     private val selectedPreviewTheme = BehaviorSubject.create<TimetableColorTheme>()
 
@@ -38,7 +38,7 @@ class TableThemeSheet(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DialogSelectThemeBinding.inflate(inflater, container, false)
         return binding.root
     }

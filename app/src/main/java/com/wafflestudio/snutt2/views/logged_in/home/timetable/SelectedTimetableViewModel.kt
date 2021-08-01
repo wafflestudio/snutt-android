@@ -20,7 +20,7 @@ import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 @HiltViewModel
-class TimetableViewModel @Inject constructor(
+class SelectedTimetableViewModel @Inject constructor(
     private val myLectureRepository: MyLectureRepository,
     private val storage: SNUTTStorage,
     private val tableRepository: TableRepository

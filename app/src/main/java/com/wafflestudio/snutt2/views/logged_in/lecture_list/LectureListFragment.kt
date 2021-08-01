@@ -15,19 +15,19 @@ import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class TableLecturesFragment : BaseFragment() {
     private lateinit var binding: FragmentLectureListBinding
 
-    private val vm: TimetableViewModel by activityViewModels()
+    private val vm: SelectedTimetableViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
         return binding.root
     }

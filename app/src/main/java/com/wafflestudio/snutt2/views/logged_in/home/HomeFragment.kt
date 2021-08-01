@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class HomeFragment : BaseFragment() {
     private lateinit var pageAdapter: HomeStateAdapter
 
 
-    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
@@ -135,7 +135,7 @@ class HomeFragment : BaseFragment() {
                     }
                 ).show(childFragmentManager, "modify_${it.hashCode()}")
             },
-            selectedTableId = timetableViewModel.lastViewedTable.asObservable().filterEmpty()
+            selectedTableId = selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty()
                 .map { it.id },
             bindable = this
         )

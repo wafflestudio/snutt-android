@@ -21,7 +21,7 @@ import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.kotlin.Observables
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class SearchFragment : BaseFragment() {
 
     private val searchViewModel: SearchViewModel by activityViewModels()
 
-    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -61,7 +61,7 @@ class SearchFragment : BaseFragment() {
         searchResultAdapter = SearchResultAdapter(
             onSelectLecture = { searchViewModel.toggleLectureSelection(it) },
             onToggleAddition = {
-                timetableViewModel.toggleLecture(it)
+                selectedTimetableViewModel.toggleLecture(it)
                     .bindUi(
                         this,
                         onError = apiOnError,
@@ -170,7 +170,7 @@ class SearchFragment : BaseFragment() {
                 binding.timetable.selectedLecture = it.get()
             }
 
-        timetableViewModel.currentTimetable
+        selectedTimetableViewModel.currentTimetable
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.timetable.theme = it.theme
@@ -178,8 +178,8 @@ class SearchFragment : BaseFragment() {
             }
 
         Observables.combineLatest(
-            timetableViewModel.currentTimetable,
-            timetableViewModel.trimParam
+            selectedTimetableViewModel.currentTimetable,
+            selectedTimetableViewModel.trimParam
         )
             .distinctUntilChanged()
             .bindUi(this) { (table, trimParam) ->

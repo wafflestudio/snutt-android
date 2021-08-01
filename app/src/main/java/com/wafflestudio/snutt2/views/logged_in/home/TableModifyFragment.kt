@@ -13,7 +13,7 @@ import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -35,7 +35,7 @@ class TableModifyFragment(
 
     private val tableListViewModel: TableListViewModel by activityViewModels()
 
-    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,7 +85,7 @@ class TableModifyFragment(
         binding.themeButton.throttledClicks()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onNext = {
-                if (tableDto.id == timetableViewModel.lastViewedTable.get().value?.id) {
+                if (tableDto.id == selectedTimetableViewModel.lastViewedTable.get().value?.id) {
                     dismiss()
                     onThemeChange()
                 } else {

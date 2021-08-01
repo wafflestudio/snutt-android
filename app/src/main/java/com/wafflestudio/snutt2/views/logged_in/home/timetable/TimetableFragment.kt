@@ -39,7 +39,7 @@ class TimetableFragment : BaseFragment() {
 
     private lateinit var binding: FragmentTimetableBinding
 
-    private val vm: TimetableViewModel by activityViewModels()
+    private val vm: SelectedTimetableViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
