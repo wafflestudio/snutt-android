@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TableListViewModel @Inject constructor(
     private val tableRepository: TableRepository,
-    private val courseBookRepository: CourseBookRepository,
+    courseBookRepository: CourseBookRepository,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
     private val selectedCourseBooksSubject =
@@ -33,7 +33,6 @@ class TableListViewModel @Inject constructor(
         selectedCourseBooksSubject.hide().filterEmpty()
 
     val courseBooks = courseBookRepository.courseBooks
-    private val tableMap = tableRepository.tableMap
 
     init {
         tableRepository.currentTable
@@ -45,7 +44,7 @@ class TableListViewModel @Inject constructor(
     }
 
     val currentCourseBooksTable: Observable<List<SimpleTableDto>> =
-        Observable.combineLatest(tableMap, selectedCourseBooks, { map, courseBook ->
+        Observable.combineLatest(tableRepository.tableMap.asObservable(), selectedCourseBooks, { map, courseBook ->
             map.toList().map { it.second }.filter { table ->
                 table.semester == courseBook.semester && table.year == courseBook.year
             }

@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.android.MessagingError
+import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
@@ -16,18 +17,8 @@ class TableRepository @Inject constructor(
     private val snuttRestApi: SNUTTRestApi,
     private val storage: SNUTTStorage
 ) {
-    private var _tableMap: Map<String, SimpleTableDto>
-        get() = storage.tableMap.get()
-        set(value) {
-            storage.tableMap.update(value)
-        }
-    val tableMap = storage.tableMap.asObservable()
-
+    val tableMap: DataValue<Map<String, SimpleTableDto>> = storage.tableMap
     val currentTable = storage.lastViewedTable.asObservable()
-
-    fun getCurrentTable(): TableDto? {
-        return storage.lastViewedTable.get().get()
-    }
 
     fun refreshTable(tableId: String): Single<TableDto> {
         return snuttRestApi.getTableById(tableId)
@@ -56,7 +47,7 @@ class TableRepository @Inject constructor(
         return snuttRestApi.getTableList()
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                _tableMap = result.map { it.id to it }.toMap()
+                tableMap.update(result.map { it.id to it }.toMap())
             }
     }
 
@@ -64,7 +55,7 @@ class TableRepository @Inject constructor(
         return snuttRestApi.postTable(PostTableParams(year, semester, title))
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                _tableMap = result.map { it.id to it }.toMap()
+                tableMap.update(result.map { it.id to it }.toMap())
             }
     }
 
@@ -75,7 +66,7 @@ class TableRepository @Inject constructor(
         return snuttRestApi.deleteTable(id)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                _tableMap = result.map { it.id to it }.toMap()
+                tableMap.update(result.map { it.id to it }.toMap())
             }
     }
 
@@ -86,7 +77,7 @@ class TableRepository @Inject constructor(
                 storage.lastViewedTable.get().get()?.let {
                     storage.lastViewedTable.update(it.copy(title = title).toOptional())
                 }
-                _tableMap = result.map { it.id to it }.toMap()
+                tableMap.update(result.map { it.id to it }.toMap())
             }
     }
 
@@ -105,7 +96,7 @@ class TableRepository @Inject constructor(
         return snuttRestApi.copyTable(id)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->
-                _tableMap = result.map { it.id to it }.toMap()
+                tableMap.update(result.map { it.id to it }.toMap())
             }
     }
 }
