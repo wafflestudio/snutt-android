@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.model.LectureItem
+import kotlin.math.max
 
 /**
  * Created by makesource on 2017. 3. 17..
@@ -504,7 +505,7 @@ class LectureDetailAdapter(
             fromTime = newVal
             /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
             null
-            toPicker.value = fromTime + 1
+            toPicker.value = max(fromTime + 1, toPicker.value)
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = 28
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)

@@ -12,12 +12,12 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.DialogSelectThemeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,8 +32,6 @@ class TableThemeSheet(
 
     private val vm: SelectedTimetableViewModel by activityViewModels()
 
-    private val selectedPreviewTheme = BehaviorSubject.create<TimetableColorTheme>()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +43,7 @@ class TableThemeSheet(
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        vm.setSelectedPreviewTheme(null)
+        vm.setSelectedPreviewTheme(vm.lastViewedTable.get().value?.theme)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,9 +51,8 @@ class TableThemeSheet(
 
         binding.confirm.throttledClicks()
             .flatMapCompletable {
-                vm.updateTheme(tableDto.id, selectedPreviewTheme.value)
+                vm.updateTheme(tableDto.id, vm.selectedPreviewTheme.get().value!!)
                     .doOnComplete {
-                        vm.setSelectedPreviewTheme(null)
                         dismiss()
                     }
             }
@@ -64,10 +61,10 @@ class TableThemeSheet(
                 onError = apiOnError
             )
 
-        selectedPreviewTheme
+        vm.selectedPreviewTheme.asObservable()
+            .filterEmpty()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
-                vm.setSelectedPreviewTheme(it)
                 mapOf(
                     TimetableColorTheme.SNUTT to binding.snuttText,
                     TimetableColorTheme.MODERN to binding.modernText,
@@ -91,7 +88,7 @@ class TableThemeSheet(
             binding.jadeButton to TimetableColorTheme.JADE
         ).forEach { (view, theme) ->
             view.setOnClickListener {
-                selectedPreviewTheme.onNext(theme)
+                vm.setSelectedPreviewTheme(theme)
             }
         }
     }

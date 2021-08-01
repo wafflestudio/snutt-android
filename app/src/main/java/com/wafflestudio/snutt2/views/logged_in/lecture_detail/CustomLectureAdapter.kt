@@ -34,6 +34,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.util.*
+import kotlin.math.max
 
 /**
  * Created by makesource on 2017. 3. 17..
@@ -472,7 +473,7 @@ class CustomLectureAdapter(
             fromTime = newVal
             /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
             null
-            toPicker.value = fromTime + 1
+            toPicker.value = max(fromTime + 1, toPicker.value)
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = maxTimeIndex
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, maxTimeIndex)
