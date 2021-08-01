@@ -82,9 +82,8 @@ class TableListViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun deleteTable(tableId: String): Completable {
+    fun deleteTable(tableId: String): Single<List<SimpleTableDto>> {
         return tableRepository.deleteTable(tableId)
-            .ignoreElement()
     }
 
     fun changeNameTable(tableId: String, name: String): Completable {

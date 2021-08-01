@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.ResetLectureResults
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toOptional
@@ -63,11 +64,10 @@ class LectureDetailViewModel @Inject constructor(
             .ignoreElement()
     }
 
-    fun resetLecture(): Completable {
+    fun resetLecture(): Single<ResetLectureResults> {
         val lectureId = _selectedLecture.value.get()?.id
-            ?: return Completable.error(IllegalStateException("no selected lecture"))
+            ?: return Single.error(IllegalStateException("no selected lecture"))
         return myLectureRepository.resetLecture(lectureId)
-            .ignoreElement()
     }
 
     fun getCourseBookUrl(): Single<GetCoursebooksOfficialResults> {

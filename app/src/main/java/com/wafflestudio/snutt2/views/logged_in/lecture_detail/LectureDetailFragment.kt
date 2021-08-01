@@ -140,9 +140,11 @@ class LectureDetailFragment : BaseFragment() {
             return null
         }
 
-    fun refreshFragment() {
+    fun refreshFragment(find: LectureDto?) {
         vm.setEditMode(false)
+        vm.setLecture(find)
         vm.lists.clear()
+        attachLectureDetailList(find)
         adapter.notifyDataSetChanged()
     }
 
@@ -301,8 +303,8 @@ class LectureDetailFragment : BaseFragment() {
                     .resetLecture()
                     .bindUi(
                         this,
-                        onComplete = {
-                            refreshFragment()
+                        onSuccess = {
+                            refreshFragment(it.lectureList.find { it.id == args.selectedLecture.id })
                         },
                         onError = apiOnError
                     )

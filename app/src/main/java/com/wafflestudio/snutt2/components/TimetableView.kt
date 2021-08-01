@@ -30,13 +30,13 @@ class TimetableView : View {
     private val linePaint: Paint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.rgb(235, 235, 235)
-            strokeWidth = 1.dp(context)
+            strokeWidth = (0.5f).dp(context)
         }
 
     private val subLinePaint: Paint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.rgb(243, 243, 243)
-            strokeWidth = 1.dp(context)
+            strokeWidth = (0.5f).dp(context)
         }
 
     private val hourLabelTextPaint: Paint =

@@ -64,13 +64,22 @@ class TableModifyFragment(
             .subscribeBy(onError = apiOnError)
 
         binding.deleteButton.throttledClicks()
-            .flatMapCompletable {
+            .doOnComplete {
+                dismiss()
+            }
+            .flatMapMaybe {
+                dialogController.showConfirm(
+                    R.string.table_delete_alert_title,
+                    R.string.table_delete_alert_message
+                )
+            }
+            .flatMapSingle {
                 tableListViewModel.deleteTable(tableDto.id)
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onComplete = {
+            .doOnEach { dismiss() }
+            .subscribeBy(onNext = {
                 requireContext().toast("시간표가 삭제되었습니다.")
-                dismiss()
             }, onError = apiOnError)
 
         binding.themeButton.throttledClicks()

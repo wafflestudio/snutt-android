@@ -30,25 +30,25 @@
     <color name="theme_snutt_7">#4F48C4</color>
     <color name="theme_snutt_8">#AF56B3</color>
 
-    <color name="theme_modern_0">#B82E31</color>
-    <color name="theme_modern_1">#DB701C</color>
-    <color name="theme_modern_2">#EAA32A</color>
-    <color name="theme_modern_3">#C6C013</color>
-    <color name="theme_modern_4">#3A856E</color>
-    <color name="theme_modern_5">#19B2AC</color>
-    <color name="theme_modern_6">#3994CE</color>
-    <color name="theme_modern_7">#3F3A9C</color>
-    <color name="theme_modern_8">#924396</color>
+    <color name="theme_autumn_0">#B82E31</color>
+    <color name="theme_autumn_1">#DB701C</color>
+    <color name="theme_autumn_2">#EAA32A</color>
+    <color name="theme_autumn_3">#C6C013</color>
+    <color name="theme_autumn_4">#3A856E</color>
+    <color name="theme_autumn_5">#19B2AC</color>
+    <color name="theme_autumn_6">#3994CE</color>
+    <color name="theme_autumn_7">#3F3A9C</color>
+    <color name="theme_autumn_8">#924396</color>
 
-    <color name="theme_autumn_0">#F0652A</color>
-    <color name="theme_autumn_1">#F5AD3E</color>
-    <color name="theme_autumn_2">#F4EFBE</color>
-    <color name="theme_autumn_3">#89C291</color>
-    <color name="theme_autumn_4">#266F55</color>
-    <color name="theme_autumn_5">#13808F</color>
-    <color name="theme_autumn_6">#366689</color>
-    <color name="theme_autumn_7">#432920</color>
-    <color name="theme_autumn_8">#D82F3D</color>
+    <color name="theme_modern_0">#F0652A</color>
+    <color name="theme_modern_1">#F5AD3E</color>
+    <color name="theme_modern_2">#F4EFBE</color>
+    <color name="theme_modern_3">#89C291</color>
+    <color name="theme_modern_4">#266F55</color>
+    <color name="theme_modern_5">#13808F</color>
+    <color name="theme_modern_6">#366689</color>
+    <color name="theme_modern_7">#432920</color>
+    <color name="theme_modern_8">#D82F3D</color>
 
     <color name="theme_cherry_0">#FD79A8</color>
     <color name="theme_cherry_1">#FEC9DD</color>
