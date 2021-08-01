@@ -11,7 +11,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.DialogSelectThemeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -46,7 +45,7 @@ class TableThemeSheet(
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        vm.setPreviewTheme(null)
+        vm.setSelectedPreviewTheme(null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class TableThemeSheet(
             .flatMapCompletable {
                 vm.updateTheme(tableDto.id, selectedPreviewTheme.value)
                     .doOnComplete {
-                        vm.setPreviewTheme(null)
+                        vm.setSelectedPreviewTheme(null)
                         dismiss()
                     }
             }
@@ -68,7 +67,7 @@ class TableThemeSheet(
         selectedPreviewTheme
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
-                vm.setPreviewTheme(it)
+                vm.setSelectedPreviewTheme(it)
                 mapOf(
                     TimetableColorTheme.SNUTT to binding.snuttText,
                     TimetableColorTheme.MODERN to binding.modernText,

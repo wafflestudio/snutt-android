@@ -6,6 +6,8 @@ import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.lib.data.DataProvider
+import com.wafflestudio.snutt2.lib.data.SubjectDataValue
 import com.wafflestudio.snutt2.lib.isRegularlyEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -15,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +25,11 @@ class TimetableViewModel @Inject constructor(
     private val storage: SNUTTStorage,
     private val tableRepository: TableRepository
 ) : ViewModel() {
+    private val _selectedPreviewTheme =
+        SubjectDataValue(myLectureRepository.lastViewedTable.get().value?.theme.toOptional())
+    val selectedPreviewTheme: DataProvider<Optional<TimetableColorTheme>> = _selectedPreviewTheme
+
+    val lastViewedTable: DataProvider<Optional<TableDto>> = myLectureRepository.lastViewedTable
 
     val currentTimetable: Observable<TableDto>
         get() = myLectureRepository.currentTable
@@ -31,13 +37,6 @@ class TimetableViewModel @Inject constructor(
     val trimParam: Observable<TableTrimParam>
         get() = storage.tableTrimParam.asObservable()
 
-    fun getCurrentTimetable(): TableDto? {
-        return storage.lastViewedTable.get().value
-    }
-
-    private val selectedPreviewTheme =
-        BehaviorSubject.createDefault<Optional<TimetableColorTheme>>(Optional.empty())
-    val previewTheme = selectedPreviewTheme.hide()
 
     fun toggleLecture(lecture: LectureDto): Completable {
         return myLectureRepository.currentTable
@@ -57,7 +56,7 @@ class TimetableViewModel @Inject constructor(
             .ignoreElement()
     }
 
-    fun setPreviewTheme(theme: TimetableColorTheme?) {
-        selectedPreviewTheme.onNext(theme.toOptional())
+    fun setSelectedPreviewTheme(theme: TimetableColorTheme?) {
+        _selectedPreviewTheme.update(theme.toOptional())
     }
 }

@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.databinding.FragmentLectureListBinding
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,7 +51,7 @@ class TableLecturesFragment : BaseFragment() {
             DividerItemDecoration(requireContext(), R.drawable.lecture_divider)
         )
 
-        vm.currentTimetable
+        vm.lastViewedTable.asObservable().filterEmpty()
             .map { it.lectureList }
             .distinctUntilChanged()
             .bindUi(this) { list ->

@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,8 +54,8 @@ class TimetableFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Observables.combineLatest(
-            vm.currentTimetable,
-            vm.previewTheme
+            vm.lastViewedTable.asObservable().filterEmpty(),
+            vm.selectedPreviewTheme.asObservable()
         )
             .distinctUntilChanged()
             .bindUi(this) { (table, previewTheme) ->
@@ -69,7 +70,7 @@ class TimetableFragment : BaseFragment() {
             }
 
         Observables.combineLatest(
-            vm.currentTimetable,
+            vm.lastViewedTable.asObservable().filterEmpty(),
             vm.trimParam
         )
             .distinctUntilChanged()

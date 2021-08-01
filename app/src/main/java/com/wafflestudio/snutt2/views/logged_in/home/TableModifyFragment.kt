@@ -85,7 +85,7 @@ class TableModifyFragment(
         binding.themeButton.throttledClicks()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onNext = {
-                if (tableDto.id == timetableViewModel.getCurrentTimetable()?.id) {
+                if (tableDto.id == timetableViewModel.lastViewedTable.get().value?.id) {
                     dismiss()
                     onThemeChange()
                 } else {

@@ -37,11 +37,9 @@ class TableListViewModel @Inject constructor(
     val courseBooks: DataProvider<List<CourseBookDto>> = courseBookRepository.courseBooks
 
     init {
-        myLectureRepository.currentTable
-            .firstElement()
-            .subscribeBy {
-                _selectedCourseBooks.update(CourseBookDto(it.semester, it.year).toOptional())
-            }
+        myLectureRepository.lastViewedTable.get().value?.let {
+            _selectedCourseBooks.update(CourseBookDto(it.semester, it.year).toOptional())
+        }
     }
 
     val selectedCourseBookTableList: Observable<List<SimpleTableDto>> =

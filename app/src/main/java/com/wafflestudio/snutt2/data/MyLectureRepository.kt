@@ -25,10 +25,7 @@ class MyLectureRepository @Inject constructor(
         storage.lastViewedTable.asObservable().distinctUntilChanged()
             .filterEmpty()
 
-    fun getCurrentTable(): Optional<TableDto> {
-        return storage.lastViewedTable.get()
-    }
-
+    val lastViewedTable = storage.lastViewedTable
 
     fun addLecture(lectureId: String): Single<PostCustomLectureResults> {
         return api.postAddLecture(

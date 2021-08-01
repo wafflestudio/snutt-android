@@ -35,7 +35,7 @@ class LectureDetailViewModel @Inject constructor(
     private val _selectedColor = BehaviorSubject.create<Pair<Int, ColorDto?>>()
     val selectedColor: Observable<Pair<Int, ColorDto?>> = _selectedColor.hide()
 
-    val colorTheme: TimetableColorTheme? = myLectureRepository.getCurrentTable().value?.theme
+    val colorTheme: TimetableColorTheme? = myLectureRepository.lastViewedTable.get().value?.theme
 
 
     val lists: ArrayList<LectureItem> = arrayListOf()
