@@ -8,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.snutt2.DialogController
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -66,6 +68,19 @@ class LectureDetailFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback {
+            if (vm.isEditMode.get())
+                dialogController.showConfirm(message = R.string.lecture_detail_cancel_editing)
+                    .bindUi(this@LectureDetailFragment,
+                        onSuccess = {
+                            findNavController().popBackStack()
+                        }
+                    )
+            else {
+                findNavController().popBackStack()
+            }
+        }
+
 
         adapter = LectureDetailAdapter(
             vm.lists,
@@ -86,7 +101,7 @@ class LectureDetailFragment : BaseFragment() {
         binding.lectureDetailView.adapter = adapter
         binding.lectureDetailView.layoutManager = LinearLayoutManager(context)
 
-        vm.isEditMode
+        vm.isEditMode.asObservable()
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.completeButton.isVisible = it

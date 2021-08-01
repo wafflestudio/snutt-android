@@ -144,4 +144,5 @@
     <string name="home_drawer_table_theme_change">시간표 색상 테마 변경</string>
     <string name="table_delete_alert_title">테이블 삭제</string>
     <string name="table_delete_alert_message">테이블을 정말 삭제하시겠습니까?</string>
+    <string name="lecture_detail_cancel_editing">편집을 취소하시겠습니까?</string>
 </resources>

@@ -28,7 +28,8 @@ class PrefValue<T : Any> constructor(
 
 
     override fun get(): T {
-        return prefContext.getValue(metaData.domain, metaData.key, metaData.type) ?: metaData.defaultValue
+        return prefContext.getValue(metaData.domain, metaData.key, metaData.type)
+            ?: metaData.defaultValue
     }
 
     override fun update(value: T) {

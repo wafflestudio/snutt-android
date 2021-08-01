@@ -78,14 +78,14 @@ class DialogController @Inject constructor(@ActivityContext private val context:
     }
 
     fun showConfirm(
-        @StringRes title: Int,
-        @StringRes message: Int,
+        @StringRes title: Int? = null,
+        @StringRes message: Int? = null,
         @StringRes positiveText: Int? = null
     ): Maybe<Unit> {
         return Maybe.create { emitter ->
             AlertDialog.Builder(context).apply {
-                setTitle(title)
-                setMessage(message)
+                title?.let { setTitle(it) }
+                message?.let { setMessage(it) }
                 setPositiveButton(context.getString(positiveText ?: R.string.common_ok)) { _, _ ->
                     emitter.onSuccess(Unit)
                 }

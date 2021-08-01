@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.lib.data.DataProvider
+import com.wafflestudio.snutt2.lib.data.SubjectDataValue
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
@@ -17,7 +19,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,8 +29,8 @@ class LectureDetailViewModel @Inject constructor(
     private val _selectedLecture = BehaviorSubject.create<Optional<LectureDto>>()
     val selectedLecture: Observable<Optional<LectureDto>> = _selectedLecture.hide()
 
-    private val _isEditMode = BehaviorSubject.createDefault(false)
-    val isEditMode: Observable<Boolean> = _isEditMode.hide()
+    private val _isEditMode = SubjectDataValue(false)
+    val isEditMode: DataProvider<Boolean> = _isEditMode
 
     private val _selectedColor = BehaviorSubject.create<Pair<Int, ColorDto?>>()
     val selectedColor: Observable<Pair<Int, ColorDto?>> = _selectedColor.hide()
@@ -40,7 +42,7 @@ class LectureDetailViewModel @Inject constructor(
 
 
     fun setEditMode(edit: Boolean) {
-        _isEditMode.onNext(edit)
+        _isEditMode.update(edit)
     }
 
     fun setLecture(lectureDto: LectureDto?) {
