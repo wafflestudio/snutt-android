@@ -12,7 +12,7 @@ class CourseBookRepository @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
 ) {
-    val courseBooks = storage.courseBooks.asObservable()
+    val courseBooks = storage.courseBooks
 
     fun fetchCourseBook(): Single<GetCoursebookResults> {
         return api.getCoursebook()

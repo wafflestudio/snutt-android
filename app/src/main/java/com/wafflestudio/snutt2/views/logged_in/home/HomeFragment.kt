@@ -81,14 +81,10 @@ class HomeFragment : BaseFragment() {
         })
 
         binding.coursebookSelectButton.throttledClicks()
-            .flatMapSingle {
-                tableListViewModel.selectedCourseBooks.firstOrError()
-            }
-            .flatMapSingle { current ->
-                tableListViewModel.courseBooks.firstOrError().map { Pair(current, it) }
-            }
             .observeOn(AndroidSchedulers.mainThread())
-            .flatMapMaybe { (current, list) ->
+            .flatMapMaybe {
+                val current = tableListViewModel.selectedCourseBooks.get().value
+                val list = tableListViewModel.courseBooks.get()
                 dialogController.showSelectorDialog(
                     R.string.home_drawer_selector_dialog_title,
                     list,
@@ -96,12 +92,13 @@ class HomeFragment : BaseFragment() {
                 ) { it.toFormattedString(requireContext()) }
             }
             .bindEvent(this) {
-                tableListViewModel.selectCurrentCourseBook(it)
+                tableListViewModel.setSelectedCourseBook(it)
             }
 
-        tableListViewModel.selectedCourseBooks.bindUi(this) {
-            binding.coursebookTitle.text = it.toFormattedString(requireContext())
-        }
+        tableListViewModel.selectedCourseBooks.asObservable()
+            .bindUi(this) {
+                binding.coursebookTitle.text = it.value?.toFormattedString(requireContext()) ?: "-"
+            }
 
         tablesAdapter = TableListAdapter(
             onCreateItem = {
@@ -119,7 +116,7 @@ class HomeFragment : BaseFragment() {
             },
             onSelectItem = {
                 binding.root.close()
-                tableListViewModel.changeCurrentTable(it.id)
+                tableListViewModel.changeSelectedTable(it.id)
             },
             onDuplicateItem = {
                 tableListViewModel.copyTable(it.id)
@@ -143,7 +140,7 @@ class HomeFragment : BaseFragment() {
 
         binding.tablesContent.adapter = tablesAdapter
 
-        tableListViewModel.currentCourseBooksTable
+        tableListViewModel.selectedCourseBookTableList
             .bindUi(this) { list ->
                 tablesAdapter.submitList(
                     list.map<SimpleTableDto, TableListAdapter.Data> { TableListAdapter.Data.Table(it) }

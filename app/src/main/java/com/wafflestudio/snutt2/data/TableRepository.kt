@@ -18,7 +18,6 @@ class TableRepository @Inject constructor(
     private val storage: SNUTTStorage
 ) {
     val tableMap: DataValue<Map<String, SimpleTableDto>> = storage.tableMap
-    val currentTable = storage.lastViewedTable.asObservable()
 
     fun refreshTable(tableId: String): Single<TableDto> {
         return snuttRestApi.getTableById(tableId)
