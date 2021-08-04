@@ -59,9 +59,6 @@ class TableRepository @Inject constructor(
     }
 
     fun deleteTable(id: String): Single<List<SimpleTableDto>> {
-        if (storage.lastViewedTable.get()
-                .get()?.id == id
-        ) return Single.error(MessagingError("현재 선택된 시간표를 삭제할 수 없습니다."))
         return snuttRestApi.deleteTable(id)
             .subscribeOn(Schedulers.io())
             .doOnSuccess { result ->

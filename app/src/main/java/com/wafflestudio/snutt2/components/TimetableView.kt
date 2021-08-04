@@ -10,7 +10,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
-import com.wafflestudio.snutt2.lib.getFittingTableTrimParam
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.dp
@@ -70,16 +70,24 @@ class TimetableView : View {
 
     var trimParam: TableTrimParam = TableTrimParam.Default
         set(value) {
-            field =
-                if (value.forceFitLectures) lectures.getFittingTableTrimParam()
-                else value
+            field = value
             invalidate()
+        }
+
+    private val fittedTrimParam: TableTrimParam
+        get() {
+            return if (trimParam.forceFitLectures) {
+                (selectedLecture?.let {
+                    lectures + it
+                } ?: lectures).getFittingTrimParam(TableTrimParam.Default)
+            } else {
+                trimParam
+            }
         }
 
     var lectures: List<LectureDto> = listOf()
         set(value) {
             field = value
-            trimParam = trimParam
             invalidate()
         }
 
@@ -96,10 +104,10 @@ class TimetableView : View {
         }
 
     private val unitWidth: Float
-        get() = (width - hourLabelWidth) / (trimParam.dayOfWeekTo - trimParam.dayOfWeekFrom + 1)
+        get() = (width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
 
     private val unitHeight: Float
-        get() = (height - dayLabelHeight) / (trimParam.hourTo - trimParam.hourFrom + 1)
+        get() = (height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -151,8 +159,8 @@ class TimetableView : View {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
-        val day = ((x - hourLabelWidth) / unitWidth).toInt() + trimParam.dayOfWeekFrom
-        val time = ((y - dayLabelHeight) / unitHeight) + trimParam.hourFrom - 8
+        val day = ((x - hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
+        val time = ((y - dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom - 8
 
         if (event.action == MotionEvent.ACTION_UP) {
             for (lec in lectures) {
@@ -167,12 +175,12 @@ class TimetableView : View {
     private fun drawTableGrid(canvas: Canvas) {
         val textHeight = getTextHeight(0.toDayString(context), dayLabelTextPaint)
 
-        val verticalLines = trimParam.dayOfWeekTo - trimParam.dayOfWeekFrom + 1
+        val verticalLines = fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1
         var startWidth = hourLabelWidth
         repeat(verticalLines) {
             canvas.drawLine(startWidth, 0f, startWidth, height.toFloat(), linePaint)
             canvas.drawText(
-                (trimParam.dayOfWeekFrom + it).toDayString(context),
+                (fittedTrimParam.dayOfWeekFrom + it).toDayString(context),
                 startWidth + unitWidth * 0.5f,
                 (dayLabelHeight + textHeight) / 2f,
                 dayLabelTextPaint
@@ -181,12 +189,12 @@ class TimetableView : View {
         }
 
 
-        val horizontalLines = trimParam.hourTo - trimParam.hourFrom + 1
+        val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
         var startHeight = dayLabelHeight
         repeat(horizontalLines) {
             canvas.drawLine(0f, startHeight, width.toFloat(), startHeight, linePaint)
             canvas.drawText(
-                (trimParam.hourFrom + it).toString(),
+                (fittedTrimParam.hourFrom + it).toString(),
                 hourLabelWidth - 4.dp(context),
                 startHeight + textHeight + 6.dp(context),
                 hourLabelTextPaint
@@ -247,12 +255,12 @@ class TimetableView : View {
         bgColor: Int,
         fgColor: Int,
     ) {
-        val dayOffset = classTime.day - trimParam.dayOfWeekFrom
+        val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
         val hourRangeOffset = Pair(
-            max(classTime.start - trimParam.hourFrom + 8, 0f),
+            max(classTime.start - fittedTrimParam.hourFrom + 8, 0f),
             min(
-                classTime.start + classTime.len - trimParam.hourFrom + 8,
-                trimParam.hourTo - trimParam.hourFrom.toFloat() + 1
+                classTime.start + classTime.len - fittedTrimParam.hourFrom + 8,
+                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
             )
         )
 

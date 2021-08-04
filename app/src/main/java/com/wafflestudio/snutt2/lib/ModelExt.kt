@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
+import timber.log.Timber
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -89,11 +90,11 @@ fun LectureDto.isRegularlyEquals(lectureDto: LectureDto): Boolean {
 
 }
 
-fun List<LectureDto>.getFittingTableTrimParam(): TableTrimParam = TableTrimParam(
-    dayOfWeekFrom = (flatMap { it.class_time_json.map { it.day } } + TableTrimParam.Default.dayOfWeekFrom).minOf { it },
-    dayOfWeekTo = (flatMap { it.class_time_json.map { it.day } } + TableTrimParam.Default.dayOfWeekTo).maxOf { it },
-    hourFrom = (flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } } + TableTrimParam.Default.hourFrom).minOf { it },
-    hourTo = (flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() - 1 + 8 } } + TableTrimParam.Default.hourTo).maxOf { it },
-    forceFitLectures = true
-)
-
+fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =
+    TableTrimParam(
+        dayOfWeekFrom = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekFrom).minOf { it },
+        dayOfWeekTo = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekTo).maxOf { it },
+        hourFrom = (flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } } + tableTrimParam.hourFrom).minOf { it },
+        hourTo = (flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() - 1 + 8 } } + tableTrimParam.hourTo).maxOf { it },
+        forceFitLectures = true
+    ).apply { Timber.d(this.toString()) }

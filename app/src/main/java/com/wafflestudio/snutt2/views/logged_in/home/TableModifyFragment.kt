@@ -16,6 +16,7 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
@@ -68,6 +69,10 @@ class TableModifyFragment(
                 dismiss()
             }
             .flatMapMaybe {
+                if (tableListViewModel.checkTableDeletable(tableDto.id)) {
+                    requireContext().toast("현재 선택된 시간표를 삭제할 수 없습니다.")
+                    return@flatMapMaybe Maybe.empty()
+                }
                 dialogController.showConfirm(
                     R.string.table_delete_alert_title,
                     R.string.table_delete_alert_message

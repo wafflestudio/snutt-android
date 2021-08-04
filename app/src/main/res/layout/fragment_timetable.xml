@@ -31,27 +31,44 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/app_bar_title"
-                style="@style/Typo.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/timetable_app_bar_title"
-                tools:text="aaaaaaaaaaaaaaa" />
 
-            <TextView
-                android:id="@+id/credit_text"
-                style="@style/Typo.Title2"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/gray2"
-                android:textSize="12dp"
-                tools:text="(22학점)" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/app_bar_title"
+                    style="@style/Typo.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="@string/timetable_app_bar_title" />
+
+                <TextView
+                    android:id="@+id/credit_text"
+                    style="@style/Typo.Title2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="4dp"
+                    android:ellipsize="none"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/gray2"
+                    android:textSize="12dp"
+                    tools:text="(22학점)" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/empty_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
         </LinearLayout>
 

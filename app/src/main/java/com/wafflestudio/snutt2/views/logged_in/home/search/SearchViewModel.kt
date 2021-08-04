@@ -19,7 +19,7 @@ import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import timber.log.Timber
+import io.reactivex.rxjava3.subjects.PublishSubject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,8 +32,16 @@ class SearchViewModel @Inject constructor(
     private val _searchTags = SubjectDataValue<List<TagDto>>(listOf())
     private val _selectedLecture =
         SubjectDataValue<Optional<LectureDto>>(Optional.empty())
-    private val _queryRefreshSignal = SubjectDataValue<Unit>()
+    private val _queryRefreshSignal = PublishSubject.create<Unit>()
     private val _selectedTagType = SubjectDataValue(TagType.ACADEMIC_YEAR)
+
+    init {
+        myLectureRepository.currentTable.map { it.id }
+            .distinctUntilChanged()
+            .subscribe {
+                clear()
+            }
+    }
 
     val searchTags: DataProvider<List<TagDto>> = _searchTags
 
@@ -52,7 +60,7 @@ class SearchViewModel @Inject constructor(
 
     val queryResults: Observable<PagingData<DataWithState<LectureDto, LectureState>>> =
         Observable.combineLatest(
-            _queryRefreshSignal.asObservable()
+            _queryRefreshSignal.hide()
                 .switchMap {
                     searchLectureRepository.getPagingSource(
                         _searchTitle.get(),
@@ -63,9 +71,6 @@ class SearchViewModel @Inject constructor(
             myLectureRepository.currentTable.map { it.lectureList }
         ) { list, selected, containeds ->
             list.map {
-                if (containeds.contains(it)) {
-                    Timber.d(it.toString())
-                }
                 it.toDataWithState(
                     LectureState(
                         selected = selected.get() == it,
@@ -101,8 +106,15 @@ class SearchViewModel @Inject constructor(
         )
     }
 
+    fun clear() {
+        _searchTags.update(listOf())
+        _searchTitle.update("")
+        _selectedLecture.update(Optional.empty())
+        _queryRefreshSignal.onNext(Unit)
+    }
+
     fun refreshQuery() {
-        _queryRefreshSignal.update(Unit)
+        _queryRefreshSignal.onNext(Unit)
     }
 
     fun getCourseBookUrl(lecture: LectureDto): Single<GetCoursebooksOfficialResults> {

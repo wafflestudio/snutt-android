@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TableListViewModel @Inject constructor(
     private val tableRepository: TableRepository,
-    myLectureRepository: MyLectureRepository,
+    private val myLectureRepository: MyLectureRepository,
     courseBookRepository: CourseBookRepository,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
@@ -78,6 +78,11 @@ class TableListViewModel @Inject constructor(
         return tableRepository.copyTable(tableId)
             .observeOn(AndroidSchedulers.mainThread())
     }
+
+    fun checkTableDeletable(tableId: String): Boolean {
+        return myLectureRepository.lastViewedTable.get().get()?.id == tableId
+    }
+
 
     fun deleteTable(tableId: String): Single<List<SimpleTableDto>> {
         return tableRepository.deleteTable(tableId)

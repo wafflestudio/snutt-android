@@ -171,7 +171,7 @@ class SearchFragment : BaseFragment() {
         selectedTimetableViewModel.trimParam.asObservable()
             .distinctUntilChanged()
             .bindUi(this) {
-                binding.timetable.trimParam = it
+                binding.timetable.trimParam = it.copy(forceFitLectures = true)
             }
     }
 }
