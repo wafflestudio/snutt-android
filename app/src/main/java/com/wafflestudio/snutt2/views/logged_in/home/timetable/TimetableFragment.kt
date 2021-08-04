@@ -37,6 +37,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -98,9 +99,11 @@ class TimetableFragment : BaseFragment() {
                 binding.timetable.trimParam = it
             }
 
-        binding.timetable.setOnLectureClickListener {
-            routeLectureDetail(it)
-        }
+        binding.timetable.lectureClicks()
+            .throttleFirst(800, TimeUnit.MILLISECONDS)
+            .bindUi(this) {
+                routeLectureDetail(it)
+            }
 
         binding.drawerButton.throttledClicks()
             .bindUi(this) {

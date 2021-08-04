@@ -47,8 +47,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(0, notificationBuilder.build())
         notificationRepository.triggerRefreshData()
     }
-
-    companion object {
-        private const val TAG = "MyFirebaseMsgService"
-    }
 }

@@ -42,7 +42,7 @@
 
     <color name="theme_modern_0">#F0652A</color>
     <color name="theme_modern_1">#F5AD3E</color>
-    <color name="theme_modern_2">#F4EFBE</color>
+    <color name="theme_modern_2">#998F36</color>
     <color name="theme_modern_3">#89C291</color>
     <color name="theme_modern_4">#266F55</color>
     <color name="theme_modern_5">#13808F</color>
@@ -55,7 +55,7 @@
     <color name="theme_cherry_2">#FEB0CC</color>
     <color name="theme_cherry_3">#FE93BF</color>
     <color name="theme_cherry_4">#E9B1D0</color>
-    <color name="theme_cherry_5">#FFE4F4</color>
+    <color name="theme_cherry_5">#C67D97</color>
     <color name="theme_cherry_6">#BB8EA7</color>
     <color name="theme_cherry_7">#BDB4BF</color>
     <color name="theme_cherry_8">#E16597</color>
@@ -65,7 +65,7 @@
     <color name="theme_ice_2">#66B6CA</color>
     <color name="theme_ice_3">#015F95</color>
     <color name="theme_ice_4">#A8D0DB</color>
-    <color name="theme_ice_5">#CBE9FE</color>
+    <color name="theme_ice_5">#458ED0</color>
     <color name="theme_ice_6">#62A9D1</color>
     <color name="theme_ice_7">#20363D</color>
     <color name="theme_ice_8">#6D8A96</color>

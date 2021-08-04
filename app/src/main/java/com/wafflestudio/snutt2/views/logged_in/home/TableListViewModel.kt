@@ -31,7 +31,7 @@ class TableListViewModel @Inject constructor(
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
-    private val _selectedCourseBooks = SubjectDataValue<Optional<CourseBookDto>>()
+    private val _selectedCourseBooks = SubjectDataValue<Optional<CourseBookDto>>(Optional.empty())
     val selectedCourseBooks: DataValue<Optional<CourseBookDto>> = _selectedCourseBooks
 
     val courseBooks: DataProvider<List<CourseBookDto>> = courseBookRepository.courseBooks

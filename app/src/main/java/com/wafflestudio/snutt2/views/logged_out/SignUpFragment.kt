@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -18,9 +19,8 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSignUpBinding
-import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.network.ApiStatus
 import com.wafflestudio.snutt2.lib.Quadruple
+import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -49,21 +49,6 @@ class SignUpFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.apiStatus
-            .bindUi(this) {
-                when (it) {
-                    is ApiStatus.Success -> {
-                        routeHome()
-                    }
-                    is ApiStatus.Loading -> {
-//                        TODO: loading spinner?
-                    }
-                    else -> {
-
-                    }
-                }
-            }
-
         binding.signUpButton.throttledClicks()
             .map {
                 val id = binding.idInput.text.toString()
@@ -85,7 +70,15 @@ class SignUpFragment : BaseFragment() {
             }
             .bindUi(this) { (id, email, password, _) ->
                 hideSoftKeyboard()
-                vm.signUpLocal(id,  email, password)
+                val progressDialog =
+                    ProgressDialog.show(context, "회원가입", "잠시만 기다려 주세요", true, false)
+                vm.signUpLocal(id, email, password)
+                    .bindUi(this, onSuccess = {
+                        routeHome()
+                        progressDialog.dismiss()
+                    }, onError = {
+                        progressDialog.dismiss()
+                    })
             }
 
         binding.facebookSignUpButton.throttledClicks()

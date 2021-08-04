@@ -13,7 +13,6 @@ import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +23,7 @@ class SelectedTimetableViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val _selectedPreviewTheme =
-        SubjectDataValue(myLectureRepository.lastViewedTable.get().value?.theme.toOptional())
+        SubjectDataValue<Optional<TimetableColorTheme>>(Optional.empty())
     val selectedPreviewTheme: DataProvider<Optional<TimetableColorTheme>> = _selectedPreviewTheme
 
     val lastViewedTable: DataProvider<Optional<TableDto>> = myLectureRepository.lastViewedTable

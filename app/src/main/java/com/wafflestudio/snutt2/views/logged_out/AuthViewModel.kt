@@ -3,13 +3,9 @@ package com.wafflestudio.snutt2.views.logged_out
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.lib.network.ApiStatus
-import com.wafflestudio.snutt2.lib.network.bindStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,40 +14,27 @@ class AuthViewModel @Inject constructor(
     val apiOnError: ApiOnError
 ) : ViewModel() {
 
-    private val apiStatusSubject: BehaviorSubject<ApiStatus<Unit>> =
-        BehaviorSubject.createDefault(ApiStatus.Default())
-
-    val apiStatus: Observable<ApiStatus<Unit>> = apiStatusSubject.hide()
-
-    fun loginLocal(id: String, email: String) {
-        userRepository.postSignIn(id, email)
-            .map {  }
-            .bindStatus(apiStatusSubject)
+    fun loginLocal(id: String, email: String): Single<Unit> {
+        return userRepository.postSignIn(id, email)
+            .map { }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
     }
 
-    fun signUpLocal(id: String, email: String, password: String) {
-        userRepository.postSingUp(id, password, email)
+    fun signUpLocal(id: String, email: String, password: String): Single<Unit> {
+        return userRepository.postSingUp(id, password, email)
             .map { }
-            .bindStatus(apiStatusSubject)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
     }
 
-    fun loginFacebook(id: String, token: String) {
-        userRepository.postLoginFacebook(id, token)
+    fun loginFacebook(id: String, token: String): Single<Unit> {
+        return userRepository.postLoginFacebook(id, token)
             .map { }
-            .bindStatus(apiStatusSubject)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
     }
 
-    fun signUpFacebook(id: String, token: String) {
-        userRepository.postLoginFacebook(id, token)
+    fun signUpFacebook(id: String, token: String): Single<Unit> {
+        return userRepository.postLoginFacebook(id, token)
             .map { }
-            .bindStatus(apiStatusSubject)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
     }
 }

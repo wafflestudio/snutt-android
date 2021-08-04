@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
+import io.reactivex.rxjava3.core.Observable
 import kotlin.math.max
 import kotlin.math.min
 
@@ -132,11 +133,17 @@ class TimetableView : View {
         }
     }
 
-    fun setOnLectureClickListener(listener: (lecture: LectureDto) -> Unit) {
+    private fun setOnLectureClickListener(listener: (lecture: LectureDto) -> Unit) {
         this.onLectureClickListener = object : OnLectureClickListener {
             override fun onClick(lecture: LectureDto) {
                 listener(lecture)
             }
+        }
+    }
+
+    fun lectureClicks(): Observable<LectureDto> {
+        return Observable.create { emitter ->
+            setOnLectureClickListener { emitter.onNext(it) }
         }
     }
 

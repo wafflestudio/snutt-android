@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +20,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentLoginBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
-import com.wafflestudio.snutt2.lib.network.ApiStatus
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -51,18 +51,6 @@ class LoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.apiStatus
-            .bindUi(this) {
-                when (it) {
-                    is ApiStatus.Success -> {
-                        routeHome()
-                    }
-                    else -> {
-//                        TODO: loading spinner?
-                    }
-                }
-            }
-
         binding.loginButton.throttledClicks()
             .map {
                 val id = binding.idInput.text.toString()
@@ -71,7 +59,15 @@ class LoginFragment : BaseFragment() {
             }
             .bindUi(this) { (id, password) ->
                 hideSoftKeyboard()
+                val progressDialog =
+                    ProgressDialog.show(context, "로그인", "잠시만 기다려 주세요", true, false)
                 vm.loginLocal(id, password)
+                    .bindUi(this, onSuccess = {
+                        routeHome()
+                        progressDialog.dismiss()
+                    }, onError = {
+                        progressDialog.dismiss()
+                    })
             }
 
         binding.facebookLoginButton.throttledClicks()

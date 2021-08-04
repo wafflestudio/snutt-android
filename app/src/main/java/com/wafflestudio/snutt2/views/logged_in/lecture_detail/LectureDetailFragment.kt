@@ -65,10 +65,14 @@ class LectureDetailFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onDetach() {
+        super.onDetach()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().onBackPressedDispatcher.addCallback {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (vm.isEditMode.get())
                 dialogController.showConfirm(message = R.string.lecture_detail_cancel_editing)
                     .bindUi(this@LectureDetailFragment,

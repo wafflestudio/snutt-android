@@ -49,6 +49,7 @@ class TableThemeSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        vm.setSelectedPreviewTheme(vm.lastViewedTable.get().value?.theme)
         binding.confirm.throttledClicks()
             .flatMapCompletable {
                 vm.updateTheme(tableDto.id, vm.selectedPreviewTheme.get().value!!)
