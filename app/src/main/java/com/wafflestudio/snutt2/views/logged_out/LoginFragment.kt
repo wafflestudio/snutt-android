@@ -66,6 +66,7 @@ class LoginFragment : BaseFragment() {
                         routeHome()
                         progressDialog.dismiss()
                     }, onError = {
+                        apiOnError(it)
                         progressDialog.dismiss()
                     })
             }
