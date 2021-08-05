@@ -16,7 +16,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
@@ -92,13 +91,16 @@ class LectureDetailFragment : BaseFragment() {
             onRemoveLecture = { startRemoveAlertView() },
             onResetLecture = { startResetAlertView() },
             onChangeColor = {
-                dialogController.showColorSelector(
-                    vm.colorTheme ?: TimetableColorTheme.SNUTT,
-                    colorItem?.getColor()?.bgColor
-                )
-                    .bindUi(this) {
-                        setLectureColor(it.first, it.second)
-                    }
+                childFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out
+                    )
+                    .add(R.id.color_select_fragment, LectureColorSelectorFragment())
+                    .addToBackStack("color_picker")
+                    .commit()
             }
         )
 
@@ -112,10 +114,12 @@ class LectureDetailFragment : BaseFragment() {
                 binding.editButton.isVisible = it.not()
             }
 
-        vm.selectedColor
+        vm.selectedColor.asObservable()
             .distinctUntilChanged()
             .bindUi(this) {
-                setLectureColor(it.first, it.second)
+                it.value?.let {
+                    setLectureColor(it.first, it.second)
+                }
             }
 
         binding.completeButton.throttledClicks()

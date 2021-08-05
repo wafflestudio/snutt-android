@@ -6,16 +6,16 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.flag.BubbleFlag
+import com.skydoves.colorpickerview.flag.FlagMode
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.DialogItemPickerBinding
 import com.wafflestudio.snutt2.databinding.DialogTextInputBinding
-import com.wafflestudio.snutt2.databinding.FragmentLectureColorSelectorBinding
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.core.Maybe
 import javax.inject.Inject
+
 
 @ActivityScoped
 class DialogController @Inject constructor(@ActivityContext private val context: Context) {
@@ -99,73 +99,30 @@ class DialogController @Inject constructor(@ActivityContext private val context:
     }
 
     fun showColorSelector(
-        theme: TimetableColorTheme,
-        customColor: Int? = null
-    ): Maybe<Pair<Int, ColorDto?>> {
-        var dialog: AlertDialog? = null
+        title: String,
+        defaultColor: Int? = null,
+    ): Maybe<Int> {
         return Maybe.create { emitter ->
-            val binding = FragmentLectureColorSelectorBinding.inflate(LayoutInflater.from(context))
-            theme.let {
-                listOf(
-                    binding.colorOne,
-                    binding.colorTwo,
-                    binding.colorThree,
-                    binding.colorFour,
-                    binding.colorFive,
-                    binding.colorSix,
-                    binding.colorSeven,
-                    binding.colorEight,
-                    binding.colorNine,
-                )
-                    .forEachIndexed { index, item ->
-                        item.bgColor.setBackgroundColor(
-                            theme.getColorByIndex(
-                                context,
-                                (index + 1).toLong()
-                            )
-                        )
-                        item.name.text = theme.name + (index + 1)
-                        item.root.setOnClickListener {
-                            dialog?.dismiss()
-                            emitter.onSuccess(Pair(index + 1, null))
-                        }
+            ColorPickerDialog.Builder(context)
+                .setTitle(title)
+                .setPositiveButton("확인", object : ColorEnvelopeListener {
+                    override fun onColorSelected(
+                        envelope: ColorEnvelope?,
+                        fromUser: Boolean
+                    ) {
+                        emitter.onSuccess(envelope?.color!!)
                     }
-            }
-
-            binding.colorCustom.let { item ->
-                item.bgColor.setBackgroundColor(customColor ?: context.getColor(R.color.white))
-                item.name.text = "커스텀"
-                item.root.setOnClickListener {
-                    ColorPickerDialog.Builder(context)
-                        .setPositiveButton("확인", object : ColorEnvelopeListener {
-                            override fun onColorSelected(
-                                envelope: ColorEnvelope?,
-                                fromUser: Boolean
-                            ) {
-                                emitter.onSuccess(
-                                    Pair(
-                                        0,
-                                        ColorDto(context.getColor(R.color.white), envelope?.color!!)
-                                    )
-                                )
-                                dialog?.dismiss()
-                            }
-                        })
-                        .attachAlphaSlideBar(false)
-                        .show()
+                })
+                .attachAlphaSlideBar(false)
+                .setOnDismissListener {
+                    emitter.onComplete()
                 }
-            }
-
-
-            dialog = AlertDialog.Builder(context).apply {
-                setView(binding.root)
-                setTitle("색상 선택")
-                setNegativeButton(context.getString(R.string.common_cancel), null)
-            }
-                .setOnCancelListener { emitter.onComplete() }
-                .setOnDismissListener { emitter.onComplete() }
-                .create()
-            dialog?.show()
+                .apply {
+                    val bubbleFlag = BubbleFlag(context)
+                    bubbleFlag.flagMode = FlagMode.ALWAYS
+                    colorPickerView.flagView = bubbleFlag
+                }
+                .show()
         }
     }
 }

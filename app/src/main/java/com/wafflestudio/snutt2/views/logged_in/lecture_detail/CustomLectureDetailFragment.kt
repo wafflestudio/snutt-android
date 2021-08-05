@@ -13,8 +13,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.DialogController
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -75,15 +75,17 @@ class CustomLectureDetailFragment : BaseFragment() {
         adapter =
             CustomLectureAdapter(
                 this, vm.lists, myLectureRepository, apiOnError,
-                lecture
-                ,{
-                    dialogController.showColorSelector(
-                        vm.colorTheme ?: TimetableColorTheme.SNUTT,
-                        colorItem?.getColor()?.bgColor
-                    )
-                        .bindUi(this) {
-                            setLectureColor(it.first, it.second)
-                        }
+                lecture, {
+                    childFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                        )
+                        .add(R.id.color_select_fragment, LectureColorSelectorFragment())
+                        .addToBackStack("color_picker")
+                        .commit()
                 },
                 this
             )
@@ -99,6 +101,14 @@ class CustomLectureDetailFragment : BaseFragment() {
         binding.backButton.throttledClicks()
             .bindUi(this) {
                 findNavController().popBackStack()
+            }
+
+        vm.selectedColor.asObservable()
+            .distinctUntilChanged()
+            .bindUi(this) {
+                it.value?.let {
+                    setLectureColor(it.first, it.second)
+                }
             }
 
         binding.completeButton.throttledClicks()

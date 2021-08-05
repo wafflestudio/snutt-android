@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.DataProvider
+import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -32,8 +33,8 @@ class LectureDetailViewModel @Inject constructor(
     private val _isEditMode = SubjectDataValue(false)
     val isEditMode: DataProvider<Boolean> = _isEditMode
 
-    private val _selectedColor = BehaviorSubject.create<Pair<Int, ColorDto?>>()
-    val selectedColor: Observable<Pair<Int, ColorDto?>> = _selectedColor.hide()
+    private val _selectedColor = SubjectDataValue<Optional<Pair<Int, ColorDto?>>>(Optional.empty())
+    val selectedColor: DataValue<Optional<Pair<Int, ColorDto?>>> = _selectedColor
 
     val colorTheme: TimetableColorTheme? = myLectureRepository.lastViewedTable.get().value?.theme
 
@@ -50,7 +51,7 @@ class LectureDetailViewModel @Inject constructor(
     }
 
     fun setSelectedColor(colorIndex: Int, colorDto: ColorDto?) {
-        _selectedColor.onNext(Pair(colorIndex, colorDto))
+        _selectedColor.update(Pair(colorIndex, colorDto).toOptional())
     }
 
     fun updateLecture(param: PutLectureParams): Single<PutLectureResults> {

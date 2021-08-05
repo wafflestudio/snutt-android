@@ -225,7 +225,9 @@ class TimetableView : View {
                     context,
                     lecture.colorIndex
                 ),
-                lecture.color.fgColor ?: context.getColor(R.color.white),
+                if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
+                    R.color.white
+                ),
             )
         }
     }
