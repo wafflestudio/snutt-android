@@ -133,6 +133,7 @@ dependencies {
     implementation "com.uber.rxdogtag2:rxdogtag:2.0.1"
     implementation "com.github.skydoves:colorpickerview:2.2.3"
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.tbuonomo:dotsindicator:4.2'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

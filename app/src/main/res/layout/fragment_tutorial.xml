@@ -7,17 +7,25 @@
     android:orientation="vertical"
     tools:context=".views.logged_out.TutorialFragment">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <com.viewpagerindicator.CirclePageIndicator
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/indicator"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp" />
+        android:layout_gravity="center_horizontal"
+        android:padding="30dp"
+        app:dotsColor="@color/gray"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="12dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="2"
+        app:progressMode="true"
+        app:selectedDotColor="@color/gray_400" />
 
     <View
         android:layout_width="match_parent"

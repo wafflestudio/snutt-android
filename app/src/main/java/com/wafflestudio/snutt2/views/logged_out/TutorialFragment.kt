@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentTutorialBinding
-import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +38,9 @@ class TutorialFragment : BaseFragment() {
             .bindUi(this) {
                 routeSignUp()
             }
+        binding.container.adapter = TutorialStateAdapter()
+
+        binding.indicator.setViewPager2(binding.container)
     }
 
     private fun routeSignUp() {
@@ -49,5 +53,16 @@ class TutorialFragment : BaseFragment() {
         findNavController().navigate(
             R.id.action_tutorialFragment_to_loginFragment
         )
+    }
+
+    inner class TutorialStateAdapter : FragmentStateAdapter(this) {
+        override fun getItemCount(): Int {
+            return 3
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return TutorialPageFragment(position)
+        }
+
     }
 }
