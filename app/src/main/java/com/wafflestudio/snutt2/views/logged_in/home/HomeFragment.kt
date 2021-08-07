@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -86,6 +87,7 @@ class HomeFragment : BaseFragment() {
             settingsViewModel.trimParam.asObservable(),
             selectedTimetableViewModel.lastViewedTable.asObservable()
         )
+            .debounce(10000, TimeUnit.MILLISECONDS)
             .bindUi(this) {
                 refreshWidget()
             }

@@ -97,4 +97,4 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
         hourFrom = (flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } } + tableTrimParam.hourFrom).minOf { it },
         hourTo = (flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() - 1 + 8 } } + tableTrimParam.hourTo).maxOf { it },
         forceFitLectures = true
-    ).apply { Timber.d(this.toString()) }
+    )

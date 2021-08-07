@@ -71,19 +71,12 @@ class TimetableView : View {
     var trimParam: TableTrimParam = TableTrimParam.Default
         set(value) {
             field = value
+            invalidateTrimParam()
             invalidate()
         }
 
-    private val fittedTrimParam: TableTrimParam
-        get() {
-            return if (trimParam.forceFitLectures) {
-                (selectedLecture?.let {
-                    lectures + it
-                } ?: lectures).getFittingTrimParam(TableTrimParam.Default)
-            } else {
-                trimParam
-            }
-        }
+
+    private var fittedTrimParam: TableTrimParam = TableTrimParam.Default
 
     var lectures: List<LectureDto> = listOf()
         set(value) {
@@ -94,6 +87,7 @@ class TimetableView : View {
     var selectedLecture: LectureDto? = null
         set(value) {
             field = value
+            invalidateTrimParam()
             invalidate()
         }
 
@@ -319,6 +313,17 @@ class TimetableView : View {
         paint.getTextBounds(text, 0, text.length, bounds)
         return bounds.height().toFloat()
     }
+
+    private fun invalidateTrimParam() {
+        fittedTrimParam = if (trimParam.forceFitLectures) {
+            (selectedLecture?.let {
+                lectures + it
+            } ?: lectures).getFittingTrimParam(TableTrimParam.Default)
+        } else {
+            trimParam
+        }
+    }
+
 }
 
 interface OnLectureClickListener {

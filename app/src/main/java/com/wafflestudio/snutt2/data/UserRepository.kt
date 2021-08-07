@@ -181,7 +181,7 @@ class UserRepository @Inject constructor(
     fun performLogout() {
         /* firebase token 삭제 후 로그아웃 시행 */
         LoginManager.getInstance().logOut() // for facebook sdk
-        snuttStorage.clearAll()
+        snuttStorage.clearLoginScope()
     }
 
     private fun registerFirebaseToken(): Single<RegisterFirebaseTokenResults> {
