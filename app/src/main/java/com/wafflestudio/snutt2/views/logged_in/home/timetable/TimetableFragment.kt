@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.createChooser
 import android.graphics.Bitmap
@@ -62,6 +63,16 @@ class TimetableFragment : BaseFragment() {
         binding = FragmentTimetableBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

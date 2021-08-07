@@ -175,6 +175,11 @@ class HomeFragment : BaseFragment() {
             bindable = this
         )
 
+        binding.closeButton.throttledClicks()
+            .bindUi(this) {
+                binding.root.close()
+            }
+
         binding.tablesContent.adapter = tablesAdapter
 
         tableListViewModel.selectedCourseBookTableList

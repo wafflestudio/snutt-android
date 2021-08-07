@@ -49,7 +49,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="7dp"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="50"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="2021년도 여름학기 수강편람이 업데이트되었습니다." />
