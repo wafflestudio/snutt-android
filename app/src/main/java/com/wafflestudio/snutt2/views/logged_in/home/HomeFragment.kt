@@ -1,8 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -87,9 +84,9 @@ class HomeFragment : BaseFragment() {
             settingsViewModel.trimParam.asObservable(),
             selectedTimetableViewModel.lastViewedTable.asObservable()
         )
-            .debounce(10000, TimeUnit.MILLISECONDS)
+            .debounce(1000, TimeUnit.MILLISECONDS)
             .bindUi(this) {
-                refreshWidget()
+                TimetableWidgetProvider.refreshWidget(requireContext())
             }
 
 
@@ -193,20 +190,5 @@ class HomeFragment : BaseFragment() {
                         .toList()
                 )
             }
-    }
-
-    private fun refreshWidget() {
-        val intent = Intent(requireContext(), TimetableWidgetProvider::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids: IntArray =
-            AppWidgetManager.getInstance(requireContext())
-                .getAppWidgetIds(
-                    ComponentName(
-                        requireContext(),
-                        TimetableWidgetProvider::class.java
-                    )
-                )
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        requireContext().sendBroadcast(intent)
     }
 }

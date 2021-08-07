@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/timetable_app_bar_title" />
+            android:text="@string/notifications_app_bar_title" />
 
     </LinearLayout>
 

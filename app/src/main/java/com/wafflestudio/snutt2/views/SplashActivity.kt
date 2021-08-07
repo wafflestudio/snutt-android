@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashActivity : BaseActivity() {
-    private val SPLASH_DISPLAY_LENGTH = 1000
+    private val SPLASH_DISPLAY_LENGTH = 500
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         setContentView(R.layout.activity_splash)

@@ -5,6 +5,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
+import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,6 +34,7 @@ class RootActivity : BaseActivity() {
             .distinctUntilChanged()
             .filter { it.isEmpty() }
             .bindUi(this) {
+                TimetableWidgetProvider.refreshWidget(this)
                 navController.navigate(R.id.startTutorial)
             }
     }

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.provider
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -20,7 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TimetableWidgetProvider : AppWidgetProvider() {
+class
+TimetableWidgetProvider : AppWidgetProvider() {
     @Inject
     lateinit var myLectureRepository: MyLectureRepository
 
@@ -67,7 +69,28 @@ class TimetableWidgetProvider : AppWidgetProvider() {
             tableView.draw(canvas)
 
             views.setViewVisibility(R.id.placeholder, View.GONE)
+            views.setViewVisibility(R.id.table, View.VISIBLE)
             views.setImageViewBitmap(R.id.table, bitmap)
+        } ?: run {
+            views.setViewVisibility(R.id.placeholder, View.VISIBLE)
+            views.setViewVisibility(R.id.table, View.GONE)
+        }
+    }
+
+    companion object {
+        fun refreshWidget(context: Context) {
+            val intent = Intent(context, TimetableWidgetProvider::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            val ids: IntArray =
+                AppWidgetManager.getInstance(context)
+                    .getAppWidgetIds(
+                        ComponentName(
+                            context,
+                            TimetableWidgetProvider::class.java
+                        )
+                    )
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            context.sendBroadcast(intent)
         }
     }
 }
