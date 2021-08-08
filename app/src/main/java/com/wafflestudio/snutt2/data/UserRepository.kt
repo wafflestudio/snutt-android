@@ -196,14 +196,16 @@ class UserRepository @Inject constructor(
 
     private fun getFirebaseToken(): Single<String> {
         return Single.create {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    it.onError(RuntimeException("cannot get firebase token"))
-                    return@OnCompleteListener
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        it.onError(RuntimeException("cannot get firebase token"))
+                        return@OnCompleteListener
+                    }
+                    val token = task.result
+                    it.onSuccess(token)
                 }
-                val token = task.result
-                it.onSuccess(token)
-            })
+            )
         }
     }
 }

@@ -6,6 +6,4 @@ import com.wafflestudio.snutt2.lib.rx.RxBinder
 
 abstract class BaseAdapter<TData : Any>(
     diffCallback: DiffUtil.ItemCallback<TData>
-) : ListAdapter<TData, BaseViewHolder<out TData>>(diffCallback), RxBinder {
-
-}
+) : ListAdapter<TData, BaseViewHolder<out TData>>(diffCallback), RxBinder

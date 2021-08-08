@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2
 
 import android.app.Application
 import com.facebook.FacebookSdk
-import com.wafflestudio.snutt2.lib.rx.DirectFirstHandlerScheduler
+import com.wafflestudio.snutt2.lib.rx.DirectFirstHandleScheduler
 import dagger.hilt.android.HiltAndroidApp
 import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins
 import rxdogtag2.RxDogTag
@@ -20,7 +20,7 @@ class SNUTTApplication : Application() {
         RxDogTag.install()
         Timber.plant(Timber.DebugTree())
         RxAndroidPlugins.setMainThreadSchedulerHandler {
-            DirectFirstHandlerScheduler(true)
+            DirectFirstHandleScheduler(true)
         }
     }
 

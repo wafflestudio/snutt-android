@@ -19,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
-
 @AndroidEntryPoint
 class SearchOptionFragment : BottomSheetDialogFragment() {
 

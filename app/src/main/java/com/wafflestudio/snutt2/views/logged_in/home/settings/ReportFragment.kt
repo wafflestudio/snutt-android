@@ -29,7 +29,7 @@ class ReportFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentReportBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -44,7 +44,7 @@ class ReportFragment : BaseFragment() {
 
         binding.buttonSend.throttledClicks()
             .bindUi(this) {
-                if (binding.detailEditText.text.toString().isNullOrEmpty()) {
+                if (binding.detailEditText.text.toString().isEmpty()) {
                     Toast.makeText(requireContext(), "내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
                 } else {
                     val email = binding.emailEditText.text.toString()
@@ -62,8 +62,6 @@ class ReportFragment : BaseFragment() {
                             }
                         )
                 }
-
             }
-
     }
 }

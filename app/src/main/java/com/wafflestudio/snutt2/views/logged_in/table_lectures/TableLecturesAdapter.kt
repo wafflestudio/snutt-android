@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.lecture_list
+package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,10 +10,10 @@ import com.wafflestudio.snutt2.lib.base.BaseViewHolder
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 
-class LectureListAdapter(
+class TableLecturesAdapter(
     private val onClickAdd: () -> Unit,
     private val onClickLecture: (lecture: LectureDto) -> Unit
-) : BaseAdapter<LectureListAdapter.Data>(diffCallback) {
+) : BaseAdapter<TableLecturesAdapter.Data>(diffCallback) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -21,7 +21,6 @@ class LectureListAdapter(
             is Data.Add -> 1
         }
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<out Data> {
         return when (viewType) {
@@ -50,7 +49,6 @@ class LectureListAdapter(
         }
     }
 
-
     inner class DataViewHolder(override val binding: ItemLectureListBinding) :
         BaseViewHolder<Data.Lecture>(binding) {
 
@@ -72,17 +70,16 @@ class LectureListAdapter(
 
             binding.tag.text = tagText
             var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
-            if (classTimeText.isNullOrEmpty()) classTimeText = "(없음)"
+            if (classTimeText.isEmpty()) classTimeText = "(없음)"
             binding.time.text = classTimeText
             var locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
-            if (locationText.isNullOrEmpty()) locationText = "(없음)"
+            if (locationText.isEmpty()) locationText = "(없음)"
             binding.location.text = locationText
             binding.root.setOnClickListener {
                 onClickLecture.invoke(lecture)
             }
         }
     }
-
 
     inner class AddButtonViewHolder(override val binding: ItemAddLectureListBinding) :
         BaseViewHolder<Data.Add>(binding) {
@@ -99,7 +96,6 @@ class LectureListAdapter(
 
         object Add : Data()
     }
-
 
     companion object {
         private val diffCallback = object : DiffUtil.ItemCallback<Data>() {

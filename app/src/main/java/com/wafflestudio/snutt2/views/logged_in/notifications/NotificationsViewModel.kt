@@ -19,6 +19,4 @@ class NotificationsViewModel @Inject constructor(
         return notificationsRepository
             .getPagedNotifications()
     }
-
-
 }

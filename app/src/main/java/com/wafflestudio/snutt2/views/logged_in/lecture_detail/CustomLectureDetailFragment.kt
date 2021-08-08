@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,6 @@ class CustomLectureDetailFragment : BaseFragment() {
     @Inject
     lateinit var myLectureRepository: MyLectureRepository
 
-
     private val vm: LectureDetailViewModel by viewModels()
 
     val args: CustomLectureDetailFragmentArgs by navArgs()
@@ -74,8 +72,12 @@ class CustomLectureDetailFragment : BaseFragment() {
         for (it in vm.lists) it.isEditable = add
         adapter =
             CustomLectureAdapter(
-                this, vm.lists, myLectureRepository, apiOnError,
-                lecture, {
+                this,
+                vm.lists,
+                myLectureRepository,
+                apiOnError,
+                lecture,
+                {
                     childFragmentManager.beginTransaction()
                         .setCustomAnimations(
                             R.anim.slide_in,
@@ -141,7 +143,6 @@ class CustomLectureDetailFragment : BaseFragment() {
                 binding.editButton.isVisible = false
                 setEditMode()
             }
-
     }
 
     fun setLectureColor(index: Int, color: ColorDto?) {
@@ -268,7 +269,6 @@ class CustomLectureDetailFragment : BaseFragment() {
             for (item in vm.lists!!) {
                 if (item.type === LectureItem.Type.Color) return item
             }
-            Log.e(TAG, "can't find color item")
             return null
         }
     private val addClassTimeItemPosition: Int
@@ -276,7 +276,6 @@ class CustomLectureDetailFragment : BaseFragment() {
             for (i in vm.lists!!.indices) {
                 if (vm.lists!![i].type === LectureItem.Type.AddClassTime) return i
             }
-            Log.e(TAG, "can't find add class time item")
             return -1
         }
     private val removeItemPosition: Int
@@ -284,7 +283,6 @@ class CustomLectureDetailFragment : BaseFragment() {
             for (i in vm.lists!!.indices) {
                 if (vm.lists!![i].type === LectureItem.Type.RemoveLecture) return i
             }
-            Log.e(TAG, "can't find syllabus item")
             return -1
         }
     private val classTimeHeaderPosition: Int
@@ -292,7 +290,6 @@ class CustomLectureDetailFragment : BaseFragment() {
             for (i in vm.lists!!.indices) {
                 if (vm.lists!![i].type === LectureItem.Type.ClassTimeHeader) return i
             }
-            Log.e(TAG, "can't find class time header item")
             return -1
         }
     private val lastClassItemPosition: Int

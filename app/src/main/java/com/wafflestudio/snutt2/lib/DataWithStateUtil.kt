@@ -18,5 +18,4 @@ data class DataWithState<TData : Any, TState : Any>(
     }
 }
 
-
 typealias Selectable<T> = DataWithState<T, Boolean>

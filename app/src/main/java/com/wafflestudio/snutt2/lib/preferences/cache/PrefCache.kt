@@ -11,4 +11,3 @@ interface PrefCache {
         data class Hit(val value: Any?) : Result()
     }
 }
-

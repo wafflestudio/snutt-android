@@ -80,7 +80,6 @@ class NotificationsAdapter : PagingDataAdapter<NotificationDto, NotificationsAda
             Timber.e("notification created time parse error!")
             "-"
         }
-
     }
 
     class ViewHolder(val binding: ItemNotificationBinding) : RecyclerView.ViewHolder(binding.root)

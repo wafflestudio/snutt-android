@@ -55,10 +55,10 @@ class SearchResultAdapter(
                 }
 
             val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture).let {
-                if (it.isNullOrBlank()) "(없음)" else it
+                if (it.isBlank()) "(없음)" else it
             }
             val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture).let {
-                if (it.isNullOrBlank()) "(없음)" else it
+                if (it.isBlank()) "(없음)" else it
             }
 
             if (data.state.selected) {
@@ -76,7 +76,6 @@ class SearchResultAdapter(
             binding.time.text = classTimeText
             binding.location.text = locationText
             binding.buttonGroup.isVisible = data.state.selected
-
 
             binding.root.setOnClickListener {
                 onSelectLecture.invoke(lecture)

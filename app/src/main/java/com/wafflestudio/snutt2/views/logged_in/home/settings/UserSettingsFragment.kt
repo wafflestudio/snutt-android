@@ -61,11 +61,12 @@ class UserSettingsFragment : BaseFragment() {
                         SettingsItem.Type.ChangePassword -> performChangePassword()
                         SettingsItem.Type.ChangeEmail -> performChangeEmail()
                         SettingsItem.Type.AddIdPassword -> performAddIdPassword()
-                        SettingsItem.Type.LinkFacebook -> LoginManager.getInstance()
-                            .logInWithReadPermissions(
-                                this@UserSettingsFragment,
-                                null
-                            )
+                        SettingsItem.Type.LinkFacebook ->
+                            LoginManager.getInstance()
+                                .logInWithReadPermissions(
+                                    this@UserSettingsFragment,
+                                    null
+                                )
                         SettingsItem.Type.DeleteFacebook -> performDeleteFacebook()
                         SettingsItem.Type.Leave -> performLeave()
                         else -> {
@@ -92,7 +93,7 @@ class UserSettingsFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentUserSettingsBinding.inflate(inflater, container, false)
 
         val recyclerView = binding.accountRecyclerView
@@ -175,7 +176,7 @@ class UserSettingsFragment : BaseFragment() {
         dialog2.show()
         dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val email = (layout2.findViewById<View>(R.id.email) as EditText).text.toString()
-            if (email.isNullOrEmpty().not()) {
+            if (email.isEmpty().not()) {
                 userRepository.putUserInfo(email)
                     .bindUi(
                         this,

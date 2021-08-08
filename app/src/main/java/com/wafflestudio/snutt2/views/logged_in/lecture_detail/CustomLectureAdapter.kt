@@ -1,14 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.text.method.ArrowKeyMovementMethod
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -163,7 +161,6 @@ class CustomLectureAdapter(
             for (i in 0 until itemCount) {
                 if (isLastClassItem(i)) return i
             }
-            Log.e(TAG, "can't find class time item")
             return -1
         }
 
@@ -182,20 +179,19 @@ class CustomLectureAdapter(
         alert.setTitle("강좌 삭제")
         alert.setMessage("강좌를 삭제하시겠습니까")
         alert.setPositiveButton(
-            "삭제",
-            DialogInterface.OnClickListener { dialog, whichButton ->
-                myLectureRepository.removeLecture(lectureId)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onSuccess = {
-                            fragment.findNavController().popBackStack()
-                        },
-                        onError = {
-                            apiOnError(it)
-                        }
-                    ).let { bindable.bindDisposable(it) }
-            }
-        ).setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
+            "삭제"
+        ) { _, _ ->
+            myLectureRepository.removeLecture(lectureId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onSuccess = {
+                        fragment.findNavController().popBackStack()
+                    },
+                    onError = {
+                        apiOnError(it)
+                    }
+                ).let { bindable.bindDisposable(it) }
+        }.setNegativeButton("취소") { dialog, whichButton -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
     }
@@ -358,7 +354,9 @@ class CustomLectureAdapter(
         }
     }
 
-    private class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
+    private class ClassViewHolder(view: View) :
+        RecyclerView.ViewHolder(view),
+        View.OnClickListener,
         OnLongClickListener {
         private val title1: TextView
         private val title2: TextView

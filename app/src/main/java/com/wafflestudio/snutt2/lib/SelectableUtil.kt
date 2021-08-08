@@ -14,4 +14,3 @@ data class SelectableLegacy<T : Any>(
             SelectableLegacy(item, selected)
     }
 }
-

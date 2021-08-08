@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
@@ -85,7 +84,6 @@ class TableRepository @Inject constructor(
                     storage.lastViewedTable.update(result.toOptional())
                 }
             }
-
     }
 
     fun copyTable(id: String): Single<PostCopyTableResults> {

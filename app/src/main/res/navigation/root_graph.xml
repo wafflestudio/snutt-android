@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/tableLecturesFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_list.TableLecturesFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesFragment"
         android:label="@layout/fragment_lecture_list"
         tools:layout="@layout/fragment_lecture_list" />
 

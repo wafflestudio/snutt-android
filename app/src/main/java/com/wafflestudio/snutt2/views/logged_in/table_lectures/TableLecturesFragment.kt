@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.lecture_list
+package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,7 +25,8 @@ class TableLecturesFragment : BaseFragment() {
     private val vm: SelectedTimetableViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
@@ -39,11 +40,14 @@ class TableLecturesFragment : BaseFragment() {
                 findNavController().popBackStack()
             }
 
-        val adapter = LectureListAdapter({
-            routeLectureCreate()
-        }, {
-            routeLectureDetail(it)
-        })
+        val adapter = TableLecturesAdapter(
+            {
+                routeLectureCreate()
+            },
+            {
+                routeLectureDetail(it)
+            }
+        )
 
         binding.contents.adapter = adapter
 
@@ -56,11 +60,11 @@ class TableLecturesFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) { list ->
                 adapter.submitList(
-                    list.map<LectureDto, LectureListAdapter.Data> {
-                        LectureListAdapter.Data.Lecture(
+                    list.map<LectureDto, TableLecturesAdapter.Data> {
+                        TableLecturesAdapter.Data.Lecture(
                             it
                         )
-                    }.toMutableList().apply { add(LectureListAdapter.Data.Add) }
+                    }.toMutableList().apply { add(TableLecturesAdapter.Data.Add) }
                 )
             }
     }

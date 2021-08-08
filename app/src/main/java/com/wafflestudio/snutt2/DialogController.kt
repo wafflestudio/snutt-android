@@ -16,7 +16,6 @@ import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.core.Maybe
 import javax.inject.Inject
 
-
 @ActivityScoped
 class DialogController @Inject constructor(@ActivityContext private val context: Context) {
 
@@ -49,7 +48,6 @@ class DialogController @Inject constructor(@ActivityContext private val context:
                 .show()
         }
     }
-
 
     fun showTextDialog(
         @StringRes title: Int,
@@ -105,14 +103,17 @@ class DialogController @Inject constructor(@ActivityContext private val context:
         return Maybe.create { emitter ->
             ColorPickerDialog.Builder(context)
                 .setTitle(title)
-                .setPositiveButton("확인", object : ColorEnvelopeListener {
-                    override fun onColorSelected(
-                        envelope: ColorEnvelope?,
-                        fromUser: Boolean
-                    ) {
-                        emitter.onSuccess(envelope?.color!!)
+                .setPositiveButton(
+                    "확인",
+                    object : ColorEnvelopeListener {
+                        override fun onColorSelected(
+                            envelope: ColorEnvelope?,
+                            fromUser: Boolean
+                        ) {
+                            emitter.onSuccess(envelope?.color!!)
+                        }
                     }
-                })
+                )
                 .attachAlphaSlideBar(false)
                 .setOnDismissListener {
                     emitter.onComplete()

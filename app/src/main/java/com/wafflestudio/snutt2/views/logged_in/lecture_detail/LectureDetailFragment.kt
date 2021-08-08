@@ -74,7 +74,8 @@ class LectureDetailFragment : BaseFragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (vm.isEditMode.get())
                 dialogController.showConfirm(message = R.string.lecture_detail_cancel_editing)
-                    .bindUi(this@LectureDetailFragment,
+                    .bindUi(
+                        this@LectureDetailFragment,
                         onSuccess = {
                             findNavController().popBackStack()
                         }
@@ -83,7 +84,6 @@ class LectureDetailFragment : BaseFragment() {
                 findNavController().popBackStack()
             }
         }
-
 
         adapter = LectureDetailAdapter(
             vm.lists,
@@ -143,7 +143,6 @@ class LectureDetailFragment : BaseFragment() {
             .bindUi(this) {
                 setEditMode()
             }
-
     }
 
     fun setLectureColor(index: Int, color: ColorDto?) {

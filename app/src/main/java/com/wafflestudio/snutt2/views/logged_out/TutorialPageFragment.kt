@@ -13,7 +13,8 @@ class TutorialPageFragment(val pageNum: Int) : Fragment() {
     private lateinit var binding: FragmentTutorialPageBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTutorialPageBinding.inflate(inflater, container, false)

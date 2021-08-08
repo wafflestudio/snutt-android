@@ -40,7 +40,6 @@ import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class TimetableFragment : BaseFragment() {
 
@@ -57,7 +56,8 @@ class TimetableFragment : BaseFragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTimetableBinding.inflate(inflater, container, false)
@@ -67,12 +67,12 @@ class TimetableFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     override fun onDetach() {
         super.onDetach()
-        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        (requireParentFragment().view as? DrawerLayout)?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,11 +130,15 @@ class TimetableFragment : BaseFragment() {
                 getScreenShotFromView(binding.timetable)
                     .subscribeOn(Schedulers.io())
                     .flatMap { saveImage(it) }
-                    .bindUi(this@TimetableFragment, onError = {
-                        requireContext().toast("시간표 공유에 실패하였습니다.")
-                    }, onSuccess = {
-                        shareTimetable(it)
-                    })
+                    .bindUi(
+                        this@TimetableFragment,
+                        onError = {
+                            requireContext().toast("시간표 공유에 실패하였습니다.")
+                        },
+                        onSuccess = {
+                            shareTimetable(it)
+                        }
+                    )
             }
 
         binding.notificationsButton.throttledClicks()
@@ -158,7 +162,6 @@ class TimetableFragment : BaseFragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onError = apiOnError)
             }
-
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
@@ -174,13 +177,15 @@ class TimetableFragment : BaseFragment() {
 
     private fun routeNotifications() {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToNotificationsFragment(), defaultNavOptions
+            HomeFragmentDirections.actionHomeFragmentToNotificationsFragment(),
+            defaultNavOptions
         )
     }
 
     private fun routeLectureList() {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToTableLecturesFragment(), defaultNavOptions
+            HomeFragmentDirections.actionHomeFragmentToTableLecturesFragment(),
+            defaultNavOptions
         )
     }
 

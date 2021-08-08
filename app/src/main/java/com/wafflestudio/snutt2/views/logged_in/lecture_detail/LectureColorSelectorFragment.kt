@@ -30,7 +30,7 @@ class LectureColorSelectorFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLectureColorSelectorBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -92,7 +92,6 @@ class LectureColorSelectorFragment : BaseFragment() {
                             vm.setSelectedColor(0, ColorDto(fgColor, bgColor))
                             parentFragmentManager.popBackStack()
                         }
-
                 }
         }
     }

@@ -9,7 +9,6 @@ import com.wafflestudio.snutt2.databinding.ItemTableBinding
 import com.wafflestudio.snutt2.lib.base.BaseAdapter
 import com.wafflestudio.snutt2.lib.base.BaseViewHolder
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.RxBindable
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import io.reactivex.rxjava3.core.Observable

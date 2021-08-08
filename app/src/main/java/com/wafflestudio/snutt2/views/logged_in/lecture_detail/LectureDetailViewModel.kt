@@ -38,9 +38,7 @@ class LectureDetailViewModel @Inject constructor(
 
     val colorTheme: TimetableColorTheme? = myLectureRepository.lastViewedTable.get().value?.theme
 
-
     val lists: ArrayList<LectureItem> = arrayListOf()
-
 
     fun setEditMode(edit: Boolean) {
         _isEditMode.update(edit)

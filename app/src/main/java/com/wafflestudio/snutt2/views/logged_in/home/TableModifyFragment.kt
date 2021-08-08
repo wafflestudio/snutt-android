@@ -83,19 +83,24 @@ class TableModifyFragment(
             }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnEach { dismiss() }
-            .subscribeBy(onNext = {
-                requireContext().toast("시간표가 삭제되었습니다.")
-            }, onError = apiOnError)
+            .subscribeBy(
+                onNext = {
+                    requireContext().toast("시간표가 삭제되었습니다.")
+                },
+                onError = apiOnError
+            )
 
         binding.themeButton.throttledClicks()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onNext = {
-                if (tableDto.id == selectedTimetableViewModel.lastViewedTable.get().value?.id) {
-                    dismiss()
-                    onThemeChange()
-                } else {
-                    requireContext().toast("현재 선택된 강좌의 테마만 변경할 수 있습니다.")
+            .subscribeBy(
+                onNext = {
+                    if (tableDto.id == selectedTimetableViewModel.lastViewedTable.get().value?.id) {
+                        dismiss()
+                        onThemeChange()
+                    } else {
+                        requireContext().toast("현재 선택된 강좌의 테마만 변경할 수 있습니다.")
+                    }
                 }
-            })
+            )
     }
 }

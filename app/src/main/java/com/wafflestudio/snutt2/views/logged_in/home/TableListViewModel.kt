@@ -53,7 +53,8 @@ class TableListViewModel @Inject constructor(
                 map.toList().map { it.second }.filter { table ->
                     table.semester == courseBook.semester && table.year == courseBook.year
                 }
-            })
+            }
+        )
 
     fun setSelectedCourseBook(courseBookDto: CourseBookDto) {
         _selectedCourseBooks.update(courseBookDto.toOptional())
@@ -85,7 +86,6 @@ class TableListViewModel @Inject constructor(
     fun checkTableDeletable(tableId: String): Boolean {
         return myLectureRepository.lastViewedTable.get().get()?.id == tableId
     }
-
 
     fun deleteTable(tableId: String): Single<List<SimpleTableDto>> {
         return tableRepository.deleteTable(tableId)

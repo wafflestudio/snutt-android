@@ -25,7 +25,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class SearchFragment : BaseFragment() {
 
@@ -45,7 +44,8 @@ class SearchFragment : BaseFragment() {
     private val bottomSheet = SearchOptionFragment()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -138,12 +138,10 @@ class SearchFragment : BaseFragment() {
                     binding.placeholder.root.isVisible = false
                     binding.lectureList.isVisible = false
                     binding.empty.root.isVisible = true
-
                 } else {
                     binding.placeholder.root.isVisible = false
                     binding.lectureList.isVisible = true
                     binding.empty.root.isVisible = false
-
                 }
             }
 

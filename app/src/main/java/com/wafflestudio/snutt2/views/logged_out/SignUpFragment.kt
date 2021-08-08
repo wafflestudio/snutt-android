@@ -43,7 +43,8 @@ class SignUpFragment : BaseFragment() {
     private val vm: AuthViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
@@ -77,13 +78,17 @@ class SignUpFragment : BaseFragment() {
                 val progressDialog =
                     ProgressDialog.show(context, "회원가입", "잠시만 기다려 주세요", true, false)
                 vm.signUpLocal(id, email, password)
-                    .bindUi(this, onSuccess = {
-                        routeHome()
-                        progressDialog.dismiss()
-                    }, onError = {
-                        apiOnError(it)
-                        progressDialog.dismiss()
-                    })
+                    .bindUi(
+                        this,
+                        onSuccess = {
+                            routeHome()
+                            progressDialog.dismiss()
+                        },
+                        onError = {
+                            apiOnError(it)
+                            progressDialog.dismiss()
+                        }
+                    )
             }
 
         binding.facebookSignUpButton.throttledClicks()
@@ -99,39 +104,41 @@ class SignUpFragment : BaseFragment() {
                 showTerms()
             }
 
-        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(result: LoginResult?) {
-                if (result == null) {
+        loginManager.registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult?) {
+                    if (result == null) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.sign_up_facebook_login_failed_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return
+                    }
+                    val id = result.accessToken.userId
+                    val token = result.accessToken.token
+                    vm.signUpFacebook(id, token)
+                }
+
+                override fun onCancel() {
                     Toast.makeText(
                         context,
                         getString(R.string.sign_up_facebook_login_failed_toast),
                         Toast.LENGTH_SHORT
                     ).show()
-                    return
                 }
-                val id = result.accessToken.userId
-                val token = result.accessToken.token
-                vm.signUpFacebook(id, token)
-            }
 
-            override fun onCancel() {
-                Toast.makeText(
-                    context,
-                    getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
+                override fun onError(error: FacebookException?) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.sign_up_facebook_login_failed_toast),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-
-            override fun onError(error: FacebookException?) {
-                Toast.makeText(
-                    context,
-                    getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+        )
     }
-
 
     private fun hideSoftKeyboard() {
         (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
@@ -155,5 +162,4 @@ class SignUpFragment : BaseFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
-
 }

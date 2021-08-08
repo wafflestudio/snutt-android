@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-class DirectFirstHandlerScheduler(private val async: Boolean) : Scheduler() {
+class DirectFirstHandleScheduler(private val async: Boolean) : Scheduler() {
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val first = AtomicBoolean(true)
 

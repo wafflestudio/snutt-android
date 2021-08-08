@@ -57,16 +57,20 @@ class TimetableView : View {
         }
 
     private val lectureCellTextRect =
-        TextRect(Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 10f.sp(context)
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
-        })
+        TextRect(
+            Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                textSize = 10f.sp(context)
+                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
+            }
+        )
 
     private val lectureCellSubTextRect =
-        TextRect(Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 11f.sp(context)
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
-        })
+        TextRect(
+            Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                textSize = 11f.sp(context)
+                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
+            }
+        )
 
     var trimParam: TableTrimParam = TableTrimParam.Default
         set(value) {
@@ -74,7 +78,6 @@ class TimetableView : View {
             invalidateTrimParam()
             invalidate()
         }
-
 
     private var fittedTrimParam: TableTrimParam = TableTrimParam.Default
 
@@ -182,7 +185,6 @@ class TimetableView : View {
             startWidth += unitWidth
         }
 
-
         val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
         var startHeight = dayLabelHeight
         repeat(horizontalLines) {
@@ -203,7 +205,6 @@ class TimetableView : View {
             startHeight += unitHeight
         }
     }
-
 
     private fun drawLecture(
         canvas: Canvas,
@@ -260,7 +261,6 @@ class TimetableView : View {
             )
         )
 
-
         val left = hourLabelWidth + (dayOffset) * unitWidth
         val right =
             hourLabelWidth + (dayOffset) * unitWidth + unitWidth
@@ -271,11 +271,14 @@ class TimetableView : View {
         val rect = RectF(left, top, right, bottom)
 
         canvas.drawRect(rect, Paint().apply { color = bgColor })
-        canvas.drawRect(rect, Paint().apply {
-            style = Paint.Style.STROKE
-            color = 0x0d000000
-            strokeWidth = 1.dp(context)
-        })
+        canvas.drawRect(
+            rect,
+            Paint().apply {
+                style = Paint.Style.STROKE
+                color = 0x0d000000
+                strokeWidth = 1.dp(context)
+            }
+        )
 
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
@@ -316,14 +319,15 @@ class TimetableView : View {
 
     private fun invalidateTrimParam() {
         fittedTrimParam = if (trimParam.forceFitLectures) {
-            (selectedLecture?.let {
-                lectures + it
-            } ?: lectures).getFittingTrimParam(TableTrimParam.Default)
+            (
+                selectedLecture?.let {
+                    lectures + it
+                } ?: lectures
+                ).getFittingTrimParam(TableTrimParam.Default)
         } else {
             trimParam
         }
     }
-
 }
 
 interface OnLectureClickListener {

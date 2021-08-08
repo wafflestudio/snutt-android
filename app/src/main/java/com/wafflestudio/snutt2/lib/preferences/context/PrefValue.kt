@@ -26,7 +26,6 @@ class PrefValue<T : Any> constructor(
             .distinctUntilChanged()
     }
 
-
     override fun get(): T {
         return prefContext.getValue(metaData.domain, metaData.key, metaData.type)
             ?: metaData.defaultValue
@@ -40,5 +39,3 @@ class PrefValue<T : Any> constructor(
         prefContext.removeValue(metaData.domain, metaData.key)
     }
 }
-
-

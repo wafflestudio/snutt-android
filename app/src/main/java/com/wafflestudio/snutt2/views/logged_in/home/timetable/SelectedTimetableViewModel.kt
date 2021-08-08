@@ -31,7 +31,6 @@ class SelectedTimetableViewModel @Inject constructor(
     val trimParam: DataProvider<TableTrimParam>
         get() = settingsRepository.tableTrimParam
 
-
     fun toggleLecture(lecture: LectureDto): Completable {
         return myLectureRepository.currentTable
             .firstOrError()

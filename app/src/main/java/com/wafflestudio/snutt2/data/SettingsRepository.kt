@@ -1,9 +1,7 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.data.DataValue
-import com.wafflestudio.snutt2.lib.preferences.context.PrefValue
 import com.wafflestudio.snutt2.model.TableTrimParam
-import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,6 +33,4 @@ class SettingsRepository @Inject constructor(
             forceFitLectures = isAuto ?: current.forceFitLectures,
         )
     }
-
-
 }

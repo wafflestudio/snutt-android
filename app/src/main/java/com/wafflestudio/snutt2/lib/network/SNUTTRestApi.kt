@@ -62,8 +62,7 @@ interface SNUTTRestApi {
 
     // API Timetable
     @GET("/tables")
-    fun getTableList(
-    ): Single<GetTableListResults>
+    fun getTableList(): Single<GetTableListResults>
 
     @POST("/tables")
     fun postTable(
@@ -139,8 +138,7 @@ interface SNUTTRestApi {
 
     // API for User
     @GET("/user/info")
-    fun getUserInfo(
-    ): Single<GetUserInfoResults>
+    fun getUserInfo(): Single<GetUserInfoResults>
 
     @PUT("/user/info")
     fun putUserInfo(
@@ -163,12 +161,10 @@ interface SNUTTRestApi {
     ): Single<PostUserFacebookResults>
 
     @DELETE("/user/facebook")
-    fun deleteUserFacebook(
-    ): Single<DeleteUserFacebookResults>
+    fun deleteUserFacebook(): Single<DeleteUserFacebookResults>
 
     @GET("/user/facebook")
-    fun getUserFacebook(
-    ): Single<GetUserFacebookResults>
+    fun getUserFacebook(): Single<GetUserFacebookResults>
 
     @POST("/user/device/{registration_id}")
     fun registerFirebaseToken(
@@ -193,6 +189,5 @@ interface SNUTTRestApi {
     ): Single<GetNotificationResults>
 
     @GET("/notification/count")
-    fun getNotificationCount(
-    ): Single<GetNotificationCountResults>
+    fun getNotificationCount(): Single<GetNotificationCountResults>
 }

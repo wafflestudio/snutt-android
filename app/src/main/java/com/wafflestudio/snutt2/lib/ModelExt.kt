@@ -7,10 +7,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
-import timber.log.Timber
 import kotlin.math.ceil
 import kotlin.math.floor
-
 
 fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
     for (classTimeDto in this.class_time_json) {
@@ -87,7 +85,6 @@ fun Long.getDefaultBgColorHex(): Int {
 
 fun LectureDto.isRegularlyEquals(lectureDto: LectureDto): Boolean {
     return course_number != null && course_number == lectureDto.course_number
-
 }
 
 fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =

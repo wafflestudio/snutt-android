@@ -19,7 +19,8 @@ class TutorialFragment : BaseFragment() {
     private lateinit var binding: FragmentTutorialBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTutorialBinding.inflate(inflater, container, false)
@@ -63,6 +64,5 @@ class TutorialFragment : BaseFragment() {
         override fun createFragment(position: Int): Fragment {
             return TutorialPageFragment(position)
         }
-
     }
 }

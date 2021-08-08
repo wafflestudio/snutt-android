@@ -26,7 +26,6 @@ import io.reactivex.rxjava3.kotlin.Observables
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class HomeFragment : BaseFragment() {
 
@@ -35,7 +34,6 @@ class HomeFragment : BaseFragment() {
     private lateinit var tablesAdapter: TableListAdapter
 
     private lateinit var pageAdapter: HomeStateAdapter
-
 
     private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
 
@@ -59,7 +57,8 @@ class HomeFragment : BaseFragment() {
     )
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -89,30 +88,33 @@ class HomeFragment : BaseFragment() {
                 TimetableWidgetProvider.refreshWidget(requireContext())
             }
 
-
         // 스크롤 감도를 낮춘다.
         binding.contents.reduceDragSensitivity(6)
 
-        binding.root.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-            }
+        binding.root.addDrawerListener(
+            object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                }
 
-            override fun onDrawerOpened(drawerView: View) {
-                homeViewModel.refreshData()
-            }
+                override fun onDrawerOpened(drawerView: View) {
+                    homeViewModel.refreshData()
+                }
 
-            override fun onDrawerClosed(drawerView: View) {
-            }
+                override fun onDrawerClosed(drawerView: View) {
+                }
 
-            override fun onDrawerStateChanged(newState: Int) {
+                override fun onDrawerStateChanged(newState: Int) {
+                }
             }
-        })
+        )
 
-        binding.contents.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                binding.bottomNavigation.selectedItemId = fragmentIndexMap[position]
+        binding.contents.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    binding.bottomNavigation.selectedItemId = fragmentIndexMap[position]
+                }
             }
-        })
+        )
 
         binding.coursebookSelectButton.throttledClicks()
             .observeOn(AndroidSchedulers.mainThread())

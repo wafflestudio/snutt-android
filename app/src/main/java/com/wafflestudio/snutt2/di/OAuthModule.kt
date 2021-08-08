@@ -23,5 +23,4 @@ object OAuthModule {
     fun provideLoginManager(): LoginManager {
         return LoginManager.getInstance()
     }
-
 }

@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.lib
 import android.content.Context
 import com.wafflestudio.snutt2.R
 
-
 fun Int.toDayString(context: Context): String {
     val days = arrayOf(
         context.getString(R.string.common_day_mon),

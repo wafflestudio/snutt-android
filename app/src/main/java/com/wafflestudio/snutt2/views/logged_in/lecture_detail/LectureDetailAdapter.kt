@@ -391,7 +391,9 @@ class LectureDetailAdapter(
         }
     }
 
-    inner class ClassViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener,
+    inner class ClassViewHolder(view: View) :
+        RecyclerView.ViewHolder(view),
+        View.OnClickListener,
         OnLongClickListener {
         private val title1: TextView
         private val title2: TextView
@@ -504,13 +506,13 @@ class LectureDetailAdapter(
         fromPicker.setOnValueChangedListener { picker, oldVal, newVal ->
             fromTime = newVal
             /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
-            null
+                null
             toPicker.value = max(fromTime + 1, toPicker.value)
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = 28
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)
             /* setValue method does not call listener, so we have to change the value manually */toTime =
-            fromTime + 1
+                fromTime + 1
         }
         toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
         val to = SNUTTUtils.getTimeList(fromTime + 1, 28)
@@ -531,7 +533,6 @@ class LectureDetailAdapter(
         }.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }.setTitle("시간을 삭제하시겠습니까?")
         alert.show()
     }
-
 
     private interface TextChangedListener {
         fun onText1Changed(text: String, position: Int)
