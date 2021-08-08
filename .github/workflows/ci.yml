@@ -1,13 +1,12 @@
 name: CI
 
-# Temp Trigger on refactoring
 on:
   pull_request:
     branches:
-      - 'refactoring'
+      - 'develop'
   push:
     branches:
-      - 'refactoring'
+      - 'develop'
 
 jobs:
   cancel-workflow:
