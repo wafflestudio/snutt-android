@@ -11,7 +11,6 @@
 - default branch: `develop`
 - PR 브랜치 명칭: `${username}/${YYMMDD}-${changes}` (e.g.: `sanggggg/210101-renewal-table-ui`)
 - merge convention: only squash merge
-- gitmoji
 
 ## Secrets
 - `app/src/staging/google-services.json`
