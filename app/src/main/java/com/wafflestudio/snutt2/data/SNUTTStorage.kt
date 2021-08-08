@@ -73,7 +73,7 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "table_trim_param",
             type = TableTrimParam::class.java,
-            defaultValue = TableTrimParam.Default.copy(forceFitLectures = true)
+            defaultValue = TableTrimParam.Default
         )
     )
 

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
@@ -11,8 +13,10 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.databinding.FragmentLectureColorSelectorBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
@@ -37,6 +41,40 @@ class LectureColorSelectorFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object :
+                OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    parentFragmentManager.popBackStack()
+                }
+            }
+        )
+
+        Observable.combineLatest(
+            vm.selectedLecture.asObservable().filterEmpty()
+                .map { it.colorIndex },
+            vm.selectedColor.asObservable()
+        ) { lectureColorIndex, selectedColorIndex ->
+            selectedColorIndex.value?.first ?: lectureColorIndex.toInt()
+        }.bindUi(this) { colorIndex ->
+            listOf(
+                binding.colorCustom,
+                binding.colorOne,
+                binding.colorTwo,
+                binding.colorThree,
+                binding.colorFour,
+                binding.colorFive,
+                binding.colorSix,
+                binding.colorSeven,
+                binding.colorEight,
+                binding.colorNine
+            ).forEachIndexed { index, item ->
+                item.checked.isVisible =
+                    index == colorIndex
+            }
+        }
 
         (vm.colorTheme ?: TimetableColorTheme.SNUTT).let { theme ->
             listOf(

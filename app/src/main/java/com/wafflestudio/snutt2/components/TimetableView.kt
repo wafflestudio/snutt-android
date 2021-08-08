@@ -84,6 +84,7 @@ class TimetableView : View {
     var lectures: List<LectureDto> = listOf()
         set(value) {
             field = value
+            invalidateTrimParam()
             invalidate()
         }
 

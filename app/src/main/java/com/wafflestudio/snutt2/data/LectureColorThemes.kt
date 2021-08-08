@@ -12,7 +12,7 @@ enum class TimetableColorTheme(val code: Int) {
     AUTUMN(2),
     CHERRY(3),
     ICE(4),
-    JADE(5);
+    GRASS(5);
 
     fun getColorByIndex(context: Context, colorIndex: Long): Int {
         return when (this) {
@@ -71,16 +71,16 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_ice_7),
                 context.getColor(R.color.theme_ice_8),
             )
-            JADE -> listOf(
-                context.getColor(R.color.theme_jade_0),
-                context.getColor(R.color.theme_jade_1),
-                context.getColor(R.color.theme_jade_2),
-                context.getColor(R.color.theme_jade_3),
-                context.getColor(R.color.theme_jade_4),
-                context.getColor(R.color.theme_jade_5),
-                context.getColor(R.color.theme_jade_6),
-                context.getColor(R.color.theme_jade_7),
-                context.getColor(R.color.theme_jade_8),
+            GRASS -> listOf(
+                context.getColor(R.color.theme_grass_0),
+                context.getColor(R.color.theme_grass_1),
+                context.getColor(R.color.theme_grass_2),
+                context.getColor(R.color.theme_grass_3),
+                context.getColor(R.color.theme_grass_4),
+                context.getColor(R.color.theme_grass_5),
+                context.getColor(R.color.theme_grass_6),
+                context.getColor(R.color.theme_grass_7),
+                context.getColor(R.color.theme_grass_8),
             )
         }[colorIndex.toInt() - 1]
     }
