@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:elevation="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:translationZ="1dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/drawer_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="12dp"
+            android:src="@drawable/ic_setting_unselected" />
+
+        <TextView
+            style="@style/Typo.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/timetable_app_bar_setting" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/settings_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/gray"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar"/>
+        android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

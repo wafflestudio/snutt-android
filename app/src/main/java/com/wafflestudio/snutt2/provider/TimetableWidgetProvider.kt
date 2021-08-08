@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.provider
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,27 +13,21 @@ import android.widget.RemoteViews
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
-import com.wafflestudio.snutt2.manager.LectureManager
-import com.wafflestudio.snutt2.manager.PrefStorage
-import com.wafflestudio.snutt2.ui.SplashActivity
-import com.wafflestudio.snutt2.view.TableView
+import com.wafflestudio.snutt2.components.TimetableView
+import com.wafflestudio.snutt2.data.MyLectureRepository
+import com.wafflestudio.snutt2.data.SettingsRepository
+import com.wafflestudio.snutt2.views.SplashActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/**
- * Created by makesource on 2017. 8. 19..
- */
 @AndroidEntryPoint
-class TimetableWidgetProvider : AppWidgetProvider() {
+class
+TimetableWidgetProvider : AppWidgetProvider() {
     @Inject
-    lateinit var prefStorage: PrefStorage
+    lateinit var myLectureRepository: MyLectureRepository
 
     @Inject
-    lateinit var lectureManager: LectureManager
-
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-    }
+    lateinit var settingsRepository: SettingsRepository
 
     override fun onUpdate(
         context: Context,
@@ -58,25 +53,44 @@ class TimetableWidgetProvider : AppWidgetProvider() {
     ) {
         val width = context.displayWidth.toInt()
         val height = context.displayHeight.toInt()
-        if (prefStorage.currentTable != null) {
-            val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(resultBitmap)
-            val table = TableView(context)
-            table.drawWidget(canvas, width, height)
+
+        myLectureRepository.lastViewedTable.get().value?.let { table ->
+            val tableView = TimetableView(context)
+
+            tableView.theme = table.theme
+            tableView.lectures = table.lectureList
+            tableView.trimParam = settingsRepository.tableTrimParam.get()
+
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+
+            tableView.measure(width, height)
+            tableView.layout(0, 0, width, height)
+            tableView.draw(canvas)
+
             views.setViewVisibility(R.id.placeholder, View.GONE)
-            views.setImageViewBitmap(R.id.table, resultBitmap)
+            views.setViewVisibility(R.id.table, View.VISIBLE)
+            views.setImageViewBitmap(R.id.table, bitmap)
+        } ?: run {
+            views.setViewVisibility(R.id.placeholder, View.VISIBLE)
+            views.setViewVisibility(R.id.table, View.GONE)
         }
     }
 
-    override fun onEnabled(context: Context) {
-        super.onEnabled(context)
-    }
-
-    override fun onDisabled(context: Context) {
-        super.onDisabled(context)
-    }
-
-    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        super.onDeleted(context, appWidgetIds)
+    companion object {
+        fun refreshWidget(context: Context) {
+            val intent = Intent(context, TimetableWidgetProvider::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            val ids: IntArray =
+                AppWidgetManager.getInstance(context)
+                    .getAppWidgetIds(
+                        ComponentName(
+                            context,
+                            TimetableWidgetProvider::class.java
+                        )
+                    )
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            context.sendBroadcast(intent)
+        }
     }
 }

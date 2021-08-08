@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by makesource on 2017. 2. 27..
  */
-abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutManager) :
+    RecyclerView.OnScrollListener() {
     // set visibleThreshold   default: 5
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -58,7 +59,8 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
                     if (totalItemCount < previousTotalItemCount) { // swipe refresh reload result to change list size ,reset page index
                         currentPage = startingPageIndex
                     } else if (totalItemCount == previousTotalItemCount) { // if load failure or load empty data , we rollback  page index
-                        currentPage = if (currentPage == startingPageIndex) startingPageIndex else --currentPage
+                        currentPage =
+                            if (currentPage == startingPageIndex) startingPageIndex else --currentPage
                     }
                     loading = false
                 }
@@ -105,7 +107,8 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
     private val lastVisibleItemPosition: Int
         private get() {
             var lastVisibleItemPosition = 0
-            lastVisibleItemPosition = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            lastVisibleItemPosition =
+                (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
             return lastVisibleItemPosition
         }
 

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <com.viewpagerindicator.CirclePageIndicator
         android:id="@+id/indicator"
-        android:padding="10dp"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        app:radius="4dp"
-        app:fillColor="#66000000" />
+        android:layout_height="wrap_content"
+        android:padding="10dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -33,9 +32,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="16sp"
             android:background="?selectableItemBackground"
-            android:text="로그인" />
+            android:text="로그인"
+            android:textSize="16sp" />
 
         <View
             android:layout_width="1dp"
@@ -47,9 +46,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="16sp"
             android:background="?selectableItemBackground"
-            android:text="가입" />
+            android:text="가입"
+            android:textSize="16sp" />
 
     </LinearLayout>
 

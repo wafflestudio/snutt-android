@@ -40,12 +40,12 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
     </style>
 
-    <style name="Text.ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title" >
+    <style name="Text.ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">18sp</item>
         <!--<item name="android:textStyle">bold</item>-->
     </style>
 
-    <style name="Text.ActionBarItemMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item" >
+    <style name="Text.ActionBarItemMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textSize">14sp</item>
         <!--<item name="android:textStyle">bold</item>-->
     </style>
@@ -59,11 +59,22 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
 
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/background_search_option</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
@@ -256,4 +267,43 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">17sp</item>
     </style>
+
+    <style name="Typo" />
+
+    <style name="Typo.Title">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_bold</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Typo.Title2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Typo.SubHeading">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Typo.SubHeading2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Typo.Details">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Typo.Details2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/spoqa_han_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:id="@+id/layout"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="로그인을 해주세요\n마지막에 본 시간표가 이곳에 표시됩니다"
-        android:textSize="15sp"
-        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/spoqa_han_sans_regular"
         android:gravity="center"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:text="로그인을 해주세요"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/table"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY" />
+
 </LinearLayout>

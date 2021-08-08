@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+        <TextView
+            style="@style/Text.AppTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/logo"
+            android:layout_marginTop="40dp"
+            android:textAlignment="center"
+            android:drawablePadding="15dp"
+            android:text="SNUTT" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
+
+            <EditText
+                android:id="@+id/input_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="15dp"
+                android:hint="아이디"
+                android:maxLines="1"
+                android:textSize="17sp"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/input_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="15dp"
+                android:inputType="textPassword"
+                android:hint="비밀번호"
+                android:textSize="17sp"
+                android:maxLines="1"/>
+
+            <EditText
+                android:id="@+id/input_password_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="15dp"
+                android:inputType="textPassword"
+                android:hint="비밀번호 확인"
+                android:textSize="17sp"
+                android:maxLines="1"/>
+
+            <EditText
+                android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="15dp"
+                android:inputType="textEmailAddress"
+                android:hint="이메일 입력"
+                android:textSize="17sp"
+                android:maxLines="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="30dp"
+                android:layout_height="45dp"
+                android:background="@drawable/border_gray">
+
+                <Button
+                    android:id="@+id/button_sign_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="회원가입"
+                    android:textSize="16sp"
+                    android:background="?selectableItemBackground"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#1A000000"/>
+
+                <TextView
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="or"
+                    android:textColor="#1A000000"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#1A000000"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_facebook"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="?selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/border_blue">
+
+                    <ImageView
+                        android:layout_width="9.5dp"
+                        android:layout_height="18dp"
+                        android:layout_marginEnd="7dp"
+                        android:src="@drawable/iconfacebook"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="#3c5dd4"
+                        android:text="페이스북으로 시작하기" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/terms_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_terms"
+                android:textSize="11sp"
+                android:background="?selectableItemBackground"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
