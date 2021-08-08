@@ -72,7 +72,7 @@ class TableThemeSheet(
                     TimetableColorTheme.AUTUMN to binding.autumnText,
                     TimetableColorTheme.CHERRY to binding.pinkText,
                     TimetableColorTheme.ICE to binding.iceText,
-                    TimetableColorTheme.JADE to binding.jadeText
+                    TimetableColorTheme.GRASS to binding.grassText
                 ).forEach { (theme, view) ->
                     view.background =
                         if (theme == it) requireContext().getDrawable(R.drawable.background_label)
@@ -86,7 +86,7 @@ class TableThemeSheet(
             binding.autumnButton to TimetableColorTheme.AUTUMN,
             binding.pinkButton to TimetableColorTheme.CHERRY,
             binding.iceButton to TimetableColorTheme.ICE,
-            binding.jadeButton to TimetableColorTheme.JADE
+            binding.grassButton to TimetableColorTheme.GRASS
         ).forEach { (view, theme) ->
             view.setOnClickListener {
                 vm.setSelectedPreviewTheme(theme)

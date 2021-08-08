@@ -167,7 +167,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/jade_button"
+                android:id="@+id/grass_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -177,17 +177,17 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/theme_preview_jade" />
+                    android:src="@drawable/theme_preview_grass" />
 
                 <TextView
-                    android:id="@+id/jade_text"
+                    android:id="@+id/grass_text"
                     style="@style/Typo.Details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp"
-                    android:text="@string/home_select_theme_jade" />
+                    android:text="@string/home_select_theme_grass" />
 
             </LinearLayout>
 
