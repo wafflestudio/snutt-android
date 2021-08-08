@@ -43,7 +43,8 @@ class TableThemeSheet(
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        vm.setSelectedPreviewTheme(vm.lastViewedTable.get().value?.theme)
+        // FIXME: selected preview 의 scope 를 제한하는 보다 좋은 방법을 찾자
+        vm.setSelectedPreviewTheme(null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
