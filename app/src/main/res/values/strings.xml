@@ -3,29 +3,6 @@
     <string name="privacy" translatable="false">privacy_policy</string>
     <string name="member" translatable="false">member</string>
 
-    <string name="action_timetable_list">시간표 목록</string>
-    <string name="action_settings">설정</string>
-    <string name="action_add">추가</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_create">저장</string>
-
-    <string name="wday_mon">월</string>
-    <string name="wday_tue">화</string>
-    <string name="wday_wed">수</string>
-    <string name="wday_thu">목</string>
-    <string name="wday_fri">금</string>
-    <string name="wday_sat">토</string>
-    <string name="wday_sun">일</string>
-    <string name="class_time">교시</string>
-    <string name="credit">학점</string>
-    <string name="add">+ 추가하기</string>
-    <string name="remove">— 제거하기</string>
-    <string name="click_back_twice">종료를 원하시면 뒤로 버튼을 한 번 더 눌러주세요</string>
-    <string name="search_query_hint">검색어를 입력하세요</string>
-    <string name="save_complete">이미지 저장이 완료되었습니다</string>
-    <string name="share_image">이미지 내보내기</string>
-
     <!-- For sign up fragment -->
     <string name="sign_up_terms">회원가입을 누르시면 <u><b>일반 이용 약관</b></u>에 동의하시게 됩니다.</string>
 
@@ -71,11 +48,8 @@
     <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
     <string name="error_unknown">알수없는 에러입니다</string>
-    <string name="action_capture_timetable">시간표 캡쳐</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="sign_up_button">가입하기</string>
-    <string name="login_button">로그인하기</string>
     <string name="sign_up_logo_title">SNUTT</string>
     <string name="sign_up_id_hint">아이디</string>
     <string name="sign_up_password_hint">비밀번호</string>
@@ -107,7 +81,6 @@
     <string name="notifications_placeholder_description">넣은 강좌의 수강편람이 바뀌거나, 새로운 수강편람이 뜨면 알림을 줍니다</string>
     <string name="notifications_placeholder_title">알림이 없습니다</string>
     <string name="common_network_failure">네트워크 연결 상태를 확인해주세요.</string>
-    <string name="settings_app_bar_title">설정</string>
     <string name="course_book_spring_semster">1학기</string>
     <string name="course_book_summer_semester">여름학기</string>
     <string name="course_book_authum">2학기</string>
@@ -129,7 +102,6 @@
     <string name="lecture_detail_top_bar_edit">편집</string>
     <string name="home_select_theme_confirm">적용</string>
     <string name="home_select_theme_title">시간표 색상 테마 변경</string>
-    <string name="home_select_theme_custom">커스텀</string>
     <string name="home_select_theme_snutt">SNUTT</string>
     <string name="home_select_theme_autumn">가을</string>
     <string name="home_select_theme_modern">모던</string>

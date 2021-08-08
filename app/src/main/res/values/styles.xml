@@ -77,80 +77,12 @@
         <item name="android:background">@drawable/background_search_option</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <!-- Text -->
     <style name="Text"></style>
 
-    <style name="Text.TabLayout">
-        <item name="android:textColor">@drawable/tab_selectable_text</item>
-        <!--<item name="android:textStyle">bold</item>-->
-    </style>
-
-    <style name="Text.AddRemoveButton">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Text.MainLabel">
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Text.SmallLabel">
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:textSize">11sp</item>
-    </style>
-
-    <style name="Text.SmallLabelRed">
-        <item name="android:textColor">#ffff0000</item>
-        <item name="android:textSize">11sp</item>
-    </style>
-
     <!-- For searched lecture list -->
 
-    <style name="Text.LectureTitle">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Text.LectureSubTitle">
-        <item name="android:textColor">#9AFFFFFF</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="Text.LectureBody">
-        <item name="android:textColor">#ccffffff</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="Text.LectureDetail">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
     <!-- For my lecture list-->
-
-    <style name="Text.MyLectureTitle">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Text.MyLectureSubTitle">
-        <item name="android:textColor">#9a000000</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="Text.MyLectureBody">
-        <item name="android:textColor">#cd000000</item>
-        <item name="android:textSize">12sp</item>
-    </style>
 
     <style name="Text.SettingsTitle">
         <item name="android:textColor">#000000</item>
@@ -164,16 +96,6 @@
 
     <!--For notification-->
 
-    <style name="Text.NotificationTitle">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="Text.NotificationDetail">
-        <item name="android:textColor">#808080</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <!--For lecture detail-->
 
     <style name="Text.LectureDetailTitle1">
@@ -186,30 +108,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="Text.LectureDetailTitle2">
-        <item name="android:textColorHint">#808080</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <style name="Text.LectureDetailContent2">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
     <style name="Text.LectureDetailButton">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <!--For timetable list-->
-    <style name="Text.TimetableTitle">
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="Text.TimetableSection">
-        <item name="android:textSize">12sp</item>
-    </style>
 
 
     <!--For Welcome page-->
@@ -220,16 +124,6 @@
     </style>
 
     <!--For Table Create -->
-
-    <style name="Text.TableCreateTitle">
-        <item name="android:textColor">#9a000000</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="Text.TableCreateDetail">
-        <item name="android:textColor">#ff000000</item>
-        <item name="android:textSize">16sp</item>
-    </style>
 
     <!-- For Notification Placeholder -->
 
@@ -245,15 +139,6 @@
     </style>
 
     <!--For TagHelper-->
-    <style name="Text.TagHelper">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <style name="Text.TagHelperDisable">
-        <item name="android:textColor">#4C000000</item>
-        <item name="android:textSize">15sp</item>
-    </style>
 
     <!--For report Fragment-->
     <style name="Text.ReportTextView">
