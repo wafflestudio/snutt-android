@@ -112,6 +112,10 @@ class HomeFragment : BaseFragment() {
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     binding.bottomNavigation.selectedItemId = fragmentIndexMap[position]
+                    binding.root.setDrawerLockMode(
+                        if (position != 0) DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+                        else DrawerLayout.LOCK_MODE_UNLOCKED
+                    )
                 }
             }
         )

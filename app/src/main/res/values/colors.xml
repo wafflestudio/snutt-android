@@ -67,14 +67,14 @@
     <color name="theme_ice_7">#20363D</color>
     <color name="theme_ice_8">#6D8A96</color>
 
-    <color name="theme_jade_0">#4FBEAA</color>
-    <color name="theme_jade_1">#9FC1A4</color>
-    <color name="theme_jade_2">#5A8173</color>
-    <color name="theme_jade_3">#84AEB1</color>
-    <color name="theme_jade_4">#266F55</color>
-    <color name="theme_jade_5">#D0E0C4</color>
-    <color name="theme_jade_6">#59886D</color>
-    <color name="theme_jade_7">#476060</color>
-    <color name="theme_jade_8">#3D7068</color>
+    <color name="theme_grass_0">#4FBEAA</color>
+    <color name="theme_grass_1">#9FC1A4</color>
+    <color name="theme_grass_2">#5A8173</color>
+    <color name="theme_grass_3">#84AEB1</color>
+    <color name="theme_grass_4">#266F55</color>
+    <color name="theme_grass_5">#D0E0C4</color>
+    <color name="theme_grass_6">#59886D</color>
+    <color name="theme_grass_7">#476060</color>
+    <color name="theme_grass_8">#3D7068</color>
 
 </resources>

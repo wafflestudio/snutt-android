@@ -43,7 +43,8 @@ class TableThemeSheet(
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        vm.setSelectedPreviewTheme(vm.lastViewedTable.get().value?.theme)
+        // FIXME: selected preview 의 scope 를 제한하는 보다 좋은 방법을 찾자
+        vm.setSelectedPreviewTheme(null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,7 +73,7 @@ class TableThemeSheet(
                     TimetableColorTheme.AUTUMN to binding.autumnText,
                     TimetableColorTheme.CHERRY to binding.pinkText,
                     TimetableColorTheme.ICE to binding.iceText,
-                    TimetableColorTheme.JADE to binding.jadeText
+                    TimetableColorTheme.GRASS to binding.grassText
                 ).forEach { (theme, view) ->
                     view.background =
                         if (theme == it) requireContext().getDrawable(R.drawable.background_label)
@@ -86,7 +87,7 @@ class TableThemeSheet(
             binding.autumnButton to TimetableColorTheme.AUTUMN,
             binding.pinkButton to TimetableColorTheme.CHERRY,
             binding.iceButton to TimetableColorTheme.ICE,
-            binding.jadeButton to TimetableColorTheme.JADE
+            binding.grassButton to TimetableColorTheme.GRASS
         ).forEach { (view, theme) ->
             view.setOnClickListener {
                 vm.setSelectedPreviewTheme(theme)
