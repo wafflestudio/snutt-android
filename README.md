@@ -1,10 +1,17 @@
 # SNUTT-android
+
+[![CI](https://github.com/wafflestudio/SNUTT-android/actions/workflows/ci.yml/badge.svg)](https://github.com/wafflestudio/SNUTT-android/actions/workflows/ci.yml)
+<a href="https://gitmoji.dev">
+  <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
+</a>
+
 서울대학교 시간표 앱 SNUTT Project
 
 ## Branch Conventions
 - default branch: `develop`
 - PR 브랜치 명칭: `${username}/${YYMMDD}-${changes}` (e.g.: `sanggggg/210101-renewal-table-ui`)
 - merge convention: only squash merge
+- gitmoji
 
 ## Secrets
 - `app/src/staging/google-services.json`
