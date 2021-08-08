@@ -53,7 +53,7 @@ class CustomLectureDetailFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLectureDetailBinding.inflate(inflater, container, false)
         detailView = binding.lectureDetailView
 
@@ -159,7 +159,7 @@ class CustomLectureDetailFragment : BaseFragment() {
         editable = false
         ActivityCompat.invalidateOptionsMenu(activity)
         vm.lists!!.clear()
-        attachLectureDetailList(vm.getSelectedLecture().get())
+        attachLectureDetailList(vm.selectedLecture.get().value)
         adapter!!.notifyDataSetChanged()
     }
 
