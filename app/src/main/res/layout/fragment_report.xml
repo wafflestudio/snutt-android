@@ -1,46 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="18dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="이메일 (옵션)"
-        android:paddingLeft="4dp"
-        style="@style/Text.ReportTextView" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:elevation="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:translationZ="1dp">
 
-    <EditText
-        android:id="@+id/email_editText"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/back_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="12dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            style="@style/Typo.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="개발자 괴롭히기" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_send" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
-        android:hint="example@gmail.com"
-        android:inputType="textEmailAddress"
-        style="@style/Text.ReportEditText"/>
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="18dp"
+        android:paddingRight="20dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="15dp" />
+        <TextView
+            style="@style/Text.ReportTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:text="이메일 (옵션)" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="내용"
-        android:paddingLeft="4dp"
-        style="@style/Text.ReportTextView" />
+        <EditText
+            android:id="@+id/email_editText"
+            style="@style/Text.ReportEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="example@gmail.com"
+            android:inputType="textEmailAddress"
+            android:paddingBottom="15dp" />
 
-    <EditText
-        android:id="@+id/detail_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:hint="불편한 점이나 버그를 적어주세요." />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <TextView
+            style="@style/Text.ReportTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:text="내용" />
+
+        <EditText
+            android:id="@+id/detail_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:hint="불편한 점이나 버그를 적어주세요."
+            android:inputType="textMultiLine"
+            android:paddingBottom="15dp" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".views.logged_in.home.reviews.ReviewsFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:elevation="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:translationZ="1dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/drawer_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="12dp"
+            android:src="@drawable/ic_timetable_selected" />
+
+        <TextView
+            style="@style/Typo.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/reviews_app_bar_title" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spoqa_han_sans_regular"
+            android:text="강의평 기능을 준비중입니다."
+            android:textColor="@color/black"
+            android:textSize="17dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="169dp"
+            android:layout_height="177dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="25dp"
+            android:src="@drawable/img_reviews_coming_soon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spoqa_han_sans_regular"
+            android:text="\@wafflestudio"
+            android:textColor="@color/black"
+            android:textSize="9dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,20 +1,24 @@
 package com.wafflestudio.snutt2.di
 
-import android.content.Context
-import android.content.SharedPreferences
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.wafflestudio.snutt2.data.TimetableColorThemeAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
 
     @Provides
-    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
-        val preferenceName = context.packageName + "_preferences"
-        return context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
+    @Singleton
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .add(TimetableColorThemeAdapter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
     }
 }

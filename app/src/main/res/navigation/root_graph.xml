@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/tutorialFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.TutorialFragment"
+        android:label="fragment_tutorial"
+        tools:layout="@layout/fragment_tutorial">
+        <action
+            android:id="@+id/action_tutorialFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_tutorialFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/tutorialFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_out.SignUpFragment"
+        android:label="SignUpFragment">
+
+        <action
+            android:id="@+id/action_signUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/tutorialFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_tableLecturesFragment"
+            app:destination="@id/tableLecturesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_termsInfoFragment"
+            app:destination="@id/termsInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_userSettingsFragment"
+            app:destination="@id/userSettingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_timetableSettingsFragment"
+            app:destination="@id/timetableSettingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_teamInfoFragment"
+            app:destination="@id/teamInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_serviceInfoFragment"
+            app:destination="@id/serviceInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tableLecturesFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesFragment"
+        android:label="@layout/fragment_lecture_list"
+        tools:layout="@layout/fragment_lecture_list" />
+
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.notifications.NotificationsFragment"
+        android:label="@layout/fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/lectureDetailFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailFragment"
+        android:label="fragment_lecture_detail"
+        tools:layout="@layout/fragment_lecture_detail">
+        <argument
+            android:name="selectedLecture"
+            app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_lectureDetailFragment_to_lectureColorSelectorFragment"
+            app:destination="@id/lectureColorSelectorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/customLectureDetailFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.CustomLectureDetailFragment"
+        android:label="fragment_lecture_create"
+        tools:layout="@layout/fragment_lecture_create">
+
+        <argument
+            android:name="selectedLecture"
+            app:argType="com.wafflestudio.snutt2.lib.network.dto.core.LectureDto"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_customLectureDetailFragment_to_lectureColorSelectorFragment"
+            app:destination="@id/lectureColorSelectorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/termsInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TermsInfoFragment"
+        android:label="fragment_terms_info"
+        tools:layout="@layout/fragment_terms_info" />
+    <action
+        android:id="@+id/startTutorial"
+        app:destination="@id/tutorialFragment"
+        app:popUpTo="@id/root_graph"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/userSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.UserSettingsFragment"
+        android:label="fragment_user_settings"
+        tools:layout="@layout/fragment_user_settings" />
+    <fragment
+        android:id="@+id/timetableSettingsFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TimetableSettingsFragment"
+        android:label="fragment_timetable_settings"
+        tools:layout="@layout/fragment_timetable_settings" />
+    <fragment
+        android:id="@+id/teamInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoFragment"
+        android:label="fragment_team_info"
+        tools:layout="@layout/fragment_team_info" />
+    <fragment
+        android:id="@+id/serviceInfoFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoFragment"
+        android:label="ServiceInfoFragment" />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.home.settings.ReportFragment"
+        android:label="ReportFragment" />
+    <fragment
+        android:id="@+id/lectureColorSelectorFragment"
+        android:name="com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorFragment"
+        android:label="LectureColorSelectorFragment" />
+    <action
+        android:id="@+id/action_global_lectureDetailFragment"
+        app:destination="@id/lectureDetailFragment" />
+    <action
+        android:id="@+id/action_global_customLectureDetailFragment"
+        app:destination="@id/customLectureDetailFragment" />
+
+</navigation>

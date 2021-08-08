@@ -7,7 +7,8 @@ import io.reactivex.rxjava3.exceptions.OnErrorNotImplementedException
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
 
-private val onErrorStub: (Throwable) -> Unit = { RxJavaPlugins.onError(OnErrorNotImplementedException(it)) }
+private val onErrorStub: (Throwable) -> Unit =
+    { RxJavaPlugins.onError(OnErrorNotImplementedException(it)) }
 
 interface RxBinder {
 

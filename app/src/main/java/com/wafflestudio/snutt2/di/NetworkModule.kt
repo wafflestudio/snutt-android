@@ -2,10 +2,10 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.network.SNUTTRestApi
+import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,17 +24,22 @@ import java.io.File
 object NetworkModule {
 
     @Provides
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
-
-    @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+    fun provideOkHttpClient(
+        @ApplicationContext context: Context,
+        storage: SNUTTStorage
+    ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
+            .addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader(
+                        "x-access-token",
+                        storage.accessToken.get()
+                    )
+                    .build()
+                chain.proceed(newRequest)
+            }
             .addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
@@ -54,7 +59,11 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideRetrofit(@ApplicationContext context: Context, okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
+    fun provideRetrofit(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient,
+        moshi: Moshi
+    ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(context.getString(R.string.api_server))

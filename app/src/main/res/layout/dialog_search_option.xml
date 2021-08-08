@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/tag_types"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toTopOf="@id/filter_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/academic_year_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="학년" />
+
+        <TextView
+            android:id="@+id/classification_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="구분"
+            android:textColor="@color/gray2" />
+
+        <TextView
+            android:id="@+id/credit_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="학점"
+            android:textColor="@color/gray2" />
+
+        <TextView
+            android:id="@+id/department_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="학과"
+            android:textColor="@color/gray2" />
+
+        <TextView
+            android:id="@+id/category_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="교양분류"
+            android:textColor="@color/gray2" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tag_items"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
+        app:fastScrollEnabled="true"
+        android:layout_marginEnd="20dp"
+        app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/fast_scroll_track"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/filter_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tag_types"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_tag" />
+
+
+    <TextView
+        android:id="@+id/filter_button"
+        style="@style/Typo.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1BD0C8"
+        android:gravity="center"
+        android:paddingVertical="20dp"
+        android:text="필터 적용"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="7dp">
+
+    <LinearLayout
+        android:id="@+id/click_area"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/check_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_vivid_check" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/timetable_app_bar_title"
+                android:textColor="@color/black"
+                android:textSize="14dp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/credit"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/credit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="none"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="@color/gray2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="(22학점)" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/duplicate_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_duplicate" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/more_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_more" />
+
+</LinearLayout>
