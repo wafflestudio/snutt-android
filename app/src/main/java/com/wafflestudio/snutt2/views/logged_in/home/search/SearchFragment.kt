@@ -26,7 +26,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class SearchFragment : BaseFragment() {
 
