@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.view.focusChanges
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
@@ -24,6 +25,7 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment() {
@@ -112,6 +114,22 @@ class SearchFragment : BaseFragment() {
         binding.filterButton.clicks()
             .bindUi(this) {
                 bottomSheet.show(parentFragmentManager, "tag_selector")
+            }
+
+        binding.clearButton.clicks()
+            .bindUi(this) {
+                binding.textEdit.text.clear()
+                binding.textEdit.clearFocus()
+                (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                    requireView().windowToken,
+                    0
+                )
+            }
+
+        binding.textEdit.focusChanges()
+            .bindUi(this) { hasFocus ->
+                binding.clearButton.isVisible = hasFocus
+                binding.filterButton.isVisible = hasFocus.not()
             }
 
         binding.textEdit.setOnEditorActionListener { _, actionId, _ ->
