@@ -45,6 +45,13 @@
                 android:maxLines="1" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/clear_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_exit"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/filter_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -107,9 +114,9 @@
                     android:id="@+id/lecture_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
                     android:scrollbarThumbVertical="@drawable/recyclerview_dark_scrollbar"
                     android:scrollbars="vertical"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_lecture_search" />
 
