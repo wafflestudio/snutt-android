@@ -1,9 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.data.UserRepository
@@ -47,6 +49,7 @@ class ReportFragment : BaseFragment() {
                 if (binding.detailEditText.text.toString().isEmpty()) {
                     Toast.makeText(requireContext(), "내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
                 } else {
+                    hideSoftKeyboard()
                     val email = binding.emailEditText.text.toString()
                     val detail = binding.detailEditText.text.toString()
                     userRepository.postFeedback(email, detail)
@@ -63,5 +66,12 @@ class ReportFragment : BaseFragment() {
                         )
                 }
             }
+    }
+
+    private fun hideSoftKeyboard() {
+        (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+            requireView().windowToken,
+            0
+        )
     }
 }
