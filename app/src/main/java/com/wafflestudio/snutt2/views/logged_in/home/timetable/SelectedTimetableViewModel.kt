@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.data.*
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.DataProvider
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
-import com.wafflestudio.snutt2.lib.isRegularlyEquals
+import com.wafflestudio.snutt2.lib.isCourseNumberEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
@@ -35,7 +35,7 @@ class SelectedTimetableViewModel @Inject constructor(
         return myLectureRepository.currentTable
             .firstOrError()
             .flatMap {
-                val target = it.lectureList.findLast { lec -> lec.isRegularlyEquals(lecture) }
+                val target = it.lectureList.findLast { lec -> lec.isCourseNumberEquals(lecture) }
                 if (target != null) myLectureRepository.removeLecture(lectureId = target.id)
                 else myLectureRepository.addLecture(lectureId = lecture.id)
             }

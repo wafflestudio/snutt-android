@@ -57,7 +57,7 @@
             custom:tickStart="8"
             custom:tickInterval="1"
             custom:tickEnd="23"
-            custom:pinMaxFont="10sp"
+            custom:pinMaxFont="10dp"
             custom:connectingLineWeight="1dp"
             custom:pinColor="@color/colorAccent"
             custom:selectorColor="@color/colorAccent"

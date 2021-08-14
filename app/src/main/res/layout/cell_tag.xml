@@ -21,7 +21,7 @@
             android:gravity="center"
             android:text="컴공"
             android:textColor="#ffffff"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
         <ImageView
             android:id="@+id/remove"

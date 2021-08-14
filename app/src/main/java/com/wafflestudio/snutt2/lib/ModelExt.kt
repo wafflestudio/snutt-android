@@ -83,8 +83,12 @@ fun Long.getDefaultBgColorHex(): Int {
     return DEFAULT_BG[this.toInt()]
 }
 
-fun LectureDto.isRegularlyEquals(lectureDto: LectureDto): Boolean {
+fun LectureDto.isCourseNumberEquals(lectureDto: LectureDto): Boolean {
     return course_number != null && course_number == lectureDto.course_number
+}
+
+fun LectureDto.isLectureNumberEquals(lectureDto: LectureDto): Boolean {
+    return isCourseNumberEquals(lectureDto) && lecture_number != null && lecture_number == lectureDto.lecture_number
 }
 
 fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =

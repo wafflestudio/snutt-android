@@ -19,6 +19,7 @@ import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -156,6 +157,7 @@ class CustomLectureDetailFragment : BaseFragment() {
     }
 
     fun refreshFragment() {
+        hideSoftKeyboard()
         editable = false
         ActivityCompat.invalidateOptionsMenu(activity)
         vm.lists!!.clear()
@@ -221,6 +223,7 @@ class CustomLectureDetailFragment : BaseFragment() {
     }
 
     private fun setNormalMode() {
+        hideSoftKeyboard()
         editable = false
         for (i in vm.lists!!.indices) {
             val it = vm.lists!![i]

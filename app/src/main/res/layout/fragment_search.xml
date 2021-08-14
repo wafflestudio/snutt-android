@@ -15,7 +15,7 @@
         android:elevation="1dp"
         android:translationZ="1dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
@@ -30,9 +30,12 @@
                 android:id="@+id/search_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_search" />
+                android:src="@drawable/ic_search"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
+            <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
                 android:id="@+id/text_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -42,22 +45,34 @@
                 android:hint="검색어를 입력하세요."
                 android:imeOptions="actionSearch"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textIsSelectable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/clear_button"
+                app:layout_constraintStart_toEndOf="@id/search_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/clear_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_exit"
-                android:visibility="gone" />
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/filter_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_filter" />
+                android:src="@drawable/ic_filter"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
@@ -146,7 +161,7 @@
                     android:gravity="center"
                     android:text="검색결과가 없습니다"
                     android:textColor="#B3FFFFFF"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
             </LinearLayout>
 

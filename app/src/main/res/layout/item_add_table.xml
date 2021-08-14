@@ -13,6 +13,6 @@
         android:minHeight="22dp"
         android:text="@string/home_drawer_timetable_add_button"
         android:textColor="@color/gray2"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
 </LinearLayout>

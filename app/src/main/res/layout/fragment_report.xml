@@ -57,7 +57,7 @@
             android:paddingLeft="4dp"
             android:text="이메일 (옵션)" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/email_editText"
             style="@style/Text.ReportEditText"
             android:layout_width="match_parent"
@@ -77,7 +77,7 @@
             android:paddingLeft="4dp"
             android:text="내용" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/detail_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -173,6 +174,7 @@ class LectureDetailFragment : BaseFragment() {
     private fun setNormalMode() {
         try {
             vm.setEditMode(false)
+            hideSoftKeyboard()
             for (i in vm.lists.indices) {
                 val it = vm.lists[i]
                 it.isEditable = false
