@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
@@ -158,11 +159,14 @@ class HomeFragment : BaseFragment() {
                 binding.root.close()
                 tableListViewModel.changeSelectedTable(it.id)
             },
-            onDuplicateItem = {
-                tableListViewModel.copyTable(it.id)
+            onDuplicateItem = { table ->
+                tableListViewModel.copyTable(table.id)
                     .bindUi(
                         this,
-                        onError = apiOnError
+                        onError = apiOnError,
+                        onSuccess = {
+                            requireContext().toast("\"${table.title}\" 강좌가 복사되었습니다.")
+                        }
                     )
             },
             onShowMoreItem = {
