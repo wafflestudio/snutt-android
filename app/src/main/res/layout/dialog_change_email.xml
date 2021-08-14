@@ -16,6 +16,6 @@
         android:hint="example@gmail.com"
         android:paddingBottom="15dp"
         android:inputType="textEmailAddress"
-        android:textSize="16sp"/>
+        android:textSize="16dp"/>
 
 </LinearLayout>

@@ -36,7 +36,7 @@
             android:inputType="text"
             android:maxLines="1"
             android:paddingBottom="15dp"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
 
         <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password_input"
@@ -48,7 +48,7 @@
             android:inputType="textPassword"
             android:maxLines="1"
             android:paddingBottom="15dp"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
 
         <Button
             android:id="@+id/login_button"
@@ -57,7 +57,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/border_gray"
             android:text="@string/sign_in_sign_in_button"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sign_up_sign_up_facebook_button"
                 android:textColor="#3c5dd4"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
 
         </LinearLayout>
 
