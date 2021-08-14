@@ -62,7 +62,6 @@ fun ViewPager2.reduceDragSensitivity(sensitivityReduceFactor: Int) {
     ) // "8" was obtained experimentally
 }
 
-
 fun Fragment.hideSoftKeyboard() {
     (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
         requireView().windowToken,

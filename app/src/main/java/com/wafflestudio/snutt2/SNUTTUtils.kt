@@ -76,7 +76,7 @@ object SNUTTUtils {
     }
 
     // px to sp
-    fun Context.px2dp(px: Float): Float {
+    fun Context.px2sp(px: Float): Float {
         val scaledDensity = this.resources.displayMetrics.scaledDensity
         return px / scaledDensity
     }
