@@ -25,7 +25,6 @@ import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -128,6 +127,7 @@ class SearchFragment : BaseFragment() {
             .bindUi(this) {
                 binding.textEdit.text?.clear()
                 binding.textEdit.clearFocus()
+                searchViewModel.setTitle("")
                 hideSoftKeyboard()
             }
 
@@ -150,7 +150,7 @@ class SearchFragment : BaseFragment() {
 
         searchResultAdapter.loadingState()
             .bindUi(this) {
-                if (it.refresh is LoadState.NotLoading && it.refresh.endOfPaginationReached.not() && searchResultAdapter.itemCount < 1) {
+                if (it.refresh is LoadState.NotLoading && it.append.endOfPaginationReached.not() && searchResultAdapter.itemCount < 1) {
                     binding.placeholder.root.isVisible = true
                     binding.lectureList.isVisible = false
                     binding.empty.root.isVisible = false
