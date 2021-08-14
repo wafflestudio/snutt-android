@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="10dp" />
 
-    <EditText
+    <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="example@gmail.com"
         android:paddingBottom="15dp"
         android:inputType="textEmailAddress"
-        android:textSize="16sp"/>
+        android:textSize="16dp"/>
 
 </LinearLayout>

@@ -74,7 +74,7 @@ class SearchViewModel @Inject constructor(
                 it.toDataWithState(
                     LectureState(
                         selected = selected.get() == it,
-                        contained = containeds.any { lec -> lec.isRegularlyEquals(it) }
+                        contained = containeds.any { lec -> lec.isLectureNumberEquals(it) }
                     )
                 )
             }

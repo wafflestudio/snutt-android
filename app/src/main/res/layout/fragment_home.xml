@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/spoqa_han_sans_bold"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 tools:text="2021 2학기" />
 
             <androidx.appcompat.widget.AppCompatImageView

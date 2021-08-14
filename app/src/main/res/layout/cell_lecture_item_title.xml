@@ -19,7 +19,7 @@
         android:layout_marginLeft="20dp"
         style="@style/Text.LectureDetailTitle1"/>
 
-    <EditText
+    <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
         android:id="@+id/text_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

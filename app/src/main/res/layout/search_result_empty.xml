@@ -22,6 +22,6 @@
         android:gravity="center"
         android:text="검색 결과가 없습니다."
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18dp" />
 
 </LinearLayout>

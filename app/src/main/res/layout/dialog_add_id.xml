@@ -12,13 +12,13 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="15dp"
             android:hint="아이디"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -26,13 +26,13 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="15dp"
             android:hint="비밀번호"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -40,13 +40,13 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="15dp"
             android:hint="비밀번호 확인"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 

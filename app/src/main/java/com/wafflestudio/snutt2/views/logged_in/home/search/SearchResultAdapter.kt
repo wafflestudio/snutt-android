@@ -64,6 +64,9 @@ class SearchResultAdapter(
             if (data.state.selected) {
                 binding.tag.text = lecture.remark
                 binding.tag.ellipsize = TextUtils.TruncateAt.MARQUEE
+                binding.content.setBackgroundColor(binding.root.context.getColor(R.color.black_a40))
+            } else {
+                binding.content.setBackgroundColor(binding.root.context.getColor(R.color.transparent))
             }
 
             binding.tag.let { tagView ->
