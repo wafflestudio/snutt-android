@@ -16,6 +16,9 @@
     <color name="white">#ffffff</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="black">#FF000000</color>
+    <color name="black_a40">#60000000</color>
+
+    <color name="transparent">#00000000</color>
 
     <color name="theme_snutt_0">#E54459</color>
     <color name="theme_snutt_1">#F58D3D</color>
