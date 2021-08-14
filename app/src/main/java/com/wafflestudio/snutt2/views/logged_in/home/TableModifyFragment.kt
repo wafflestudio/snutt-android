@@ -38,6 +38,8 @@ class TableModifyFragment(
 
     private val selectedTimetableViewModel: SelectedTimetableViewModel by activityViewModels()
 
+    var tableTitle: String = tableDto.title // so dirty
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,11 +56,12 @@ class TableModifyFragment(
             .flatMapMaybe {
                 dialogController.showTextDialog(
                     R.string.home_drawer_change_name_dialog_title,
-                    tableDto.title,
+                    tableTitle,
                     R.string.home_drawer_change_name_dialog_hint
                 )
             }
             .flatMapCompletable {
+                tableTitle = it
                 tableListViewModel.changeNameTable(tableDto.id, it)
             }
             .observeOn(AndroidSchedulers.mainThread())
