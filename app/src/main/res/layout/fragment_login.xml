@@ -26,7 +26,7 @@
         android:orientation="vertical"
         android:paddingHorizontal="30dp">
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/id_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:paddingBottom="15dp"
             android:textSize="17sp" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

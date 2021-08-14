@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:paddingHorizontal="30dp">
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/id_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:paddingBottom="15dp"
             android:textSize="17sp" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:paddingBottom="15dp"
             android:textSize="17sp" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/password_confirm_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,17 +60,17 @@
             android:paddingBottom="15dp"
             android:textSize="17sp" />
 
-        <EditText
+        <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
             android:id="@+id/email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:autofillHints="emailAddress"
             android:hint="@string/sign_up_eamil_input_hint"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:paddingBottom="15dp"
-            android:textSize="17sp"
-            android:autofillHints="emailAddress" />
+            android:textSize="17sp" />
 
         <Button
             android:id="@+id/sign_up_button"

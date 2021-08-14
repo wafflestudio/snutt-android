@@ -20,10 +20,12 @@ import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
+import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,13 +61,19 @@ class SearchFragment : BaseFragment() {
         tagAdapter = TagAdapter { searchViewModel.toggleTag(it) }
 
         searchResultAdapter = SearchResultAdapter(
-            onSelectLecture = { searchViewModel.toggleLectureSelection(it) },
+            onSelectLecture = {
+                searchViewModel.toggleLectureSelection(it)
+                hideSoftKeyboard()
+            },
             onToggleAddition = {
                 selectedTimetableViewModel.toggleLecture(it)
                     .bindUi(
                         this,
                         onError = apiOnError,
-                        onComplete = { searchViewModel.toggleLectureSelection(it) }
+                        onComplete = {
+                            searchViewModel.toggleLectureSelection(it)
+                            hideSoftKeyboard()
+                        }
                     )
             },
             onShowSyllabus = {
@@ -108,6 +116,7 @@ class SearchFragment : BaseFragment() {
             .bindUi(this) {
                 searchViewModel.setTitle(binding.textEdit.text.toString())
                 searchViewModel.refreshQuery()
+                hideSoftKeyboard()
             }
 
         binding.filterButton.clicks()
@@ -117,24 +126,22 @@ class SearchFragment : BaseFragment() {
 
         binding.clearButton.clicks()
             .bindUi(this) {
-                binding.textEdit.text.clear()
+                binding.textEdit.text?.clear()
                 binding.textEdit.clearFocus()
-                (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
-                    requireView().windowToken,
-                    0
-                )
+                hideSoftKeyboard()
             }
 
         binding.textEdit.focusChanges()
             .bindUi(this) { hasFocus ->
-                binding.clearButton.isVisible = hasFocus
-                binding.filterButton.isVisible = hasFocus.not()
+                binding.clearButton.visibility = if (hasFocus) View.VISIBLE else View.INVISIBLE
+                binding.filterButton.visibility = if (hasFocus) View.INVISIBLE else View.VISIBLE
             }
 
         binding.textEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchViewModel.setTitle(binding.textEdit.text.toString())
                 searchViewModel.refreshQuery()
+                hideSoftKeyboard()
                 true
             } else {
                 false
