@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.handler.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -99,6 +100,10 @@ class LoginFragment : BaseFragment() {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.loginFacebook(id, token)
+                        .subscribeBy(
+                            onError = { apiOnError(it) },
+                            onSuccess = { routeHome() }
+                        )
                 }
 
                 override fun onCancel() {
