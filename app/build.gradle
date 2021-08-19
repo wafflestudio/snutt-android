@@ -64,14 +64,14 @@ android {
     productFlavors {
         staging {
             applicationIdSuffix ".staging"
-            versionCode 20000001
-            versionName "2.0.0-rc.1"
+            versionCode 2000000999
+            versionName "2.0.0"
         }
 
         live {
             applicationIdSuffix ".live"
-            versionCode 20000001
-            versionName "2.0.0-rc.1"
+            versionCode 2000000999
+            versionName "2.0.0"
         }
     }
     kotlinOptions {
