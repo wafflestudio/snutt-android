@@ -106,8 +106,7 @@ class SNUTTStorage @Inject constructor(
         const val DOMAIN_SCOPE_PERMANENT = "domain_scope_permanent"
 
         // 레거시 대응을 위해 어쩔 수 없음..
-        const val DOMAIN_SCOPE_LOGIN = "com.wafflestudio.snutt2.live.preferences"
-
+        const val DOMAIN_SCOPE_LOGIN = "com.wafflestudio.snutt2.live_preferences"
         const val DOMAIN_SCOPE_CURRENT_VERSION = "domain_scope_current_version"
     }
 }
