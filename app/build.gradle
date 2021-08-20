@@ -47,16 +47,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
+
         release {
-            minifyEnabled true
-            proguardFile getDefaultProguardFile("proguard-android.txt")
-            proguardFile "proguard-common.pro"
-            proguardFile "proguard-crashlytics.pro"
-            proguardFile "proguard-gson.pro"
-            proguardFile "proguard-guava.pro"
-            proguardFile "proguard-retrofit.pro"
-            proguardFile "proguard-support-design.pro"
-            proguardFile "proguard-support-v7-appcompat.pro"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -64,14 +62,14 @@ android {
     productFlavors {
         staging {
             applicationIdSuffix ".staging"
-            versionCode 2000000999
-            versionName "2.0.0"
+            versionCode 2000002000
+            versionName "2.0.1"
         }
 
         live {
             applicationIdSuffix ".live"
-            versionCode 2000000999
-            versionName "2.0.0"
+            versionCode 2000002000
+            versionName "2.0.1"
         }
     }
     kotlinOptions {
