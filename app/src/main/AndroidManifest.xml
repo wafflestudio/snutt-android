@@ -70,7 +70,7 @@ id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.wafflestudio.snutt2.fileprovider"
+            android:authorities="@string/file_provider_authorities"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
