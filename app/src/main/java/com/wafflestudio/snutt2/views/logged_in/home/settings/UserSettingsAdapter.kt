@@ -73,9 +73,7 @@ class UserSettingsAdapter(private val lists: List<SettingsItem>) :
         }
 
         override fun onClick(v: View) {
-            if (clickListener != null) {
-                clickListener!!.onClick(v, position)
-            }
+            clickListener?.onClick(v, position)
         }
 
         init {
