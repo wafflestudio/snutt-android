@@ -110,7 +110,9 @@ class DialogController @Inject constructor(@ActivityContext private val context:
                             envelope: ColorEnvelope?,
                             fromUser: Boolean
                         ) {
-                            emitter.onSuccess(envelope?.color!!)
+                            envelope?.color?.let {
+                                emitter.onSuccess(it)
+                            }
                         }
                     }
                 )

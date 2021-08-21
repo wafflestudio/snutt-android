@@ -196,7 +196,7 @@ class UserSettingsFragment : BaseFragment() {
     }
 
     private fun performAddIdPassword() {
-        val layout = inflater!!.inflate(R.layout.dialog_add_id, null)
+        val layout = layoutInflater.inflate(R.layout.dialog_add_id, null)
         val alert = AlertDialog.Builder(requireContext())
         alert.setTitle("아이디 비빌번호 추가")
         alert.setView(layout)
@@ -317,7 +317,7 @@ class UserSettingsFragment : BaseFragment() {
             .bindUi(
                 this,
                 onSuccess = {
-                    facebookNameItem!!.detail = it.name
+                    facebookNameItem?.detail = it.name
                     adapter.notifyItemChanged(pos)
                 },
                 onError = {
