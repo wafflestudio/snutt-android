@@ -44,12 +44,13 @@
     <TextView
         android:id="@+id/description"
         style="@style/Typo.Details"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="7dp"
         android:ellipsize="end"
         android:maxLines="50"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="2021년도 여름학기 수강편람이 업데이트되었습니다." />
