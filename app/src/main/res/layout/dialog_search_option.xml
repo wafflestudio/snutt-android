@@ -61,6 +61,15 @@
             android:text="교양분류"
             android:textColor="@color/gray2" />
 
+        <TextView
+            android:id="@+id/etc_button"
+            style="@style/Typo.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="기타"
+            android:textColor="@color/gray2" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -68,8 +77,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="60dp"
-        app:fastScrollEnabled="true"
         android:layout_marginEnd="20dp"
+        app:fastScrollEnabled="true"
         app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
         app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
         app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"

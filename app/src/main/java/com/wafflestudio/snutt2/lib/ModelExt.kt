@@ -24,6 +24,20 @@ fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
     return false
 }
 
+fun List<LectureDto>.getClassTimeMask(): List<Int> {
+    val masks = IntArray(7)
+    for (lecture in this) {
+        for (i in lecture.class_time_mask.indices) {
+            val mask: Int = lecture.class_time_mask[i].toInt()
+            masks[i] = masks[i] or mask
+        }
+    }
+    for (i in 0..6) {
+        masks[i] = masks[i] xor 0x3FFFFFFF
+    }
+    return masks.toList()
+}
+
 fun CourseBookDto.toFormattedString(context: Context): String {
     val semesterStr = when (this.semester) {
         1L -> context.getString(R.string.course_book_spring_semster)
@@ -43,6 +57,7 @@ fun TagType.color(): Int {
         TagType.DEPARTMENT -> Color.rgb(27, 208, 200)
         TagType.INSTRUCTOR -> Color.rgb(29, 153, 232)
         TagType.CATEGORY -> Color.rgb(175, 86, 179)
+        TagType.ETC -> Color.rgb(0xaf, 0x56, 0xb3)
     }
 }
 

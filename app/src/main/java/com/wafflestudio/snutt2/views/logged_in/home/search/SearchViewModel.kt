@@ -47,7 +47,8 @@ class SearchViewModel @Inject constructor(
 
     val tagsByTagType: Observable<List<Selectable<TagDto>>> =
         Observable.combineLatest(
-            tagRepository.tags.asObservable(),
+            tagRepository.tags.asObservable()
+                .map { it + listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY) },
             _selectedTagType.asObservable(),
             _searchTags.asObservable()
         ) { tags, tagType, selected ->

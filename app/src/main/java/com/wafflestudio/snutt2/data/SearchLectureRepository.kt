@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingState
 import androidx.paging.rxjava3.RxPagingSource
+import com.wafflestudio.snutt2.lib.getClassTimeMask
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -23,6 +24,7 @@ class SearchLectureRepository @Inject constructor(
 
     fun getPagingSource(title: String, tags: List<TagDto>): Pager<Long, LectureDto> {
         val current = storage.lastViewedTable.get().get()!!
+        val lecturesMask = storage.lastViewedTable.get().get()?.lectureList?.getClassTimeMask()
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -35,7 +37,8 @@ class SearchLectureRepository @Inject constructor(
                     current.year,
                     current.semester,
                     title,
-                    tags
+                    tags,
+                    lecturesMask
                 )
             }
         )
@@ -48,7 +51,8 @@ class SearchLecturePagingSource @Inject constructor(
     private val year: Long,
     private val semester: Long,
     private val title: String,
-    private val tags: List<TagDto>
+    private val tags: List<TagDto>,
+    private val lecturesMask: List<Int>?
 ) : RxPagingSource<Long, LectureDto>() {
 
     override fun getRefreshKey(state: PagingState<Long, LectureDto>): Long? {
@@ -70,6 +74,14 @@ class SearchLecturePagingSource @Inject constructor(
                 instructor = tags.extractTagString(TagType.INSTRUCTOR),
                 department = tags.extractTagString(TagType.DEPARTMENT),
                 category = tags.extractTagString(TagType.CATEGORY),
+                time_mask = if (tags.contains(TagDto.ETC_EMPTY)) lecturesMask else null,
+                etc = tags.mapNotNull {
+                    when (it) {
+                        TagDto.ETC_ENG -> "E"
+                        TagDto.ETC_MILITARY -> "MO"
+                        else -> null
+                    }
+                }.ifEmpty { null },
                 offset = offset,
                 limit = loadSize
             )

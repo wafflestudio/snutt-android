@@ -60,6 +60,7 @@ class SearchOptionFragment : BottomSheetDialogFragment() {
             TagType.DEPARTMENT to binding.departmentButton,
             TagType.CREDIT to binding.creditButton,
             TagType.CLASSIFICATION to binding.classificationButton,
+            TagType.ETC to binding.etcButton,
         )
 
         adapter = TagSelectionAdapter {

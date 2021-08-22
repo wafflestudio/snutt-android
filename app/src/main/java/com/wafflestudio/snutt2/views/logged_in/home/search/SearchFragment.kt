@@ -25,6 +25,7 @@ import com.wafflestudio.snutt2.lib.rx.loadingState
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -169,7 +170,10 @@ class SearchFragment : BaseFragment() {
                 }
             }
 
-        binding.placeholder.searchIcon.throttledClicks()
+        Observable.merge(
+            binding.placeholder.searchIcon.throttledClicks(),
+            binding.empty.searchIcon.throttledClicks()
+        )
             .bindUi(this) {
                 binding.textEdit.requestFocus()
                 val imm =
