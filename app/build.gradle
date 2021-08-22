@@ -23,6 +23,9 @@ ktlint {
     disabledRules = ["import-ordering", "no-wildcard-imports"]
 }
 
+def versionProps = new Properties()
+file("version.properties").withInputStream { versionProps.load(it) }
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -62,14 +65,14 @@ android {
     productFlavors {
         staging {
             applicationIdSuffix ".staging"
-            versionCode 2000003900
-            versionName "2.0.3"
+            versionCode versionProps.getProperty("snuttVersionCode").toInteger()
+            versionName versionProps.getProperty("snuttVersionName")
         }
 
         live {
             applicationIdSuffix ".live"
-            versionCode 2000003900
-            versionName "2.0.3"
+            versionCode versionProps.getProperty("snuttVersionCode").toInteger()
+            versionName versionProps.getProperty("snuttVersionName")
         }
     }
     kotlinOptions {
