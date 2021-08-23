@@ -8,7 +8,6 @@ on:
 jobs:
   static-check:
     runs-on: ubuntu-18.04
-    needs: cancel-workflow
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
