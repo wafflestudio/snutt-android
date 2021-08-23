@@ -3,7 +3,9 @@ name: CD
 on:
   push:
     branches:
-      - 'sanggggg/210822-cd-flow'
+      - 'develop'
+    paths:
+      - 'app/version.properties'
 
 jobs:
   build:
@@ -43,6 +45,8 @@ jobs:
           VERSION="${PROPERTY/snuttVersionName=}"
           TITLE="SNUTT Android 빌드 알림"
           MESSAGE="${VERSION} 빌드 완료"
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
