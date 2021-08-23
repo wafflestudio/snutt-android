@@ -8,6 +8,20 @@ on:
       - 'app/version.properties'
 
 jobs:
+  static-check:
+    runs-on: ubuntu-18.04
+    needs: cancel-workflow
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Clean build
+        run: ./gradlew clean
+      - name: Run ktlintDebug
+        run: ./gradlew ktlintMainSourceSetCheck
+
   build:
     runs-on: ubuntu-18.04
     needs: static-check
