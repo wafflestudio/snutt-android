@@ -37,3 +37,16 @@ jobs:
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
           file: app/build/outputs/apk/staging/debug/app-staging-debug.apk
+      - name: Set Message
+        run: |
+          PROPERTY=$(head -n 1 app/version.properties)
+          VERSION="${PROPERTY/snuttVersionName=}"
+          TITLE="SNUTT Android 빌드 알림"
+          MESSAGE="${VERSION} 빌드 완료"
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: ${{ env.TITLE }}
+          SLACK_MESSAGE: ${{ env.MESSAGE }}
+          SLACK_USERNAME: BuildNoti
