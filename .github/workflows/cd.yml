@@ -6,22 +6,8 @@ on:
       - 'sanggggg/210822-cd-flow'
 
 jobs:
-  static-check:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Clean build
-        run: ./gradlew clean
-      - name: Run ktlintDebug
-        run: ./gradlew ktlintMainSourceSetCheck
-
   build:
     runs-on: ubuntu-18.04
-    needs: static-check
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
@@ -34,7 +20,7 @@ jobs:
         run: |
           mkdir -p ./app/src/staging
           cat << EOF > ./app/src/staging/google-services.json
-          ${{ secrets.google_services_json_live }}
+          ${{ secrets.google_services_json }}
           EOF
       - name: Setup secrets.xml
         run: |
