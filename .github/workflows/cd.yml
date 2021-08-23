@@ -26,7 +26,7 @@ jobs:
         run: |
           mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml_live }}
+          ${{ secrets.secrets_xml }}
           EOF
       - name: Build debug apk
         run: ./gradlew assembleStagingDebug --stacktrace
