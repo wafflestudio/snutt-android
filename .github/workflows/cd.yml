@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'sanggggg/210822-cd-flow'
-    paths:
-      - 'app/version.properties'
 
 jobs:
   static-check:
