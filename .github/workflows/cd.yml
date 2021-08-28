@@ -3,7 +3,9 @@ name: CD
 on:
   push:
     branches:
-      - 'sanggggg/210828-upload-release-app'
+      - 'develop'
+    paths:
+      - 'app/version.properties'
 
 jobs:
   build:
@@ -47,3 +49,18 @@ jobs:
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
           file: app/build/outputs/apk/live/release/app-live-release.aab
+      - name: Set Message
+        run: |
+          PROPERTY=$(head -n 1 app/version.properties)
+          VERSION="${PROPERTY/snuttVersionName=}"
+          TITLE="SNUTT Android 빌드 알림"
+          MESSAGE="${VERSION} 빌드 완료"
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: ${{ env.TITLE }}
+          SLACK_MESSAGE: ${{ env.MESSAGE }}
+          SLACK_USERNAME: BuildNoti
