@@ -35,6 +35,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.Observables
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
@@ -133,6 +134,7 @@ class TimetableFragment : BaseFragment() {
                     .bindUi(
                         this@TimetableFragment,
                         onError = {
+                            Timber.e(it)
                             requireContext().toast("시간표 공유에 실패하였습니다.")
                         },
                         onSuccess = {
@@ -210,7 +212,7 @@ class TimetableFragment : BaseFragment() {
             stream.close()
             return@fromCallable FileProvider.getUriForFile(
                 requireContext(),
-                "com.wafflestudio.snutt2.fileprovider",
+                requireContext().getString(R.string.file_provider_authorities),
                 file
             )
         }
