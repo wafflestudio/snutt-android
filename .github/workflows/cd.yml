@@ -30,15 +30,25 @@ jobs:
           cat << EOF > ./app/src/staging/res/values/secrets.xml
           ${{ secrets.secrets_xml }}
           EOF
-      - name: Build debug apk
-        run: ./gradlew assembleStagingDebug --stacktrace
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: 'keystore/your_signing_keystore.jks'
+          encodedString: ${{ secrets.KEYSTORE }}
+      - name: Build production apk
+        run: ./gradlew bundleLiveRelease --stacktrace
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
-          file: app/build/outputs/apk/staging/debug/app-staging-debug.apk
+          file: app/build/outputs/apk/live/release/app-live-release.aab
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 app/version.properties)
