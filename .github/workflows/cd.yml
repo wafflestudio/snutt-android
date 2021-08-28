@@ -32,9 +32,8 @@ jobs:
         env:
           ENCODED_STRING: ${{ secrets.KEYSTORE }}
         run: |
-          TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-          mkdir "${TMP_KEYSTORE_FILE_PATH}"
-          echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/android.jks
+          mkdir -p ./app/keystore
+          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
       - name: Build production apk
         run: ./gradlew bundleLiveRelease --stacktrace
         env:
