@@ -210,7 +210,7 @@ class TimetableFragment : BaseFragment() {
             stream.close()
             return@fromCallable FileProvider.getUriForFile(
                 requireContext(),
-                "com.wafflestudio.snutt2.fileprovider",
+                requireContext().getString(R.string.file_provider_authorities),
                 file
             )
         }
