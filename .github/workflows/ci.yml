@@ -48,17 +48,17 @@ jobs:
           java-version: 1.8
       - name: Clean build
         run: ./gradlew clean
-      - name: Setup google-services.json
+      - name: Setup google-services.json (Staging)
         run: |
           mkdir -p ./app/src/staging
           cat << EOF > ./app/src/staging/google-services.json
-          ${{ secrets.google_services_json }}
+          ${{ secrets.google_services_json_staging }}
           EOF
-      - name: Setup secrets.xml
+      - name: Setup secrets.xml (Staging)
         run: |
           mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml }}
+          ${{ secrets.secrets_xml_staging }}
           EOF
       - name: Build debug APK
         run: ./gradlew assembleStagingDebug --stacktrace

@@ -45,10 +45,14 @@ android {
         targetCompatibility 1.8
     }
 
-    viewBinding {
-        enabled = true
+    signingConfigs {
+        release {
+            storeFile file("keystore/android.jks")
+            storePassword System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+        }
     }
-
     buildTypes {
         debug {
             minifyEnabled false
@@ -57,8 +61,14 @@ android {
 
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+
+    viewBinding {
+        enabled = true
     }
 
     flavorDimensions "mode"
