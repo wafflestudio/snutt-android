@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.manager
+package com.wafflestudio.snutt2.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
