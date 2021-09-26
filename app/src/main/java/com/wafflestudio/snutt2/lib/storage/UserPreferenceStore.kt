@@ -7,6 +7,7 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.data.SNUTTStorage
@@ -31,6 +32,7 @@ val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
                 context,
                 SNUTTStorage.DOMAIN_SCOPE_LOGIN
             ) { sharedPrefs: SharedPreferencesView, currentData: UserPreferences ->
+                @Suppress("BlockingMethodInNonBlockingContext")
                 withContext(Dispatchers.IO) {
                     if (currentData.accessToken.isEmpty()) return@withContext null
                     val userId =
@@ -52,6 +54,7 @@ val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
     }
 )
 
+@JsonClass(generateAdapter = true)
 data class UserPreferences(
     val userId: String,
     val accessToken: String,
@@ -67,6 +70,7 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
 
     override suspend fun readFrom(input: InputStream): UserPreferences {
         return try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             withContext(Dispatchers.IO) {
                 moshi.adapter(UserPreferences::class.java)
                     .fromJson(input.source().buffer())
@@ -78,6 +82,7 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
     }
 
     override suspend fun writeTo(t: UserPreferences, output: OutputStream) {
+        @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
             moshi.adapter(UserPreferences::class.java)
                 .toJson(output.sink().buffer(), t)
