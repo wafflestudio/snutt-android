@@ -156,6 +156,7 @@ dependencies {
     implementation "com.github.skydoves:colorpickerview:2.2.3"
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.tbuonomo:dotsindicator:4.2'
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
