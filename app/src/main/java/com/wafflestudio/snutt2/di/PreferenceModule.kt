@@ -9,9 +9,7 @@ import com.wafflestudio.snutt2.lib.preferences.cache.PrefCacheImpl
 import com.wafflestudio.snutt2.lib.preferences.context.PrefContext
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorageImpl
-import com.wafflestudio.snutt2.lib.storage.UserPreferences
-import com.wafflestudio.snutt2.lib.storage.UserPreferencesSerializer
-import com.wafflestudio.snutt2.lib.storage.userPreferencesStore
+import com.wafflestudio.snutt2.lib.storage.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,5 +46,25 @@ object PreferenceModule {
     fun provideUserPreferencesStore(context: Context, moshi: Moshi): DataStore<UserPreferences> {
         UserPreferencesSerializer.moshi = moshi
         return context.userPreferencesStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrentTablePreferencesStore(
+        context: Context,
+        moshi: Moshi
+    ): DataStore<CurrentTablePreferences> {
+        CurrentTablePreferencesSerializer.moshi = moshi
+        return context.currentTablePreferencesStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideTableMapPreferencesStore(
+        context: Context,
+        moshi: Moshi
+    ): DataStore<TableMapPreferences> {
+        TableMapPreferencesSerializer.moshi = moshi
+        return context.tableMapPreferencesStore
     }
 }
