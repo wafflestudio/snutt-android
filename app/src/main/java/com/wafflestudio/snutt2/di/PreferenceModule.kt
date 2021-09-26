@@ -1,12 +1,17 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import com.squareup.moshi.Moshi
+import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.preferences.cache.PrefCache
 import com.wafflestudio.snutt2.lib.preferences.cache.PrefCacheImpl
 import com.wafflestudio.snutt2.lib.preferences.context.PrefContext
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorageImpl
+import com.wafflestudio.snutt2.lib.storage.UserPreferences
+import com.wafflestudio.snutt2.lib.storage.UserPreferencesSerializer
+import com.wafflestudio.snutt2.lib.storage.userPreferencesStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,5 +41,12 @@ object PreferenceModule {
     @Singleton
     fun providePrefCache(): PrefCache {
         return PrefCacheImpl(64)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserPreferencesStore(context: Context, moshi: Moshi): DataStore<UserPreferences> {
+        UserPreferencesSerializer.moshi = moshi
+        return context.userPreferencesStore
     }
 }
