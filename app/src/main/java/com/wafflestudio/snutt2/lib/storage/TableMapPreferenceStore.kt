@@ -5,10 +5,10 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -26,11 +26,11 @@ val Context.tableMapPreferencesStore: DataStore<TableMapPreferences> by dataStor
     serializer = TableMapPreferencesSerializer,
 )
 
+@JsonClass(generateAdapter = true)
 data class TableMapPreferences(
     val map: Map<String, SimpleTableDto>
 )
 
-@Suppress("BlockingMethodInNonBlockingContext")
 object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
     lateinit var moshi: Moshi
 
@@ -38,6 +38,7 @@ object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
 
     override suspend fun readFrom(input: InputStream): TableMapPreferences {
         return try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             withContext(Dispatchers.IO) {
                 moshi.adapter(TableMapPreferences::class.java)
                     .fromJson(input.source().buffer())
@@ -49,6 +50,7 @@ object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
     }
 
     override suspend fun writeTo(t: TableMapPreferences, output: OutputStream) {
+        @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
             moshi.adapter(TableMapPreferences::class.java)
                 .toJson(output.sink().buffer(), t)

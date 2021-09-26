@@ -5,6 +5,7 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -25,6 +26,7 @@ val Context.currentTablePreferencesStore: DataStore<CurrentTablePreferences> by 
     serializer = CurrentTablePreferencesSerializer,
 )
 
+@JsonClass(generateAdapter = true)
 data class CurrentTablePreferences(
     val data: TableDto?
 )
@@ -37,6 +39,7 @@ object CurrentTablePreferencesSerializer : Serializer<CurrentTablePreferences> {
 
     override suspend fun readFrom(input: InputStream): CurrentTablePreferences {
         return try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             withContext(Dispatchers.IO) {
                 moshi.adapter(CurrentTablePreferences::class.java)
                     .fromJson(input.source().buffer())
@@ -48,6 +51,7 @@ object CurrentTablePreferencesSerializer : Serializer<CurrentTablePreferences> {
     }
 
     override suspend fun writeTo(t: CurrentTablePreferences, output: OutputStream) {
+        @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
             moshi.adapter(CurrentTablePreferences::class.java)
                 .toJson(output.sink().buffer(), t)
