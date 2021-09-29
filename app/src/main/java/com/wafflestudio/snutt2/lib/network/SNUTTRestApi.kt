@@ -356,4 +356,9 @@ interface SNUTTRestApi {
 
     @DELETE("/user/account")
     suspend fun _deleteUserAccount(): DeleteUserAccountResults
+
+    @POST("/feedback")
+    suspend fun _postFeedback(
+        @Body body: PostFeedbackParams
+    ): PostFeedbackResults
 }
