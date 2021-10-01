@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.storage.UserPreferences
+import com.wafflestudio.snutt2.model.TableTrimParam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -26,6 +27,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override val user: Flow<UserDto> = userStore.data
         .map { it.data }
+        .filterNotNull()
+
+    override val tableTrimParam: Flow<TableTrimParam> = userStore.data
+        .map { it.tableTrimParam }
         .filterNotNull()
 
     override suspend fun postSignIn(id: String, password: String) {
@@ -151,7 +156,7 @@ class UserRepositoryImpl @Inject constructor(
     private suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         userStore.updateData {
-            UserPreferences("", "", null)
+            UserPreferences()
         }
     }
 
