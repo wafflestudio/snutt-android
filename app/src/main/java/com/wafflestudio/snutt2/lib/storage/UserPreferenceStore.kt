@@ -12,6 +12,7 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.TableTrimParam
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -56,9 +57,10 @@ val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
 
 @JsonClass(generateAdapter = true)
 data class UserPreferences(
-    val userId: String,
-    val accessToken: String,
-    val data: UserDto?
+    val userId: String = "",
+    val accessToken: String = "",
+    val data: UserDto? = null,
+    val tableTrimParam: TableTrimParam = TableTrimParam.Default
 )
 
 // TODO: DataStore 에서 데이터 업데이트 시 read flow 에 serialize 과정 없이 업데이트가 전달되는지 확인하기
@@ -66,7 +68,7 @@ data class UserPreferences(
 object UserPreferencesSerializer : Serializer<UserPreferences> {
     lateinit var moshi: Moshi
 
-    override val defaultValue: UserPreferences = UserPreferences("", "", null)
+    override val defaultValue: UserPreferences = UserPreferences()
 
     override suspend fun readFrom(input: InputStream): UserPreferences {
         return try {
