@@ -81,11 +81,7 @@ android {
     }
 
     buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion rootProject.composeVersion
+//        compose true
     }
 }
 
@@ -139,14 +135,14 @@ dependencies {
     implementation "androidx.paging:paging-rxjava3:$paging_version"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:$rootProject.composeVersion"
-    implementation "androidx.compose.ui:ui:$rootProject.composeVersion"
-    implementation "androidx.compose.foundation:foundation:$rootProject.composeVersion"
-    implementation "androidx.compose.foundation:foundation-layout:$rootProject.composeVersion"
-    implementation "androidx.compose.material:material:$rootProject.composeVersion"
-    implementation "androidx.compose.runtime:runtime-livedata:$rootProject.composeVersion"
-    implementation "androidx.compose.ui:ui-tooling:$rootProject.composeVersion"
-    implementation "com.google.android.material:compose-theme-adapter:$rootProject.composeVersion"
+//    implementation "androidx.compose.runtime:runtime:$rootProject.composeVersion"
+//    implementation "androidx.compose.ui:ui:$rootProject.composeVersion"
+//    implementation "androidx.compose.foundation:foundation:$rootProject.composeVersion"
+//    implementation "androidx.compose.foundation:foundation-layout:$rootProject.composeVersion"
+//    implementation "androidx.compose.material:material:$rootProject.composeVersion"
+//    implementation "androidx.compose.runtime:runtime-livedata:$rootProject.composeVersion"
+//    implementation "androidx.compose.ui:ui-tooling:$rootProject.composeVersion"
+//    implementation "com.google.android.material:compose-theme-adapter:$rootProject.composeVersion"
 
     // misc
     implementation "androidx.drawerlayout:drawerlayout:1.1.1"
