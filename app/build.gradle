@@ -87,6 +87,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        useIR = true
+    }
+
+    buildFeatures {
+//        compose true
     }
 }
 
@@ -103,6 +108,8 @@ dependencies {
     implementation "com.github.JakeWharton:ViewPagerIndicator:2.4.1"
 
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
 
     // Moshi
     implementation 'com.squareup.moshi:moshi:1.12.0'
@@ -137,6 +144,16 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
     implementation "androidx.paging:paging-rxjava3:$paging_version"
 
+    // Compose
+//    implementation "androidx.compose.runtime:runtime:$rootProject.composeVersion"
+//    implementation "androidx.compose.ui:ui:$rootProject.composeVersion"
+//    implementation "androidx.compose.foundation:foundation:$rootProject.composeVersion"
+//    implementation "androidx.compose.foundation:foundation-layout:$rootProject.composeVersion"
+//    implementation "androidx.compose.material:material:$rootProject.composeVersion"
+//    implementation "androidx.compose.runtime:runtime-livedata:$rootProject.composeVersion"
+//    implementation "androidx.compose.ui:ui-tooling:$rootProject.composeVersion"
+//    implementation "com.google.android.material:compose-theme-adapter:$rootProject.composeVersion"
+
     // misc
     implementation "androidx.drawerlayout:drawerlayout:1.1.1"
     implementation 'com.facebook.android:facebook-login:11.1.0'
@@ -145,6 +162,7 @@ dependencies {
     implementation "com.github.skydoves:colorpickerview:2.2.3"
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.tbuonomo:dotsindicator:4.2'
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

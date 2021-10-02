@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.handler.ApiOnError
-import com.wafflestudio.snutt2.manager.NotificationsRepository
+import com.wafflestudio.snutt2.data.NotificationsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
