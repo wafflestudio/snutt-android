@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import androidx.datastore.core.DataStore
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -20,6 +21,11 @@ class CurrentTableRepositoryImpl @Inject constructor(
         .map { it.data }
         .filterNotNull()
         .distinctUntilChanged()
+
+    private val _previewTheme = MutableStateFlow<TimetableColorTheme?>(null)
+
+    override val previewTheme: Flow<TimetableColorTheme?>
+        get() = _previewTheme
 
     override suspend fun addLecture(lectureId: String) {
         currentTableStore.updateData { prev ->
@@ -64,6 +70,10 @@ class CurrentTableRepositoryImpl @Inject constructor(
             val response = api._putLecture(prevTable.id, lectureId, target)
             prev.copy(data = response)
         }
+    }
+
+    override suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?) {
+        _previewTheme.value = previewTheme
     }
 
     override suspend fun getLectureSyllabusUrl(
