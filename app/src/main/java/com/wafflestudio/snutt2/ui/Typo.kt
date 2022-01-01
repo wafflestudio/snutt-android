@@ -30,26 +30,13 @@ val SnuttTypography = Typography(
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Bold
     ),
+    button = TextStyle(
+        color = Color.Black,
+        fontSize = 16.sp,
+        fontFamily = SpoqaHanSans,
+    )
 )
 
-//val a =
-//
-//val c = TextStyle(
-//    color = Color.Black,
-//    fontSize = 18.sp,
-//    fontFamily = SpoqaHanSans,
-//)
-//
-//val d = TextStyle(
-//    color = Color.Black,
-//    fontSize = 16.sp,
-//    fontFamily = SpoqaHanSans,
-//)
-//val e = TextStyle(
-//    color = Color.Black,
-//    fontSize = 15.sp,
-//    fontFamily = SpoqaHanSans,
-//)
 //val f = TextStyle(
 //    color = Color.Black,
 //    fontSize = 14.sp,
