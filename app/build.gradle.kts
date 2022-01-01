@@ -13,6 +13,8 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 }
 
+val composeVersion = "1.0.5"
+
 ktlint {
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
@@ -32,7 +34,7 @@ val versionProps = Properties().apply {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     repositories {
         mavenCentral()
@@ -41,7 +43,7 @@ android {
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 31
     }
 
     compileOptions {
@@ -91,8 +93,17 @@ android {
             versionName = versionProps.getProperty("snuttVersionName")
         }
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = composeVersion
     }
 }
 
@@ -127,8 +138,8 @@ dependencies {
     implementation("com.jakewharton.rxbinding4:rxbinding:4.0.0")
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.36")
-    kapt("com.google.dagger:hilt-android-compiler:2.36")
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
 
     // AAC Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
@@ -143,6 +154,16 @@ dependencies {
     implementation("androidx.paging:paging-runtime:3.0.0")
     implementation("androidx.paging:paging-rxjava3:3.0.0")
 
+    // Compose
+    implementation("androidx.compose.runtime:runtime:$composeVersion")
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+    implementation("androidx.compose.foundation:foundation-layout:$composeVersion")
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("com.google.android.material:compose-theme-adapter:$composeVersion")
+
     // misc
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
     implementation("com.facebook.android:facebook-login:11.1.0")
@@ -151,6 +172,7 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
 }
 
 repositories {
