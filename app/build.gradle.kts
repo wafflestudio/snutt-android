@@ -163,6 +163,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("com.google.android.material:compose-theme-adapter:$composeVersion")
+    implementation("com.google.accompanist:accompanist-pager:0.20.3")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
 
     // misc
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
