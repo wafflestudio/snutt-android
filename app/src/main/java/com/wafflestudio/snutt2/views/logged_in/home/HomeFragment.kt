@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto

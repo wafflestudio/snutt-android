@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.handler
+package com.wafflestudio.snutt2.lib.network
 
 import android.content.Context
 import android.util.Log

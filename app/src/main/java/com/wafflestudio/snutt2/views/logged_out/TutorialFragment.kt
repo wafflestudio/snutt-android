@@ -122,7 +122,9 @@ private fun TutorialScreen(
                 .align(Alignment.CenterHorizontally),
             pagerState = pagerState,
             activeColor = Gray400,
-            inactiveColor = Gray100
+            inactiveColor = Gray100,
+            indicatorHeight = 12.dp,
+            indicatorWidth = 12.dp,
         )
 
         ActionButtons(onClickSignIn = onClickSignIn, onClickSignUp = onClickSignUp)

@@ -17,7 +17,7 @@ import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard

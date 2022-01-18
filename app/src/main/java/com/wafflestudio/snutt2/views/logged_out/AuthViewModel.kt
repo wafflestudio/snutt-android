@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_out
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.UserRepository
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single

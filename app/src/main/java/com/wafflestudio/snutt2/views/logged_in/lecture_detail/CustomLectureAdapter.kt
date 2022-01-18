@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -38,13 +38,13 @@ import kotlin.math.max
  * Created by makesource on 2017. 3. 17..
  */
 class CustomLectureAdapter(
-    private val fragment: BaseFragment,
-    private val lists: ArrayList<LectureItem>,
-    private val myLectureRepository: MyLectureRepository,
-    private val apiOnError: ApiOnError,
-    private val lectureDto: LectureDto?,
-    private val onChangeColor: () -> Unit,
-    private val bindable: RxBindable
+        private val fragment: BaseFragment,
+        private val lists: ArrayList<LectureItem>,
+        private val myLectureRepository: MyLectureRepository,
+        private val apiOnError: ApiOnError,
+        private val lectureDto: LectureDto?,
+        private val onChangeColor: () -> Unit,
+        private val bindable: RxBindable
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var day = 0
     private var fromTime = 0
