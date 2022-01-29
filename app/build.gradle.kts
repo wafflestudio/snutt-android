@@ -175,6 +175,7 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
 }
 
 repositories {
