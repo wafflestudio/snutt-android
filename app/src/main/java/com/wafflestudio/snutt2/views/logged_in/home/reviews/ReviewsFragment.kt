@@ -14,6 +14,7 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
+import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +37,9 @@ class ReviewsFragment : BaseFragment() {
 
     @Inject
     lateinit var webViewUrlStream: WebViewUrlStream
+
+    @Inject
+    lateinit var snuttUrls: SnuttUrls
 
     private val loadState: MutableStateFlow<LoadState> = MutableStateFlow(LoadState.Loading)
 
@@ -83,8 +87,7 @@ class ReviewsFragment : BaseFragment() {
                 reloadWebView()
             }
 
-
-        reloadWebView(getString(R.string.review_base_url) + "/main")
+        reloadWebView(snuttUrls.getReviewMain())
 
         webViewUrlStream.urlStream
             .observeOn(AndroidSchedulers.mainThread())

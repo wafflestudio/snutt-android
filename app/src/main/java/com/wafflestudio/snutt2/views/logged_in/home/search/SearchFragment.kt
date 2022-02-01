@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
+import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -44,6 +45,9 @@ class SearchFragment : BaseFragment() {
 
     @Inject
     lateinit var apiService: SNUTTRestApi
+
+    @Inject
+    lateinit var snuttUrls: SnuttUrls
 
     private lateinit var binding: FragmentSearchBinding
 
@@ -102,9 +106,7 @@ class SearchFragment : BaseFragment() {
                     .bindUi(
                         this,
                         onSuccess = { result ->
-                            webViewUrlStream.updateUrl(
-                                requireContext().getString(R.string.review_base_url) + "/detail/${result.id}"
-                            )
+                            webViewUrlStream.updateUrl(snuttUrls.getReviewDetail(result.id))
                         }, onError = apiOnError
                     )
             },

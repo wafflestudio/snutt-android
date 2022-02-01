@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +11,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
+import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
+import com.wafflestudio.snutt2.lib.rx.itemSelected
 import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
@@ -53,6 +56,9 @@ class HomeFragment : BaseFragment() {
     lateinit var dialogController: DialogController
 
     @Inject
+    lateinit var snuttUrls: SnuttUrls
+
+    @Inject
     lateinit var apiOnError: ApiOnError
 
     private val fragmentIndexMap = listOf(
@@ -80,10 +86,20 @@ class HomeFragment : BaseFragment() {
 
         binding.contents.adapter = pageAdapter
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-            binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
-            true
-        }
+        binding.bottomNavigation.itemSelected()
+            // PageView 업데이트로 두 번 콜백이 불리는 것을 방지한다.
+            .throttleFirst(100, TimeUnit.MILLISECONDS)
+            .bindUi(this) {
+                val nextItem = fragmentIndexMap.indexOf(it.itemId)
+                val currentItem = binding.contents.currentItem
+                val reviewItem = fragmentIndexMap.indexOf(R.id.action_reviews)
+
+                if (nextItem == reviewItem && currentItem == reviewItem) {
+                    webViewUrlStream.updateUrl(snuttUrls.getReviewMain())
+                } else {
+                    binding.contents.currentItem = nextItem
+                }
+            }
 
         webViewUrlStream.urlStream
             .map { }
