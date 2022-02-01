@@ -17,7 +17,8 @@ class LectureItem {
         ),
         AddClassTime(14), ResetLecture(15), ShortHeader(16), LongHeader(17), ClassTimeHeader(18), Margin(
             19
-        );
+        ),
+        LectureReview(20);
     }
 
     enum class ViewType(val value: Int) {
@@ -54,7 +55,13 @@ class LectureItem {
         isEditable = false
     }
 
-    constructor(title1: String?, index: Int, color: ColorDto?, theme: TimetableColorTheme?, type: Type) {
+    constructor(
+        title1: String?,
+        index: Int,
+        color: ColorDto?,
+        theme: TimetableColorTheme?,
+        type: Type
+    ) {
         this.title1 = title1
         colorIndex = index
         this.color = color

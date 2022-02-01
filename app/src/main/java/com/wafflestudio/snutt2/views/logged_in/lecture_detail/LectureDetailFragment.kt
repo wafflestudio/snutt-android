@@ -17,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
+import com.wafflestudio.snutt2.lib.SnuttUrls
+import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
@@ -45,6 +48,15 @@ class LectureDetailFragment : BaseFragment() {
     @Inject
     lateinit var dialogController: DialogController
 
+    @Inject
+    lateinit var snuttUrls: SnuttUrls
+
+    @Inject
+    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+
+    @Inject
+    lateinit var apiService: SNUTTRestApi
+
     private lateinit var adapter: LectureDetailAdapter
 
     private val vm: LectureDetailViewModel by viewModels()
@@ -63,10 +75,6 @@ class LectureDetailFragment : BaseFragment() {
         attachLectureDetailList(selectedLecture)
 
         return binding.root
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +98,7 @@ class LectureDetailFragment : BaseFragment() {
             vm.lists,
             onSyllabus = { startSyllabus() },
             onRemoveLecture = { startRemoveAlertView() },
+            onLectureReview = { openLectureReview() },
             onResetLecture = { startResetAlertView() },
             onChangeColor = {
                 childFragmentManager.beginTransaction()
@@ -189,6 +198,8 @@ class LectureDetailFragment : BaseFragment() {
             adapter.notifyItemInserted(pos + 1)
             vm.lists.add(pos + 2, LectureItem(LectureItem.Type.Syllabus, false))
             adapter.notifyItemInserted(pos + 2)
+            vm.lists.add(pos + 3, LectureItem(LectureItem.Type.LectureReview, false))
+            adapter.notifyItemInserted(pos + 3)
 
             // change button
             pos = resetItemPosition
@@ -210,6 +221,9 @@ class LectureDetailFragment : BaseFragment() {
                 adapter.notifyItemChanged(i)
             }
             val syllabusPosition = syllabusItemPosition
+            // remove lecture review
+            vm.lists.removeAt(syllabusPosition + 1)
+            adapter.notifyItemRemoved(syllabusPosition + 1)
             // remove syllabus
             vm.lists.removeAt(syllabusPosition)
             adapter.notifyItemRemoved(syllabusPosition)
@@ -271,6 +285,7 @@ class LectureDetailFragment : BaseFragment() {
             add(LectureItem(LectureItem.Type.Margin))
             add(LectureItem(LectureItem.Type.LongHeader))
             add(LectureItem(LectureItem.Type.Syllabus))
+            add(LectureItem(LectureItem.Type.LectureReview))
             add(LectureItem(LectureItem.Type.ShortHeader))
             add(LectureItem(LectureItem.Type.RemoveLecture))
             add(LectureItem(LectureItem.Type.LongHeader))
@@ -307,6 +322,18 @@ class LectureDetailFragment : BaseFragment() {
             .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
+    }
+
+    private fun openLectureReview() {
+        vm.getReviewContentsUrl()
+            .bindUi(
+                this,
+                onSuccess = {
+                    findNavController().popBackStack()
+                    reviewWebViewUrlStream.updateUrl(it)
+                }, onError = apiOnError
+            )
+
     }
 
     private fun routeColorSelector() {

@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.toOptional
@@ -14,7 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class MyLectureRepository @Inject constructor(
     private val api: SNUTTRestApi,
-    private val storage: SNUTTStorage
+    private val storage: SNUTTStorage,
+    private val snuttUrls: SnuttUrls
 ) {
     private var _currentTable: TableDto
         get() = storage.lastViewedTable.get().get()!!
@@ -87,5 +90,17 @@ class MyLectureRepository @Inject constructor(
             lectureNumber
         )
             .subscribeOn(Schedulers.io())
+    }
+
+    fun getLectureReviewUrl(
+        courseNumber: String,
+        instructor: String,
+    ): Single<String> {
+        return api.getLecturesId(
+            courseNumber,
+            instructor
+        ).map {
+            snuttUrls.getReviewDetail(it.id)
+        }
     }
 }

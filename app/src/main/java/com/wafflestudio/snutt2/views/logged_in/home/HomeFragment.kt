@@ -102,6 +102,9 @@ class HomeFragment : BaseFragment() {
 
         reviewWebViewUrlStream.urlStream
             .map { }
+            // LectureDetail 에서 popBack 이후 페이지 변경이 원활하게 동작할 수 있도록 딜레이를 준다.
+            // (home fragment 가 Start 상태가 아닌 경우 제대로 페이지 변경이 되지 않는다.
+            .delay(100, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
                 binding.contents.setCurrentItem(2, true)

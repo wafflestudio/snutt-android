@@ -78,4 +78,14 @@ class LectureDetailViewModel @Inject constructor(
         )
         return myLectureRepository.getLectureCourseBookUrl(courseNumber, lectureNumber)
     }
+
+    fun getReviewContentsUrl(): Single<String> {
+        val courseNumber = _selectedLecture.get().value?.course_number ?: return Single.error(
+            IllegalStateException("lecture with no course number")
+        )
+        val instructor = _selectedLecture.get().value?.instructor ?: return Single.error(
+            IllegalStateException("lecture with no instructor")
+        )
+        return myLectureRepository.getLectureReviewUrl(courseNumber, instructor)
+    }
 }
