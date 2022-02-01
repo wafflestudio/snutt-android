@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class WebViewUrlStream @Inject constructor() {
+class ReviewWebViewUrlStream @Inject constructor() {
 
     private val _urlStream = PublishSubject.create<String>()
     val urlStream: Observable<String> = _urlStream.hide()

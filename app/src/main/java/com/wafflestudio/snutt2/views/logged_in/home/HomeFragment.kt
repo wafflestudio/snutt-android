@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -50,7 +49,7 @@ class HomeFragment : BaseFragment() {
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     @Inject
-    lateinit var webViewUrlStream: WebViewUrlStream
+    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
 
     @Inject
     lateinit var dialogController: DialogController
@@ -95,13 +94,13 @@ class HomeFragment : BaseFragment() {
                 val reviewItem = fragmentIndexMap.indexOf(R.id.action_reviews)
 
                 if (nextItem == reviewItem && currentItem == reviewItem) {
-                    webViewUrlStream.updateUrl(snuttUrls.getReviewMain())
+                    reviewWebViewUrlStream.updateUrl(snuttUrls.getReviewMain())
                 } else {
                     binding.contents.currentItem = nextItem
                 }
             }
 
-        webViewUrlStream.urlStream
+        reviewWebViewUrlStream.urlStream
             .map { }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {

@@ -14,10 +14,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -41,7 +40,7 @@ class SearchFragment : BaseFragment() {
     lateinit var apiOnError: ApiOnError
 
     @Inject
-    lateinit var webViewUrlStream: WebViewUrlStream
+    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
 
     @Inject
     lateinit var apiService: SNUTTRestApi
@@ -106,7 +105,7 @@ class SearchFragment : BaseFragment() {
                     .bindUi(
                         this,
                         onSuccess = { result ->
-                            webViewUrlStream.updateUrl(snuttUrls.getReviewDetail(result.id))
+                            reviewWebViewUrlStream.updateUrl(snuttUrls.getReviewDetail(result.id))
                         }, onError = apiOnError
                     )
             },

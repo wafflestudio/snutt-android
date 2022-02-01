@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import com.jakewharton.rxbinding4.view.clicks
 import com.wafflestudio.snutt2.BuildConfig
@@ -15,12 +14,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,7 +34,7 @@ class ReviewsFragment : BaseFragment() {
     lateinit var storage: SNUTTStorage
 
     @Inject
-    lateinit var webViewUrlStream: WebViewUrlStream
+    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
@@ -89,7 +87,7 @@ class ReviewsFragment : BaseFragment() {
 
         reloadWebView(snuttUrls.getReviewMain())
 
-        webViewUrlStream.urlStream
+        reviewWebViewUrlStream.urlStream
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
                 reloadWebView(it)
