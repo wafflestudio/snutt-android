@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
+import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -24,6 +25,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -43,6 +45,9 @@ class HomeFragment : BaseFragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val settingsViewModel: SettingsViewModel by activityViewModels()
+
+    @Inject
+    lateinit var webViewUrlStream: WebViewUrlStream
 
     @Inject
     lateinit var dialogController: DialogController
@@ -79,6 +84,13 @@ class HomeFragment : BaseFragment() {
             binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
             true
         }
+
+        webViewUrlStream.urlStream
+            .map { }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                binding.contents.setCurrentItem(2, true)
+            }
 
         Observables.combineLatest(
             settingsViewModel.trimParam.asObservable(),

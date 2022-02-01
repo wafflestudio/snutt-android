@@ -10,14 +10,20 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import com.jakewharton.rxbinding4.view.clicks
+import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
+import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.net.URL
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,6 +34,11 @@ class ReviewsFragment : BaseFragment() {
     @Inject
     lateinit var storage: SNUTTStorage
 
+    @Inject
+    lateinit var webViewUrlStream: WebViewUrlStream
+
+    private val loadState: MutableStateFlow<LoadState> = MutableStateFlow(LoadState.Loading)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,8 +47,6 @@ class ReviewsFragment : BaseFragment() {
         binding = FragmentReviewsBinding.inflate(inflater)
         return binding.root
     }
-
-    private val loadState: MutableStateFlow<LoadState> = MutableStateFlow(LoadState.Loading)
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +58,9 @@ class ReviewsFragment : BaseFragment() {
             }
         }
 
-        WebView.setWebContentsDebuggingEnabled(true)
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun onReceivedError(
@@ -66,53 +77,37 @@ class ReviewsFragment : BaseFragment() {
                 super.onPageFinished(view, url)
             }
         }
-
-        reloadWebView()
-
         binding.webView.settings.javaScriptEnabled = true
         binding.retryButton.clicks()
             .bindUi(this) {
                 reloadWebView()
             }
-    }
 
-    private var backPressCallback: OnBackPressedCallback? = null
 
-    override fun onResume() {
-        super.onResume()
-        backPressCallback = (object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (binding.webView.canGoBack()) {
-                    binding.webView.goBack()
-                } else {
-                    requireActivity().finish()
-                }
+        reloadWebView(getString(R.string.review_base_url) + "/main")
+
+        webViewUrlStream.urlStream
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                reloadWebView(it)
             }
-        }).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        backPressCallback?.remove()
-        backPressCallback = null
-    }
-
-
-    private fun reloadWebView() {
+    private fun reloadWebView(url: String? = null) {
+        val reviewUrlHost = URL(requireContext().getString(R.string.review_base_url)).host
         CookieManager.getInstance().apply {
             setCookie(
-                "snutt-ev-web-dev.wafflestudio.com",
+                reviewUrlHost,
                 "x-access-apikey=${resources.getString(R.string.api_key)}"
             )
             setCookie(
-                "snutt-ev-web-dev.wafflestudio.com",
+                reviewUrlHost,
                 "x-access-token=${storage.accessToken.get()}"
             )
         }.flush()
         loadState.value = LoadState.Loading
-        binding.webView.loadUrl(getString(R.string.review_base_url) + "/main")
+        if (url == null) binding.webView.reload()
+        else binding.webView.loadUrl(url)
     }
 
     private fun setVisibility(state: LoadState) {
@@ -136,6 +131,29 @@ class ReviewsFragment : BaseFragment() {
                 binding.placeholderError.visibility = View.VISIBLE
             }
         }
+    }
+
+    private var backPressCallback: OnBackPressedCallback? = null
+
+    override fun onResume() {
+        super.onResume()
+        backPressCallback = (object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
+                } else {
+                    requireActivity().finish()
+                }
+            }
+        }).also {
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        backPressCallback?.remove()
+        backPressCallback = null
     }
 
     enum class LoadState {

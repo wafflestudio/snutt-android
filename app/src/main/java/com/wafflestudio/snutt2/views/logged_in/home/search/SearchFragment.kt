@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
@@ -17,8 +16,10 @@ import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
-import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.android.WebViewUrlStream
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.loadingState
@@ -37,6 +38,12 @@ class SearchFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var webViewUrlStream: WebViewUrlStream
+
+    @Inject
+    lateinit var apiService: SNUTTRestApi
 
     private lateinit var binding: FragmentSearchBinding
 
@@ -88,11 +95,18 @@ class SearchFragment : BaseFragment() {
                     )
             },
             onShowReviews = {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.lecture_review_not_ready),
-                    Toast.LENGTH_SHORT
-                ).show()
+                apiService.getLecturesId(
+                    it.course_number ?: "",
+                    it.instructor
+                )
+                    .bindUi(
+                        this,
+                        onSuccess = { result ->
+                            webViewUrlStream.updateUrl(
+                                requireContext().getString(R.string.review_base_url) + "/detail/${result.id}"
+                            )
+                        }, onError = apiOnError
+                    )
             },
         )
 
