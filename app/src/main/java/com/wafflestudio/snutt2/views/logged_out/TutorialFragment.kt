@@ -28,23 +28,28 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @Composable
 fun TutorialPage(modifier: Modifier = Modifier, titleImg: Painter, contentImg: Painter) {
-    Column(modifier = modifier,
+    Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(Modifier.weight(3.5f)) {}
 
-        Image(modifier = Modifier
-            .width(250.dp)
-            .height(40.dp),
+        Image(
+            modifier = Modifier
+                .width(250.dp)
+                .height(40.dp),
             painter = titleImg,
-            contentDescription = "tutorial title")
+            contentDescription = "tutorial title"
+        )
 
         Surface(Modifier.weight(1.0f)) {}
 
-        Image(modifier = Modifier
-            .height(300.dp),
+        Image(
+            modifier = Modifier
+                .height(300.dp),
             painter = contentImg,
-            contentDescription = "tutorial contents")
+            contentDescription = "tutorial contents"
+        )
 
         Surface(Modifier.weight(1.5f)) {}
     }
@@ -52,45 +57,57 @@ fun TutorialPage(modifier: Modifier = Modifier, titleImg: Painter, contentImg: P
 
 @Composable
 fun ActionButtons(modifier: Modifier = Modifier, onClickSignIn: () -> Unit, onClickSignUp: () -> Unit) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .height(50.dp)) {
-
-        Surface(modifier = Modifier
-            .background(Gray200)
+    Column(
+        modifier = modifier
             .fillMaxWidth()
-            .height(1.dp)) {}
+            .height(50.dp)
+    ) {
+
+        Surface(
+            modifier = Modifier
+                .background(Gray200)
+                .fillMaxWidth()
+                .height(1.dp)
+        ) {}
 
         Row(modifier = modifier.fillMaxWidth()) {
-            Button(modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
+            Button(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = White900,
                     contentColor = Black900
                 ),
                 elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
-                onClick = onClickSignIn) {
-                Text(text = "로그인",
+                onClick = onClickSignIn
+            ) {
+                Text(
+                    text = "로그인",
                     style = MaterialTheme.typography.button
                 )
             }
 
-            Surface(modifier = Modifier
-                .background(Gray200)
-                .fillMaxHeight()
-                .width(1.dp)) {}
+            Surface(
+                modifier = Modifier
+                    .background(Gray200)
+                    .fillMaxHeight()
+                    .width(1.dp)
+            ) {}
 
-            Button(modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
+            Button(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = White900,
                     contentColor = Black900
                 ),
                 elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
-                onClick = onClickSignUp) {
-                Text(text = "가입",
+                onClick = onClickSignUp
+            ) {
+                Text(
+                    text = "가입",
                     style = MaterialTheme.typography.button
                 )
             }
@@ -105,9 +122,11 @@ private fun TutorialScreen(
     onClickSignUp: () -> Unit
 ) {
     val pagerState = rememberPagerState()
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(White900)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White900)
+    ) {
         HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) {
             TutorialPage(
                 modifier = Modifier.fillMaxWidth(),
