@@ -138,15 +138,17 @@ class ReviewsFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        backPressCallback = (object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (binding.webView.canGoBack()) {
-                    binding.webView.goBack()
-                } else {
-                    requireActivity().finish()
+        backPressCallback = (
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (binding.webView.canGoBack()) {
+                        binding.webView.goBack()
+                    } else {
+                        requireActivity().finish()
+                    }
                 }
             }
-        }).also {
+            ).also {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
         }
     }

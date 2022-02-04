@@ -30,7 +30,6 @@ private class ItemSelectedObservable(
         private val observer: Observer<in MenuItem>
     ) : MainThreadDisposable(), NavigationBarView.OnItemSelectedListener {
 
-
         override fun onDispose() {
             view.setOnItemSelectedListener(null)
         }

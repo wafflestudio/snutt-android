@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.lib.rx
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadStates
 import androidx.paging.PagingDataAdapter
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wafflestudio.snutt2.lib.Optional
 import io.reactivex.rxjava3.core.Observable
 

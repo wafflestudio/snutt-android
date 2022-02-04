@@ -25,10 +25,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TableListViewModel @Inject constructor(
-        private val tableRepository: TableRepository,
-        private val myLectureRepository: MyLectureRepository,
-        courseBookRepository: CourseBookRepository,
-        private val apiOnError: ApiOnError,
+    private val tableRepository: TableRepository,
+    private val myLectureRepository: MyLectureRepository,
+    courseBookRepository: CourseBookRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
     private val _selectedCourseBooks = SubjectDataValue<Optional<CourseBookDto>>(Optional.empty())

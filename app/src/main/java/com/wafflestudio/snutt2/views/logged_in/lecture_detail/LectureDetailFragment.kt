@@ -333,7 +333,6 @@ class LectureDetailFragment : BaseFragment() {
                     reviewWebViewUrlStream.updateUrl(it)
                 }, onError = apiOnError
             )
-
     }
 
     private fun routeColorSelector() {
