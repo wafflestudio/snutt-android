@@ -190,4 +190,10 @@ interface SNUTTRestApi {
 
     @GET("/notification/count")
     fun getNotificationCount(): Single<GetNotificationCountResults>
+
+    @GET("/ev-service/v1/lectures/id")
+    fun getLecturesId(
+        @Query(value = "course_number") courseNumber: String,
+        @Query(value = "instructor") instructor: String
+    ): Single<GetLecturesIdResults>
 }

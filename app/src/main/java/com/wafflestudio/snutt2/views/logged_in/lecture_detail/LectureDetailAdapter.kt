@@ -28,6 +28,7 @@ import kotlin.math.max
 class LectureDetailAdapter(
     private val lists: MutableList<LectureItem>,
     private val onSyllabus: () -> Unit,
+    private val onLectureReview: () -> Unit,
     private val onRemoveLecture: () -> Unit,
     private val onResetLecture: () -> Unit,
     private val onChangeColor: () -> Unit
@@ -96,6 +97,7 @@ class LectureDetailAdapter(
             viewHolder!!.bindData(item) {
                 when (item.type) {
                     LectureItem.Type.Syllabus -> onSyllabus()
+                    LectureItem.Type.LectureReview -> onLectureReview()
                     LectureItem.Type.RemoveLecture -> onRemoveLecture()
                     LectureItem.Type.ResetLecture -> onResetLecture()
                     LectureItem.Type.AddClassTime -> {
@@ -282,6 +284,10 @@ class LectureDetailAdapter(
             when (item.type) {
                 LectureItem.Type.Syllabus -> {
                     textView.text = "강의계획서"
+                    textView.setTextColor(Color.parseColor("#000000"))
+                }
+                LectureItem.Type.LectureReview -> {
+                    textView.text = "강의평"
                     textView.setTextColor(Color.parseColor("#000000"))
                 }
                 LectureItem.Type.RemoveLecture -> {

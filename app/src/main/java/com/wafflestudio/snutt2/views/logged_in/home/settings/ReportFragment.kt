@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.databinding.FragmentReportBinding
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,23 +48,29 @@ class ReportFragment : BaseFragment() {
             .bindUi(this) {
                 if (binding.detailEditText.text.toString().isEmpty()) {
                     Toast.makeText(requireContext(), "내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
-                } else {
-                    hideSoftKeyboard()
-                    val email = binding.emailEditText.text.toString()
-                    val detail = binding.detailEditText.text.toString()
-                    userRepository.postFeedback(email, detail)
-                        .bindUi(
-                            this,
-                            onSuccess = {
-                                Toast.makeText(requireContext(), "전송하였습니다", Toast.LENGTH_SHORT)
-                                    .show()
-                                findNavController().popBackStack()
-                            },
-                            onError = {
-                                apiOnError(it)
-                            }
-                        )
+                    return@bindUi
                 }
+
+                if (binding.emailEditText.text.toString().isEmpty()) {
+                    Toast.makeText(requireContext(), "이메일을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                    return@bindUi
+                }
+
+                hideSoftKeyboard()
+                val email = binding.emailEditText.text.toString()
+                val detail = binding.detailEditText.text.toString()
+                userRepository.postFeedback(email, detail)
+                    .bindUi(
+                        this,
+                        onSuccess = {
+                            Toast.makeText(requireContext(), "전송하였습니다", Toast.LENGTH_SHORT)
+                                .show()
+                            findNavController().popBackStack()
+                        },
+                        onError = {
+                            apiOnError(it)
+                        }
+                    )
             }
     }
 
