@@ -13,8 +13,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 }
 
-val composeVersion = "1.0.5"
-
 ktlint {
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
@@ -103,47 +101,43 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
+        kotlinCompilerExtensionVersion = Deps.Version.Compose
     }
 }
 
 dependencies {
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
-    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("com.appyvet:materialrangebar:1.3")
-
-    implementation("com.github.JakeWharton:ViewPagerIndicator:2.4.1")
-
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
 
     // Moshi
-    implementation("com.squareup.moshi:moshi:1.12.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
+    implementation("com.squareup.moshi:moshi:${Deps.Version.Moshi}")
+    implementation("com.squareup.moshi:moshi-kotlin:${Deps.Version.Moshi}")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:${Deps.Version.Retrofit}")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:${Deps.Version.Retrofit}")
+    implementation("com.squareup.retrofit2:converter-moshi:${Deps.Version.Retrofit}")
     implementation("com.squareup.okhttp3:logging-interceptor:4.7.2")
 
     // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:3.0.12")
-    implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("com.jakewharton.rxbinding4:rxbinding:4.0.0")
+    implementation("io.reactivex.rxjava3:rxjava:${Deps.Version.RxJava}")
+    implementation("io.reactivex.rxjava3:rxkotlin:${Deps.Version.RxKotlin}")
+    implementation("io.reactivex.rxjava3:rxandroid:${Deps.Version.RxAndroid}")
+    implementation("com.jakewharton.rxbinding4:rxbinding:${Deps.Version.RxBinding}")
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+    implementation("com.google.dagger:hilt-android:${Deps.Version.Hilt}")
+    kapt("com.google.dagger:hilt-android-compiler:${Deps.Version.Hilt}")
 
     // AAC Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:${Deps.Version.Navigation}")
+    implementation("androidx.navigation:navigation-ui-ktx:${Deps.Version.Navigation}")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
@@ -151,22 +145,21 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
 
     // Paging
-    implementation("androidx.paging:paging-runtime:3.0.0")
-    implementation("androidx.paging:paging-rxjava3:3.0.0")
+    implementation("androidx.paging:paging-runtime:${Deps.Version.Paging}")
+    implementation("androidx.paging:paging-rxjava3:${Deps.Version.Paging}")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:$composeVersion")
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.foundation:foundation:$composeVersion")
-    implementation("androidx.compose.foundation:foundation-layout:$composeVersion")
-    implementation("androidx.compose.material:material:$composeVersion")
-    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("com.google.android.material:compose-theme-adapter:$composeVersion")
-    implementation("com.google.accompanist:accompanist-pager:0.20.3")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
+    implementation("androidx.compose.runtime:runtime:${Deps.Version.Compose}")
+    implementation("androidx.compose.ui:ui:${Deps.Version.Compose}")
+    implementation("androidx.compose.foundation:foundation:${Deps.Version.Compose}")
+    implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.Compose}")
+    implementation("androidx.compose.material:material:${Deps.Version.Compose}")
+    implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
+    implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
 
     // misc
+    implementation("com.google.accompanist:accompanist-pager:0.20.3")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
     implementation("com.facebook.android:facebook-login:11.1.0")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
@@ -174,7 +167,8 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
+    implementation("com.github.JakeWharton:ViewPagerIndicator:2.4.1")
+    implementation("com.appyvet:materialrangebar:1.3")
 }
 
 repositories {
