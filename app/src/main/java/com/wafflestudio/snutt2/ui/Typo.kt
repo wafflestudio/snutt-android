@@ -37,13 +37,13 @@ val SnuttTypography = Typography(
     )
 )
 
-//val f = TextStyle(
+// val f = TextStyle(
 //    color = Color.Black,
 //    fontSize = 14.sp,
 //    fontFamily = SpoqaHanSans,
-//)
-//val g = TextStyle(
+// )
+// val g = TextStyle(
 //    color = Color.Black,
 //    fontSize = 13.sp,
 //    fontFamily = SpoqaHanSans,
-//)
+// )
