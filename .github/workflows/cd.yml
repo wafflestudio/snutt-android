@@ -5,7 +5,7 @@ on:
     branches:
       - 'develop'
     paths:
-      - 'app/version.properties'
+      - 'version.properties'
 
 jobs:
   build-live:
