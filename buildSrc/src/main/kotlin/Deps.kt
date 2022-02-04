@@ -15,5 +15,6 @@ object Deps {
         const val Paging = "3.1.0"
         const val Compose = "1.1.0-rc03"
         const val AndroidGradle = "7.0.4"
+        const val KtLintGradle = "10.2.1"
     }
 }

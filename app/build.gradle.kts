@@ -71,7 +71,6 @@ android {
         }
     }
 
-
     viewBinding {
         isEnabled = true
     }

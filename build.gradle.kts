@@ -16,8 +16,8 @@ buildscript {
 }
 
 plugins {
-    id("org.jlleitschuh.gradle.ktlint-idea") version "9.4.1"
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
+    id("org.jlleitschuh.gradle.ktlint-idea") version Deps.Version.KtLintGradle
+    id("org.jlleitschuh.gradle.ktlint") version Deps.Version.KtLintGradle
 }
 
 allprojects {

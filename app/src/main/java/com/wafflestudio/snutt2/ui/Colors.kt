@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.ui
 
 import androidx.compose.ui.graphics.Color
 
-
 val colorPrimary = Color(0xffffffff)
 val colorPrimaryDark = Color(0xFF000000)
 val colorAccent = Color(0xFF000000)
