@@ -10,11 +10,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
-import com.wafflestudio.snutt2.handler.ApiOnError
+import com.wafflestudio.snutt2.lib.SnuttUrls
+import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
+import com.wafflestudio.snutt2.lib.rx.itemSelected
 import com.wafflestudio.snutt2.lib.rx.reduceDragSensitivity
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
@@ -24,6 +27,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -45,7 +49,13 @@ class HomeFragment : BaseFragment() {
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     @Inject
+    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+
+    @Inject
     lateinit var dialogController: DialogController
+
+    @Inject
+    lateinit var snuttUrls: SnuttUrls
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -75,10 +85,30 @@ class HomeFragment : BaseFragment() {
 
         binding.contents.adapter = pageAdapter
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-            binding.contents.currentItem = fragmentIndexMap.indexOf(it.itemId)
-            true
-        }
+        binding.bottomNavigation.itemSelected()
+            // PageView 업데이트로 두 번 콜백이 불리는 것을 방지한다.
+            .throttleFirst(100, TimeUnit.MILLISECONDS)
+            .bindUi(this) {
+                val nextItem = fragmentIndexMap.indexOf(it.itemId)
+                val currentItem = binding.contents.currentItem
+                val reviewItem = fragmentIndexMap.indexOf(R.id.action_reviews)
+
+                if (nextItem == reviewItem && currentItem == reviewItem) {
+                    reviewWebViewUrlStream.updateUrl(snuttUrls.getReviewMain())
+                } else {
+                    binding.contents.currentItem = nextItem
+                }
+            }
+
+        reviewWebViewUrlStream.urlStream
+            .map { }
+            // LectureDetail 에서 popBack 이후 페이지 변경이 원활하게 동작할 수 있도록 딜레이를 준다.
+            // (home fragment 가 Start 상태가 아닌 경우 제대로 페이지 변경이 되지 않는다.
+            .delay(100, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                binding.contents.setCurrentItem(2, true)
+            }
 
         Observables.combineLatest(
             settingsViewModel.trimParam.asObservable(),
