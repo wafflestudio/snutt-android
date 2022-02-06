@@ -12,5 +12,5 @@ class SnuttUrls @Inject constructor(@ApplicationContext private val context: Con
     fun getReviewMain(): String = context.getString(R.string.review_base_url) + "/main"
 
     fun getReviewDetail(detailId: String): String =
-        context.getString(R.string.review_base_url) + "/detail/$detailId"
+        context.getString(R.string.review_base_url) + "/detail?id=$detailId"
 }
