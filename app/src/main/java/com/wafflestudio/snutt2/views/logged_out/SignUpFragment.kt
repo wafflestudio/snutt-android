@@ -120,9 +120,10 @@ class SignUpFragment : BaseFragment() {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.signUpFacebook(id, token)
-                        .subscribeBy(
+                        .bindUi(
                             onError = { apiOnError(it) },
-                            onSuccess = { routeHome() }
+                            onSuccess = { routeHome() },
+                            bindable = this@SignUpFragment
                         )
                 }
 

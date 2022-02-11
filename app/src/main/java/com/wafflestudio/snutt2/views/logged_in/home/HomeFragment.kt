@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -11,7 +12,8 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -49,7 +51,7 @@ class HomeFragment : BaseFragment() {
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     @Inject
-    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+    lateinit var homePagerController: HomePagerController
 
     @Inject
     lateinit var dialogController: DialogController
@@ -67,6 +69,8 @@ class HomeFragment : BaseFragment() {
         R.id.action_settings
     )
 
+    private var backPressCallback: OnBackPressedCallback? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,6 +78,28 @@ class HomeFragment : BaseFragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        backPressCallback = (
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (binding.contents.currentItem == 0) {
+                        requireActivity().finish()
+                    } else {
+                        binding.contents.setCurrentItem(0, true)
+                    }
+                }
+            }
+            ).also {
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        backPressCallback?.remove()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,20 +120,24 @@ class HomeFragment : BaseFragment() {
                 val reviewItem = fragmentIndexMap.indexOf(R.id.action_reviews)
 
                 if (nextItem == reviewItem && currentItem == reviewItem) {
-                    reviewWebViewUrlStream.updateUrl(snuttUrls.getReviewMain())
+                    homePagerController.updateHomePage(HomePage.Review(snuttUrls.getReviewMain()))
                 } else {
                     binding.contents.currentItem = nextItem
                 }
             }
 
-        reviewWebViewUrlStream.urlStream
-            .map { }
-            // LectureDetail 에서 popBack 이후 페이지 변경이 원활하게 동작할 수 있도록 딜레이를 준다.
-            // (home fragment 가 Start 상태가 아닌 경우 제대로 페이지 변경이 되지 않는다.
-            .delay(100, TimeUnit.MILLISECONDS)
+        homePagerController.homePageState
+            // 다른 탭에서 강의평 탭으로 진입 시 page pop 이후 리뷰 탭으로 변경이 동작할 수 있도록 딜레이를 준다.
+            .delay(10, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
-                binding.contents.setCurrentItem(2, true)
+                val pageNum = when (it) {
+                    HomePage.Timetable -> 0
+                    HomePage.Search -> 1
+                    is HomePage.Review -> 2
+                    HomePage.Setting -> 3
+                }
+                binding.contents.setCurrentItem(pageNum, true)
             }
 
         Observables.combineLatest(

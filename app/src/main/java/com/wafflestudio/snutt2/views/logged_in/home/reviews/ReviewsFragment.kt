@@ -14,11 +14,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -34,7 +34,7 @@ class ReviewsFragment : BaseFragment() {
     lateinit var storage: SNUTTStorage
 
     @Inject
-    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+    lateinit var homePagerController: HomePagerController
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
@@ -87,10 +87,12 @@ class ReviewsFragment : BaseFragment() {
 
         reloadWebView(snuttUrls.getReviewMain())
 
-        reviewWebViewUrlStream.urlStream
+        homePagerController.homePageState
+            .filter { it is HomePage.Review }
+            .map { (it as HomePage.Review).landingUrl }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                reloadWebView(it)
+            .bindUi(this) {
+                reloadWebView()
             }
     }
 
@@ -144,13 +146,13 @@ class ReviewsFragment : BaseFragment() {
                     if (binding.webView.canGoBack()) {
                         binding.webView.goBack()
                     } else {
-                        requireActivity().finish()
+                        homePagerController.updateHomePage(HomePage.Timetable)
                     }
                 }
             }
             ).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
     }
 
     override fun onPause() {
