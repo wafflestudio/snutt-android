@@ -24,7 +24,6 @@ import com.wafflestudio.snutt2.lib.Quadruple
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -120,9 +119,10 @@ class SignUpFragment : BaseFragment() {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.signUpFacebook(id, token)
-                        .subscribeBy(
+                        .bindUi(
                             onError = { apiOnError(it) },
-                            onSuccess = { routeHome() }
+                            onSuccess = { routeHome() },
+                            bindable = this@SignUpFragment
                         )
                 }
 
