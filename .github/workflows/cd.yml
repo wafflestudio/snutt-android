@@ -81,7 +81,7 @@ jobs:
         run: ./gradlew clean
       - name: Setup google-services.json (Staging)
         run: |
-          mkdir -p ./app/src/live
+          mkdir -p ./app/src/staging
           cat << EOF > ./app/src/staging/google-services.json
           ${{ secrets.google_services_json_staging }}
           EOF
