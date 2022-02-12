@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.reviews
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +15,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -34,12 +35,13 @@ class ReviewsFragment : BaseFragment() {
     lateinit var storage: SNUTTStorage
 
     @Inject
-    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+    lateinit var homePagerController: HomePagerController
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
 
-    private val loadState: MutableStateFlow<LoadState> = MutableStateFlow(LoadState.Loading)
+    private val loadState: MutableStateFlow<LoadState> =
+        MutableStateFlow(LoadState.InitialLoading(0))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,32 +66,58 @@ class ReviewsFragment : BaseFragment() {
             WebView.setWebContentsDebuggingEnabled(true)
         }
 
+        if (loadState.value == LoadState.InitialLoading(0)) {
+            reloadWebView(snuttUrls.getReviewMain())
+        }
+
         binding.webView.webViewClient = object : WebViewClient() {
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                if (loadState.value != LoadState.Error) {
+                    loadState.value = LoadState.Success
+                }
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                loadState.value = when (loadState.value) {
+                    is LoadState.InitialLoading -> LoadState.InitialLoading(0)
+                    else -> LoadState.Loading(0)
+                }
+            }
+
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
-                super.onReceivedError(view, request, error)
-                loadState.compareAndSet(LoadState.Loading, LoadState.Failure)
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                loadState.compareAndSet(LoadState.Loading, LoadState.Success)
-                super.onPageFinished(view, url)
+                loadState.value = LoadState.Error
             }
         }
+
+        binding.webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                when (loadState.value) {
+                    is LoadState.InitialLoading -> LoadState.InitialLoading(newProgress)
+                    is LoadState.Loading -> LoadState.Loading(newProgress)
+                    else -> null
+                }?.let {
+                    loadState.value = it
+                }
+            }
+        }
+
         binding.webView.settings.javaScriptEnabled = true
+
         binding.retryButton.clicks()
             .bindUi(this) {
                 reloadWebView()
             }
 
-        reloadWebView(snuttUrls.getReviewMain())
-
-        reviewWebViewUrlStream.urlStream
+        homePagerController.homePageState
+            .filter { it is HomePage.Review }
+            .map { (it as HomePage.Review).landingUrl }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
+            .bindUi(this) {
                 reloadWebView(it)
             }
     }
@@ -106,7 +134,6 @@ class ReviewsFragment : BaseFragment() {
                 "x-access-token=${storage.accessToken.get()}"
             )
         }.flush()
-        loadState.value = LoadState.Loading
         if (url == null) binding.webView.reload()
         else binding.webView.loadUrl(url)
     }
@@ -114,22 +141,26 @@ class ReviewsFragment : BaseFragment() {
     private fun setVisibility(state: LoadState) {
         when (state) {
             LoadState.Success -> {
-                binding.webView.visibility = View.VISIBLE
-                binding.placeholder.visibility = View.GONE
-                binding.placeholderLoading.visibility = View.GONE
-                binding.placeholderError.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
+                binding.appBar.visibility = View.GONE
+                binding.error.visibility = View.GONE
             }
-            LoadState.Loading -> {
-                binding.webView.visibility = View.GONE
-                binding.placeholder.visibility = View.VISIBLE
-                binding.placeholderLoading.visibility = View.VISIBLE
-                binding.placeholderError.visibility = View.GONE
+            LoadState.Error -> {
+                binding.progressBar.visibility = View.GONE
+                binding.appBar.visibility = View.GONE
+                binding.error.visibility = View.VISIBLE
             }
-            LoadState.Failure -> {
-                binding.webView.visibility = View.GONE
-                binding.placeholder.visibility = View.VISIBLE
-                binding.placeholderLoading.visibility = View.GONE
-                binding.placeholderError.visibility = View.VISIBLE
+            is LoadState.Loading -> {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.progressBar.progress = state.progress
+                binding.appBar.visibility = View.GONE
+                binding.error.visibility = View.GONE
+            }
+            is LoadState.InitialLoading -> {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.progressBar.progress = state.progress
+                binding.appBar.visibility = View.VISIBLE
+                binding.error.visibility = View.GONE
             }
         }
     }
@@ -144,7 +175,7 @@ class ReviewsFragment : BaseFragment() {
                     if (binding.webView.canGoBack()) {
                         binding.webView.goBack()
                     } else {
-                        requireActivity().finish()
+                        homePagerController.updateHomePage(HomePage.Timetable)
                     }
                 }
             }
@@ -159,9 +190,10 @@ class ReviewsFragment : BaseFragment() {
         backPressCallback = null
     }
 
-    enum class LoadState {
-        Success,
-        Loading,
-        Failure
+    sealed class LoadState {
+        object Success : LoadState()
+        object Error : LoadState()
+        data class Loading(val progress: Int) : LoadState()
+        data class InitialLoading(val progress: Int) : LoadState()
     }
 }

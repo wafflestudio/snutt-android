@@ -18,7 +18,8 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -52,7 +53,7 @@ class LectureDetailFragment : BaseFragment() {
     lateinit var snuttUrls: SnuttUrls
 
     @Inject
-    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+    lateinit var homePagerController: HomePagerController
 
     @Inject
     lateinit var apiService: SNUTTRestApi
@@ -330,7 +331,7 @@ class LectureDetailFragment : BaseFragment() {
                 this,
                 onSuccess = {
                     findNavController().popBackStack()
-                    reviewWebViewUrlStream.updateUrl(it)
+                    homePagerController.updateHomePage(HomePage.Review(it))
                 }, onError = apiOnError
             )
     }

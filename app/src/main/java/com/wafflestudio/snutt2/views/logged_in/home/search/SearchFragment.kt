@@ -16,7 +16,8 @@ import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.ReviewWebViewUrlStream
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -40,7 +41,7 @@ class SearchFragment : BaseFragment() {
     lateinit var apiOnError: ApiOnError
 
     @Inject
-    lateinit var reviewWebViewUrlStream: ReviewWebViewUrlStream
+    lateinit var homePagerController: HomePagerController
 
     @Inject
     lateinit var apiService: SNUTTRestApi
@@ -105,7 +106,13 @@ class SearchFragment : BaseFragment() {
                     .bindUi(
                         this,
                         onSuccess = { result ->
-                            reviewWebViewUrlStream.updateUrl(snuttUrls.getReviewDetail(result.id))
+                            homePagerController.updateHomePage(
+                                HomePage.Review(
+                                    snuttUrls.getReviewDetail(
+                                        result.id
+                                    )
+                                )
+                            )
                         }, onError = apiOnError
                     )
             },
