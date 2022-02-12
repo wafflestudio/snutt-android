@@ -110,6 +110,7 @@ class HomeFragment : BaseFragment() {
         pageAdapter = HomeStateAdapter(this)
 
         binding.contents.adapter = pageAdapter
+        binding.contents.isUserInputEnabled = false
 
         binding.bottomNavigation.itemSelected()
             // PageView 업데이트로 두 번 콜백이 불리는 것을 방지한다.
