@@ -24,7 +24,6 @@ import com.wafflestudio.snutt2.lib.Quadruple
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -70,7 +70,6 @@ class ReviewsFragment : BaseFragment() {
             reloadWebView(snuttUrls.getReviewMain())
         }
 
-
         binding.webView.webViewClient = object : WebViewClient() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -95,7 +94,6 @@ class ReviewsFragment : BaseFragment() {
             }
         }
 
-
         binding.webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 when (loadState.value) {
@@ -107,7 +105,6 @@ class ReviewsFragment : BaseFragment() {
                 }
             }
         }
-
 
         binding.webView.settings.javaScriptEnabled = true
 
@@ -183,8 +180,8 @@ class ReviewsFragment : BaseFragment() {
                 }
             }
             ).also {
-                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+        }
     }
 
     override fun onPause() {
