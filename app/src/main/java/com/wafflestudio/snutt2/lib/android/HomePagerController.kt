@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.android
 
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -8,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class HomePagerController @Inject constructor() {
 
-    private val _homePageStream = PublishSubject.create<HomePage>()
+    private val _homePageStream = BehaviorSubject.create<HomePage>()
     val homePageState: Observable<HomePage> = _homePageStream.hide()
 
     fun updateHomePage(page: HomePage) {
