@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -109,6 +110,7 @@ class HomeFragment : BaseFragment() {
         backPressCallback?.remove()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -134,21 +136,24 @@ class HomeFragment : BaseFragment() {
                 )
             }
 
-        binding.bottomNavigation.itemSelected()
-            // PageView 업데이트로 두 번 콜백이 불리는 것을 방지한다.
-            .throttleFirst(100, TimeUnit.MILLISECONDS)
-            .bindUi(this) {
-                val next = when (it.itemId) {
-                    R.id.action_timetable -> HomePage.Timetable
-                    R.id.action_search -> HomePage.Search
-                    R.id.action_reviews -> HomePage.Review
-                    R.id.action_settings -> HomePage.Setting
-                    else -> throw IllegalStateException("")
-                }
+        binding.bottomNavigation.setItemOnTouchListener(R.id.action_reviews) { _, _ ->
+            if (homePagerController.homePageState.value == HomePage.Review) {
+                reviewUrlController.update(snuttUrls.getReviewMain())
+            }
+            false
+        }
 
-                homePagerController.update { prev ->
-                    next
-                }
+        binding.bottomNavigation.itemSelected()
+            .bindUi(this) {
+                homePagerController.update(
+                    when (it.itemId) {
+                        R.id.action_timetable -> HomePage.Timetable
+                        R.id.action_search -> HomePage.Search
+                        R.id.action_reviews -> HomePage.Review
+                        R.id.action_settings -> HomePage.Setting
+                        else -> throw IllegalStateException("")
+                    }
+                )
             }
 
         Observables.combineLatest(
