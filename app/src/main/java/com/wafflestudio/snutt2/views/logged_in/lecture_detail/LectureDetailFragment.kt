@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.HomePage
 import com.wafflestudio.snutt2.lib.android.HomePagerController
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -30,6 +31,8 @@ import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.Completable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -54,6 +57,9 @@ class LectureDetailFragment : BaseFragment() {
 
     @Inject
     lateinit var homePagerController: HomePagerController
+
+    @Inject
+    lateinit var reviewUrlController: ReviewUrlController
 
     @Inject
     lateinit var apiService: SNUTTRestApi
@@ -331,7 +337,12 @@ class LectureDetailFragment : BaseFragment() {
                 this,
                 onSuccess = {
                     findNavController().popBackStack()
-                    homePagerController.updateHomePage(HomePage.Review(it))
+                    // pop back 이후 딜레이를 주지 않고 강의평으로 보내버리면 가끔 스크롤링이 무시되어 임시방편 처리함
+                    Completable.timer(150, TimeUnit.MILLISECONDS)
+                        .subscribe {
+                            homePagerController.update(HomePage.Review)
+                            reviewUrlController.update(it)
+                        }
                 }, onError = apiOnError
             )
     }

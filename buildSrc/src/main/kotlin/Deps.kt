@@ -4,6 +4,7 @@ object Deps {
 
     object Version {
         const val Kotlin = "1.6.10"
+        const val Rx3Coroutine= "1.6.0"
         const val Moshi = "1.12.0"
         const val Retrofit = "2.9.0"
         const val RxJava = "3.0.12"

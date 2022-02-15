@@ -114,6 +114,7 @@ dependencies {
     implementation("com.google.android.material:material:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Deps.Version.Kotlin}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${Deps.Version.Rx3Coroutine}")
 
     // Moshi
     implementation("com.squareup.moshi:moshi:${Deps.Version.Moshi}")
@@ -158,6 +159,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
 
     // misc
+    implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.accompanist:accompanist-pager:0.20.3")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
