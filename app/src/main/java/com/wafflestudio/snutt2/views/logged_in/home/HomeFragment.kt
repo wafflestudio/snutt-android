@@ -1,12 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
@@ -14,6 +17,7 @@ import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.HomePage
 import com.wafflestudio.snutt2.lib.android.HomePagerController
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -29,7 +33,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.rx3.asObservable
+import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -52,6 +57,9 @@ class HomeFragment : BaseFragment() {
 
     @Inject
     lateinit var homePagerController: HomePagerController
+
+    @Inject
+    lateinit var reviewUrlController: ReviewUrlController
 
     @Inject
     lateinit var dialogController: DialogController
@@ -85,16 +93,15 @@ class HomeFragment : BaseFragment() {
         backPressCallback = (
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (binding.contents.currentItem == 0) {
+                    if (homePagerController.homePageState.value == HomePage.Timetable)
                         requireActivity().finish()
-                    } else {
-                        binding.contents.setCurrentItem(0, true)
-                    }
+                    else
+                        homePagerController.update(HomePage.Timetable)
                 }
             }
             ).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
     }
 
     override fun onPause() {
@@ -112,33 +119,36 @@ class HomeFragment : BaseFragment() {
         binding.contents.adapter = pageAdapter
         binding.contents.isUserInputEnabled = false
 
+        homePagerController.homePageState.asObservable()
+            .bindUi(this) {
+                binding.contents.setCurrentItem(it.pageNum)
+                binding.bottomNavigation.selectedItemId = listOf(
+                    R.id.action_timetable,
+                    R.id.action_search,
+                    R.id.action_reviews,
+                    R.id.action_settings
+                )[it.pageNum]
+                binding.root.setDrawerLockMode(
+                    if (it.pageNum != 0) DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+                    else DrawerLayout.LOCK_MODE_UNLOCKED
+                )
+            }
+
         binding.bottomNavigation.itemSelected()
             // PageView 업데이트로 두 번 콜백이 불리는 것을 방지한다.
             .throttleFirst(100, TimeUnit.MILLISECONDS)
             .bindUi(this) {
-                val nextItem = fragmentIndexMap.indexOf(it.itemId)
-                val currentItem = binding.contents.currentItem
-                val reviewItem = fragmentIndexMap.indexOf(R.id.action_reviews)
-
-                if (nextItem == reviewItem && currentItem == reviewItem) {
-                    homePagerController.updateHomePage(HomePage.Review(snuttUrls.getReviewMain()))
-                } else {
-                    binding.contents.currentItem = nextItem
+                val next = when (it.itemId) {
+                    R.id.action_timetable -> HomePage.Timetable
+                    R.id.action_search -> HomePage.Search
+                    R.id.action_reviews -> HomePage.Review
+                    R.id.action_settings -> HomePage.Setting
+                    else -> throw IllegalStateException("")
                 }
-            }
 
-        homePagerController.homePageState
-            // 다른 탭에서 강의평 탭으로 진입 시 page pop 이후 리뷰 탭으로 변경이 동작할 수 있도록 딜레이를 준다.
-            .delay(10, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                val pageNum = when (it) {
-                    HomePage.Timetable -> 0
-                    HomePage.Search -> 1
-                    is HomePage.Review -> 2
-                    HomePage.Setting -> 3
+                homePagerController.update { prev ->
+                    next
                 }
-                binding.contents.setCurrentItem(pageNum, true)
             }
 
         Observables.combineLatest(
@@ -149,9 +159,6 @@ class HomeFragment : BaseFragment() {
             .bindUi(this) {
                 TimetableWidgetProvider.refreshWidget(requireContext())
             }
-
-        // 스크롤 감도를 낮춘다.
-        binding.contents.reduceDragSensitivity(6)
 
         binding.root.addDrawerListener(
             object : DrawerLayout.DrawerListener {
@@ -166,18 +173,6 @@ class HomeFragment : BaseFragment() {
                 }
 
                 override fun onDrawerStateChanged(newState: Int) {
-                }
-            }
-        )
-
-        binding.contents.registerOnPageChangeCallback(
-            object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    binding.bottomNavigation.selectedItemId = fragmentIndexMap[position]
-                    binding.root.setDrawerLockMode(
-                        if (position != 0) DrawerLayout.LOCK_MODE_LOCKED_CLOSED
-                        else DrawerLayout.LOCK_MODE_UNLOCKED
-                    )
                 }
             }
         )

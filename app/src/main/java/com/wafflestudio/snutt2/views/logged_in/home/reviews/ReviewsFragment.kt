@@ -17,12 +17,13 @@ import com.wafflestudio.snutt2.databinding.FragmentReviewsBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.HomePage
 import com.wafflestudio.snutt2.lib.android.HomePagerController
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.toOptional
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx3.asObservable
 import java.net.URL
 import javax.inject.Inject
 
@@ -36,6 +37,9 @@ class ReviewsFragment : BaseFragment() {
 
     @Inject
     lateinit var homePagerController: HomePagerController
+
+    @Inject
+    lateinit var reviewUrlController: ReviewUrlController
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
@@ -113,12 +117,13 @@ class ReviewsFragment : BaseFragment() {
                 reloadWebView()
             }
 
-        homePagerController.homePageState
-            .filter { it is HomePage.Review }
-            .map { (it as HomePage.Review).landingUrl }
-            .observeOn(AndroidSchedulers.mainThread())
+        reviewUrlController.urlEvent
+            .map { it.toOptional() }.asObservable()
             .bindUi(this) {
-                reloadWebView(it)
+                if (it.value != null) {
+                    reloadWebView(it.value)
+                    reviewUrlController.flushAfterObserve()
+                }
             }
     }
 
@@ -175,13 +180,13 @@ class ReviewsFragment : BaseFragment() {
                     if (binding.webView.canGoBack()) {
                         binding.webView.goBack()
                     } else {
-                        homePagerController.updateHomePage(HomePage.Timetable)
+                        homePagerController.update(HomePage.Timetable)
                     }
                 }
             }
             ).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
     }
 
     override fun onPause() {
