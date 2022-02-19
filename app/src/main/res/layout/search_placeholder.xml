@@ -19,16 +19,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:fontFamily="@font/spoqa_han_sans_bold"
         android:gravity="center"
-        android:text="tip. 줄임말로도 검색이 가능합니다!"
+        android:text="SNUTT 검색 꿀팁 🍯"
+        android:textColor="#B3FFFFFF"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:gravity="center"
+        android:text="다양한 조합으로 검색해보세요."
         android:textColor="#B3FFFFFF"
         android:textSize="18dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="ex) 대영 Paul / 죽과이 유성호"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:text="ex) 2학년 컴공 전필 / 경영 영강"
+        android:textColor="#80FFFFFF"
+        android:textSize="14dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:gravity="center"
+        android:text="줄임말로 검색해보세요."
+        android:textColor="#B3FFFFFF"
+        android:textSize="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:text="ex) 죽음의 과학적 이해 유성호 → 죽과이 유성호"
         android:textColor="#80FFFFFF"
         android:textSize="14dp" />
 
