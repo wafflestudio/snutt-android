@@ -9,5 +9,4 @@ interface NotificationRepository {
     suspend fun getNotificationResultStream(): Flow<PagingData<NotificationDto>>
 
     suspend fun getNotificationCount(): Long
-
 }

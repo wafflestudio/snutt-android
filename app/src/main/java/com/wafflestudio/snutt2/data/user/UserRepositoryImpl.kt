@@ -160,7 +160,6 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-
     private suspend fun registerFirebaseToken() {
         val token = getFirebaseToken()
         api._registerFirebaseToken(

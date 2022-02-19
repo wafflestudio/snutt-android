@@ -17,9 +17,7 @@ import okio.source
 import java.io.InputStream
 import java.io.OutputStream
 
-
 private const val CURRENT_TABLE_PREFERENCES_FILE_NAME = "current_table_prefs.pb"
-
 
 val Context.currentTablePreferencesStore: DataStore<CurrentTablePreferences> by dataStore(
     fileName = CURRENT_TABLE_PREFERENCES_FILE_NAME,

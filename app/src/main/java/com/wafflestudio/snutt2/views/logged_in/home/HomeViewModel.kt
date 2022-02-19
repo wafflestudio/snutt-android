@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.CourseBookRepository
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.data.UserRepository
@@ -16,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val tableRepository: TableRepository,
-    private val courseBookRepository: CourseBookRepository,
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
     private val notificationRepository: NotificationsRepository,
@@ -29,10 +27,6 @@ class HomeViewModel @Inject constructor(
             .subscribeBy(onError = apiOnError)
 
         tableRepository.fetchTableList()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-
-        courseBookRepository.fetchCourseBook()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onError = apiOnError)
 

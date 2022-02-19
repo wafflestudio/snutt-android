@@ -27,7 +27,6 @@ class TableRepositoryImpl @Inject constructor(
             .map { it.map }
             .distinctUntilChanged()
 
-
     override suspend fun fetchTableById(id: String) {
         val response = api._getTableById(id)
         currentTableStore.updateData {
