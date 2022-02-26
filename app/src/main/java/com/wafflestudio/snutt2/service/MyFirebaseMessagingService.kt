@@ -8,16 +8,12 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.NotificationsRepository
 import com.wafflestudio.snutt2.views.SplashActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
-    @Inject
-    lateinit var notificationRepository: NotificationsRepository
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
@@ -45,6 +41,5 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
-        notificationRepository.triggerRefreshData()
     }
 }

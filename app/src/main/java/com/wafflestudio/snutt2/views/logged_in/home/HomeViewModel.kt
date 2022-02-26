@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.manager.NotificationsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -19,7 +18,6 @@ class HomeViewModel @Inject constructor(
     private val courseBookRepository: CourseBookRepository,
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
-    private val notificationRepository: NotificationsRepository,
     private val apiOnError: ApiOnError
 ) : ViewModel() {
 
@@ -46,7 +44,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun fetchUncheckedNotifications(): Single<Boolean> {
-        return notificationRepository.getNotificationCount()
-            .map { it.count > 0 }
+        return Single.just(false)
     }
 }

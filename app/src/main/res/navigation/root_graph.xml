@@ -52,9 +52,6 @@
             android:id="@+id/action_homeFragment_to_tableLecturesFragment"
             app:destination="@id/tableLecturesFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_notificationsFragment"
-            app:destination="@id/notificationsFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_termsInfoFragment"
             app:destination="@id/termsInfoFragment" />
         <action
@@ -79,12 +76,6 @@
         android:name="com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesFragment"
         android:label="@layout/fragment_lecture_list"
         tools:layout="@layout/fragment_lecture_list" />
-
-    <fragment
-        android:id="@+id/notificationsFragment"
-        android:name="com.wafflestudio.snutt2.views.logged_in.notifications.NotificationsFragment"
-        android:label="@layout/fragment_notifications"
-        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/lectureDetailFragment"
