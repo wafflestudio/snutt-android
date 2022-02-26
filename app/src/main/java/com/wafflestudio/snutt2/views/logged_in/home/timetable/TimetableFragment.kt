@@ -141,11 +141,6 @@ class TimetableFragment : BaseFragment() {
                     )
             }
 
-        binding.notificationsButton.throttledClicks()
-            .bindUi(this) {
-                routeNotifications()
-            }
-
         binding.appBarTitle.throttledClicks()
             .bindUi(this) {
                 dialogController.showTextDialog(
@@ -173,13 +168,6 @@ class TimetableFragment : BaseFragment() {
                 lecture
             )
         findNavController().navigate(action, defaultNavOptions)
-    }
-
-    private fun routeNotifications() {
-        findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToNotificationsFragment(),
-            defaultNavOptions
-        )
     }
 
     private fun routeLectureList() {
