@@ -54,7 +54,7 @@ jobs:
         run: ./gradlew appDistributionUploadLiveRelease
       - name: Set Message
         run: |
-          PROPERTY=$(head -n 1 app/version.properties)
+          PROPERTY=$(head -n 1 version.properties)
           VERSION="${PROPERTY/snuttVersionName=}"
           TITLE="SNUTT Android 빌드 알림"
           MESSAGE="${VERSION} 빌드 완료"

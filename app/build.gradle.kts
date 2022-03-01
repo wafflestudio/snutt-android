@@ -90,6 +90,7 @@ android {
             versionName = propertyVersionName
 
             firebaseAppDistribution {
+                artifactType = "APK"
                 testers = "urban"
                 serviceCredentialsFile = "gcp-service-account-staging.json"
             }
