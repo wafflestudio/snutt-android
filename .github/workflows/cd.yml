@@ -27,6 +27,11 @@ jobs:
           cat << EOF > ./app/src/live/google-services.json
           ${{ secrets.google_services_json_live }}
           EOF
+      - name: Setup gcp-service-account.json (Live)
+        run: |
+          cat << EOF > ./gcp-service-account.json
+          ${{ secrets.app_distribution_service_account_live }}
+          EOF
       - name: Setup secrets.xml (Live)
         run: |
           mkdir -p ./app/src/live/res/values
@@ -46,12 +51,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID_LIVE }}
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          groups: urban
-          file: app/build/outputs/bundle/liveRelease/app-live-release.aab
+        run: ./gradlew appDistributionUploadLiveRelease
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 app/version.properties)
@@ -86,6 +86,11 @@ jobs:
           cat << EOF > ./app/src/staging/google-services.json
           ${{ secrets.google_services_json_staging }}
           EOF
+      - name: Setup gcp-service-account.json (Staging)
+        run: |
+          cat << EOF > ./gcp-service-account.json
+          ${{ secrets.app_distribution_service_account_staging }}
+          EOF
       - name: Setup secrets.xml (Staging)
         run: |
           mkdir -p ./app/src/staging/res/values
@@ -99,15 +104,10 @@ jobs:
           mkdir -p ./app/keystore
           echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
       - name: Build production apk
-        run: ./gradlew bundleStagingRelease
+        run: ./gradlew assembleStagingRelease
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID_STAGING }}
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          groups: urban
-          file: app/build/outputs/bundle/stagingRelease/app-staging-release.aab
+        run: ./gradlew appDistributionUploadStagingRelease

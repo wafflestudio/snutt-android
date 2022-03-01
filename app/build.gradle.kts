@@ -11,6 +11,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.firebase.appdistribution")
 }
 
 ktlint {
@@ -67,7 +68,10 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -80,16 +84,27 @@ android {
     productFlavors {
         create("staging") {
             applicationIdSuffix = ".staging"
+
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
             versionName = propertyVersionName
+
+            firebaseAppDistribution {
+                testers = "urban"
+                serviceCredentialsFile = "gcp-service-account.json"
+            }
         }
 
         create("live") {
             applicationIdSuffix = ".live"
+
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
             versionName = propertyVersionName
+
+            firebaseAppDistribution {
+                serviceCredentialsFile = "gcp-service-account.json"
+            }
         }
     }
 
