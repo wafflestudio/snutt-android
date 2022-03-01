@@ -29,7 +29,7 @@ jobs:
           EOF
       - name: Setup gcp-service-account.json (Live)
         run: |
-          cat << EOF > ./gcp-service-account.json
+          cat << EOF > ./gcp-service-account-live.json
           ${{ secrets.app_distribution_service_account_live }}
           EOF
       - name: Setup secrets.xml (Live)
@@ -88,7 +88,7 @@ jobs:
           EOF
       - name: Setup gcp-service-account.json (Staging)
         run: |
-          cat << EOF > ./gcp-service-account.json
+          cat << EOF > ./gcp-service-account-staging.json
           ${{ secrets.app_distribution_service_account_staging }}
           EOF
       - name: Setup secrets.xml (Staging)

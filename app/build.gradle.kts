@@ -91,7 +91,7 @@ android {
 
             firebaseAppDistribution {
                 testers = "urban"
-                serviceCredentialsFile = "gcp-service-account.json"
+                serviceCredentialsFile = "gcp-service-account-staging.json"
             }
         }
 
@@ -103,7 +103,8 @@ android {
             versionName = propertyVersionName
 
             firebaseAppDistribution {
-                serviceCredentialsFile = "gcp-service-account.json"
+                artifactType = "AAB"
+                serviceCredentialsFile = "gcp-service-account-live.json"
             }
         }
     }
