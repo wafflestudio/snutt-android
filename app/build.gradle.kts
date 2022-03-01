@@ -80,14 +80,16 @@ android {
     productFlavors {
         create("staging") {
             applicationIdSuffix = ".staging"
-            versionCode = versionProps.getProperty("snuttVersionCode").toInt()
-            versionName = versionProps.getProperty("snuttVersionName")
+            val propertyVersionName = versionProps.getProperty("snuttVersionName")
+            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
+            versionName = propertyVersionName
         }
 
         create("live") {
             applicationIdSuffix = ".live"
-            versionCode = versionProps.getProperty("snuttVersionCode").toInt()
-            versionName = versionProps.getProperty("snuttVersionName")
+            val propertyVersionName = versionProps.getProperty("snuttVersionName")
+            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
+            versionName = propertyVersionName
         }
     }
 

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'develop'
+      - 'release-*'
     paths:
       - 'version.properties'
 
@@ -39,7 +40,7 @@ jobs:
           mkdir -p ./app/keystore
           echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
       - name: Build production apk
-        run: ./gradlew bundleLiveRelease --stacktrace
+        run: ./gradlew bundleLiveRelease
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -50,7 +51,7 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID_LIVE }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
-          file: app/build/outputs/apk/live/release/app-live-release.aab
+          file: app/live/release/app-live-release.aab
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 app/version.properties)
@@ -98,7 +99,7 @@ jobs:
           mkdir -p ./app/keystore
           echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
       - name: Build production apk
-        run: ./gradlew bundleStagingRelease --stacktrace
+        run: ./gradlew bundleStagingRelease
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -109,4 +110,4 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID_STAGING }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
-          file: app/build/outputs/apk/staging/release/app-staging-release.aab
+          file: app/staging/release/app-staging-release.aab
