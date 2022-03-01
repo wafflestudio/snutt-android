@@ -51,7 +51,7 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID_LIVE }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
-          file: app/live/release/app-live-release.aab
+          file: app/build/outputs/bundle/liveRelease/app-live-release.aab
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 app/version.properties)
@@ -110,4 +110,4 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID_STAGING }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: urban
-          file: app/staging/release/app-staging-release.aab
+          file: app/build/outputs/bundle/stagingRelease/app-staging-release.aab
