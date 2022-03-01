@@ -88,8 +88,7 @@ android {
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
             versionName = propertyVersionName
-
-            firebaseAppDistribution {
+            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "APK"
                 testers = "urban"
                 serviceCredentialsFile = "gcp-service-account-staging.json"
@@ -102,8 +101,7 @@ android {
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
             versionName = propertyVersionName
-
-            firebaseAppDistribution {
+            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "AAB"
                 serviceCredentialsFile = "gcp-service-account-live.json"
             }
