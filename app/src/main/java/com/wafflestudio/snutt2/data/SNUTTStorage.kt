@@ -1,10 +1,8 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.network.dto.GetNotificationResults
+import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
@@ -93,6 +91,16 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tags",
             type = TagDto::class.java,
+            defaultValue = listOf()
+        )
+    )
+
+    val notifications = PrefValue<GetNotificationResults>(
+        prefContext,
+        PrefListValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "pref_notifications",
+            type = NotificationDto::class.java,
             defaultValue = listOf()
         )
     )

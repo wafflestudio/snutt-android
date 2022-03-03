@@ -157,6 +157,11 @@ class TimetableFragment : BaseFragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onError = apiOnError)
             }
+
+        binding.notificationsButton.throttledClicks()
+            .bindUi(this) {
+                routeNotification()
+            }
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
@@ -177,7 +182,14 @@ class TimetableFragment : BaseFragment() {
         )
     }
 
-    private fun getScreenShotFromView(v: View): Single<Bitmap> {
+    private fun routeNotification() {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToNotificationFragment(),
+            defaultNavOptions
+        )
+    }
+
+        private fun getScreenShotFromView(v: View): Single<Bitmap> {
         return Single.fromCallable {
             val screenshot =
                 Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
