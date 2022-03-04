@@ -9,14 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.HomePage
 import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
@@ -103,17 +104,11 @@ class SearchFragment : BaseFragment() {
                     )
             },
             onShowReviews = {
-                apiService.getLecturesId(
-                    it.course_number ?: "",
-                    it.instructor
-                )
-                    .bindUi(
-                        this,
-                        onSuccess = { result ->
-                            homePagerController.update(HomePage.Review)
-                            reviewUrlController.update(snuttUrls.getReviewDetail(result.id))
-                        }, onError = apiOnError
-                    )
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.lecture_review_not_ready),
+                    Toast.LENGTH_SHORT
+                ).show()
             },
         )
 
