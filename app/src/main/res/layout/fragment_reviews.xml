@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".views.logged_in.home.reviews.ReviewsFragment">
 
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarThumbVertical="@drawable/recyclerview_light_scrollbar"
+        android:scrollbars="vertical" />
 
     <LinearLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/white"
@@ -31,40 +38,57 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/reviews_app_bar_title" />
+            android:text="@string/reviews_app_bar_title"
+            android:textSize="16dp" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="3dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="56dp"
+        android:indeterminate="false"
+        android:progressBackgroundTint="@color/white"
+        android:progressTint="#d5d5d5"
+        tools:progress="40" />
+
+    <LinearLayout
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="50dp"
+            android:layout_height="58dp"
+            android:src="@drawable/ic_cat_retry" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/spoqa_han_sans_regular"
-            android:text="강의평 기능을 준비중입니다."
+            android:text="네트워크 연결을 확인해주세요"
             android:textColor="@color/black"
             android:textSize="17dp" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="169dp"
-            android:layout_height="177dp"
-            android:layout_marginTop="65dp"
-            android:layout_marginBottom="25dp"
-            android:src="@drawable/img_reviews_coming_soon" />
-
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/retry_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/spoqa_han_sans_regular"
-            android:text="\@wafflestudio"
-            android:textColor="@color/black"
-            android:textSize="9dp" />
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_retry_icon"
+            android:fontFamily="@font/spoqa_han_sans_bold"
+            android:text="다시 불러오기"
+            android:textColor="@color/white"
+            android:textSize="12dp" />
+
     </LinearLayout>
 
-
-</LinearLayout>
+</FrameLayout>

@@ -18,8 +18,11 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.*
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -202,6 +205,8 @@ class LectureDetailFragment : BaseFragment() {
             adapter.notifyItemInserted(pos + 1)
             vm.lists.add(pos + 2, LectureItem(LectureItem.Type.Syllabus, false))
             adapter.notifyItemInserted(pos + 2)
+            vm.lists.add(pos + 3, LectureItem(LectureItem.Type.LectureReview, false))
+            adapter.notifyItemInserted(pos + 3)
 
             // change button
             pos = resetItemPosition
@@ -287,6 +292,7 @@ class LectureDetailFragment : BaseFragment() {
             add(LectureItem(LectureItem.Type.Margin))
             add(LectureItem(LectureItem.Type.LongHeader))
             add(LectureItem(LectureItem.Type.Syllabus))
+            add(LectureItem(LectureItem.Type.LectureReview))
             add(LectureItem(LectureItem.Type.ShortHeader))
             add(LectureItem(LectureItem.Type.RemoveLecture))
             add(LectureItem(LectureItem.Type.LongHeader))
