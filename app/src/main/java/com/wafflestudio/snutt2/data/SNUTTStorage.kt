@@ -95,15 +95,15 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
-    val notifications = PrefValue<GetNotificationResults>(
-        prefContext,
-        PrefListValueMetaData(
-            domain = DOMAIN_SCOPE_CURRENT_VERSION,
-            key = "pref_notifications",
-            type = NotificationDto::class.java,
-            defaultValue = listOf()
-        )
-    )
+//    val notifications = PrefValue<GetNotificationResults>(
+//        prefContext,
+//        PrefListValueMetaData(
+//            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+//            key = "pref_notifications",
+//            type = NotificationDto::class.java,
+//            defaultValue = listOf()
+//        )
+//    )
 
     fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)

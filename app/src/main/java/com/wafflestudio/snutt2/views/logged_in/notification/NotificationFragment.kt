@@ -5,12 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingDataAdapter
+import androidx.paging.map
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentNotificationBinding
+import com.wafflestudio.snutt2.databinding.ItemNotificationBinding
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NotificationFragment : BaseFragment() {
@@ -35,21 +44,11 @@ class NotificationFragment : BaseFragment() {
             }
 
         val adapter = NotificationAdapter()
-
         binding.contents.adapter = adapter
-        vm.loadNotification()
-
-        vm.notificationList.asObservable()
-            .bindUi(this) { list ->
-                adapter.submitList(
-                    // map<T, R>(...) 은 (T)를 R로 바꿔서 List<R>로 반환.
-                    // list.map(dd)
-                    // 그냥 {...} 안에 써서 하면 편함.
-                    list.map<NotificationDto, NotificationAdapter.Data> {NotificationAdapter.Data.Notification(it)}
-                )
+        vm.notifications
+            .distinctUntilChanged()
+            .bindUi(this) {
+                adapter.submitData(lifecycle, it)
             }
-    }
-    val dd : (NotificationDto) -> NotificationAdapter.Data  = {
-        NotificationAdapter.Data.Notification(it)
     }
 }
