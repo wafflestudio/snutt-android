@@ -74,5 +74,4 @@ class LecturePagingSource(
     companion object {
         const val LECTURE_SEARCH_STARTING_PAGE_INDEX: Long = 0
     }
-
 }
