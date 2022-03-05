@@ -21,7 +21,6 @@ import okio.source
 import java.io.InputStream
 import java.io.OutputStream
 
-
 private const val USER_PREFERENCES_FILE_NAME = "user_prefs.pb"
 
 val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(

@@ -319,7 +319,6 @@ interface SNUTTRestApi {
         @Body body: PostForceLogoutParams
     ): PostForceLogoutResults
 
-
     @GET("/user/info")
     suspend fun _getUserInfo(): GetUserInfoResults
 

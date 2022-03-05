@@ -17,9 +17,7 @@ import okio.source
 import java.io.InputStream
 import java.io.OutputStream
 
-
 private const val TABLE_MAP_PREFERENCES_FILE_NAME = "table_map_prefs.pb"
-
 
 val Context.tableMapPreferencesStore: DataStore<TableMapPreferences> by dataStore(
     fileName = TABLE_MAP_PREFERENCES_FILE_NAME,

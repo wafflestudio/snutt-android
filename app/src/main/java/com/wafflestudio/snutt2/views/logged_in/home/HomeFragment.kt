@@ -30,7 +30,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
 import kotlinx.coroutines.rx3.asObservable
+import kotlinx.coroutines.rx3.rxMaybe
 import java.lang.IllegalStateException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -65,13 +67,6 @@ class HomeFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
-
-    private val fragmentIndexMap = listOf(
-        R.id.action_timetable,
-        R.id.action_search,
-        R.id.action_reviews,
-        R.id.action_settings
-    )
 
     private var backPressCallback: OnBackPressedCallback? = null
 
@@ -178,10 +173,19 @@ class HomeFragment : BaseFragment() {
         )
 
         binding.coursebookSelectButton.throttledClicks()
-            .observeOn(AndroidSchedulers.mainThread())
             .flatMapMaybe {
+                rxMaybe {
+                    try {
+                        return@rxMaybe tableListViewModel.getCourseBooks()
+                    } catch (e: Throwable) {
+                        apiOnError(e)
+                        return@rxMaybe null
+                    }
+                }
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMapMaybe { list ->
                 val current = tableListViewModel.selectedCourseBooks.get().value
-                val list = tableListViewModel.courseBooks.get()
                 dialogController.showSelectorDialog(
                     R.string.home_drawer_selector_dialog_title,
                     list,
