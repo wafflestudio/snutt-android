@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.TableRepository
-import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -15,7 +14,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
-    private val tagRepository: TagRepository,
     private val notificationRepository: NotificationRepository,
     private val apiOnError: ApiOnError
 ) : ViewModel() {
@@ -30,10 +28,6 @@ class HomeViewModel @Inject constructor(
             .subscribeBy(onError = apiOnError)
 
         userRepository.fetchUserInfo()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-
-        tagRepository.fetchTags()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(onError = apiOnError)
     }

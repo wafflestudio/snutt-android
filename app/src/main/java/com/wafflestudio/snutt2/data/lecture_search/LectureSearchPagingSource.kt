@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.data.lectures
+package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.lib.toCreditNumber
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 
-class LecturePagingSource(
+class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
     year: Long,
     semester: Long,
