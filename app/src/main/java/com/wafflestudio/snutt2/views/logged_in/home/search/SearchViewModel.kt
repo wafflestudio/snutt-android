@@ -1,14 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
-import androidx.paging.rxjava3.cachedIn
-import androidx.paging.rxjava3.observable
 import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.SearchLectureRepository
 import com.wafflestudio.snutt2.data.TagRepository
+import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.DataProvider
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
@@ -19,13 +16,15 @@ import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.rx3.asObservable
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchLectureRepository: SearchLectureRepository,
     private val myLectureRepository: MyLectureRepository,
+    private val lectureSearchRepository: LectureSearchRepository,
     tagRepository: TagRepository,
 ) : ViewModel() {
     private val _searchTitle = SubjectDataValue("")
@@ -35,12 +34,19 @@ class SearchViewModel @Inject constructor(
     private val _queryRefreshSignal = PublishSubject.create<Unit>()
     private val _selectedTagType = SubjectDataValue(TagType.ACADEMIC_YEAR)
 
+    private var semesterChangeDisposable: Disposable? = null
+
     init {
-        myLectureRepository.currentTable.map { it.id }
+        semesterChangeDisposable = myLectureRepository.currentTable.map { it.id }
             .distinctUntilChanged()
             .subscribe {
                 clear()
             }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        semesterChangeDisposable?.dispose()
     }
 
     val searchTags: DataProvider<List<TagDto>> = _searchTags
@@ -63,19 +69,26 @@ class SearchViewModel @Inject constructor(
         Observable.combineLatest(
             _queryRefreshSignal.hide()
                 .switchMap {
-                    searchLectureRepository.getPagingSource(
+                    lectureSearchRepository.getLectureSearchResultStream(
+                        myLectureRepository.lastViewedTable.get().value?.year!!,
+                        myLectureRepository.lastViewedTable.get().value?.semester!!,
                         _searchTitle.get(),
-                        _searchTags.get()
-                    ).observable.cachedIn(viewModelScope)
+                        _searchTags.get(),
+                        null
+                    ).asObservable()
                 },
             _selectedLecture.asObservable(),
             myLectureRepository.currentTable.map { it.lectureList }
-        ) { list, selected, containeds ->
+        ) { list, selected, alreadyContainingLectures ->
             list.map {
                 it.toDataWithState(
                     LectureState(
                         selected = selected.get() == it,
-                        contained = containeds.any { lec -> lec.isLectureNumberEquals(it) }
+                        contained = alreadyContainingLectures.any { lec ->
+                            lec.isLectureNumberEquals(
+                                it
+                            )
+                        }
                     )
                 )
             }

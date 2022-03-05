@@ -16,7 +16,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi
 ) : LectureSearchRepository {
 
-    override suspend fun getLectureSearchResultStream(
+    override fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
         title: String,

@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.model.TagDto
 import kotlinx.coroutines.flow.Flow
 
 interface LectureSearchRepository {
-    suspend fun getLectureSearchResultStream(
+    fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
         title: String,
