@@ -1,10 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.TagRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.DataProvider
@@ -19,13 +20,13 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.rx3.asObservable
+import kotlinx.coroutines.rx3.rxSingle
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val myLectureRepository: MyLectureRepository,
-    private val lectureSearchRepository: LectureSearchRepository,
-    tagRepository: TagRepository,
+    private val lectureSearchRepository: LectureSearchRepository
 ) : ViewModel() {
     private val _searchTitle = SubjectDataValue("")
     private val _searchTags = SubjectDataValue<List<TagDto>>(listOf())
@@ -49,12 +50,21 @@ class SearchViewModel @Inject constructor(
         semesterChangeDisposable?.dispose()
     }
 
+    private val currentYear get() = myLectureRepository.lastViewedTable.get().value?.year!!
+    private val currentSemester get() = myLectureRepository.lastViewedTable.get().value?.semester!!
+
     val searchTags: DataProvider<List<TagDto>> = _searchTags
 
     val tagsByTagType: Observable<List<Selectable<TagDto>>> =
         Observable.combineLatest(
-            tagRepository.tags.asObservable()
-                .map { it + listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY) },
+            rxSingle {
+                lectureSearchRepository.getSearchTags(
+                    currentYear,
+                    currentSemester
+                )
+            }
+                .map { it + listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY) }
+                .toObservable(),
             _selectedTagType.asObservable(),
             _searchTags.asObservable()
         ) { tags, tagType, selected ->
@@ -75,7 +85,7 @@ class SearchViewModel @Inject constructor(
                         _searchTitle.get(),
                         _searchTags.get(),
                         null
-                    ).asObservable()
+                    ).cachedIn(viewModelScope).asObservable()
                 },
             _selectedLecture.asObservable(),
             myLectureRepository.currentTable.map { it.lectureList }
