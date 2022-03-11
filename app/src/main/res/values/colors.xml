@@ -80,4 +80,6 @@
     <color name="theme_grass_7">#476060</color>
     <color name="theme_grass_8">#3D7068</color>
 
+    <color name="created_at">#777777</color>
+
 </resources>

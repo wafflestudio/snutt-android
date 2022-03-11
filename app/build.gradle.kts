@@ -172,6 +172,9 @@ dependencies {
     implementation("com.github.JakeWharton:ViewPagerIndicator:2.4.1")
     implementation("com.appyvet:materialrangebar:1.3")
     implementation("com.airbnb.android:lottie:3.4.0")
+
+    // Jetpack Compose and Flow and Paging?
+    implementation("androidx.paging:paging-compose:1.0.0-alpha14")
 }
 
 repositories {

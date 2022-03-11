@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
-import com.wafflestudio.snutt2.lib.network.dto.GetNotificationResults
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam

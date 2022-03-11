@@ -1,28 +1,21 @@
 package com.wafflestudio.snutt2.views.logged_in.notification
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.ui.res.stringResource
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.ItemNotificationBinding
-import com.wafflestudio.snutt2.lib.base.BaseAdapter
-import com.wafflestudio.snutt2.lib.base.BaseViewHolder
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 
-class NotificationAdapter(
-
-): PagingDataAdapter<String, NotificationAdapter.DataViewHolder>(diffCallback) {
+class NotificationAdapter() : PagingDataAdapter<String, NotificationAdapter.DataViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         return DataViewHolder(
             ItemNotificationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false)
+                false
+            )
         )
     }
 
@@ -30,8 +23,7 @@ class NotificationAdapter(
         getItem(position)?.let { holder.bindData(it) }
     }
 
-
-    inner class DataViewHolder(val binding : ItemNotificationBinding) :
+    inner class DataViewHolder(val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 //        fun bindData(notification: NotificationDto) {
@@ -48,9 +40,7 @@ class NotificationAdapter(
         fun bindData(notification: String) {
             binding.description.text = notification
         }
-
     }
-
 
 //    companion object {
 //        private val diffCallback = object : DiffUtil.ItemCallback<NotificationDto>() {
@@ -66,19 +56,19 @@ class NotificationAdapter(
 //            }
 //        }
 //    }
-companion object {
-    private val diffCallback = object : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-            return when (oldItem) {
-                is String -> (newItem as? String) == oldItem
-                else -> false
+    companion object {
+
+        private val diffCallback = object : DiffUtil.ItemCallback<String>() {
+            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+                return when (oldItem) {
+                    is String -> (newItem as? String) == oldItem
+                    else -> false
+                }
+            }
+
+            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+                return oldItem == newItem
             }
         }
-
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-            return oldItem == newItem
-        }
     }
-}
-
 }

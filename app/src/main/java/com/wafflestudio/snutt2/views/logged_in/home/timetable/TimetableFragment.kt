@@ -189,7 +189,7 @@ class TimetableFragment : BaseFragment() {
         )
     }
 
-        private fun getScreenShotFromView(v: View): Single<Bitmap> {
+    private fun getScreenShotFromView(v: View): Single<Bitmap> {
         return Single.fromCallable {
             val screenshot =
                 Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)

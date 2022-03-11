@@ -10,7 +10,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.SplashActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
