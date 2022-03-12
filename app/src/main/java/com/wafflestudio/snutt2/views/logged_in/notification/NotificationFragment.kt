@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.Flow
 class NotificationFragment : BaseFragment() {
 
     private val vm: NotificationViewModel by activityViewModels()
-    private val typeList : List<String> = listOf("", "추가", "업데이트", "삭제", "경고")  // 임시
+    private val typeList: List<String> = listOf("", "추가", "업데이트", "삭제", "경고") // 임시
     private val spoqaHanSans = FontFamily(
         Font(R.font.spoqa_han_sans_regular, FontWeight.Medium),
         Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
@@ -57,7 +57,7 @@ class NotificationFragment : BaseFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SnuttTheme {
-                    Column{
+                    Column {
                         TopBar()
                         NotificationList(notifications = vm.notifications)
                     }
@@ -67,61 +67,66 @@ class NotificationFragment : BaseFragment() {
     }
 
     @Composable
-    fun NotificationItem(info : NotificationDto?){
+    fun NotificationItem(info: NotificationDto?) {
         val subHeadingFontStyle = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold, color = colorResource(R.color.black))
         val detailFontStyle = TextStyle(fontSize = 12.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium, color = colorResource(R.color.black))
-        
-        Column(modifier = Modifier.padding(all=16.dp)) {
+
+        Column(modifier = Modifier.padding(all = 16.dp)) {
             Row {
-                Image(painter = painterResource(R.drawable.ic_refresh),
+                Image(
+                    painter = painterResource(R.drawable.ic_refresh),
                     contentDescription = "Message",
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-                        Text(text = typeList[info?.type?:0], style = subHeadingFontStyle)
-                        Text(text = info?.createdAt?.substring(0, 10)?:"", style = detailFontStyle, color = colorResource(R.color.created_at))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = typeList[info?.type ?: 0], style = subHeadingFontStyle)
+                        Text(text = info?.createdAt?.substring(0, 10) ?: "", style = detailFontStyle, color = colorResource(R.color.created_at))
                     }
                     Spacer(modifier = Modifier.height(7.dp))
-                    Text(text = info?.message?:"", style = detailFontStyle)
+                    Text(text = info?.message ?: "", style = detailFontStyle)
                 }
             }
         }
     }
 
     @Composable
-    fun NotificationList(notifications : Flow<PagingData<NotificationDto>>){
-        val items : LazyPagingItems<NotificationDto> =  notifications.collectAsLazyPagingItems()
+    fun NotificationList(notifications: Flow<PagingData<NotificationDto>>) {
+        val items: LazyPagingItems<NotificationDto> = notifications.collectAsLazyPagingItems()
         CompositionLocalProvider(LocalOverScrollConfiguration provides null) {
-            LazyColumn{
+            LazyColumn {
                 items(items) { notification ->
-                    for(i : Int in 1..10) NotificationItem(notification)
+                    for (i: Int in 1..10) NotificationItem(notification)
                 }
             }
         }
     }
 
     @Composable
-    fun TopBar(){
+    fun TopBar() {
         val titleStyle = TextStyle(fontSize = 17.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold, color = colorResource(R.color.black))
 
         Surface(elevation = 2.dp) {
-            Row(modifier = Modifier
-                .padding(all = 12.dp)
-                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.ic_arrow_back),
-                      contentDescription = "back button",
-                      modifier = Modifier
-                          .size(30.dp)
-                          .clickable(
-                              interactionSource = remember { MutableInteractionSource() },
-                              onClick = { findNavController().popBackStack() },
-                              indication = null
-                          )
+            Row(
+                modifier = Modifier
+                    .padding(all = 12.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    contentDescription = "back button",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = { findNavController().popBackStack() },
+                            indication = null
+                        )
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(text="알림", style = titleStyle)
+                Text(text = "알림", style = titleStyle)
             }
         }
     }

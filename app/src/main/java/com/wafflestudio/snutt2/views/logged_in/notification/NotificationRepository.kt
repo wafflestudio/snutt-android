@@ -17,10 +17,11 @@ class NotificationRepository @Inject constructor(
     private val api: SNUTTRestApi
 ) {
 
-    fun getNotification(limit : Long,
-                        offset : Long,
-                        explicit : Long
-    ) : Pager<Long, NotificationDto> {
+    fun getNotification(
+        limit: Long,
+        offset: Long,
+        explicit: Long
+    ): Pager<Long, NotificationDto> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -32,97 +33,49 @@ class NotificationRepository @Inject constructor(
                     api = api,
                     limit,
                     offset,
-                    explicit)
+                    explicit
+                )
             }
         )
     }
-//    fun getNotification(
-//        limit: Long,
-//        offset: Long,
-//        explicit: Long
-//    ): Pager<Long, String> {
-//        return Pager(
-//            config = PagingConfig(
-//                pageSize = 20,
-//                enablePlaceholders = true,
-//                prefetchDistance = 5,
-//            ),
-//            pagingSourceFactory = {
-//                NotificationPagingSource(
-//                    api = api
-//                )
-//            }
-//        )
-//    }
-//}
 
- @Singleton
- class NotificationPagingSource @Inject constructor(
-    private val api: SNUTTRestApi,
-    private val limit : Long,
-    private val offset : Long,
-    private val explicit : Long
- ) : RxPagingSource<Long, NotificationDto>() {
-    override fun getRefreshKey(state: PagingState<Long, NotificationDto>): Long? {
-        return state.anchorPosition?.let {
-            return state.anchorPosition?.toLong()
+    @Singleton
+    class NotificationPagingSource @Inject constructor(
+        private val api: SNUTTRestApi,
+        private val limit: Long,
+        private val offset: Long,
+        private val explicit: Long
+    ) : RxPagingSource<Long, NotificationDto>() {
+        override fun getRefreshKey(state: PagingState<Long, NotificationDto>): Long? {
+            return state.anchorPosition?.let {
+                return state.anchorPosition?.toLong()
+            }
+        }
+
+        override fun loadSingle(params: LoadParams<Long>): Single<LoadResult<Long, NotificationDto>> {
+            val offset = params.key ?: 0
+            val loadSize = params.loadSize.toLong()
+
+            return api.getNotification(
+                limit = limit,
+                offset = offset,
+                explicit = explicit
+            )
+                .subscribeOn(Schedulers.io())
+                .map { toLoadResult(it, offset = offset, loadSize = loadSize) }
+                .onErrorReturn { LoadResult.Error(it) }
+        }
+
+        private fun toLoadResult(
+            data: List<NotificationDto>,
+            offset: Long,
+            loadSize: Long
+        ): LoadResult<Long, NotificationDto> {
+            return LoadResult.Page(
+                data = data,
+                prevKey = if (offset == 0L) null else offset - loadSize,
+                nextKey = if (data.isEmpty()) null else offset + loadSize
+            )
         }
     }
-
-    override fun loadSingle(params: LoadParams<Long>): Single<LoadResult<Long, NotificationDto>> {
-        val offset = params.key ?: 0
-        val loadSize = params.loadSize.toLong()
-
-        return api.getNotification(
-            limit= limit,
-            offset= offset,
-            explicit = explicit)
-            .subscribeOn(Schedulers.io())
-            .map { toLoadResult(it, offset = offset, loadSize = loadSize) }
-            .onErrorReturn { LoadResult.Error(it) }
-    }
-
-    private fun toLoadResult(
-        data: List<NotificationDto>,
-        offset: Long,
-        loadSize: Long
-    ): LoadResult<Long, NotificationDto> {
-        return LoadResult.Page(
-            data = data,
-            prevKey = if (offset == 0L) null else offset - loadSize,
-            nextKey = if (data.isEmpty()) null else offset + loadSize
-        )
-    }
- }
-//@Singleton
-//class NotificationPagingSource @Inject constructor(
-//    private val api: SNUTTRestApi,
-//) : RxPagingSource<Long, String>() {
-//    override fun getRefreshKey(state: PagingState<Long, String>): Long? {
-//        return state.anchorPosition?.let {
-//            return state.anchorPosition?.toLong()
-//        }
-//    }
-//
-//    override fun loadSingle(params: LoadParams<Long>): Single<LoadResult<Long, String>> {
-//        val offset = params.key ?: 0
-//        val loadSize = params.loadSize.toLong()
-//
-//        return api.getTagList(2022, 1)
-//            .subscribeOn(Schedulers.io())
-//            .map { toLoadResult(it.instructor, offset, loadSize) }
-//            .onErrorReturn { LoadResult.Error(it) }
-//    }
-//
-//    private fun toLoadResult(
-//        data: List<String>,
-//        offset: Long,
-//        loadSize: Long
-//    ): LoadResult<Long, String> {
-//        return LoadResult.Page(
-//            data = data,
-//            prevKey = if (offset == 0L) null else offset - loadSize,
-//            nextKey = if (data.isEmpty()) null else offset + loadSize
-//        )
-//    }
 }

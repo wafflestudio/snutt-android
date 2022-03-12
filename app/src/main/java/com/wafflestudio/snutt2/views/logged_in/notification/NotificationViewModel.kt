@@ -14,9 +14,6 @@ class NotificationViewModel @Inject constructor(
     private val apiOnError: ApiOnError
 ) : ViewModel() {
 
-    val notifications : Flow<PagingData<NotificationDto>> =
+    val notifications: Flow<PagingData<NotificationDto>> =
         notificationRepository.getNotification(10, 0, 10).flow
-
-//    val notifications: Flow<PagingData<String>> =
-//        notificationRepository.getNotification(10, 0, 10).flow
 }
