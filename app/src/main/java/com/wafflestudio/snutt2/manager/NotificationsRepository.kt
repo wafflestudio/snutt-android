@@ -13,6 +13,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +30,7 @@ class NotificationsRepository @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    fun getPagedNotifications(): Flowable<PagingData<NotificationDto>> {
+    fun getPagedNotifications(): Flow<PagingData<NotificationDto>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -37,7 +38,7 @@ class NotificationsRepository @Inject constructor(
                 prefetchDistance = 5,
             ),
             pagingSourceFactory = { pagingSource }
-        ).flowable
+        ).flow
     }
 
     fun triggerRefreshData() {
