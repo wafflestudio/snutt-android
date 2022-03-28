@@ -11,6 +11,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.firebase.appdistribution")
 }
 
 ktlint {
@@ -67,7 +68,10 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -80,14 +84,27 @@ android {
     productFlavors {
         create("staging") {
             applicationIdSuffix = ".staging"
-            versionCode = versionProps.getProperty("snuttVersionCode").toInt()
-            versionName = versionProps.getProperty("snuttVersionName")
+
+            val propertyVersionName = versionProps.getProperty("snuttVersionName")
+            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
+            versionName = propertyVersionName
+            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
+                artifactType = "APK"
+                testers = "urban"
+                serviceCredentialsFile = "gcp-service-account-staging.json"
+            }
         }
 
         create("live") {
             applicationIdSuffix = ".live"
-            versionCode = versionProps.getProperty("snuttVersionCode").toInt()
-            versionName = versionProps.getProperty("snuttVersionName")
+
+            val propertyVersionName = versionProps.getProperty("snuttVersionName")
+            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
+            versionName = propertyVersionName
+            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
+                artifactType = "AAB"
+                serviceCredentialsFile = "gcp-service-account-live.json"
+            }
         }
     }
 
