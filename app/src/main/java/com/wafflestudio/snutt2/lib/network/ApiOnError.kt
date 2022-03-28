@@ -348,5 +348,5 @@ data class RestError(
 )
 
 data class Ext(
-    @Json(name="confirm_message") var message: String? = null
+    @Json(name = "confirm_message") var message: String? = null
 )

@@ -98,7 +98,7 @@ class SearchFragment : BaseFragment() {
                                     val restError: RestError? = error.response()?.errorBody()?.string()?.let {
                                         moshi.adapter(RestError::class.java).fromJson(it)
                                     }
-                                    if(restError?.code==0x300C) {
+                                    if (restError?.code == 0x300C) {
                                         overwriteLectureDialog(it, restError.ext?.message)
                                     } else apiOnError
                                 }
@@ -242,7 +242,7 @@ class SearchFragment : BaseFragment() {
             }
     }
 
-    private fun overwriteLectureDialog(dto : LectureDto, message : String?){
+    private fun overwriteLectureDialog(dto: LectureDto, message: String?) {
         val alert = AlertDialog.Builder(requireContext())
             .setTitle("강좌 덮어씌우기")
             .setMessage(message)
