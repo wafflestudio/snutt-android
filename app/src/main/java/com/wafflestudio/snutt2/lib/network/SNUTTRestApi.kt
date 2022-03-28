@@ -109,6 +109,7 @@ interface SNUTTRestApi {
     fun postAddLecture(
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
+        @Body is_forced : PostLectureForce
     ): Single<PostCustomLectureResults>
 
     @DELETE("/tables/{id}/lecture/{lecture_id}")

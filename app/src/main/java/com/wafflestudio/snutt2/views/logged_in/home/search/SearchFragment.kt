@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
+import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.HomePage
@@ -21,7 +23,9 @@ import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.RestError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.loadingState
@@ -29,6 +33,7 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,6 +57,9 @@ class SearchFragment : BaseFragment() {
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
+
+    @Inject
+    lateinit var moshi: Moshi
 
     private lateinit var binding: FragmentSearchBinding
 
@@ -81,10 +89,22 @@ class SearchFragment : BaseFragment() {
                 hideSoftKeyboard()
             },
             onToggleAddition = {
-                selectedTimetableViewModel.toggleLecture(it)
+                selectedTimetableViewModel.toggleLecture(it, false)
                     .bindUi(
                         this,
-                        onError = apiOnError,
+                        onError = { error ->
+                            when (error) {
+                                is HttpException -> {
+                                    val restError: RestError? = error.response()?.errorBody()?.string()?.let {
+                                        moshi.adapter(RestError::class.java).fromJson(it)
+                                    }
+                                    if(restError?.code==0x300C) {
+                                        overwriteLectureDialog(it, restError.ext?.message)
+                                    } else apiOnError
+                                }
+                                else -> apiOnError
+                            }
+                        },
                         onComplete = {
                             searchViewModel.toggleLectureSelection(it)
                             hideSoftKeyboard()
@@ -220,5 +240,25 @@ class SearchFragment : BaseFragment() {
             .bindUi(this) {
                 binding.timetable.trimParam = it.copy(forceFitLectures = true)
             }
+    }
+
+    private fun overwriteLectureDialog(dto : LectureDto, message : String?){
+        val alert = AlertDialog.Builder(requireContext())
+            .setTitle("강좌 덮어씌우기")
+            .setMessage(message)
+            .setPositiveButton("조와용") { _, _ ->
+                selectedTimetableViewModel.toggleLecture(dto, true)
+                    .bindUi(
+                        this,
+                        onError = apiOnError,
+                        onComplete = {
+                            searchViewModel.toggleLectureSelection(dto)
+                            hideSoftKeyboard()
+                        }
+                    )
+            }
+            .setNegativeButton("싫은데요") { dialog, _ -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 }
