@@ -56,7 +56,11 @@ fun TutorialPage(modifier: Modifier = Modifier, titleImg: Painter, contentImg: P
 }
 
 @Composable
-fun ActionButtons(modifier: Modifier = Modifier, onClickSignIn: () -> Unit, onClickSignUp: () -> Unit) {
+fun ActionButtons(
+    modifier: Modifier = Modifier,
+    onClickSignIn: () -> Unit,
+    onClickSignUp: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -127,11 +131,23 @@ private fun TutorialScreen(
             .fillMaxSize()
             .background(White900)
     ) {
-        HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) {
+        HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) { page ->
             TutorialPage(
                 modifier = Modifier.fillMaxWidth(),
-                titleImg = painterResource(id = R.drawable.imgintrotitle1),
-                contentImg = painterResource(id = R.drawable.imgintro1)
+                titleImg = painterResource(
+                    id = when (page) {
+                        0 -> R.drawable.imgintrotitle1
+                        1 -> R.drawable.imgintrotitle2
+                        else -> R.drawable.imgintrotitle3
+                    }
+                ),
+                contentImg = painterResource(
+                    id = when (page) {
+                        0 -> R.drawable.imgintro1
+                        1 -> R.drawable.imgintro2
+                        else -> R.drawable.imgintro3
+                    }
+                )
             )
         }
 
