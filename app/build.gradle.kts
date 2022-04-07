@@ -12,6 +12,7 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.appdistribution")
+    id("com.google.firebase.crashlytics")
 }
 
 ktlint {
@@ -161,6 +162,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Paging
     implementation("androidx.paging:paging-runtime:${Deps.Version.Paging}")

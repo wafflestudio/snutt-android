@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.navigation.fragment.NavHostFragment
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
@@ -17,6 +19,7 @@ class RootActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        throw RuntimeException("Test Crash") // Force a crash
         setContentView(R.layout.activity_root)
 
         val navController =
