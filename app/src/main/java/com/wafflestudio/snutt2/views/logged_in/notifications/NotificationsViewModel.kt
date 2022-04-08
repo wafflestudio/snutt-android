@@ -10,9 +10,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
-    private val notificationRepository: NotificationsRepository
+    private val notificationsRepository: NotificationsRepository
 ) : ViewModel() {
 
     val notifications: Flow<PagingData<NotificationDto>> =
-        notificationRepository.getPagedNotifications()
+        notificationsRepository.getPagedNotifications()
 }

@@ -81,5 +81,8 @@
     <color name="theme_grass_8">#3D7068</color>
 
     <color name="created_at">#777777</color>
+    <color name="notification_error">#999999</color>
+    <color name="placeholder_text">#aaaaaa</color>
+
 
 </resources>

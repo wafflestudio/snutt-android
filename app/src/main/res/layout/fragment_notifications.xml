@@ -45,14 +45,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_notification" />
+            tools:listitem="@layout/item_notification"
+            tools:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,7 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:visibility="gone">
 
             <ImageView
                 android:layout_width="40dp"
