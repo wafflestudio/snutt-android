@@ -48,7 +48,7 @@ private val placeholderDetail = TextStyle(fontSize = 14.sp, fontFamily = spoqaHa
 @Composable
 fun Preview() {
     Column {
-        TopBar {}
+        TopBar (onButtonClick = {}, titleText = R.string.notifications_app_bar_title)
         // val previewFlow = flowOf(PagingData.from(previewNotificationList))
         // NotificationList(previewFlow)
         NotificationPlaceholder()
@@ -56,7 +56,7 @@ fun Preview() {
 }
 
 @Composable
-fun TopBar(backButtonClick: () -> Unit) {
+fun TopBar(onButtonClick: () -> Unit, titleText : Int) {
     Surface(elevation = 2.dp) {
         Row(
             modifier = Modifier
@@ -70,11 +70,11 @@ fun TopBar(backButtonClick: () -> Unit) {
                 modifier = Modifier
                     .size(30.dp)
                     .clickable(
-                        onClick = backButtonClick
+                        onClick = onButtonClick
                     )
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = stringResource(R.string.notifications_app_bar_title), style = titleStyle)
+            Text(text = stringResource(titleText), style = titleStyle)
         }
     }
 }
