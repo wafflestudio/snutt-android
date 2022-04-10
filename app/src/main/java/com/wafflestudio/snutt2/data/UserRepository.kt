@@ -203,7 +203,11 @@ class UserRepository @Inject constructor(
                         return@OnCompleteListener
                     }
                     val token = task.result
-                    it.onSuccess(token)
+                    if (token == null) {
+                        it.onError(RuntimeException("cannot get firebase token"))
+                    } else {
+                        it.onSuccess(token)
+                    }
                 }
             )
         }

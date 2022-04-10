@@ -86,8 +86,8 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun copyTable(id: String) {
         val response = api._copyTable(id)
-        tableMapStore.updateData { prev ->
-            TableMapPreferences(response.map { it.id to it }.toMap())
+        tableMapStore.updateData {
+            TableMapPreferences(response.associateBy { it.id })
         }
     }
 }

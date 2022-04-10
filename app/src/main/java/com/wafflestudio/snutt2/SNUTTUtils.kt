@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.DisplayMetrics
 import com.wafflestudio.snutt2.model.TagType
 
@@ -82,10 +84,17 @@ object SNUTTUtils {
     }
 
     fun isNetworkAvailable(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = cm.activeNetworkInfo
-        return activeNetwork != null &&
-            activeNetwork.isConnectedOrConnecting
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+            else -> false
+        }
     }
 
     @JvmStatic
@@ -97,14 +106,14 @@ object SNUTTUtils {
         get() = this.resources.displayMetrics.heightPixels.toFloat()
 
     fun getTagColor(type: TagType?): Int {
-        when (type) {
-            TagType.ACADEMIC_YEAR -> return Color.rgb(229, 68, 89)
-            TagType.CLASSIFICATION -> return Color.rgb(245, 141, 61)
-            TagType.CREDIT -> return Color.rgb(166, 217, 48)
-            TagType.DEPARTMENT -> return Color.rgb(27, 208, 200)
-            TagType.INSTRUCTOR -> return Color.rgb(29, 153, 232)
-            TagType.CATEGORY -> return Color.rgb(175, 86, 179)
+        return when (type) {
+            TagType.ACADEMIC_YEAR -> Color.rgb(229, 68, 89)
+            TagType.CLASSIFICATION -> Color.rgb(245, 141, 61)
+            TagType.CREDIT -> Color.rgb(166, 217, 48)
+            TagType.DEPARTMENT -> Color.rgb(27, 208, 200)
+            TagType.INSTRUCTOR -> Color.rgb(29, 153, 232)
+            TagType.CATEGORY -> Color.rgb(175, 86, 179)
+            else -> Color.RED
         }
-        return Color.RED
     }
 }

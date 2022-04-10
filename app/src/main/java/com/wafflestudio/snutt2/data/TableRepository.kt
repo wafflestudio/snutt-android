@@ -27,17 +27,16 @@ class TableRepository @Inject constructor(
     }
 
     fun fetchDefaultTable(): Single<TableDto> {
-        return storage.lastViewedTable.get().let { table ->
-            if (table.isEmpty()) {
-                snuttRestApi.getRecentTable()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .doOnSuccess {
-                        storage.lastViewedTable.update(it.toOptional())
-                    }
-            } else {
-                Single.just(table.get())
-            }
+        val table = storage.lastViewedTable.get().value
+        return if (table == null) {
+            snuttRestApi.getRecentTable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .doOnSuccess {
+                    storage.lastViewedTable.update(it.toOptional())
+                }
+        } else {
+            Single.just(table)
         }
     }
 

@@ -16,7 +16,6 @@ class SNUTTApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        FacebookSdk.sdkInitialize(this)
         RxDogTag.install()
         Timber.plant(Timber.DebugTree())
         RxAndroidPlugins.setMainThreadSchedulerHandler {
