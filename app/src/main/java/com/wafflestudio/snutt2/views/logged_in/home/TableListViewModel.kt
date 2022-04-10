@@ -1,13 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.CourseBookRepository
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.TableRepository
+import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.android.MessagingError
-import com.wafflestudio.snutt2.lib.data.DataProvider
 import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
 import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
@@ -27,14 +26,12 @@ import javax.inject.Inject
 class TableListViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val myLectureRepository: MyLectureRepository,
-    courseBookRepository: CourseBookRepository,
+    private val courseBookRepository: CourseBookRepository,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
     private val _selectedCourseBooks = SubjectDataValue<Optional<CourseBookDto>>(Optional.empty())
     val selectedCourseBooks: DataValue<Optional<CourseBookDto>> = _selectedCourseBooks
-
-    val courseBooks: DataProvider<List<CourseBookDto>> = courseBookRepository.courseBooks
 
     init {
         myLectureRepository.lastViewedTable.asObservable()
@@ -55,6 +52,10 @@ class TableListViewModel @Inject constructor(
                 }
             }
         )
+
+    suspend fun getCourseBooks(): List<CourseBookDto> {
+        return courseBookRepository.getCourseBook()
+    }
 
     fun setSelectedCourseBook(courseBookDto: CourseBookDto) {
         _selectedCourseBooks.update(courseBookDto.toOptional())
