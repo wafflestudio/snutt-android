@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.network
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -10,11 +9,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import okio.IOException
-import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,13 +47,8 @@ class ApiOnError @Inject constructor(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                is HttpException -> {
-                    Log.d(TAG, error.code().toString() + " " + error.message)
-                    val restError: RestError? = error.response()?.errorBody()?.string()?.let {
-                        moshi.adapter(RestError::class.java).fromJson(it)
-                    }
-
-                    when (restError?.code) {
+                is ErrorParsedHttpException -> {
+                    when (error.errorDTO?.code) {
                         ErrorCode.SERVER_FAULT -> Toast.makeText(
                             context,
                             context.getString(R.string.error_server_fault),
@@ -285,10 +279,6 @@ class ApiOnError @Inject constructor(
             }
         }
     }
-
-    companion object {
-        private const val TAG = "RETROFIT_ERROR_HANDLER"
-    }
 }
 
 private object ErrorCode {
@@ -342,7 +332,8 @@ private object ErrorCode {
 }
 
 @JsonClass(generateAdapter = true)
-data class RestError(
-    @Json(name = "errcode") var code: Int? = null,
-    @Json(name = "message") var message: String? = null
+data class ErrorDTO(
+    @Json(name = "errcode") val code: Int? = null,
+    @Json(name = "message") val message: String? = null,
+    @Json(name = "ext") val ext: Map<String, String>? = null
 )
