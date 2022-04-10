@@ -12,6 +12,7 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.appdistribution")
+    id("com.google.firebase.crashlytics")
 }
 
 ktlint {
@@ -162,6 +163,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Paging
     implementation("androidx.paging:paging-runtime:${Deps.Version.Paging}")
@@ -181,7 +183,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.20.3")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
-    implementation("com.facebook.android:facebook-login:11.1.0")
+    implementation("com.facebook.android:facebook-login:13.1.0")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
     implementation("com.uber.rxdogtag2:rxdogtag:2.0.1")
     implementation("com.github.skydoves:colorpickerview:2.2.3")
