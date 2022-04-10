@@ -35,6 +35,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.Observables
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.rx3.rxSingle
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
@@ -78,7 +79,7 @@ class TimetableFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.fetchUncheckedNotifications()
+        rxSingle { homeViewModel.getUncheckedNotificationsExist() }
             .bindUi(
                 this,
                 onSuccess = {
