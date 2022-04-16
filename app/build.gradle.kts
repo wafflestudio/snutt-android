@@ -111,6 +111,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
@@ -189,9 +190,7 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
-    implementation("com.github.JakeWharton:ViewPagerIndicator:2.4.1")
     implementation("com.appyvet:materialrangebar:1.3")
-    implementation("com.airbnb.android:lottie:3.4.0")
 }
 
 repositories {

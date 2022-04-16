@@ -96,10 +96,7 @@ class DialogController @Inject constructor(@ActivityContext private val context:
         }
     }
 
-    fun showColorSelector(
-        title: String,
-        defaultColor: Int? = null,
-    ): Maybe<Int> {
+    fun showColorSelector(title: String): Maybe<Int> {
         return Maybe.create { emitter ->
             ColorPickerDialog.Builder(context)
                 .setTitle(title)
