@@ -5,7 +5,9 @@ import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,13 +64,19 @@ object NetworkModule {
     fun provideRetrofit(
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
-        moshi: Moshi
+        moshi: Moshi,
+        serializer: Serializer
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(context.getString(R.string.api_server))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addCallAdapterFactory(
+                ErrorParsingCallAdapterFactory(
+                    RxJava3CallAdapterFactory.create(),
+                    serializer
+                )
+            )
             .build()
     }
 
