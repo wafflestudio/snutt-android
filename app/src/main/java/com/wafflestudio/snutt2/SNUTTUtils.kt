@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.DisplayMetrics
 import com.wafflestudio.snutt2.model.TagType
 
