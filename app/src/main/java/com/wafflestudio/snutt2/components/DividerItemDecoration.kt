@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.components
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
@@ -24,6 +25,6 @@ class DividerItemDecoration(context: Context, resId: Int) : ItemDecoration() {
     }
 
     init {
-        mDivider = context.resources.getDrawable(resId)
+        mDivider = ResourcesCompat.getDrawable(context.resources, resId, null)!!
     }
 }

@@ -62,7 +62,7 @@ class SignUpFragment : BaseFragment() {
                 val passwordConfirm = binding.passwordConfirmInput.text.toString()
                 Quadruple(id, email, password, passwordConfirm)
             }
-            .filter { (id, email, password, passwordConfirm) ->
+            .filter { (_, _, password, passwordConfirm) ->
                 val passCheck = password == passwordConfirm
                 if (passCheck.not()) {
                     Toast.makeText(

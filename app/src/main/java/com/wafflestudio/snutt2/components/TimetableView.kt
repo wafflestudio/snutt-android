@@ -108,11 +108,11 @@ class TimetableView : View {
         get() = (height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
     constructor(context: Context) : super(context) {
-        init(null, 0)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(attrs, 0)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
@@ -120,10 +120,10 @@ class TimetableView : View {
         attrs,
         defStyle
     ) {
-        init(attrs, defStyle)
+        init()
     }
 
-    private fun init(attrs: AttributeSet?, defStyle: Int) {
+    private fun init() {
         setBackgroundColor(Color.rgb(255, 255, 255))
     }
 
