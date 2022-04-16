@@ -32,8 +32,8 @@ class SearchOptionFragment : BottomSheetDialogFragment() {
 
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
-        dialog.setOnShowListener { dialog ->
-            val d = dialog as BottomSheetDialog
+        dialog.setOnShowListener {
+            val d = it as BottomSheetDialog
             val bottomSheet: FrameLayout =
                 d.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
             val behavior = BottomSheetBehavior.from(bottomSheet)

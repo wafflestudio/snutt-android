@@ -38,7 +38,6 @@ class TagSelectionAdapter(
         BaseViewHolder<Selectable<TagDto>>(binding) {
         override fun bindData(data: Selectable<TagDto>) {
             val tag = data.item
-            val context = itemView.context
             binding.checkIcon.setImageResource(if (data.state) R.drawable.ic_vivid_checked else R.drawable.ic_vivid_unchecked)
             binding.tagName.text = tag.name
             binding.root.setOnClickListener {
