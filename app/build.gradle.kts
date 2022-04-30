@@ -12,6 +12,7 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.appdistribution")
+    id("com.google.firebase.crashlytics")
 }
 
 ktlint {
@@ -110,6 +111,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
@@ -125,6 +127,7 @@ dependencies {
     testImplementation("junit:junit:4.13.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -161,6 +164,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Paging
     implementation("androidx.paging:paging-runtime:${Deps.Version.Paging}")
@@ -180,15 +184,13 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.20.3")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
-    implementation("com.facebook.android:facebook-login:11.1.0")
+    implementation("com.facebook.android:facebook-login:13.1.0")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
     implementation("com.uber.rxdogtag2:rxdogtag:2.0.1")
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
-    implementation("com.github.JakeWharton:ViewPagerIndicator:2.4.1")
     implementation("com.appyvet:materialrangebar:1.3")
-    implementation("com.airbnb.android:lottie:3.4.0")
 }
 
 repositories {

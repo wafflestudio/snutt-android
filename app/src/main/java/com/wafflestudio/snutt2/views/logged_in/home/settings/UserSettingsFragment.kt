@@ -27,7 +27,6 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.SettingsItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -47,17 +46,18 @@ class UserSettingsFragment : BaseFragment() {
 
     private var lists: MutableList<SettingsItem> = mutableListOf()
     private lateinit var adapter: UserSettingsAdapter
-    private var inflater: LayoutInflater? = null
-    private var callbackManager: CallbackManager? = null
+    private lateinit var callbackManager: CallbackManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         registerFacebookCallback()
+
         adapter = UserSettingsAdapter(lists)
         adapter.setOnItemClickListener(
             object : UserSettingsAdapter.ClickListener {
                 override fun onClick(v: View?, position: Int) {
-                    when (lists.get(position).type) {
+                    when (lists[position].type) {
                         SettingsItem.Type.ChangePassword -> performChangePassword()
                         SettingsItem.Type.ChangeEmail -> performChangeEmail()
                         SettingsItem.Type.AddIdPassword -> performAddIdPassword()
@@ -65,7 +65,8 @@ class UserSettingsFragment : BaseFragment() {
                             LoginManager.getInstance()
                                 .logInWithReadPermissions(
                                     this@UserSettingsFragment,
-                                    null
+                                    callbackManager,
+                                    emptyList()
                                 )
                         SettingsItem.Type.DeleteFacebook -> performDeleteFacebook()
                         SettingsItem.Type.Leave -> performLeave()
@@ -114,7 +115,7 @@ class UserSettingsFragment : BaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        callbackManager!!.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun performChangePassword() {
@@ -366,12 +367,12 @@ class UserSettingsFragment : BaseFragment() {
         LoginManager.getInstance().registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
+                override fun onSuccess(result: LoginResult) {
                     // App code
-                    val id = loginResult.accessToken.userId
-                    val token = loginResult.accessToken.token
-                    Timber.i("User ID: %s", loginResult.accessToken.userId)
-                    Timber.i("Auth Token: %s", loginResult.accessToken.token)
+                    val id = result.accessToken.userId
+                    val token = result.accessToken.token
+                    Timber.i("User ID: %s", result.accessToken.userId)
+                    Timber.i("Auth Token: %s", result.accessToken.token)
                     userRepository.postUserFacebook(id, token)
                         .bindUi(
                             this@UserSettingsFragment,
@@ -390,9 +391,9 @@ class UserSettingsFragment : BaseFragment() {
                     Toast.makeText(context, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onError(exception: FacebookException) {
+                override fun onError(error: FacebookException) {
                     // App code
-                    Timber.e(exception)
+                    Timber.e(error)
                     Toast.makeText(context, "페이스북 연동중 오류가 발생하였습니다", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -435,9 +436,5 @@ class UserSettingsFragment : BaseFragment() {
             lists.add(SettingsItem("회원탈퇴", SettingsItem.Type.Leave))
             // lists.add(new SettingsItem(SettingsItem.Type.Header));
         }
-    }
-
-    companion object {
-        private const val TAG = "ACCOUNT_FRAGMENT"
     }
 }
