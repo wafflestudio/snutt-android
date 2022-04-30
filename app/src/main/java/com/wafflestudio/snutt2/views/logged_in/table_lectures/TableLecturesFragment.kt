@@ -13,9 +13,9 @@ import com.wafflestudio.snutt2.RootGraphDirections
 import com.wafflestudio.snutt2.lib.android.defaultNavOptions
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.ui.common.TopBar
 import com.wafflestudio.snutt2.ui.SnuttTheme
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.notifications.TopBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
