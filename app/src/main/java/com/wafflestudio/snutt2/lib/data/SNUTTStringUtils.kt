@@ -56,11 +56,11 @@ object SNUTTStringUtils {
         return text
     }
 
-    fun getNotificationTime(info: NotificationDto?): String {
+    fun getNotificationTime(info: NotificationDto): String {
         try {
             val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             format.timeZone = TimeZone.getTimeZone("UTC")
-            val date1 = format.parse(info?.createdAt) ?: Date()
+            val date1 = format.parse(info.createdAt) ?: Date()
             val date2 = Date()
 
             val diff = date2.time - date1.time

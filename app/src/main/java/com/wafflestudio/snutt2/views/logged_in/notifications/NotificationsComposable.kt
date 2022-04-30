@@ -29,6 +29,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import kotlinx.coroutines.flow.Flow
 
@@ -107,7 +108,7 @@ fun NotificationItem(info: NotificationDto?) {
                         Text(text = it, style = subHeadingFontStyle)
                     }
                     Text(
-                        text = SNUTTStringUtils.getNotificationTime(info),
+                        text = if(info!=null) getNotificationTime(info) else "-",
                         style = detailFontStyle, color = colorResource(R.color.created_at)
                     )
                 }
