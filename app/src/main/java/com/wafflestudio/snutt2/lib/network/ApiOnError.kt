@@ -227,15 +227,15 @@ class ApiOnError @Inject constructor(
                         context.getString(R.string.error_not_custom_lecture),
                         Toast.LENGTH_SHORT
                     ).show()
-//                    ErrorCode.LECTURE_TIME_OVERLAP -> {
-//                        restError.ext?.message?.let {
-//                            Toast.makeText(
-//                                context,
-//                                it,
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
+                    ErrorCode.LECTURE_TIME_OVERLAP -> {
+                        restError.ext?.message?.let {
+                            Toast.makeText(
+                                context,
+                                it,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                     ErrorCode.IS_CUSTOM_LECTURE -> Toast.makeText(
                         context,
                         context.getString(R.string.error_is_custom_lecture),
