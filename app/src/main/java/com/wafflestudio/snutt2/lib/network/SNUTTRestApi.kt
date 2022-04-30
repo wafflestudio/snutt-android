@@ -196,4 +196,174 @@ interface SNUTTRestApi {
         @Query(value = "course_number") courseNumber: String,
         @Query(value = "instructor") instructor: String
     ): Single<GetLecturesIdResults>
+
+    @GET("/notification")
+    suspend fun _getNotification(
+        @Query(value = "limit") limit: Int,
+        @Query(value = "offset") offset: Int,
+        @Query(value = "explicit") explicit: Int,
+    ): GetNotificationResults
+
+    @GET("/notification/count")
+    suspend fun _getNotificationCount(): GetNotificationCountResults
+
+    @GET("/tags/{year}/{semester}")
+    suspend fun _getTagList(
+        @Path("year") year: Int,
+        @Path("semester") semester: Int,
+    ): GetTagListResults
+
+    @POST("/search_query")
+    suspend fun _postSearchQuery(
+        @Body body: PostSearchQueryParams
+    ): PostSearchQueryResults
+
+    @GET("/course_books")
+    suspend fun _getCoursebook(): GetCoursebookResults
+
+    // API Timetable
+    @GET("/tables")
+    suspend fun _getTableList(): GetTableListResults
+
+    @POST("/tables")
+    suspend fun _postTable(
+        @Body body: PostTableParams,
+    ): PostTableResults
+
+    @GET("/tables/{id}")
+    suspend fun _getTableById(
+        @Path("id") id: String,
+    ): GetTableByIdResults
+
+    @GET("/tables/recent")
+    suspend fun _getRecentTable(): GetRecentTableResults
+
+    @DELETE("/tables/{id}")
+    suspend fun _deleteTable(
+        @Path("id") id: String,
+    ): DeleteTableResults
+
+    @PUT("/tables/{id}")
+    suspend fun _putTable(
+        @Path("id") id: String,
+        @Body body: PutTableParams
+    ): PutTableResults
+
+    @PUT("/tables/{id}/theme")
+    suspend fun _putTableTheme(
+        @Path("id") id: String,
+        @Body body: PutTableThemeParams
+    ): PutTableThemeResult
+
+    @POST("/tables/{id}/copy")
+    suspend fun _copyTable(
+        @Path("id") id: String,
+    ): PostCopyTableResults
+
+    @POST("/tables/{id}/lecture")
+    suspend fun _postCustomLecture(
+        @Path("id") id: String,
+        @Body body: PostCustomLectureParams,
+    ): PostCustomLectureResults
+
+    @POST("/tables/{id}/lecture/{lecture_id}")
+    suspend fun _postAddLecture(
+        @Path("id") id: String,
+        @Path("lecture_id") lecture_id: String,
+    ): PostCustomLectureResults
+
+    @DELETE("/tables/{id}/lecture/{lecture_id}")
+    suspend fun _deleteLecture(
+        @Path("id") id: String,
+        @Path("lecture_id") lecture_id: String,
+    ): DeleteLectureResults
+
+    @PUT("/tables/{id}/lecture/{lecture_id}")
+    suspend fun _putLecture(
+        @Path("id") id: String,
+        @Path("lecture_id") lecture_id: String,
+        @Body body: PutLectureParams
+    ): PutLectureResults
+
+    @PUT("/tables/{id}/lecture/{lecture_id}/reset")
+    suspend fun _resetLecture(
+        @Path("id") id: String,
+        @Path("lecture_id") lecture_id: String,
+    ): ResetLectureResults
+
+    @GET("/course_books/official")
+    suspend fun _getCoursebooksOfficial(
+        @Query(value = "year") year: Long,
+        @Query(value = "semester") semester: Long,
+        @Query(value = "course_number") courseNumber: String,
+        @Query(value = "lecture_number") lectureNumber: String,
+    ): GetCoursebooksOfficialResults
+
+    @POST("/auth/register_local")
+    suspend fun _postSignUp(
+        @Body body: PostSignUpParams
+    ): PostSignUpResults
+
+    @POST("/auth/login_local")
+    suspend fun _postSignIn(
+        @Body body: PostSignInParams
+    ): PostSignInResults
+
+    @POST("/auth/login_fb")
+    suspend fun _postLoginFacebook(
+        @Body body: PostLoginFacebookParams
+    ): PostLoginFacebookResults
+
+    @POST("/auth/logout")
+    suspend fun _postForceLogout(
+        @Body body: PostForceLogoutParams
+    ): PostForceLogoutResults
+
+    @GET("/user/info")
+    suspend fun _getUserInfo(): GetUserInfoResults
+
+    @PUT("/user/info")
+    suspend fun _putUserInfo(
+        @Body body: PutUserInfoParams,
+    ): PutUserInfoResults
+
+    @PUT("/user/password")
+    suspend fun _putUserPassword(
+        @Body body: PutUserPasswordParams,
+    ): PutUserPasswordResults
+
+    @POST("/user/password")
+    suspend fun _postUserPassword(
+        @Body body: PostUserPasswordParams,
+    ): PostUserPasswordResults
+
+    @POST("/user/facebook")
+    suspend fun _postUserFacebook(
+        @Body body: PostUserFacebookParams,
+    ): PostUserFacebookResults
+
+    @DELETE("/user/facebook")
+    suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
+
+    @GET("/user/facebook")
+    suspend fun _getUserFacebook(): GetUserFacebookResults
+
+    @POST("/user/device/{registration_id}")
+    suspend fun _registerFirebaseToken(
+        @Path("registration_id") id: String,
+        @Body body: RegisterFirebaseTokenParams
+    ): RegisterFirebaseTokenResults
+
+    @DELETE("/user/device/{registration_id}")
+    suspend fun _deleteFirebaseToken(
+        @Path("registration_id") id: String,
+    ): DeleteFirebaseTokenResults
+
+    @DELETE("/user/account")
+    suspend fun _deleteUserAccount(): DeleteUserAccountResults
+
+    @POST("/feedback")
+    suspend fun _postFeedback(
+        @Body body: PostFeedbackParams
+    ): PostFeedbackResults
 }
