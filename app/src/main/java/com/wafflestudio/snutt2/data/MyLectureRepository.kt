@@ -32,7 +32,7 @@ class MyLectureRepository @Inject constructor(
         return api.postAddLecture(
             _currentTable.id,
             lectureId,
-            PostLectureForce(isForced)
+            PostLectureParams(isForced)
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
