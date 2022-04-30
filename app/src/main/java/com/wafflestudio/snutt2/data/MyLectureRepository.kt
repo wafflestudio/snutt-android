@@ -28,11 +28,11 @@ class MyLectureRepository @Inject constructor(
 
     val lastViewedTable = storage.lastViewedTable
 
-    fun addLecture(lectureId: String, is_forced: Boolean): Single<PostCustomLectureResults> {
+    fun addLecture(lectureId: String, isForced: Boolean): Single<PostCustomLectureResults> {
         return api.postAddLecture(
             _currentTable.id,
             lectureId,
-            PostLectureForce(is_forced)
+            PostLectureForce(isForced)
         )
             .subscribeOn(Schedulers.io())
             .doOnSuccess {
