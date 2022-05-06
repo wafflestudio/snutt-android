@@ -33,7 +33,6 @@ import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -95,12 +94,11 @@ class SearchFragment : BaseFragment() {
                     .bindUi(
                         this,
                         onError = { error ->
-                            when(error) {
+                            when (error) {
                                 is ErrorParsedHttpException -> {
-                                    if(error.errorDTO?.code == LECTURE_TIME_OVERLAP){
+                                    if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
                                         overwriteLectureDialog(it, error.errorDTO.ext!!["confirm_message"])
-                                    }
-                                    else apiOnError
+                                    } else apiOnError
                                 }
                                 else -> apiOnError
                             }
