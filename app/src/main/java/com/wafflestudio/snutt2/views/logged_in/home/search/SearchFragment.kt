@@ -23,8 +23,8 @@ import com.wafflestudio.snutt2.lib.android.HomePagerController
 import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.lib.network.RestError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
@@ -69,6 +69,8 @@ class SearchFragment : BaseFragment() {
 
     private val bottomSheet = SearchOptionFragment()
 
+    private val LECTURE_TIME_OVERLAP = 0x300C
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,14 +95,12 @@ class SearchFragment : BaseFragment() {
                     .bindUi(
                         this,
                         onError = { error ->
-                            when (error) {
-                                is HttpException -> {
-                                    val restError: RestError? = error.response()?.errorBody()?.string()?.let {
-                                        moshi.adapter(RestError::class.java).fromJson(it)
+                            when(error) {
+                                is ErrorParsedHttpException -> {
+                                    if(error.errorDTO?.code == LECTURE_TIME_OVERLAP){
+                                        overwriteLectureDialog(it, error.errorDTO.ext!!["confirm_message"])
                                     }
-                                    if (restError?.code == 0x300C) {
-                                        overwriteLectureDialog(it, restError.ext?.message)
-                                    } else apiOnError
+                                    else apiOnError
                                 }
                                 else -> apiOnError
                             }
