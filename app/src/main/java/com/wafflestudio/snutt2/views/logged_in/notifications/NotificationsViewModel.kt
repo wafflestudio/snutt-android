@@ -13,6 +13,8 @@ class NotificationsViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) : ViewModel() {
 
-    val notifications: Flow<PagingData<NotificationDto>> =
-        notificationRepository.getNotificationResultStream()
+    fun getNotificationsPagingData(): Flow<PagingData<NotificationDto>> {
+        return notificationRepository
+            .getNotificationResultStream()
+    }
 }

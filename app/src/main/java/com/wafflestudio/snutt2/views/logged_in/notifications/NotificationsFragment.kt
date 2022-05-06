@@ -31,7 +31,7 @@ class NotificationsFragment : BaseFragment() {
                             onButtonClick = { findNavController().popBackStack() },
                             titleText = R.string.notifications_app_bar_title
                         )
-                        NotificationList(notifications = vm.notifications)
+                        NotificationList(notifications = vm.getNotificationsPagingData())
                     }
                 }
             }
