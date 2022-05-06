@@ -36,10 +36,11 @@ TimetableWidgetProvider : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             val intent = Intent(context, SplashActivity::class.java)
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val pendingIntent =
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val views = RemoteViews(context.packageName, R.layout.widget_timetable)
             views.setOnClickPendingIntent(R.id.layout, pendingIntent)
-            renderViews(context, appWidgetManager, appWidgetId, views)
+            renderViews(context, views)
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
@@ -47,8 +48,6 @@ TimetableWidgetProvider : AppWidgetProvider() {
 
     private fun renderViews(
         context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
         views: RemoteViews
     ) {
         val width = context.displayWidth.toInt()

@@ -81,22 +81,15 @@ class LoginFragment : BaseFragment() {
             .bindUi(this) {
                 loginManager.logInWithReadPermissions(
                     this@LoginFragment,
-                    null
+                    callbackManager,
+                    emptyList()
                 )
             }
 
         loginManager.registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult?) {
-                    if (result == null) {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.sign_up_facebook_login_failed_toast),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return
-                    }
+                override fun onSuccess(result: LoginResult) {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.loginFacebook(id, token)
@@ -114,7 +107,7 @@ class LoginFragment : BaseFragment() {
                     ).show()
                 }
 
-                override fun onError(error: FacebookException?) {
+                override fun onError(error: FacebookException) {
                     Toast.makeText(
                         context,
                         getString(R.string.sign_up_facebook_login_failed_toast),

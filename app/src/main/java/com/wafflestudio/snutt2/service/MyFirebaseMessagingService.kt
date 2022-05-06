@@ -8,16 +8,11 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.manager.NotificationsRepository
 import com.wafflestudio.snutt2.views.SplashActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
-    @Inject
-    lateinit var notificationRepository: NotificationsRepository
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
@@ -36,7 +31,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT
         )
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this)
+        val notificationBuilder = NotificationCompat.Builder(this, SNUTT_FIREBASE_CHANNEL)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
@@ -45,6 +40,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
-        notificationRepository.triggerRefreshData()
+    }
+
+    companion object {
+        const val SNUTT_FIREBASE_CHANNEL = "snutt_firebase_channel"
     }
 }

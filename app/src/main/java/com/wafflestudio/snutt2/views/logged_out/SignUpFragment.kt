@@ -62,7 +62,7 @@ class SignUpFragment : BaseFragment() {
                 val passwordConfirm = binding.passwordConfirmInput.text.toString()
                 Quadruple(id, email, password, passwordConfirm)
             }
-            .filter { (id, email, password, passwordConfirm) ->
+            .filter { (_, _, password, passwordConfirm) ->
                 val passCheck = password == passwordConfirm
                 if (passCheck.not()) {
                     Toast.makeText(
@@ -95,7 +95,8 @@ class SignUpFragment : BaseFragment() {
             .bindUi(this) {
                 loginManager.logInWithReadPermissions(
                     this@SignUpFragment,
-                    null
+                    callbackManager,
+                    emptyList()
                 )
             }
 
@@ -107,15 +108,7 @@ class SignUpFragment : BaseFragment() {
         loginManager.registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult?) {
-                    if (result == null) {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.sign_up_facebook_login_failed_toast),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return
-                    }
+                override fun onSuccess(result: LoginResult) {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.signUpFacebook(id, token)
@@ -134,7 +127,7 @@ class SignUpFragment : BaseFragment() {
                     ).show()
                 }
 
-                override fun onError(error: FacebookException?) {
+                override fun onError(error: FacebookException) {
                     Toast.makeText(
                         context,
                         getString(R.string.sign_up_facebook_login_failed_toast),
