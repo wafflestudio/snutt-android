@@ -31,6 +31,7 @@ class SelectedTimetableViewModel @Inject constructor(
     val trimParam: DataProvider<TableTrimParam>
         get() = settingsRepository.tableTrimParam
 
+    // FIXME: @sangggg toggle 대신 add/remove 명시적으로 호출하기
     fun toggleLecture(lecture: LectureDto, is_force: Boolean): Completable {
         return myLectureRepository.currentTable
             .firstOrError()
