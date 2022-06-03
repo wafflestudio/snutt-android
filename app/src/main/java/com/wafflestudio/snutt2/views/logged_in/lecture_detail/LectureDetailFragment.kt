@@ -128,7 +128,7 @@ class LectureDetailFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.completeButton.isVisible = it
-                binding.editButton.isVisible = it.not()
+                binding.editButton.isVisible = false
             }
 
         vm.selectedColor.asObservable()
@@ -154,11 +154,6 @@ class LectureDetailFragment : BaseFragment() {
         binding.backButton.throttledClicks()
             .bindUi(this) {
                 findNavController().popBackStack()
-            }
-
-        binding.editButton.throttledClicks()
-            .bindUi(this) {
-                setEditMode()
             }
     }
 
