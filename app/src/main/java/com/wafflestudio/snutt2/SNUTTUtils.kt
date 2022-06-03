@@ -44,6 +44,24 @@ object SNUTTUtils {
         return "$hour:$minute"
     }
 
+    fun numberToTimeAdjusted(time : Float, len : Float) : String {
+        var adjustedTime = ((8+time+len)*60).toInt()
+
+        when (len) {
+            1f -> adjustedTime -= 10
+            1.5f -> adjustedTime -= 15
+            2f -> adjustedTime -= 10
+            3f -> adjustedTime -= 10
+            4.5f -> adjustedTime -= 15
+        }
+
+        val hour = adjustedTime / 60
+        val minute = adjustedTime % 60
+
+        return if(minute==0) "$hour:00"
+        else "$hour:$minute"
+    }
+
     fun getTimeList(from: Int, to: Int): Array<String?> {
         val list = arrayOfNulls<String>(to - from + 1)
         for (i in from..to) list[i - from] = numberToTime(i / 2f)

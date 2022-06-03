@@ -410,7 +410,7 @@ class LectureDetailAdapter(
             title1.hint = "시간"
             val time = SNUTTUtils.numberToWday(item.classTime!!.day) + " " +
                 SNUTTUtils.numberToTime(item.classTime!!.start) + "~" +
-                SNUTTUtils.numberToTime(item.classTime!!.start + item.classTime!!.len)
+                SNUTTUtils.numberToTimeAdjusted(item.classTime!!.start, item.classTime!!.len)
             editText1.setText(time)
             editText1.isClickable = false
             editText1.isFocusable = false
