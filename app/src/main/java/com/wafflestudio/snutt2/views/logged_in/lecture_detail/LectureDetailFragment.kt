@@ -128,7 +128,7 @@ class LectureDetailFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.completeButton.isVisible = it
-                binding.editButton.isVisible = false
+                binding.editButton.isVisible = false // 서버 강의는 편집 불가능
             }
 
         vm.selectedColor.asObservable()
