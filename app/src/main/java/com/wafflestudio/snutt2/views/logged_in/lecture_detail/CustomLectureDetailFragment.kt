@@ -23,8 +23,6 @@ import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -115,28 +113,35 @@ class CustomLectureDetailFragment : BaseFragment() {
             }
 
         binding.completeButton.throttledClicks()
-            .flatMapSingle {
+            .bindUi(this) {
                 when {
                     add -> {
                         adapter!!.createLecture()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSuccess { findNavController().popBackStack() }
+                            .bindUi(
+                                this,
+                                onError = apiOnError,
+                                onSuccess = {
+                                    findNavController().popBackStack()
+                                }
+                            )
                     }
                     editable -> {
                         adapter!!.updateLecture()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSuccess {
-                                binding.completeButton.isVisible = false
-                                binding.editButton.isVisible = true
-                                setNormalMode()
-                            }
+                            .bindUi(
+                                this,
+                                onError = apiOnError,
+                                onSuccess = {
+                                    binding.completeButton.isVisible = false
+                                    binding.editButton.isVisible = true
+                                    setNormalMode()
+                                }
+                            )
                     }
                     else -> {
-                        Single.error(Error("illegal status"))
+                        apiOnError
                     }
                 }
             }
-            .bindUi(this, onError = apiOnError)
 
         binding.editButton.throttledClicks()
             .bindUi(this) {
