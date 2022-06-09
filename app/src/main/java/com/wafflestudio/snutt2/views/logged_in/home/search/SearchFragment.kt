@@ -242,9 +242,9 @@ class SearchFragment : BaseFragment() {
 
     private fun overwriteLectureDialog(dto: LectureDto, message: String?) {
         val alert = AlertDialog.Builder(requireContext())
-            .setTitle("강좌 덮어씌우기")
+            .setTitle("강의 덮어씌우기")
             .setMessage(message)
-            .setPositiveButton("조와용") { _, _ ->
+            .setPositiveButton("확인") { _, _ ->
                 selectedTimetableViewModel.toggleLecture(dto, true)
                     .bindUi(
                         this,
@@ -255,7 +255,7 @@ class SearchFragment : BaseFragment() {
                         }
                     )
             }
-            .setNegativeButton("싫은데요") { dialog, _ -> dialog.cancel() }
+            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
         val dialog = alert.create()
         dialog.show()
     }

@@ -25,5 +25,6 @@ data class PutLectureParams(
     @Json(name = "remark") var remark: String? = null,
     @Json(name = "category") var category: String? = null,
     @Json(name = "colorIndex") var colorIndex: Long? = null, // 색상
-    @Json(name = "color") var color: ColorDto? = null
+    @Json(name = "color") var color: ColorDto? = null,
+    @Json(name = "is_forced") var isForced : Boolean? = false
 )

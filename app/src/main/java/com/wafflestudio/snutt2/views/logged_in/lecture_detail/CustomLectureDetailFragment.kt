@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -17,12 +18,14 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,6 +50,8 @@ class CustomLectureDetailFragment : BaseFragment() {
     private var adapter: CustomLectureAdapter? = null
     private var editable = false
     private var add = false
+
+    private val LECTURE_TIME_OVERLAP = 0x300C
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,32 +120,27 @@ class CustomLectureDetailFragment : BaseFragment() {
         binding.completeButton.throttledClicks()
             .bindUi(this) {
                 when {
-                    add -> {
-                        adapter!!.createLecture()
-                            .bindUi(
-                                this,
-                                onError = apiOnError,
-                                onSuccess = {
-                                    findNavController().popBackStack()
-                                }
-                            )
+                    add -> adapter!!.createLecture(isForced = false)
+                    editable -> adapter!!.updateLecture(false)
+                    else -> Single.error(Error("Illegal status"))
+                }.bindUi(
+                    this,
+                    onError = { error ->
+                        when(error) {
+                            is ErrorParsedHttpException -> {
+                                if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
+                                    overwriteCustomLectureDialog(error.errorDTO.ext!!["confirm_message"])
+                                } else apiOnError
+                            }
+                            else -> apiOnError
+                        }
+                    },
+                    onSuccess = {
+                        binding.completeButton.isVisible = false
+                        binding.editButton.isVisible = true
+                        setNormalMode()
                     }
-                    editable -> {
-                        adapter!!.updateLecture()
-                            .bindUi(
-                                this,
-                                onError = apiOnError,
-                                onSuccess = {
-                                    binding.completeButton.isVisible = false
-                                    binding.editButton.isVisible = true
-                                    setNormalMode()
-                                }
-                            )
-                    }
-                    else -> {
-                        apiOnError
-                    }
-                }
+                )
             }
 
         binding.editButton.throttledClicks()
@@ -270,6 +270,28 @@ class CustomLectureDetailFragment : BaseFragment() {
         // add button
         vm.lists!!.add(lastPosition + 1, LectureItem(LectureItem.Type.AddClassTime, true))
         adapter!!.notifyItemInserted(lastPosition + 1)
+    }
+
+    private fun overwriteCustomLectureDialog(message: String?) {
+        val alert = AlertDialog.Builder(requireContext())
+            .setTitle("강의 덮어씌우기")
+            .setMessage(message)
+            .setPositiveButton("확인") { _, _ ->
+                when {
+                    add -> adapter!!.createLecture(true)
+                    editable -> adapter!!.updateLecture(true)
+                    else -> Single.error(Error("Illegal status"))
+                }.bindUi(
+                    this,
+                    onError = apiOnError,
+                    onSuccess = {
+                        findNavController().popBackStack()
+                    }
+                )
+            }
+            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 
     val colorItem: LectureItem?

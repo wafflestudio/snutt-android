@@ -498,7 +498,7 @@ class CustomLectureAdapter(
         alert.show()
     }
 
-    fun updateLecture(): Single<TableDto> {
+    fun updateLecture(isForced: Boolean): Single<TableDto> {
         // 강의명, 교수, 학과, 학년, 학점, 분류, 구분, 강의시간 전체를 다 업데이트
         val lectureId = lectureDto?.id
             ?: return Single.error(Error("no selected lecture"))
@@ -531,6 +531,7 @@ class CustomLectureAdapter(
             }
         }
         target.class_time_json = classTimeList
+        target.isForced = isForced
         return myLectureRepository.updateLecture(lectureId, target)
     }
 
@@ -542,7 +543,7 @@ class CustomLectureAdapter(
         }
     }
 
-    fun createLecture(): Single<TableDto> {
+    fun createLecture(isForced : Boolean): Single<TableDto> {
         val lecture = PostCustomLectureParams()
         val classTimeList = mutableListOf<ClassTimeDto>()
 
@@ -573,6 +574,7 @@ class CustomLectureAdapter(
             }
         }
         lecture.class_time_json = classTimeList
+        lecture.isForced = isForced
         return myLectureRepository.createLecture(lecture)
     }
 
