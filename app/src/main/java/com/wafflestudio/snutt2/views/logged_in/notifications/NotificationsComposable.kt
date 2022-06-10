@@ -14,14 +14,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -30,30 +24,8 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.ui.SnuttTypography
 import kotlinx.coroutines.flow.Flow
-
-private val spoqaHanSans = FontFamily(
-    Font(R.font.spoqa_han_sans_regular, FontWeight.Medium),
-    Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
-)
-
-private val subHeadingFontStyle = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold)
-private val subHeading2FontStyle = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium)
-private val detailFontStyle = TextStyle(fontSize = 12.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium)
-private val titleStyle = TextStyle(fontSize = 17.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold)
-private val placeholderTitle = TextStyle(fontSize = 18.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold)
-private val placeholderDetail = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium)
-
-@Preview
-@Composable
-fun Preview() {
-    Column {
-        TopBar(onButtonClick = {}, titleText = R.string.notifications_app_bar_title)
-        // val previewFlow = flowOf(PagingData.from(previewNotificationList))
-        // NotificationList(previewFlow)
-        NotificationPlaceholder()
-    }
-}
 
 @Composable
 fun TopBar(onButtonClick: () -> Unit, titleText: Int) {
@@ -74,7 +46,7 @@ fun TopBar(onButtonClick: () -> Unit, titleText: Int) {
                     )
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = stringResource(titleText), style = titleStyle)
+            Text(text = stringResource(titleText), style = SnuttTypography.h2)
         }
     }
 }
@@ -104,15 +76,15 @@ fun NotificationItem(info: NotificationDto?) {
                         3 -> stringResource(id = R.string.notifications_noti_delete)
                         else -> null
                     }?.let {
-                        Text(text = it, style = subHeadingFontStyle)
+                        Text(text = it, style = SnuttTypography.subtitle1)
                     }
                     Text(
                         text = if (info != null) getNotificationTime(info) else "-",
-                        style = detailFontStyle, color = colorResource(R.color.created_at)
+                        style = SnuttTypography.body1, color = colorResource(R.color.created_at)
                     )
                 }
                 Spacer(modifier = Modifier.height(7.dp))
-                Text(text = info?.message ?: "", style = detailFontStyle)
+                Text(text = info?.message ?: "", style = SnuttTypography.body1)
             }
         }
     }
@@ -134,7 +106,7 @@ fun NotificationError() {
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = stringResource(R.string.common_network_failure),
-            style = subHeading2FontStyle,
+            style = SnuttTypography.subtitle2,
             color = colorResource(R.color.notification_error)
         )
     }
@@ -158,13 +130,13 @@ fun NotificationPlaceholder() {
         Text(
             text = stringResource(R.string.notifications_placeholder_title),
             color = colorResource(R.color.placeholder_text),
-            style = placeholderTitle
+            style = SnuttTypography.h2
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.notifications_placeholder_description),
             color = colorResource(R.color.placeholder_text),
-            style = placeholderDetail,
+            style = SnuttTypography.subtitle2,
             textAlign = TextAlign.Center
         )
     }

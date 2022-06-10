@@ -34,7 +34,25 @@ val SnuttTypography = Typography(
         color = Color.Black,
         fontSize = 16.sp,
         fontFamily = SpoqaHanSans,
-    )
+    ),
+    subtitle1 = TextStyle(
+        color = Color.Black,
+        fontSize = 14.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Bold
+    ),
+    subtitle2 = TextStyle(
+        color = Color.Black,
+        fontSize = 14.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Medium
+    ),
+    body1 = TextStyle(
+        color = Color.Black,
+        fontSize = 12.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Medium
+    ),
 )
 
 // val f = TextStyle(
