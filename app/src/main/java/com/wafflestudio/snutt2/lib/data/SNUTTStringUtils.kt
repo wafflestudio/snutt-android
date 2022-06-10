@@ -50,4 +50,8 @@ object SNUTTStringUtils {
         if (text.isEmpty()) text = "(없음)"
         return text
     }
+
+    fun getInstructorAndCredit(instructor: String, credit: Long): String {
+        return "$instructor / ${credit}학점"
+    }
 }
