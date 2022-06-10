@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.lib.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-
+import com.wafflestudio.snutt2.ui.SnuttTypography
 
 @Composable
 fun TopBar(onButtonClick: () -> Unit, titleText: Int) {
@@ -29,13 +29,19 @@ fun TopBar(onButtonClick: () -> Unit, titleText: Int) {
                 contentDescription = "back button",
                 modifier = Modifier
                     .size(30.dp)
-                    .clickable(
+                    .clickableWithoutRippleEffect(
                         onClick = onButtonClick
                     )
             )
             Spacer(modifier = Modifier.width(12.dp))
-            // FIXME: jutak 나중에 MaterialTheme Typo 잘 정의해서 옮겨놓기
-            Text(text = stringResource(titleText), style = MaterialTheme.typography.h1)
+            Text(text = stringResource(titleText), style = SnuttTypography.h2)
         }
     }
 }
+
+fun Modifier.clickableWithoutRippleEffect(onClick: () -> Unit): Modifier =
+    clickable(
+        interactionSource = MutableInteractionSource(),
+        indication = null,
+        onClick = onClick
+    )

@@ -38,12 +38,8 @@ class TableLecturesFragment : BaseFragment() {
                         vm.lastViewedTable.get().value?.lectureList?.let { list ->
                             TableLecturesList(
                                 lectures = list,
-                                {
-                                    routeLectureCreate()
-                                },
-                                {
-                                    routeLectureDetail(it)
-                                }
+                                onClickAdd = { routeLectureCreate() },
+                                onClickLecture = { routeLectureDetail(it) }
                             )
                         }
                     }

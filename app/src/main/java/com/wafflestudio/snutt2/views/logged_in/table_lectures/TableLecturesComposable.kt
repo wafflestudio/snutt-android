@@ -1,10 +1,9 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,30 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getInstructorAndCredit
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import kotlinx.coroutines.flow.flowOf
-
-private val spoqaHanSans = FontFamily(
-    Font(R.font.spoqa_han_sans_regular, FontWeight.Medium),
-    Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
-)
-
-private val subHeadingFontStyle = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Bold)
-private val detailFontStyle = TextStyle(fontSize = 12.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium)
-private val detail2FontStyle = TextStyle(fontSize = 14.sp, fontFamily = spoqaHanSans, fontWeight = FontWeight.Medium)
+import com.wafflestudio.snutt2.lib.ui.common.clickableWithoutRippleEffect
+import com.wafflestudio.snutt2.ui.SnuttTypography
 
 sealed class Data {
     class Lecture(val lecture: LectureDto) : Data()
@@ -44,26 +27,20 @@ sealed class Data {
 }
 
 @Composable
-fun TableLecturesList(lectures: List<LectureDto>, onClickAdd: () -> Unit, onClickLecture: (lecture: LectureDto) -> Unit) {
-
-    val lectureItems: LazyPagingItems<Data> =
-        flowOf(
-            PagingData.from(
-                lectures.map<LectureDto, Data> { Data.Lecture(it) }
-                    .toMutableList()
-                    .apply { add(Data.Add) }
-                    .toList()
-            )
-        ).collectAsLazyPagingItems()
-
+fun TableLecturesList(
+    lectures: List<LectureDto>,
+    onClickAdd: () -> Unit,
+    onClickLecture: (lecture: LectureDto) -> Unit
+) {
     LazyColumn {
-        items(lectureItems) { lectureData ->
-            TableLectureItem(lectureData, onClickAdd, onClickLecture)
-            if (lectureData is Data.Lecture) {
-                Row(Modifier.padding(horizontal = 20.dp)) {
-                    Divider(color = colorResource(R.color.table_lecture_divider), thickness = 1.dp)
-                }
+        items(lectures) { lectureDto ->
+            TableLectureItem(data = Data.Lecture(lectureDto), onClickAdd = onClickAdd, onClickLecture = onClickLecture)
+            Row(Modifier.padding(horizontal = 20.dp)) {
+                Divider(color = colorResource(R.color.table_lecture_divider), thickness = 1.dp)
             }
+        }
+        item {
+            TableLectureItem(data = Data.Add, onClickAdd = onClickAdd, onClickLecture = onClickLecture)
         }
     }
 }
@@ -80,64 +57,58 @@ fun TableLectureItem(data: Data?, onClickAdd: () -> Unit, onClickLecture: (lectu
             )
                 .filter { it.isNullOrBlank().not() }
                 .let {
-                    if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+                    if (it.isEmpty()) stringResource(id = R.string.table_lectures_empty_string) else it.joinToString(", ")
                 }
-            var classTimeText = SNUTTStringUtils.getSimplifiedClassTime(data.lecture)
-            if (classTimeText.isEmpty()) classTimeText = "(없음)"
-            var locationText = SNUTTStringUtils.getSimplifiedLocation(data.lecture)
-            if (locationText.isEmpty()) locationText = "(없음)"
+            val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(data.lecture)
+            val locationText = SNUTTStringUtils.getSimplifiedLocation(data.lecture)
 
             Column(
                 modifier = Modifier
-                    .clickable(
-                        onClick = { onClickLecture.invoke(data.lecture) },
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    )
+                    .clickableWithoutRippleEffect {
+                        onClickLecture(data.lecture)
+                    }
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 Row {
                     Column(Modifier.weight(1f)) {
-                        Text(text = data.lecture.course_title, style = subHeadingFontStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(text = data.lecture.course_title, style = SnuttTypography.subtitle1, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
-                        Text(text = data.lecture.instructor + " / " + data.lecture.credit + "학점", style = detailFontStyle)
+                        Text(text = getInstructorAndCredit(data.lecture.instructor, data.lecture.credit), style = SnuttTypography.body1)
                     }
                 }
                 Spacer(Modifier.height(7.dp))
                 Row {
                     Image(painter = painterResource(id = R.drawable.ic_tag), contentDescription = "tag icon", modifier = Modifier.size(15.dp, 15.dp))
                     Spacer(Modifier.width(10.dp))
-                    Text(text = tagText, style = detailFontStyle)
+                    Text(text = tagText, style = SnuttTypography.body1)
                 }
                 Spacer(Modifier.height(7.dp))
                 Row {
                     Image(painter = painterResource(id = R.drawable.ic_clock), contentDescription = "time icon", modifier = Modifier.size(15.dp, 15.dp))
                     Spacer(Modifier.width(10.dp))
-                    Text(text = classTimeText, style = detailFontStyle)
+                    Text(text = classTimeText, style = SnuttTypography.body1)
                 }
                 Spacer(Modifier.height(7.dp))
                 Row {
                     Image(painter = painterResource(id = R.drawable.ic_location), contentDescription = "location icon", modifier = Modifier.size(15.dp, 15.dp))
                     Spacer(Modifier.width(10.dp))
-                    Text(text = locationText, style = detailFontStyle)
+                    Text(text = locationText, style = SnuttTypography.body1)
                 }
             }
         }
         is Data.Add -> {
             Column(
                 modifier = Modifier
-                    .clickable(
-                        onClick = { onClickAdd.invoke() },
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    )
+                    .clickableWithoutRippleEffect {
+                        onClickAdd.invoke()
+                    }
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 Row {
                     Column(Modifier.weight(1f)) {
-                        Text(text = stringResource(R.string.lecture_list_add_button), style = detail2FontStyle)
+                        Text(text = stringResource(R.string.lecture_list_add_button), style = SnuttTypography.subtitle2)
                     }
                     Image(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "add arrow", modifier = Modifier.size(22.dp, 22.dp))
                 }
