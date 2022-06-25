@@ -543,7 +543,7 @@ class CustomLectureAdapter(
         }
     }
 
-    fun createLecture(isForced : Boolean): Single<TableDto> {
+    fun createLecture(isForced: Boolean): Single<TableDto> {
         val lecture = PostCustomLectureParams()
         val classTimeList = mutableListOf<ClassTimeDto>()
 

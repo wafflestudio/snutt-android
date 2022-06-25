@@ -126,7 +126,7 @@ class CustomLectureDetailFragment : BaseFragment() {
                 }.bindUi(
                     this,
                     onError = { error ->
-                        when(error) {
+                        when (error) {
                             is ErrorParsedHttpException -> {
                                 if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
                                     overwriteCustomLectureDialog(error.errorDTO.ext!!["confirm_message"])
