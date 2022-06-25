@@ -79,5 +79,6 @@
     <color name="theme_grass_6">#59886D</color>
     <color name="theme_grass_7">#476060</color>
     <color name="theme_grass_8">#3D7068</color>
+    <color name="black_translucent_50">#80000000</color>
 
 </resources>

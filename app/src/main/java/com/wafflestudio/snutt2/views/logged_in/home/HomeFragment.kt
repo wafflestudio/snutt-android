@@ -12,13 +12,11 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.HomePage
-import com.wafflestudio.snutt2.lib.android.HomePagerController
-import com.wafflestudio.snutt2.lib.android.ReviewUrlController
+import com.wafflestudio.snutt2.lib.android.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.itemSelected
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
@@ -53,6 +51,8 @@ class HomeFragment : BaseFragment() {
 
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
+    private val popupViewModel: PopupViewModel by activityViewModels()
+
     @Inject
     lateinit var homePagerController: HomePagerController
 
@@ -67,6 +67,9 @@ class HomeFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var prefStorage: PrefStorage
 
     private var backPressCallback: OnBackPressedCallback? = null
 
@@ -110,6 +113,20 @@ class HomeFragment : BaseFragment() {
 
         binding.contents.adapter = pageAdapter
         binding.contents.isUserInputEnabled = false
+
+        popupViewModel.fetchPopup(
+            show = { hiddenDays, dto ->
+                PopupDialog(
+                    context = requireContext(),
+                    hideFewDays = {
+                        val expiredDay = getCurrDay() + (hiddenDays ?: 99999) // hiddenDays == null 이면 "영원히 보지 않기". TODO : 99999 대신 다르게..
+                        prefStorage.putValue("popup", dto.key, expiredDay, Int::class.java)
+                    },
+                    days = hiddenDays,
+                    url = dto.url
+                ).show()
+            }
+        )
 
         homePagerController.homePageState.asObservable()
             .bindUi(this) {
@@ -261,4 +278,9 @@ class HomeFragment : BaseFragment() {
                 )
             }
     }
+}
+
+// TODO : 적절한 곳으로 옮기기
+fun getCurrDay(): Int {
+    return Calendar.getInstance().get(Calendar.YEAR) * 365 + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
 }
