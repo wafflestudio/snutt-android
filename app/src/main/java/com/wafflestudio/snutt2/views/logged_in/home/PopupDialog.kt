@@ -11,13 +11,13 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getPopupCloseMessage
 
 class PopupDialog(
     context: Context,
-    hideFewDays: () -> Unit,
+    onClickHideFewDays: () -> Unit,
     days: Int?,
     url: String
 ) : Dialog(context, R.style.popup_dialog) {
 
     // 왜 constructor 에서 바로 가져다 쓰지 못하는가?
-    private val clickFewDaysButton = hideFewDays
+    private val clickFewDaysButton = onClickHideFewDays
     private val day = days
 
     lateinit var binding: DialogPopupBinding

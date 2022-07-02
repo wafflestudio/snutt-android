@@ -57,6 +57,17 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
+    val popUpAsdfMap = PrefValue<Map<String, Long>>(
+        prefContext,
+        PrefMapValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "pop_up_asdf",
+            String::class.java,
+            Long::class.java,
+            mapOf()
+        )
+    )
+
     val lastViewedTable = PrefValue<Optional<TableDto>>(
         prefContext,
         PrefOptionalValueMetaData(

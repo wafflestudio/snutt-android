@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.rx3.asObservable
 import kotlinx.coroutines.rx3.rxMaybe
 import java.lang.IllegalStateException
@@ -94,8 +95,8 @@ class HomeFragment : BaseFragment() {
                 }
             }
             ).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
     }
 
     override fun onPause() {
@@ -114,19 +115,15 @@ class HomeFragment : BaseFragment() {
         binding.contents.adapter = pageAdapter
         binding.contents.isUserInputEnabled = false
 
-        popupViewModel.fetchPopup(
-            show = { hiddenDays, dto ->
+        popupViewModel.fetchPopup()
+            .subscribeBy(onSuccess = {
                 PopupDialog(
                     context = requireContext(),
-                    hideFewDays = {
-                        val expiredDay = getCurrDay() + (hiddenDays ?: 99999) // hiddenDays == null 이면 "영원히 보지 않기". TODO : 99999 대신 다르게..
-                        prefStorage.putValue("popup", dto.key, expiredDay, Int::class.java)
-                    },
-                    days = hiddenDays,
-                    url = dto.url
+                    onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
+                    days = it.popUpHideDays,
+                    url = it.url
                 ).show()
-            }
-        )
+            }, onError = {})
 
         homePagerController.homePageState.asObservable()
             .bindUi(this) {
@@ -278,9 +275,4 @@ class HomeFragment : BaseFragment() {
                 )
             }
     }
-}
-
-// TODO : 적절한 곳으로 옮기기
-fun getCurrDay(): Int {
-    return Calendar.getInstance().get(Calendar.YEAR) * 365 + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
 }
