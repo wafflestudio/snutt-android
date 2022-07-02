@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.view.focusChanges
-import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.databinding.FragmentSearchBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.android.HomePage
@@ -56,9 +55,6 @@ class SearchFragment : BaseFragment() {
 
     @Inject
     lateinit var snuttUrls: SnuttUrls
-
-    @Inject
-    lateinit var moshi: Moshi
 
     private lateinit var binding: FragmentSearchBinding
 
@@ -242,7 +238,7 @@ class SearchFragment : BaseFragment() {
 
     private fun overwriteLectureDialog(dto: LectureDto, message: String?) {
         val alert = AlertDialog.Builder(requireContext())
-            .setTitle("강의 덮어씌우기")
+            .setTitle("시간대 겹침")
             .setMessage(message)
             .setPositiveButton("확인") { _, _ ->
                 selectedTimetableViewModel.toggleLecture(dto, true)

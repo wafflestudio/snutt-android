@@ -18,6 +18,7 @@ import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.databinding.FragmentLectureDetailBinding
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.ErrorCode
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -50,8 +51,6 @@ class CustomLectureDetailFragment : BaseFragment() {
     private var adapter: CustomLectureAdapter? = null
     private var editable = false
     private var add = false
-
-    private val LECTURE_TIME_OVERLAP = 0x300C
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -128,8 +127,10 @@ class CustomLectureDetailFragment : BaseFragment() {
                     onError = { error ->
                         when (error) {
                             is ErrorParsedHttpException -> {
-                                if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
-                                    overwriteCustomLectureDialog(error.errorDTO.ext!!["confirm_message"])
+                                if (error.errorDTO?.code == ErrorCode.LECTURE_TIME_OVERLAP) {
+                                    overwriteCustomLectureDialog(
+                                        error.errorDTO.ext?.get("confirm_message") ?: "-"
+                                    )
                                 } else apiOnError
                             }
                             else -> apiOnError
