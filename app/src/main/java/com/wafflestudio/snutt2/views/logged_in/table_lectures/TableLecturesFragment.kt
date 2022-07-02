@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.activityViewModels
@@ -18,6 +19,7 @@ import com.wafflestudio.snutt2.ui.SnuttTheme
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 class TableLecturesFragment : BaseFragment() {
     private val vm: SelectedTimetableViewModel by activityViewModels()
