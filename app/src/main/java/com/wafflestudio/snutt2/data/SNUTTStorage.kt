@@ -63,7 +63,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pop_up_asdf",
             String::class.java,
-            Long::class.java,
+            // Primitive Type 을 사용하지 못해 wrapping 된 타입을 넘겨준다.
+            Long::class.javaObjectType,
             mapOf()
         )
     )

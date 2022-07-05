@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.lib.network.dto.PopupDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Maybe
-import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -44,4 +43,3 @@ class PopupViewModel @Inject constructor(
         const val INFINITE_LONG_MILLIS = Long.MAX_VALUE
     }
 }
-
