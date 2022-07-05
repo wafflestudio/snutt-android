@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 data class PopupDto(
     @Json(name = "key") val key: String,
     @Json(name = "image_url") val url: String,
-    @Json(name = "hidden_days") val days: Int?
+    @Json(name = "hidden_days") val popupHideDays: Int?
 )

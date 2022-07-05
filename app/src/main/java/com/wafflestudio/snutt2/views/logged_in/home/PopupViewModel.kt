@@ -1,34 +1,45 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.PopupDto
-import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.core.Maybe
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class PopupViewModel @Inject constructor(
-    private val prefStorage: PrefStorage,
     private val popupRepository: PopupRepository,
-    private val apiOnError: ApiOnError
+    private val storage: SNUTTStorage
 ) : ViewModel() {
 
-    fun fetchPopup(show: (day: Int?, dto: PopupDto) -> Unit) {
-        popupRepository.getPopup()
+    fun fetchPopup(): Maybe<PopupDto> {
+        return popupRepository.getPopup()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onError = apiOnError,
-                onSuccess = {
-                    val expireDate: Int? = prefStorage.getValue("popup", it.key, Int::class.java)
+            .filter {
+                val expireMillis: Long? = storage.popupMap.get()[it.key]
+                val currentMillis = System.currentTimeMillis()
+                (expireMillis == null || currentMillis >= expireMillis)
+            }
+    }
 
-                    // 처음 보는 팝업 or 다시 볼 때가 된 팝업
-                    if (expireDate == null || getCurrDay() >= expireDate) {
-                        show.invoke(it.days, it)
-                    }
+    fun invalidateShownPopUp(popupDto: PopupDto) {
+        val expiredDay: Long = popupDto.popupHideDays?.let { hideDays ->
+            System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
+        } ?: INFINITE_LONG_MILLIS
+
+        storage.popupMap.update(
+            storage.popupMap.get()
+                .toMutableMap()
+                .also {
+                    it[popupDto.key] = expiredDay
                 }
-            )
+        )
+    }
+
+    companion object {
+        const val INFINITE_LONG_MILLIS = Long.MAX_VALUE
     }
 }
