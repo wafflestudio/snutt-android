@@ -4,6 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
+data class PopupList(
+    @Json(name = "content") val popups: List<PopupDto>
+)
+
+@JsonClass(generateAdapter = true)
 data class PopupDto(
     @Json(name = "key") val key: String,
     @Json(name = "image_url") val url: String,

@@ -31,7 +31,6 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.rx3.asObservable
 import kotlinx.coroutines.rx3.rxMaybe
 import java.lang.IllegalStateException
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -95,8 +94,8 @@ class HomeFragment : BaseFragment() {
                 }
             }
             ).also {
-                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+        }
     }
 
     override fun onPause() {
@@ -110,20 +109,25 @@ class HomeFragment : BaseFragment() {
 
         homeViewModel.refreshData()
 
+        val showPopup = requireArguments().getBoolean("popup")
+        if (showPopup) {
+            popupViewModel.fetchPopup()
+                .subscribeBy(
+                    onNext = {
+                        PopupDialog(
+                            context = requireContext(),
+                            onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
+                            url = it.url
+                        ).show()
+                    }, onError = {}
+                )
+            requireArguments().putBoolean("popup", false)
+        }
+
         pageAdapter = HomeStateAdapter(this)
 
         binding.contents.adapter = pageAdapter
         binding.contents.isUserInputEnabled = false
-
-        popupViewModel.fetchPopup()
-            .subscribeBy(onSuccess = {
-                PopupDialog(
-                    context = requireContext(),
-                    onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
-                    days = it.popupHideDays,
-                    url = it.url
-                ).show()
-            }, onError = {})
 
         homePagerController.homePageState.asObservable()
             .bindUi(this) {

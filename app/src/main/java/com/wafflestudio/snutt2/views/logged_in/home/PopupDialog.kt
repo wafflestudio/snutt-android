@@ -8,12 +8,10 @@ import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogPopupBinding
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getPopupCloseMessage
 
 class PopupDialog(
     context: Context,
     private val onClickHideFewDays: () -> Unit,
-    private val days: Int?,
     private val url: String
 ) : Dialog(context, R.style.popup_dialog) {
 
@@ -28,8 +26,6 @@ class PopupDialog(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT
         )
-
-        binding.popupHideFewDaysButton.text = getPopupCloseMessage(days)
 
         binding.popupCloseButton.setOnClickListener {
             dismiss()

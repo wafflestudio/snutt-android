@@ -22,13 +22,16 @@ class RootActivity : BaseActivity() {
         val navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         val navGraph = navController.navInflater.inflate(R.navigation.root_graph)
-
+        val args = Bundle()
         navGraph.setStartDestination(
             if (snuttStorage.accessToken.get().isEmpty()) R.id.tutorialFragment
-            else R.id.homeFragment
+            else {
+                args.putBoolean("popup", true)
+                R.id.homeFragment
+            }
         )
 
-        navController.graph = navGraph
+        navController.setGraph(navGraph, args)
 
         snuttStorage.accessToken.asObservable()
             .distinctUntilChanged()

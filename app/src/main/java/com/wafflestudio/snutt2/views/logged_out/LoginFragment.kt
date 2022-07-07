@@ -126,7 +126,8 @@ class LoginFragment : BaseFragment() {
     }
 
     private fun routeHome() {
-        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        val args = Bundle().apply { putBoolean("popup", true) }
+        findNavController().navigate(resId = R.id.action_loginFragment_to_homeFragment, args = args)
     }
 
     @Suppress("DEPRECATION") // Facebook SDK 에서 ActivityResultContract 지원 안해줌

@@ -146,7 +146,8 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun routeHome() {
-        findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+        val args = Bundle().apply { putBoolean("popup", true) }
+        findNavController().navigate(R.id.action_signUpFragment_to_homeFragment, args)
     }
 
     private fun showTerms() {

@@ -50,8 +50,4 @@ object SNUTTStringUtils {
         if (text.isEmpty()) text = "(없음)"
         return text
     }
-
-    fun getPopupCloseMessage(day: Int?): String {
-        return if (day != null) "${day}일 후에 다시보기" else "다시 보지 않기"
-    }
 }
