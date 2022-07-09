@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -15,23 +16,24 @@ class RootActivity : BaseActivity() {
     @Inject
     lateinit var snuttStorage: SNUTTStorage
 
+    @Inject
+    lateinit var popupState: PopupState
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
 
+        popupState.refreshPopupState()
+
         val navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         val navGraph = navController.navInflater.inflate(R.navigation.root_graph)
-        val args = Bundle()
         navGraph.setStartDestination(
             if (snuttStorage.accessToken.get().isEmpty()) R.id.tutorialFragment
-            else {
-                args.putBoolean("popup", true)
-                R.id.homeFragment
-            }
+            else R.id.homeFragment
         )
 
-        navController.setGraph(navGraph, args)
+        navController.graph = navGraph
 
         snuttStorage.accessToken.asObservable()
             .distinctUntilChanged()

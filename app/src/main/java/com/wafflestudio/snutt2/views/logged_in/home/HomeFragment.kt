@@ -22,6 +22,9 @@ import com.wafflestudio.snutt2.lib.rx.itemSelected
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupDialog
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +74,9 @@ class HomeFragment : BaseFragment() {
     @Inject
     lateinit var prefStorage: PrefStorage
 
+    @Inject
+    lateinit var popupState: PopupState
+
     private var backPressCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(
@@ -109,11 +115,10 @@ class HomeFragment : BaseFragment() {
 
         homeViewModel.refreshData()
 
-        val showPopup = requireArguments().getBoolean("popup")
-        if (showPopup) {
+        if (popupState.getAndUpdatePopupState().not()) {
             popupViewModel.fetchPopup()
                 .subscribeBy(
-                    onNext = {
+                    onSuccess = {
                         PopupDialog(
                             context = requireContext(),
                             onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
@@ -121,7 +126,6 @@ class HomeFragment : BaseFragment() {
                         ).show()
                     }, onError = {}
                 )
-            requireArguments().putBoolean("popup", false)
         }
 
         pageAdapter = HomeStateAdapter(this)

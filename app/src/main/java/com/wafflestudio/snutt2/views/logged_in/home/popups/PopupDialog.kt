@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home
+package com.wafflestudio.snutt2.views.logged_in.home.popups
 
 import android.app.Dialog
 import android.content.Context

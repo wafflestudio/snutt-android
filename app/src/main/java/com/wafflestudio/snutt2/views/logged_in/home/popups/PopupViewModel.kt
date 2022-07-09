@@ -1,11 +1,11 @@
-package com.wafflestudio.snutt2.views.logged_in.home
+package com.wafflestudio.snutt2.views.logged_in.home.popups
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.PopupDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Maybe
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -15,14 +15,20 @@ class PopupViewModel @Inject constructor(
     private val storage: SNUTTStorage
 ) : ViewModel() {
 
-    fun fetchPopup(): Observable<PopupDto> {
+    fun fetchPopup(): Maybe<PopupDto> {
         return popupRepository.getPopup()
             .observeOn(AndroidSchedulers.mainThread())
-            .flattenAsObservable {
-                it.filter { popupDto ->
+            .map { it.popups }
+            .flatMapMaybe {
+                val filtered = it.filter { popupDto ->
                     val expireMillis: Long? = storage.popupMap.get()[popupDto.key]
                     val currentMillis = System.currentTimeMillis()
                     (expireMillis == null || currentMillis >= expireMillis)
+                }
+                if (filtered.isEmpty()) {
+                    Maybe.empty()
+                } else {
+                    Maybe.just(filtered.first())
                 }
             }
     }
