@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_translucent_50"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/popup_image"
+        android:layout_width="230dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:alpha="1"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/popup_hide_few_days_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/img_reviews_coming_soon" />
+
+    <TextView
+        android:id="@+id/popup_hide_few_days_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:text="다시 보지 않기"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:paddingHorizontal="20dp"
+        android:textSize="16sp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/popup_close_button"
+        app:layout_constraintStart_toStartOf="@id/popup_image"
+        app:layout_constraintTop_toBottomOf="@id/popup_image" />
+
+    <View
+        android:id="@+id/popup_message_divider"
+        android:layout_width="1dp"
+        android:layout_height="17dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/popup_hide_few_days_button"
+        app:layout_constraintEnd_toStartOf="@id/popup_close_button"
+        app:layout_constraintStart_toEndOf="@id/popup_hide_few_days_button"
+        app:layout_constraintTop_toTopOf="@id/popup_hide_few_days_button" />
+
+    <TextView
+        android:id="@+id/popup_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:fontFamily="@font/spoqa_han_sans_regular"
+        android:text="닫기"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/popup_hide_few_days_button"
+        app:layout_constraintEnd_toEndOf="@id/popup_image"
+        app:layout_constraintStart_toEndOf="@id/popup_hide_few_days_button"
+        app:layout_constraintTop_toTopOf="@id/popup_hide_few_days_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

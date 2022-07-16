@@ -12,27 +12,28 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.HomePage
-import com.wafflestudio.snutt2.lib.android.HomePagerController
-import com.wafflestudio.snutt2.lib.android.ReviewUrlController
+import com.wafflestudio.snutt2.lib.android.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.itemSelected
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupDialog
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.rx3.asObservable
 import kotlinx.coroutines.rx3.rxMaybe
 import java.lang.IllegalStateException
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -53,6 +54,8 @@ class HomeFragment : BaseFragment() {
 
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
+    private val popupViewModel: PopupViewModel by activityViewModels()
+
     @Inject
     lateinit var homePagerController: HomePagerController
 
@@ -67,6 +70,12 @@ class HomeFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var prefStorage: PrefStorage
+
+    @Inject
+    lateinit var popupState: PopupState
 
     private var backPressCallback: OnBackPressedCallback? = null
 
@@ -105,6 +114,19 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         homeViewModel.refreshData()
+
+        if (popupState.getAndUpdatePopupState().not()) {
+            popupViewModel.fetchPopup()
+                .subscribeBy(
+                    onSuccess = {
+                        PopupDialog(
+                            context = requireContext(),
+                            onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
+                            url = it.url
+                        ).show()
+                    }, onError = {}
+                )
+        }
 
         pageAdapter = HomeStateAdapter(this)
 
