@@ -128,7 +128,7 @@ class LectureDetailFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.completeButton.isVisible = it
-                binding.editButton.isVisible = it.not()
+                binding.editButton.isVisible = false // 서버 강의는 편집 불가능
             }
 
         vm.selectedColor.asObservable()
@@ -140,25 +140,20 @@ class LectureDetailFragment : BaseFragment() {
             }
 
         binding.completeButton.throttledClicks()
-            .flatMapSingle {
+            .bindUi(this) {
                 vm.updateLecture(adapter.getUpdateParam())
+                    .bindUi(
+                        this,
+                        onError = apiOnError,
+                        onSuccess = {
+                            setNormalMode()
+                        }
+                    )
             }
-            .bindUi(
-                this,
-                onNext = {
-                    setNormalMode()
-                },
-                onError = apiOnError
-            )
 
         binding.backButton.throttledClicks()
             .bindUi(this) {
                 findNavController().popBackStack()
-            }
-
-        binding.editButton.throttledClicks()
-            .bindUi(this) {
-                setEditMode()
             }
     }
 

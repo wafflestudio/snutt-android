@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.DisplayMetrics
 import com.wafflestudio.snutt2.model.TagType
+import kotlin.math.roundToInt
 
 /**
  * Created by makesource on 2016. 1. 24..
@@ -42,6 +43,22 @@ object SNUTTUtils {
         val minute: String
         minute = if (Math.floor(num.toDouble()) == num.toDouble()) "00" else "30"
         return "$hour:$minute"
+    }
+
+    fun numberToEndTimeAdjusted(time: Float, len: Float): String {
+        val totalMinute = ((8 + time + len) * 60).roundToInt()
+        val totalMinuteAdjusted = when (len) {
+            1f -> totalMinute - 10
+            1.5f -> totalMinute - 15
+            2f -> totalMinute - 10
+            3f -> totalMinute - 10
+            4.5f -> totalMinute - 10
+            else -> totalMinute
+        }
+        val hour = totalMinuteAdjusted / 60
+        val minute = totalMinuteAdjusted % 60
+
+        return String.format("%02d:%02d", hour, minute)
     }
 
     fun getTimeList(from: Int, to: Int): Array<String?> {
