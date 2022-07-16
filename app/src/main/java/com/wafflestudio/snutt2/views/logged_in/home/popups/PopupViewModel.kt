@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.popups
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.dto.PopupDto
+import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Maybe
@@ -15,13 +15,13 @@ class PopupViewModel @Inject constructor(
     private val storage: SNUTTStorage
 ) : ViewModel() {
 
-    fun fetchPopup(): Maybe<PopupDto> {
+    fun fetchPopup(): Maybe<GetPopupResults.Popup> {
         return popupRepository.getPopup()
             .observeOn(AndroidSchedulers.mainThread())
             .map { it.popups }
             .flatMapMaybe {
-                val filtered = it.filter { popupDto ->
-                    val expireMillis: Long? = storage.popupMap.get()[popupDto.key]
+                val filtered = it.filter { popup ->
+                    val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[popup.key]
                     val currentMillis = System.currentTimeMillis()
                     (expireMillis == null || currentMillis >= expireMillis)
                 }
@@ -33,16 +33,16 @@ class PopupViewModel @Inject constructor(
             }
     }
 
-    fun invalidateShownPopUp(popupDto: PopupDto) {
-        val expiredDay: Long = popupDto.popupHideDays?.let { hideDays ->
+    fun invalidateShownPopUp(popup: GetPopupResults.Popup) {
+        val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
             System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
         } ?: INFINITE_LONG_MILLIS
 
-        storage.popupMap.update(
-            storage.popupMap.get()
+        storage.shownPopupIdsAndTimestamp.update(
+            storage.shownPopupIdsAndTimestamp.get()
                 .toMutableMap()
                 .also {
-                    it[popupDto.key] = expiredDay
+                    it[popup.key] = expiredDay
                 }
         )
     }

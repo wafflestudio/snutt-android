@@ -57,7 +57,7 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
-    val popupMap = PrefValue<Map<String, Long>>(
+    val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,

@@ -198,7 +198,7 @@ interface SNUTTRestApi {
     ): Single<GetLecturesIdResults>
 
     @GET("/v1/popups")
-    fun getPopup(): Single<PopupList>
+    fun getPopup(): Single<GetPopupResults>
 
     @GET("/notification")
     suspend fun _getNotification(

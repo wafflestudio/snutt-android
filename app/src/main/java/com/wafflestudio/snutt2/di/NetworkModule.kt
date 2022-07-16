@@ -58,29 +58,14 @@ object NetworkModule {
                         "x-os-type",
                         "android"
                     )
-                    .build()
-                chain.proceed(newRequest)
-            }
-            .addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-os-version",
                         Build.VERSION.SDK_INT.toString()
                     )
-                    .build()
-                chain.proceed(newRequest)
-            }
-            .addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-app-version",
                         BuildConfig.VERSION_NAME
                     )
-                    .build()
-                chain.proceed(newRequest)
-            }
-            .addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-app-type",
                         if (BuildConfig.DEBUG) "debug" else "release"
