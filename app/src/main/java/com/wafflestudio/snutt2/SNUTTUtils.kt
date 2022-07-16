@@ -58,8 +58,7 @@ object SNUTTUtils {
         val hour = totalMinuteAdjusted / 60
         val minute = totalMinuteAdjusted % 60
 
-        return if (minute == 0) "$hour:00"
-        else "$hour:$minute"
+        return String.format("%02d:%02d", hour, minute)
     }
 
     fun getTimeList(from: Int, to: Int): Array<String?> {
