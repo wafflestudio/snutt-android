@@ -21,6 +21,7 @@ import com.wafflestudio.snutt2.databinding.FragmentLoginBinding
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import javax.inject.Inject
@@ -38,6 +39,9 @@ class LoginFragment : BaseFragment() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var popupState: PopupState
 
     private val vm: AuthViewModel by viewModels()
 
@@ -126,6 +130,7 @@ class LoginFragment : BaseFragment() {
     }
 
     private fun routeHome() {
+        popupState.refreshPopupState()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }
 

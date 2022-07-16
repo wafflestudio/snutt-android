@@ -57,6 +57,18 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
+    val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
+        prefContext,
+        PrefMapValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "popup_keys",
+            String::class.java,
+            // Primitive Type 을 사용하지 못해 wrapping 된 타입을 넘겨준다.
+            Long::class.javaObjectType,
+            mapOf()
+        )
+    )
+
     val lastViewedTable = PrefValue<Optional<TableDto>>(
         prefContext,
         PrefOptionalValueMetaData(

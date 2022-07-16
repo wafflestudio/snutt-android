@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
+import android.os.Build
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -47,6 +48,27 @@ object NetworkModule {
                     .addHeader(
                         "x-access-apikey",
                         context.getString(R.string.api_key)
+                    )
+                    .build()
+                chain.proceed(newRequest)
+            }
+            .addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader(
+                        "x-os-type",
+                        "android"
+                    )
+                    .addHeader(
+                        "x-os-version",
+                        Build.VERSION.SDK_INT.toString()
+                    )
+                    .addHeader(
+                        "x-app-version",
+                        BuildConfig.VERSION_NAME
+                    )
+                    .addHeader(
+                        "x-app-type",
+                        if (BuildConfig.DEBUG) "debug" else "release"
                     )
                     .build()
                 chain.proceed(newRequest)

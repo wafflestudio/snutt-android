@@ -191,4 +191,10 @@
         <item name="android:textSize">14dp</item>
     </style>
 
+    <style name="popup_dialog" parent="Theme.AppCompat.Light">
+        <item name="windowMinWidthMajor">100%</item>
+        <item name="windowMinWidthMinor">100%</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

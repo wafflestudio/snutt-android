@@ -198,6 +198,9 @@ interface SNUTTRestApi {
         @Query(value = "instructor") instructor: String
     ): Single<GetLecturesIdResults>
 
+    @GET("/v1/popups")
+    fun getPopup(): Single<GetPopupResults>
+
     @GET("/notification")
     suspend fun _getNotification(
         @Query(value = "limit") limit: Int,
