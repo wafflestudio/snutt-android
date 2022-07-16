@@ -178,6 +178,7 @@ dependencies {
     implementation("androidx.compose.material:material:${Deps.Version.Compose}")
     implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
     implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
+    implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
 
     // misc
     implementation("androidx.core:core-ktx:1.7.0")

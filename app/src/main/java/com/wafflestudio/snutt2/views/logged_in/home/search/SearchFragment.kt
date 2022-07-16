@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
@@ -22,6 +23,8 @@ import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
 import com.wafflestudio.snutt2.lib.rx.loadingState
@@ -61,6 +64,8 @@ class SearchFragment : BaseFragment() {
 
     private val bottomSheet = SearchOptionFragment()
 
+    private val LECTURE_TIME_OVERLAP = 0x300C
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -81,10 +86,19 @@ class SearchFragment : BaseFragment() {
                 hideSoftKeyboard()
             },
             onToggleAddition = {
-                selectedTimetableViewModel.toggleLecture(it)
+                selectedTimetableViewModel.toggleLecture(it, false)
                     .bindUi(
                         this,
-                        onError = apiOnError,
+                        onError = { error ->
+                            when (error) {
+                                is ErrorParsedHttpException -> {
+                                    if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
+                                        overwriteLectureDialog(it, error.errorDTO.ext!!["confirm_message"])
+                                    } else apiOnError
+                                }
+                                else -> apiOnError
+                            }
+                        },
                         onComplete = {
                             searchViewModel.toggleLectureSelection(it)
                             hideSoftKeyboard()
@@ -220,5 +234,25 @@ class SearchFragment : BaseFragment() {
             .bindUi(this) {
                 binding.timetable.trimParam = it.copy(forceFitLectures = true)
             }
+    }
+
+    private fun overwriteLectureDialog(dto: LectureDto, message: String?) {
+        val alert = AlertDialog.Builder(requireContext())
+            .setTitle("시간대 겹침")
+            .setMessage(message)
+            .setPositiveButton("확인") { _, _ ->
+                selectedTimetableViewModel.toggleLecture(dto, true)
+                    .bindUi(
+                        this,
+                        onError = apiOnError,
+                        onComplete = {
+                            searchViewModel.toggleLectureSelection(dto)
+                            hideSoftKeyboard()
+                        }
+                    )
+            }
+            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
+        val dialog = alert.create()
+        dialog.show()
     }
 }

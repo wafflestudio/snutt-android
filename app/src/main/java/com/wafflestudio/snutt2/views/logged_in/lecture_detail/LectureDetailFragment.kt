@@ -140,16 +140,16 @@ class LectureDetailFragment : BaseFragment() {
             }
 
         binding.completeButton.throttledClicks()
-            .flatMapSingle {
+            .bindUi(this) {
                 vm.updateLecture(adapter.getUpdateParam())
+                    .bindUi(
+                        this,
+                        onError = apiOnError,
+                        onSuccess = {
+                            setNormalMode()
+                        }
+                    )
             }
-            .bindUi(
-                this,
-                onNext = {
-                    setNormalMode()
-                },
-                onError = apiOnError
-            )
 
         binding.backButton.throttledClicks()
             .bindUi(this) {

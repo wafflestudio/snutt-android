@@ -281,7 +281,7 @@ class ApiOnError @Inject constructor(
     }
 }
 
-private object ErrorCode {
+object ErrorCode {
     const val SERVER_FAULT = 0x0000
 
     /* 401 - Request was invalid */

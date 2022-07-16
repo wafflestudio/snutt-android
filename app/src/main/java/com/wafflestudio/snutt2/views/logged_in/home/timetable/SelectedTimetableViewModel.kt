@@ -31,13 +31,14 @@ class SelectedTimetableViewModel @Inject constructor(
     val trimParam: DataProvider<TableTrimParam>
         get() = settingsRepository.tableTrimParam
 
-    fun toggleLecture(lecture: LectureDto): Completable {
+    // FIXME: @sangggg toggle 대신 add/remove 명시적으로 호출하기
+    fun toggleLecture(lecture: LectureDto, is_force: Boolean): Completable {
         return myLectureRepository.currentTable
             .firstOrError()
             .flatMap {
                 val target = it.lectureList.findLast { lec -> lec.isLectureNumberEquals(lecture) }
                 if (target != null) myLectureRepository.removeLecture(lectureId = target.id)
-                else myLectureRepository.addLecture(lectureId = lecture.id)
+                else myLectureRepository.addLecture(lectureId = lecture.id, is_force)
             }
             .observeOn(AndroidSchedulers.mainThread())
             .ignoreElement()
