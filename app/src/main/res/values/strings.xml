@@ -7,6 +7,8 @@
     <string name="sign_up_terms">회원가입을 누르시면 <u><b>일반 이용 약관</b></u>에 동의하시게 됩니다.</string>
 
     <!--error-message-->
+    <string name="popup_hide_message">당분간 보지 않기</string>
+    <string name="popup_close_message">닫기</string>
     <string name="error_server_fault">서버에 문제가 있으니, 잠시후 다시 시도해주세요</string>
     <string name="error_no_network">네트워크가 불안정합니다</string>
     <string name="error_no_fb_id_or_token">페이스북 아이디 혹은 토큰이 주어지지 않았습니다</string>
@@ -54,12 +56,14 @@
     <string name="sign_up_id_hint">아이디</string>
     <string name="sign_up_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_hint">비밀번호 확인</string>
-    <string name="sign_up_eamil_input_hint">이메일 입력</string>
+    <string name="sign_up_email_input_hint">이메일 입력</string>
     <string name="sign_up_sign_up_button">회원가입</string>
     <string name="sign_up_button_divider">or</string>
     <string name="sign_up_sign_up_facebook_button">페이스북으로 시작하기</string>
     <string name="sign_up_sign_up_facebook_logo">facebook_logo</string>
+    <string name="sign_in_logo_title">SNUTT</string>
     <string name="sign_in_sign_in_button">로그인</string>
+    <string name="sign_in_sign_in_facebook_button">페이스북으로 시작하기</string>
     <string name="sign_in_id_hint">아이디</string>
     <string name="sign_in_password_hint">비밀번호</string>
     <string name="sign_in_button_divider">or</string>
@@ -119,6 +123,5 @@
     <string name="table_delete_alert_message">시간표를 정말 삭제하시겠습니까?</string>
     <string name="lecture_detail_cancel_editing">편집을 취소하시겠습니까?</string>
     <string name="notifications_app_bar_title">알림</string>
-    <string name="popup_hide_message">당분간 보지 않기</string>
-    <string name="popup_close_message">닫기</string>
+    <string name="home_timetable_drawer">서랍 메뉴</string>
 </resources>
