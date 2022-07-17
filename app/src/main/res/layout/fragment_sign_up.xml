@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:autofillHints="emailAddress"
-            android:hint="@string/sign_up_eamil_input_hint"
+            android:hint="@string/sign_up_email_input_hint"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:paddingBottom="15dp"
