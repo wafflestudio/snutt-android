@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavController
@@ -18,6 +16,7 @@ import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
@@ -60,14 +59,19 @@ class RootActivity : BaseActivity() {
 
             composable("notification") { NotificationPage() }
 
-            composable("lectures_of_table") { LecturesOfTablePage() }
+            composable("lecturesOfTable") { LecturesOfTablePage() }
 
             composable("lectures/{lecture_id}") {
                 val id = it.arguments?.getString("lecture_id")
                 LectureDetailPage(id = id)
             }
 
-            settingComposables()
+            composable("lectures/{lecture_id}/colorSelector") {
+                val id = it.arguments?.getString("lecture_id")
+                LectureColorSelectorPage(id = id)
+            }
+
+            settingComposable()
         }
     }
 
@@ -94,7 +98,7 @@ class RootActivity : BaseActivity() {
         }
     }
 
-    private fun NavGraphBuilder.settingComposables() {
+    private fun NavGraphBuilder.settingComposable() {
         composable("appReport") { AppReportPage() }
         composable("serviceInfo") { ServiceInfoPage() }
         composable("teamInfo") { TeamInfoPage() }
