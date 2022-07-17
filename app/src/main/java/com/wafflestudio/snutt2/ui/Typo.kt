@@ -16,7 +16,7 @@ private val SpoqaHanSans = FontFamily(
     Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
 )
 
-val SnuttTypography = Typography(
+val SNUTTTypography = Typography(
     defaultFontFamily = SpoqaHanSans,
     h1 = TextStyle(
         color = Color.Black,

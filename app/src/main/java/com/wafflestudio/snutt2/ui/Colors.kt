@@ -2,6 +2,19 @@ package com.wafflestudio.snutt2.ui
 
 import androidx.compose.ui.graphics.Color
 
+object SNUTTColors {
+    val Gray100 = Color(0xfff2f2f2)
+    val Gray200 = Color(0xffbdbdbd)
+    val Gray400 = Color(0xff999999)
+    val Gray600 = Color(0xff777777)
+    val Gray800 = Color(0xff555555)
+
+    val Black900 = Color(0xff000000)
+    val White900 = Color(0xffffffff)
+
+
+}
+
 val colorPrimary = Color(0xffffffff)
 val colorPrimaryDark = Color(0xFF000000)
 val colorAccent = Color(0xFF000000)

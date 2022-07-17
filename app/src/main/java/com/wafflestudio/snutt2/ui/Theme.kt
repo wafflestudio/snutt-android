@@ -24,7 +24,7 @@ fun SnuttTheme(
 ) {
     MaterialTheme(
         colors = LightThemeColors,
-        typography = SnuttTypography,
+        typography = SNUTTTypography,
         content = content
     )
 }
