@@ -21,6 +21,7 @@ fun SettingsPage() {
         Button(onClick = { navController.navigate("teamInfo") }) { Text(text = "teamInfo") }
         Button(onClick = { navController.navigate("timetableConfig") }) { Text(text = "timetableConfig") }
         Button(onClick = { navController.navigate("userConfig") }) { Text(text = "userConfig") }
+        // FIXME: 임시 사용 예시이다. migration 이후에 지워주자.
         Text(text = "${viewModel.trimParam.get()}")
     }
 }
