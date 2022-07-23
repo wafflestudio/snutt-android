@@ -11,8 +11,6 @@ object SNUTTColors {
 
     val Black900 = Color(0xff000000)
     val White900 = Color(0xffffffff)
-
-
 }
 
 val colorPrimary = Color(0xffffffff)
