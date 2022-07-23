@@ -5,13 +5,20 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.views.logged_in.home.HomeNavControllerContext
 
 @Composable
 fun SettingsPage() {
     val navController = HomeNavControllerContext.current
+    val viewModel = hiltViewModel<SettingsViewModel>()
+    val tableTrimParam = viewModel.trimParam
+        .asObservable()
+        .subscribeAsState(initial = TableTrimParam.Default)
 
     Column {
         Button(onClick = { navController.navigate("appReport") }) { Text(text = "appReport") }
@@ -19,6 +26,8 @@ fun SettingsPage() {
         Button(onClick = { navController.navigate("teamInfo") }) { Text(text = "teamInfo") }
         Button(onClick = { navController.navigate("timetableConfig") }) { Text(text = "timetableConfig") }
         Button(onClick = { navController.navigate("userConfig") }) { Text(text = "userConfig") }
+        // FIXME: 임시 사용 예시이다. migration 이후에 지워주자.
+        Text(text = "$tableTrimParam")
     }
 }
 
