@@ -119,4 +119,6 @@
     <string name="table_delete_alert_message">시간표를 정말 삭제하시겠습니까?</string>
     <string name="lecture_detail_cancel_editing">편집을 취소하시겠습니까?</string>
     <string name="notifications_app_bar_title">알림</string>
+    <string name="popup_hide_message">당분간 보지 않기</string>
+    <string name="popup_close_message">닫기</string>
 </resources>
