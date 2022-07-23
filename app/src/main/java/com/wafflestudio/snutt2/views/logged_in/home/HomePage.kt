@@ -14,6 +14,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
+import java.lang.RuntimeException
 
 enum class HomeItem(@DrawableRes val icon: Int) {
     Timetable(R.drawable.ic_timetable),
@@ -22,70 +23,84 @@ enum class HomeItem(@DrawableRes val icon: Int) {
     Settings(R.drawable.ic_setting)
 }
 
+val HomeDrawerStateContext = compositionLocalOf<DrawerState> {
+    throw RuntimeException("")
+}
+
+val HomeNavControllerContext = compositionLocalOf<NavController> {
+    throw RuntimeException("")
+}
+
 @Composable
 fun HomePage(navController: NavController) {
     var currentScreen by remember { mutableStateOf(HomeItem.Timetable) }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalDrawer(
         drawerContent = { HomeDrawer() },
-        drawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+        drawerState = drawerState,
         gesturesEnabled = currentScreen == HomeItem.Timetable
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        CompositionLocalProvider(
+            HomeDrawerStateContext provides drawerState,
+            HomeNavControllerContext provides navController
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                when (currentScreen) {
-                    HomeItem.Timetable -> TimetablePage()
-                    HomeItem.Search -> SearchPage()
-                    HomeItem.Review -> ReviewPage()
-                    HomeItem.Settings -> SettingsPage(navController = navController)
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth()
-            ) {
-                Button(
+                Box(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
-                        .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Timetable },
                 ) {
-                    Text(text = "timetable")
+                    when (currentScreen) {
+                        HomeItem.Timetable -> TimetablePage()
+                        HomeItem.Search -> SearchPage()
+                        HomeItem.Review -> ReviewPage()
+                        HomeItem.Settings -> SettingsPage()
+                    }
                 }
 
-                Button(
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Search },
+                        .height(56.dp)
+                        .fillMaxWidth()
                 ) {
-                    Text(text = "search")
-                }
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        onClick = { currentScreen = HomeItem.Timetable },
+                    ) {
+                        Text(text = "timetable")
+                    }
 
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Review },
-                ) {
-                    Text(text = "review")
-                }
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        onClick = { currentScreen = HomeItem.Search },
+                    ) {
+                        Text(text = "search")
+                    }
 
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Settings },
-                ) {
-                    Text(text = "settings")
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        onClick = { currentScreen = HomeItem.Review },
+                    ) {
+                        Text(text = "review")
+                    }
+
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        onClick = { currentScreen = HomeItem.Settings },
+                    ) {
+                        Text(text = "settings")
+                    }
                 }
             }
         }

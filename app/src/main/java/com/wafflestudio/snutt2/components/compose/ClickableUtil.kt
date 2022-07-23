@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -27,7 +28,9 @@ fun Modifier.clicks(
     clickable(
         enabled = enabled,
         role = role,
-        onClick = clickFn
+        onClick = clickFn,
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() }
     )
 }
 
