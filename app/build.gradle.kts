@@ -180,6 +180,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
     implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // misc
     implementation("androidx.core:core-ktx:1.7.0")

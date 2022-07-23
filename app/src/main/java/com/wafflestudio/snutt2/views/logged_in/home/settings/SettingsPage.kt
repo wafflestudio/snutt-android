@@ -6,12 +6,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeNavControllerContext
 
 @Composable
 fun SettingsPage() {
     val navController = HomeNavControllerContext.current
+    val viewModel = hiltViewModel<SettingsViewModel>()
 
     Column {
         Button(onClick = { navController.navigate("appReport") }) { Text(text = "appReport") }
@@ -19,6 +21,7 @@ fun SettingsPage() {
         Button(onClick = { navController.navigate("teamInfo") }) { Text(text = "teamInfo") }
         Button(onClick = { navController.navigate("timetableConfig") }) { Text(text = "timetableConfig") }
         Button(onClick = { navController.navigate("userConfig") }) { Text(text = "userConfig") }
+        Text(text = "${viewModel.trimParam.get()}")
     }
 }
 
