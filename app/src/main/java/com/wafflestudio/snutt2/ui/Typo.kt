@@ -19,19 +19,49 @@ private val SpoqaHanSans = FontFamily(
 val SNUTTTypography = Typography(
     defaultFontFamily = SpoqaHanSans,
     h1 = TextStyle(
-        color = Color.Black,
+        color = SNUTTColors.Black900,
         fontSize = 22.sp,
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Bold
     ),
     h2 = TextStyle(
-        color = Color.Black,
+        color = SNUTTColors.Black900,
         fontSize = 18.sp,
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Bold
     ),
+    h3 = TextStyle(
+        color = SNUTTColors.Black900,
+        fontSize = 16.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Bold
+    ),
+    h4 = TextStyle(
+        color = SNUTTColors.Black900,
+        fontSize = 14.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Bold
+    ),
+    h5 = TextStyle(
+        color = SNUTTColors.Black900,
+        fontSize = 12.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Bold
+    ),
+    subtitle1 = TextStyle(
+        color = SNUTTColors.Gray400,
+        fontSize = 17.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Medium
+    ),
+    subtitle2 = TextStyle(
+        color = SNUTTColors.Gray400,
+        fontSize = 17.sp,
+        fontFamily = SpoqaHanSans,
+        fontWeight = FontWeight.Medium
+    ),
     button = TextStyle(
-        color = Color.Black,
+        color = SNUTTColors.Black900,
         fontSize = 16.sp,
         fontFamily = SpoqaHanSans,
     )
