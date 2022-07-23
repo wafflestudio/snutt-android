@@ -44,7 +44,6 @@ fun SignInPage(
             )
         }
 
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -72,7 +71,6 @@ fun SignInPage(
             )
         }
 
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -92,7 +90,8 @@ fun SignInPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
-                onClick = { onClickFacebookSignIn() }) {
+                onClick = { onClickFacebookSignIn() }
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.iconfacebook),
                     contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),

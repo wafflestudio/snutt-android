@@ -14,7 +14,6 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialPage(

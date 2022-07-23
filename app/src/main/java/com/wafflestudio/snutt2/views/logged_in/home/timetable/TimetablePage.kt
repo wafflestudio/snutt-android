@@ -50,7 +50,6 @@ fun TimetablePage() {
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-
         }
     }
 }
