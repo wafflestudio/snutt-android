@@ -15,15 +15,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.views.NavControllerContext
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun SignInPage(
-    onClickSignIn: (String, String) -> Unit,
+    onSuccessSignIn: () -> Unit,
     onClickFacebookSignIn: () -> Unit,
 ) {
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
+
+    val navController = NavControllerContext.current
+    val vm = hiltViewModel<AuthViewModel>()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,7 +88,17 @@ fun SignInPage(
                     .fillMaxWidth()
                     .height(45.dp),
                 shape = RectangleShape,
-                onClick = { onClickSignIn(idField, passwordField) }
+                onClick = {
+
+                    vm.loginLocal(idField, passwordField)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                onSuccessSignIn()
+                            },
+                            onError = { }
+                        )
+                }
             ) {
                 Text(text = stringResource(R.string.sign_in_sign_in_button))
             }
@@ -104,11 +121,11 @@ fun SignInPage(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SignInPagePreview() {
     SignInPage(
         onClickFacebookSignIn = {},
-        onClickSignIn = { _, _ -> }
+        onSuccessSignIn = {}
     )
 }

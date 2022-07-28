@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,7 +26,12 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.RuntimeException
 import javax.inject.Inject
+
+val NavControllerContext = compositionLocalOf<NavController> {
+    throw RuntimeException("")
+}
 
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
@@ -49,29 +56,32 @@ class RootActivity : BaseActivity() {
         val navController = rememberNavController()
 
         val startDestination =
-            if (snuttStorage.accessToken.get().isNotEmpty()) "onboard" else "home"
+            if (snuttStorage.accessToken.get().isEmpty()) "onboard" else "home"
 
-        NavHost(navController = navController, startDestination = startDestination) {
+        CompositionLocalProvider(NavControllerContext provides navController) {
 
-            onboardGraph(navController)
+            NavHost(navController = navController, startDestination = startDestination) {
 
-            composable("home") { HomePage(navController = navController) }
+                onboardGraph(navController)
 
-            composable("notification") { NotificationPage() }
+                composable("home") { HomePage() }
 
-            composable("lecturesOfTable") { LecturesOfTablePage() }
+                composable("notification") { NotificationPage() }
 
-            composable("lectures/{lecture_id}") {
-                val id = it.arguments?.getString("lecture_id")
-                LectureDetailPage(id = id)
+                composable("lecturesOfTable") { LecturesOfTablePage() }
+
+                composable("lectures/{lecture_id}") {
+                    val id = it.arguments?.getString("lecture_id")
+                    LectureDetailPage(id = id)
+                }
+
+                composable("lectures/{lecture_id}/colorSelector") {
+                    val id = it.arguments?.getString("lecture_id")
+                    LectureColorSelectorPage(id = id)
+                }
+
+                settingComposable()
             }
-
-            composable("lectures/{lecture_id}/colorSelector") {
-                val id = it.arguments?.getString("lecture_id")
-                LectureColorSelectorPage(id = id)
-            }
-
-            settingComposable()
         }
     }
 
@@ -85,7 +95,7 @@ class RootActivity : BaseActivity() {
             }
             composable("signIn") {
                 SignInPage(
-                    onClickSignIn = { _, _ -> navController.navigateAsOrigin("home") },
+                    onSuccessSignIn = { navController.navigateAsOrigin("home") },
                     onClickFacebookSignIn = { navController.navigateAsOrigin("home") }
                 )
             }

@@ -76,7 +76,7 @@ fun TutorialPage(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun TutorialPagePreview() {
     TutorialPage(

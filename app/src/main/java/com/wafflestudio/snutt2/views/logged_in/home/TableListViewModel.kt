@@ -45,13 +45,12 @@ class TableListViewModel @Inject constructor(
     val selectedCourseBookTableList: Observable<List<SimpleTableDto>> =
         Observable.combineLatest(
             tableRepository.tableMap.asObservable(),
-            selectedCourseBooks.asObservable().filterEmpty(),
-            { map, courseBook ->
-                map.toList().map { it.second }.filter { table ->
-                    table.semester == courseBook.semester && table.year == courseBook.year
-                }
+            selectedCourseBooks.asObservable().filterEmpty()
+        ) { map, courseBook ->
+            map.toList().map { it.second }.filter { table ->
+                table.semester == courseBook.semester && table.year == courseBook.year
             }
-        )
+        }
 
     suspend fun getCourseBooks(): List<CourseBookDto> {
         return courseBookRepository.getCourseBook()
