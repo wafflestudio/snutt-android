@@ -82,4 +82,16 @@ object SNUTTStringUtils {
             return ""
         }
     }
+
+    fun getLectureTagText(lecture: LectureDto): String {
+        return listOf(
+            lecture.category,
+            lecture.department,
+            lecture.academic_year
+        )
+            .filter { it.isNullOrBlank().not() }
+            .let {
+                if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+            }
+    }
 }

@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,16 +32,19 @@ class SelectedTimetableViewModel @Inject constructor(
     val trimParam: DataProvider<TableTrimParam>
         get() = settingsRepository.tableTrimParam
 
-    // FIXME: @sangggg toggle 대신 add/remove 명시적으로 호출하기
-    fun toggleLecture(lecture: LectureDto, is_force: Boolean): Completable {
+    fun addLecture(lecture: LectureDto, is_force: Boolean): Completable {
+        return myLectureRepository.addLecture(lecture.id, is_force)
+            .ignoreElement()
+    }
+
+    fun removeLecture(lecture: LectureDto): Completable {
         return myLectureRepository.currentTable
             .firstOrError()
             .flatMap {
                 val target = it.lectureList.findLast { lec -> lec.isLectureNumberEquals(lecture) }
                 if (target != null) myLectureRepository.removeLecture(lectureId = target.id)
-                else myLectureRepository.addLecture(lectureId = lecture.id, is_force)
+                else Single.never() // FIXME
             }
-            .observeOn(AndroidSchedulers.mainThread())
             .ignoreElement()
     }
 
