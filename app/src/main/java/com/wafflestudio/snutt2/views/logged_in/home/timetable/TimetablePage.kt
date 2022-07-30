@@ -51,17 +51,11 @@ import kotlin.math.min
 
 class CanvasContext(
     val context: Context,
-    val canvasSize: Size,
     val fittedTrimParam: TableTrimParam
 ) {
     val hourLabelWidth = 24.5f.dp(context)
     val dayLabelHeight = 28.5f.dp(context)
     val cellPadding = 4.dp(context)
-
-    val unitWidth =
-        (canvasSize.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
-    val unitHeight =
-        (canvasSize.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
     val dayLabelTextPaint: Paint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -96,15 +90,12 @@ class CanvasContext(
 val LocalCanvasContext = compositionLocalOf<CanvasContext> {
     throw RuntimeException("")
 }
-val LocalSelectedLectureContext = compositionLocalOf<LectureDto?> {
-    throw RuntimeException("")
-}
 
 @Composable
 fun TimetablePage() {
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
-    val table = LocalTableContext.current.table
+    val table = TableContext.current.table
     val scope = rememberCoroutineScope()
 
     Column {
@@ -161,33 +152,30 @@ fun TimetablePage() {
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            CompositionLocalProvider(LocalSelectedLectureContext provides null) {
-                TimeTable()
-            }
+            TimeTable()
         }
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TimeTable() {
+fun TimeTable(touchEnabled: Boolean = true) {
     var canvasSize by remember { mutableStateOf(Size.Zero) }
 
     val context = LocalContext.current
     val navigator = NavControllerContext.current
-    val lectures = LocalTableContext.current.table.lectureList
-    val trimParam = LocalTableContext.current.trimParam
-    val selectedLecture = LocalSelectedLectureContext.current
+    val lectures = TableContext.current.table.lectureList
+    val trimParam = TableContext.current.trimParam
+    val selectedLecture = SelectedLectureContext.current
 
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
-            (selectedLecture?.let { lectures + it } ?: lectures)
+            (selectedLecture.value?.let { lectures + it } ?: lectures)
                 .getFittingTrimParam(TableTrimParam.Default)
         } else trimParam
 
     val canvasContext = CanvasContext(
         context = context,
-        canvasSize = canvasSize,
         fittedTrimParam = fittedTrimParam
     )
 
@@ -197,15 +185,22 @@ fun TimeTable() {
             .pointerInteropFilter { event ->
                 when (event.action) {
                     MotionEvent.ACTION_UP -> {
-                        val day =
-                            ((event.x - canvasContext.hourLabelWidth) / canvasContext.unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
-                        val time =
-                            ((event.y - canvasContext.dayLabelHeight) / canvasContext.unitHeight) + fittedTrimParam.hourFrom - 8
+                        if (touchEnabled) {
+                            val unitWidth =
+                                (canvasSize.width - canvasContext.hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+                            val unitHeight =
+                                (canvasSize.height - canvasContext.dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
-                        for (lecture in lectures) {
-                            if (lecture.contains(day, time)) {
-                                navigator.navigate("lectures/${lecture.id}")
-                                break
+                            val day =
+                                ((event.x - canvasContext.hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
+                            val time =
+                                ((event.y - canvasContext.dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom - 8
+
+                            for (lecture in lectures) {
+                                if (lecture.contains(day, time)) {
+                                    navigator.navigate("lectures/${lecture.id}")
+                                    break
+                                }
                             }
                         }
                     }
@@ -223,6 +218,9 @@ fun TimeTable() {
         lectures.forEach {
             DrawLecture(lecture = it)
         }
+        selectedLecture.value?.let {
+            DrawSelectedLecture(it)
+        }
     }
 }
 
@@ -234,10 +232,13 @@ fun DrawTableGrid() {
     val dayLabelHeight = LocalCanvasContext.current.dayLabelHeight
     val dayLabelTextPaint = LocalCanvasContext.current.dayLabelTextPaint
     val hourLabelTextPaint = LocalCanvasContext.current.hourLabelTextPaint
-    val unitHeight = LocalCanvasContext.current.unitHeight
-    val unitWidth = LocalCanvasContext.current.unitWidth
 
     Canvas(modifier = Modifier.fillMaxSize()) {
+        val unitWidth =
+            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+        val unitHeight =
+            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+
         val textHeight = getTextHeight("월", dayLabelTextPaint)
 
         val verticalLines = fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1
@@ -291,7 +292,7 @@ fun DrawTableGrid() {
 @Composable
 fun DrawLecture(lecture: LectureDto) {
     val context = LocalContext.current
-    val theme = LocalTableContext.current.theme
+    val theme = TableContext.current.theme
 
     lecture.class_time_json.forEach {
         DrawClassTime(
@@ -317,8 +318,6 @@ fun DrawClassTime(
     val hourLabelWidth = LocalCanvasContext.current.hourLabelWidth
     val dayLabelHeight = LocalCanvasContext.current.dayLabelHeight
     val cellPadding = LocalCanvasContext.current.cellPadding
-    val unitHeight = LocalCanvasContext.current.unitHeight
-    val unitWidth = LocalCanvasContext.current.unitWidth
     val lectureCellTextRect = LocalCanvasContext.current.lectureCellTextRect
     val lectureCellSubTextRect = LocalCanvasContext.current.lectureCellSubTextRect
 
@@ -332,6 +331,11 @@ fun DrawClassTime(
     )
 
     Canvas(modifier = Modifier.fillMaxSize()) {
+        val unitWidth =
+            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+        val unitHeight =
+            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+
         val left = hourLabelWidth + (dayOffset) * unitWidth
         val right =
             hourLabelWidth + (dayOffset) * unitWidth + unitWidth
@@ -383,6 +387,19 @@ fun DrawClassTime(
                 fgColor
             )
         }
+    }
+}
+
+@Composable
+fun DrawSelectedLecture(selectedLecture: LectureDto) {
+    for (classTime in selectedLecture.class_time_json) {
+        selectedLecture.color.bgRaw
+        DrawClassTime(
+            classTime,
+            selectedLecture.course_title,
+            -0x1f1f20,
+            -0xcccccd
+        )
     }
 }
 
