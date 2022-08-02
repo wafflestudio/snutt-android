@@ -16,10 +16,9 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 
 @Composable
 fun HomeDrawer(
-    // TODO: CompositionalLocal 로 넘기는 형태로 바꾸기
     selectedCourseBook: CourseBookDto,
-    selectedCourseBookTableList: List<SimpleTableDto>,
-    onClickItem: (String) -> Unit
+    tableListOfSelectedCourseBook: List<SimpleTableDto>,
+    onClickTableItem: (String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -27,15 +26,15 @@ fun HomeDrawer(
         Text(text = selectedCourseBook.toFormattedString(context))
         Spacer(modifier = Modifier.height(10.dp))
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            selectedCourseBookTableList.forEach {
-                TableItem(tableDto = it, onClick = onClickItem)
+            tableListOfSelectedCourseBook.forEach {
+                TableItem(tableDto = it, onClick = onClickTableItem)
             }
         }
     }
 }
 
 @Composable
-fun TableItem(tableDto: SimpleTableDto, onClick: (String) -> Unit) {
+private fun TableItem(tableDto: SimpleTableDto, onClick: (String) -> Unit) {
     Row(
         modifier = Modifier
             .clicks { onClick(tableDto.id) }

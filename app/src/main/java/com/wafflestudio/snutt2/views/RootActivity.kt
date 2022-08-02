@@ -15,6 +15,20 @@ import androidx.navigation.navigation
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
+import com.wafflestudio.snutt2.views.NavigationDestination.appReport
+import com.wafflestudio.snutt2.views.NavigationDestination.home
+import com.wafflestudio.snutt2.views.NavigationDestination.lectureColorSelector
+import com.wafflestudio.snutt2.views.NavigationDestination.lectureDetail
+import com.wafflestudio.snutt2.views.NavigationDestination.lecturesOfTable
+import com.wafflestudio.snutt2.views.NavigationDestination.notification
+import com.wafflestudio.snutt2.views.NavigationDestination.onboard
+import com.wafflestudio.snutt2.views.NavigationDestination.serviceInfo
+import com.wafflestudio.snutt2.views.NavigationDestination.signIn
+import com.wafflestudio.snutt2.views.NavigationDestination.signUp
+import com.wafflestudio.snutt2.views.NavigationDestination.teamInfo
+import com.wafflestudio.snutt2.views.NavigationDestination.timetableConfig
+import com.wafflestudio.snutt2.views.NavigationDestination.tutorial
+import com.wafflestudio.snutt2.views.NavigationDestination.userConfig
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -56,7 +70,7 @@ class RootActivity : BaseActivity() {
         val navController = rememberNavController()
 
         val startDestination =
-            if (snuttStorage.accessToken.get().isEmpty()) "onboard" else "home"
+            if (snuttStorage.accessToken.get().isEmpty()) onboard else home
 
         CompositionLocalProvider(NavControllerContext provides navController) {
 
@@ -64,18 +78,18 @@ class RootActivity : BaseActivity() {
 
                 onboardGraph(navController)
 
-                composable("home") { HomePage() }
+                composable(home) { HomePage() }
 
-                composable("notification") { NotificationPage() }
+                composable(notification) { NotificationPage() }
 
-                composable("lecturesOfTable") { LecturesOfTablePage() }
+                composable(lecturesOfTable) { LecturesOfTablePage() }
 
-                composable("lectures/{lecture_id}") {
+                composable(lectureDetail) {
                     val id = it.arguments?.getString("lecture_id")
                     LectureDetailPage(id = id)
                 }
 
-                composable("lectures/{lecture_id}/colorSelector") {
+                composable(lectureColorSelector) {
                     val id = it.arguments?.getString("lecture_id")
                     LectureColorSelectorPage(id = id)
                 }
@@ -86,44 +100,35 @@ class RootActivity : BaseActivity() {
     }
 
     private fun NavGraphBuilder.onboardGraph(navController: NavController) {
-        navigation(startDestination = "tutorial", route = "onboard") {
-            composable("tutorial") {
-                TutorialPage(
-                    onClickSignIn = { navController.navigate("signIn") },
-                    onClickSignUp = { navController.navigate("signUp") }
-                )
+        navigation(startDestination = tutorial, route = onboard) {
+            composable(tutorial) {
+                TutorialPage()
             }
-            composable("signIn") {
-                SignInPage(
-                    onSuccessSignIn = { navController.navigateAsOrigin("home") },
-                    onClickFacebookSignIn = { navController.navigateAsOrigin("home") }
-                )
+            composable(signIn) {
+                SignInPage()
             }
-            composable("signUp") {
-                SignUpPage(
-                    onClickSignUp = { _, _, _, _ -> navController.navigateAsOrigin("home") },
-                    onClickFacebookSignUp = { navController.navigateAsOrigin("home") }
-                )
+            composable(signUp) {
+                SignUpPage()
             }
         }
     }
 
     private fun NavGraphBuilder.settingComposable() {
-        composable("appReport") { AppReportPage() }
-        composable("serviceInfo") { ServiceInfoPage() }
-        composable("teamInfo") { TeamInfoPage() }
-        composable("timetableConfig") { TimetableConfigPage() }
-        composable("userConfig") { UserConfigPage() }
+        composable(appReport) { AppReportPage() }
+        composable(serviceInfo) { ServiceInfoPage() }
+        composable(teamInfo) { TeamInfoPage() }
+        composable(timetableConfig) { TimetableConfigPage() }
+        composable(userConfig) { UserConfigPage() }
     }
+}
 
-    private fun NavController.navigateAsOrigin(route: String) {
-        navigate(route) {
-            popUpTo(this@navigateAsOrigin.graph.findStartDestination().id) {
-                saveState = true
-                inclusive = true
-            }
-            launchSingleTop = true
-            restoreState = true
+fun NavController.navigateAsOrigin(route: String) {
+    navigate(route) {
+        popUpTo(this@navigateAsOrigin.graph.findStartDestination().id) {
+            saveState = true
+            inclusive = true
         }
+        launchSingleTop = true
+        restoreState = true
     }
 }

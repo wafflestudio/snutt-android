@@ -1,14 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -64,22 +62,18 @@ fun LecturesOfTable(
     onClickAdd: () -> Unit,
     onClickLecture: (lecture: LectureDto) -> Unit
 ) {
-    CompositionLocalProvider(
-        LocalOverScrollConfiguration provides null
-    ) {
-        LazyColumn {
-            items(lectures) { lectureDto ->
-                TableLectureItem(
-                    lecture = lectureDto,
-                    onClickLecture = onClickLecture
-                )
-                Row(Modifier.padding(horizontal = 20.dp)) {
-                    Divider(thickness = 1.dp) // TODO: Color (일괄)
-                }
+    LazyColumn {
+        items(lectures) { lectureDto ->
+            TableLectureItem(
+                lecture = lectureDto,
+                onClickLecture = onClickLecture
+            )
+            Row(Modifier.padding(horizontal = 20.dp)) {
+                Divider(thickness = 1.dp) // TODO: Color (일괄)
             }
-            item {
-                TableLectureAdd(onClickAdd = onClickAdd)
-            }
+        }
+        item {
+            TableLectureAdd(onClickAdd = onClickAdd)
         }
     }
 }
@@ -180,7 +174,6 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
     Spacer(Modifier.height(20.dp))
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 fun LecturesOfTablePagePreview() {

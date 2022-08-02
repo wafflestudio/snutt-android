@@ -38,16 +38,17 @@ fun NotificationPage() {
             onClickNavigateBack = { navController.popBackStack() }
         )
 
-        if ((refreshState is LoadState.NotLoading) && appendState.endOfPaginationReached && notificationList.itemCount < 1) {
-            NotificationPlaceholder()
-        } else if (refreshState is LoadState.Error) {
-            NotificationError()
-        } else {
-            LazyColumn {
-                items(notificationList.itemCount) { index ->
-                    NotificationItem(notificationList[index])
+        when {
+            refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 ->
+                NotificationPlaceholder()
+            refreshState is LoadState.Error ->
+                NotificationError()
+            else ->
+                LazyColumn {
+                    items(notificationList.itemCount) { index ->
+                        NotificationItem(notificationList[index])
+                    }
                 }
-            }
         }
     }
 }
@@ -105,14 +106,9 @@ fun NotificationError() {
             painter = painterResource(R.drawable.ic_warning),
             contentDescription = "Notification Error",
             modifier = Modifier.size(40.dp, 40.dp),
-//            colorFilter = ColorFilter.tint(Color(99, 99, 99))
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = stringResource(R.string.common_network_failure),
-            style = SNUTTTypography.subtitle2,
-//            color = colorResource(R.color.notification_error)
-        )
+        Text(text = stringResource(R.string.common_network_failure))
     }
 }
 
@@ -131,16 +127,10 @@ fun NotificationPlaceholder() {
             modifier = Modifier.size(40.dp, 40.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.notifications_placeholder_title),
-//            color = colorResource(R.color.placeholder_text),
-            style = SNUTTTypography.h2
-        )
+        Text(text = stringResource(R.string.notifications_placeholder_title))
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.notifications_placeholder_description),
-//            color = colorResource(R.color.placeholder_text),
-            style = SNUTTTypography.subtitle2,
             textAlign = TextAlign.Center
         )
     }
