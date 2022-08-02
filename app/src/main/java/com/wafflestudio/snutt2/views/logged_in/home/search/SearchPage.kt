@@ -4,53 +4,80 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.views.logged_in.home.SearchLazyListContext
-import com.wafflestudio.snutt2.views.logged_in.home.SearchResultContext
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.flow.flowOf
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchPage(
-    selectLecture: (LectureDto) -> Unit,
-    addLecture: (LectureDto, Boolean) -> Unit,
-    removeLecture: (LectureDto) -> Unit,
-    searchLecture: (String) -> Unit
+    searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
+    lazyListState: LazyListState,
+    selectedLecture: Optional<LectureDto>
 ) {
+    val searchViewModel = hiltViewModel<SearchViewModel>()
+    val selectedTimetableViewModel = hiltViewModel<SelectedTimetableViewModel>()
+
     var searchKeyword by remember { mutableStateOf("") }
+    var searchEditTextFocused by remember { mutableStateOf(false) }
+    val keyBoardController = LocalSoftwareKeyboardController.current
 
-    val searchResultPagingItems = SearchResultContext.current
     val loadState = searchResultPagingItems.loadState
-
-    val listState = SearchLazyListContext.current
 
     Column {
         TopAppBar {
             EditText(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .onFocusChanged { searchEditTextFocused = it.isFocused },
+                leadingIcon = { SearchIcon() },
+                trailingIcon = { if (searchEditTextFocused) ExitIcon() else FilterIcon() },
+                keyBoardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        searchViewModel.setTitle(searchKeyword)
+                        searchViewModel.refreshQuery()
+                        keyBoardController?.hide()
+                    }
+                ),
                 value = searchKeyword,
                 onValueChange = { searchKeyword = it },
-                hint = stringResource(R.string.search_hint),
-                onSearch = { searchLecture(searchKeyword) }
+                hint = stringResource(R.string.search_hint)
             )
         }
         Box(
@@ -58,35 +85,63 @@ fun SearchPage(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            TimeTable(touchEnabled = false)
+            TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
 
             Box(
                 modifier = Modifier
                     .background(Color(0x80000000)) // TODO: 임시
                     .fillMaxSize()
             ) {
-                if (loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1) {
-                    SearchPlaceHolder()
-                } else if (loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error) {
-                    SearchEmptyPage()
-                } else
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .background(Color(0x80000000)) // TODO: 임시
-                            .fillMaxSize()
-                    ) {
-                        items(searchResultPagingItems) {
-                            it?.let {
-                                SearchListItem(
-                                    lectureDataWithState = it,
-                                    onSelect = { selectLecture(it.item) },
-                                    onClickAdd = { addLecture(it.item, false) },
-                                    onClickRemove = { removeLecture(it.item) }
-                                )
+                when {
+                    loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1 -> {
+                        SearchPlaceHolder()
+                    }
+                    loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
+                        SearchEmptyPage()
+                    }
+                    else -> {
+                        LazyColumn(
+                            state = lazyListState,
+                            modifier = Modifier
+                                .background(Color(0x80000000)) // TODO: 임시
+                                .fillMaxSize()
+                        ) {
+                            items(searchResultPagingItems) {
+                                it?.let {
+                                    SearchListItem(
+                                        lectureDataWithState = it,
+                                        onSelect = {
+                                            searchViewModel.toggleLectureSelection(it.item)
+                                        },
+                                        onClickAdd = {
+                                            selectedTimetableViewModel.addLecture(
+                                                lecture = it.item,
+                                                is_force = false // TODO: is_forced
+                                            )
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeBy( // TODO: dispose
+                                                    onError = {},
+                                                    onComplete = {
+                                                        searchViewModel.toggleLectureSelection(it.item)
+                                                    }
+                                                )
+                                        },
+                                        onClickRemove = {
+                                            selectedTimetableViewModel.removeLecture(it.item)
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeBy( // TODO: dispose
+                                                    onError = {},
+                                                    onComplete = {
+                                                        searchViewModel.toggleLectureSelection(it.item)
+                                                    }
+                                                )
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
+                }
             }
         }
     }
@@ -104,7 +159,11 @@ fun SearchListItem(
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText =
-        lectureDataWithState.item.instructor + " / " + lectureDataWithState.item.credit + "학점"
+        stringResource(
+            R.string.search_result_item_instructor_credit_text,
+            lectureDataWithState.item.instructor,
+            lectureDataWithState.item.credit
+        )
     val remarkText = lectureDataWithState.item.remark
     val tagText = getLectureTagText(lectureDataWithState.item)
     val classTimeText = getSimplifiedClassTime(lectureDataWithState.item)
@@ -177,10 +236,14 @@ fun SearchListItem(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "강의계획서", modifier = Modifier.clicks { })
-                    Text(text = "강의평")
                     Text(
-                        text = if (contained) "삭제하기" else "추가하기",
+                        text = stringResource(R.string.search_result_item_syllabus_button),
+                        modifier = Modifier.clicks { }
+                    )
+                    Text(text = stringResource(R.string.search_result_item_review_button))
+                    Text(
+                        text = if (contained) stringResource(R.string.search_result_item_remove_button)
+                        else stringResource(R.string.search_result_item_add_button),
                         modifier = Modifier.clicks {
                             if (contained) onClickRemove() else onClickAdd()
                         }
@@ -208,7 +271,7 @@ fun SearchPlaceHolder() {
                 .height(76.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = "SNUTT 검색 꿀팁 \uD83C\uDF6F", fontSize = 25.sp) // TODO: 나중에 typography 맞추기
+        Text(text = stringResource(R.string.search_result_placeholder), fontSize = 25.sp) // TODO: 나중에 typography 맞추기
     }
 }
 
@@ -228,17 +291,16 @@ fun SearchEmptyPage() {
                 .height(76.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = "검색 결과가 없습니다.", fontSize = 25.sp) // TODO: 나중에 typography 맞추기
+        Text(text = stringResource(R.string.search_result_empty), fontSize = 25.sp) // TODO: 나중에 typography 맞추기
     }
 }
 
-// @Preview
-// @Composable
-// fun SearchPagePreview() {
-//    SearchPage(
-//        selectLecture = { _ -> },
-//        addLecture = { _, _ -> },
-//        removeLecture = { _ -> },
-//        searchLecture = { _ -> },
-//    )
-// }
+@Preview
+@Composable
+fun SearchPagePreview() {
+    SearchPage(
+        flowOf(PagingData.empty<DataWithState<LectureDto, LectureState>>()).collectAsLazyPagingItems(),
+        LazyListState(),
+        Optional.empty()
+    )
+}

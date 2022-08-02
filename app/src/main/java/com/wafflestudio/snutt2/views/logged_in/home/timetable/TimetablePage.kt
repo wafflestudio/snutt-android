@@ -32,6 +32,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -92,7 +93,9 @@ val LocalCanvasContext = compositionLocalOf<CanvasContext> {
 }
 
 @Composable
-fun TimetablePage() {
+fun TimetablePage(
+    uncheckedNotification: Boolean
+) {
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
     val table = TableContext.current.table
@@ -141,7 +144,7 @@ fun TimetablePage() {
                         .size(30.dp)
                         .clicks { navController.navigate(notification) },
                     painter = painterResource(
-                        id = if (UncheckedNotificationContext.current) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
+                        id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
                     ),
                     contentDescription = stringResource(R.string.home_timetable_drawer)
                 )
@@ -152,21 +155,23 @@ fun TimetablePage() {
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            TimeTable()
+            TimeTable(selectedLecture = Optional.empty())
         }
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TimeTable(touchEnabled: Boolean = true) {
+fun TimeTable(
+    touchEnabled: Boolean = true,
+    selectedLecture: Optional<LectureDto>
+) {
     var canvasSize by remember { mutableStateOf(Size.Zero) }
 
     val context = LocalContext.current
     val navigator = NavControllerContext.current
     val lectures = TableContext.current.table.lectureList
     val trimParam = TableContext.current.trimParam
-    val selectedLecture = SelectedLectureContext.current
 
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
@@ -225,7 +230,7 @@ fun TimeTable(touchEnabled: Boolean = true) {
 }
 
 @Composable
-fun DrawTableGrid() {
+private fun DrawTableGrid() {
     val context = LocalContext.current
     val fittedTrimParam = LocalCanvasContext.current.fittedTrimParam
     val hourLabelWidth = LocalCanvasContext.current.hourLabelWidth
@@ -239,7 +244,7 @@ fun DrawTableGrid() {
         val unitHeight =
             (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
-        val textHeight = getTextHeight("월", dayLabelTextPaint)
+        val textHeight = getTextHeight("월", dayLabelTextPaint) // TODO: 다른 방법 찾아보기
 
         val verticalLines = fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1
         var startWidth = hourLabelWidth
@@ -290,7 +295,7 @@ fun DrawTableGrid() {
 }
 
 @Composable
-fun DrawLecture(lecture: LectureDto) {
+private fun DrawLecture(lecture: LectureDto) {
     val context = LocalContext.current
     val theme = TableContext.current.theme
 
@@ -307,7 +312,7 @@ fun DrawLecture(lecture: LectureDto) {
 }
 
 @Composable
-fun DrawClassTime(
+private fun DrawClassTime(
     classTime: ClassTimeDto,
     courseTitle: String,
     bgColor: Int,
@@ -391,7 +396,7 @@ fun DrawClassTime(
 }
 
 @Composable
-fun DrawSelectedLecture(selectedLecture: LectureDto) {
+private fun DrawSelectedLecture(selectedLecture: LectureDto) {
     for (classTime in selectedLecture.class_time_json) {
         selectedLecture.color.bgRaw
         DrawClassTime(
@@ -400,17 +405,6 @@ fun DrawSelectedLecture(selectedLecture: LectureDto) {
             -0x1f1f20,
             -0xcccccd
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TimetablePagePreview() {
-    CompositionLocalProvider(
-        NavControllerContext provides rememberNavController(),
-        HomeDrawerStateContext provides rememberDrawerState(initialValue = DrawerValue.Closed)
-    ) {
-//        TimetablePage()
     }
 }
 
@@ -431,4 +425,17 @@ private fun getTextHeight(text: String, paint: Paint): Float {
     val bounds = Rect()
     paint.getTextBounds(text, 0, text.length, bounds)
     return bounds.height().toFloat()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TimetablePagePreview() {
+    CompositionLocalProvider(
+        NavControllerContext provides rememberNavController(),
+        HomeDrawerStateContext provides rememberDrawerState(initialValue = DrawerValue.Closed)
+    ) {
+        TimetablePage(
+            uncheckedNotification = false
+        )
+    }
 }

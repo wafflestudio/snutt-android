@@ -7,36 +7,27 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.rxjava3.subscribeAsState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
-import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
-import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.Observables
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx3.rxSingle
 import kotlin.RuntimeException
 
 enum class HomeItem(@DrawableRes val icon: Int) {
@@ -58,26 +49,12 @@ val HomeDrawerStateContext = compositionLocalOf<DrawerState> {
 val TableContext = compositionLocalOf<TableContextBundle> {
     throw RuntimeException("")
 }
-val UncheckedNotificationContext = compositionLocalOf<Boolean> {
-    throw RuntimeException("")
-}
-val SelectedLectureContext = compositionLocalOf<Optional<LectureDto>> {
-    throw RuntimeException("")
-}
-val SearchResultContext =
-    compositionLocalOf<LazyPagingItems<DataWithState<LectureDto, LectureState>>> {
-        throw RuntimeException("")
-    }
-val SearchLazyListContext = compositionLocalOf<LazyListState> {
-    throw RuntimeException("")
-}
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomePage() {
     val scope = rememberCoroutineScope()
     var currentScreen by remember { mutableStateOf(HomeItem.Timetable) }
-    var unCheckedNotification by remember { mutableStateOf(false) }
+    var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
@@ -85,26 +62,31 @@ fun HomePage() {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
-    val keyBoardController = LocalSoftwareKeyboardController.current
+    // TODO: 새 알림 체크를 어느 주기로 해야 할지? (일단 TimeTablePage에 올 때마다 확인하도록 설정)
+    LaunchedEffect(currentScreen == HomeItem.Timetable) {
+        try {
+            homeViewModel.getUncheckedNotificationsExist()
+                .let { uncheckedNotification = it }
+        } catch (e: Exception) {
+        }
+    }
 
-    rxSingle { homeViewModel.getUncheckedNotificationsExist() }
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeBy(
-            onSuccess = { unCheckedNotification = it },
-            onError = { }
-        )
     val (table, theme) =
         Observables.combineLatest(
             selectedTimetableViewModel.lastViewedTable.asObservable().filterEmpty(),
             selectedTimetableViewModel.selectedPreviewTheme.asObservable()
         ).distinctUntilChanged()
-            .subscribeAsState(initial = Pair(Defaults.defaultTableDto, Optional.empty())) // TODO: 초기값 문제
-            .value
+            .subscribeAsState(
+                initial = Pair(
+                    Defaults.defaultTableDto, // TODO: 초기값 문제
+                    Optional.empty()
+                )
+            ).value
     val trimParam = selectedTimetableViewModel.trimParam
         .asObservable().distinctUntilChanged()
         .subscribeAsState(initial = TableTrimParam.Default).value
     val selectedCourseBook = tableListViewModel.selectedCourseBooks.asObservable().filterEmpty()
-        .subscribeAsState(initial = CourseBookDto(1L, 2022)).value
+        .subscribeAsState(initial = CourseBookDto(1L, 2020)).value
     val selectedCourseBookTableList = tableListViewModel.selectedCourseBookTableList
         .subscribeAsState(initial = emptyList()).value
     val selectedLecture = searchViewModel.selectedLecture.distinctUntilChanged()
@@ -124,9 +106,9 @@ fun HomePage() {
             HomeDrawer(
                 selectedCourseBook,
                 selectedCourseBookTableList,
-                onClickItem = {
+                onClickTableItem = {
                     scope.launch { drawerState.close() }
-                    tableListViewModel.changeSelectedTable(it)
+                    tableListViewModel.changeSelectedTable(it) // dispose
                 }
             )
         },
@@ -145,50 +127,21 @@ fun HomePage() {
                     HomeItem.Timetable ->
                         CompositionLocalProvider(
                             HomeDrawerStateContext provides drawerState,
-                            TableContext provides tableContext,
-                            UncheckedNotificationContext provides unCheckedNotification,
-                            SelectedLectureContext provides Optional.empty(),
-                        ) { TimetablePage() }
+                            TableContext provides tableContext
+                        ) {
+                            TimetablePage(
+                                uncheckedNotification = uncheckedNotification
+                            )
+                        }
 
                     HomeItem.Search ->
                         CompositionLocalProvider(
-                            TableContext provides tableContext,
-                            SearchResultContext provides searchResultPagingItems,
-                            SearchLazyListContext provides listState,
-                            SelectedLectureContext provides selectedLecture
+                            TableContext provides tableContext
                         ) {
                             SearchPage(
-                                selectLecture = { lecture ->
-                                    searchViewModel.toggleLectureSelection(lecture)
-                                    keyBoardController?.hide()
-                                },
-                                addLecture = { lecture, is_forced ->
-                                    selectedTimetableViewModel.addLecture(lecture, is_forced)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeBy(
-                                            onError = {},
-                                            onComplete = {
-                                                searchViewModel.toggleLectureSelection(lecture)
-                                                keyBoardController?.hide()
-                                            }
-                                        )
-                                },
-                                removeLecture = { lecture ->
-                                    selectedTimetableViewModel.removeLecture(lecture)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeBy(
-                                            onError = {},
-                                            onComplete = {
-                                                searchViewModel.toggleLectureSelection(lecture)
-                                                keyBoardController?.hide()
-                                            }
-                                        )
-                                },
-                                searchLecture = { searchKeyword ->
-                                    searchViewModel.setTitle(searchKeyword)
-                                    searchViewModel.refreshQuery()
-                                    keyBoardController?.hide()
-                                }
+                                searchResultPagingItems,
+                                listState,
+                                selectedLecture
                             )
                         }
 
