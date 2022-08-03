@@ -16,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -117,9 +116,6 @@ class LectureDetailAdapter(
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val viewHolder = holder as ClassViewHolder?
             viewHolder!!.bindData(item) {
-                if (item.isEditable) {
-                    it.context.toast("커스텀 강의가 아닌 강의의 시간대는 변경할 수 없습니디.")
-                }
             }
         }
         if (viewType == LectureItem.ViewType.ItemRemark.value) {
@@ -415,7 +411,7 @@ class LectureDetailAdapter(
             editText1.setText(time)
             editText1.isClickable = false
             editText1.isFocusable = false
-            editText1.setOnClickListener(listener)
+            editText1.setTextColor(Color.argb(if (item.isEditable) 51 else 255, 0, 0, 0))
             title2.hint = "장소"
             editText2.setText(item.classTime!!.place)
             editText2.addTextChangedListener(
@@ -442,9 +438,9 @@ class LectureDetailAdapter(
                     }
                 }
             )
-            editText2.isClickable = false
-            editText2.isFocusable = false
-            editText2.isFocusableInTouchMode = false
+            editText2.isClickable = item.isEditable
+            editText2.isFocusable = item.isEditable
+            editText2.isFocusableInTouchMode = item.isEditable
             remove.visibility = View.GONE
         }
 
