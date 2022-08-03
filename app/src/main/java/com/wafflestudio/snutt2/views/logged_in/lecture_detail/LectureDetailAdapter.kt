@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.getDefaultFgColorHex
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -117,7 +118,7 @@ class LectureDetailAdapter(
             val viewHolder = holder as ClassViewHolder?
             viewHolder!!.bindData(item) {
                 if (item.isEditable) {
-                    showDialog(item, it.context)
+                    it.context.toast("커스텀 강의가 아닌 강의의 시간대는 변경할 수 없습니디.")
                 }
             }
         }
@@ -441,10 +442,10 @@ class LectureDetailAdapter(
                     }
                 }
             )
-            editText2.isClickable = item.isEditable
-            editText2.isFocusable = item.isEditable
-            editText2.isFocusableInTouchMode = item.isEditable
-            remove.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+            editText2.isClickable = false
+            editText2.isFocusable = false
+            editText2.isFocusableInTouchMode = false
+            remove.visibility = View.GONE
         }
 
         override fun onLongClick(v: View): Boolean {
@@ -512,13 +513,13 @@ class LectureDetailAdapter(
         fromPicker.setOnValueChangedListener { picker, oldVal, newVal ->
             fromTime = newVal
             /* set DisplayedValues as null to avoid out of bound index error */toPicker.displayedValues =
-                null
+            null
             toPicker.value = max(fromTime + 1, toPicker.value)
             toPicker.minValue = fromTime + 1
             toPicker.maxValue = 28
             toPicker.displayedValues = SNUTTUtils.getTimeList(fromTime + 1, 28)
             /* setValue method does not call listener, so we have to change the value manually */toTime =
-                fromTime + 1
+            fromTime + 1
         }
         toTime = (item.classTime!!.start + item.classTime!!.len).toInt() * 2
         val to = SNUTTUtils.getTimeList(fromTime + 1, 28)

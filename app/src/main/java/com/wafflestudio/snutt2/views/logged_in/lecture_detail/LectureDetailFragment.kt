@@ -128,7 +128,7 @@ class LectureDetailFragment : BaseFragment() {
             .distinctUntilChanged()
             .bindUi(this) {
                 binding.completeButton.isVisible = it
-                binding.editButton.isVisible = false // 서버 강의는 편집 불가능
+                binding.editButton.isVisible = it.not()
             }
 
         vm.selectedColor.asObservable()
@@ -154,6 +154,11 @@ class LectureDetailFragment : BaseFragment() {
         binding.backButton.throttledClicks()
             .bindUi(this) {
                 findNavController().popBackStack()
+            }
+
+        binding.editButton.throttledClicks()
+            .bindUi(this) {
+                setEditMode()
             }
     }
 
@@ -191,9 +196,7 @@ class LectureDetailFragment : BaseFragment() {
                 it.isEditable = false
                 adapter.notifyItemChanged(i)
             }
-            var pos = addClassTimeItemPosition
-            vm.lists.removeAt(pos)
-            adapter.notifyItemRemoved(pos)
+            var pos = lastClassItemPosition + 1
             vm.lists.add(pos, LectureItem(LectureItem.Type.Margin, false))
             adapter.notifyItemInserted(pos)
             vm.lists.add(pos + 1, LectureItem(LectureItem.Type.LongHeader, false))
@@ -237,8 +240,8 @@ class LectureDetailFragment : BaseFragment() {
             adapter.notifyItemRemoved(syllabusPosition - 2)
             val lastPosition = lastClassItemPosition
             // add button
-            vm.lists.add(lastPosition + 1, LectureItem(LectureItem.Type.AddClassTime, true))
-            adapter.notifyItemInserted(lastPosition + 1)
+//            vm.lists.add(lastPosition + 1, LectureItem(LectureItem.Type.AddClassTime, true))
+//            adapter.notifyItemInserted(lastPosition + 1)
 
             // change button
             val removePosition = removeItemPosition
