@@ -156,7 +156,7 @@ class SearchFragment : BaseFragment() {
 
         binding.filterButton.clicks()
             .bindUi(this) {
-                bottomSheet.show(parentFragmentManager, "tag_selector")
+                if(bottomSheet.isAdded.not()) bottomSheet.show(parentFragmentManager, "tag_selector")
             }
 
         binding.clearButton.clicks()
