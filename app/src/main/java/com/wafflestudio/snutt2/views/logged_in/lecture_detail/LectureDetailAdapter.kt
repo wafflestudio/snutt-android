@@ -116,9 +116,6 @@ class LectureDetailAdapter(
         if (viewType == LectureItem.ViewType.ItemClass.value) {
             val viewHolder = holder as ClassViewHolder?
             viewHolder!!.bindData(item) {
-                if (item.isEditable) {
-                    showDialog(item, it.context)
-                }
             }
         }
         if (viewType == LectureItem.ViewType.ItemRemark.value) {
@@ -414,7 +411,7 @@ class LectureDetailAdapter(
             editText1.setText(time)
             editText1.isClickable = false
             editText1.isFocusable = false
-            editText1.setOnClickListener(listener)
+            editText1.setTextColor(Color.argb(if (item.isEditable) 51 else 255, 0, 0, 0))
             title2.hint = "장소"
             editText2.setText(item.classTime!!.place)
             editText2.addTextChangedListener(
@@ -444,7 +441,7 @@ class LectureDetailAdapter(
             editText2.isClickable = item.isEditable
             editText2.isFocusable = item.isEditable
             editText2.isFocusableInTouchMode = item.isEditable
-            remove.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+            remove.visibility = View.GONE
         }
 
         override fun onLongClick(v: View): Boolean {
