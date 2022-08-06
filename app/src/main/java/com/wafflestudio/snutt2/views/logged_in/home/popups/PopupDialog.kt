@@ -37,7 +37,9 @@ class PopupDialog(
         }
 
         val defaultImage = R.drawable.img_reviews_coming_soon
-        Glide.with(context)
+
+        // ApplicationContext 에 묶이지만 1회성 요청
+        Glide.with(context.applicationContext)
             .load(url)
             .placeholder(R.color.white)
             .error(defaultImage)
