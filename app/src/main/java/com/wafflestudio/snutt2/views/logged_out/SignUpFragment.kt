@@ -19,9 +19,9 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentSignUpBinding
-import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.Quadruple
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

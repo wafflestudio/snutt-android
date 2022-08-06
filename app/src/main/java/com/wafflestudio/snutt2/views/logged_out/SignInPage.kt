@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.widget.Toast
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,21 +11,51 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.ProgressDialog
+import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.NavigationDestination.home
+import com.wafflestudio.snutt2.views.navigateAsOrigin
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignInPage(
-    onClickSignIn: (String, String) -> Unit,
-    onClickFacebookSignIn: () -> Unit,
-) {
+fun SignInPage() {
+    val navController = NavControllerContext.current
+    val authViewModel = hiltViewModel<AuthViewModel>()
+
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
+
+    val keyboardManager = LocalSoftwareKeyboardController.current
+    val callbackManager = CallbackManager.Factory.create()
+    val loginManager = LoginManager.getInstance()
+    val context = LocalContext.current
+
+    var showProgressDialog by remember { mutableStateOf(false) }
+    if (showProgressDialog) {
+        ProgressDialog(
+            title = stringResource(R.string.sign_in_sign_in_button),
+            message = stringResource(R.string.sign_in_progress_bar_message),
+            onDismissRequest = { showProgressDialog = false }
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,7 +113,21 @@ fun SignInPage(
                     .fillMaxWidth()
                     .height(45.dp),
                 shape = RectangleShape,
-                onClick = { onClickSignIn(idField, passwordField) }
+                onClick = {
+                    keyboardManager?.hide()
+                    showProgressDialog = true
+                    authViewModel.loginLocal(idField, passwordField)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy( // TODO: dispose
+                            onSuccess = {
+                                navController.navigateAsOrigin(home)
+                                showProgressDialog = false
+                            },
+                            onError = { // TODO: onError
+                                showProgressDialog = false
+                            }
+                        )
+                }
             ) {
                 Text(text = stringResource(R.string.sign_in_sign_in_button))
             }
@@ -90,7 +136,13 @@ fun SignInPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
-                onClick = { onClickFacebookSignIn() }
+                onClick = {
+                    loginManager.logInWithReadPermissions(
+                        context as ActivityResultRegistryOwner,
+                        callbackManager,
+                        emptyList()
+                    )
+                }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.iconfacebook),
@@ -102,13 +154,41 @@ fun SignInPage(
             }
         }
     }
+
+    loginManager.registerCallback(
+        callbackManager,
+        object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                val id = result.accessToken.userId
+                val token = result.accessToken.token
+                authViewModel.loginFacebook(id, token) // TODO: dispose
+                    .subscribeBy(
+                        onError = {}, // TODO: onError
+                        onSuccess = { navController.navigateAsOrigin(home) }
+                    )
+            }
+
+            override fun onCancel() {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.sign_up_facebook_login_failed_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onError(error: FacebookException) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.sign_up_facebook_login_failed_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SignInPagePreview() {
-    SignInPage(
-        onClickFacebookSignIn = {},
-        onClickSignIn = { _, _ -> }
-    )
+    SignInPage()
 }

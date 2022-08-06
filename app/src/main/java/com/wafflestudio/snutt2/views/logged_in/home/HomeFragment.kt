@@ -12,9 +12,12 @@ import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.android.*
-import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.android.HomePage
+import com.wafflestudio.snutt2.lib.android.HomePagerController
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
@@ -33,7 +36,6 @@ import io.reactivex.rxjava3.kotlin.Observables
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.rx3.asObservable
 import kotlinx.coroutines.rx3.rxMaybe
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -100,8 +102,8 @@ class HomeFragment : BaseFragment() {
                 }
             }
             ).also {
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-        }
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+            }
     }
 
     override fun onPause() {
@@ -135,7 +137,7 @@ class HomeFragment : BaseFragment() {
 
         homePagerController.homePageState.asObservable()
             .bindUi(this) {
-                binding.contents.setCurrentItem(it.pageNum)
+                binding.contents.currentItem = it.pageNum
                 binding.bottomNavigation.selectedItemId = listOf(
                     R.id.action_timetable,
                     R.id.action_search,
