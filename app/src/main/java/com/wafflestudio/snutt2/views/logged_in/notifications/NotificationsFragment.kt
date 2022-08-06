@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.wafflestudio.snutt2.databinding.FragmentNotificationsBinding
@@ -36,12 +35,12 @@ class NotificationsFragment : BaseFragment() {
 
         binding.contents.adapter = adapter
 
-        lifecycleScope.launchWhenResumed {
-            vm.getNotificationsPagingData()
-                .collect {
-                    adapter.submitData(it)
-                }
-        }
+//        lifecycleScope.launchWhenResumed {
+//            vm.getNotificationsPagingData()
+//                .collect {
+//                    adapter.submitData(it)
+//                }
+//        }
 
         binding.backButton.throttledClicks()
             .bindUi(this) {

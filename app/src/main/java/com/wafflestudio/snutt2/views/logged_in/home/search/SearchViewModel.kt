@@ -19,6 +19,8 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.asObservable
 import kotlinx.coroutines.rx3.rxSingle
 import javax.inject.Inject
@@ -75,7 +77,7 @@ class SearchViewModel @Inject constructor(
 
     val selectedLecture: Observable<Optional<LectureDto>> = _selectedLecture.asObservable()
 
-    val queryResults: Observable<PagingData<DataWithState<LectureDto, LectureState>>> =
+    val queryResults: Flow<PagingData<DataWithState<LectureDto, LectureState>>> =
         Observable.combineLatest(
             _queryRefreshSignal.hide()
                 .switchMap {
@@ -102,7 +104,7 @@ class SearchViewModel @Inject constructor(
                     )
                 )
             }
-        }
+        }.asFlow()
 
     fun setTitle(title: String) {
         _searchTitle.update(title)

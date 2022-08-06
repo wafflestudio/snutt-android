@@ -10,11 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.model.TableTrimParam
-import com.wafflestudio.snutt2.views.logged_in.home.HomeNavControllerContext
+import com.wafflestudio.snutt2.views.NavControllerContext
 
 @Composable
 fun SettingsPage() {
-    val navController = HomeNavControllerContext.current
+    val navController = NavControllerContext.current
     val viewModel = hiltViewModel<SettingsViewModel>()
     val tableTrimParam = viewModel.trimParam
         .asObservable()
@@ -35,7 +35,7 @@ fun SettingsPage() {
 @Composable
 fun SettingsPagePreview() {
     CompositionLocalProvider(
-        HomeNavControllerContext provides rememberNavController()
+        NavControllerContext provides rememberNavController()
     ) {
         SettingsPage()
     }

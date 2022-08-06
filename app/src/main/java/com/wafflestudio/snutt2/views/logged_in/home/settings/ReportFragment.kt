@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.databinding.FragmentReportBinding
-import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.base.BaseFragment
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

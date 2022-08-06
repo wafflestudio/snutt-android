@@ -6,7 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun LectureDetailPage(id: String?) {
-    Text(text = "LectureDetailPage")
+    Text(text = "LectureDetailPage $id")
 }
 
 @Preview
