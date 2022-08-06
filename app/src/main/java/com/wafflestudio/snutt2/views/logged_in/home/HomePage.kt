@@ -28,7 +28,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableV
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import io.reactivex.rxjava3.kotlin.Observables
 import kotlinx.coroutines.launch
-import kotlin.RuntimeException
 
 enum class HomeItem(@DrawableRes val icon: Int) {
     Timetable(R.drawable.ic_timetable),
@@ -78,7 +77,8 @@ fun HomePage() {
         ).distinctUntilChanged()
             .subscribeAsState(
                 initial = Pair(
-                    selectedTimetableViewModel.lastViewedTable.get().get() ?: Defaults.defaultTableDto,
+                    selectedTimetableViewModel.lastViewedTable.get().get()
+                        ?: Defaults.defaultTableDto,
                     Optional.empty()
                 )
             ).value

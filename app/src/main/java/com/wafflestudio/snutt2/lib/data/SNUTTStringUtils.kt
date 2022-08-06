@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.lib.data
 
-import androidx.compose.ui.res.stringResource
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto

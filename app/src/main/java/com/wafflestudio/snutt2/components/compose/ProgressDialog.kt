@@ -22,7 +22,10 @@ fun ProgressDialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
-        Box(modifier = Modifier.background(Color.White).fillMaxWidth(0.98f).padding(20.dp)) {
+        Box(modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth(0.98f)
+            .padding(20.dp)) {
             Column {
                 Text(title)
                 Spacer(modifier = Modifier.height(20.dp))

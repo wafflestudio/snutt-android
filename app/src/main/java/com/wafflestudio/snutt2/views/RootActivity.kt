@@ -40,7 +40,6 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 val NavControllerContext = compositionLocalOf<NavController> {

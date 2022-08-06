@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.TableRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
-import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
