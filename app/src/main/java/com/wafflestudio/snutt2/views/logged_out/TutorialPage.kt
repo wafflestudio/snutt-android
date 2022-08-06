@@ -1,7 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,13 +14,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.NavigationDestination
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TutorialPage(
-    onClickSignIn: () -> Unit,
-    onClickSignUp: () -> Unit
-) {
+fun TutorialPage() {
+    val navController = NavControllerContext.current
     val pagerState = rememberPagerState()
     Column(
         modifier = Modifier
@@ -61,14 +62,14 @@ fun TutorialPage(
             Button(
                 modifier = Modifier
                     .weight(1f),
-                onClick = onClickSignIn
+                onClick = { navController.navigate(NavigationDestination.signIn) }
             ) {
                 Text(text = "로그인")
             }
 
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = onClickSignUp
+                onClick = { navController.navigate(NavigationDestination.signUp) }
             ) {
                 Text(text = "가입")
             }
@@ -76,11 +77,8 @@ fun TutorialPage(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun TutorialPagePreview() {
-    TutorialPage(
-        onClickSignIn = {},
-        onClickSignUp = {},
-    )
+    TutorialPage()
 }

@@ -23,7 +23,6 @@ import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseFragment
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.lib.rx.hideSoftKeyboard
@@ -86,24 +85,24 @@ class SearchFragment : BaseFragment() {
                 hideSoftKeyboard()
             },
             onToggleAddition = {
-                selectedTimetableViewModel.toggleLecture(it, false)
-                    .bindUi(
-                        this,
-                        onError = { error ->
-                            when (error) {
-                                is ErrorParsedHttpException -> {
-                                    if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
-                                        overwriteLectureDialog(it, error.errorDTO.ext!!["confirm_message"])
-                                    } else apiOnError
-                                }
-                                else -> apiOnError
-                            }
-                        },
-                        onComplete = {
-                            searchViewModel.toggleLectureSelection(it)
-                            hideSoftKeyboard()
-                        }
-                    )
+//                selectedTimetableViewModel.toggleLecture(it, false)
+//                    .bindUi(
+//                        this,
+//                        onError = { error ->
+//                            when (error) {
+//                                is ErrorParsedHttpException -> {
+//                                    if (error.errorDTO?.code == LECTURE_TIME_OVERLAP) {
+//                                        overwriteLectureDialog(it, error.errorDTO.ext!!["confirm_message"])
+//                                    } else apiOnError
+//                                }
+//                                else -> apiOnError
+//                            }
+//                        },
+//                        onComplete = {
+//                            searchViewModel.toggleLectureSelection(it)
+//                            hideSoftKeyboard()
+//                        }
+//                    )
             },
             onShowSyllabus = {
                 searchViewModel.getCourseBookUrl(it)
@@ -141,11 +140,11 @@ class SearchFragment : BaseFragment() {
                 tagAdapter.submitList(it)
             }
 
-        searchViewModel.queryResults
-            .distinctUntilChanged()
-            .bindUi(this) {
-                searchResultAdapter.submitData(lifecycle, it)
-            }
+//        searchViewModel.queryResults
+//            .distinctUntilChanged()
+//            .bindUi(this) {
+//                searchResultAdapter.submitData(lifecycle, it)
+//            }
 
         binding.searchButton.clicks()
             .bindUi(this) {
@@ -241,15 +240,15 @@ class SearchFragment : BaseFragment() {
             .setTitle("시간대 겹침")
             .setMessage(message)
             .setPositiveButton("확인") { _, _ ->
-                selectedTimetableViewModel.toggleLecture(dto, true)
-                    .bindUi(
-                        this,
-                        onError = apiOnError,
-                        onComplete = {
-                            searchViewModel.toggleLectureSelection(dto)
-                            hideSoftKeyboard()
-                        }
-                    )
+//                selectedTimetableViewModel.toggleLecture(dto, true)
+//                    .bindUi(
+//                        this,
+//                        onError = apiOnError,
+//                        onComplete = {
+//                            searchViewModel.toggleLectureSelection(dto)
+//                            hideSoftKeyboard()
+//                        }
+//                    )
             }
             .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
         val dialog = alert.create()

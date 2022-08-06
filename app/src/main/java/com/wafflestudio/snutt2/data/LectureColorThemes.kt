@@ -90,7 +90,7 @@ enum class TimetableColorTheme(val code: Int) {
     }
 }
 
-class TimetableColorThemeAdapter() {
+class TimetableColorThemeAdapter {
     @ToJson
     fun toJson(type: TimetableColorTheme): Int = type.code
 
