@@ -62,3 +62,69 @@ fun ArrowBackIcon(
         contentDescription = ""
     )
 }
+
+@Composable
+fun SearchIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(id = R.drawable.ic_search_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun FilterIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(id = R.drawable.ic_filter),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun ExitIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(id = R.drawable.ic_exit),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun TagIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(15.dp),
+        painter = painterResource(id = R.drawable.ic_tag),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun ClockIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(15.dp),
+        painter = painterResource(id = R.drawable.ic_clock),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun LocationIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(15.dp),
+        painter = painterResource(id = R.drawable.ic_location),
+        contentDescription = ""
+    )
+}

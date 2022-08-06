@@ -67,6 +67,7 @@
     <string name="sign_in_button_divider">or</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
+    <string name="sign_in_progress_bar_message">잠시만 기다려 주세요</string>
     <string name="common_day_mon">월</string>
     <string name="common_day_tue">화</string>
     <string name="common_day_wed">수</string>
@@ -99,6 +100,11 @@
     <string name="home_drawer_change_name_dialog_hint">이름 변경하기</string>
     <string name="search_result_item_add_button">+ 추가하기</string>
     <string name="search_result_item_remove_button">- 삭제하기</string>
+    <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
+    <string name="search_result_item_syllabus_button">강의계획서</string>
+    <string name="search_result_item_review_button">강의평</string>
+    <string name="search_result_empty">검색 결과가 없습니다.</string>
+    <string name="search_result_placeholder">SNUTT 검색 꿀팁 🍯</string>
     <string name="lecture_detail_app_bar_title">강의 상세 보기</string>
     <string name="lecture_detail_top_bar_complete">완료</string>
     <string name="lecture_detail_top_bar_edit">편집</string>
@@ -121,5 +127,7 @@
     <string name="table_delete_alert_message">시간표를 정말 삭제하시겠습니까?</string>
     <string name="lecture_detail_cancel_editing">편집을 취소하시겠습니까?</string>
     <string name="notifications_app_bar_title">알림</string>
+    <string name="notifications_item_time_hour">%d시간 전</string>
     <string name="home_timetable_drawer">서랍 메뉴</string>
+    <string name="search_hint">검색어를 입력하세요.</string>
 </resources>

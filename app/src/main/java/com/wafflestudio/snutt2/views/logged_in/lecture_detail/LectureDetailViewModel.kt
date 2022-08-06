@@ -18,7 +18,6 @@ import com.wafflestudio.snutt2.model.LectureItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel

@@ -60,19 +60,19 @@ class TextRect(paint: Paint) {
                     // 강의명만 생각
                     paint!!.getTextBounds(text, start, stop, bounds)
                     if (start <= lowest && lowest < stop || bounds.width() > maxWidth) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
-                        {
-                            --stop
-                            if (lowest < start || lowest > stop) {
-                                val blank = text.lastIndexOf(" ", stop)
-                                if (blank > start) lowest = blank
-                            }
-                            if (start <= lowest && lowest <= stop) {
-                                val ch = text[stop]
-                                if (ch != '\n' && ch != ' ') ++lowest
-                                stop = lowest
-                            }
-                            continue
+                    {
+                        --stop
+                        if (lowest < start || lowest > stop) {
+                            val blank = text.lastIndexOf(" ", stop)
+                            if (blank > start) lowest = blank
                         }
+                        if (start <= lowest && lowest <= stop) {
+                            val ch = text[stop]
+                            if (ch != '\n' && ch != ' ') ++lowest
+                            stop = lowest
+                        }
+                        continue
+                    }
                     break
                 }
                 if (start >= stop) break
