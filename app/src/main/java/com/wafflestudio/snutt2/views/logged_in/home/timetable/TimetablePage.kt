@@ -8,10 +8,7 @@ import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,9 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
+import com.wafflestudio.snutt2.components.compose.CustomDialog
+import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
@@ -46,6 +46,8 @@ import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination.lecturesOfTable
 import com.wafflestudio.snutt2.views.NavigationDestination.notification
 import com.wafflestudio.snutt2.views.logged_in.home.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -98,8 +100,25 @@ fun TimetablePage(
 ) {
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
+    val tableListViewModel = hiltViewModel<TableListViewModel>()
     val table = TableContext.current.table
     val scope = rememberCoroutineScope()
+    var showTimetableTitleChangeDialog by remember {
+        mutableStateOf(false)
+    }
+    if (showTimetableTitleChangeDialog) ShowTimetableTitleChangeDialog(
+        onDismiss = { showTimetableTitleChangeDialog = false },
+        onConfirm = { newTitle ->
+            tableListViewModel.changeNameTable(
+                table.id,
+                newTitle
+            )
+                .observeOn(AndroidSchedulers.mainThread()) // TODO: dispose
+                .subscribeBy(onError = {}) // TODO: onError
+            showTimetableTitleChangeDialog = false
+        },
+        oldTitle = table.title
+    )
 
     Column {
         TopAppBar(
@@ -109,7 +128,12 @@ fun TimetablePage(
                     table.lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
                 )
                 Row {
-                    Text(text = table.title)
+                    Text(
+                        text = table.title,
+                        modifier = Modifier.clicks {
+                            showTimetableTitleChangeDialog = true
+                        }
+                    )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(text = creditText)
                 }
@@ -408,10 +432,30 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto) {
     }
 }
 
+@Composable
+private fun ShowTimetableTitleChangeDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    oldTitle: String
+) {
+    val context = LocalContext.current
+    var text by remember { mutableStateOf(oldTitle) }
+
+    CustomDialog(
+        onDismiss = onDismiss,
+        onConfirm = { onConfirm(text) },
+        title = context.getString(R.string.home_drawer_change_name_dialog_title)
+    ) {
+        EditText(value = text, onValueChange = {
+            text = it
+        })
+    }
+}
+
 object Defaults {
     val defaultTableDto = TableDto(
         id = "",
-        year = 2022,
+        year = 2023,
         semester = 1,
         title = "",
         lectureList = emptyList(),

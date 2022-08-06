@@ -42,7 +42,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.flowOf
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
@@ -56,6 +56,7 @@ fun SearchPage(
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val keyBoardController = LocalSoftwareKeyboardController.current
 
+    val scope = rememberCoroutineScope()
     val loadState = searchResultPagingItems.loadState
 
     Column {
@@ -66,7 +67,9 @@ fun SearchPage(
                     .weight(1f)
                     .onFocusChanged { searchEditTextFocused = it.isFocused },
                 leadingIcon = { SearchIcon() },
-                trailingIcon = { if (searchEditTextFocused) ExitIcon() else FilterIcon() },
+                trailingIcon = {
+                    if (searchEditTextFocused) ExitIcon() else FilterIcon()
+                },
                 keyBoardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
                     onSearch = {
@@ -271,7 +274,10 @@ fun SearchPlaceHolder() {
                 .height(76.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = stringResource(R.string.search_result_placeholder), fontSize = 25.sp) // TODO: 나중에 typography 맞추기
+        Text(
+            text = stringResource(R.string.search_result_placeholder),
+            fontSize = 25.sp
+        ) // TODO: 나중에 typography 맞추기
     }
 }
 
@@ -291,7 +297,10 @@ fun SearchEmptyPage() {
                 .height(76.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = stringResource(R.string.search_result_empty), fontSize = 25.sp) // TODO: 나중에 typography 맞추기
+        Text(
+            text = stringResource(R.string.search_result_empty),
+            fontSize = 25.sp
+        ) // TODO: 나중에 typography 맞추기
     }
 }
 

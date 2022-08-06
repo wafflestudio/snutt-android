@@ -43,7 +43,7 @@ class SelectedTimetableViewModel @Inject constructor(
             .flatMap {
                 val target = it.lectureList.findLast { lec -> lec.isLectureNumberEquals(lecture) }
                 if (target != null) myLectureRepository.removeLecture(lectureId = target.id)
-                else Single.never() // FIXME
+                else Single.error(IllegalStateException("lecture Id not found in current table"))
             }
             .ignoreElement()
     }

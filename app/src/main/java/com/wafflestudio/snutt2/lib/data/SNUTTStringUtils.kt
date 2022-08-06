@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.lib.data
 
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
@@ -71,7 +73,7 @@ object SNUTTStringUtils {
                     DateFormat.getDateInstance().format(date1)
                 }
                 hours > 0 -> {
-                    "$hours 시간 전"
+                    "$hours 시간 전"   // TODO: resource로 빼기
                 }
                 else -> {
                     "방금"

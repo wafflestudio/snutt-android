@@ -78,7 +78,7 @@ fun HomePage() {
         ).distinctUntilChanged()
             .subscribeAsState(
                 initial = Pair(
-                    Defaults.defaultTableDto, // TODO: 초기값 문제
+                    selectedTimetableViewModel.lastViewedTable.get().get() ?: Defaults.defaultTableDto,
                     Optional.empty()
                 )
             ).value
@@ -108,7 +108,7 @@ fun HomePage() {
                 selectedCourseBookTableList,
                 onClickTableItem = {
                     scope.launch { drawerState.close() }
-                    tableListViewModel.changeSelectedTable(it) // dispose
+                    tableListViewModel.changeSelectedTable(it) // TODO: CoroutineScope에 changetable 묶기
                 }
             )
         },
