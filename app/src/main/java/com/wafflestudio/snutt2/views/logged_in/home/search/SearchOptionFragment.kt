@@ -13,11 +13,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogSearchOptionBinding
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.rx.throttledClicks
 import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchOptionFragment : BottomSheetDialogFragment() {
@@ -27,6 +29,9 @@ class SearchOptionFragment : BottomSheetDialogFragment() {
     private lateinit var binding: DialogSearchOptionBinding
 
     private lateinit var adapter: TagSelectionAdapter
+
+    @Inject
+    lateinit var apiOnError: ApiOnError
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -71,9 +76,10 @@ class SearchOptionFragment : BottomSheetDialogFragment() {
 
         vm.tagsByTagType
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                adapter.submitList(it)
-            }
+            .subscribeBy(
+                onNext = { adapter.submitList(it) },
+                onError = apiOnError
+            )
 
         vm.selectedTagType
             .observeOn(AndroidSchedulers.mainThread())

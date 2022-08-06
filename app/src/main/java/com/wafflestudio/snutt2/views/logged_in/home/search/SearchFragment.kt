@@ -154,9 +154,9 @@ class SearchFragment : BaseFragment() {
                 hideSoftKeyboard()
             }
 
-        binding.filterButton.clicks()
+        binding.filterButton.throttledClicks()
             .bindUi(this) {
-                bottomSheet.show(parentFragmentManager, "tag_selector")
+                if (bottomSheet.isAdded.not()) bottomSheet.show(parentFragmentManager, "tag_selector")
             }
 
         binding.clearButton.clicks()
