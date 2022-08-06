@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
-import com.bumptech.glide.Glide
 import com.wafflestudio.snutt2.DialogController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.FragmentHomeBinding
@@ -124,7 +123,6 @@ class HomeFragment : BaseFragment() {
                             context = requireContext(),
                             onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
                             url = it.url,
-                            glideRequestManager = Glide.with(this)
                         ).show()
                     }, onError = {}
                 )

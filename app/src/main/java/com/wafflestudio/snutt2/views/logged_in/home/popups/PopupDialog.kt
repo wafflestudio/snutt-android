@@ -5,15 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.WindowManager
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.Glide
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.DialogPopupBinding
 
 class PopupDialog(
     context: Context,
     private val onClickHideFewDays: () -> Unit,
-    private val url: String,
-    private val glideRequestManager: RequestManager
+    private val url: String
 ) : Dialog(context, R.style.popup_dialog) {
 
     lateinit var binding: DialogPopupBinding
@@ -38,7 +37,9 @@ class PopupDialog(
         }
 
         val defaultImage = R.drawable.img_reviews_coming_soon
-        glideRequestManager
+
+        // ApplicationContext 에 묶이지만 1회성 요청
+        Glide.with(context.applicationContext)
             .load(url)
             .placeholder(R.color.white)
             .error(defaultImage)
