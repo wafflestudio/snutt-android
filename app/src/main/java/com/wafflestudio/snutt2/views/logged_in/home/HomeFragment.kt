@@ -122,7 +122,7 @@ class HomeFragment : BaseFragment() {
                         PopupDialog(
                             context = requireContext(),
                             onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
-                            url = it.url
+                            url = it.url,
                         ).show()
                     }, onError = {}
                 )
