@@ -97,7 +97,7 @@ class LoginFragment : BaseFragment() {
                     val id = result.accessToken.userId
                     val token = result.accessToken.token
                     vm.loginFacebook(id, token)
-                        .subscribeBy(
+                        .bindUi(this@LoginFragment,
                             onError = { apiOnError(it) },
                             onSuccess = { routeHome() }
                         )
