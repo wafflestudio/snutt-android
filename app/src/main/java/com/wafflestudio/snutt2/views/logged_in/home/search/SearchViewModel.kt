@@ -84,7 +84,7 @@ class SearchViewModel @Inject constructor(
                         myLectureRepository.lastViewedTable.get().value?.semester!!,
                         _searchTitle.get(),
                         _searchTags.get(),
-                        null
+                        myLectureRepository.lastViewedTable.get().get()?.lectureList?.getClassTimeMask()
                     ).cachedIn(viewModelScope).asObservable()
                 },
             _selectedLecture.asObservable(),
