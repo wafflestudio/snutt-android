@@ -8,7 +8,10 @@ import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,8 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
@@ -43,9 +44,10 @@ import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.views.NavControllerContext
-import com.wafflestudio.snutt2.views.NavigationDestination.lecturesOfTable
-import com.wafflestudio.snutt2.views.NavigationDestination.notification
-import com.wafflestudio.snutt2.views.logged_in.home.*
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
+import com.wafflestudio.snutt2.views.logged_in.home.TableContext
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
@@ -154,7 +156,7 @@ fun TimetablePage(
                 Image(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { navController.navigate(lecturesOfTable) },
+                        .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
                     painter = painterResource(id = R.drawable.ic_lecture_list),
                     contentDescription = stringResource(R.string.home_timetable_drawer)
                 )
@@ -166,7 +168,7 @@ fun TimetablePage(
                 Image(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { navController.navigate(notification) },
+                        .clicks { navController.navigate(NavigationDestination.Notification) },
                     painter = painterResource(
                         id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
                     ),
@@ -441,15 +443,6 @@ private fun ShowTimetableTitleChangeDialog(
     val context = LocalContext.current
     var text by remember { mutableStateOf(oldTitle) }
 
-    CustomDialog(
-        onDismiss = onDismiss,
-        onConfirm = { onConfirm(text) },
-        title = context.getString(R.string.home_drawer_change_name_dialog_title)
-    ) {
-        EditText(value = text, onValueChange = {
-            text = it
-        })
-    }
 }
 
 object Defaults {
