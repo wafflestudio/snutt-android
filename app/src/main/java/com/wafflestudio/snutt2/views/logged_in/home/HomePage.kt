@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -12,6 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerDefaults
+import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
@@ -19,6 +24,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SearchPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SettingsPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.TimeTablePage
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
@@ -36,6 +45,13 @@ enum class HomeItem(@DrawableRes val icon: Int) {
     Settings(R.drawable.ic_setting)
 }
 
+object PagerConstants {
+    const val TimeTablePage = 0
+    const val SearchPage = 1
+    const val ReviewPage = 2
+    const val SettingsPage = 3
+}
+
 data class TableContextBundle(
     val table: TableDto,
     val trimParam: TableTrimParam,
@@ -49,10 +65,10 @@ val TableContext = compositionLocalOf<TableContextBundle> {
     throw RuntimeException("")
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomePage() {
     val scope = rememberCoroutineScope()
-    var currentScreen by remember { mutableStateOf(HomeItem.Timetable) }
     var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -61,12 +77,15 @@ fun HomePage() {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
-    // TODO: 새 알림 체크를 어느 주기로 해야 할지? (일단 TimeTablePage에 올 때마다 확인하도록 설정)
-    LaunchedEffect(currentScreen == HomeItem.Timetable) {
-        try {
-            homeViewModel.getUncheckedNotificationsExist()
-                .let { uncheckedNotification = it }
-        } catch (e: Exception) {
+    val pageState = rememberPagerState()
+
+    LaunchedEffect(pageState.currentPage == TimeTablePage) {
+        if (pageState.currentPage == TimeTablePage) {
+            try {
+                homeViewModel.getUncheckedNotificationsExist()
+                    .let { uncheckedNotification = it }
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -113,7 +132,7 @@ fun HomePage() {
             )
         },
         drawerState = drawerState,
-        gesturesEnabled = currentScreen == HomeItem.Timetable
+        gesturesEnabled = pageState.currentPage == TimeTablePage
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -123,30 +142,30 @@ fun HomePage() {
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                when (currentScreen) {
-                    HomeItem.Timetable ->
-                        CompositionLocalProvider(
-                            HomeDrawerStateContext provides drawerState,
-                            TableContext provides tableContext
-                        ) {
-                            TimetablePage(
-                                uncheckedNotification = uncheckedNotification
-                            )
-                        }
-
-                    HomeItem.Search ->
-                        CompositionLocalProvider(
-                            TableContext provides tableContext
-                        ) {
-                            SearchPage(
-                                searchResultPagingItems,
-                                listState,
-                                selectedLecture
-                            )
-                        }
-
-                    HomeItem.Review -> ReviewPage()
-                    HomeItem.Settings -> SettingsPage()
+                HorizontalPager(count = 4, state = pageState, userScrollEnabled = false) { page ->
+                    when (page) {
+                        TimeTablePage ->
+                            CompositionLocalProvider(
+                                HomeDrawerStateContext provides drawerState,
+                                TableContext provides tableContext
+                            ) {
+                                TimetablePage(
+                                    uncheckedNotification = uncheckedNotification
+                                )
+                            }
+                        SearchPage ->
+                            CompositionLocalProvider(
+                                TableContext provides tableContext
+                            ) {
+                                SearchPage(
+                                    searchResultPagingItems,
+                                    listState,
+                                    selectedLecture
+                                )
+                            }
+                        ReviewPage -> ReviewPage()
+                        SettingsPage -> SettingsPage()
+                    }
                 }
             }
 
@@ -159,7 +178,11 @@ fun HomePage() {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Timetable },
+                    onClick = {
+                        scope.launch {
+                            pageState.animateScrollToPage(TimeTablePage)
+                        }
+                    },
                 ) {
                     Text(text = "timetable")
                 }
@@ -168,7 +191,11 @@ fun HomePage() {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Search },
+                    onClick = {
+                        scope.launch {
+                            pageState.animateScrollToPage(SearchPage)
+                        }
+                    },
                 ) {
                     Text(text = "search")
                 }
@@ -177,7 +204,11 @@ fun HomePage() {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Review },
+                    onClick = {
+                        scope.launch {
+                            pageState.animateScrollToPage(ReviewPage)
+                        }
+                    },
                 ) {
                     Text(text = "review")
                 }
@@ -186,7 +217,11 @@ fun HomePage() {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
-                    onClick = { currentScreen = HomeItem.Settings },
+                    onClick = {
+                        scope.launch {
+                            pageState.animateScrollToPage(SettingsPage)
+                        }
+                    },
                 ) {
                     Text(text = "settings")
                 }

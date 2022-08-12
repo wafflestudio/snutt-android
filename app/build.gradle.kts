@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.*
 
 plugins {
     id("com.android.application")
@@ -183,6 +183,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.compose.runtime:runtime-rxjava3:1.1.1")
+    implementation("com.google.accompanist:accompanist-pager:0.24.5-alpha")
 
     // misc
     implementation("androidx.core:core-ktx:1.7.0")
