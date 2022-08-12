@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -39,4 +40,40 @@ fun ProgressDialog(
             }
         }
     }
+}
+
+@Composable
+fun CustomDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    confirmButtonText: String = "확인",
+    dismissButtonText: String = "취소",
+    title: String,
+    content: @Composable (() -> Unit)
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Text(
+                text = confirmButtonText,
+                modifier = Modifier
+                    .clicks {
+                        onConfirm()
+                    }
+                    .padding(20.dp)
+            )
+        },
+        dismissButton = {
+            Text(
+                text = dismissButtonText,
+                modifier = Modifier
+                    .clicks {
+                        onDismiss()
+                    }
+                    .padding(20.dp)
+            )
+        },
+        title = { Text(text = title) },
+        text = content,
+    )
 }

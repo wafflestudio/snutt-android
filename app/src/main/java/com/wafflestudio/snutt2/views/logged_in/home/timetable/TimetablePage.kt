@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
+import com.wafflestudio.snutt2.components.compose.CustomDialog
+import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
@@ -48,7 +51,6 @@ import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -96,6 +98,7 @@ val LocalCanvasContext = compositionLocalOf<CanvasContext> {
     throw RuntimeException("")
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimetablePage(
     uncheckedNotification: Boolean
@@ -103,24 +106,32 @@ fun TimetablePage(
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
     val tableListViewModel = hiltViewModel<TableListViewModel>()
+    val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table
     val scope = rememberCoroutineScope()
-    var showTimetableTitleChangeDialog by remember {
+    var changeTitleDialogState by remember {
         mutableStateOf(false)
     }
-    if (showTimetableTitleChangeDialog) ShowTimetableTitleChangeDialog(
-        onDismiss = { showTimetableTitleChangeDialog = false },
-        onConfirm = { newTitle ->
-            tableListViewModel.changeNameTable(
-                table.id,
-                newTitle
-            )
-                .observeOn(AndroidSchedulers.mainThread()) // TODO: dispose
-                .subscribeBy(onError = {}) // TODO: onError
-            showTimetableTitleChangeDialog = false
-        },
-        oldTitle = table.title
-    )
+    if (changeTitleDialogState) {
+        ChangeTitleDialog(
+            onDismiss = {
+                changeTitleDialogState = false
+                keyboardManager?.hide()
+            },
+            onConfirm = { newTitle ->
+                tableListViewModel.changeNameTable(
+                    tableId = table.id,
+                    name = newTitle
+                )
+                    .subscribeBy(
+                        onError = {}
+                    )
+                changeTitleDialogState = false
+                keyboardManager?.hide()
+            },
+            oldTitle = table.title
+        )
+    }
 
     Column {
         TopAppBar(
@@ -133,7 +144,7 @@ fun TimetablePage(
                     Text(
                         text = table.title,
                         modifier = Modifier.clicks {
-                            showTimetableTitleChangeDialog = true
+                            changeTitleDialogState = true
                         }
                     )
                     Spacer(modifier = Modifier.width(5.dp))
@@ -435,14 +446,19 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto) {
 }
 
 @Composable
-private fun ShowTimetableTitleChangeDialog(
+private fun ChangeTitleDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     oldTitle: String
 ) {
-    val context = LocalContext.current
     var text by remember { mutableStateOf(oldTitle) }
-
+    CustomDialog(
+        onDismiss = onDismiss,
+        onConfirm = { onConfirm(text) },
+        title = stringResource(R.string.home_drawer_change_name_dialog_title)
+    ) {
+        EditText(value = text, onValueChange = { text = it })
+    }
 }
 
 object Defaults {
