@@ -2,16 +2,19 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.wafflestudio.snutt2.R
 
 @Composable
 fun ProgressDialog(
@@ -46,34 +49,34 @@ fun ProgressDialog(
 fun CustomDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    confirmButtonText: String = "확인",
-    dismissButtonText: String = "취소",
     title: String,
-    content: @Composable (() -> Unit)
+    positiveButtonText: String = stringResource(R.string.common_ok),
+    negativeButtonText: String = stringResource(R.string.common_cancel),
+    content: @Composable () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            Text(
-                text = confirmButtonText,
-                modifier = Modifier
-                    .clicks {
-                        onConfirm()
+    Dialog(onDismissRequest = onDismiss) {
+        Surface {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row {
+                    Box(modifier = Modifier.padding(20.dp)) {
+                        Text(text = title, fontSize = 18.sp)
                     }
-                    .padding(20.dp)
-            )
-        },
-        dismissButton = {
-            Text(
-                text = dismissButtonText,
-                modifier = Modifier
-                    .clicks {
-                        onDismiss()
+                    Box(modifier = Modifier.weight(1f))
+                }
+
+                content()
+
+                Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
+                    Box(modifier = Modifier.weight(1f))
+                    Box(modifier = Modifier.clicks { onDismiss() }) {
+                        Text(text = negativeButtonText, fontSize = 14.sp)
                     }
-                    .padding(20.dp)
-            )
-        },
-        title = { Text(text = title) },
-        text = content,
-    )
+                    Spacer(modifier = Modifier.width(30.dp))
+                    Box(modifier = Modifier.clicks { onConfirm() }) {
+                        Text(text = positiveButtonText, fontSize = 14.sp)
+                    }
+                }
+            }
+        }
+    }
 }
