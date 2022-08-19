@@ -41,6 +41,7 @@ import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
@@ -471,6 +472,14 @@ object Defaults {
         updatedAt = "default",
         totalCredit = null,
         theme = TimetableColorTheme.SNUTT
+    )
+    val defaultSimpleTableDto = SimpleTableDto(
+        id = "",
+        year = 2022,
+        semester = 1L,
+        title = "",
+        updatedAt = "",
+        totalCredit = null
     )
 }
 
