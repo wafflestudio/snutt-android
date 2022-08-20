@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -17,7 +16,7 @@
         android:singleLine="true"
         android:text="Title"
         android:layout_marginLeft="20dp"
-        style="@style/Text.LectureDetailTitle1"/>
+        style="@style/Text.LectureDetailTitle1" />
 
     <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
         android:id="@+id/text_value"
@@ -29,5 +28,5 @@
         android:hint="(없음)"
         android:background="@android:color/transparent"
         android:layout_marginRight="20dp"
-        style="@style/Text.LectureDetailContent1"/>
+        style="@style/Text.LectureDetailContent1" />
 </LinearLayout>

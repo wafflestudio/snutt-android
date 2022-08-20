@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -16,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="Color"
         android:layout_marginLeft="20dp"
-        style="@style/Text.LectureDetailTitle1"/>
+        style="@style/Text.LectureDetailTitle1" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -26,6 +25,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="20dp">
@@ -34,20 +34,20 @@
                     android:id="@+id/fgColor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@android:color/white"/>
+                    android:background="@android:color/white" />
 
                 <View
                     android:id="@+id/bgColor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@android:color/holo_green_dark"/>
+                    android:background="@android:color/holo_green_dark" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="40dp"
                 android:layout_height="20dp"
-                android:background="@drawable/border_black"/>
+                android:background="@drawable/border_black" />
 
         </FrameLayout>
     </LinearLayout>
@@ -58,6 +58,6 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/arrowright"/>
+        android:background="@drawable/arrowright" />
 
 </LinearLayout>

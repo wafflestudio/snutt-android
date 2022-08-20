@@ -62,14 +62,14 @@ fun TutorialPage() {
             Button(
                 modifier = Modifier
                     .weight(1f),
-                onClick = { navController.navigate(NavigationDestination.signIn) }
+                onClick = { navController.navigate(NavigationDestination.SignIn) }
             ) {
                 Text(text = "로그인")
             }
 
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = { navController.navigate(NavigationDestination.signUp) }
+                onClick = { navController.navigate(NavigationDestination.SignUp) }
             ) {
                 Text(text = "가입")
             }

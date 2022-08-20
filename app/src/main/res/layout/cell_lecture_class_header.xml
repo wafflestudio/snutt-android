@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -14,6 +13,6 @@
         android:singleLine="true"
         android:text="시간 및 장소"
         android:layout_marginLeft="20dp"
-        style="@style/Text.LectureDetailTitle1"/>
+        style="@style/Text.LectureDetailTitle1" />
 
 </LinearLayout>

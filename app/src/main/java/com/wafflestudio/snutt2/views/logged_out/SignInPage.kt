@@ -29,7 +29,7 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ProgressDialog
 import com.wafflestudio.snutt2.views.NavControllerContext
-import com.wafflestudio.snutt2.views.NavigationDestination.home
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.navigateAsOrigin
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -120,7 +120,7 @@ fun SignInPage() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy( // TODO: dispose
                             onSuccess = {
-                                navController.navigateAsOrigin(home)
+                                navController.navigateAsOrigin(NavigationDestination.Home)
                                 showProgressDialog = false
                             },
                             onError = { // TODO: onError
@@ -164,7 +164,7 @@ fun SignInPage() {
                 authViewModel.loginFacebook(id, token) // TODO: dispose
                     .subscribeBy(
                         onError = {}, // TODO: onError
-                        onSuccess = { navController.navigateAsOrigin(home) }
+                        onSuccess = { navController.navigateAsOrigin(NavigationDestination.Home) }
                     )
             }
 

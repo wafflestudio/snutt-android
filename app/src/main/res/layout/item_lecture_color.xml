@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
@@ -14,11 +15,12 @@
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="20dp">
@@ -27,26 +29,26 @@
                     android:id="@+id/fgColor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@android:color/white"/>
+                    android:background="@android:color/white" />
 
                 <View
                     android:id="@+id/bgColor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@android:color/holo_green_dark"/>
+                    android:background="@android:color/holo_green_dark" />
             </LinearLayout>
 
             <View
                 android:layout_width="40dp"
                 android:layout_height="20dp"
-                android:background="@drawable/border_black"/>
+                android:background="@drawable/border_black" />
 
         </FrameLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
 
         <TextView
@@ -55,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="12"
             android:text="color name"
-            style="@style/Text.LectureDetailContent1"/>
+            style="@style/Text.LectureDetailContent1" />
 
         <ImageView
             android:id="@+id/checked"
@@ -63,12 +65,12 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:visibility="invisible"
-            android:src="@drawable/checked"/>
+            android:src="@drawable/checked" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
 
     </LinearLayout>

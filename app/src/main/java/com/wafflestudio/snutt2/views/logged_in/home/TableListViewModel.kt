@@ -84,6 +84,10 @@ class TableListViewModel @Inject constructor(
     }
 
     fun checkTableDeletable(tableId: String): Boolean {
+        return myLectureRepository.lastViewedTable.get().get()?.id != tableId
+    }
+
+    fun checkTableThemeChangeable(tableId: String): Boolean {
         return myLectureRepository.lastViewedTable.get().get()?.id == tableId
     }
 

@@ -19,7 +19,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="0dp"
@@ -27,12 +27,12 @@
             android:layout_weight="18"
             android:gravity="center_vertical"
             android:text="요일"
-            style="@style/Text.SettingsTitle"/>
+            style="@style/Text.SettingsTitle" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -47,7 +47,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <com.appyvet.rangebar.RangeBar
             android:id="@+id/day_range_bar"
@@ -62,12 +62,12 @@
             custom:pinColor="@color/colorAccent"
             custom:selectorColor="@color/colorAccent"
             custom:connectingLineColor="@color/colorAccent"
-            custom:temporaryPins="false"/>
+            custom:temporaryPins="false" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:focusable="true"
-    android:baselineAligned="false" android:clickable="true"
+    android:baselineAligned="false"
+    android:clickable="true"
     android:background="@color/white">
 
     <LinearLayout
@@ -29,7 +29,7 @@
                 android:singleLine="true"
                 android:text="시간"
                 android:layout_marginLeft="20dp"
-                style="@style/Text.LectureDetailTitle1"/>
+                style="@style/Text.LectureDetailTitle1" />
 
             <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
                 android:id="@+id/input_time"
@@ -40,7 +40,7 @@
                 android:text="value"
                 android:hint="(없음)"
                 android:background="@android:color/transparent"
-                style="@style/Text.LectureDetailContent1"/>
+                style="@style/Text.LectureDetailContent1" />
         </LinearLayout>
 
         <View
@@ -60,7 +60,7 @@
                 android:singleLine="true"
                 android:text="장소"
                 android:layout_marginLeft="20dp"
-                style="@style/Text.LectureDetailTitle1"/>
+                style="@style/Text.LectureDetailTitle1" />
 
             <com.wafflestudio.snutt2.lib.android.ClearFocusEditText
                 android:id="@+id/input_location"
@@ -71,7 +71,7 @@
                 android:text="value"
                 android:hint="(없음)"
                 android:background="@android:color/transparent"
-                style="@style/Text.LectureDetailContent1"/>
+                style="@style/Text.LectureDetailContent1" />
         </LinearLayout>
     </LinearLayout>
 
@@ -85,7 +85,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:background="@drawable/btntipclose"/>
+            android:background="@drawable/btntipclose" />
     </LinearLayout>
 
 </LinearLayout>
