@@ -15,20 +15,6 @@ import androidx.navigation.navigation
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
-import com.wafflestudio.snutt2.views.NavigationDestination.appReport
-import com.wafflestudio.snutt2.views.NavigationDestination.home
-import com.wafflestudio.snutt2.views.NavigationDestination.lectureColorSelector
-import com.wafflestudio.snutt2.views.NavigationDestination.lectureDetail
-import com.wafflestudio.snutt2.views.NavigationDestination.lecturesOfTable
-import com.wafflestudio.snutt2.views.NavigationDestination.notification
-import com.wafflestudio.snutt2.views.NavigationDestination.onboard
-import com.wafflestudio.snutt2.views.NavigationDestination.serviceInfo
-import com.wafflestudio.snutt2.views.NavigationDestination.signIn
-import com.wafflestudio.snutt2.views.NavigationDestination.signUp
-import com.wafflestudio.snutt2.views.NavigationDestination.teamInfo
-import com.wafflestudio.snutt2.views.NavigationDestination.timetableConfig
-import com.wafflestudio.snutt2.views.NavigationDestination.tutorial
-import com.wafflestudio.snutt2.views.NavigationDestination.userConfig
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -69,7 +55,9 @@ class RootActivity : BaseActivity() {
         val navController = rememberNavController()
 
         val startDestination =
-            if (snuttStorage.accessToken.get().isEmpty()) onboard else home
+            if (snuttStorage.accessToken.get()
+                    .isEmpty()
+            ) NavigationDestination.Onboard else NavigationDestination.Home
 
         CompositionLocalProvider(NavControllerContext provides navController) {
 
@@ -77,18 +65,18 @@ class RootActivity : BaseActivity() {
 
                 onboardGraph(navController)
 
-                composable(home) { HomePage() }
+                composable(NavigationDestination.Home) { HomePage() }
 
-                composable(notification) { NotificationPage() }
+                composable(NavigationDestination.Notification) { NotificationPage() }
 
-                composable(lecturesOfTable) { LecturesOfTablePage() }
+                composable(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable(lectureDetail) {
+                composable(NavigationDestination.LectureDetail) {
                     val id = it.arguments?.getString("lecture_id")
                     LectureDetailPage(id = id)
                 }
 
-                composable(lectureColorSelector) {
+                composable(NavigationDestination.LectureColorSelector) {
                     val id = it.arguments?.getString("lecture_id")
                     LectureColorSelectorPage(id = id)
                 }
@@ -99,25 +87,28 @@ class RootActivity : BaseActivity() {
     }
 
     private fun NavGraphBuilder.onboardGraph(navController: NavController) {
-        navigation(startDestination = tutorial, route = onboard) {
-            composable(tutorial) {
+        navigation(
+            startDestination = NavigationDestination.Tutorial,
+            route = NavigationDestination.Onboard
+        ) {
+            composable(NavigationDestination.Tutorial) {
                 TutorialPage()
             }
-            composable(signIn) {
+            composable(NavigationDestination.SignIn) {
                 SignInPage()
             }
-            composable(signUp) {
+            composable(NavigationDestination.SignUp) {
                 SignUpPage()
             }
         }
     }
 
     private fun NavGraphBuilder.settingComposable() {
-        composable(appReport) { AppReportPage() }
-        composable(serviceInfo) { ServiceInfoPage() }
-        composable(teamInfo) { TeamInfoPage() }
-        composable(timetableConfig) { TimetableConfigPage() }
-        composable(userConfig) { UserConfigPage() }
+        composable(NavigationDestination.AppReport) { AppReportPage() }
+        composable(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
+        composable(NavigationDestination.TeamInfo) { TeamInfoPage() }
+        composable(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
+        composable(NavigationDestination.UserConfig) { UserConfigPage() }
     }
 }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -32,6 +31,6 @@
         android:background="@android:color/transparent"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        style="@style/Text.LectureDetailContent1"/>
+        style="@style/Text.LectureDetailContent1" />
 
 </LinearLayout>
