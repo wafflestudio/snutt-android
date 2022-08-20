@@ -18,13 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text = "text"
-            style="@style/Text.SettingsTitle"/>
+            android:text="text"
+            style="@style/Text.SettingsTitle" />
 
         <View
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/settings_arrow"
@@ -32,7 +32,7 @@
             android:layout_height="16dp"
             android:layout_gravity="center_vertical"
             android:visibility="gone"
-            android:src="@drawable/arrowright"/>
+            android:src="@drawable/arrowright" />
 
         <TextView
             android:id="@+id/settings_detail"
@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="right"
-            android:text = "detail"
-            style="@style/Text.SettingsDetail"/>
+            android:text="detail"
+            style="@style/Text.SettingsDetail" />
 
     </LinearLayout>
 

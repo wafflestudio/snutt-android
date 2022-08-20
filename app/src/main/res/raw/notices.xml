@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2013 Philip Schiffer
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +47,9 @@
     <notice>
         <name>ViewPagerIndicator</name>
         <url>https://github.com/JakeWharton/ViewPagerIndicator</url>
-        <copyright>Copyright 2012 Jake Wharton&#xD;Copyright 2011 Patrik Åkerfeldt&#xD;Copyright 2011 Francisco Figueiredo Jr.</copyright>
+        <copyright>Copyright 2012 Jake Wharton&#xD;Copyright 2011 Patrik Åkerfeldt&#xD;Copyright
+            2011 Francisco Figueiredo Jr.
+        </copyright>
         <license>Apache Software License 2.0</license>
     </notice>
 </notices>

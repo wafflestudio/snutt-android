@@ -8,7 +8,10 @@ import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,16 +41,17 @@ import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.views.NavControllerContext
-import com.wafflestudio.snutt2.views.NavigationDestination.lecturesOfTable
-import com.wafflestudio.snutt2.views.NavigationDestination.notification
-import com.wafflestudio.snutt2.views.logged_in.home.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
+import com.wafflestudio.snutt2.views.logged_in.home.TableContext
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -94,6 +99,7 @@ val LocalCanvasContext = compositionLocalOf<CanvasContext> {
     throw RuntimeException("")
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimetablePage(
     uncheckedNotification: Boolean
@@ -101,24 +107,32 @@ fun TimetablePage(
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
     val tableListViewModel = hiltViewModel<TableListViewModel>()
+    val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table
     val scope = rememberCoroutineScope()
-    var showTimetableTitleChangeDialog by remember {
+    var changeTitleDialogState by remember {
         mutableStateOf(false)
     }
-    if (showTimetableTitleChangeDialog) ShowTimetableTitleChangeDialog(
-        onDismiss = { showTimetableTitleChangeDialog = false },
-        onConfirm = { newTitle ->
-            tableListViewModel.changeNameTable(
-                table.id,
-                newTitle
-            )
-                .observeOn(AndroidSchedulers.mainThread()) // TODO: dispose
-                .subscribeBy(onError = {}) // TODO: onError
-            showTimetableTitleChangeDialog = false
-        },
-        oldTitle = table.title
-    )
+    if (changeTitleDialogState) {
+        ChangeTitleDialog(
+            onDismiss = {
+                changeTitleDialogState = false
+                keyboardManager?.hide()
+            },
+            onConfirm = { newTitle ->
+                tableListViewModel.changeNameTable(
+                    tableId = table.id,
+                    name = newTitle
+                )
+                    .subscribeBy(
+                        onError = {}
+                    )
+                changeTitleDialogState = false
+                keyboardManager?.hide()
+            },
+            oldTitle = table.title
+        )
+    }
 
     Column {
         TopAppBar(
@@ -131,7 +145,7 @@ fun TimetablePage(
                     Text(
                         text = table.title,
                         modifier = Modifier.clicks {
-                            showTimetableTitleChangeDialog = true
+                            changeTitleDialogState = true
                         }
                     )
                     Spacer(modifier = Modifier.width(5.dp))
@@ -154,7 +168,7 @@ fun TimetablePage(
                 Image(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { navController.navigate(lecturesOfTable) },
+                        .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
                     painter = painterResource(id = R.drawable.ic_lecture_list),
                     contentDescription = stringResource(R.string.home_timetable_drawer)
                 )
@@ -166,7 +180,7 @@ fun TimetablePage(
                 Image(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { navController.navigate(notification) },
+                        .clicks { navController.navigate(NavigationDestination.Notification) },
                     painter = painterResource(
                         id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
                     ),
@@ -433,22 +447,18 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto) {
 }
 
 @Composable
-private fun ShowTimetableTitleChangeDialog(
+private fun ChangeTitleDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     oldTitle: String
 ) {
-    val context = LocalContext.current
     var text by remember { mutableStateOf(oldTitle) }
-
     CustomDialog(
         onDismiss = onDismiss,
         onConfirm = { onConfirm(text) },
-        title = context.getString(R.string.home_drawer_change_name_dialog_title)
+        title = stringResource(R.string.home_drawer_change_name_dialog_title)
     ) {
-        EditText(value = text, onValueChange = {
-            text = it
-        })
+        EditText(value = text, onValueChange = { text = it })
     }
 }
 
@@ -462,6 +472,14 @@ object Defaults {
         updatedAt = "default",
         totalCredit = null,
         theme = TimetableColorTheme.SNUTT
+    )
+    val defaultSimpleTableDto = SimpleTableDto(
+        id = "",
+        year = 2022,
+        semester = 1L,
+        title = "",
+        updatedAt = "",
+        totalCredit = null
     )
 }
 

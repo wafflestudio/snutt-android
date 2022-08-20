@@ -3,14 +3,14 @@
     android:height="30dp"
     android:viewportWidth="30"
     android:viewportHeight="30">
-  <path
-      android:pathData="M22,8m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#000000"/>
-  <path
-      android:pathData="M27.4994,13.9199L13.9281,27.5029C13.2651,28.1664 12.194,28.1656 11.5321,27.501L2.4987,18.4304C1.8328,17.7618 1.8339,16.6756 2.5013,16.0084L16.0155,2.4964C16.334,2.178 16.7643,2 17.2119,2H26.3024C27.2361,2 28,2.7611 28,3.7087V12.7083C28,13.1637 27.8194,13.5996 27.4994,13.9199L28.2068,14.6267L27.4994,13.9199Z"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#000000"/>
+    <path
+        android:pathData="M22,8m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000" />
+    <path
+        android:pathData="M27.4994,13.9199L13.9281,27.5029C13.2651,28.1664 12.194,28.1656 11.5321,27.501L2.4987,18.4304C1.8328,17.7618 1.8339,16.6756 2.5013,16.0084L16.0155,2.4964C16.334,2.178 16.7643,2 17.2119,2H26.3024C27.2361,2 28,2.7611 28,3.7087V12.7083C28,13.1637 27.8194,13.5996 27.4994,13.9199L28.2068,14.6267L27.4994,13.9199Z"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000" />
 </vector>

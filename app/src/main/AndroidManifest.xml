@@ -60,7 +60,8 @@ id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
         <!-- <action android:name="com.google.firebase.INSTANCE_ID_EVENT" /> -->
         <!-- </intent-filter> -->
         <!-- </service> -->
-        <receiver android:name=".provider.TimetableWidgetProvider"
+        <receiver
+            android:name=".provider.TimetableWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
