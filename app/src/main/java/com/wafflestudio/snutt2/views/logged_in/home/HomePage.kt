@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.views.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SettingsPage
@@ -94,7 +95,7 @@ fun HomePage() {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
-    val pageState = rememberPagerState()
+    val pageState = HomePageController.current
 
     LaunchedEffect(pageState.currentPage == TimeTablePage) {
         if (pageState.currentPage == TimeTablePage) {

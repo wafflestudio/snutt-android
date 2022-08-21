@@ -216,3 +216,14 @@ fun PaletteIcon(
         contentDescription = ""
     )
 }
+
+@Composable
+fun TipCloseIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.btntipclose),
+        contentDescription = ""
+    )
+}

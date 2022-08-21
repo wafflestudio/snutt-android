@@ -60,50 +60,33 @@ fun <T> Picker(
                 }
             ),
     ) {
-        Layout(
-            content = {
-                Box(contentAlignment = Alignment.Center) {
-                    if (centerItemIndex > 0) {
-                        PickerItem(
-                            modifier = Modifier
-                                .offset(y = -columnHeightDp + localOffset.dp)
-                                .alpha((columnHeightDp / 2 + localOffset.dp) / columnHeightDp),
-                            content = { PickerItemContent(centerItemIndex - 1) }
-                        )
-                    }
-                    Divider(
-                        thickness = 2.dp,
-                        modifier = Modifier.offset(y = -columnHeightDp / 2)
-                    )
-                    PickerItem(
-                        modifier = Modifier.offset(y = localOffset.dp),
-                        content = { PickerItemContent(centerItemIndex) }
-                    )
-                    Divider(
-                        thickness = 2.dp,
-                        modifier = Modifier.offset(y = columnHeightDp / 2)
-                    )
-                    if (centerItemIndex < list.size - 1) {
-                        PickerItem(
-                            modifier = Modifier
-                                .offset(y = columnHeightDp + localOffset.dp)
-                                .alpha(-(-columnHeightDp / 2 + localOffset.dp) / columnHeightDp),
-                            content = { PickerItemContent(centerItemIndex + 1) }
-                        )
-                    }
-                }
-            }
-        ) { measurables, constraints ->
-            val placeables = measurables.map { measurable ->
-                measurable.measure(constraints)
-            }
-            layout(constraints.maxWidth, placeables.sumOf { it.height }) {
-                var yPosition = 0
-                placeables.forEach { placeable ->
-                    placeable.placeRelative(x = 0, y = yPosition)
-                    yPosition += placeable.height
-                }
-            }
+        if (centerItemIndex > 0) {
+            PickerItem(
+                modifier = Modifier
+                    .offset(y = -columnHeightDp + localOffset.dp)
+                    .alpha((columnHeightDp / 2 + localOffset.dp) / columnHeightDp),
+                content = { PickerItemContent(centerItemIndex - 1) }
+            )
+        }
+        Divider(
+            thickness = 2.dp,
+            modifier = Modifier.offset(y = -columnHeightDp / 2)
+        )
+        PickerItem(
+            modifier = Modifier.offset(y = localOffset.dp),
+            content = { PickerItemContent(centerItemIndex) }
+        )
+        Divider(
+            thickness = 2.dp,
+            modifier = Modifier.offset(y = columnHeightDp / 2)
+        )
+        if (centerItemIndex < list.size - 1) {
+            PickerItem(
+                modifier = Modifier
+                    .offset(y = columnHeightDp + localOffset.dp)
+                    .alpha(-(-columnHeightDp / 2 + localOffset.dp) / columnHeightDp),
+                content = { PickerItemContent(centerItemIndex + 1) }
+            )
         }
     }
 }

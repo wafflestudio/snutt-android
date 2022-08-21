@@ -241,7 +241,11 @@ fun TimeTable(
 
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
-                                    navigator.navigate("lectures/${lecture.id}")
+                                    navigator.currentBackStackEntry?.savedStateHandle?.set(
+                                        key = "lecture_dto",
+                                        value = lecture
+                                    )
+                                    navigator.navigate(NavigationDestination.LectureDetail)
                                     break
                                 }
                             }
