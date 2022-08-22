@@ -152,7 +152,7 @@ fun ArrowDownIcon(
 }
 
 @Composable
-fun CheckedIcon(
+fun VividCheckedIcon(
     modifier: Modifier = Modifier
 ) {
     Image(
@@ -224,6 +224,28 @@ fun TipCloseIcon(
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.btntipclose),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun ArrowRight(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.arrowright),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun CheckedIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.checked),
         contentDescription = ""
     )
 }

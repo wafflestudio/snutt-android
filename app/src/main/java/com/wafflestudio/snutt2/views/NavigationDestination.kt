@@ -8,7 +8,7 @@ object NavigationDestination {
     const val SignUp = "signUp"
     const val LecturesOfTable = "lectures_of_table"
     const val LectureDetail = "lecture_detail"
-    const val LectureColorSelector = "lectures/{lecture_id}/color_selector"
+    const val LectureColorSelector = "lecture_color_selector"
     const val Notification = "notification"
     const val AppReport = "app_report"
     const val ServiceInfo = "service_info"

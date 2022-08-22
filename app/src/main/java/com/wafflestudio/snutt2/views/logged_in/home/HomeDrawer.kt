@@ -53,7 +53,6 @@ fun HomeDrawer(
         .subscribeAsState(initial = emptyList()).value
     var courseBookList by remember { mutableStateOf(listOf(selectedCourseBook)) }
 
-
     var courseBookSelectDialogState by remember { mutableStateOf(false) }
     var pickerSelectedCourseBook = selectedCourseBook
     LaunchedEffect(courseBookSelectDialogState) {
@@ -88,7 +87,7 @@ fun HomeDrawer(
             onDismiss = { addNewTableDialogState = false },
             onConfirm = {
                 tableListViewModel.createTable(newTableTitle)
-                    .subscribeBy(onError = {})  // TODO: onError
+                    .subscribeBy(onError = {}) // TODO: onError
                 addNewTableDialogState = false
             },
             title = stringResource(R.string.home_drawer_create_table_dialog_title)
@@ -138,7 +137,7 @@ fun HomeDrawer(
                         onSuccess = {
                             context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
                         },
-                        onError = {}    // TODO: apiOnError
+                        onError = {} // TODO: apiOnError
                     )
                 scope.launch {
                     hideBottomSheet(false)
@@ -178,18 +177,17 @@ fun HomeDrawer(
                                             hideBottomSheet(false)
                                         }
                                     },
-                                    onError = { }  // TODO: apiOnError
+                                    onError = { } // TODO: apiOnError
                                 )
                         },
                         onDispose = {
-                            selectedTimetableViewModel.setSelectedPreviewTheme(null)    // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
+                            selectedTimetableViewModel.setSelectedPreviewTheme(null) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
                         }
                     )
                 }
             }
             changeThemeBottomSheetState = false
         }
-
     }
 
     var showMoreBottomSheetState by remember { mutableStateOf(false) }
@@ -225,7 +223,8 @@ fun HomeDrawer(
             ExitIcon()
         }
         Divider(modifier = Modifier.padding(vertical = 20.dp))
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clicks {
                 courseBookSelectDialogState = true
             }
@@ -247,7 +246,7 @@ fun HomeDrawer(
                     onSelect = onClickTableItem,
                     onDuplicate = { table ->
                         tableListViewModel.copyTable(table.id)
-                            .subscribeBy(      // TODO: dispose
+                            .subscribeBy( // TODO: dispose
                                 onSuccess = {
                                     context.toast(
                                         context.getString(
@@ -256,7 +255,7 @@ fun HomeDrawer(
                                         )
                                     )
                                 },
-                                onError = {}   // TODO: onError
+                                onError = {} // TODO: onError
                             )
                     },
                     onShowMore = {
@@ -268,7 +267,6 @@ fun HomeDrawer(
             CreateTableItem(onClick = { addNewTableDialogState = true })
         }
     }
-
 }
 
 @Composable
@@ -282,15 +280,14 @@ private fun TableItem(
     Row(
         modifier = Modifier.padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .weight(1f)
                 .clicks { onSelect(tableDto.id) },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CheckedIcon(
+            VividCheckedIcon(
                 modifier = Modifier
                     .size(15.dp)
                     .alpha(if (selected) 1f else 0f)
@@ -305,14 +302,16 @@ private fun TableItem(
                 )
             )
         }
-        DuplicateIcon(modifier = Modifier
-            .size(30.dp)
-            .clicks { onDuplicate(tableDto) }
+        DuplicateIcon(
+            modifier = Modifier
+                .size(30.dp)
+                .clicks { onDuplicate(tableDto) }
         )
         Spacer(modifier = Modifier.width(10.dp))
-        MoreIcon(modifier = Modifier
-            .size(30.dp)
-            .clicks { onShowMore() }
+        MoreIcon(
+            modifier = Modifier
+                .size(30.dp)
+                .clicks { onShowMore() }
         )
     }
 }
@@ -479,7 +478,8 @@ private fun ChangeThemeBottomSheetContent(
                 ThemeItem(
                     name = nameAndIdPair.first,
                     painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) })
+                    modifier = Modifier.clicks { onPreview(themeIdx) }
+                )
                 Spacer(modifier = Modifier.width(20.dp))
             }
         }
@@ -506,7 +506,6 @@ private fun ThemeItem(
             Text(text = name, textAlign = TextAlign.Center)
         }
     }
-
 }
 
 @Preview

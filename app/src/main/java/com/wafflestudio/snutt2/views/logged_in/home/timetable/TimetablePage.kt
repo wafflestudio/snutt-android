@@ -39,10 +39,7 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
@@ -52,6 +49,7 @@ import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -204,8 +202,9 @@ fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: Optional<LectureDto>
 ) {
-    var canvasSize by remember { mutableStateOf(Size.Zero) }
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
+    var canvasSize by remember { mutableStateOf(Size.Zero) }
     val context = LocalContext.current
     val navigator = NavControllerContext.current
     val lectures = TableContext.current.table.lectureList
@@ -241,10 +240,7 @@ fun TimeTable(
 
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
-                                    navigator.currentBackStackEntry?.savedStateHandle?.set(
-                                        key = "lecture_dto",
-                                        value = lecture
-                                    )
+                                    lectureDetailViewModel.initializeSelectedLectureFlow(lecture)
                                     navigator.navigate(NavigationDestination.LectureDetail)
                                     break
                                 }
@@ -484,6 +480,23 @@ object Defaults {
         title = "",
         updatedAt = "",
         totalCredit = null
+    )
+    val defaultLectureDto = LectureDto(
+        id = "",
+        course_title = "",
+        instructor = "",
+        colorIndex = 0L,
+        color = ColorDto(),
+        department = null,
+        academic_year = null,
+        credit = 0,
+        category = null,
+        classification = null,
+        course_number = null,
+        lecture_number = null,
+        remark = "",
+        class_time_json = listOf(),
+        class_time_mask = listOf()
     )
 }
 

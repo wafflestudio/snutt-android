@@ -56,7 +56,7 @@ fun CustomDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column {
                 Row {
                     Box(modifier = Modifier.padding(20.dp)) {
                         Text(text = title, fontSize = 18.sp)
@@ -64,7 +64,9 @@ fun CustomDialog(
                     Box(modifier = Modifier.weight(1f))
                 }
 
-                content()
+                Box(modifier = Modifier.padding(start = 20.dp)) {
+                    content()
+                }
 
                 Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
                     Box(modifier = Modifier.weight(1f))

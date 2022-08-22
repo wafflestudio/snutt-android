@@ -20,7 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.data.TimetableColorTheme
@@ -97,6 +96,9 @@ fun HomePage() {
 
     val pageState = HomePageController.current
 
+    LaunchedEffect(Unit) {
+        homeViewModel.refreshData()
+    }
     LaunchedEffect(pageState.currentPage == TimeTablePage) {
         if (pageState.currentPage == TimeTablePage) {
             try {
@@ -132,7 +134,6 @@ fun HomePage() {
     // HomePage가 가지고 있어야 탭 전환해도 스크롤 위치가 유지됨
     val listState: LazyListState = rememberLazyListState()
 
-
     // BottomSheet 관련
     var bottomSheetState by remember { mutableStateOf(BottomSheetState.HIDE) }
     var bottomSheetHeight by remember { mutableStateOf(200.dp) }
@@ -148,13 +149,13 @@ fun HomePage() {
                 bottomSheetOffset.snapTo(bottomSheetHeightPx)
                 bottomSheetContent = content
                 bottomSheetState = BottomSheetState.SHOW
-                launch { bottomSheetDim.animateTo(Color(0x99000000)) }  // TODO: Color 정리
+                launch { bottomSheetDim.animateTo(Color(0x99000000)) } // TODO: Color 정리
                 launch { bottomSheetOffset.animateTo(0f) }
             }
         }
     val hideBottomSheet: suspend (Boolean) -> Unit = { fast ->
         coroutineScope {
-            launch { bottomSheetDim.animateTo(Color(0x00000000)) }      // TODO: Color 정리
+            launch { bottomSheetDim.animateTo(Color(0x00000000)) } // TODO: Color 정리
             launch {
                 bottomSheetOffset.animateTo(
                     targetValue = bottomSheetHeightPx,

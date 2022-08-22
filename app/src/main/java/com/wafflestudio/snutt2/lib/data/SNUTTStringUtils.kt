@@ -71,7 +71,7 @@ object SNUTTStringUtils {
                     DateFormat.getDateInstance().format(date1)
                 }
                 hours > 0 -> {
-                    "$hours 시간 전"   // TODO: resource로 빼기
+                    "$hours 시간 전" // TODO: resource로 빼기
                 }
                 else -> {
                     "방금"

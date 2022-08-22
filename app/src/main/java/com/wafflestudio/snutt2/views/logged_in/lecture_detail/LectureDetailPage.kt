@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,55 +24,85 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.views.HomePageController
 import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.ReviewUrlController
 import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun LectureDetailPage(lecture: LectureDto?) {
+fun LectureDetailPage() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val vm = hiltViewModel<LectureDetailViewModel>()
-
     val navController = NavControllerContext.current
     val reviewUrlController = ReviewUrlController.current
     val homePageController = HomePageController.current
 
-    var editMode by remember { mutableStateOf(false) }
-
-    var lectureTitle by remember { mutableStateOf(lecture?.course_title) }
-    var lectureInstructor by remember { mutableStateOf(lecture?.instructor) }
-//    var lectureColor by remember { mutableStateOf(lecture?.color) }
-    var lectureDepartment by remember { mutableStateOf(lecture?.department) }
-    var lectureAcademicYear by remember { mutableStateOf(lecture?.academic_year) }
-    var lectureCredit by remember { mutableStateOf(lecture?.credit) }
-    var lectureClassification by remember { mutableStateOf(lecture?.classification) }
-    var lectureRemark by remember { mutableStateOf(lecture?.remark) }
-
-    LaunchedEffect(Unit) {
-        vm.setLecture(lecture)
+    // share viewModel
+    val backStackEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry(NavigationDestination.Home)
     }
+    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+
+    // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
+
+    // ColorSelector 갔다 와도 유지돼야 해서 rememberSaveable 사용 (그냥 이것도 viewModel 로?)
+    var editMode by rememberSaveable { mutableStateOf(false) }
+    val lectureState by vm.selectedLectureFlow.collectAsState()
+    val theme = vm.colorTheme ?: TimetableColorTheme.SNUTT
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
-    if(deleteLectureDialogState) {
+    if (deleteLectureDialogState) {
         CustomDialog(
             onDismiss = { deleteLectureDialogState = false },
-            onConfirm = { /*TODO*/ },
+            onConfirm = {
+                vm.removeLecture2()
+                    .subscribeBy(
+                        onError = {},
+                        onComplete = {
+                            // main thread에서 navigate해야 한다고 함.
+                            scope.launch(Dispatchers.Main) {
+                                navController.navigate(NavigationDestination.Home)
+                            }
+                            deleteLectureDialogState = false
+                        }
+                    )
+            },
             title = "강좌 삭제"
         ) {
-          Text(text = "강좌를 삭제하시겠습니까?")
+            Text(text = "강좌를 삭제하시겠습니까?")
+        }
+    }
+
+    var resetLectureDialogState by remember { mutableStateOf(false) }
+    if (resetLectureDialogState) {
+        CustomDialog(
+            onDismiss = { resetLectureDialogState = false },
+            onConfirm = {
+                vm.resetLecture2()
+                    .subscribeBy(
+                        onError = {},
+                        onSuccess = {
+                            vm.initializeSelectedLectureFlow(it.lectureList.find { it.id == lectureState.id })
+                            editMode = false
+                            resetLectureDialogState = false
+                        }
+                    )
+            },
+            title = "강좌 초기화"
+        ) {
+            Text(text = "강좌를 원래 상태로 초기화하시겠습니까?")
         }
     }
 
@@ -79,6 +111,7 @@ fun LectureDetailPage(lecture: LectureDto?) {
         CustomDialog(
             onDismiss = { editExitDialogState = false },
             onConfirm = {
+                vm.abandonEditedSelectedLectureFlow()
                 editExitDialogState = false
                 editMode = false
             },
@@ -90,7 +123,6 @@ fun LectureDetailPage(lecture: LectureDto?) {
     BackHandler(enabled = editMode) {
         editExitDialogState = true
     }
-
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -105,7 +137,18 @@ fun LectureDetailPage(lecture: LectureDto?) {
                     text = if (editMode) "완료" else "편집",
                     modifier = Modifier
                         .clicks {
-                            editMode = editMode.not()
+                            if (editMode.not()) editMode = true
+                            else {
+                                vm
+                                    .updateLecture2()
+                                    .subscribeBy(
+                                        onError = {}, // TODO: onApiError
+                                        onSuccess = {
+                                            vm.initializeSelectedLectureFlow(lectureState)
+                                            editMode = false
+                                        }
+                                    )
+                            }
                         }
                         .padding(horizontal = 10.dp)
                 )
@@ -118,47 +161,69 @@ fun LectureDetailPage(lecture: LectureDto?) {
             Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 LectureDetailItem(title = "강의명") {
                     EditText(
-                        value = lectureTitle ?: "",
-                        onValueChange = { lectureTitle = it },
+                        value = lectureState.course_title,
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(course_title = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
-                        hint = "예) 기초 영어"
                     )
                 }
                 LectureDetailItem(title = "교수") {
                     EditText(
-                        value = lectureInstructor ?: "",
-                        onValueChange = { lectureInstructor = it },
+                        value = lectureState.instructor,
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(instructor = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                LectureDetailItem(title = "색상") {
-
+                LectureDetailItem(
+                    title = "색상",
+                    modifier = Modifier.clicks {
+                        if (editMode) {
+                            navController.navigate(NavigationDestination.LectureColorSelector)
+                        }
+                    }
+                ) {
+                    Row {
+                        ColorBox(lectureState.colorIndex, lectureState.color, theme)
+                        Spacer(modifier = Modifier.weight(1f))
+                        AnimatedVisibility(visible = editMode) {
+                            ArrowRight(modifier = Modifier.size(16.dp))
+                        }
+                    }
                 }
             }
             Margin(height = 10.dp)
             Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 LectureDetailItem(title = "학과") {
                     EditText(
-                        value = lectureDepartment ?: "",
-                        onValueChange = { lectureDepartment = it },
+                        value = lectureState.department ?: "",
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(department = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 LectureDetailItem(title = "학년") {
                     EditText(
-                        value = lectureAcademicYear ?: "",
-                        onValueChange = { lectureAcademicYear = it },
+                        value = lectureState.academic_year ?: "",
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(academic_year = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 LectureDetailItem(title = "학점") {
                     EditText(
-                        value = lectureCredit.toString(),
-                        onValueChange = { lectureCredit = it.stringToLong() },
+                        value = lectureState.credit.toString(),
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(credit = it.toLong()))
+                        },
                         enabled = editMode,
                         keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
@@ -166,28 +231,39 @@ fun LectureDetailPage(lecture: LectureDto?) {
                 }
                 LectureDetailItem(title = "분류") {
                     EditText(
-                        value = lectureClassification ?: "",
-                        onValueChange = { lectureClassification = it },
+                        value = lectureState.classification ?: "",
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(classification = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 LectureDetailItem(title = "구분") {
-                    Text(text = lecture?.category ?: "(없음)")
+                    EditText(
+                        value = lectureState.category ?: "",
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(category = it))
+                        },
+                        enabled = editMode,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-                LectureDetailItem(title = "강좌번호") {                 // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = lecture?.course_number ?: "")
+                LectureDetailItem(title = "강좌번호") { // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
+                    Text(text = lectureState.course_number ?: "")
                 }
-                LectureDetailItem(title = "분반번호") {                 // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = lecture?.lecture_number ?: "")
+                LectureDetailItem(title = "분반번호") { // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
+                    Text(text = lectureState.lecture_number ?: "")
                 }
                 LectureDetailItem(title = "인원") {
                     Text(text = "TODO")
                 }
-                LectureDetailRemark(title = "비고") {                 //  TODO: movementMethod 는 뭘까
+                LectureDetailRemark(title = "비고") { //  TODO: movementMethod 는 뭘까
                     EditText(
-                        value = lectureRemark ?: "",
-                        onValueChange = { lectureRemark = it },
+                        value = lectureState.remark,
+                        onValueChange = {
+                            vm.editSelectedLectureFlow(lectureState.copy(remark = it))
+                        },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -203,16 +279,26 @@ fun LectureDetailPage(lecture: LectureDto?) {
                 ) {
                     Text(text = "시간 및 장소")
                 }
-                lecture?.class_time_json?.forEach { it ->
-                    val time = SNUTTUtils.numberToWday(it.day) + " " +
-                        SNUTTUtils.numberToTime(it.start) + "~" +
-                        SNUTTUtils.numberToEndTimeAdjusted(it.start, it.len)
+                lectureState.class_time_json.forEachIndexed { idx, classTime ->
+                    // TODO: stringUtil 정리
+                    val time = SNUTTUtils.numberToWday(classTime.day) + " " +
+                        SNUTTUtils.numberToTime(classTime.start) + "~" +
+                        SNUTTUtils.numberToEndTimeAdjusted(classTime.start, classTime.len)
 
-                    LectureDetailTimeAndLocation(           // TODO: Long click
+                    LectureDetailTimeAndLocation( // TODO: Long click (커스텀에서만)
                         time = time,
-                        location = it.place,
-                        onTimeTextChange = {},
-                        onLocationTextChange = {},
+                        location = classTime.place,
+                        onLocationTextChange = {
+                            vm.editSelectedLectureFlow(
+                                // 서버 강의는 시간대 삭제가 안 되니까 idx 그대로 갖다 써도 된다. (FIXME: 추후 변경 가능)
+                                lectureState.copy(
+                                    class_time_json = lectureState.class_time_json.toMutableList()
+                                        .apply {
+                                            this[idx] = classTime.copy(place = it)
+                                        }
+                                )
+                            )
+                        },
                         editMode = editMode
                     )
                 }
@@ -225,21 +311,20 @@ fun LectureDetailPage(lecture: LectureDto?) {
                     LectureDetailButton(title = "강의계획서") {
                         vm.getCourseBookUrl()
                             .subscribeBy(
-                                onError = {},    // TODO: apiOnError
+                                onError = {}, // TODO: apiOnError
                                 onSuccess = { result ->
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
                                     context.startActivity(intent)
                                 }
                             )
-
                     }
                     LectureDetailButton(title = "강의평") {
-                        vm.getReviewContentsUrl()           // FIXME: staging 에서는 원래 403 에러가 나는가?
+                        vm.getReviewContentsUrl() // FIXME: staging 에서는 원래 403 에러가 나는가?
                             .subscribeBy(
                                 onError = {},
                                 onSuccess = {
                                     navController.popBackStack()
-                                    reviewUrlController.update(it)      // TODO: ReviewPage 만들 때 재확인
+                                    reviewUrlController.update(it) // TODO: ReviewPage 만들 때 재확인
                                     scope.launch {
                                         homePageController.animateScrollToPage(ReviewPage)
                                     }
@@ -250,7 +335,8 @@ fun LectureDetailPage(lecture: LectureDto?) {
             }
             Margin(height = 10.dp)
             LectureDetailButton(title = if (editMode) "초기화" else "삭제") {
-
+                if (editMode) resetLectureDialogState = true
+                else deleteLectureDialogState = true
             }
             Margin(height = 30.dp)
         }
@@ -260,10 +346,11 @@ fun LectureDetailPage(lecture: LectureDto?) {
 @Composable
 fun LectureDetailItem(
     title: String,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(40.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -295,7 +382,6 @@ fun LectureDetailRemark(
         }
         Spacer(modifier = Modifier.width(20.dp))
     }
-
 }
 
 @Composable
@@ -318,7 +404,6 @@ fun LectureDetailButton(
 fun LectureDetailTimeAndLocation(
     time: String,
     location: String,
-    onTimeTextChange: (String) -> Unit,
     onLocationTextChange: (String) -> Unit,
     editMode: Boolean,
 ) {
@@ -340,7 +425,7 @@ fun LectureDetailTimeAndLocation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "시간", modifier = Modifier.width(76.dp))
-                Text(text = time)           // TODO : editMode에 따라 색 변경 (편집 불가)
+                Text(text = time) // TODO : editMode에 따라 색 변경 (편집 불가)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -348,7 +433,12 @@ fun LectureDetailTimeAndLocation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "장소", modifier = Modifier.width(76.dp))
-                EditText(value = location, onValueChange = onLocationTextChange)
+                EditText(
+                    value = location,
+                    onValueChange = onLocationTextChange,
+                    enabled = editMode,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
         // TODO: 이건 커스텀 디테일에만 들어간다
@@ -366,16 +456,55 @@ private fun Margin(height: Dp) {
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(Color(0xfff2f2f2))      // TODO: Color 정리
+            .background(Color(0xfff2f2f2)) // TODO: Color 정리
     )
+}
+
+@Composable
+fun ColorBox(
+    lectureColorIndex: Long,
+    lectureColor: ColorDto?, // null 이면 반드시 기존 테마.
+    theme: TimetableColorTheme
+) {
+    Row(
+        modifier = Modifier
+            .width(40.dp)
+            .height(20.dp)
+            .zIndex(1f)
+            .border(width = (0.5f).dp, color = Color(0x26000000)) // TODO: Color
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    // colorIndex == 0 이면 사용자 커스텀 색
+                    // colorIndex > 0 이면 bgColor 는 스누티티 지정 테마 색깔, fgColor = -0x1 (디폴트 흰색)
+                    if ((lectureColorIndex) > 0) Color(-0x1)
+                    // 커스텀 fg 색이면 null 이 오지 않아서 원래는 !! 처리했지만..
+                    else Color(lectureColor?.fgColor ?: -0x1)
+                )
+                .size(20.dp)
+        )
+        Box(
+            modifier = Modifier
+                .background(
+                    // index > 0 : 스누티티 지정 테마 색깔.
+                    if (lectureColorIndex > 0)
+                        theme.getColorByIndexComposable(lectureColorIndex)
+                    // 사용자 지정 bgColor, 역시 이때는 null이 오지 않아서 !! 처리를 했었다. 그냥 !! 해도 될지도
+                    else Color(lectureColor?.bgColor ?: (-0x1))
+                )
+                .size(20.dp)
+        )
+    }
 }
 
 @Preview(showBackground = true, widthDp = 480, heightDp = 880)
 @Composable
 fun LectureDetailPagePreview() {
-    LectureDetailPage(lecture = null)
+    LectureDetailPage()
 }
 
+// TODO: StringUtil 로 이동?
 private fun String.stringToLong(): Long {
     return try {
         this.toLong()
@@ -383,3 +512,17 @@ private fun String.stringToLong(): Long {
         0
     }
 }
+
+// class LectureDtoNavType : NavType<LectureDto>(isNullableAllowed = false) {
+//    override fun get(bundle: Bundle, key: String): LectureDto? {
+//        return bundle.getParcelable(key)
+//    }
+//
+//    override fun parseValue(value: String): LectureDto {
+//        return Gson().fromJson(value, LectureDto::class.java)
+//    }
+//
+//    override fun put(bundle: Bundle, key: String, value: LectureDto) {
+//        bundle.putParcelable(key, value)
+//    }
+// }

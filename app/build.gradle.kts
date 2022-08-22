@@ -197,6 +197,7 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.tbuonomo:dotsindicator:4.2")
     implementation("com.appyvet:materialrangebar:1.3")
+    implementation("com.google.code.gson:gson:2.9.1")
 
     // glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
