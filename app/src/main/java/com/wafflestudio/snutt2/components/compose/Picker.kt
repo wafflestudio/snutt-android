@@ -6,9 +6,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -19,24 +17,33 @@ import kotlin.math.roundToInt
 @Composable
 fun <T> Picker(
     list: List<T>,
-    value: T,
-    onValueChanged: (T) -> Unit,
+    initialValue: T,
+    onValueChanged: (Int) -> Unit,
     PickerItemContent: @Composable (Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val columnHeightDp = 60.dp
+    val columnHeightDp = 45.dp
 
-    val animatedOffset = remember { Animatable(list.indexOf(value) * columnHeightDp.value) }
+    val animatedOffset = remember { Animatable(list.indexOf(initialValue) * columnHeightDp.value) }
         .apply {
             updateBounds(0f, (columnHeightDp.value * list.size))
         }
     val threshold = (animatedOffset.value + columnHeightDp.value / 2) % columnHeightDp.value
-    val centerItemIndex = remember(threshold) {
-        (animatedOffset.value / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1)
+    var centerItemIndex by remember(threshold) {
+        mutableStateOf(
+            (animatedOffset.value / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1)
+        )
     }
     val localOffset =
         if (animatedOffset.value % columnHeightDp.value > columnHeightDp.value / 2) (columnHeightDp.value - (animatedOffset.value % columnHeightDp.value))
         else -(animatedOffset.value % columnHeightDp.value)
+
+    // list 자체의 변경에 따른 변화를 반영한다. (recompose 로 되는 방법 찾기)
+    // FIXME: 시작 시간의 변경에 따라 끝나는 시간의 list 가 바뀌는데, 이때 미세한 떨림 존재
+    LaunchedEffect(list.size) {
+        centerItemIndex = list.indexOf(initialValue)
+        animatedOffset.snapTo(columnHeightDp.value * centerItemIndex)
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -55,7 +62,7 @@ fun <T> Picker(
                     scope.launch {
                         animatedOffset.animateTo(columnHeightDp.value * centerItemIndex)
                     }
-                    onValueChanged(list[centerItemIndex])
+                    onValueChanged(centerItemIndex)
                 }
             ),
     ) {

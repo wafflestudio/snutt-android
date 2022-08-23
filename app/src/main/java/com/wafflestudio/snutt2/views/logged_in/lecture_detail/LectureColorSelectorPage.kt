@@ -47,7 +47,13 @@ fun LectureColorSelectorPage() {
     Column {
         TopAppBar(
             title = { Text("강의 색상 선택하기") },
-            navigationIcon = { ArrowBackIcon() }
+            navigationIcon = {
+                ArrowBackIcon(
+                    modifier = Modifier.clicks {
+                        navController.popBackStack()
+                    }
+                )
+            }
         )
         Spacer(modifier = Modifier.height(10.dp))
         for (idx in 1L..9L) ColorItem(

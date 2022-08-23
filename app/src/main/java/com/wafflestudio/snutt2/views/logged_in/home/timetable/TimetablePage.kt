@@ -241,7 +241,9 @@ fun TimeTable(
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
                                     lectureDetailViewModel.initializeSelectedLectureFlow(lecture)
-                                    navigator.navigate(NavigationDestination.LectureDetail)
+                                    if (lecture.isCustom) {
+                                        navigator.navigate(NavigationDestination.LectureDetailCustom)
+                                    } else navigator.navigate(NavigationDestination.LectureDetail)
                                     break
                                 }
                             }
@@ -485,7 +487,7 @@ object Defaults {
         id = "",
         course_title = "",
         instructor = "",
-        colorIndex = 0L,
+        colorIndex = 1L,
         color = ColorDto(),
         department = null,
         academic_year = null,
@@ -495,8 +497,15 @@ object Defaults {
         course_number = null,
         lecture_number = null,
         remark = "",
-        class_time_json = listOf(),
-        class_time_mask = listOf()
+        class_time_json = emptyList(),
+        class_time_mask = emptyList()
+    )
+    val defaultClassTimeDto = ClassTimeDto(
+        day = 0,
+        start = 0f,
+        len = 1f,
+        place = "",
+        id = null
     )
 }
 

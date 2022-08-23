@@ -1,13 +1,15 @@
-@file:OptIn(ExperimentalPagerApi::class)
-
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,10 +17,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,19 +36,18 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.views.HomePageController
 import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.ReviewUrlController
 import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LectureDetailPage() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val navController = NavControllerContext.current
-    val reviewUrlController = ReviewUrlController.current
     val homePageController = HomePageController.current
 
     // share viewModel
@@ -57,8 +58,7 @@ fun LectureDetailPage() {
 
     // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
 
-    // ColorSelector 갔다 와도 유지돼야 해서 rememberSaveable 사용 (그냥 이것도 viewModel 로?)
-    var editMode by rememberSaveable { mutableStateOf(false) }
+    val editMode by vm.editMode.collectAsState()
     val lectureState by vm.selectedLectureFlow.collectAsState()
     val theme = vm.colorTheme ?: TimetableColorTheme.SNUTT
 
@@ -71,9 +71,9 @@ fun LectureDetailPage() {
                     .subscribeBy(
                         onError = {},
                         onComplete = {
-                            // main thread에서 navigate해야 한다고 함.
+                            // main thread 에서 navigate 해야 한다고 함.
                             scope.launch(Dispatchers.Main) {
-                                navController.navigate(NavigationDestination.Home)
+                                navController.popBackStack()
                             }
                             deleteLectureDialogState = false
                         }
@@ -93,9 +93,9 @@ fun LectureDetailPage() {
                 vm.resetLecture2()
                     .subscribeBy(
                         onError = {},
-                        onSuccess = {
-                            vm.initializeSelectedLectureFlow(it.lectureList.find { it.id == lectureState.id })
-                            editMode = false
+                        onSuccess = { resetLectureResult ->
+                            vm.initializeSelectedLectureFlow(resetLectureResult.lectureList.find { it.id == lectureState.id })
+                            vm.unsetEditMode()
                             resetLectureDialogState = false
                         }
                     )
@@ -111,9 +111,9 @@ fun LectureDetailPage() {
         CustomDialog(
             onDismiss = { editExitDialogState = false },
             onConfirm = {
-                vm.abandonEditedSelectedLectureFlow()
+                vm.abandonEditingSelectedLectureFlow()
                 editExitDialogState = false
-                editMode = false
+                vm.unsetEditMode()
             },
             title = "편집을 취소하시겠습니까?"
         ) {}
@@ -124,20 +124,29 @@ fun LectureDetailPage() {
         editExitDialogState = true
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xfff2f2f2)) // TODO: color
+    ) {
         TopAppBar(
             title = {
                 Text(text = "강의 상세 보기")
             },
             navigationIcon = {
-                ArrowBackIcon()
+                ArrowBackIcon(
+                    modifier = Modifier.clicks {
+                        if (editMode) editExitDialogState = true
+                        else navController.popBackStack()
+                    }
+                )
             },
             actions = {
                 Text(
                     text = if (editMode) "완료" else "편집",
                     modifier = Modifier
                         .clicks {
-                            if (editMode.not()) editMode = true
+                            if (editMode.not()) vm.setEditMode()
                             else {
                                 vm
                                     .updateLecture2()
@@ -145,7 +154,7 @@ fun LectureDetailPage() {
                                         onError = {}, // TODO: onApiError
                                         onSuccess = {
                                             vm.initializeSelectedLectureFlow(lectureState)
-                                            editMode = false
+                                            vm.unsetEditMode()
                                         }
                                     )
                             }
@@ -158,7 +167,8 @@ fun LectureDetailPage() {
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Margin(height = 10.dp)
-            Column(modifier = Modifier.padding(vertical = 4.dp)) {
+            Column(modifier = Modifier.background(Color.White)) {
+                Margin(height = 4.dp)
                 LectureDetailItem(title = "강의명") {
                     EditText(
                         value = lectureState.course_title,
@@ -195,9 +205,11 @@ fun LectureDetailPage() {
                         }
                     }
                 }
+                Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.padding(vertical = 4.dp)) {
+            Column(modifier = Modifier.background(Color.White)) {
+                Margin(height = 4.dp)
                 LectureDetailItem(title = "학과") {
                     EditText(
                         value = lectureState.department ?: "",
@@ -222,7 +234,7 @@ fun LectureDetailPage() {
                     EditText(
                         value = lectureState.credit.toString(),
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(credit = it.toLong()))
+                            vm.editSelectedLectureFlow(lectureState.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
                         keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -249,10 +261,10 @@ fun LectureDetailPage() {
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                LectureDetailItem(title = "강좌번호") { // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
+                LectureDetailItem(title = "강좌번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
                     Text(text = lectureState.course_number ?: "")
                 }
-                LectureDetailItem(title = "분반번호") { // TODO: editMode에 따라 색 변경 로직 추가 (편집 불가)
+                LectureDetailItem(title = "분반번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
                     Text(text = lectureState.lecture_number ?: "")
                 }
                 LectureDetailItem(title = "인원") {
@@ -268,9 +280,11 @@ fun LectureDetailPage() {
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
+                Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.padding(vertical = 4.dp)) {
+            Column(modifier = Modifier.background(Color.White)) {
+                Margin(height = 4.dp)
                 Box(
                     modifier = Modifier
                         .height(32.dp)
@@ -285,17 +299,14 @@ fun LectureDetailPage() {
                         SNUTTUtils.numberToTime(classTime.start) + "~" +
                         SNUTTUtils.numberToEndTimeAdjusted(classTime.start, classTime.len)
 
-                    LectureDetailTimeAndLocation( // TODO: Long click (커스텀에서만)
-                        time = time,
-                        location = classTime.place,
-                        onLocationTextChange = {
+                    LectureDetailTimeAndLocation(
+                        timeText = time,
+                        locationText = classTime.place,
+                        onLocationTextChange = { changedLocation ->
                             vm.editSelectedLectureFlow(
-                                // 서버 강의는 시간대 삭제가 안 되니까 idx 그대로 갖다 써도 된다. (FIXME: 추후 변경 가능)
                                 lectureState.copy(
                                     class_time_json = lectureState.class_time_json.toMutableList()
-                                        .apply {
-                                            this[idx] = classTime.copy(place = it)
-                                        }
+                                        .also { it[idx] = classTime.copy(place = changedLocation) }
                                 )
                             )
                         },
@@ -308,35 +319,40 @@ fun LectureDetailPage() {
             ) {
                 Column {
                     Margin(height = 30.dp)
-                    LectureDetailButton(title = "강의계획서") {
-                        vm.getCourseBookUrl()
-                            .subscribeBy(
-                                onError = {}, // TODO: apiOnError
-                                onSuccess = { result ->
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
-                                    context.startActivity(intent)
-                                }
-                            )
-                    }
-                    LectureDetailButton(title = "강의평") {
-                        vm.getReviewContentsUrl() // FIXME: staging 에서는 원래 403 에러가 나는가?
-                            .subscribeBy(
-                                onError = {},
-                                onSuccess = {
-                                    navController.popBackStack()
-                                    reviewUrlController.update(it) // TODO: ReviewPage 만들 때 재확인
-                                    scope.launch {
-                                        homePageController.animateScrollToPage(ReviewPage)
+                    Column(modifier = Modifier.background(Color.White)) {
+                        LectureDetailButton(title = "강의계획서") {
+                            vm.getCourseBookUrl()
+                                .subscribeBy(
+                                    onError = {}, // TODO: apiOnError
+                                    onSuccess = { result ->
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
+                                        context.startActivity(intent)
                                     }
-                                }
-                            )
+                                )
+                        }
+                        LectureDetailButton(title = "강의평") {
+                            vm.getReviewContentsUrl() // FIXME: staging 에서는 원래 403 에러가 나는가?
+                                .subscribeBy(
+                                    onError = {},
+                                    onSuccess = {
+                                        navController.popBackStack()
+//                                    reviewUrlController.update(it) // TODO: ReviewPage 만들 때 재확인
+                                        scope.launch {
+                                            homePageController.animateScrollToPage(ReviewPage)
+                                        }
+                                    }
+                                )
+                        }
                     }
                 }
             }
             Margin(height = 10.dp)
-            LectureDetailButton(title = if (editMode) "초기화" else "삭제") {
-                if (editMode) resetLectureDialogState = true
-                else deleteLectureDialogState = true
+            Box(modifier = Modifier.background(Color.White)) {
+                LectureDetailButton(title = if (editMode) "초기화" else "삭제") {
+                    if (editMode) resetLectureDialogState = true
+                    else deleteLectureDialogState = true
+                }
             }
             Margin(height = 30.dp)
         }
@@ -402,61 +418,91 @@ fun LectureDetailButton(
 
 @Composable
 fun LectureDetailTimeAndLocation(
-    time: String,
-    location: String,
+    timeText: String,
+    locationText: String,
+    editTime: () -> Unit = {},
     onLocationTextChange: (String) -> Unit,
+    onClickDeleteIcon: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     editMode: Boolean,
+    isCustom: Boolean = false,
+    visible: MutableTransitionState<Boolean> = MutableTransitionState(true)
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .height(60.dp),
-        verticalAlignment = Alignment.CenterVertically
+    AnimatedVisibility(
+        visibleState = visible,
+        enter = expandVertically(),
+        exit = shrinkVertically()
     ) {
-        Spacer(modifier = Modifier.width(20.dp))
-        Column(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    // TODO: 중요하지 않은 기능이지만.. 하위 editText의 clicks{} 가 상위의 tap event를 가로챈다.
+                    detectTapGestures(onLongPress = { onLongClick() })
+                }
+                .height(60.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Spacer(modifier = Modifier.width(20.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "시간", modifier = Modifier.width(76.dp))
-                Text(text = time) // TODO : editMode에 따라 색 변경 (편집 불가)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "시간",
+                        modifier = Modifier.width(76.dp)
+                    )
+                    Text(
+                        text = timeText,
+                        modifier = Modifier // TODO : editMode 에 따라 색 변경 (편집 불가)
+                            .fillMaxWidth()
+                            .clicks {
+                                if (editMode && isCustom) editTime()
+                            }
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "장소", modifier = Modifier.width(76.dp))
+                    EditText(
+                        value = locationText,
+                        onValueChange = onLocationTextChange,
+                        enabled = editMode,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "장소", modifier = Modifier.width(76.dp))
-                EditText(
-                    value = location,
-                    onValueChange = onLocationTextChange,
-                    enabled = editMode,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            if (isCustom) {
+                AnimatedVisibility(visible = editMode) {
+                    Box(
+                        modifier = Modifier
+                            .width(36.dp)
+                            .clicks { onClickDeleteIcon() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TipCloseIcon(Modifier.size(16.dp))
+                    }
+                }
             }
         }
-        // TODO: 이건 커스텀 디테일에만 들어간다
-//        AnimatedVisibility(visible = editMode) {
-//            Box(modifier = Modifier.width(36.dp), contentAlignment = Alignment.Center) {
-//                TipCloseIcon(Modifier.size(16.dp))
-//            }
-//        }
     }
 }
 
+// 별도의 폴더(component 패키지)로?
 @Composable
-private fun Margin(height: Dp) {
+fun Margin(height: Dp) {
     Spacer(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(Color(0xfff2f2f2)) // TODO: Color 정리
     )
 }
 
@@ -505,7 +551,7 @@ fun LectureDetailPagePreview() {
 }
 
 // TODO: StringUtil 로 이동?
-private fun String.stringToLong(): Long {
+fun String.stringToLong(): Long {
     return try {
         this.toLong()
     } catch (e: Exception) {

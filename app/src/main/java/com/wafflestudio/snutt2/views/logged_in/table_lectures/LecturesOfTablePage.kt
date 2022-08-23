@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,13 +25,22 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LecturesOfTablePage() {
     val navController = NavControllerContext.current
     val viewModel = hiltViewModel<SelectedTimetableViewModel>()
+
+    // share viewModel
+    val backStackEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry(NavigationDestination.Home)
+    }
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     val lectureList = viewModel.lastViewedTable.asObservable()
         .filterEmpty()
@@ -47,10 +57,15 @@ fun LecturesOfTablePage() {
         LecturesOfTable(
             lectures = lectureList,
             onClickAdd = {
-                navController.navigate("")
+                lectureDetailViewModel.setAddMode(true)
+                lectureDetailViewModel.setEditMode()
+                lectureDetailViewModel.initializeSelectedLectureFlow(Defaults.defaultLectureDto)
+                navController.navigate(NavigationDestination.LectureDetailCustom)
             },
             onClickLecture = { lecture ->
-                navController.navigate("lectures/${lecture.id}")
+                lectureDetailViewModel.initializeSelectedLectureFlow(lecture)
+                if (lecture.isCustom) navController.navigate(NavigationDestination.LectureDetailCustom)
+                else navController.navigate(NavigationDestination.LectureDetail)
             }
         )
     }

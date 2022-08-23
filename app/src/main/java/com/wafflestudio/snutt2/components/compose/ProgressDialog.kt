@@ -49,7 +49,7 @@ fun ProgressDialog(
 fun CustomDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    title: String,
+    title: String? = null,
     positiveButtonText: String = stringResource(R.string.common_ok),
     negativeButtonText: String = stringResource(R.string.common_cancel),
     content: @Composable () -> Unit
@@ -57,11 +57,13 @@ fun CustomDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface {
             Column {
-                Row {
-                    Box(modifier = Modifier.padding(20.dp)) {
-                        Text(text = title, fontSize = 18.sp)
+                title?.let {
+                    Row {
+                        Box(modifier = Modifier.padding(20.dp)) {
+                            Text(text = it, fontSize = 18.sp)
+                        }
+                        Box(modifier = Modifier.weight(1f))
                     }
-                    Box(modifier = Modifier.weight(1f))
                 }
 
                 Box(modifier = Modifier.padding(start = 20.dp)) {

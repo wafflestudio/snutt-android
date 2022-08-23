@@ -71,8 +71,8 @@ fun HomeDrawer(
         ) {
             Picker(
                 list = courseBookList,
-                value = selectedCourseBook,
-                onValueChanged = { pickerSelectedCourseBook = it },
+                initialValue = selectedCourseBook,
+                onValueChanged = { index -> pickerSelectedCourseBook = courseBookList[index] },
                 PickerItemContent = { index ->
                     CourseBookPickerItem(name = courseBookList[index].toFormattedString(context))
                 }
@@ -149,7 +149,7 @@ fun HomeDrawer(
 
     var changeThemeBottomSheetState by remember { mutableStateOf(false) }
     if (changeThemeBottomSheetState) {
-        scope.launch {
+        LaunchedEffect(Unit) {
             launch { closeDrawer.invoke() }
             coroutineScope {
                 hideBottomSheet(true)
@@ -192,7 +192,7 @@ fun HomeDrawer(
 
     var showMoreBottomSheetState by remember { mutableStateOf(false) }
     if (showMoreBottomSheetState) {
-        scope.launch {
+        LaunchedEffect(Unit) {
             showBottomSheet(150.dp) {
                 ShowMoreBottomSheetContent(
                     onChangeTitle = {

@@ -8,10 +8,7 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.DataProvider
 import com.wafflestudio.snutt2.lib.data.DataValue
 import com.wafflestudio.snutt2.lib.data.SubjectDataValue
-import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
-import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
-import com.wafflestudio.snutt2.lib.network.dto.ResetLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toOptional
@@ -39,15 +36,36 @@ class LectureDetailViewModel @Inject constructor(
     val selectedColor: DataValue<Optional<Pair<Int, ColorDto?>>> = _selectedColor
 
     // TODO: 나중에 위에 3개 지우기
+    val colorTheme: TimetableColorTheme? = myLectureRepository.lastViewedTable.get().value?.theme
+    private var addMode = false
+    private val _editMode = MutableStateFlow(false)
+    val editMode = _editMode.asStateFlow()
     private var originalLectureDto = Defaults.defaultLectureDto
     private val _selectedLectureFlow = MutableStateFlow(originalLectureDto)
     val selectedLectureFlow = _selectedLectureFlow.asStateFlow()
+
+    fun isAddMode(): Boolean {
+        return addMode
+    }
+
+    fun setAddMode(value: Boolean) {
+        addMode = value
+    }
+
+    fun setEditMode() {
+        viewModelScope.launch { _editMode.emit(true) }
+    }
+
+    fun unsetEditMode() {
+        viewModelScope.launch { _editMode.emit(false) }
+    }
+
     fun initializeSelectedLectureFlow(lectureDto: LectureDto?) {
         originalLectureDto = lectureDto ?: Defaults.defaultLectureDto // null 문제 (reset에서 비롯됨)
         viewModelScope.launch { _selectedLectureFlow.emit(originalLectureDto) }
     }
 
-    fun abandonEditedSelectedLectureFlow() {
+    fun abandonEditingSelectedLectureFlow() {
         viewModelScope.launch { _selectedLectureFlow.emit(originalLectureDto) }
     }
 
@@ -55,23 +73,8 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _selectedLectureFlow.emit(newLectureDto) }
     }
 
-    val colorTheme: TimetableColorTheme? = myLectureRepository.lastViewedTable.get().value?.theme
-
     fun updateLecture2(): Single<PutLectureResults> {
-        val param = PutLectureParams(
-            id = _selectedLectureFlow.value.id,
-            course_title = _selectedLectureFlow.value.course_title,
-            instructor = _selectedLectureFlow.value.instructor,
-            colorIndex = _selectedLectureFlow.value.colorIndex,
-            color = _selectedLectureFlow.value.color,
-            department = _selectedLectureFlow.value.department,
-            academic_year = _selectedLectureFlow.value.academic_year,
-            credit = _selectedLectureFlow.value.credit,
-            classification = _selectedLectureFlow.value.classification,
-            category = _selectedLectureFlow.value.category,
-            remark = _selectedLectureFlow.value.remark,
-            class_time_json = _selectedLectureFlow.value.class_time_json
-        )
+        val param = buildPutLectureParams()
         return myLectureRepository.updateLecture(_selectedLectureFlow.value.id, param)
     }
 
@@ -82,6 +85,11 @@ class LectureDetailViewModel @Inject constructor(
 
     fun resetLecture2(): Single<ResetLectureResults> {
         return myLectureRepository.resetLecture(_selectedLectureFlow.value.id)
+    }
+
+    fun createLecture2(): Single<PostCustomLectureResults> {
+        val param = buildPostLectureParams()
+        return myLectureRepository.createLecture(param)
     }
 
     // TODO: 여기부터 아래로 쭉 지우기
@@ -138,5 +146,34 @@ class LectureDetailViewModel @Inject constructor(
             IllegalStateException("lecture with no instructor")
         )
         return myLectureRepository.getLectureReviewUrl(courseNumber, instructor)
+    }
+
+    private fun buildPutLectureParams(): PutLectureParams {
+        return PutLectureParams(
+            id = _selectedLectureFlow.value.id,
+            course_title = _selectedLectureFlow.value.course_title,
+            instructor = _selectedLectureFlow.value.instructor,
+            colorIndex = _selectedLectureFlow.value.colorIndex,
+            color = _selectedLectureFlow.value.color,
+            department = _selectedLectureFlow.value.department,
+            academic_year = _selectedLectureFlow.value.academic_year,
+            credit = _selectedLectureFlow.value.credit,
+            classification = _selectedLectureFlow.value.classification,
+            category = _selectedLectureFlow.value.category,
+            remark = _selectedLectureFlow.value.remark,
+            class_time_json = _selectedLectureFlow.value.class_time_json
+        )
+    }
+
+    private fun buildPostLectureParams(): PostCustomLectureParams {
+        return PostCustomLectureParams(
+            course_title = _selectedLectureFlow.value.course_title,
+            instructor = _selectedLectureFlow.value.instructor,
+            colorIndex = _selectedLectureFlow.value.colorIndex,
+            color = _selectedLectureFlow.value.color,
+            credit = _selectedLectureFlow.value.credit,
+            remark = _selectedLectureFlow.value.remark,
+            class_time_json = _selectedLectureFlow.value.class_time_json
+        )
     }
 }

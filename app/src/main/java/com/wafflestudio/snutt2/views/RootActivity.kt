@@ -24,6 +24,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.TimeTablePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailCustomPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
@@ -42,9 +43,9 @@ val HomePageController = compositionLocalOf<PagerState> {
     return@compositionLocalOf PagerState(TimeTablePage)
 }
 
-val ReviewUrlController = compositionLocalOf<ReviewUrlController> {
-    throw RuntimeException("")
-}
+// val ReviewUrlController = compositionLocalOf<ReviewUrlController> {
+//    throw RuntimeException("")
+// }
 
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
@@ -74,7 +75,7 @@ class RootActivity : BaseActivity() {
 
         val startDestination =
             if (snuttStorage.accessToken.get()
-                    .isEmpty()
+                .isEmpty()
             ) NavigationDestination.Onboard else NavigationDestination.Home
 
         CompositionLocalProvider(
@@ -92,11 +93,9 @@ class RootActivity : BaseActivity() {
 
                 composable(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable(NavigationDestination.LectureDetail) {
-                    CompositionLocalProvider(ReviewUrlController provides reviewUrlController) {
-                        LectureDetailPage()
-                    }
-                }
+                composable(NavigationDestination.LectureDetail) { LectureDetailPage() }
+
+                composable(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
 
                 composable(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
