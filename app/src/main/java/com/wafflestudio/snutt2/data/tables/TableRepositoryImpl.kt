@@ -42,7 +42,11 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTableList(): List<SimpleTableDto> {
-        return api._getTableList()
+        val response = api._getTableList()
+        tableMapStore.updateData {
+            TableMapPreferences(response.map { it.id to it }.toMap())
+        }
+        return response
     }
 
     override suspend fun createTable(year: Long, semester: Long, title: String?) {

@@ -36,7 +36,6 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -48,9 +47,8 @@ import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -63,34 +61,30 @@ class CanvasContext(
     val dayLabelHeight = 28.5f.dp(context)
     val cellPadding = 4.dp(context)
 
-    val dayLabelTextPaint: Paint =
+    val dayLabelTextPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.argb(180, 0, 0, 0)
+        textSize = 12.sp(context)
+        textAlign = Paint.Align.CENTER
+        typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+    }
+    val hourLabelTextPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.argb(180, 0, 0, 0)
+        textSize = 12.sp(context)
+        textAlign = Paint.Align.RIGHT
+        typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+    }
+    val lectureCellTextRect = TextRect(
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.argb(180, 0, 0, 0)
-            textSize = 12.sp(context)
-            textAlign = Paint.Align.CENTER
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+            textSize = 10f.sp(context)
+            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
         }
-    val hourLabelTextPaint: Paint =
+    )
+    val lectureCellSubTextRect = TextRect(
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.argb(180, 0, 0, 0)
-            textSize = 12.sp(context)
-            textAlign = Paint.Align.RIGHT
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+            textSize = 11f.sp(context)
+            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
         }
-    val lectureCellTextRect =
-        TextRect(
-            Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                textSize = 10f.sp(context)
-                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
-            }
-        )
-    val lectureCellSubTextRect =
-        TextRect(
-            Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                textSize = 11f.sp(context)
-                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
-            }
-        )
+    )
 }
 
 val LocalCanvasContext = compositionLocalOf<CanvasContext> {
@@ -104,9 +98,9 @@ fun TimetablePage(
 ) {
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
-    val tableListViewModel = hiltViewModel<TableListViewModel>()
+    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val keyboardManager = LocalSoftwareKeyboardController.current
-    val table = TableContext.current.table
+    val table = TableContext.current.table // TODO: null 처리 재고
     val scope = rememberCoroutineScope()
     var changeTitleDialogState by remember {
         mutableStateOf(false)
@@ -116,82 +110,77 @@ fun TimetablePage(
             onDismiss = {
                 changeTitleDialogState = false
                 keyboardManager?.hide()
-            },
-            onConfirm = { newTitle ->
-                tableListViewModel.changeNameTable(
-                    tableId = table.id,
+            }, onConfirm = { newTitle ->
+            scope.launch {
+                tableListViewModel.changeNameTableNew(
+                    tableId = table?.id ?: "", // TODO: null 처리 재고
                     name = newTitle
                 )
-                    .subscribeBy(
-                        onError = {}
-                    )
                 changeTitleDialogState = false
                 keyboardManager?.hide()
-            },
-            oldTitle = table.title
+            }
+        }, oldTitle = table?.title ?: "" // TODO: null 처리 재고
         )
     }
 
     Column {
-        TopAppBar(
-            title = {
-                val creditText = stringResource(
+        TopAppBar(title = { // TODO: null 처리 재고
+            val creditText = table?.let {
+                stringResource(
                     id = R.string.timetable_credit,
-                    table.lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
+                    (table.lectureList).fold(0L) { acc, lecture -> acc + lecture.credit }
                 )
-                Row {
-                    Text(
-                        text = table.title,
-                        modifier = Modifier.clicks {
-                            changeTitleDialogState = true
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(text = creditText)
-                }
-            },
-            navigationIcon = {
-                Image(
-                    modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .clicks {
-                            scope.launch { drawerState.open() }
-                        },
-                    painter = painterResource(id = R.drawable.ic_drawer),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
+            } ?: ""
+            Row {
+                Text(
+                    text = table?.title ?: "",
+                    modifier = Modifier.clicks {
+                        changeTitleDialogState = true
+                    }
                 )
-            },
-            actions = {
-                Image(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
-                    painter = painterResource(id = R.drawable.ic_lecture_list),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
-                )
-                Image(
-                    modifier = Modifier.size(30.dp),
-                    painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
-                )
-                Image(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.Notification) },
-                    painter = painterResource(
-                        id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
-                    ),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
-                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(text = creditText)
             }
-        )
+        }, navigationIcon = {
+            Image(
+                modifier = Modifier
+                    .height(30.dp)
+                    .fillMaxWidth()
+                    .clicks {
+                        scope.launch { drawerState.open() }
+                    },
+                painter = painterResource(id = R.drawable.ic_drawer),
+                contentDescription = stringResource(R.string.home_timetable_drawer)
+            )
+        }, actions = {
+            Image(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
+                painter = painterResource(id = R.drawable.ic_lecture_list),
+                contentDescription = stringResource(R.string.home_timetable_drawer)
+            )
+            Image(
+                modifier = Modifier.size(30.dp),
+                painter = painterResource(id = R.drawable.ic_share),
+                contentDescription = stringResource(R.string.home_timetable_drawer)
+            )
+            Image(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks { navController.navigate(NavigationDestination.Notification) },
+                painter = painterResource(
+                    id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
+                ),
+                contentDescription = stringResource(R.string.home_timetable_drawer)
+            )
+        })
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            TimeTable(selectedLecture = Optional.empty())
+            TimeTable(selectedLecture = mutableStateOf(null))
         }
     }
 }
@@ -200,25 +189,24 @@ fun TimetablePage(
 @Composable
 fun TimeTable(
     touchEnabled: Boolean = true,
-    selectedLecture: Optional<LectureDto>
+    selectedLecture: State<LectureDto?>
 ) {
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val context = LocalContext.current
     val navigator = NavControllerContext.current
-    val lectures = TableContext.current.table.lectureList
+    val lectures = TableContext.current.table?.lectureList ?: emptyList() // TODO: null 처리 재고
     val trimParam = TableContext.current.trimParam
 
-    val fittedTrimParam =
-        if (trimParam.forceFitLectures) {
-            (selectedLecture.value?.let { lectures + it } ?: lectures)
-                .getFittingTrimParam(TableTrimParam.Default)
-        } else trimParam
+    val fittedTrimParam = if (trimParam.forceFitLectures) {
+        (selectedLecture.value?.let { lectures + it } ?: lectures).getFittingTrimParam(
+            TableTrimParam.Default
+        )
+    } else trimParam
 
     val canvasContext = CanvasContext(
-        context = context,
-        fittedTrimParam = fittedTrimParam
+        context = context, fittedTrimParam = fittedTrimParam
     )
 
     Canvas(
@@ -240,7 +228,7 @@ fun TimeTable(
 
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
-                                    lectureDetailViewModel.initializeSelectedLectureFlow(lecture)
+                                    lectureDetailViewModel.initializeEditingLectureDetail(lecture)
                                     if (lecture.isCustom) {
                                         navigator.navigate(NavigationDestination.LectureDetailCustom)
                                     } else navigator.navigate(NavigationDestination.LectureDetail)
@@ -337,16 +325,18 @@ private fun DrawTableGrid() {
 @Composable
 private fun DrawLecture(lecture: LectureDto) {
     val context = LocalContext.current
-    val theme = TableContext.current.theme
+    val theme = TableContext.current.previewTheme ?: TableContext.current.table.theme
 
     lecture.class_time_json.forEach {
         DrawClassTime(
             classTime = it,
             courseTitle = lecture.course_title,
-            bgColor = if (lecture.colorIndex == 0L && lecture.color.bgColor != null)
-                lecture.color.bgColor!! else theme.getColorByIndex(context, lecture.colorIndex),
-            fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null)
-                lecture.color.fgColor!! else context.getColor(R.color.white)
+            bgColor = if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!! else theme.getColorByIndex(
+                context, lecture.colorIndex
+            ),
+            fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
+                R.color.white
+            )
         )
     }
 }
@@ -382,11 +372,9 @@ private fun DrawClassTime(
             (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
         val left = hourLabelWidth + (dayOffset) * unitWidth
-        val right =
-            hourLabelWidth + (dayOffset) * unitWidth + unitWidth
+        val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
         val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
-        val bottom =
-            dayLabelHeight + (hourRangeOffset.second) * unitHeight
+        val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
 
         val rect = RectF(left, top, right, bottom)
 
@@ -406,14 +394,10 @@ private fun DrawClassTime(
         val cellWidth = right - left - cellPadding * 2
 
         val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle,
-            cellWidth.toInt(),
-            cellHeight.toInt()
+            courseTitle, cellWidth.toInt(), cellHeight.toInt()
         )
         val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place,
-            cellWidth.toInt(),
-            cellHeight.toInt() - courseTitleHeight
+            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight
         )
 
         drawIntoCanvas { canvas ->
@@ -440,10 +424,7 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto) {
     for (classTime in selectedLecture.class_time_json) {
         selectedLecture.color.bgRaw
         DrawClassTime(
-            classTime,
-            selectedLecture.course_title,
-            -0x1f1f20,
-            -0xcccccd
+            classTime, selectedLecture.course_title, -0x1f1f20, -0xcccccd
         )
     }
 }
@@ -467,21 +448,16 @@ private fun ChangeTitleDialog(
 object Defaults {
     val defaultTableDto = TableDto(
         id = "",
-        year = 2023,
+        year = 2022,
         semester = 1,
-        title = "",
+        title = "나의 시간표",
         lectureList = emptyList(),
         updatedAt = "default",
-        totalCredit = null,
+        totalCredit = 0,
         theme = TimetableColorTheme.SNUTT
     )
     val defaultSimpleTableDto = SimpleTableDto(
-        id = "",
-        year = 2022,
-        semester = 1L,
-        title = "",
-        updatedAt = "",
-        totalCredit = null
+        id = "", year = 2022, semester = 1L, title = "", updatedAt = "", totalCredit = null
     )
     val defaultLectureDto = LectureDto(
         id = "",
@@ -501,11 +477,7 @@ object Defaults {
         class_time_mask = emptyList()
     )
     val defaultClassTimeDto = ClassTimeDto(
-        day = 0,
-        start = 0f,
-        len = 1f,
-        place = "",
-        id = null
+        day = 0, start = 0f, len = 1f, place = "", id = null
     )
 }
 

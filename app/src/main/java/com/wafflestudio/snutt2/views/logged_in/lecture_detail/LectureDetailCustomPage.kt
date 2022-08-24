@@ -19,21 +19,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LectureDetailCustomPage() {
     val scope = rememberCoroutineScope()
@@ -44,30 +40,24 @@ fun LectureDetailCustomPage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
 
     val editMode by vm.editMode.collectAsState()
-    val lectureState by vm.selectedLectureFlow.collectAsState()
-    val theme = vm.colorTheme ?: TimetableColorTheme.SNUTT
+    val lectureState by vm.editingLectureDetail.collectAsState()
+    val currentTable = vm.currentTable.collectAsState()
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
     if (deleteLectureDialogState) {
         CustomDialog(
-            onDismiss = { deleteLectureDialogState = false },
-            onConfirm = {
+            onDismiss = { deleteLectureDialogState = false }, onConfirm = {
+            scope.launch {
                 vm.removeLecture2()
-                    .subscribeBy(
-                        onError = {},
-                        onComplete = {
-                            // main thread 에서 navigate 해야 한다고 함.
-                            scope.launch(Dispatchers.Main) {
-                                navController.popBackStack()
-                            }
-                            deleteLectureDialogState = false
-                        }
-                    )
-            },
-            title = "강좌 삭제"
+                scope.launch(Dispatchers.Main) {
+                    navController.popBackStack()
+                }
+                deleteLectureDialogState = false
+            }
+        }, title = "강좌 삭제"
         ) {
             Text(text = "강좌를 삭제하시겠습니까?")
         }
@@ -76,13 +66,11 @@ fun LectureDetailCustomPage() {
     var editExitDialogState by remember { mutableStateOf(false) }
     if (editExitDialogState) {
         CustomDialog(
-            onDismiss = { editExitDialogState = false },
-            onConfirm = {
-                vm.abandonEditingSelectedLectureFlow()
-                editExitDialogState = false
-                vm.unsetEditMode()
-            },
-            title = "편집을 취소하시겠습니까?"
+            onDismiss = { editExitDialogState = false }, onConfirm = {
+            vm.abandonEditingLectureDetail()
+            editExitDialogState = false
+            vm.unsetEditMode()
+        }, title = "편집을 취소하시겠습니까?"
         ) {}
     }
     // 편집 모드에서 뒤로가기 누르면 편집 취소 dialog 띄우기
@@ -99,12 +87,12 @@ fun LectureDetailCustomPage() {
             classTime = lectureState.class_time_json[editingClassTimeIndex],
             onDismiss = { editTimeDialogState = false },
             onConfirm = { editedClassTime ->
-                vm.editSelectedLectureFlow(
+                vm.editEditingLectureDetail(
                     lectureState.copy(
-                        class_time_json =
-                        lectureState.class_time_json.toMutableList().also {
-                            it[editingClassTimeIndex] = editedClassTime
-                        }
+                        class_time_json = lectureState.class_time_json.toMutableList()
+                            .also {
+                                it[editingClassTimeIndex] = editedClassTime
+                            }
                     )
                 )
                 editTimeDialogState = false
@@ -115,19 +103,17 @@ fun LectureDetailCustomPage() {
     var deleteTimeDialogState by remember { mutableStateOf(false) }
     if (deleteTimeDialogState) {
         CustomDialog(
-            onDismiss = { deleteTimeDialogState = false },
-            onConfirm = {
-                vm.editSelectedLectureFlow(
-                    lectureState.copy(
-                        class_time_json =
-                        lectureState.class_time_json.toMutableList().also {
+            onDismiss = { deleteTimeDialogState = false }, onConfirm = {
+            vm.editEditingLectureDetail(
+                lectureState.copy(
+                    class_time_json = lectureState.class_time_json.toMutableList()
+                        .also {
                             it.removeAt(editingClassTimeIndex)
                         }
-                    )
                 )
-                deleteTimeDialogState = false
-            },
-            title = "시간을 삭제하시겠습니까?"
+            )
+            deleteTimeDialogState = false
+        }, title = "시간을 삭제하시겠습니까?"
         ) {}
     }
 
@@ -145,74 +131,62 @@ fun LectureDetailCustomPage() {
             .fillMaxSize()
             .background(Color(0xfff2f2f2)) // TODO: Color
     ) {
-        TopAppBar(
-            title = {
-                Text(text = "강의 상세 보기")
-            },
-            navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier.clicks {
-                        // '직접 강좌 추가하기' 로 진입했으면 < 아이콘 누를 때 바로 pop
-                        if (vm.isAddMode()) {
-                            vm.setAddMode(false)
-                            vm.unsetEditMode()
-                        } else {
-                            if (editMode) editExitDialogState = true
-                            else navController.popBackStack()
-                        }
+        TopAppBar(title = {
+            Text(text = "강의 상세 보기")
+        }, navigationIcon = {
+            ArrowBackIcon(
+                modifier = Modifier.clicks {
+                    // '직접 강좌 추가하기' 로 진입했으면 < 아이콘 누를 때 바로 pop
+                    if (vm.isAddMode()) {
+                        vm.setAddMode(false)
+                        vm.unsetEditMode()
+                        navController.popBackStack()
+                    } else {
+                        if (editMode) editExitDialogState = true
+                        else navController.popBackStack()
                     }
-                )
-            },
-            actions = {
-                Text(
-                    text = if (editMode) "완료" else "편집",
-                    modifier = Modifier
-                        .clicks {
-                            if (editMode.not()) vm.setEditMode()
-                            else {
-                                if (vm.isAddMode()) {
-                                    vm
-                                        .createLecture2()
-                                        .subscribeBy(
-                                            onError = {},
-                                            onSuccess = {
-                                                /* FIXME
-                                                 * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                                 *
-                                                 * 하지만 @POST("/tables/{id}/lecture") api 는
-                                                 * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                                 * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                                 * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                                 *
-                                                 * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                                 * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                                 *
-                                                 * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                                 * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                                 */
-
-                                                vm.unsetEditMode()
-                                                vm.setAddMode(false)
-                                                scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                            }
-                                        )
-                                } else {
-                                    vm
-                                        .updateLecture2()
-                                        .subscribeBy(
-                                            onError = {}, // TODO: onApiError
-                                            onSuccess = {
-                                                vm.initializeSelectedLectureFlow(lectureState)
-                                                vm.unsetEditMode()
-                                            }
-                                        )
+                }
+            )
+        }, actions = {
+            Text(
+                text = if (editMode) "완료" else "편집",
+                modifier = Modifier
+                    .clicks {
+                        if (editMode.not()) vm.setEditMode()
+                        else {
+                            if (vm.isAddMode()) {
+                                scope.launch {
+                                    vm.createLecture2()
+                                    vm.unsetEditMode()
+                                    vm.setAddMode(false)
+                                /* FIXME
+                                 * 안드로이드는 여기서 그대로 detailPage 에 남는다.
+                                 *
+                                 * 하지만 @POST("/tables/{id}/lecture") api 는
+                                 * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
+                                 * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
+                                 * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
+                                 *
+                                 * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
+                                 * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
+                                 *
+                                 * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
+                                 * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
+                                 */
+                                    scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                }
+                            } else {
+                                scope.launch {
+                                    vm.updateLecture2()
+                                    vm.initializeEditingLectureDetail(lectureState)
+                                    vm.unsetEditMode()
                                 }
                             }
                         }
-                        .padding(horizontal = 10.dp)
-                )
-            }
-        )
+                    }
+                    .padding(horizontal = 10.dp)
+            )
+        })
         Column(
             modifier = Modifier.verticalScroll(scrollState)
         ) {
@@ -223,7 +197,7 @@ fun LectureDetailCustomPage() {
                     EditText(
                         value = lectureState.course_title,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(course_title = it))
+                            vm.editEditingLectureDetail(lectureState.copy(course_title = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -233,7 +207,7 @@ fun LectureDetailCustomPage() {
                     EditText(
                         value = lectureState.instructor,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(instructor = it))
+                            vm.editEditingLectureDetail(lectureState.copy(instructor = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -248,7 +222,9 @@ fun LectureDetailCustomPage() {
                     }
                 ) {
                     Row {
-                        ColorBox(lectureState.colorIndex, lectureState.color, theme)
+                        ColorBox(
+                            lectureState.colorIndex, lectureState.color, currentTable.value.theme
+                        )
                         Spacer(modifier = Modifier.weight(1f))
                         AnimatedVisibility(visible = editMode) {
                             ArrowRight(modifier = Modifier.size(16.dp))
@@ -259,7 +235,7 @@ fun LectureDetailCustomPage() {
                     EditText(
                         value = lectureState.credit.toString(),
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(credit = it.stringToLong()))
+                            vm.editEditingLectureDetail(lectureState.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
                         keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -275,7 +251,7 @@ fun LectureDetailCustomPage() {
                     EditText(
                         value = lectureState.remark,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(remark = it))
+                            vm.editEditingLectureDetail(lectureState.copy(remark = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -295,9 +271,10 @@ fun LectureDetailCustomPage() {
                 }
                 lectureState.class_time_json.forEachIndexed { idx, classTime ->
                     // TODO: stringUtil 정리
-                    val time = SNUTTUtils.numberToWday(classTime.day) + " " +
-                        SNUTTUtils.numberToTime(classTime.start) + "~" +
-                        SNUTTUtils.numberToTime(classTime.start + classTime.len)
+                    val time =
+                        SNUTTUtils.numberToWday(classTime.day) + " " + SNUTTUtils.numberToTime(
+                            classTime.start
+                        ) + "~" + SNUTTUtils.numberToTime(classTime.start + classTime.len)
 
                     LectureDetailTimeAndLocation(
                         timeText = time,
@@ -307,10 +284,12 @@ fun LectureDetailCustomPage() {
                             editTimeDialogState = true
                         },
                         onLocationTextChange = { changedLocation ->
-                            vm.editSelectedLectureFlow(
+                            vm.editEditingLectureDetail(
                                 lectureState.copy(
                                     class_time_json = lectureState.class_time_json.toMutableList()
-                                        .also { it[idx] = classTime.copy(place = changedLocation) }
+                                        .also {
+                                            it[idx] = classTime.copy(place = changedLocation)
+                                        }
                                 )
                             )
                         },
@@ -338,10 +317,9 @@ fun LectureDetailCustomPage() {
                             .clicks {
                                 classTimeAnimationState =
                                     MutableTransitionState(false).apply { targetState = true }
-                                vm.editSelectedLectureFlow(
+                                vm.editEditingLectureDetail(
                                     lectureState.copy(
-                                        class_time_json =
-                                        lectureState.class_time_json
+                                        class_time_json = lectureState.class_time_json
                                             .toMutableList()
                                             .also { it.add(Defaults.defaultClassTimeDto) }
                                     )
@@ -404,8 +382,7 @@ fun DayAndTimeSelectorDialog(
         onConfirm = {
             onConfirm(
                 classTime.copy(
-                    day = day,
-                    start = startTime - 8f, // TODO: 24시간 개선시 반영
+                    day = day, start = startTime - 8f, // TODO: 24시간 개선시 반영
                     len = endTime - startTime
                 )
             )
@@ -427,14 +404,12 @@ fun DayAndTimeSelectorDialog(
                         indexOf(8f), // 아직 시작 시간은 8시가 하한     TODO: 24시간 개선시 변경
                         indexOf(24f) // 시작 시간은 24:00 선택 불가
                     ),
-                    initialValue = timeStringAtIndex(indexOf(startTime)),
-                    onValueChanged = {
+                    initialValue = timeStringAtIndex(indexOf(startTime)), onValueChanged = {
                         // 콜백되는 인덱스는 08시가 index 0인 리스트 기준
                         startTime = (
                             it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
                             ) + 8f // TODO: 24시간 개선시 변경
-                        if (endTime <= startTime) endTime =
-                            startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        if (endTime <= startTime) endTime = startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
                     }
                 ) {
                     // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경
@@ -448,8 +423,7 @@ fun DayAndTimeSelectorDialog(
                         indexOf(startTime + 0.5f), // TODO: 시간 최소 단위 바꾸면 변경
                         timeList.size
                     ),
-                    initialValue = timeStringAtIndex(indexOf(endTime)),
-                    onValueChanged = {
+                    initialValue = timeStringAtIndex(indexOf(endTime)), onValueChanged = {
                         // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
                         endTime = (it / 2f) + startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
                     }

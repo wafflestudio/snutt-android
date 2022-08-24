@@ -108,6 +108,7 @@
     <string name="search_result_item_remove_button">- 삭제하기</string>
     <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
     <string name="search_result_item_syllabus_button">강의계획서</string>
+    <string name="search_result_item_detail_button">자세희</string>
     <string name="search_result_item_review_button">강의평</string>
     <string name="search_result_empty">검색 결과가 없습니다.</string>
     <string name="search_result_placeholder">SNUTT 검색 꿀팁 🍯</string>
