@@ -43,7 +43,7 @@ object PreferenceModule {
 
     @Provides
     @Singleton
-    fun provideUserPreferencesStore(context: Context, moshi: Moshi): DataStore<UserPreferences> {
+    fun provideUserPreferencesStore(@ApplicationContext context: Context, moshi: Moshi): DataStore<UserPreferences> {
         UserPreferencesSerializer.moshi = moshi
         return context.userPreferencesStore
     }

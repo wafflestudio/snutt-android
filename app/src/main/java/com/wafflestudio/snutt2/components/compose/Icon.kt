@@ -249,3 +249,25 @@ fun CheckedIcon(
         contentDescription = ""
     )
 }
+
+@Composable
+fun SettingsIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_setting_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SendIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_send),
+        contentDescription = ""
+    )
+}

@@ -129,6 +129,7 @@ class RootActivity : BaseActivity() {
         composable(NavigationDestination.TeamInfo) { TeamInfoPage() }
         composable(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable(NavigationDestination.UserConfig) { UserConfigPage() }
+        composable(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
     }
 }
 

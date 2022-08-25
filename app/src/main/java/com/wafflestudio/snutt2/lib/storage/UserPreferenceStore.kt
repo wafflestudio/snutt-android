@@ -75,6 +75,7 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
             withContext(Dispatchers.IO) {
                 moshi.adapter(UserPreferences::class.java)
                     .fromJson(input.source().buffer())
+                    // FIXME: EOF exception 발생
                     ?: throw JsonDataException("data not exists")
             }
         } catch (exception: JsonDataException) {
