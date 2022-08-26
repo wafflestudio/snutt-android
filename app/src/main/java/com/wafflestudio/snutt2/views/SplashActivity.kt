@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.base.BaseActivity
-import com.wafflestudio.snutt2.ui.SnuttTheme
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.White900
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,7 +52,7 @@ class SplashActivity : BaseActivity() {
         setContentView(
             ComposeView(this).apply {
                 setContent {
-                    SnuttTheme {
+                    SNUTTTheme {
                         SplashScreen()
                     }
                 }
@@ -71,7 +71,7 @@ class SplashActivity : BaseActivity() {
 @Preview
 @Composable
 private fun SplashScreenPreview() {
-    SnuttTheme {
+    SNUTTTheme {
         SplashScreen()
     }
 }

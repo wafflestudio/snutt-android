@@ -176,7 +176,7 @@ class TutorialFragment : BaseFragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                SnuttTheme {
+                SNUTTTheme {
                     TutorialScreen(
                         onClickSignUp = { routeSignUp() },
                         onClickSignIn = { routeSignIn() }
@@ -202,7 +202,7 @@ class TutorialFragment : BaseFragment() {
 @Preview
 @Composable
 fun TutorialScreenPreview() {
-    SnuttTheme {
+    SNUTTTheme {
         TutorialScreen({}, {})
     }
 }
