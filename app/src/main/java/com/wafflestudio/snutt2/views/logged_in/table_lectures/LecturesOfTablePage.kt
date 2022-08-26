@@ -8,8 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,32 +22,27 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.rx.filterEmpty
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LecturesOfTablePage() {
     val navController = NavControllerContext.current
-    val viewModel = hiltViewModel<SelectedTimetableViewModel>()
+    val viewModel = hiltViewModel<TimetableViewModel>()
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
 
-    val lectureList = viewModel.lastViewedTable.asObservable()
-        .filterEmpty()
-        .map { it.lectureList }
-        .distinctUntilChanged()
-        .subscribeAsState(listOf())
-        .value
+    val currentTable = viewModel.currentTable.collectAsState(Defaults.defaultTableDto)
+    val lectureList = currentTable.value.lectureList
 
     Column {
         SimpleTopBar(
@@ -59,11 +54,12 @@ fun LecturesOfTablePage() {
             onClickAdd = {
                 lectureDetailViewModel.setAddMode(true)
                 lectureDetailViewModel.setEditMode()
-                lectureDetailViewModel.initializeSelectedLectureFlow(Defaults.defaultLectureDto)
+                lectureDetailViewModel.initializeEditingLectureDetail(Defaults.defaultLectureDto)
                 navController.navigate(NavigationDestination.LectureDetailCustom)
             },
             onClickLecture = { lecture ->
-                lectureDetailViewModel.initializeSelectedLectureFlow(lecture)
+                // TODO: [자세히] 눌러서 들어간 화면은 조금 달라야 한다. (색깔, 편집 버튼, 삭제 버튼 없어야)
+                lectureDetailViewModel.initializeEditingLectureDetail(lecture)
                 if (lecture.isCustom) navController.navigate(NavigationDestination.LectureDetailCustom)
                 else navController.navigate(NavigationDestination.LectureDetail)
             }

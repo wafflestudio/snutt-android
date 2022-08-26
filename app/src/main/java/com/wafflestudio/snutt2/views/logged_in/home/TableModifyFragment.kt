@@ -51,21 +51,21 @@ class TableModifyFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.changeNameButton.throttledClicks()
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMapMaybe {
-                dialogController.showTextDialog(
-                    R.string.home_drawer_change_name_dialog_title,
-                    tableTitle,
-                    R.string.home_drawer_change_name_dialog_hint
-                )
-            }
-            .flatMapCompletable {
-                tableTitle = it
-                tableListViewModel.changeNameTable(tableDto.id, it)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
+//        binding.changeNameButton.throttledClicks()
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .flatMapMaybe {
+//                dialogController.showTextDialog(
+//                    R.string.home_drawer_change_name_dialog_title,
+//                    tableTitle,
+//                    R.string.home_drawer_change_name_dialog_hint
+//                )
+//            }
+//            .flatMapCompletable {
+//                tableTitle = it
+//                tableListViewModel.changeNameTable(tableDto.id, it)
+//            }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribeBy(onError = apiOnError)
 
         binding.deleteButton.throttledClicks()
             .doOnComplete {

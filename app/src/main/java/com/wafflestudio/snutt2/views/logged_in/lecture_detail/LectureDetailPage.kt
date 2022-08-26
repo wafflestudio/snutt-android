@@ -28,56 +28,46 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.views.HomePageController
 import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LectureDetailPage() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val navController = NavControllerContext.current
-    val homePageController = HomePageController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
 
     // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
 
     val editMode by vm.editMode.collectAsState()
-    val lectureState by vm.selectedLectureFlow.collectAsState()
-    val theme = vm.colorTheme ?: TimetableColorTheme.SNUTT
+    val editingLectureDetail by vm.editingLectureDetail.collectAsState()
+    val theme = vm.currentTable.collectAsState()
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
     if (deleteLectureDialogState) {
         CustomDialog(
             onDismiss = { deleteLectureDialogState = false },
             onConfirm = {
-                vm.removeLecture2()
-                    .subscribeBy(
-                        onError = {},
-                        onComplete = {
-                            // main thread 에서 navigate 해야 한다고 함.
-                            scope.launch(Dispatchers.Main) {
-                                navController.popBackStack()
-                            }
-                            deleteLectureDialogState = false
-                        }
-                    )
+                scope.launch {
+                    vm.removeLecture2()
+                    scope.launch(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
+                    deleteLectureDialogState = false
+                }
             },
             title = "강좌 삭제"
         ) {
@@ -90,15 +80,12 @@ fun LectureDetailPage() {
         CustomDialog(
             onDismiss = { resetLectureDialogState = false },
             onConfirm = {
-                vm.resetLecture2()
-                    .subscribeBy(
-                        onError = {},
-                        onSuccess = { resetLectureResult ->
-                            vm.initializeSelectedLectureFlow(resetLectureResult.lectureList.find { it.id == lectureState.id })
-                            vm.unsetEditMode()
-                            resetLectureDialogState = false
-                        }
-                    )
+                scope.launch {
+                    val resetLecture = vm.resetLecture2()
+                    vm.initializeEditingLectureDetail(resetLecture)
+                    vm.unsetEditMode()
+                    resetLectureDialogState = false
+                }
             },
             title = "강좌 초기화"
         ) {
@@ -111,7 +98,7 @@ fun LectureDetailPage() {
         CustomDialog(
             onDismiss = { editExitDialogState = false },
             onConfirm = {
-                vm.abandonEditingSelectedLectureFlow()
+                vm.abandonEditingLectureDetail()
                 editExitDialogState = false
                 vm.unsetEditMode()
             },
@@ -148,15 +135,11 @@ fun LectureDetailPage() {
                         .clicks {
                             if (editMode.not()) vm.setEditMode()
                             else {
-                                vm
-                                    .updateLecture2()
-                                    .subscribeBy(
-                                        onError = {}, // TODO: onApiError
-                                        onSuccess = {
-                                            vm.initializeSelectedLectureFlow(lectureState)
-                                            vm.unsetEditMode()
-                                        }
-                                    )
+                                scope.launch {
+                                    vm.updateLecture2()
+                                    vm.initializeEditingLectureDetail(editingLectureDetail)
+                                    vm.unsetEditMode()
+                                }
                             }
                         }
                         .padding(horizontal = 10.dp)
@@ -171,9 +154,9 @@ fun LectureDetailPage() {
                 Margin(height = 4.dp)
                 LectureDetailItem(title = "강의명") {
                     EditText(
-                        value = lectureState.course_title,
+                        value = editingLectureDetail.course_title,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(course_title = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(course_title = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -181,9 +164,9 @@ fun LectureDetailPage() {
                 }
                 LectureDetailItem(title = "교수") {
                     EditText(
-                        value = lectureState.instructor,
+                        value = editingLectureDetail.instructor,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(instructor = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(instructor = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -198,7 +181,11 @@ fun LectureDetailPage() {
                     }
                 ) {
                     Row {
-                        ColorBox(lectureState.colorIndex, lectureState.color, theme)
+                        ColorBox(
+                            editingLectureDetail.colorIndex,
+                            editingLectureDetail.color,
+                            theme.value.theme
+                        )
                         Spacer(modifier = Modifier.weight(1f))
                         AnimatedVisibility(visible = editMode) {
                             ArrowRight(modifier = Modifier.size(16.dp))
@@ -212,9 +199,9 @@ fun LectureDetailPage() {
                 Margin(height = 4.dp)
                 LectureDetailItem(title = "학과") {
                     EditText(
-                        value = lectureState.department ?: "",
+                        value = editingLectureDetail.department ?: "",
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(department = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(department = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -222,9 +209,9 @@ fun LectureDetailPage() {
                 }
                 LectureDetailItem(title = "학년") {
                     EditText(
-                        value = lectureState.academic_year ?: "",
+                        value = editingLectureDetail.academic_year ?: "",
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(academic_year = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(academic_year = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -232,9 +219,9 @@ fun LectureDetailPage() {
                 }
                 LectureDetailItem(title = "학점") {
                     EditText(
-                        value = lectureState.credit.toString(),
+                        value = editingLectureDetail.credit.toString(),
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(credit = it.stringToLong()))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
                         keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -243,9 +230,9 @@ fun LectureDetailPage() {
                 }
                 LectureDetailItem(title = "분류") {
                     EditText(
-                        value = lectureState.classification ?: "",
+                        value = editingLectureDetail.classification ?: "",
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(classification = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(classification = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -253,28 +240,28 @@ fun LectureDetailPage() {
                 }
                 LectureDetailItem(title = "구분") {
                     EditText(
-                        value = lectureState.category ?: "",
+                        value = editingLectureDetail.category ?: "",
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(category = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(category = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
                 LectureDetailItem(title = "강좌번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = lectureState.course_number ?: "")
+                    Text(text = editingLectureDetail.course_number ?: "")
                 }
                 LectureDetailItem(title = "분반번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = lectureState.lecture_number ?: "")
+                    Text(text = editingLectureDetail.lecture_number ?: "")
                 }
                 LectureDetailItem(title = "인원") {
                     Text(text = "TODO")
                 }
                 LectureDetailRemark(title = "비고") { //  TODO: movementMethod 는 뭘까
                     EditText(
-                        value = lectureState.remark,
+                        value = editingLectureDetail.remark,
                         onValueChange = {
-                            vm.editSelectedLectureFlow(lectureState.copy(remark = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(remark = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
@@ -293,7 +280,7 @@ fun LectureDetailPage() {
                 ) {
                     Text(text = "시간 및 장소")
                 }
-                lectureState.class_time_json.forEachIndexed { idx, classTime ->
+                editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
                     // TODO: stringUtil 정리
                     val time = SNUTTUtils.numberToWday(classTime.day) + " " +
                         SNUTTUtils.numberToTime(classTime.start) + "~" +
@@ -303,9 +290,9 @@ fun LectureDetailPage() {
                         timeText = time,
                         locationText = classTime.place,
                         onLocationTextChange = { changedLocation ->
-                            vm.editSelectedLectureFlow(
-                                lectureState.copy(
-                                    class_time_json = lectureState.class_time_json.toMutableList()
+                            vm.editEditingLectureDetail(
+                                editingLectureDetail.copy(
+                                    class_time_json = editingLectureDetail.class_time_json.toMutableList()
                                         .also { it[idx] = classTime.copy(place = changedLocation) }
                                 )
                             )
@@ -321,28 +308,20 @@ fun LectureDetailPage() {
                     Margin(height = 30.dp)
                     Column(modifier = Modifier.background(Color.White)) {
                         LectureDetailButton(title = "강의계획서") {
-                            vm.getCourseBookUrl()
-                                .subscribeBy(
-                                    onError = {}, // TODO: apiOnError
-                                    onSuccess = { result ->
-                                        val intent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(result.url))
-                                        context.startActivity(intent)
-                                    }
-                                )
+                            scope.launch {
+                                vm.getCourseBookUrl().let { url ->
+                                    val intent =
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(intent)
+                                }
+                            }
                         }
                         LectureDetailButton(title = "강의평") {
-                            vm.getReviewContentsUrl() // FIXME: staging 에서는 원래 403 에러가 나는가?
-                                .subscribeBy(
-                                    onError = {},
-                                    onSuccess = {
-                                        navController.popBackStack()
-//                                    reviewUrlController.update(it) // TODO: ReviewPage 만들 때 재확인
-                                        scope.launch {
-                                            homePageController.animateScrollToPage(ReviewPage)
-                                        }
-                                    }
-                                )
+                            scope.launch {
+                                vm.getReviewContentsUrl().let {
+                                    // 강의평 쪽 api 403 난다
+                                }
+                            }
                         }
                     }
                 }
@@ -558,17 +537,3 @@ fun String.stringToLong(): Long {
         0
     }
 }
-
-// class LectureDtoNavType : NavType<LectureDto>(isNullableAllowed = false) {
-//    override fun get(bundle: Bundle, key: String): LectureDto? {
-//        return bundle.getParcelable(key)
-//    }
-//
-//    override fun parseValue(value: String): LectureDto {
-//        return Gson().fromJson(value, LectureDto::class.java)
-//    }
-//
-//    override fun put(bundle: Bundle, key: String, value: LectureDto) {
-//        bundle.putParcelable(key, value)
-//    }
-// }

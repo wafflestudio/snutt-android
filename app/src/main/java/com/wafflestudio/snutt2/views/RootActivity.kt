@@ -12,15 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.TimeTablePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -37,15 +33,6 @@ import javax.inject.Inject
 val NavControllerContext = compositionLocalOf<NavController> {
     throw RuntimeException("")
 }
-
-@OptIn(ExperimentalPagerApi::class)
-val HomePageController = compositionLocalOf<PagerState> {
-    return@compositionLocalOf PagerState(TimeTablePage)
-}
-
-// val ReviewUrlController = compositionLocalOf<ReviewUrlController> {
-//    throw RuntimeException("")
-// }
 
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
@@ -68,7 +55,6 @@ class RootActivity : BaseActivity() {
         }
     }
 
-    @OptIn(ExperimentalPagerApi::class)
     @Composable
     fun setUpUI() {
         val navController = rememberNavController()
@@ -80,7 +66,6 @@ class RootActivity : BaseActivity() {
 
         CompositionLocalProvider(
             NavControllerContext provides navController,
-            HomePageController provides rememberPagerState()
         ) {
 
             NavHost(navController = navController, startDestination = startDestination) {

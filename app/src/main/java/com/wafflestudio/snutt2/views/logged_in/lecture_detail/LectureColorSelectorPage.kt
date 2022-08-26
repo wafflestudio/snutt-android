@@ -38,11 +38,11 @@ fun LectureColorSelectorPage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
 
-    val lectureState by vm.selectedLectureFlow.collectAsState()
+    val lectureState by vm.editingLectureDetail.collectAsState()
 
-    val theme = vm.colorTheme ?: TimetableColorTheme.SNUTT
+    val currentTable = vm.currentTable.collectAsState()
 
     Column {
         TopAppBar(
@@ -59,16 +59,16 @@ fun LectureColorSelectorPage() {
         for (idx in 1L..9L) ColorItem(
             color = null,
             index = idx,
-            theme = theme,
+            theme = currentTable.value.theme,
             isSelected = (idx == lectureState.colorIndex)
         ) {
-            vm.editSelectedLectureFlow(lectureState.copy(colorIndex = idx, color = ColorDto()))
+            vm.editEditingLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
             navController.popBackStack()
         }
         ColorItem(
             color = lectureState.color,
             index = 0,
-            theme = theme,
+            theme = currentTable.value.theme,
             isSelected = (lectureState.colorIndex == 0L)
         ) {
             colorSelectorDialog(context, "글자 색")
@@ -76,7 +76,7 @@ fun LectureColorSelectorPage() {
                     colorSelectorDialog(context, "배경 색").map { Pair(fgColor, it) }
                 }
                 .subscribeBy { (fgColor, bgColor) ->
-                    vm.editSelectedLectureFlow(
+                    vm.editEditingLectureDetail(
                         lectureState.copy(
                             colorIndex = 0L,
                             color = ColorDto(fgColor, bgColor)

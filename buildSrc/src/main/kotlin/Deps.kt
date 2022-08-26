@@ -14,7 +14,7 @@ object Deps {
         const val Hilt = "2.38.1"
         const val Navigation = "2.4.0"
         const val Paging = "3.1.0"
-        const val Compose = "1.1.0-rc03"
+        const val Compose = "1.2.0-alpha03"
         const val AndroidGradle = "7.0.4"
         const val KtLintGradle = "10.2.1"
         const val PagingCompose = "1.0.0-alpha14"
