@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 
 private val LightThemeColors = lightColors(
     primary = SNUTTColors.White900,
-    primaryVariant = Gray400,
+    primaryVariant = SNUTTColors.Gray400,
     onPrimary = SNUTTColors.Black900,
     error = SNUTTColors.Red,
     background = SNUTTColors.White900,

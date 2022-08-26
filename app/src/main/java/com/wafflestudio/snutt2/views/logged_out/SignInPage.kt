@@ -1,29 +1,41 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ProgressDialog
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx3.await
+import kotlin.math.sin
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -31,14 +43,45 @@ fun SignInPage() {
     val navController = LocalNavController.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
-    val keyboardManager = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
     val authViewModel = hiltViewModel<AuthViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
+
+    val handleLocalSignIn = {
+        coroutineScope.launch {
+            try {
+                apiOnProgress.showProgress()
+                authViewModel.loginLocal(idField, passwordField).await()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            } catch (e: Exception) {
+                apiOnError(e)
+            } finally {
+                apiOnProgress.hideProgress()
+            }
+        }
+    }
+    val handleFacebookSignIn = {
+        coroutineScope.launch {
+            try {
+                apiOnProgress.showProgress()
+                val loginResult = facebookLogin(context)
+                authViewModel.loginFacebook(
+                    loginResult.accessToken.userId,
+                    loginResult.accessToken.token
+                ).await()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            } catch (e: Exception) {
+                apiOnError(e)
+            } finally {
+                apiOnProgress.hideProgress()
+            }
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,16 +89,18 @@ fun SignInPage() {
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp)
+            .clicks { focusManager.clearFocus() }
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(R.string.sign_in_logo_title),
                 modifier = Modifier.padding(top = 40.dp, bottom = 15.dp),
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title)
+            Text(
+                text = stringResource(R.string.sign_in_logo_title),
+                style = SNUTTTypography.h1,
             )
         }
 
@@ -67,21 +112,24 @@ fun SignInPage() {
                 .padding(top = 60.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            TextField(
+            EditText(
                 value = idField,
                 onValueChange = { idField = it },
-                placeholder = {
-                    Text(text = stringResource(R.string.sign_in_id_hint))
-                },
+                hint = stringResource(R.string.sign_in_id_hint),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            TextField(
+            EditText(
                 value = passwordField,
                 onValueChange = { passwordField = it },
-                placeholder = {
-                    Text(text = stringResource(R.string.sign_in_password_hint))
-                },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
+                hint = stringResource(R.string.sign_in_password_hint),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -96,20 +144,7 @@ fun SignInPage() {
                     .fillMaxWidth()
                     .height(45.dp),
                 shape = RectangleShape,
-                onClick = {
-                    coroutineScope.launch {
-                        try {
-                            apiOnProgress.showProgress()
-                            keyboardManager?.hide()
-                            authViewModel.loginLocal(idField, passwordField).await()
-                            navController.navigateAsOrigin(NavigationDestination.Home)
-                        } catch (e: Exception) {
-                            apiOnError(e)
-                        } finally {
-                            apiOnProgress.hideProgress()
-                        }
-                    }
-                }
+                onClick = { handleLocalSignIn() }
             ) {
                 Text(text = stringResource(R.string.sign_in_sign_in_button))
             }
@@ -118,23 +153,8 @@ fun SignInPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
-                onClick = {
-                    coroutineScope.launch {
-                        try {
-                            apiOnProgress.showProgress()
-                            val loginResult = facebookLogin(context)
-                            authViewModel.loginFacebook(
-                                loginResult.accessToken.userId,
-                                loginResult.accessToken.token
-                            ).await()
-                            navController.navigateAsOrigin(NavigationDestination.Home)
-                        } catch (e: Exception) {
-                            apiOnError(e)
-                        } finally {
-                            apiOnProgress.hideProgress()
-                        }
-                    }
-                }
+                onClick = { handleFacebookSignIn() }
+
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.iconfacebook),

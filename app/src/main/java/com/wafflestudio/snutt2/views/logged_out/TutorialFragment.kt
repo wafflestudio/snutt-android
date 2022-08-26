@@ -69,7 +69,7 @@ fun ActionButtons(
 
         Surface(
             modifier = Modifier
-                .background(Gray200)
+                .background(SNUTTColors.Gray200)
                 .fillMaxWidth()
                 .height(1.dp)
         ) {}
@@ -80,8 +80,8 @@ fun ActionButtons(
                     .weight(1f)
                     .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = White900,
-                    contentColor = Black900
+                    backgroundColor = SNUTTColors.White900,
+                    contentColor = SNUTTColors.Black900
                 ),
                 elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
                 onClick = onClickSignIn
@@ -94,7 +94,7 @@ fun ActionButtons(
 
             Surface(
                 modifier = Modifier
-                    .background(Gray200)
+                    .background(SNUTTColors.Gray200)
                     .fillMaxHeight()
                     .width(1.dp)
             ) {}
@@ -104,8 +104,8 @@ fun ActionButtons(
                     .weight(1f)
                     .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = White900,
-                    contentColor = Black900
+                    backgroundColor = SNUTTColors.White900,
+                    contentColor = SNUTTColors.Black900
                 ),
                 elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
                 onClick = onClickSignUp
@@ -129,7 +129,7 @@ private fun TutorialScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(White900)
+            .background(SNUTTColors.White900)
     ) {
         HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) { page ->
             TutorialPage(
@@ -156,8 +156,8 @@ private fun TutorialScreen(
                 .padding(30.dp)
                 .align(Alignment.CenterHorizontally),
             pagerState = pagerState,
-            activeColor = Gray400,
-            inactiveColor = Gray100,
+            activeColor = SNUTTColors.Gray400,
+            inactiveColor = SNUTTColors.Gray100,
             indicatorHeight = 12.dp,
             indicatorWidth = 12.dp,
         )
