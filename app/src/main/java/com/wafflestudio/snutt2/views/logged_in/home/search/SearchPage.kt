@@ -4,6 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -18,6 +21,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +40,8 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.NavControllerContext
 import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -47,7 +53,6 @@ import kotlinx.coroutines.launch
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
 ) {
-    // TODO: 검색 태그
     val navController = NavControllerContext.current
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
@@ -62,9 +67,18 @@ fun SearchPage(
     val lazyListState = searchViewModel.lazyListState
     val loadState = searchResultPagingItems.loadState
     val selectedLecture = searchViewModel.selectedLecture.collectAsState()
+    val tagsByTagType = searchViewModel.tagsByTagType.collectAsState()
+    val selectedTags = searchViewModel.selectedTags.collectAsState()
+    var searchOptionSheetState by remember { mutableStateOf(false) }
 
     Column {
-        TopAppBar {
+        TopAppBar(navigationIcon = {
+            SearchIcon(
+                modifier = Modifier.clicks {
+                    scope.launch { searchViewModel.query() }
+                }
+            )
+        }, title = {
             EditText(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,19 +104,32 @@ fun SearchPage(
                 },
                 hint = stringResource(R.string.search_hint)
             )
-        }
+        }, actions = {
+            FilterIcon(modifier = Modifier.clicks { searchOptionSheetState = true })
+        })
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
-
-            Box(
+            Column(
                 modifier = Modifier
                     .background(Color(0x80000000)) // TODO: 임시
                     .fillMaxSize()
             ) {
+                AnimatedVisibility(selectedTags.value.isNotEmpty()) {
+                    LazyRow(state = rememberLazyListState()) {
+                        items(selectedTags.value) {
+                            TagCell(text = it.name) {
+                                scope.launch {
+                                    searchViewModel.toggleTag(it)
+                                    searchViewModel.query()
+                                }
+                            }
+                        }
+                    }
+                }
                 when {
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1 -> {
                         SearchPlaceHolder()
@@ -149,6 +176,20 @@ fun SearchPage(
                     }
                 }
             }
+        }
+    }
+
+    val showBottomSheet = ShowBottomSheet.current
+    val hideBottomSheet = HideBottomSheet.current
+    if (searchOptionSheetState) {
+        LaunchedEffect(Unit) {
+            showBottomSheet(380.dp) {
+                SearchOptionSheet(tagsByTagType) {
+                    scope.launch { searchViewModel.query() }
+                    scope.launch { hideBottomSheet.invoke(false) }
+                }
+            }
+            searchOptionSheetState = false
         }
     }
 }
@@ -303,6 +344,29 @@ fun SearchEmptyPage() {
         Text(
             text = stringResource(R.string.search_result_empty), fontSize = 25.sp
         ) // TODO: 나중에 typography 맞추기
+    }
+}
+
+@Composable
+private fun TagCell(
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .height(30.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = text, textAlign = TextAlign.Center, modifier = Modifier.height(20.dp))
+            WhiteCloseIcon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .padding(2.5.dp)
+                    .clicks { onClick() }
+            )
+        }
     }
 }
 

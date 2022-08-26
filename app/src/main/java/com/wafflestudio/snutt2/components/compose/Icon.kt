@@ -163,6 +163,17 @@ fun VividCheckedIcon(
 }
 
 @Composable
+fun VividUncheckedIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_vivid_unchecked),
+        contentDescription = ""
+    )
+}
+
+@Composable
 fun DuplicateIcon(
     modifier: Modifier = Modifier
 ) {
@@ -246,6 +257,17 @@ fun CheckedIcon(
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.checked),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun WhiteCloseIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_close_white),
         contentDescription = ""
     )
 }
