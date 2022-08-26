@@ -146,16 +146,6 @@ fun HomePage() {
         )
     }
 
-    var popupDialogState by remember { mutableStateOf(true)}
-    if(popupDialogState) {
-        Popup(
-            url = "",
-            onClickFewDays = {},
-            onClickClose = { popupDialogState = false }
-        )
-    }
-
-
     CompositionLocalProvider(
         ShowBottomSheet provides showBottomSheet,
         HideBottomSheet provides hideBottomSheet,

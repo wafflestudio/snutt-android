@@ -14,13 +14,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val pagerState = rememberPagerState()
     Column(
         modifier = Modifier

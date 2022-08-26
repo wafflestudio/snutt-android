@@ -44,7 +44,7 @@ class RootActivity : BaseActivity() {
     lateinit var popupState: PopupState
 
     @Inject
-    lateinit var reviewUrlController: ReviewUrlController
+    lateinit var apiOnError: ApiOnError
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +58,20 @@ class RootActivity : BaseActivity() {
     @Composable
     fun setUpUI() {
         val navController = rememberNavController()
+
+        var isProgressVisible by remember { mutableStateOf(false) }
+
+        val apiOnProgress = remember {
+            object : ApiOnProgress {
+                override fun showProgress() {
+                    isProgressVisible = true
+                }
+
+                override fun hideProgress() {
+                    isProgressVisible = false
+                }
+            }
+        }
 
         val startDestination =
             if (snuttStorage.accessToken.get()

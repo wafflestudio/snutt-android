@@ -111,7 +111,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
@@ -121,6 +121,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Deps.Version.Compose
     }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
 }
 
 dependencies {

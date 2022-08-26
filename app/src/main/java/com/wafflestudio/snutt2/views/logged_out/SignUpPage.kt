@@ -21,43 +21,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ProgressDialog
-import com.wafflestudio.snutt2.views.NavControllerContext
-import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.navigateAsOrigin
+import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.views.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx3.await
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
+    val context = LocalContext.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
+
+    val keyboardManager = LocalSoftwareKeyboardController.current
+    val coroutineScope = rememberCoroutineScope()
+
     val authViewModel = hiltViewModel<AuthViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
     var passwordConfirmField by remember { mutableStateOf("") }
     var emailField by remember { mutableStateOf("") }
-
-    val keyboardManager = LocalSoftwareKeyboardController.current
-    val callbackManager = CallbackManager.Factory.create()
-    val loginManager = LoginManager.getInstance()
-    val context = LocalContext.current
-
-    var showProgressDialog by remember { mutableStateOf(false) }
-    if (showProgressDialog) {
-        ProgressDialog(
-            title = stringResource(R.string.sign_up_sign_up_button),
-            message = stringResource(R.string.sign_in_progress_bar_message),
-            onDismissRequest = { showProgressDialog = false }
-        )
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,27 +126,22 @@ fun SignUpPage() {
                     .height(45.dp),
                 shape = RectangleShape,
                 onClick = { // TODO: throttling
-                    val passwordConfirmPass = (passwordConfirmField == passwordField)
-                    if (passwordConfirmPass) {
-                        keyboardManager?.hide()
-                        showProgressDialog = true
-                        authViewModel.signUpLocal(idField, emailField, passwordField)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy( // TODO: dispose
-                                onSuccess = {
-                                    navController.navigateAsOrigin(NavigationDestination.Home)
-                                    showProgressDialog = false
-                                },
-                                onError = { // TODO: onError
-                                    showProgressDialog = false
-                                }
-                            )
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.sign_up_password_confirm_invalid_toast),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
+                    if (isPasswordConfirmPassed.not()) {
+                        context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
+                        return@Button
+                    }
+                    coroutineScope.launch {
+                        try {
+                            apiOnProgress.showProgress()
+                            keyboardManager?.hide()
+                            authViewModel.signUpLocal(idField, emailField, passwordField).await()
+                            navController.navigateAsOrigin(NavigationDestination.Home)
+                        } catch (e: Exception) {
+                            apiOnError(e)
+                        } finally {
+                            apiOnProgress.hideProgress()
+                        }
                     }
                 }
             ) {
@@ -165,12 +152,21 @@ fun SignUpPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
-                onClick = { // TODO: throttling
-                    loginManager.logInWithReadPermissions(
-                        context as ActivityResultRegistryOwner,
-                        callbackManager,
-                        emptyList()
-                    )
+                onClick = {
+                    coroutineScope.launch {
+                        try {
+                            apiOnProgress.showProgress()
+                            val loginResult = facebookLogin(context)
+                            val id = loginResult.accessToken.userId
+                            val token = loginResult.accessToken.token
+                            authViewModel.signUpFacebook(id, token).await()
+                            navController.navigateAsOrigin(NavigationDestination.Home)
+                        } catch (e: Exception) {
+                            apiOnError(e)
+                        } finally {
+                            apiOnProgress.hideProgress()
+                        }
+                    }
                 }
             ) {
                 Image(
@@ -186,38 +182,6 @@ fun SignUpPage() {
             modifier = Modifier.padding(top = 20.dp)
         )
     }
-
-    loginManager.registerCallback(
-        callbackManager,
-        object : FacebookCallback<LoginResult> {
-            override fun onCancel() {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onError(error: FacebookException) {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onSuccess(result: LoginResult) {
-                val id = result.accessToken.userId
-                val token = result.accessToken.token
-                authViewModel.signUpFacebook(id, token)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy( // TODO: Dispose
-                        onError = {}, // TODO: onError
-                        onSuccess = { navController.navigateAsOrigin(NavigationDestination.Home) }
-                    )
-            }
-        }
-    )
 
     // TODO: 이용 약관 버튼
 }
