@@ -1,12 +1,13 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -14,6 +15,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
@@ -55,23 +58,52 @@ fun TutorialPage() {
             indicatorWidth = 12.dp,
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         ) {
-            Button(
-                modifier = Modifier
-                    .weight(1f),
-                onClick = { navController.navigate(NavigationDestination.SignIn) }
-            ) {
-                Text(text = "로그인")
-            }
 
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = { navController.navigate(NavigationDestination.SignUp) }
-            ) {
-                Text(text = "가입")
+            Box(
+                modifier = Modifier
+                    .background(SNUTTColors.Gray100)
+                    .fillMaxWidth()
+                    .height(1.dp)
+            )
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                BorderButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    color = SNUTTColors.White900,
+                    onClick = { navController.navigate(NavigationDestination.SignIn) }
+                ) {
+                    Text(
+                        text = stringResource(R.string.tutorial_sign_in_button),
+                        style = MaterialTheme.typography.button
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .fillMaxHeight()
+                        .width(1.dp)
+                )
+
+                BorderButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    color = SNUTTColors.White900,
+                    onClick = { navController.navigate(NavigationDestination.SignUp) }
+                ) {
+                    Text(
+                        text = stringResource(R.string.tutorial_sign_up_button),
+                        style = MaterialTheme.typography.button
+                    )
+                }
             }
         }
     }
