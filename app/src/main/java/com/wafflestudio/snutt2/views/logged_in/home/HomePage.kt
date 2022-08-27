@@ -12,17 +12,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SearchPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SettingsPage
+import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.TimeTablePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
@@ -180,7 +187,8 @@ fun HomePage() {
                         .height(56.dp)
                         .fillMaxWidth()
                 ) {
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -188,10 +196,14 @@ fun HomePage() {
                             pageState = HomeItem.Timetable
                         },
                     ) {
-                        Text(text = "timetable")
+                        TimetableIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState.currentPage == TimeTablePage
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -199,10 +211,14 @@ fun HomePage() {
                             pageState = HomeItem.Search
                         },
                     ) {
-                        Text(text = "search")
+                        SearchIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState.currentPage == SearchPage
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -210,10 +226,14 @@ fun HomePage() {
                             pageState = HomeItem.Review
                         },
                     ) {
-                        Text(text = "review")
+                        ReviewIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState.currentPage == ReviewPage
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -221,7 +241,10 @@ fun HomePage() {
                             pageState = HomeItem.Settings
                         },
                     ) {
-                        Text(text = "settings")
+                        SettingIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState.currentPage == SettingsPage
+                        )
                     }
                 }
             }
