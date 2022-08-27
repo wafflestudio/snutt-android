@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_out
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,8 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.launch
@@ -136,33 +139,62 @@ fun SignInPage() {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.wrapContentHeight()
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
-                shape = RectangleShape,
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.Gray200,
                 onClick = { handleLocalSignIn() }
             ) {
-                Text(text = stringResource(R.string.sign_in_sign_in_button))
+                Text(
+                    text = stringResource(R.string.sign_in_sign_in_button),
+                    style = SNUTTTypography.button
+                )
             }
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
-                onClick = { handleFacebookSignIn() }
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.iconfacebook),
-                    contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
-                    modifier = Modifier.padding(end = 12.dp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
                 )
 
-                Text(text = stringResource(R.string.sign_in_sign_in_facebook_button))
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = "or", style = SNUTTTypography.body2, color = SNUTTColors.Gray200
+                )
+
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
+                )
+            }
+
+
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.FacebookBlue,
+                onClick = { handleFacebookSignIn() }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.iconfacebook),
+                        contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 12.dp),
+                    )
+
+                    Text(
+                        text = stringResource(R.string.sign_in_sign_in_facebook_button),
+                        color = SNUTTColors.FacebookBlue,
+                        style = SNUTTTypography.button
+                    )
+                }
             }
         }
     }

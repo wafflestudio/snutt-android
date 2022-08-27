@@ -12,6 +12,8 @@ object SNUTTColors {
 
     val Red = Color(0xffe54459)
 
+    val FacebookBlue = Color(0x993c5dd4)
+
     val Black900 = Color(0xff000000)
     val White900 = Color(0xffffffff)
 }

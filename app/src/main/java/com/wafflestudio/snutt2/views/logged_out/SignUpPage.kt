@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_out
 import android.widget.Toast
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -32,9 +33,11 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ProgressDialog
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -171,37 +174,70 @@ fun SignUpPage() {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.wrapContentHeight()
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
-                shape = RectangleShape,
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.Gray200,
                 onClick = { handleLocalSignUp() }
             ) {
-                Text(text = stringResource(R.string.sign_up_sign_up_button))
+                Text(
+                    text = stringResource(R.string.sign_up_sign_up_button),
+                    style = SNUTTTypography.button
+                )
             }
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
+                )
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = "or", style = SNUTTTypography.body2, color = SNUTTColors.Gray200
+                )
+
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
+                )
+            }
+
+
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.FacebookBlue,
                 onClick = { handleFacebookSignUp() }
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.iconfacebook),
-                    contentDescription = stringResource(id = R.string.sign_up_sign_up_facebook_button),
-                    modifier = Modifier.padding(end = 12.dp)
-                )
-                Text(text = stringResource(R.string.sign_up_sign_up_facebook_button))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.iconfacebook),
+                        contentDescription = stringResource(id = R.string.sign_up_sign_up_facebook_button),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 12.dp),
+                    )
+
+                    Text(
+                        text = stringResource(R.string.sign_up_sign_up_facebook_button),
+                        color = SNUTTColors.FacebookBlue,
+                        style = SNUTTTypography.button
+                    )
+                }
             }
+
+            Text(
+                text = stringResource(id = R.string.sign_up_terms),
+                modifier = Modifier.padding(top = 20.dp),
+                style = SNUTTTypography.body2
+            )
         }
-        Text(
-            text = stringResource(id = R.string.sign_up_terms),
-            modifier = Modifier.padding(top = 20.dp)
-        )
     }
 
     // TODO: 이용 약관 버튼
