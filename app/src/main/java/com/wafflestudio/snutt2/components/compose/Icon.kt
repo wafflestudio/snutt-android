@@ -152,12 +152,23 @@ fun ArrowDownIcon(
 }
 
 @Composable
-fun CheckedIcon(
+fun VividCheckedIcon(
     modifier: Modifier = Modifier
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_vivid_checked),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun VividUncheckedIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_vivid_unchecked),
         contentDescription = ""
     )
 }
@@ -213,6 +224,72 @@ fun PaletteIcon(
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_palette),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun TipCloseIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.btntipclose),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun ArrowRight(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.arrowright),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun CheckedIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.checked),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun WhiteCloseIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_close_white),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SettingsIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_setting_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SendIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_send),
         contentDescription = ""
     )
 }

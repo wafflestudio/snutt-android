@@ -44,4 +44,14 @@ interface UserRepository {
     suspend fun deleteFirebaseToken()
 
     suspend fun postForceLogout()
+
+    suspend fun setTableTrim(
+        dayOfWeekFrom: Int? = null,
+        dayOfWeekTo: Int? = null,
+        hourFrom: Int? = null,
+        hourTo: Int? = null,
+        isAuto: Boolean? = null,
+    )
+
+    suspend fun getAccessToken(): String
 }

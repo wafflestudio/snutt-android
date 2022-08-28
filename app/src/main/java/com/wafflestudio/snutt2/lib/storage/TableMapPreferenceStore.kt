@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
 import okio.source
+import java.io.EOFException
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -44,6 +45,8 @@ object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
             }
         } catch (exception: JsonDataException) {
             throw CorruptionException("Cannot read json.", exception)
+        } catch (exception: EOFException) {
+            return defaultValue
         }
     }
 

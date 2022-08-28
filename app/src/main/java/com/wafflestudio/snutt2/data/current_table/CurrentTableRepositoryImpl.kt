@@ -27,11 +27,11 @@ class CurrentTableRepositoryImpl @Inject constructor(
     override val previewTheme: Flow<TimetableColorTheme?>
         get() = _previewTheme
 
-    override suspend fun addLecture(lectureId: String) {
+    override suspend fun addLecture(lectureId: String, isForced: Boolean) {
         currentTableStore.updateData { prev ->
             val prevTable = prev.data
                 ?: throw IllegalStateException("cannot add lecture when current table not exists")
-            val response = api._postAddLecture(prevTable.id, lectureId)
+            val response = api._postAddLecture(prevTable.id, lectureId, isForced)
             prev.copy(data = response)
         }
     }

@@ -153,6 +153,31 @@ class UserRepositoryImpl @Inject constructor(
         performLogout()
     }
 
+    override suspend fun getAccessToken(): String {
+        return userStore.data.first().accessToken
+    }
+
+    override suspend fun setTableTrim(
+        dayOfWeekFrom: Int?,
+        dayOfWeekTo: Int?,
+        hourFrom: Int?,
+        hourTo: Int?,
+        isAuto: Boolean?
+    ) {
+        userStore.updateData { prev ->
+            val prevTrimParam = prev.tableTrimParam
+            prev.copy(
+                tableTrimParam = TableTrimParam(
+                    dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
+                    dayOfWeekTo = dayOfWeekTo ?: prevTrimParam.dayOfWeekTo,
+                    hourFrom = hourFrom ?: prevTrimParam.hourFrom,
+                    hourTo = hourTo ?: prevTrimParam.hourTo,
+                    forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
+                )
+            )
+        }
+    }
+
     private suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         userStore.updateData {

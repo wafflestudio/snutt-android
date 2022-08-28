@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,7 +21,7 @@ import com.wafflestudio.snutt2.views.NavControllerContext
 import kotlinx.coroutines.launch
 
 @Composable
-fun TeamInfoPage() {
+fun PersonalInformationPolicyPage() {
     val navController = NavControllerContext.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -30,7 +29,7 @@ fun TeamInfoPage() {
     val webViewClient = WebViewClient()
 
     var accessToken: String
-    val url = stringResource(R.string.api_server) + stringResource(R.string.member)
+    val url = stringResource(R.string.api_server) + stringResource(R.string.privacy)
     val headers = HashMap<String, String>()
     headers["x-access-apikey"] = stringResource(R.string.api_key)
 
@@ -38,7 +37,7 @@ fun TeamInfoPage() {
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text(text = stringResource(R.string.settings_team_info)) },
+            title = { Text(text = stringResource(R.string.settings_personal_information_policy)) },
             navigationIcon = {
                 ArrowBackIcon(
                     modifier = Modifier
@@ -63,10 +62,4 @@ fun TeamInfoPage() {
             webViewUrlReady = true
         }
     }
-}
-
-@Preview
-@Composable
-fun TeamInfoPagePreview() {
-    TeamInfoPage()
 }

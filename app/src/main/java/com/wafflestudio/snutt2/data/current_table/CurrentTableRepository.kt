@@ -11,7 +11,7 @@ interface CurrentTableRepository {
 
     val previewTheme: Flow<TimetableColorTheme?>
 
-    suspend fun addLecture(lectureId: String)
+    suspend fun addLecture(lectureId: String, isForced: Boolean)
 
     suspend fun removeLecture(lectureId: String)
 

@@ -43,15 +43,15 @@ object PreferenceModule {
 
     @Provides
     @Singleton
-    fun provideUserPreferencesStore(context: Context, moshi: Moshi): DataStore<UserPreferences> {
+    fun provideUserPreferencesStore(@ApplicationContext context: Context, moshi: Moshi): DataStore<UserPreferences> {
         UserPreferencesSerializer.moshi = moshi
         return context.userPreferencesStore
     }
 
-    @Provides
     @Singleton
+    @Provides
     fun provideCurrentTablePreferencesStore(
-        context: Context,
+        @ApplicationContext context: Context,
         moshi: Moshi
     ): DataStore<CurrentTablePreferences> {
         CurrentTablePreferencesSerializer.moshi = moshi
@@ -61,7 +61,7 @@ object PreferenceModule {
     @Provides
     @Singleton
     fun provideTableMapPreferencesStore(
-        context: Context,
+        @ApplicationContext context: Context,
         moshi: Moshi
     ): DataStore<TableMapPreferences> {
         TableMapPreferencesSerializer.moshi = moshi

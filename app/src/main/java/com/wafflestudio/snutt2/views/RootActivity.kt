@@ -14,11 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailCustomPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
@@ -41,6 +43,9 @@ class RootActivity : BaseActivity() {
     @Inject
     lateinit var popupState: PopupState
 
+    @Inject
+    lateinit var reviewUrlController: ReviewUrlController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
@@ -56,10 +61,12 @@ class RootActivity : BaseActivity() {
 
         val startDestination =
             if (snuttStorage.accessToken.get()
-                    .isEmpty()
+                .isEmpty()
             ) NavigationDestination.Onboard else NavigationDestination.Home
 
-        CompositionLocalProvider(NavControllerContext provides navController) {
+        CompositionLocalProvider(
+            NavControllerContext provides navController,
+        ) {
 
             NavHost(navController = navController, startDestination = startDestination) {
 
@@ -71,14 +78,12 @@ class RootActivity : BaseActivity() {
 
                 composable(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable(NavigationDestination.LectureDetail) {
-                    val id = it.arguments?.getString("lecture_id")
-                    LectureDetailPage(id = id)
-                }
+                composable(NavigationDestination.LectureDetail) { LectureDetailPage() }
+
+                composable(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
 
                 composable(NavigationDestination.LectureColorSelector) {
-                    val id = it.arguments?.getString("lecture_id")
-                    LectureColorSelectorPage(id = id)
+                    LectureColorSelectorPage()
                 }
 
                 settingComposable()
@@ -109,6 +114,7 @@ class RootActivity : BaseActivity() {
         composable(NavigationDestination.TeamInfo) { TeamInfoPage() }
         composable(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable(NavigationDestination.UserConfig) { UserConfigPage() }
+        composable(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
     }
 }
 

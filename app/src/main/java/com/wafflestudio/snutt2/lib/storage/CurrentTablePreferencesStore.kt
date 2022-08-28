@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
 import okio.source
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -45,6 +46,9 @@ object CurrentTablePreferencesSerializer : Serializer<CurrentTablePreferences> {
             }
         } catch (exception: JsonDataException) {
             throw CorruptionException("Cannot read json.", exception)
+        } catch (exception: IOException) {
+            // FIXME: 여기서 json encoding exception 때문에 store 에 있는 table 을 불러오지 못한다.
+            return defaultValue
         }
     }
 

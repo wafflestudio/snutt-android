@@ -102,8 +102,8 @@ class HomeFragment : BaseFragment() {
                 }
             }
             ).also {
-                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
-            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, it)
+        }
     }
 
     override fun onPause() {
