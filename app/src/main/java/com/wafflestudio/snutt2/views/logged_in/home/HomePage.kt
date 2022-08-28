@@ -23,6 +23,8 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -143,6 +145,16 @@ fun HomePage() {
             onDismiss = { hideBottomSheet(false) },
         )
     }
+
+    var popupDialogState by remember { mutableStateOf(true)}
+    if(popupDialogState) {
+        Popup(
+            url = "",
+            onClickFewDays = {},
+            onClickClose = { popupDialogState = false }
+        )
+    }
+
 
     CompositionLocalProvider(
         ShowBottomSheet provides showBottomSheet,
