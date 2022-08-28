@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
 ) {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
 

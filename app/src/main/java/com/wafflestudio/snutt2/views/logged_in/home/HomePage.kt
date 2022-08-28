@@ -12,7 +12,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,6 +24,7 @@ import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -53,9 +53,6 @@ data class TableContextBundle(
     val previewTheme: TimetableColorTheme?,
 )
 
-val HomeDrawerStateContext = compositionLocalOf<DrawerState> {
-    throw RuntimeException("")
-}
 val TableContext = compositionLocalOf<TableContextBundle> {
     throw RuntimeException("")
 }
@@ -151,7 +148,7 @@ fun HomePage() {
         ShowBottomSheet provides showBottomSheet,
         HideBottomSheet provides hideBottomSheet,
         TableContext provides tableContext,
-        HomeDrawerStateContext provides drawerState,
+        LocalDrawerState provides drawerState,
     ) {
         ModalDrawer(
             drawerContent = {

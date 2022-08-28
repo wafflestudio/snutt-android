@@ -21,7 +21,7 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SettingsIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.model.TableTrimParam
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import de.psdev.licensesdialog.BuildConfig
@@ -29,7 +29,7 @@ import de.psdev.licensesdialog.LicensesDialog
 
 @Composable
 fun SettingsPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val context = LocalContext.current
     val viewModel = hiltViewModel<SettingsViewModel>()
     val tableTrimParam =
@@ -152,7 +152,7 @@ private fun showLicenseDialog(context: Context) {
 @Composable
 fun SettingsPagePreview() {
     CompositionLocalProvider(
-        NavControllerContext provides rememberNavController()
+        LocalNavController provides rememberNavController()
     ) {
         SettingsPage()
     }

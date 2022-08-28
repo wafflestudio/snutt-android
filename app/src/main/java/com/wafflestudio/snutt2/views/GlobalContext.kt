@@ -14,10 +14,10 @@ val LocalApiOnProgress = compositionLocalOf<ApiOnProgress> {
     throw RuntimeException("")
 }
 
-val LocalNavController = compositionLocalOf<NavController> {
+val LocalDrawerState = compositionLocalOf<DrawerState> {
     throw RuntimeException("")
 }
 
-val LocalDrawerState = compositionLocalOf<DrawerState> {
+val LocalNavController = compositionLocalOf<NavController> {
     throw RuntimeException("")
 }

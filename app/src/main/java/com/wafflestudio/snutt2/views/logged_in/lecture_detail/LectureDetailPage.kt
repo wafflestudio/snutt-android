@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,7 +42,7 @@ fun LectureDetailPage() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {

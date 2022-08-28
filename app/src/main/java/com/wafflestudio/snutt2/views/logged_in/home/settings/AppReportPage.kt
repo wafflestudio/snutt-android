@@ -15,13 +15,13 @@ import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SendIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppReportPage() {
     val context = LocalContext.current
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
 
