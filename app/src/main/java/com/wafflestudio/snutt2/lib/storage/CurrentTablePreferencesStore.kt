@@ -18,7 +18,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-private const val CURRENT_TABLE_PREFERENCES_FILE_NAME = "current_table_prefs.pb"
+private const val CURRENT_TABLE_PREFERENCES_FILE_NAME = "current_table_prefs.json"
 
 val Context.currentTablePreferencesStore: DataStore<CurrentTablePreferences> by dataStore(
     fileName = CURRENT_TABLE_PREFERENCES_FILE_NAME,
@@ -46,17 +46,15 @@ object CurrentTablePreferencesSerializer : Serializer<CurrentTablePreferences> {
             }
         } catch (exception: JsonDataException) {
             throw CorruptionException("Cannot read json.", exception)
-        } catch (exception: IOException) {
-            // FIXME: 여기서 json encoding exception 때문에 store 에 있는 table 을 불러오지 못한다.
-            return defaultValue
         }
     }
 
     override suspend fun writeTo(t: CurrentTablePreferences, output: OutputStream) {
         @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
-            moshi.adapter(CurrentTablePreferences::class.java)
-                .toJson(output.sink().buffer(), t)
+            // FIXME: sink & buffer 로 하면 write 가 안됌 그래서 일단 임시로 처리함
+            val asdf = moshi.adapter(CurrentTablePreferences::class.java).toJson(t)
+            output.write(asdf.toByteArray())
         }
     }
 }
