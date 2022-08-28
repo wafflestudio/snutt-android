@@ -52,8 +52,8 @@ object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
     override suspend fun writeTo(t: TableMapPreferences, output: OutputStream) {
         @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
-            val asdf = moshi.adapter(TableMapPreferences::class.java)
-                .toJson(t)
+            // FIXME: sink & buffer 로 하면 write 가 안됌 그래서 일단 임시로 처리함
+            val asdf = moshi.adapter(TableMapPreferences::class.java).toJson(t)
             output.write(asdf.toByteArray())
         }
     }

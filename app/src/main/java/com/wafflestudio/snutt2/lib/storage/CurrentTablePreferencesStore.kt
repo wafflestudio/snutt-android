@@ -52,6 +52,7 @@ object CurrentTablePreferencesSerializer : Serializer<CurrentTablePreferences> {
     override suspend fun writeTo(t: CurrentTablePreferences, output: OutputStream) {
         @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
+            // FIXME: sink & buffer 로 하면 write 가 안됌 그래서 일단 임시로 처리함
             val asdf = moshi.adapter(CurrentTablePreferences::class.java).toJson(t)
             output.write(asdf.toByteArray())
         }
