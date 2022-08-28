@@ -30,10 +30,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeFragmentDirections
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.Observables
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.rx3.rxSingle
 import java.io.File
@@ -147,22 +145,22 @@ class TimetableFragment : BaseFragment() {
                 routeNotifications()
             }
 
-        binding.appBarTitle.throttledClicks()
-            .bindUi(this) {
-                dialogController.showTextDialog(
-                    R.string.home_drawer_change_name_dialog_title,
-                    selectedTimetableViewModel.lastViewedTable.get().value?.title,
-                    R.string.home_drawer_change_name_dialog_hint
-                )
-                    .flatMapCompletable {
-                        tableListViewModel.changeNameTable(
-                            selectedTimetableViewModel.lastViewedTable.get().value?.id!!,
-                            it
-                        )
-                    }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(onError = apiOnError)
-            }
+//        binding.appBarTitle.throttledClicks()
+//            .bindUi(this) {
+//                dialogController.showTextDialog(
+//                    R.string.home_drawer_change_name_dialog_title,
+//                    selectedTimetableViewModel.lastViewedTable.get().value?.title,
+//                    R.string.home_drawer_change_name_dialog_hint
+//                )
+//                    .flatMapCompletable {
+//                        tableListViewModel.changeNameTable(
+//                            selectedTimetableViewModel.lastViewedTable.get().value?.id!!,
+//                            it
+//                        )
+//                    }
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribeBy(onError = apiOnError)
+//            }
     }
 
     private fun routeLectureDetail(lecture: LectureDto) {
