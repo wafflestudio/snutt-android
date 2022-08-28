@@ -1,12 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
+import android.content.Intent
+import android.graphics.*
+import android.net.Uri
 import android.view.MotionEvent
+import android.view.View
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.Text
@@ -21,15 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
 import com.wafflestudio.snutt2.components.compose.CustomDialog
@@ -50,6 +54,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.max
 import kotlin.math.min
 
@@ -96,6 +102,11 @@ val LocalCanvasContext = compositionLocalOf<CanvasContext> {
 fun TimetablePage(
     uncheckedNotification: Boolean
 ) {
+    val context = LocalContext.current
+    val view = LocalView.current
+    var timetableHeight by remember { mutableStateOf(0) }
+    var topBarHeight by remember { mutableStateOf(0) }
+
     val navController = NavControllerContext.current
     val drawerState = HomeDrawerStateContext.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
@@ -123,9 +134,9 @@ fun TimetablePage(
         )
     }
 
-    Column {
+    Column(Modifier.background(Color.White)) { // 스크린샷 때문에 background 추가  TODO: Color
         TopAppBar(title = { // TODO: null 처리 재고
-            val creditText = table?.let {
+            val creditText = table.let {
                 stringResource(
                     id = R.string.timetable_credit,
                     (table.lectureList).fold(0L) { acc, lecture -> acc + lecture.credit }
@@ -161,7 +172,11 @@ fun TimetablePage(
                 contentDescription = stringResource(R.string.home_timetable_drawer)
             )
             Image(
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks {
+                        shareScreenshotFromView(view, context, topBarHeight, timetableHeight)
+                    },
                 painter = painterResource(id = R.drawable.ic_share),
                 contentDescription = stringResource(R.string.home_timetable_drawer)
             )
@@ -174,11 +189,12 @@ fun TimetablePage(
                 ),
                 contentDescription = stringResource(R.string.home_timetable_drawer)
             )
-        })
+        }, modifier = Modifier.onGloballyPositioned { topBarHeight = it.size.height }) // top bar 높이 측정
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .onGloballyPositioned { timetableHeight = it.size.height } // timetable 높이 측정
         ) {
             TimeTable(selectedLecture = mutableStateOf(null))
         }
@@ -485,6 +501,47 @@ private fun getTextHeight(text: String, paint: Paint): Float {
     val bounds = Rect()
     paint.getTextBounds(text, 0, text.length, bounds)
     return bounds.height().toFloat()
+}
+
+private fun bitmapToUri(image: Bitmap, context: Context): Uri {
+    val imagesFolder = File(FacebookSdk.getCacheDir(), "images")
+    imagesFolder.mkdirs()
+    val file = File(imagesFolder, "shared_image.png")
+    val stream = FileOutputStream(file)
+    image.compress(Bitmap.CompressFormat.PNG, 90, stream)
+    stream.flush()
+    stream.close()
+    return FileProvider.getUriForFile(
+        context,
+        context.getString(R.string.file_provider_authorities),
+        file
+    )
+}
+
+private fun shareScreenshotFromView(
+    view: View,
+    context: Context,
+    topBarHeight: Int,
+    timetableHeight: Int
+) {
+    val bitmap =
+        Bitmap.createBitmap(
+            view.measuredWidth,
+            view.measuredHeight,
+            Bitmap.Config.ARGB_8888
+        )
+    val canvas = Canvas(bitmap)
+    view.draw(canvas)
+
+    // FIXME: 이 방법의 문제점 -> 위아래를 잘라내야 한다.
+    val bitmapResized = Bitmap.createBitmap(bitmap, 0, topBarHeight, bitmap.width, timetableHeight)
+    val uri = bitmapToUri(bitmapResized, context)
+    val shareIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_STREAM, uri)
+        type = "image/png"
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "공유하기"))
 }
 
 @Preview(showBackground = true)
