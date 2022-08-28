@@ -1,60 +1,82 @@
 package com.wafflestudio.snutt2.views.logged_out
 
-import android.widget.Toast
-import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ProgressDialog
-import com.wafflestudio.snutt2.views.NavControllerContext
-import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.navigateAsOrigin
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx3.await
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+
     val authViewModel = hiltViewModel<AuthViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
 
-    val keyboardManager = LocalSoftwareKeyboardController.current
-    val callbackManager = CallbackManager.Factory.create()
-    val loginManager = LoginManager.getInstance()
-    val context = LocalContext.current
-
-    var showProgressDialog by remember { mutableStateOf(false) }
-    if (showProgressDialog) {
-        ProgressDialog(
-            title = stringResource(R.string.sign_in_sign_in_button),
-            message = stringResource(R.string.sign_in_progress_bar_message),
-            onDismissRequest = { showProgressDialog = false }
-        )
+    val handleLocalSignIn = {
+        coroutineScope.launch {
+            try {
+                apiOnProgress.showProgress()
+                authViewModel.loginLocal(idField, passwordField).await()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            } catch (e: Exception) {
+                apiOnError(e)
+            } finally {
+                apiOnProgress.hideProgress()
+            }
+        }
+    }
+    val handleFacebookSignIn = {
+        coroutineScope.launch {
+            try {
+                apiOnProgress.showProgress()
+                val loginResult = facebookLogin(context)
+                authViewModel.loginFacebook(
+                    loginResult.accessToken.userId,
+                    loginResult.accessToken.token
+                ).await()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            } catch (e: Exception) {
+                apiOnError(e)
+            } finally {
+                apiOnProgress.hideProgress()
+            }
+        }
     }
 
     Column(
@@ -63,16 +85,18 @@ fun SignInPage() {
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp)
+            .clicks { focusManager.clearFocus() }
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(R.string.sign_in_logo_title),
                 modifier = Modifier.padding(top = 40.dp, bottom = 15.dp),
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title)
+            Text(
+                text = stringResource(R.string.sign_in_logo_title),
+                style = SNUTTTypography.h1,
             )
         }
 
@@ -84,107 +108,88 @@ fun SignInPage() {
                 .padding(top = 60.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            TextField(
+            EditText(
                 value = idField,
                 onValueChange = { idField = it },
-                placeholder = {
-                    Text(text = stringResource(R.string.sign_in_id_hint))
-                },
+                hint = stringResource(R.string.sign_in_id_hint),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            TextField(
+            EditText(
                 value = passwordField,
                 onValueChange = { passwordField = it },
-                placeholder = {
-                    Text(text = stringResource(R.string.sign_in_password_hint))
-                },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
+                hint = stringResource(R.string.sign_in_password_hint),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.wrapContentHeight()
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
-                shape = RectangleShape,
-                onClick = {
-                    keyboardManager?.hide()
-                    showProgressDialog = true
-                    authViewModel.loginLocal(idField, passwordField)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeBy( // TODO: dispose
-                            onSuccess = {
-                                navController.navigateAsOrigin(NavigationDestination.Home)
-                                showProgressDialog = false
-                            },
-                            onError = { // TODO: onError
-                                showProgressDialog = false
-                            }
-                        )
-                }
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.Gray200,
+                onClick = { handleLocalSignIn() }
             ) {
-                Text(text = stringResource(R.string.sign_in_sign_in_button))
+                Text(
+                    text = stringResource(R.string.sign_in_sign_in_button),
+                    style = SNUTTTypography.button
+                )
             }
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(45.dp),
-                onClick = {
-                    loginManager.logInWithReadPermissions(
-                        context as ActivityResultRegistryOwner,
-                        callbackManager,
-                        emptyList()
-                    )
-                }
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.iconfacebook),
-                    contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
-                    modifier = Modifier.padding(end = 12.dp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
                 )
 
-                Text(text = stringResource(R.string.sign_in_sign_in_facebook_button))
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = "or", style = SNUTTTypography.body2, color = SNUTTColors.Gray200
+                )
+
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
+                )
+            }
+
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.FacebookBlue,
+                onClick = { handleFacebookSignIn() }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.iconfacebook),
+                        contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 12.dp),
+                    )
+
+                    Text(
+                        text = stringResource(R.string.sign_in_sign_in_facebook_button),
+                        color = SNUTTColors.FacebookBlue,
+                        style = SNUTTTypography.button
+                    )
+                }
             }
         }
     }
-
-    loginManager.registerCallback(
-        callbackManager,
-        object : FacebookCallback<LoginResult> {
-            override fun onSuccess(result: LoginResult) {
-                val id = result.accessToken.userId
-                val token = result.accessToken.token
-                authViewModel.loginFacebook(id, token) // TODO: dispose
-                    .subscribeBy(
-                        onError = {}, // TODO: onError
-                        onSuccess = { navController.navigateAsOrigin(NavigationDestination.Home) }
-                    )
-            }
-
-            override fun onCancel() {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onError(error: FacebookException) {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.sign_up_facebook_login_failed_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    )
 }
 
 @Preview(showBackground = true)

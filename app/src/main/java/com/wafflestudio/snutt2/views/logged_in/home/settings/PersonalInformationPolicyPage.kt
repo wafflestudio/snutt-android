@@ -17,12 +17,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import kotlinx.coroutines.launch
 
 @Composable
 fun PersonalInformationPolicyPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()

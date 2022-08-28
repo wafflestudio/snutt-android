@@ -23,7 +23,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ import kotlin.math.roundToInt
 fun LectureDetailCustomPage() {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -238,7 +238,7 @@ fun LectureDetailCustomPage() {
                             vm.editEditingLectureDetail(lectureState.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
-                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

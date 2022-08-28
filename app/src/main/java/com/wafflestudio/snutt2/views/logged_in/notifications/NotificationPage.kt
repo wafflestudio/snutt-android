@@ -21,11 +21,11 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun NotificationPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val vm = hiltViewModel<NotificationsViewModel>()
 
     val notificationList = vm.notificationList.collectAsLazyPagingItems()

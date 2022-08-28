@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
-import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -37,9 +37,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 enum class HomeItem(@DrawableRes val icon: Int) {
-    Timetable(R.drawable.ic_timetable), Search(R.drawable.ic_search), Review(R.drawable.ic_review), Settings(
-        R.drawable.ic_setting
-    )
+    Timetable(R.drawable.ic_timetable),
+    Search(R.drawable.ic_search),
+    Review(R.drawable.ic_review),
+    Settings(R.drawable.ic_setting)
 }
 
 enum class BottomSheetState() {
@@ -52,9 +53,6 @@ data class TableContextBundle(
     val previewTheme: TimetableColorTheme?,
 )
 
-val HomeDrawerStateContext = compositionLocalOf<DrawerState> {
-    throw RuntimeException("")
-}
 val TableContext = compositionLocalOf<TableContextBundle> {
     throw RuntimeException("")
 }
@@ -146,21 +144,11 @@ fun HomePage() {
         )
     }
 
-    var popupDialogState by remember { mutableStateOf(true)}
-    if(popupDialogState) {
-        Popup(
-            url = "",
-            onClickFewDays = {},
-            onClickClose = { popupDialogState = false }
-        )
-    }
-
-
     CompositionLocalProvider(
         ShowBottomSheet provides showBottomSheet,
         HideBottomSheet provides hideBottomSheet,
         TableContext provides tableContext,
-        HomeDrawerStateContext provides drawerState,
+        LocalDrawerState provides drawerState,
     ) {
         ModalDrawer(
             drawerContent = {
@@ -190,7 +178,8 @@ fun HomePage() {
                         .height(56.dp)
                         .fillMaxWidth()
                 ) {
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -198,10 +187,14 @@ fun HomePage() {
                             pageState = HomeItem.Timetable
                         },
                     ) {
-                        Text(text = "timetable")
+                        TimetableIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState == HomeItem.Timetable
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -209,10 +202,14 @@ fun HomePage() {
                             pageState = HomeItem.Search
                         },
                     ) {
-                        Text(text = "search")
+                        SearchIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState == HomeItem.Search
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -220,10 +217,14 @@ fun HomePage() {
                             pageState = HomeItem.Review
                         },
                     ) {
-                        Text(text = "review")
+                        ReviewIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState == HomeItem.Review
+                        )
                     }
 
-                    Button(
+                    BorderButton(
+                        color = SNUTTColors.White900,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -231,7 +232,10 @@ fun HomePage() {
                             pageState = HomeItem.Settings
                         },
                     ) {
-                        Text(text = "settings")
+                        SettingIcon(
+                            modifier = Modifier.size(30.dp),
+                            isSelected = pageState == HomeItem.Settings
+                        )
                     }
                 }
             }

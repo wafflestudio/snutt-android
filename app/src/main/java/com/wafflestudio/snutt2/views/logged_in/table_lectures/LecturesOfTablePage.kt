@@ -23,7 +23,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LecturesOfTablePage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val viewModel = hiltViewModel<TimetableViewModel>()
 
     // share viewModel

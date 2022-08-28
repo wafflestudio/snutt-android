@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toFormattedString
+import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.coroutineScope
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 fun HomeDrawer() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val drawerState = HomeDrawerStateContext.current
+    val drawerState = LocalDrawerState.current
     val tableContext = TableContext.current
 
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()

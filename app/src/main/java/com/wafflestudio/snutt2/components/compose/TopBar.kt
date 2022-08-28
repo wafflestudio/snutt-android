@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
@@ -100,11 +101,13 @@ fun TopBarPreview() {
 @Preview
 @Composable
 fun SimpleTopBarPreview() {
-    Column {
-        SimpleTopBar(title = "강의 상세보기", onClickNavigateBack = {})
+    SNUTTTheme {
+        Column {
+            SimpleTopBar(title = "강의 상세보기", onClickNavigateBack = {})
 
-        Box(
-            modifier = Modifier.weight(1f)
-        )
+            Box(
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }

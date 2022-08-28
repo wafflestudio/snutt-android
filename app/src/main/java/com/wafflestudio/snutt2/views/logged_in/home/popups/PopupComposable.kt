@@ -57,7 +57,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(3f)
                         .clicks { onClickFewDays() },
                     textAlign = TextAlign.Center,
-                    color = Color.White             // TODO: Color
+                    color = Color.White // TODO: Color
                 )
                 Spacer(
                     modifier = Modifier
@@ -76,14 +76,12 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(2f)
                         .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
-                    color = Color.White             // TODO: Color
+                    color = Color.White // TODO: Color
                 )
-
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
