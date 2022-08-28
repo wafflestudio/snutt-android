@@ -21,7 +21,7 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,7 +29,7 @@ import timber.log.Timber
 @Composable
 fun UserConfigPage() {
     val context = LocalContext.current
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
 
     val viewModel = hiltViewModel<UserViewModel>()

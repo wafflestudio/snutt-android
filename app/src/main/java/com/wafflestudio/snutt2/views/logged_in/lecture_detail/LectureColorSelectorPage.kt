@@ -24,14 +24,14 @@ import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun LectureColorSelectorPage() {
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val context = LocalContext.current
 
     // share viewModel

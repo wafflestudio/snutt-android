@@ -229,6 +229,54 @@ fun PaletteIcon(
 }
 
 @Composable
+fun TimetableIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(if (isSelected) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SearchIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(if (isSelected) R.drawable.ic_search_selected else R.drawable.ic_search_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun ReviewIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(if (isSelected) R.drawable.ic_review_selected else R.drawable.ic_review_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SettingIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(if (isSelected) R.drawable.ic_setting_selected else R.drawable.ic_setting_unselected),
+        contentDescription = ""
+    )
+}
+
+@Composable
 fun TipCloseIcon(
     modifier: Modifier = Modifier
 ) {
