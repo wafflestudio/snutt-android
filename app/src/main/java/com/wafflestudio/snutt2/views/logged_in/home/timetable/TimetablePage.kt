@@ -47,9 +47,9 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawerStateContext
+import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -107,8 +107,8 @@ fun TimetablePage(
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
 
-    val navController = NavControllerContext.current
-    val drawerState = HomeDrawerStateContext.current
+    val navController = LocalNavController.current
+    val drawerState = LocalDrawerState.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table // TODO: null 처리 재고
@@ -211,7 +211,7 @@ fun TimeTable(
 
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val context = LocalContext.current
-    val navigator = NavControllerContext.current
+    val navigator = LocalNavController.current
     val lectures = TableContext.current.table?.lectureList ?: emptyList() // TODO: null 처리 재고
     val trimParam = TableContext.current.trimParam
 
@@ -548,8 +548,8 @@ private fun shareScreenshotFromView(
 @Composable
 fun TimetablePagePreview() {
     CompositionLocalProvider(
-        NavControllerContext provides rememberNavController(),
-        HomeDrawerStateContext provides rememberDrawerState(initialValue = DrawerValue.Closed)
+        LocalNavController provides rememberNavController(),
+        LocalDrawerState provides rememberDrawerState(initialValue = DrawerValue.Closed)
     ) {
         TimetablePage(
             uncheckedNotification = false
