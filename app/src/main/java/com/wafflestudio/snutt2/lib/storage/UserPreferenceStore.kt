@@ -74,9 +74,7 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
             @Suppress("BlockingMethodInNonBlockingContext")
             withContext(Dispatchers.IO) {
                 moshi.adapter(UserPreferences::class.java)
-                    .fromJson(input.source().buffer())
-                    // FIXME: EOF exception 발생
-                    ?: throw JsonDataException("data not exists")
+                    .fromJson(input.source().buffer()) ?: throw JsonDataException("data not exists")
             }
         } catch (exception: JsonDataException) {
             throw CorruptionException("Cannot read json.", exception)
@@ -86,8 +84,9 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
     override suspend fun writeTo(t: UserPreferences, output: OutputStream) {
         @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
-            moshi.adapter(UserPreferences::class.java)
-                .toJson(output.sink().buffer(), t)
+            // FIXME: sink & buffer 로 하면 write 가 안됌 그래서 일단 임시로 처리함
+            val asdf = moshi.adapter(UserPreferences::class.java).toJson(t)
+            output.write(asdf.toByteArray())
         }
     }
 }

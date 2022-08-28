@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.storage
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
@@ -18,7 +19,7 @@ import java.io.EOFException
 import java.io.InputStream
 import java.io.OutputStream
 
-private const val TABLE_MAP_PREFERENCES_FILE_NAME = "table_map_prefs.pb"
+private const val TABLE_MAP_PREFERENCES_FILE_NAME = "table_map_prefs.aaatxt"
 
 val Context.tableMapPreferencesStore: DataStore<TableMapPreferences> by dataStore(
     fileName = TABLE_MAP_PREFERENCES_FILE_NAME,
@@ -45,16 +46,15 @@ object TableMapPreferencesSerializer : Serializer<TableMapPreferences> {
             }
         } catch (exception: JsonDataException) {
             throw CorruptionException("Cannot read json.", exception)
-        } catch (exception: EOFException) {
-            return defaultValue
         }
     }
 
     override suspend fun writeTo(t: TableMapPreferences, output: OutputStream) {
         @Suppress("BlockingMethodInNonBlockingContext")
         withContext(Dispatchers.IO) {
-            moshi.adapter(TableMapPreferences::class.java)
-                .toJson(output.sink().buffer(), t)
+            // FIXME: sink & buffer 로 하면 write 가 안됌 그래서 일단 임시로 처리함
+            val asdf = moshi.adapter(TableMapPreferences::class.java).toJson(t)
+            output.write(asdf.toByteArray())
         }
     }
 }
