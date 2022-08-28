@@ -47,7 +47,8 @@ fun BottomSheet(
             modifier = Modifier
                 .background(animateDim.value)
                 .fillMaxSize()
-                .clicks { dismissTrigger = true })
+                .clicks { dismissTrigger = true }
+        )
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(topStartPercent = 8, topEndPercent = 8))
@@ -58,4 +59,3 @@ fun BottomSheet(
         }
     }
 }
-
