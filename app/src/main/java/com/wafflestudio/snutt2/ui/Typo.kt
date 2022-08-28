@@ -63,6 +63,14 @@ val SNUTTTypography = Typography(
         color = SNUTTColors.Black900,
         fontSize = 16.sp,
         fontFamily = SpoqaHanSans,
+    ),
+    body1 = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = SpoqaHanSans,
+    ),
+    body2 = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = SpoqaHanSans,
     )
 )
 

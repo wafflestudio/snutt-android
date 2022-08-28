@@ -32,7 +32,7 @@ import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.views.NavControllerContext
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
 @Composable
 fun TimetableConfigPage() {
     val context = LocalContext.current
-    val navController = NavControllerContext.current
+    val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
 //    val viewModel = hiltViewModel<UserViewModel>()
 //    val trimParam = viewModel.trimParam.collectAsState()
