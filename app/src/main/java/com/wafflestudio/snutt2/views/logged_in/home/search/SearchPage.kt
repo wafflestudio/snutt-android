@@ -88,7 +88,7 @@ fun SearchPage(
                 trailingIcon = {
                     if (searchEditTextFocused) ExitIcon() else FilterIcon()
                 },
-                keyBoardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     scope.launch {
                         searchViewModel.setTitle(searchKeyword.value)

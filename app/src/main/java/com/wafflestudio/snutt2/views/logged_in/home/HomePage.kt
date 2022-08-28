@@ -25,13 +25,6 @@ import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.ReviewPage
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SearchPage
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.SettingsPage
-import com.wafflestudio.snutt2.views.logged_in.home.PagerConstants.TimeTablePage
-import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -44,9 +37,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 enum class HomeItem(@DrawableRes val icon: Int) {
-    Timetable(R.drawable.ic_timetable), Search(R.drawable.ic_search), Review(R.drawable.ic_review), Settings(
-        R.drawable.ic_setting
-    )
+    Timetable(R.drawable.ic_timetable),
+    Search(R.drawable.ic_search),
+    Review(R.drawable.ic_review),
+    Settings(R.drawable.ic_setting)
 }
 
 enum class BottomSheetState() {
@@ -198,7 +192,7 @@ fun HomePage() {
                     ) {
                         TimetableIcon(
                             modifier = Modifier.size(30.dp),
-                            isSelected = pageState.currentPage == TimeTablePage
+                            isSelected = pageState == HomeItem.Timetable
                         )
                     }
 
@@ -213,7 +207,7 @@ fun HomePage() {
                     ) {
                         SearchIcon(
                             modifier = Modifier.size(30.dp),
-                            isSelected = pageState.currentPage == SearchPage
+                            isSelected = pageState == HomeItem.Search
                         )
                     }
 
@@ -228,7 +222,7 @@ fun HomePage() {
                     ) {
                         ReviewIcon(
                             modifier = Modifier.size(30.dp),
-                            isSelected = pageState.currentPage == ReviewPage
+                            isSelected = pageState == HomeItem.Review
                         )
                     }
 
@@ -243,7 +237,7 @@ fun HomePage() {
                     ) {
                         SettingIcon(
                             modifier = Modifier.size(30.dp),
-                            isSelected = pageState.currentPage == SettingsPage
+                            isSelected = pageState == HomeItem.Settings
                         )
                     }
                 }

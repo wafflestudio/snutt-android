@@ -23,6 +23,7 @@ fun EditText(
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
     singleLine: Boolean = false,
+    enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     value: String,
     onValueChange: (String) -> Unit,
@@ -39,6 +40,7 @@ fun EditText(
         textStyle = SNUTTTypography.subtitle1.copy(
             color = SNUTTColors.Black900,
         ),
+        enabled = enabled,
         onValueChange = onValueChange,
         singleLine = singleLine,
         visualTransformation = visualTransformation,

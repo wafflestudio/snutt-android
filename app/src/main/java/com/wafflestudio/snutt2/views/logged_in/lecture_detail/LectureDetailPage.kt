@@ -224,7 +224,7 @@ fun LectureDetailPage() {
                             vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
-                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

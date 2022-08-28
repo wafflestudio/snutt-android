@@ -1,9 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -16,6 +14,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.android.ReviewUrlController
 import com.wafflestudio.snutt2.lib.base.BaseActivity
+import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -75,7 +75,7 @@ class RootActivity : BaseActivity() {
 
         val startDestination =
             if (snuttStorage.accessToken.get()
-                .isEmpty()
+                    .isEmpty()
             ) NavigationDestination.Onboard else NavigationDestination.Home
 
         CompositionLocalProvider(
