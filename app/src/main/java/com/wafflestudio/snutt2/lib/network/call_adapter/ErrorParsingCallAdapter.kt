@@ -5,9 +5,7 @@ import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
-import retrofit2.Call
-import retrofit2.CallAdapter
-import retrofit2.HttpException
+import retrofit2.*
 
 class ErrorParsingCallAdapter<R>(
     private val delegation: CallAdapter<R, Any>,
@@ -45,3 +43,5 @@ class ErrorParsingCallAdapter<R>(
         }
     }
 }
+
+

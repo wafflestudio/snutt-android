@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -38,6 +39,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
@@ -72,47 +74,50 @@ fun SearchPage(
     var searchOptionSheetState by remember { mutableStateOf(false) }
 
     Column {
-        TopAppBar(navigationIcon = {
-            SearchIcon(
-                modifier = Modifier.clicks {
-                    scope.launch { searchViewModel.query() }
+        EditText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(SNUTTColors.White900)
+                .padding(vertical = 6.dp, horizontal = 20.dp)
+                .background(SNUTTColors.Gray100, RoundedCornerShape(6.dp))
+                .onFocusChanged { searchEditTextFocused = it.isFocused },
+            leadingIcon = {
+                SearchIcon(
+                    modifier = Modifier.clicks {
+                        scope.launch { searchViewModel.query() }
+                    }
+                )
+            },
+            trailingIcon = {
+                if (searchEditTextFocused) ExitIcon() else FilterIcon(modifier = Modifier.clicks {
+                    searchOptionSheetState = true
+                })
+            },
+            isUnderlineVisible = false,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                scope.launch {
+                    searchViewModel.setTitle(searchKeyword.value)
+                    searchViewModel.query()
+                    keyBoardController?.hide()
                 }
-            )
-        }, title = {
-            EditText(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .onFocusChanged { searchEditTextFocused = it.isFocused },
-                leadingIcon = { SearchIcon() },
-                trailingIcon = {
-                    if (searchEditTextFocused) ExitIcon() else FilterIcon()
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    scope.launch {
-                        searchViewModel.setTitle(searchKeyword.value)
-                        searchViewModel.query()
-                        keyBoardController?.hide()
-                    }
-                }),
-                value = searchKeyword.value,
-                onValueChange = {
-                    scope.launch {
-                        searchViewModel.setTitle(it)
-                    }
-                },
-                hint = stringResource(R.string.search_hint)
-            )
-        }, actions = {
-            FilterIcon(modifier = Modifier.clicks { searchOptionSheetState = true })
-        })
+            }),
+            value = searchKeyword.value,
+            onValueChange = {
+                scope.launch {
+                    searchViewModel.setTitle(it)
+                }
+            },
+            hint = stringResource(R.string.search_hint)
+        )
+
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
+            TimeTable(touchEnabled = false, selectedLecture = selectedLecture.value)
             Column(
                 modifier = Modifier
                     .background(Color(0x80000000)) // TODO: 임시

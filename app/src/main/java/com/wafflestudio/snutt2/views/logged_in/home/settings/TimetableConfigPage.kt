@@ -32,6 +32,7 @@ import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
@@ -58,7 +59,7 @@ fun TimetableConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100) // TODO: Color
     ) {
         TopAppBar(
             title = { Text(text = stringResource(R.string.timetable_settings_app_bar_title)) },

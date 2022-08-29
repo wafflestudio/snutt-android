@@ -33,10 +33,11 @@ fun ListIcon(
 @Composable
 fun NotificationIcon(
     modifier: Modifier = Modifier,
+    isActive: Boolean = false
 ) {
     Image(
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_alarm_default),
+        painter = painterResource(if (isActive) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default),
         contentDescription = ""
     )
 }

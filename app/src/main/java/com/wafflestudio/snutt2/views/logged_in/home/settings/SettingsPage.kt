@@ -6,21 +6,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.SettingsIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
@@ -31,22 +29,30 @@ import de.psdev.licensesdialog.LicensesDialog
 fun SettingsPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
-    val viewModel = hiltViewModel<SettingsViewModel>()
-    val tableTrimParam =
-        viewModel.trimParam.asObservable().subscribeAsState(initial = TableTrimParam.Default)
 
     var logoutDialogState by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
-        TopAppBar(
-            title = { Text(text = stringResource(R.string.timetable_app_bar_setting)) },
-            navigationIcon = { SettingsIcon(modifier = Modifier.size(30.dp)) },
+        TopBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.timetable_app_bar_setting),
+                    style = SNUTTTypography.h2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            navigationIcon = {
+                SettingsIcon(modifier = Modifier.size(30.dp))
+            }
         )
+
         Margin(height = 10.dp)
+
         Column(modifier = Modifier.background(Color.White)) {
             // TODO: 여기서도 공용으로 쓰니 compose component 폴더로 보내기
             SettingItem(title = stringResource(R.string.user_settings_app_bar_title)) {

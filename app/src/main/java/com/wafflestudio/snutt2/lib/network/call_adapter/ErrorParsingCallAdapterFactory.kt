@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib.network.call_adapter
 
+import android.util.Log
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
@@ -16,14 +17,17 @@ class ErrorParsingCallAdapterFactory(
         annotations: Array<out Annotation>,
         retrofit: Retrofit
     ): CallAdapter<*, *>? {
+        Log.d("___**", "${getRawType(returnType)}")
         val delegationGeneratedCallAdapter =
             delegation.get(returnType, annotations, retrofit) as? CallAdapter<Any, Any>
 
         return delegationGeneratedCallAdapter?.let {
-            return ErrorParsingCallAdapter(
+            ErrorParsingCallAdapter(
                 serializer = serializer,
                 delegation = delegationGeneratedCallAdapter
             )
+        }.also {
+            Log.d("___**", "$it")
         }
     }
 }

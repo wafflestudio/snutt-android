@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.VisualTransformation
@@ -27,6 +28,7 @@ fun EditText(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     value: String,
     onValueChange: (String) -> Unit,
+    isUnderlineVisible: Boolean = true,
     hint: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -46,30 +48,39 @@ fun EditText(
         visualTransformation = visualTransformation,
         decorationBox = {
 
-            Column {
-                Row(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     leadingIcon()
-                    if (value.isNotEmpty() || isFocused) {
-                        it()
-                    } else {
-                        hint?.let {
-                            Text(
-                                text = it,
-                                color = SNUTTColors.Gray200,
-                                style = SNUTTTypography.subtitle1
-                            )
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (value.isNotEmpty() || isFocused) {
+                            it()
+                        } else {
+                            hint?.let {
+                                Text(
+                                    text = it,
+                                    color = SNUTTColors.Gray200,
+                                    style = SNUTTTypography.subtitle1
+                                )
+                            }
                         }
                     }
                     trailingIcon()
                 }
 
-                Box(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .background(if (isFocused) SNUTTColors.Black900 else SNUTTColors.Gray200)
-                        .fillMaxWidth()
-                        .height(1.dp)
-                )
+                if (isUnderlineVisible) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .background(if (isFocused) SNUTTColors.Black900 else SNUTTColors.Gray200)
+                            .fillMaxWidth()
+                            .height(1.dp)
+                    )
+                }
             }
         }
     )

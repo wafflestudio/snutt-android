@@ -32,6 +32,7 @@ import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.Dispatchers
@@ -114,7 +115,7 @@ fun LectureDetailPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: color
+            .background(SNUTTColors.Gray100)
     ) {
         TopAppBar(
             title = {

@@ -23,6 +23,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
@@ -50,14 +51,14 @@ fun LectureDetailCustomPage() {
     if (deleteLectureDialogState) {
         CustomDialog(
             onDismiss = { deleteLectureDialogState = false }, onConfirm = {
-            scope.launch {
-                vm.removeLecture2()
-                scope.launch(Dispatchers.Main) {
-                    navController.popBackStack()
+                scope.launch {
+                    vm.removeLecture2()
+                    scope.launch(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
+                    deleteLectureDialogState = false
                 }
-                deleteLectureDialogState = false
-            }
-        }, title = "강좌 삭제"
+            }, title = "강좌 삭제"
         ) {
             Text(text = "강좌를 삭제하시겠습니까?")
         }
@@ -67,10 +68,10 @@ fun LectureDetailCustomPage() {
     if (editExitDialogState) {
         CustomDialog(
             onDismiss = { editExitDialogState = false }, onConfirm = {
-            vm.abandonEditingLectureDetail()
-            editExitDialogState = false
-            vm.unsetEditMode()
-        }, title = "편집을 취소하시겠습니까?"
+                vm.abandonEditingLectureDetail()
+                editExitDialogState = false
+                vm.unsetEditMode()
+            }, title = "편집을 취소하시겠습니까?"
         ) {}
     }
     // 편집 모드에서 뒤로가기 누르면 편집 취소 dialog 띄우기
@@ -104,16 +105,16 @@ fun LectureDetailCustomPage() {
     if (deleteTimeDialogState) {
         CustomDialog(
             onDismiss = { deleteTimeDialogState = false }, onConfirm = {
-            vm.editEditingLectureDetail(
-                lectureState.copy(
-                    class_time_json = lectureState.class_time_json.toMutableList()
-                        .also {
-                            it.removeAt(editingClassTimeIndex)
-                        }
+                vm.editEditingLectureDetail(
+                    lectureState.copy(
+                        class_time_json = lectureState.class_time_json.toMutableList()
+                            .also {
+                                it.removeAt(editingClassTimeIndex)
+                            }
+                    )
                 )
-            )
-            deleteTimeDialogState = false
-        }, title = "시간을 삭제하시겠습니까?"
+                deleteTimeDialogState = false
+            }, title = "시간을 삭제하시겠습니까?"
         ) {}
     }
 
@@ -126,10 +127,11 @@ fun LectureDetailCustomPage() {
     }
 
     // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
         TopAppBar(title = {
             Text(text = "강의 상세 보기")
@@ -159,20 +161,20 @@ fun LectureDetailCustomPage() {
                                     vm.createLecture2()
                                     vm.unsetEditMode()
                                     vm.setAddMode(false)
-                                /* FIXME
-                                 * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                 *
-                                 * 하지만 @POST("/tables/{id}/lecture") api 는
-                                 * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                 * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                 * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                 *
-                                 * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                 * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                 *
-                                 * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                 * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                 */
+                                    /* FIXME
+                                     * 안드로이드는 여기서 그대로 detailPage 에 남는다.
+                                     *
+                                     * 하지만 @POST("/tables/{id}/lecture") api 는
+                                     * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
+                                     * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
+                                     * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
+                                     *
+                                     * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
+                                     * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
+                                     *
+                                     * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
+                                     * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
+                                     */
                                     scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                 }
                             } else {
@@ -409,7 +411,8 @@ fun DayAndTimeSelectorDialog(
                         startTime = (
                             it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
                             ) + 8f // TODO: 24시간 개선시 변경
-                        if (endTime <= startTime) endTime = startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        if (endTime <= startTime) endTime =
+                            startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
                     }
                 ) {
                     // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경

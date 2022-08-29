@@ -21,6 +21,7 @@ import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
@@ -82,7 +83,7 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
         TopAppBar(
             title = { Text(text = stringResource(R.string.user_settings_app_bar_title)) },
