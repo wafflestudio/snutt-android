@@ -66,7 +66,7 @@ fun CustomDialog(
                     }
                 }
 
-                Box(modifier = Modifier.padding(start = 20.dp)) {
+                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
                     content()
                 }
 

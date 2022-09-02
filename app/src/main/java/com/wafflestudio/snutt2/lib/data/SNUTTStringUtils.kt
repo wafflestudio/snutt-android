@@ -94,4 +94,8 @@ object SNUTTStringUtils {
                 if (it.isEmpty()) "(없음)" else it.joinToString(", ")
             }
     }
+
+    fun getCreditSumFromLectureList(lectureList: List<LectureDto>): Long {
+        return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
+    }
 }

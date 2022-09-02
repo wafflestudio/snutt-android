@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -46,7 +47,9 @@ class RootActivity : BaseActivity() {
         setContentView(R.layout.activity_root)
         findViewById<ComposeView>(R.id.compose_root)
             .setContent {
-                setUpUI()
+                SNUTTTheme {
+                    setUpUI()
+                }
             }
     }
 

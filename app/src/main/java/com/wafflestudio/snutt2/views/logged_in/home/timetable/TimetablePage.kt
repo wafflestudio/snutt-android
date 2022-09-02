@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -27,6 +26,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -36,20 +36,21 @@ import androidx.navigation.compose.rememberNavController
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -111,8 +112,9 @@ fun TimetablePage(
     val drawerState = LocalDrawerState.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val keyboardManager = LocalSoftwareKeyboardController.current
-    val table = TableContext.current.table // TODO: null 처리 재고
+    val table = TableContext.current.table
     val scope = rememberCoroutineScope()
+    val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     var changeTitleDialogState by remember {
         mutableStateOf(false)
     }
@@ -122,74 +124,84 @@ fun TimetablePage(
                 changeTitleDialogState = false
                 keyboardManager?.hide()
             }, onConfirm = { newTitle ->
-            scope.launch {
-                tableListViewModel.changeNameTableNew(
-                    tableId = table?.id ?: "", // TODO: null 처리 재고
-                    name = newTitle
-                )
-                changeTitleDialogState = false
-                keyboardManager?.hide()
-            }
-        }, oldTitle = table?.title ?: "" // TODO: null 처리 재고
+                scope.launch {
+                    tableListViewModel.changeNameTableNew(
+                        tableId = table.id,
+                        name = newTitle
+                    )
+                    changeTitleDialogState = false
+                    keyboardManager?.hide()
+                }
+            }, oldTitle = table.title
         )
     }
 
-    Column(Modifier.background(Color.White)) { // 스크린샷 때문에 background 추가  TODO: Color
-        TopAppBar(title = { // TODO: null 처리 재고
-            val creditText = table.let {
-                stringResource(
-                    id = R.string.timetable_credit,
-                    (table.lectureList).fold(0L) { acc, lecture -> acc + lecture.credit }
+    Column(Modifier.background(SNUTTColors.White900)) { // 스크린샷 때문에 background 추가
+        TopBar(
+            title = {
+                val creditText = stringResource(
+                    R.string.timetable_credit,
+                    getCreditSumFromLectureList(table.lectureList)
                 )
-            } ?: ""
-            Row {
                 Text(
-                    text = table?.title ?: "",
-                    modifier = Modifier.clicks {
-                        changeTitleDialogState = true
-                    }
+                    text = table.title,
+                    style = SNUTTTypography.h2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.clicks { changeTitleDialogState = true }
                 )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(text = creditText)
-            }
-        }, navigationIcon = {
-            Image(
-                modifier = Modifier
-                    .height(30.dp)
-                    .fillMaxWidth()
-                    .clicks {
-                        scope.launch { drawerState.open() }
-                    },
-                painter = painterResource(id = R.drawable.ic_drawer),
-                contentDescription = stringResource(R.string.home_timetable_drawer)
-            )
-        }, actions = {
-            Image(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
-                painter = painterResource(id = R.drawable.ic_lecture_list),
-                contentDescription = stringResource(R.string.home_timetable_drawer)
-            )
-            Image(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clicks {
-                        shareScreenshotFromView(view, context, topBarHeight, timetableHeight)
-                    },
-                painter = painterResource(id = R.drawable.ic_share),
-                contentDescription = stringResource(R.string.home_timetable_drawer)
-            )
-            Image(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clicks { navController.navigate(NavigationDestination.Notification) },
-                painter = painterResource(
-                    id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
-                ),
-                contentDescription = stringResource(R.string.home_timetable_drawer)
-            )
-        }, modifier = Modifier.onGloballyPositioned { topBarHeight = it.size.height }) // top bar 높이 측정
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = creditText,
+                    style = SNUTTTypography.body2,
+                    color = SNUTTColors.Gray200
+                )
+            },
+            navigationIcon = {
+                Image(
+                    modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth()
+                        .clicks {
+                            scope.launch { drawerState.open() }
+                        },
+                    painter = painterResource(if(newSemesterNotify) R.drawable.ic_drawer_notify else R.drawable.ic_drawer),
+                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                )
+            },
+            actions = {
+                Image(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
+                    painter = painterResource(id = R.drawable.ic_lecture_list),
+                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Image(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks {
+                            shareScreenshotFromView(view, context, topBarHeight, timetableHeight)
+                        },
+                    painter = painterResource(id = R.drawable.ic_share),
+                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Image(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks { navController.navigate(NavigationDestination.Notification) },
+                    painter = painterResource(
+                        id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
+                    ),
+                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            },
+            modifier = Modifier.onGloballyPositioned {
+                topBarHeight = it.size.height
+            }) // top bar 높이 측정
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -212,7 +224,7 @@ fun TimeTable(
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val context = LocalContext.current
     val navigator = LocalNavController.current
-    val lectures = TableContext.current.table?.lectureList ?: emptyList() // TODO: null 처리 재고
+    val lectures = TableContext.current.table.lectureList
     val trimParam = TableContext.current.trimParam
 
     val fittedTrimParam = if (trimParam.forceFitLectures) {

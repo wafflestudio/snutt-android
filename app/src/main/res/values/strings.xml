@@ -96,13 +96,13 @@
     <string name="common_ok">확인</string>
     <string name="common_cancel">취소</string>
     <string name="home_drawer_selector_dialog_title">시간표</string>
-    <string name="home_drawer_create_table_dialog_title">새 테이블</string>
-    <string name="home_drawer_create_table_dialog_hint">테이블 이름</string>
+    <string name="home_drawer_create_table_dialog_title">시간표 추가하기</string>
+    <string name="home_drawer_create_table_dialog_hint">새 시간표 이름</string>
     <string name="home_drawer_table_change_name">이름 변경</string>
     <string name="home_drawer_table_delete">시간표 삭제</string>
     <string name="home_drawer_change_name_dialog_title">이름 변경하기</string>
     <string name="home_drawer_change_name_dialog_hint">이름 변경하기</string>
-    <string name="home_drawer_table_credit">(%d)</string>
+    <string name="home_drawer_table_credit">(%d학점)</string>
     <string name="home_drawer_copy_success_message">\"%s\" 시간표가 복사되었습니다.</string>
     <string name="home_drawer_semester_select_dialog_title">학기 선택</string>
     <string name="home_drawer_delete_table_unable_alert_message">현재 선택된 시간표를 삭제할 수 없습니다.</string>
@@ -112,7 +112,7 @@
     <string name="search_result_item_remove_button">- 삭제하기</string>
     <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
     <string name="search_result_item_syllabus_button">강의계획서</string>
-    <string name="search_result_item_detail_button">자세희</string>
+    <string name="search_result_item_detail_button">자세히</string>
     <string name="search_result_item_review_button">강의평</string>
     <string name="search_result_empty">검색 결과가 없습니다.</string>
     <string name="search_result_placeholder">SNUTT 검색 꿀팁 🍯</string>
