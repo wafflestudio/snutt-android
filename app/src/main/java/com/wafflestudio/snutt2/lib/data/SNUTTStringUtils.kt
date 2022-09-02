@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.data
 
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -101,5 +102,11 @@ object SNUTTStringUtils {
 
     fun getInstructorAndCreditText(lecture: LectureDto): String {
         return lecture.instructor + " / " + lecture.credit + "학점"
+    }
+
+    fun getClassTimeText(classTime: ClassTimeDto): String {
+        return SNUTTUtils.numberToWday(classTime.day) + " " +
+            SNUTTUtils.numberToTime(classTime.start) + "~" +
+            SNUTTUtils.numberToEndTimeAdjusted(classTime.start, classTime.len)
     }
 }
