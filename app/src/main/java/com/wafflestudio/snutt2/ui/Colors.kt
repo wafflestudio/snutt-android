@@ -16,6 +16,7 @@ object SNUTTColors {
 
     val Black000 = Color(0x00000000)
     val Black050 = Color(0x0d000000)
+    val Black250 = Color(0x26000000)
     val Black600 = Color(0x99000000)     // TODO: alpha 값이 다른 color 의 naming convention?
     val Black900 = Color(0xff000000)
     val White900 = Color(0xffffffff)

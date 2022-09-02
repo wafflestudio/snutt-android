@@ -55,7 +55,7 @@ val SNUTTTypography = Typography(
     ),
     subtitle2 = TextStyle(
         color = SNUTTColors.Gray400,
-        fontSize = 17.sp,
+        fontSize = 14.sp,
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Medium
     ),
