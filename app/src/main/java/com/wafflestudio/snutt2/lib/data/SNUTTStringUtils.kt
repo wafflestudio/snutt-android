@@ -98,4 +98,8 @@ object SNUTTStringUtils {
     fun getCreditSumFromLectureList(lectureList: List<LectureDto>): Long {
         return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
     }
+
+    fun getInstructorAndCreditText(lecture: LectureDto): String {
+        return lecture.instructor + " / " + lecture.credit + "학점"
+    }
 }
