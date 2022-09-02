@@ -1,12 +1,15 @@
 package com.wafflestudio.snutt2.components.compose
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun DrawerIcon(
@@ -340,4 +343,11 @@ fun SendIcon(
         painter = painterResource(R.drawable.ic_send),
         contentDescription = ""
     )
+}
+
+@Composable
+fun RedDot() {
+    Canvas(modifier = Modifier.size(5.dp)) {
+        drawCircle(SNUTTColors.Red)
+    }
 }
