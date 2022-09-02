@@ -10,7 +10,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,6 +24,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
@@ -81,7 +84,7 @@ fun LecturesOfTable(
                 onClickLecture = onClickLecture
             )
             Row(Modifier.padding(horizontal = 20.dp)) {
-                Divider(thickness = 1.dp) // TODO: Color (일괄)
+                Divider(thickness = 1.dp, color = SNUTTColors.Black050)
             }
         }
         item {
@@ -95,69 +98,71 @@ private fun TableLectureItem(
     lecture: LectureDto,
     onClickLecture: (lecture: LectureDto) -> Unit
 ) {
-    val tagText: String = listOf(
-        lecture.category,
-        lecture.department,
-        lecture.academic_year
-    )
-        .filter { it.isNullOrBlank().not() }
-        .let {
-            if (it.isEmpty()) "없음" else it.joinToString(", ")
-        }
+    val tagText = SNUTTStringUtils.getLectureTagText(lecture)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
     val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
 
     Column(
         modifier = Modifier
             .clicks { onClickLecture(lecture) }
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp, vertical = 7.dp)
     ) {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(
                     text = lecture.course_title,
-                    style = SNUTTTypography.subtitle1,
+                    style = SNUTTTypography.h4,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
             Column {
                 Text(
-                    text = lecture.instructor + lecture.credit, // TODO: StringUtil
-                    style = SNUTTTypography.body1
+                    text = SNUTTStringUtils.getInstructorAndCreditText(lecture),
+                    style = SNUTTTypography.body2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
-        Spacer(Modifier.height(7.dp))
-        Row {
+        Spacer(Modifier.height(5.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.ic_tag),
                 contentDescription = "tag icon",
-                modifier = Modifier.size(15.dp, 15.dp)
+                modifier = Modifier.size(15.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text(text = tagText, style = SNUTTTypography.body1)
+            Text(text = tagText, style = SNUTTTypography.body2, modifier = Modifier.alpha(0.8f))
         }
-        Spacer(Modifier.height(7.dp))
-        Row {
+        Spacer(Modifier.height(5.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.ic_clock),
                 contentDescription = "time icon",
-                modifier = Modifier.size(15.dp, 15.dp)
+                modifier = Modifier.size(15.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text(text = classTimeText, style = SNUTTTypography.body1)
+            Text(
+                text = classTimeText,
+                style = SNUTTTypography.body2,
+                modifier = Modifier.alpha(0.8f),
+            )
         }
-        Spacer(Modifier.height(7.dp))
-        Row {
+        Spacer(Modifier.height(5.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.ic_location),
                 contentDescription = "location icon",
-                modifier = Modifier.size(15.dp, 15.dp)
+                modifier = Modifier.size(15.dp, 15.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text(text = locationText, style = SNUTTTypography.body1)
+            Text(
+                text = locationText,
+                style = SNUTTTypography.body2,
+                modifier = Modifier.alpha(0.8f),
+            )
         }
     }
 }
@@ -173,7 +178,9 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.lecture_list_add_button),
-                    style = SNUTTTypography.subtitle2
+                    style = SNUTTTypography.body1,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Image(
