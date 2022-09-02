@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,8 @@ fun EditText(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String? = null,
+    underlineEnabled: Boolean = true,
+    textStyle: TextStyle = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -37,9 +40,7 @@ fun EditText(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         value = value,
-        textStyle = SNUTTTypography.subtitle1.copy(
-            color = SNUTTColors.Black900,
-        ),
+        textStyle = textStyle,
         enabled = enabled,
         onValueChange = onValueChange,
         singleLine = singleLine,
@@ -49,27 +50,28 @@ fun EditText(
             Column {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     leadingIcon()
-                    if (value.isNotEmpty() || isFocused) {
+                    if (value.isNotEmpty() || isFocused) {      // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
                         it()
                     } else {
                         hint?.let {
                             Text(
                                 text = it,
-                                color = SNUTTColors.Gray200,
-                                style = SNUTTTypography.subtitle1
+                                style = textStyle.copy(color = SNUTTColors.Gray200),
                             )
                         }
                     }
                     trailingIcon()
                 }
 
-                Box(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .background(if (isFocused) SNUTTColors.Black900 else SNUTTColors.Gray200)
-                        .fillMaxWidth()
-                        .height(1.dp)
-                )
+                if(underlineEnabled) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .background(if (isFocused) SNUTTColors.Black900 else SNUTTColors.Gray200)
+                            .fillMaxWidth()
+                            .height(1.dp)
+                    )
+                }
             }
         }
     )

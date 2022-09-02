@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,17 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.flag.BubbleFlag
 import com.skydoves.colorpickerview.flag.FlagMode
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.CheckedIcon
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import io.reactivex.rxjava3.core.Maybe
@@ -45,16 +46,12 @@ fun LectureColorSelectorPage() {
     val currentTable = vm.currentTable.collectAsState()
 
     Column {
-        TopAppBar(
-            title = { Text("강의 색상 선택하기") },
-            navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier.clicks {
-                        navController.popBackStack()
-                    }
-                )
-            }
-        )
+        SimpleTopBar(
+            title = "강의 색상 선택하기"
+        ) {
+            navController.popBackStack()
+        }
+
         Spacer(modifier = Modifier.height(10.dp))
         for (idx in 1L..9L) ColorItem(
             color = null,
@@ -105,8 +102,8 @@ fun ColorItem(
         Spacer(modifier = Modifier.width(20.dp))
         ColorBox(lectureColor = color, lectureColorIndex = index, theme = theme)
         Spacer(modifier = Modifier.width(20.dp))
-        if (index != 0L) Text(text = "SNUTT$index")
-        else Text(text = "커스텀")
+        if (index != 0L) Text(text = "SNUTT$index", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
+        else Text(text = "커스텀", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
         Spacer(modifier = Modifier.weight(1f))
         if (isSelected) CheckedIcon(modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(20.dp))
