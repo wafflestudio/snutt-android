@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -20,15 +20,22 @@ class TableListViewModelNew @Inject constructor(
 
     private val _allCourseBook = MutableStateFlow(emptyList<CourseBookDto>())
     val allCourseBook = _allCourseBook.asStateFlow()
+    val mostRecentCourseBook = _allCourseBook.filter { it.isNotEmpty() }.map { it.first() }
 
     val tableListOfEachCourseBook = tableRepository.tableMap.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), initialValue = mapOf()
     )
 
     val courseBooksWithTable = tableListOfEachCourseBook.map {
-        it.values.map { table ->
+        (it.values.map { table ->
             CourseBookDto(year = table.year, semester = table.semester)
-        }.distinct()
+        } + mostRecentCourseBook.first()).distinct()
+    }
+
+    val newSemesterNotify = tableRepository.tableMap.map { tableMap ->
+        tableMap.values.none { table ->
+            table.year == mostRecentCourseBook.first().year && table.semester == mostRecentCourseBook.first().semester
+        }
     }
 
     init {

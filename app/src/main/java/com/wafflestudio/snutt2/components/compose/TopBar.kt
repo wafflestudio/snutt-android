@@ -59,7 +59,8 @@ fun TopBar(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 8.dp)
+                .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) { title() }
 
         Row(modifier = Modifier.wrapContentWidth()) { actions() }
