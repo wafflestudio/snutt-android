@@ -9,20 +9,24 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
@@ -41,80 +45,18 @@ fun LectureDetailCustomPage() {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
     val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
-
     val editMode by vm.editMode.collectAsState()
-    val lectureState by vm.editingLectureDetail.collectAsState()
+    val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val currentTable = vm.currentTable.collectAsState()
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
-    if (deleteLectureDialogState) {
-        CustomDialog(
-            onDismiss = { deleteLectureDialogState = false }, onConfirm = {
-            scope.launch {
-                vm.removeLecture2()
-                scope.launch(Dispatchers.Main) {
-                    navController.popBackStack()
-                }
-                deleteLectureDialogState = false
-            }
-        }, title = "강좌 삭제"
-        ) {
-            Text(text = "강좌를 삭제하시겠습니까?")
-        }
-    }
-
     var editExitDialogState by remember { mutableStateOf(false) }
-    if (editExitDialogState) {
-        CustomDialog(
-            onDismiss = { editExitDialogState = false }, onConfirm = {
-            vm.abandonEditingLectureDetail()
-            editExitDialogState = false
-            vm.unsetEditMode()
-        }, title = "편집을 취소하시겠습니까?"
-        ) {}
-    }
-    // 편집 모드에서 뒤로가기 누르면 편집 취소 dialog 띄우기
-    // 변경점(개선점): 기존 앱은 여기서 확인 누르면 아예 detailFragment 에서 나가버려서 불편했다.
+    var editTimeDialogState by remember { mutableStateOf(false) }
+    var editingClassTimeIndex by remember { mutableStateOf(0) }
+    var deleteTimeDialogState by remember { mutableStateOf(false) }
     BackHandler(enabled = editMode) {
         if (vm.isAddMode()) navController.popBackStack() // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
         else editExitDialogState = true
-    }
-
-    var editTimeDialogState by remember { mutableStateOf(false) }
-    var editingClassTimeIndex by remember { mutableStateOf(0) }
-    if (editTimeDialogState) {
-        DayAndTimeSelectorDialog(
-            classTime = lectureState.class_time_json[editingClassTimeIndex],
-            onDismiss = { editTimeDialogState = false },
-            onConfirm = { editedClassTime ->
-                vm.editEditingLectureDetail(
-                    lectureState.copy(
-                        class_time_json = lectureState.class_time_json.toMutableList()
-                            .also {
-                                it[editingClassTimeIndex] = editedClassTime
-                            }
-                    )
-                )
-                editTimeDialogState = false
-            }
-        )
-    }
-
-    var deleteTimeDialogState by remember { mutableStateOf(false) }
-    if (deleteTimeDialogState) {
-        CustomDialog(
-            onDismiss = { deleteTimeDialogState = false }, onConfirm = {
-            vm.editEditingLectureDetail(
-                lectureState.copy(
-                    class_time_json = lectureState.class_time_json.toMutableList()
-                        .also {
-                            it.removeAt(editingClassTimeIndex)
-                        }
-                )
-            )
-            deleteTimeDialogState = false
-        }, title = "시간을 삭제하시겠습니까?"
-        ) {}
     }
 
     /* TODO (진행중)
@@ -125,96 +67,111 @@ fun LectureDetailCustomPage() {
         mutableStateOf(MutableTransitionState(true))
     }
 
-    // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
-        TopAppBar(title = {
-            Text(text = "강의 상세 보기")
-        }, navigationIcon = {
-            ArrowBackIcon(
-                modifier = Modifier.clicks {
-                    // '직접 강좌 추가하기' 로 진입했으면 < 아이콘 누를 때 바로 pop
-                    if (vm.isAddMode()) {
-                        vm.setAddMode(false)
-                        vm.unsetEditMode()
-                        navController.popBackStack()
-                    } else {
-                        if (editMode) editExitDialogState = true
-                        else navController.popBackStack()
+        TopBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.lecture_detail_app_bar_title),
+                    style = SNUTTTypography.h2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            },
+            navigationIcon = {
+                ArrowBackIcon(
+                    modifier = Modifier.clicks {
+                        // '직접 강좌 추가하기' 로 진입했으면 < 아이콘 누를 때 바로 pop
+                        if (vm.isAddMode()) {
+                            vm.setAddMode(false)
+                            vm.unsetEditMode()
+                            navController.popBackStack()
+                        } else {
+                            if (editMode) editExitDialogState = true
+                            else navController.popBackStack()
+                        }
                     }
-                }
-            )
-        }, actions = {
-            Text(
-                text = if (editMode) "완료" else "편집",
-                modifier = Modifier
-                    .clicks {
-                        if (editMode.not()) vm.setEditMode()
-                        else {
-                            if (vm.isAddMode()) {
-                                scope.launch {
-                                    vm.createLecture2()
-                                    vm.unsetEditMode()
-                                    vm.setAddMode(false)
-                                /* FIXME
-                                 * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                 *
-                                 * 하지만 @POST("/tables/{id}/lecture") api 는
-                                 * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                 * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                 * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                 *
-                                 * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                 * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                 *
-                                 * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                 * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                 */
-                                    scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                }
-                            } else {
-                                scope.launch {
-                                    vm.updateLecture2()
-                                    vm.initializeEditingLectureDetail(lectureState)
-                                    vm.unsetEditMode()
+                )
+            }, actions = {
+                Text(
+                    text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
+                    else stringResource(R.string.lecture_detail_top_bar_edit),
+                    modifier = Modifier
+                        .clicks {
+                            if (editMode.not()) vm.setEditMode()
+                            else {
+                                if (vm.isAddMode()) {
+                                    scope.launch {
+                                        vm.createLecture2()
+                                        vm.unsetEditMode()
+                                        vm.setAddMode(false)
+                                        /* FIXME
+                                         * 안드로이드는 여기서 그대로 detailPage 에 남는다.
+                                         *
+                                         * 하지만 @POST("/tables/{id}/lecture") api 는
+                                         * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
+                                         * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
+                                         * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
+                                         *
+                                         * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
+                                         * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
+                                         *
+                                         * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
+                                         * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
+                                         */
+                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                    }
+                                } else {
+                                    scope.launch {
+                                        vm.updateLecture2()
+                                        vm.initializeEditingLectureDetail(editingLectureDetail)
+                                        vm.unsetEditMode()
+                                    }
                                 }
                             }
                         }
-                    }
-                    .padding(horizontal = 10.dp)
-            )
-        })
+                        .padding(end = 16.dp)
+                )
+            }
+        )
         Column(
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Margin(height = 4.dp)
-                LectureDetailItem(title = "강의명") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_lecture_title)) {
                     EditText(
-                        value = lectureState.course_title,
+                        value = editingLectureDetail.course_title,
                         onValueChange = {
-                            vm.editEditingLectureDetail(lectureState.copy(course_title = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(course_title = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_lecture_title_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "교수") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_instructor)) {
                     EditText(
-                        value = lectureState.instructor,
+                        value = editingLectureDetail.instructor,
                         onValueChange = {
-                            vm.editEditingLectureDetail(lectureState.copy(instructor = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(instructor = it))
                         },
                         enabled = editMode,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(), underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_instructor_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
                 LectureDetailItem(
-                    title = "색상",
+                    title = stringResource(R.string.lecture_detail_color),
                     modifier = Modifier.clicks {
                         if (editMode) {
                             navController.navigate(NavigationDestination.LectureColorSelector)
@@ -223,7 +180,9 @@ fun LectureDetailCustomPage() {
                 ) {
                     Row {
                         ColorBox(
-                            lectureState.colorIndex, lectureState.color, currentTable.value.theme
+                            editingLectureDetail.colorIndex,
+                            editingLectureDetail.color,
+                            currentTable.value.theme
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         AnimatedVisibility(visible = editMode) {
@@ -231,15 +190,18 @@ fun LectureDetailCustomPage() {
                         }
                     }
                 }
-                LectureDetailItem(title = "학점") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
                     EditText(
-                        value = lectureState.credit.toString(),
+                        value = editingLectureDetail.credit.toString(),
                         onValueChange = {
-                            vm.editEditingLectureDetail(lectureState.copy(credit = it.stringToLong()))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
                         },
                         enabled = editMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = "0",
                     )
                 }
                 Margin(height = 4.dp)
@@ -247,37 +209,31 @@ fun LectureDetailCustomPage() {
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
                 Margin(height = 4.dp)
-                LectureDetailRemark(title = "비고") { //  TODO: movementMethod 는 뭘까
+                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark)) {
                     EditText(
-                        value = lectureState.remark,
+                        value = editingLectureDetail.remark,
                         onValueChange = {
-                            vm.editEditingLectureDetail(lectureState.copy(remark = it))
+                            vm.editEditingLectureDetail(editingLectureDetail.copy(remark = it))
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_remark_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
             }
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
-                Margin(height = 4.dp)
-                Box(
-                    modifier = Modifier
-                        .height(32.dp)
-                        .padding(start = 20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "시간 및 장소")
-                }
-                lectureState.class_time_json.forEachIndexed { idx, classTime ->
-                    // TODO: stringUtil 정리
-                    val time =
-                        SNUTTUtils.numberToWday(classTime.day) + " " + SNUTTUtils.numberToTime(
-                            classTime.start
-                        ) + "~" + SNUTTUtils.numberToTime(classTime.start + classTime.len)
-
+                Text(
+                    text = stringResource(R.string.lecture_detail_class_time),
+                    modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                )
+                editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
                     LectureDetailTimeAndLocation(
-                        timeText = time,
+                        timeText = SNUTTStringUtils.getClassTimeText(classTime),
                         locationText = classTime.place,
                         editTime = {
                             editingClassTimeIndex = idx
@@ -285,8 +241,8 @@ fun LectureDetailCustomPage() {
                         },
                         onLocationTextChange = { changedLocation ->
                             vm.editEditingLectureDetail(
-                                lectureState.copy(
-                                    class_time_json = lectureState.class_time_json.toMutableList()
+                                editingLectureDetail.copy(
+                                    class_time_json = editingLectureDetail.class_time_json.toMutableList()
                                         .also {
                                             it[idx] = classTime.copy(place = changedLocation)
                                         }
@@ -303,7 +259,7 @@ fun LectureDetailCustomPage() {
                         },
                         editMode = editMode,
                         isCustom = true,
-                        visible = if (idx == lectureState.class_time_json.lastIndex) classTimeAnimationState
+                        visible = if (idx == editingLectureDetail.class_time_json.lastIndex) classTimeAnimationState
                         else MutableTransitionState(true)
                     )
                 }
@@ -318,8 +274,8 @@ fun LectureDetailCustomPage() {
                                 classTimeAnimationState =
                                     MutableTransitionState(false).apply { targetState = true }
                                 vm.editEditingLectureDetail(
-                                    lectureState.copy(
-                                        class_time_json = lectureState.class_time_json
+                                    editingLectureDetail.copy(
+                                        class_time_json = editingLectureDetail.class_time_json
                                             .toMutableList()
                                             .also { it.add(Defaults.defaultClassTimeDto) }
                                     )
@@ -327,9 +283,14 @@ fun LectureDetailCustomPage() {
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "+ 시간 및 장소 추가", textAlign = TextAlign.Center)
+                        Text(
+                            text = stringResource(R.string.lecture_detail_add_class_time),
+                            textAlign = TextAlign.Center,
+                            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                        )
                     }
                 }
+                Margin(height = 7.dp)
             }
             AnimatedVisibility(
                 visible = editMode.not()
@@ -337,7 +298,13 @@ fun LectureDetailCustomPage() {
                 Column {
                     Margin(height = 30.dp)
                     Box(modifier = Modifier.background(Color.White)) {
-                        LectureDetailButton(title = "삭제") {
+                        LectureDetailButton(
+                            title = stringResource(R.string.lecture_detail_delete_button),
+                            textStyle = SNUTTTypography.body1.copy(
+                                fontSize = 15.sp,
+                                color = SNUTTColors.Red
+                            )
+                        ) {
                             deleteLectureDialogState = true
                         }
                     }
@@ -346,6 +313,75 @@ fun LectureDetailCustomPage() {
             Margin(height = 30.dp)
         }
     }
+
+    // 강의 삭제 다이얼로그
+    if (deleteLectureDialogState) {
+        CustomDialog(
+            onDismiss = { deleteLectureDialogState = false },
+            onConfirm = {
+                scope.launch {
+                    vm.removeLecture2()
+                    scope.launch(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
+                    deleteLectureDialogState = false
+                }
+            },
+            title = stringResource(R.string.lecture_detail_delete_dialog_title)
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message))
+        }
+    }
+
+    // 편집 취소하고 나가기 다이얼로그
+    if (editExitDialogState) {
+        CustomDialog(
+            onDismiss = { editExitDialogState = false },
+            onConfirm = {
+                vm.abandonEditingLectureDetail()
+                editExitDialogState = false
+                vm.unsetEditMode()
+            },
+            title = stringResource(R.string.lecture_detail_exit_edit_dialog_message)
+        ) {}
+    }
+
+    // 강의 시간대 편집 다이얼로그
+    if (editTimeDialogState) {
+        DayAndTimeSelectorDialog(
+            classTime = editingLectureDetail.class_time_json[editingClassTimeIndex],
+            onDismiss = { editTimeDialogState = false },
+            onConfirm = { editedClassTime ->
+                vm.editEditingLectureDetail(
+                    editingLectureDetail.copy(
+                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                            .also {
+                                it[editingClassTimeIndex] = editedClassTime
+                            }
+                    )
+                )
+                editTimeDialogState = false
+            }
+        )
+    }
+
+    // 강의 시간대 삭제 다이얼로그
+    if (deleteTimeDialogState) {
+        CustomDialog(
+            onDismiss = { deleteTimeDialogState = false }, onConfirm = {
+                vm.editEditingLectureDetail(
+                    editingLectureDetail.copy(
+                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                            .also {
+                                it.removeAt(editingClassTimeIndex)
+                            }
+                    )
+                )
+                deleteTimeDialogState = false
+            }, title = stringResource(R.string.lecture_detail_delete_class_time_message)
+        ) {}
+    }
+    
 }
 
 @Composable
@@ -409,7 +445,8 @@ fun DayAndTimeSelectorDialog(
                         startTime = (
                             it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
                             ) + 8f // TODO: 24시간 개선시 변경
-                        if (endTime <= startTime) endTime = startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        if (endTime <= startTime) endTime =
+                            startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
                     }
                 ) {
                     // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경

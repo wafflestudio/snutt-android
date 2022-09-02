@@ -15,23 +15,29 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.Dispatchers
@@ -49,64 +55,13 @@ fun LectureDetailPage() {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
     val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
-
-    // TODO: 각각 필드 비어있으면 회색 hint 적용 (editText 개선 후)
-
     val editMode by vm.editMode.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val theme = vm.currentTable.collectAsState()
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
-    if (deleteLectureDialogState) {
-        CustomDialog(
-            onDismiss = { deleteLectureDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    vm.removeLecture2()
-                    scope.launch(Dispatchers.Main) {
-                        navController.popBackStack()
-                    }
-                    deleteLectureDialogState = false
-                }
-            },
-            title = "강좌 삭제"
-        ) {
-            Text(text = "강좌를 삭제하시겠습니까?")
-        }
-    }
-
     var resetLectureDialogState by remember { mutableStateOf(false) }
-    if (resetLectureDialogState) {
-        CustomDialog(
-            onDismiss = { resetLectureDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    val resetLecture = vm.resetLecture2()
-                    vm.initializeEditingLectureDetail(resetLecture)
-                    vm.unsetEditMode()
-                    resetLectureDialogState = false
-                }
-            },
-            title = "강좌 초기화"
-        ) {
-            Text(text = "강좌를 원래 상태로 초기화하시겠습니까?")
-        }
-    }
-
     var editExitDialogState by remember { mutableStateOf(false) }
-    if (editExitDialogState) {
-        CustomDialog(
-            onDismiss = { editExitDialogState = false },
-            onConfirm = {
-                vm.abandonEditingLectureDetail()
-                editExitDialogState = false
-                vm.unsetEditMode()
-            },
-            title = "편집을 취소하시겠습니까?"
-        ) {}
-    }
-    // 편집 모드에서 뒤로가기 누르면 편집 취소 dialog 띄우기
-    // 변경점(개선점): 기존 앱은 여기서 확인 누르면 아예 detailFragment 에서 나가버려서 불편했다.
     BackHandler(enabled = editMode) {
         editExitDialogState = true
     }
@@ -114,23 +69,32 @@ fun LectureDetailPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: color
+            .background(SNUTTColors.Gray100)
     ) {
-        TopAppBar(
+        TopBar(
             title = {
-                Text(text = "강의 상세 보기")
+                Text(
+                    text = stringResource(R.string.lecture_detail_app_bar_title),
+                    style = SNUTTTypography.h2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             },
             navigationIcon = {
                 ArrowBackIcon(
-                    modifier = Modifier.clicks {
-                        if (editMode) editExitDialogState = true
-                        else navController.popBackStack()
-                    }
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks {
+                            if (editMode) editExitDialogState = true
+                            else navController.popBackStack()
+                        }
                 )
             },
             actions = {
                 Text(
-                    text = if (editMode) "완료" else "편집",
+                    text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
+                    else stringResource(R.string.lecture_detail_top_bar_edit),
+                    style = SNUTTTypography.subtitle2,
                     modifier = Modifier
                         .clicks {
                             if (editMode.not()) vm.setEditMode()
@@ -142,7 +106,7 @@ fun LectureDetailPage() {
                                 }
                             }
                         }
-                        .padding(horizontal = 10.dp)
+                        .padding(end = 16.dp)
                 )
             }
         )
@@ -150,9 +114,9 @@ fun LectureDetailPage() {
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Margin(height = 4.dp)
-                LectureDetailItem(title = "강의명") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_lecture_title)) {
                     EditText(
                         value = editingLectureDetail.course_title,
                         onValueChange = {
@@ -160,9 +124,13 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_lecture_title_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "교수") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_instructor)) {
                     EditText(
                         value = editingLectureDetail.instructor,
                         onValueChange = {
@@ -170,10 +138,14 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_instructor_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
                 LectureDetailItem(
-                    title = "색상",
+                    title = stringResource(R.string.lecture_detail_color),
                     modifier = Modifier.clicks {
                         if (editMode) {
                             navController.navigate(NavigationDestination.LectureColorSelector)
@@ -197,7 +169,7 @@ fun LectureDetailPage() {
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
                 Margin(height = 4.dp)
-                LectureDetailItem(title = "학과") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_department)) {
                     EditText(
                         value = editingLectureDetail.department ?: "",
                         onValueChange = {
@@ -205,9 +177,12 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "학년") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_academic_year)) {
                     EditText(
                         value = editingLectureDetail.academic_year ?: "",
                         onValueChange = {
@@ -215,9 +190,12 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "학점") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
                     EditText(
                         value = editingLectureDetail.credit.toString(),
                         onValueChange = {
@@ -226,9 +204,12 @@ fun LectureDetailPage() {
                         enabled = editMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = "0",
                     )
                 }
-                LectureDetailItem(title = "분류") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_classification)) {
                     EditText(
                         value = editingLectureDetail.classification ?: "",
                         onValueChange = {
@@ -236,28 +217,46 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "구분") {
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_category)) {
                     EditText(
                         value = editingLectureDetail.category ?: "",
                         onValueChange = {
                             vm.editEditingLectureDetail(editingLectureDetail.copy(category = it))
                         },
                         enabled = editMode,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(title = "강좌번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = editingLectureDetail.course_number ?: "")
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_course_number)) {
+                    Text(
+                        text = editingLectureDetail.course_number ?: "",
+                        style = SNUTTTypography.body1.copy(
+                            fontSize = 15.sp,
+                            color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
+                        )
+                    )
                 }
-                LectureDetailItem(title = "분반번호") { // TODO: editMode 에 따라 색 변경 로직 추가 (편집 불가)
-                    Text(text = editingLectureDetail.lecture_number ?: "")
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_lecture_number)) {
+                    Text(
+                        text = editingLectureDetail.lecture_number ?: "",
+                        style = SNUTTTypography.body1.copy(
+                            fontSize = 15.sp,
+                            color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
+                        )
+                    )
                 }
                 LectureDetailItem(title = "인원") {
                     Text(text = "TODO")
                 }
-                LectureDetailRemark(title = "비고") { //  TODO: movementMethod 는 뭘까
+                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark)) {
                     EditText(
                         value = editingLectureDetail.remark,
                         onValueChange = {
@@ -265,29 +264,24 @@ fun LectureDetailPage() {
                         },
                         enabled = editMode,
                         modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = if (editMode) stringResource(R.string.lecture_detail_remark_hint)
+                        else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
                 Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
-                Margin(height = 4.dp)
-                Box(
-                    modifier = Modifier
-                        .height(32.dp)
-                        .padding(horizontal = 20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "시간 및 장소")
-                }
+                Text(
+                    text = stringResource(R.string.lecture_detail_class_time),
+                    modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                )
                 editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
-                    // TODO: stringUtil 정리
-                    val time = SNUTTUtils.numberToWday(classTime.day) + " " +
-                        SNUTTUtils.numberToTime(classTime.start) + "~" +
-                        SNUTTUtils.numberToEndTimeAdjusted(classTime.start, classTime.len)
-
                     LectureDetailTimeAndLocation(
-                        timeText = time,
+                        timeText = SNUTTStringUtils.getClassTimeText(classTime),
                         locationText = classTime.place,
                         onLocationTextChange = { changedLocation ->
                             vm.editEditingLectureDetail(
@@ -300,6 +294,7 @@ fun LectureDetailPage() {
                         editMode = editMode
                     )
                 }
+                Margin(height = 7.dp)
             }
             AnimatedVisibility(
                 visible = editMode.not()
@@ -307,7 +302,7 @@ fun LectureDetailPage() {
                 Column {
                     Margin(height = 30.dp)
                     Column(modifier = Modifier.background(Color.White)) {
-                        LectureDetailButton(title = "강의계획서") {
+                        LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
                             scope.launch {
                                 vm.getCourseBookUrl().let { url ->
                                     val intent =
@@ -316,10 +311,10 @@ fun LectureDetailPage() {
                                 }
                             }
                         }
-                        LectureDetailButton(title = "강의평") {
+                        LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                             scope.launch {
                                 vm.getReviewContentsUrl().let {
-                                    // 강의평 쪽 api 403 난다
+                                    // TODO: 강의평 쪽 api 403 난다
                                 }
                             }
                         }
@@ -328,12 +323,70 @@ fun LectureDetailPage() {
             }
             Margin(height = 10.dp)
             Box(modifier = Modifier.background(Color.White)) {
-                LectureDetailButton(title = if (editMode) "초기화" else "삭제") {
+                LectureDetailButton(
+                    title = if (editMode) stringResource(R.string.lecture_detail_reset_button) else stringResource(
+                        R.string.lecture_detail_delete_button
+                    ),
+                    textStyle = SNUTTTypography.body1.copy(
+                        fontSize = 15.sp,
+                        color = SNUTTColors.Red
+                    )
+                ) {
                     if (editMode) resetLectureDialogState = true
                     else deleteLectureDialogState = true
                 }
             }
             Margin(height = 30.dp)
+        }
+    }
+
+    // 강의 삭제 다이얼로그
+    if (deleteLectureDialogState) {
+        CustomDialog(
+            onDismiss = { deleteLectureDialogState = false },
+            onConfirm = {
+                scope.launch {
+                    vm.removeLecture2()
+                    scope.launch(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
+                    deleteLectureDialogState = false
+                }
+            },
+            title = stringResource(R.string.lecture_detail_delete_dialog_title)
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message))
+        }
+    }
+
+    // 편집 취소하고 나가기 다이얼로그
+    if (editExitDialogState) {
+        CustomDialog(
+            onDismiss = { editExitDialogState = false },
+            onConfirm = {
+                vm.abandonEditingLectureDetail()
+                editExitDialogState = false
+                vm.unsetEditMode()
+            },
+            title = stringResource(R.string.lecture_detail_exit_edit_dialog_message)
+        ) {}
+    }
+
+    // 강의 초기화 다이얼로그
+    if (resetLectureDialogState) {
+        CustomDialog(
+            onDismiss = { resetLectureDialogState = false },
+            onConfirm = {
+                scope.launch {
+                    val resetLecture = vm.resetLecture2()
+                    vm.initializeEditingLectureDetail(resetLecture)
+                    vm.unsetEditMode()
+                    resetLectureDialogState = false
+                }
+            },
+            title = stringResource(R.string.lecture_detail_reset_dialog_title)
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_reset_dialog_message))
         }
     }
 }
@@ -351,7 +404,11 @@ fun LectureDetailItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(20.dp))
-        Text(text = title, modifier = Modifier.width(76.dp))
+        Text(
+            text = title,
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+            modifier = Modifier.width(76.dp)
+        )
         Box(modifier = Modifier.weight(1f)) {
             content()
         }
@@ -382,6 +439,7 @@ fun LectureDetailRemark(
 @Composable
 fun LectureDetailButton(
     title: String,
+    textStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
     onClick: () -> Unit
 ) {
     Box(
@@ -391,7 +449,7 @@ fun LectureDetailButton(
             .clicks { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text = title)
+        Text(text = title, style = textStyle)
     }
 }
 
@@ -433,16 +491,21 @@ fun LectureDetailTimeAndLocation(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "시간",
+                        text = stringResource(R.string.lecture_detail_time),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
                         modifier = Modifier.width(76.dp)
                     )
                     Text(
                         text = timeText,
-                        modifier = Modifier // TODO : editMode 에 따라 색 변경 (편집 불가)
+                        modifier = Modifier
                             .fillMaxWidth()
                             .clicks {
                                 if (editMode && isCustom) editTime()
-                            }
+                            },
+                        style = SNUTTTypography.body1.copy(
+                            fontSize = 15.sp,
+                            color = if (isCustom.not() && editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
+                        ),
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -450,12 +513,19 @@ fun LectureDetailTimeAndLocation(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "장소", modifier = Modifier.width(76.dp))
+                    Text(
+                        text = stringResource(R.string.lecture_detail_place),
+                        modifier = Modifier.width(76.dp),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                    )
                     EditText(
                         value = locationText,
                         onValueChange = onLocationTextChange,
                         enabled = editMode,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        underlineEnabled = false,
+                        textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                        hint = stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
             }
@@ -496,7 +566,7 @@ fun ColorBox(
             .width(40.dp)
             .height(20.dp)
             .zIndex(1f)
-            .border(width = (0.5f).dp, color = Color(0x26000000)) // TODO: Color
+            .border(width = (0.5f).dp, color = SNUTTColors.Black250)
     ) {
         Box(
             modifier = Modifier
@@ -529,7 +599,6 @@ fun LectureDetailPagePreview() {
     LectureDetailPage()
 }
 
-// TODO: StringUtil 로 이동?
 fun String.stringToLong(): Long {
     return try {
         this.toLong()
