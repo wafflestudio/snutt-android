@@ -369,3 +369,27 @@ fun BigSearchIcon(
         contentDescription = ""
     )
 }
+
+@Composable
+fun WarningIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_warning),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun AlarmOnIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.tab_alarm_on),
+        contentDescription = ""
+    )
+}
