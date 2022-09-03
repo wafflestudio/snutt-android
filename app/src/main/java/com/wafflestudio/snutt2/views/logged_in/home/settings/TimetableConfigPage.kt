@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -29,9 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
@@ -41,73 +40,51 @@ import kotlin.math.roundToInt
 
 @Composable
 fun TimetableConfigPage() {
-    val context = LocalContext.current
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
-//    val viewModel = hiltViewModel<UserViewModel>()
-//    val trimParam = viewModel.trimParam.collectAsState()
-
-    var temp by remember { mutableStateOf(false) }
-
-    var startDay by remember { mutableStateOf(0) }
-    var endDay by remember { mutableStateOf(4) }
-
-    var startTime by remember { mutableStateOf(0) }
-    var endTime by remember { mutableStateOf(10) }
+    val viewModel = hiltViewModel<UserViewModel>()
+    val trimParam by viewModel.trimParam.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
-        TopAppBar(
-            title = { Text(text = stringResource(R.string.timetable_settings_app_bar_title)) },
-            navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            navController.popBackStack()
-                        }
-                )
-            }
-        )
+        SimpleTopBar(title = stringResource(R.string.timetable_settings_app_bar_title),
+            onClickNavigateBack = { navController.popBackStack() })
         Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_timetable_config_force_fit),
+        SettingItem(title = stringResource(R.string.settings_timetable_config_force_fit),
             modifier = Modifier.background(Color.White),
             onClick = {
-                temp = temp.not()
-//                scope.launch {
-//                    viewModel.setAutoTrim(trimParam.value.forceFitLectures.not())
-//                }
+                scope.launch {
+                    viewModel.setAutoTrim(trimParam.forceFitLectures.not())
+                }
             },
             content = {
-                PoorSwitch(state = temp)
-            }
-        )
+                PoorSwitch(state = trimParam.forceFitLectures)
+            })
         Margin(height = 10.dp)
-        AnimatedVisibility(visible = temp) {
+        AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
             Column {
                 RangeBarCell(title = stringResource(R.string.settings_timetable_config_week_day)) {
                     RangeBar(
-                        initStart = startDay,
-                        initEnd = endDay,
+                        initStart = trimParam.dayOfWeekFrom,
+                        initEnd = trimParam.dayOfWeekTo,
                         labelArray = stringArrayResource(R.array.week_days)
                     ) { start, end ->
-                        startDay = start
-                        endDay = end
+                        scope.launch {
+                            viewModel.setDayOfWeekRange(start, end)
+                        }
                     }
                 }
                 Margin(height = 10.dp)
                 RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
-                    RangeBar(
-                        initStart = startTime,
-                        initEnd = endTime,
-                        labelArray = Array(16) { (it + 8).toString() }
-                    ) { start, end ->
-                        startTime = start
-                        endTime = end
+                    RangeBar(initStart = trimParam.hourFrom - 8,    // TODO: 24시간 개선 시 변경
+                        initEnd = trimParam.hourTo - 8, // TODO: 24시간 개선 시 변경
+                        labelArray = Array(16) { (it + 8).toString() }) { start, end ->
+                        scope.launch {
+                            viewModel.setHourRange(start + 8, end + 8)  // TODO: 24시간 개선 시 변경
+                        }
                     }
                 }
             }
@@ -124,8 +101,7 @@ private fun PoorSwitch(state: Boolean) {
     Box(
         modifier = Modifier
             .width(60.dp)
-            .fillMaxHeight(),
-        contentAlignment = Alignment.CenterEnd
+            .fillMaxHeight(), contentAlignment = Alignment.CenterEnd
     ) {
         Row {
             Box(
@@ -191,10 +167,7 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
 
 @Composable
 private fun RangeBar(
-    initStart: Int,
-    initEnd: Int,
-    labelArray: Array<String>,
-    onChange: (Int, Int) -> Unit
+    initStart: Int, initEnd: Int, labelArray: Array<String>, onChange: (Int, Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
@@ -242,10 +215,7 @@ private fun RangeBar(
         )
     }
     Label(
-        offset = barStart,
-        widthPx = widthPx,
-        tickPx = tickPx,
-        labelText = labelArray[startTick]
+        offset = barStart, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[startTick]
     ) {
         onChange(min(startTick, endTick), max(startTick, endTick))
     }
@@ -264,37 +234,32 @@ private fun Label(
 ) {
     val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier
-            .offset {
-                IntOffset(
-                    (offset.value - 13.dp.toPx()).roundToInt(),
-                    5.dp
-                        .toPx()
-                        .roundToInt()
+    Box(modifier = Modifier
+        .offset {
+            IntOffset(
+                (offset.value - 13.dp.toPx()).roundToInt(),
+                5.dp
+                    .toPx()
+                    .roundToInt()
+            )
+        }
+        .draggable(orientation = Orientation.Horizontal, state = rememberDraggableState { delta ->
+            scope.launch {
+                offset.snapTo(
+                    (offset.value + delta).coerceIn(0f, widthPx)
                 )
             }
-            .draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    scope.launch {
-                        offset.snapTo(
-                            (offset.value + delta).coerceIn(0f, widthPx)
-                        )
-                    }
-                },
-                onDragStopped = {
-                    offset.animateTo(
-                        (offset.value / tickPx).roundToInt() * tickPx
-                    )
-                    onChange()
-                }
+        }, onDragStopped = {
+            offset.animateTo(
+                (offset.value / tickPx).roundToInt() * tickPx
             )
-            .clip(CircleShape)
-            .width(26.dp)
-            .height(26.dp)
-            .background(Color.Black)
-            .clip(CircleShape),
+            onChange()
+        })
+        .clip(CircleShape)
+        .width(26.dp)
+        .height(26.dp)
+        .background(Color.Black)
+        .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(text = labelText, color = Color.White)

@@ -5,9 +5,10 @@ import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.ModalDrawer
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -27,8 +28,8 @@ import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.SelectedTimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,8 +73,7 @@ fun HomePage() {
     var pageState by rememberSaveable { mutableStateOf(HomeItem.Timetable) }
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val selectedTimetableViewModel =
-        hiltViewModel<SelectedTimetableViewModel>() // SettingRepository 에서 가져올 trimParam 을 위해 옛 viewModel을 남긴다.
+    val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
@@ -96,8 +96,7 @@ fun HomePage() {
 
     val table by timetableViewModel.currentTable.collectAsState(Defaults.defaultTableDto) // FIXME: 초기값 문제
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val trimParam = selectedTimetableViewModel.trimParam.asObservable().distinctUntilChanged()
-        .subscribeAsState(initial = TableTrimParam.Default).value
+    val trimParam by userViewModel.trimParam.collectAsState()
     val tableContext = TableContextBundle(table, trimParam, previewTheme)
 
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨

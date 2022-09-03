@@ -174,6 +174,9 @@
     <string name="settings_user_config_facebook_disconnect">페이스북 연동 취소</string>
     <string name="settings_user_config_change_email">이메일 변경</string>
     <string name="settings_user_config_leave">회원탈퇴</string>
+    <string name="settings_user_config_current_password_hint">현재 비밀번호</string>
+    <string name="settings_user_config_new_password_hint">새로운 비밀번호</string>
+    <string name="settings_user_config_new_password_confirm_hint">새로운 비밀번호 확인</string>
     <string name="settings_user_config_password_confirm_fail">새 비밀번호가 일치하지 않습니다.</string>
     <string name="settings_user_config_add_local_id_success">아이디를 추가하였습니다.</string>
     <string name="settings_user_config_enter_email">이메일을 입력해주세요.</string>
@@ -210,4 +213,8 @@
     <string name="lecture_detail_reset_dialog_title">강좌 초기화</string>
     <string name="lecture_detail_reset_dialog_message">강좌를 원래 상태로 초기화하시겠습니까?</string>
     <string name="lecture_detail_delete_class_time_message">시간을 삭제하시겠습니까?</string>
+    <string name="feedback_empty_detail_warning">내용을 입력해 주세요.</string>
+    <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>
+    <string name="feedback_send_success_message">전송하였습니다.</string>
+    <string name="example_email">example@gmail.com</string>
 </resources>
