@@ -58,10 +58,12 @@ class SearchViewModelNew @Inject constructor(
         }
     }
 
+    private val etcTags = listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY)
+
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
         _searchTagList, _selectedTagType, _selectedTags
     ) { tags, selectedTagType, selectedTags ->
-        tags.filter { it.type == selectedTagType }
+        (tags + etcTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
