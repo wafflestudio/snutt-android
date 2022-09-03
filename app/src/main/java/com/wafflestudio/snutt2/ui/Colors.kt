@@ -11,14 +11,25 @@ object SNUTTColors {
     val Gray800 = Color(0xff555555)
 
     val Red = Color(0xffe54459)
+    val Orange = Color(0xfff58d3d)
+    val Grass = Color(0xffa6d930)
+    val Sky = Color(0xff1bd0c8)
+    val Blue = Color(0xff1d99e8)
+    val Violet = Color(0xffaf56b3)
 
     val FacebookBlue = Color(0x993c5dd4)
 
-    val Black000 = Color(0x00000000)
+    val Transparent = Color(0x00000000)
     val Black050 = Color(0x0d000000)
     val Black250 = Color(0x26000000)
+    val Black400 = Color(0x66000000)
+    val Black500 = Color(0x80000000)
     val Black600 = Color(0x99000000)     // TODO: alpha 값이 다른 color 의 naming convention?
     val Black900 = Color(0xff000000)
+    val White400 = Color(0x4dffffff)
+    val White500 = Color(0x80ffffff)
+    val White700 = Color(0xb3ffffff)
+    val White800 = Color(0xccffffff)
     val White900 = Color(0xffffffff)
 }
 

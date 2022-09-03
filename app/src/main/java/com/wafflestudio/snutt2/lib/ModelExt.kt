@@ -2,11 +2,13 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import android.graphics.Color
+import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -58,6 +60,19 @@ fun TagType.color(): Int {
         TagType.INSTRUCTOR -> Color.rgb(29, 153, 232)
         TagType.CATEGORY -> Color.rgb(175, 86, 179)
         TagType.ETC -> Color.rgb(0xaf, 0x56, 0xb3)
+    }
+}
+
+@Composable
+fun TagType.getColor(): androidx.compose.ui.graphics.Color {
+    return when (this) {
+        TagType.ACADEMIC_YEAR -> SNUTTColors.Red
+        TagType.CLASSIFICATION -> SNUTTColors.Orange
+        TagType.CREDIT -> SNUTTColors.Grass
+        TagType.DEPARTMENT -> SNUTTColors.Sky
+        TagType.INSTRUCTOR -> SNUTTColors.Blue
+        TagType.CATEGORY -> SNUTTColors.Violet
+        TagType.ETC -> SNUTTColors.Violet
     }
 }
 

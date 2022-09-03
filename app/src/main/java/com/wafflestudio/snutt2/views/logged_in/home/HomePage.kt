@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -109,7 +108,7 @@ fun HomePage() {
     var bottomSheetHeight by remember { mutableStateOf(200.dp) }
     val bottomSheetHeightPx = with(LocalDensity.current) { bottomSheetHeight.toPx() }
     val bottomSheetOffset = remember { androidx.compose.animation.core.Animatable(0f) }
-    val bottomSheetDim = remember { Animatable(SNUTTColors.Black000) }
+    val bottomSheetDim = remember { Animatable(SNUTTColors.Transparent) }
     var bottomSheetContent by remember { mutableStateOf<@Composable () -> Unit>({}) }
 
     val showBottomSheet: suspend (Dp, @Composable () -> Unit) -> Unit = { contentHeight, content ->
@@ -124,7 +123,7 @@ fun HomePage() {
     }
     val hideBottomSheet: suspend (Boolean) -> Unit = { fast ->
         coroutineScope {
-            launch { bottomSheetDim.animateTo(SNUTTColors.Black000) }
+            launch { bottomSheetDim.animateTo(SNUTTColors.Transparent) }
             launch {
                 bottomSheetOffset.animateTo(
                     targetValue = bottomSheetHeightPx,

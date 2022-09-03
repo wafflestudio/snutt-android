@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
@@ -101,34 +102,40 @@ fun ExitIcon(
 
 @Composable
 fun TagIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
 ) {
     Image(
-        modifier = modifier.size(15.dp),
+        modifier = modifier,
         painter = painterResource(id = R.drawable.ic_tag),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun ClockIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
-        modifier = modifier.size(15.dp),
+        modifier = modifier,
         painter = painterResource(id = R.drawable.ic_clock),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun LocationIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
-        modifier = modifier.size(15.dp),
+        modifier = modifier,
         painter = painterResource(id = R.drawable.ic_location),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -350,4 +357,15 @@ fun RedDot() {
     Canvas(modifier = Modifier.size(5.dp)) {
         drawCircle(SNUTTColors.Red)
     }
+}
+
+@Composable
+fun BigSearchIcon(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.img_search_big),
+        contentDescription = ""
+    )
 }

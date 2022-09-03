@@ -208,7 +208,7 @@ fun TimetablePage(
                 .fillMaxWidth()
                 .onGloballyPositioned { timetableHeight = it.size.height } // timetable 높이 측정
         ) {
-            TimeTable(selectedLecture = mutableStateOf(null))
+            TimeTable(selectedLecture = null)
         }
     }
 }
@@ -217,7 +217,7 @@ fun TimetablePage(
 @Composable
 fun TimeTable(
     touchEnabled: Boolean = true,
-    selectedLecture: State<LectureDto?>
+    selectedLecture: LectureDto?,
 ) {
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
@@ -228,7 +228,7 @@ fun TimeTable(
     val trimParam = TableContext.current.trimParam
 
     val fittedTrimParam = if (trimParam.forceFitLectures) {
-        (selectedLecture.value?.let { lectures + it } ?: lectures).getFittingTrimParam(
+        (selectedLecture?.let { lectures + it } ?: lectures).getFittingTrimParam(
             TableTrimParam.Default
         )
     } else trimParam
@@ -279,7 +279,7 @@ fun TimeTable(
         lectures.forEach {
             DrawLecture(lecture = it)
         }
-        selectedLecture.value?.let {
+        selectedLecture?.let {
             DrawSelectedLecture(it)
         }
     }
