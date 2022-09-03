@@ -2,19 +2,20 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.SendIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import kotlinx.coroutines.launch
 
@@ -29,34 +30,59 @@ fun AppReportPage() {
     var detail by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
-            title = { Text(text = stringResource(R.string.settings_app_report_title)) },
-            navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            navController.popBackStack()
+        TopBar(title = {
+            Text(
+                text = stringResource(R.string.settings_app_report_title),
+                style = SNUTTTypography.h2,
+            )
+        }, navigationIcon = {
+            ArrowBackIcon(modifier = Modifier
+                .size(30.dp)
+                .clicks {
+                    navController.popBackStack()
+                })
+        }, actions = {
+            SendIcon(modifier = Modifier
+                .padding(6.dp)
+                .clicks {
+                    if (detail.isEmpty()) {
+                        context.toast(context.getString(R.string.feedback_empty_detail_warning))
+                    } else if (email.isEmailInvalid()) {
+                        context.toast(context.getString(R.string.feedback_invalid_email_warning))
+                    } else {
+                        scope.launch {
+                            userViewModel.sendFeedback(email, detail)
                         }
-                )
-            },
-            actions = {
-                SendIcon(
-                    modifier = Modifier.clicks {
-                        scope.launch { userViewModel.sendFeedback(email, detail) }
+                        context.toast(context.getString(R.string.feedback_send_success_message))
                         navController.popBackStack()
                     }
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(text = stringResource(R.string.settings_app_report_email))
-        Spacer(modifier = Modifier.height(10.dp))
-        EditText(value = email, onValueChange = { email = it })
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(text = stringResource(R.string.settings_app_report_detail))
-        Spacer(modifier = Modifier.height(10.dp))
-        EditText(value = detail, onValueChange = { detail = it })
+                })
+        })
+        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = stringResource(R.string.settings_app_report_email),
+                style = SNUTTTypography.h4.copy(fontSize = 13.sp, color = SNUTTColors.Black600),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            EditText(
+                value = email,
+                onValueChange = { email = it },
+                hint = "example@gmail.com",
+                textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = stringResource(R.string.settings_app_report_detail),
+                style = SNUTTTypography.h4.copy(fontSize = 13.sp, color = SNUTTColors.Black600),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            EditText(
+                value = detail, onValueChange = { detail = it },
+                hint = "불편한 점이나 버그를 적어주세요",
+                textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
+            )
+        }
     }
 }
 
