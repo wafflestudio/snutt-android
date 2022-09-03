@@ -1,27 +1,32 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +42,11 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
+import com.wafflestudio.snutt2.lib.getColor
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.model.TagDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
@@ -66,28 +75,24 @@ fun SearchPage(
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
     val loadState = searchResultPagingItems.loadState
-    val selectedLecture = searchViewModel.selectedLecture.collectAsState()
-    val tagsByTagType = searchViewModel.tagsByTagType.collectAsState()
-    val selectedTags = searchViewModel.selectedTags.collectAsState()
+    val selectedLecture by searchViewModel.selectedLecture.collectAsState()
+    val tagsByTagType by searchViewModel.tagsByTagType.collectAsState()
+    val selectedTagType by searchViewModel.selectedTagType.collectAsState()
+    val selectedTags by searchViewModel.selectedTags.collectAsState()
     var searchOptionSheetState by remember { mutableStateOf(false) }
 
     Column {
-        TopAppBar(navigationIcon = {
-            SearchIcon(
-                modifier = Modifier.clicks {
-                    scope.launch { searchViewModel.query() }
-                }
-            )
-        }, title = {
+        SearchTopBar {
+            SearchIcon(modifier = Modifier.clicks {
+                scope.launch { searchViewModel.query() }
+            })
+            Spacer(modifier = Modifier.width(12.dp))
+            // FIXME: EditText 글자가 살짝 중간에서 아래로 치우쳐 있다.
             EditText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .onFocusChanged { searchEditTextFocused = it.isFocused },
-                leadingIcon = { SearchIcon() },
-                trailingIcon = {
-                    if (searchEditTextFocused) ExitIcon() else FilterIcon()
-                },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     scope.launch {
@@ -102,11 +107,16 @@ fun SearchPage(
                         searchViewModel.setTitle(it)
                     }
                 },
-                hint = stringResource(R.string.search_hint)
+                singleLine = true,
+                hint = stringResource(R.string.search_hint),
+                underlineEnabled = false,
             )
-        }, actions = {
-            FilterIcon(modifier = Modifier.clicks { searchOptionSheetState = true })
-        })
+            Spacer(modifier = Modifier.width(12.dp))
+            if (searchEditTextFocused) ExitIcon(modifier = Modifier.clicks { scope.launch { searchViewModel.clearEditText() } })
+            else FilterIcon(modifier = Modifier.clicks {
+                searchOptionSheetState = true
+            })
+        }
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -115,13 +125,18 @@ fun SearchPage(
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
             Column(
                 modifier = Modifier
-                    .background(Color(0x80000000)) // TODO: 임시
+                    .background(SNUTTColors.Black500)
                     .fillMaxSize()
             ) {
-                AnimatedVisibility(selectedTags.value.isNotEmpty()) {
-                    LazyRow(state = rememberLazyListState()) {
-                        items(selectedTags.value) {
-                            TagCell(text = it.name) {
+                AnimatedVisibility(visible = selectedTags.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(items = selectedTags, key = { it.name }) {
+                            TagCell(tagDto = it) {
                                 scope.launch {
                                     searchViewModel.toggleTag(it)
                                     searchViewModel.query()
@@ -139,12 +154,9 @@ fun SearchPage(
                     }
                     else -> {
                         LazyColumn(
-                            state = lazyListState,
-                            modifier = Modifier
-                                .background(Color(0x80000000)) // TODO: 임시
-                                .fillMaxSize()
+                            state = lazyListState, modifier = Modifier.fillMaxSize()
                         ) {
-                            items(searchResultPagingItems) {
+                            items(searchResultPagingItems, key = { it.item.id }) {
                                 it?.let {
                                     SearchListItem(lectureDataWithState = it, onSelect = {
                                         scope.launch {
@@ -184,7 +196,7 @@ fun SearchPage(
     if (searchOptionSheetState) {
         LaunchedEffect(Unit) {
             showBottomSheet(380.dp) {
-                SearchOptionSheet(tagsByTagType) {
+                SearchOptionSheet(tagsByTagType, selectedTagType) {
                     scope.launch { searchViewModel.query() }
                     scope.launch { hideBottomSheet.invoke(false) }
                 }
@@ -195,7 +207,7 @@ fun SearchPage(
 }
 
 @Composable
-fun SearchListItem(
+fun LazyItemScope.SearchListItem(
     lectureDataWithState: DataWithState<LectureDto, LectureStateNew>,
     onSelect: () -> Unit,
     onClickAdd: () -> Unit,
@@ -215,158 +227,203 @@ fun SearchListItem(
     val tagText = getLectureTagText(lectureDataWithState.item)
     val classTimeText = getSimplifiedClassTime(lectureDataWithState.item)
 
-    val backgroundColor = if (selected) Color(0x60000000) else Color.Transparent // TODO: 임시
+    val backgroundColor = if (selected) SNUTTColors.Black400 else SNUTTColors.Transparent
 
-    CompositionLocalProvider(
-        LocalContentColor.provides(Color.White) // TODO: 임시
+    Column(
+        modifier = Modifier
+            .animateItemPlacement()
+            .background(backgroundColor)
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .background(backgroundColor) // TODO: 임시
-                .padding(horizontal = 20.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .clicks {
-                        onSelect()
-                    }
-            ) {
-                Row {
-                    Text(
-                        text = lectureTitle, modifier = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = instructorCreditText,
-                        maxLines = 1,
-                    )
-                }
-                Spacer(modifier = Modifier.height(7.dp))
-                Row {
-                    TagIcon()
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
-                        maxLines = 1, modifier = Modifier.alpha(0.8f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(7.dp))
-                Row {
-                    ClockIcon()
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = classTimeText, maxLines = 1, modifier = Modifier.alpha(0.8f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(7.dp))
-                Row {
-                    LocationIcon()
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = getSimplifiedLocation(lectureDataWithState.item),
-                        maxLines = 1,
-                        modifier = Modifier.alpha(0.8f)
-                    )
-                }
+        Column(modifier = Modifier
+            .padding(top = 8.dp, bottom = 9.dp)
+            .clicks {
+                onSelect()
+            }) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = lectureTitle,
+                    style = SNUTTTypography.h4.copy(color = SNUTTColors.White900),
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = instructorCreditText,
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
-            // TODO: 리스트 마지막 아이템은 expand & shrink 애니메이션이 아니라 그냥 생기고 사라지는 걸루.
-            // TODO: 애니메이션 속도 좀 더 빠르게
-            AnimatedVisibility(visible = lectureDataWithState.state.selected) {
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 15.dp, horizontal = 10.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.search_result_item_detail_button),
-                        modifier = Modifier.clicks { onClickDetail() }
-                    )
-                    Text(
-                        text = stringResource(R.string.search_result_item_review_button),
-                        modifier = Modifier.clicks {
-                            // TODO
-                        }
-                    )
-                    Text(
-                        text = if (contained) stringResource(R.string.search_result_item_remove_button)
-                        else stringResource(R.string.search_result_item_add_button),
-                        modifier = Modifier.clicks {
-                            if (contained) onClickRemove() else onClickAdd()
-                        }
-                    )
-                }
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TagIcon(
+                    modifier = Modifier.size(15.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    maxLines = 1,
+                )
             }
-            Divider(color = Color.White) // TODO: 임시
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ClockIcon(
+                    modifier = Modifier.size(15.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = classTimeText,
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    maxLines = 1,
+                )
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                LocationIcon(
+                    modifier = Modifier.size(15.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = getSimplifiedLocation(lectureDataWithState.item),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    maxLines = 1,
+                )
+            }
         }
+        // TODO: 리스트 마지막 아이템은 expand & shrink 애니메이션이 아니라 그냥 생기고 사라지는 걸루.
+        // TODO: 애니메이션 속도 좀 더 빠르게
+        AnimatedVisibility(visible = lectureDataWithState.state.selected) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 13.dp, horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(R.string.search_result_item_detail_button),
+                    textAlign = TextAlign.Start,
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clicks { onClickDetail() })
+                Text(text = stringResource(R.string.search_result_item_review_button),
+                    textAlign = TextAlign.Center,
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clicks {
+                            // TODO
+                        })
+                Text(text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
+                    R.string.search_result_item_add_button
+                ), textAlign = TextAlign.End, style = SNUTTTypography.body2.copy(
+                    color = SNUTTColors.White900, fontWeight = FontWeight.Bold
+                ), modifier = Modifier
+                    .weight(1f)
+                    .clicks {
+                        if (contained) onClickRemove() else onClickAdd()
+                    })
+            }
+        }
+        Divider(color = SNUTTColors.White400)
     }
 }
 
 @Composable
 fun SearchPlaceHolder() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.img_search_big),
-            contentDescription = "",
+        BigSearchIcon(
             modifier = Modifier
-                .padding(10.dp)
                 .width(78.dp)
                 .height(76.dp)
+                .padding(10.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
-            text = stringResource(R.string.search_result_placeholder), fontSize = 25.sp
-        ) // TODO: 나중에 typography 맞추기
+            text = stringResource(R.string.search_result_placeholder_1),
+            style = SNUTTTypography.h1.copy(fontSize = 25.sp, color = SNUTTColors.White700)
+        )
+        Spacer(modifier = Modifier.height(35.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_2),
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_3),
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500)
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_4),
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_5),
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500)
+        )
     }
 }
 
 @Composable
 fun SearchEmptyPage() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.img_search_big),
-            contentDescription = "",
+        BigSearchIcon(
             modifier = Modifier
-                .padding(10.dp)
-                .width(78.dp)
-                .height(76.dp)
+                .width(58.dp)
+                .height(56.dp)
         )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(35.dp))
         Text(
-            text = stringResource(R.string.search_result_empty), fontSize = 25.sp
-        ) // TODO: 나중에 typography 맞추기
+            text = stringResource(R.string.search_result_empty),
+            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White900, fontSize = 18.sp)
+        )
     }
 }
 
 @Composable
-private fun TagCell(
-    text: String,
-    onClick: () -> Unit
+private fun LazyItemScope.TagCell(
+    tagDto: TagDto, onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .height(30.dp),
+            .animateItemPlacement()
+            .padding(horizontal = 5.dp)
+            .height(30.dp)
+            .background(color = tagDto.type.getColor(), shape = RoundedCornerShape(15.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = text, textAlign = TextAlign.Center, modifier = Modifier.height(20.dp))
-            WhiteCloseIcon(
-                modifier = Modifier
-                    .size(20.dp)
-                    .padding(2.5.dp)
-                    .clicks { onClick() }
-            )
-        }
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = tagDto.name,
+            style = SNUTTTypography.body1.copy(fontSize = 15.sp, color = SNUTTColors.White900),
+            textAlign = TextAlign.Center,
+        )
+        WhiteCloseIcon(modifier = Modifier
+            .size(20.dp)
+            .padding(2.5.dp)
+            .clicks { onClick() })
+        Spacer(modifier = Modifier.width(10.dp))
     }
 }
 
