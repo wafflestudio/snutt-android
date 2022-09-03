@@ -4,19 +4,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.views.LocalNavController
 import kotlinx.coroutines.launch
 
@@ -36,18 +31,8 @@ fun PersonalInformationPolicyPage() {
     var webViewUrlReady by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
-            title = { Text(text = stringResource(R.string.settings_personal_information_policy)) },
-            navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            navController.popBackStack()
-                        }
-                )
-            }
-        )
+        SimpleTopBar(title = stringResource(R.string.settings_personal_information_policy),
+            onClickNavigateBack = { navController.popBackStack() })
         if (webViewUrlReady) {
             AndroidView(factory = {
                 WebView(context).apply {

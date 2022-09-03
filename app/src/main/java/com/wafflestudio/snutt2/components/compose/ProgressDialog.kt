@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun ProgressDialog(
@@ -60,7 +61,7 @@ fun CustomDialog(
                 title?.let {
                     Row {
                         Box(modifier = Modifier.padding(20.dp)) {
-                            Text(text = it, fontSize = 18.sp)
+                            Text(text = it, style = SNUTTTypography.h2)
                         }
                         Box(modifier = Modifier.weight(1f))
                     }
