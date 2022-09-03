@@ -111,6 +111,11 @@ class SearchViewModelNew @Inject constructor(
 
     suspend fun query() {
         _querySignal.emit(Unit)
+        lazyListState = LazyListState(0, 0)
+    }
+
+    suspend fun clearEditText() {
+        _searchTitle.emit("")
     }
 
     private suspend fun clear() {

@@ -2,10 +2,13 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +68,33 @@ fun TopBar(
 
         Row(modifier = Modifier.wrapContentWidth()) { actions() }
     }
+}
+
+@Composable
+fun SearchTopBar(
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .background(SNUTTColors.White900)
+            .shadow(elevation = 1.dp, clip = false)
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
+                .fillMaxSize()
+                .padding(horizontal = 8.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            content()
+        }
+    }
+
 }
 
 @Preview
