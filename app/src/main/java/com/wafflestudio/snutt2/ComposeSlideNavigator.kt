@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2
 
-import android.util.Log
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.*
 import androidx.compose.runtime.*
@@ -15,8 +14,6 @@ import kotlinx.coroutines.flow.map
 
 @Navigator.Name("slide_composable")
 class ComposeSlideNavigator : Navigator<ComposeSlideNavigator.Destination>() {
-
-    private val transitionsInProgress get() = state.transitionsInProgress
 
     override fun navigate(
         entries: List<NavBackStackEntry>,
@@ -103,9 +100,7 @@ fun NavHostWithSlideAnimation(
     var isForward by remember { mutableStateOf(true) }
     LaunchedEffect(navController.currentBackStackEntryAsState().value) {
         val backStackSize = navController.backQueue.size
-        Log.d("___", "back stack entry changed")
         if (prevBackStackSize != backStackSize) {
-            Log.d("___", "${isForward}")
             isForward = prevBackStackSize > backStackSize
             prevBackStackSize = backStackSize
         }
@@ -113,7 +108,7 @@ fun NavHostWithSlideAnimation(
 
     val backStackEntry = visibleEntries.lastOrNull()
 
-    var initialCrossfade by remember { mutableStateOf(true) }
+    var initialEnterAnimation by remember { mutableStateOf(true) }
     if (backStackEntry != null) {
         // while in the scope of the composable, we provide the navBackStackEntry as the
         // ViewModelStoreOwner and LifecycleOwner
@@ -133,13 +128,13 @@ fun NavHostWithSlideAnimation(
             }
             // We are disposing on a Unit as we only want to dispose when the CrossFade completes
             DisposableEffect(Unit) {
-                if (initialCrossfade) {
-                    // There's no animation for the initial crossfade,
+                if (initialEnterAnimation) {
+                    // There's no animation for the initial entering,
                     // so we can instantly mark the transition as complete
                     visibleEntries.forEach { entry ->
                         composeNavigator.onTransitionComplete(entry)
                     }
-                    initialCrossfade = false
+                    initialEnterAnimation = false
                 }
                 onDispose {
                     visibleEntries.forEach { entry ->
