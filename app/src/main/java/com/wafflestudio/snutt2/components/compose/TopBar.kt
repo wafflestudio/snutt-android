@@ -3,13 +3,17 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,27 +50,44 @@ fun TopBar(
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(
-        modifier = modifier
-            .background(SNUTTColors.White900)
-            .shadow(elevation = 1.dp, clip = false)
+    Surface(
+        shape = RectangleShape,
+        color = SNUTTColors.White900,
+        elevation = 1.dp,
+        modifier = Modifier
+            .padding(bottom = 2.dp)
             .fillMaxWidth()
-            .height(56.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .height(56.dp)
+            .drawWithContent {
+                val paddingPx = 2.dp.toPx()
+                clipRect(
+                    left = 0f,
+                    top = 0f,
+                    right = size.width,
+                    bottom = size.height + paddingPx
+                ) {
+                    this@drawWithContent.drawContent()
+                }
+            }
     ) {
         Row(
-            modifier = Modifier.width(54.dp),
-            horizontalArrangement = Arrangement.Center
-        ) { navigationIcon() }
-
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 8.dp),
+            modifier = modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
-        ) { title() }
+        ) {
+            Row(
+                modifier = Modifier.width(54.dp),
+                horizontalArrangement = Arrangement.Center
+            ) { navigationIcon() }
 
-        Row(modifier = Modifier.wrapContentWidth()) { actions() }
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) { title() }
+
+            Row(modifier = Modifier.wrapContentWidth()) { actions() }
+        }
     }
 }
 
