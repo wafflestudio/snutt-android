@@ -6,11 +6,12 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.wafflestudio.snutt2.ComposeSlideNavigator
+import com.wafflestudio.snutt2.NavHostWithSlideAnimation
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.composable
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -55,8 +56,7 @@ class RootActivity : BaseActivity() {
 
     @Composable
     fun setUpUI() {
-        val navController = rememberNavController()
-
+        val navController = rememberNavController(ComposeSlideNavigator())
         var isProgressVisible by remember { mutableStateOf(false) }
 
         val apiOnProgress = remember {
@@ -80,8 +80,10 @@ class RootActivity : BaseActivity() {
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
         ) {
-
-            NavHost(navController = navController, startDestination = startDestination) {
+            NavHostWithSlideAnimation(
+                navController = navController,
+                startDestination = startDestination
+            ) {
 
                 onboardGraph(navController)
 
