@@ -119,11 +119,14 @@ class HomeFragment : BaseFragment() {
             popupViewModel.fetchPopup()
                 .subscribeBy(
                     onSuccess = {
-                        PopupDialog(
+                        val popupDialog = PopupDialog(
                             context = requireContext(),
                             onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
                             url = it.url,
-                        ).show()
+                        )
+                        if(activity?.isFinishing?.not() == true) {
+                            popupDialog.show()
+                        }
                     }, onError = {}
                 )
         }
