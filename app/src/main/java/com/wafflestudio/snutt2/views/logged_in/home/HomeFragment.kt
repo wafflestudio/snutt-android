@@ -124,7 +124,7 @@ class HomeFragment : BaseFragment() {
                             onClickHideFewDays = { popupViewModel.invalidateShownPopUp(it) },
                             url = it.url,
                         )
-                        if(activity?.isFinishing?.not() == true) {
+                        if (activity?.isFinishing?.not() == true) {
                             popupDialog.show()
                         }
                     }, onError = {}
