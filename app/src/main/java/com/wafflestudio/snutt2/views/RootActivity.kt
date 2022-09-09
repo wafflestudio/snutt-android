@@ -143,3 +143,15 @@ fun NavController.navigateAsOrigin(route: String) {
         restoreState = true
     }
 }
+
+suspend fun launchSuspendApi(apiOnProgress: ApiOnProgress, apiOnError: ApiOnError, api: suspend() -> Unit) {
+    try {
+        apiOnProgress.showProgress()
+        api.invoke()
+    } catch (e: Exception) {
+        apiOnError(e)
+    } finally {
+        apiOnProgress.hideProgress()
+    }
+
+}
