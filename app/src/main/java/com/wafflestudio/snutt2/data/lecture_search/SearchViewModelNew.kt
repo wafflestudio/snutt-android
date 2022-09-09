@@ -53,7 +53,9 @@ class SearchViewModelNew @Inject constructor(
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
-                fetchSearchTagList()
+                try {
+                    fetchSearchTagList()  // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
+                } catch (e: Exception) { }
             }
         }
     }
@@ -131,7 +133,7 @@ class SearchViewModelNew @Inject constructor(
          */
     }
 
-    private suspend fun fetchSearchTagList() {
+    suspend fun fetchSearchTagList() {
         _searchTagList.emit(
             lectureSearchRepository.getSearchTags(
                 currentTable.value.year, currentTable.value.semester

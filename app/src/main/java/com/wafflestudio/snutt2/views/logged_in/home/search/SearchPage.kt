@@ -47,14 +47,15 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -71,6 +72,8 @@ fun SearchPage(
     val searchKeyword = searchViewModel.searchTitle.collectAsState()
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val keyBoardController = LocalSoftwareKeyboardController.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -84,7 +87,11 @@ fun SearchPage(
     Column {
         SearchTopBar {
             SearchIcon(modifier = Modifier.clicks {
-                scope.launch { searchViewModel.query() }
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        searchViewModel.query()
+                    }
+                }
             })
             Spacer(modifier = Modifier.width(12.dp))
             // FIXME: EditText 글자가 살짝 중간에서 아래로 치우쳐 있다.
@@ -96,9 +103,10 @@ fun SearchPage(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     scope.launch {
-                        searchViewModel.setTitle(searchKeyword.value)
-                        searchViewModel.query()
-                        keyBoardController?.hide()
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            searchViewModel.query()
+                            keyBoardController?.hide()
+                        }
                     }
                 }),
                 value = searchKeyword.value,
@@ -138,8 +146,10 @@ fun SearchPage(
                         items(items = selectedTags, key = { it.name }) {
                             TagCell(tagDto = it) {
                                 scope.launch {
-                                    searchViewModel.toggleTag(it)
-                                    searchViewModel.query()
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        searchViewModel.toggleTag(it)
+                                        searchViewModel.query()
+                                    }
                                 }
                             }
                         }
@@ -165,17 +175,21 @@ fun SearchPage(
                                     }, onClickAdd = {
                                         scope.launch(Dispatchers.IO) {
                                             // FIXME: data store 에서의 json 인코딩 문제로, 서버 500 발생
-                                            timetableViewModel.addLecture(
-                                                lecture = it.item,
-                                                is_force = false // TODO: is_forced
-                                            )
-                                            searchViewModel.toggleLectureSelection(it.item)
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                timetableViewModel.addLecture(
+                                                    lecture = it.item,
+                                                    is_force = false // TODO: is_forced
+                                                )
+                                                searchViewModel.toggleLectureSelection(it.item)
+                                            }
                                         }
                                     }, onClickRemove = {
                                         // FIXME: data store 에서의 json 인코딩 문제로, 서버 500 발생
                                         scope.launch {
-                                            timetableViewModel.removeLecture(it.item)
-                                            searchViewModel.toggleLectureSelection(it.item)
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                timetableViewModel.removeLecture(it.item)
+                                                searchViewModel.toggleLectureSelection(it.item)
+                                            }
                                         }
                                     }, onClickDetail = {
                                         // FIXME: PagingItem 정보 소실되는 문제
@@ -197,7 +211,11 @@ fun SearchPage(
         LaunchedEffect(Unit) {
             showBottomSheet(380.dp) {
                 SearchOptionSheet(tagsByTagType, selectedTagType) {
-                    scope.launch { searchViewModel.query() }
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            searchViewModel.query()
+                        }
+                    }
                     scope.launch { hideBottomSheet.invoke(false) }
                 }
             }
