@@ -115,8 +115,6 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.refreshData()
-
         if (popupState.getAndUpdatePopupState().not()) {
             popupViewModel.fetchPopup()
                 .subscribeBy(
@@ -185,7 +183,6 @@ class HomeFragment : BaseFragment() {
                 }
 
                 override fun onDrawerOpened(drawerView: View) {
-                    homeViewModel.refreshData()
                 }
 
                 override fun onDrawerClosed(drawerView: View) {

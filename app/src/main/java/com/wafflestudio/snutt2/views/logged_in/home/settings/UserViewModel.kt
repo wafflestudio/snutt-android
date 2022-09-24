@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -23,6 +24,11 @@ class UserViewModel @Inject constructor(
     val userInfo = userRepository.user.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), UserDto()
     )
+
+    val accessToken = userRepository.accessToken().stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), null
+    )
+
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
