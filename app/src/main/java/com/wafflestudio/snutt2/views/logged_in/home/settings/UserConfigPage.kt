@@ -80,6 +80,10 @@ fun UserConfigPage() {
             }
         })
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchUserInfo()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

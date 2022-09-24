@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,10 +39,8 @@ class TableListViewModelNew @Inject constructor(
         }
     }
 
-    init {
-        viewModelScope.launch {
-            _allCourseBook.emit(courseBookRepository.getCourseBook())
-        }
+    suspend fun fetchCourseBooks() {
+        _allCourseBook.emit(courseBookRepository.getCourseBook())
     }
 
     suspend fun fetchTableMap() {

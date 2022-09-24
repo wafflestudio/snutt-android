@@ -45,6 +45,10 @@ fun TimetableConfigPage() {
     val viewModel = hiltViewModel<UserViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchUserInfo()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
