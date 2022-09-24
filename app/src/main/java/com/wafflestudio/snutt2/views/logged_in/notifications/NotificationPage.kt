@@ -37,8 +37,10 @@ fun NotificationPage() {
     val appendState = notificationList.loadState.append
 
     Column {
-        SimpleTopBar(title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() })
+        SimpleTopBar(
+            title = stringResource(R.string.notifications_app_bar_title),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
 
         when {
             refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()

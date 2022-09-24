@@ -124,15 +124,15 @@ fun TimetablePage(
                 changeTitleDialogState = false
                 keyboardManager?.hide()
             }, onConfirm = { newTitle ->
-                scope.launch {
-                    tableListViewModel.changeNameTableNew(
-                        tableId = table.id,
-                        name = newTitle
-                    )
-                    changeTitleDialogState = false
-                    keyboardManager?.hide()
-                }
-            }, oldTitle = table.title
+            scope.launch {
+                tableListViewModel.changeNameTableNew(
+                    tableId = table.id,
+                    name = newTitle
+                )
+                changeTitleDialogState = false
+                keyboardManager?.hide()
+            }
+        }, oldTitle = table.title
         )
     }
 
@@ -165,7 +165,7 @@ fun TimetablePage(
                         .clicks {
                             scope.launch { drawerState.open() }
                         },
-                    painter = painterResource(if(newSemesterNotify) R.drawable.ic_drawer_notify else R.drawable.ic_drawer),
+                    painter = painterResource(if (newSemesterNotify) R.drawable.ic_drawer_notify else R.drawable.ic_drawer),
                     contentDescription = stringResource(R.string.home_timetable_drawer)
                 )
             },
@@ -201,7 +201,8 @@ fun TimetablePage(
             },
             modifier = Modifier.onGloballyPositioned {
                 topBarHeight = it.size.height
-            }) // top bar 높이 측정
+            }
+        ) // top bar 높이 측정
         Box(
             modifier = Modifier
                 .weight(1f)

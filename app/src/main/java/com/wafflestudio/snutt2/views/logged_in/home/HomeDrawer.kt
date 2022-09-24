@@ -288,285 +288,287 @@ fun HomeDrawer() {
         var newTableTitle by remember { mutableStateOf("") }
         CustomDialog(
             onDismiss = { addNewTableDialogState = false }, onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
-                        // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                        addNewTableDialogState = false
-                    }
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
+                    // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
+                    addNewTableDialogState = false
                 }
-            }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
-        ) {
-            Column {
-                if (specificSemester.not()) {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Picker(
-                        list = allCourseBook,
-                        initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
-                            ?: allCourseBook.first(),
-                        onValueChanged = { index ->
-                            selectedCourseBook = allCourseBook[index]
-                        },
-                        PickerItemContent = { index ->
-                            CourseBookPickerItem(
-                                name = allCourseBook[index].toFormattedString(
-                                    context
+            }
+        }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
+            ) {
+                Column {
+                    if (specificSemester.not()) {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Picker(
+                            list = allCourseBook,
+                            initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
+                                ?: allCourseBook.first(),
+                            onValueChanged = { index ->
+                                selectedCourseBook = allCourseBook[index]
+                            },
+                            PickerItemContent = { index ->
+                                CourseBookPickerItem(
+                                    name = allCourseBook[index].toFormattedString(
+                                        context
+                                    )
                                 )
-                            )
-                        }
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+                    EditText(
+                        value = newTableTitle,
+                        onValueChange = { newTableTitle = it },
+                        hint = stringResource(
+                            R.string.home_drawer_create_table_dialog_hint
+                        ),
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
                 }
-                EditText(
-                    value = newTableTitle,
-                    onValueChange = { newTableTitle = it },
-                    hint = stringResource(
-                        R.string.home_drawer_create_table_dialog_hint
-                    ),
-                )
             }
         }
     }
-}
 
-@Composable
-private fun TableItem(
-    tableDto: SimpleTableDto,
-    selected: Boolean,
-    onSelect: (String) -> Unit,
-    onDuplicate: (SimpleTableDto) -> Unit,
-    onShowMore: () -> Unit
-) {
-    Row(
-        modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically
+    @Composable
+    private fun TableItem(
+        tableDto: SimpleTableDto,
+        selected: Boolean,
+        onSelect: (String) -> Unit,
+        onDuplicate: (SimpleTableDto) -> Unit,
+        onShowMore: () -> Unit
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .clicks { onSelect(tableDto.id) },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                VividCheckedIcon(
+                    modifier = Modifier
+                        .size(15.dp)
+                        .alpha(if (selected) 1f else 0f)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = tableDto.title,
+                    style = SNUTTTypography.body1,
+                    maxLines = 1,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(
+                        R.string.home_drawer_table_credit,
+                        tableDto.totalCredit ?: 0L
+                    ),
+                    style = SNUTTTypography.body2,
+                    color = SNUTTColors.Gray200,
+                    maxLines = 1,
+                )
+            }
+            DuplicateIcon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks { onDuplicate(tableDto) }
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            MoreIcon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks { onShowMore() }
+            )
+        }
+    }
+
+    @Composable
+    private fun CreateTableItem(
+        onClick: () -> Unit
     ) {
         Row(
             modifier = Modifier
-                .weight(1f)
-                .clicks { onSelect(tableDto.id) },
+                .padding(vertical = 10.dp)
+                .clicks { onClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            VividCheckedIcon(
-                modifier = Modifier
-                    .size(15.dp)
-                    .alpha(if (selected) 1f else 0f)
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = tableDto.title,
-                style = SNUTTTypography.body1,
-                maxLines = 1,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(
-                    R.string.home_drawer_table_credit,
-                    tableDto.totalCredit ?: 0L
-                ),
-                style = SNUTTTypography.body2,
-                color = SNUTTColors.Gray200,
-                maxLines = 1,
-            )
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = stringResource(R.string.home_drawer_timetable_add_button))
         }
-        DuplicateIcon(
+    }
+
+    @Composable
+    private fun CourseBookPickerItem(name: String) {
+        Text(
+            text = name, fontSize = 14.sp, textAlign = TextAlign.Center
+        )
+    }
+
+    @Composable
+    private fun ShowMoreBottomSheetContent(
+        onChangeTitle: () -> Unit,
+        onDeleteTable: () -> Unit,
+        onChangeTheme: () -> Unit
+    ) {
+        Column(
             modifier = Modifier
-                .size(30.dp)
-                .clicks { onDuplicate(tableDto) }
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        MoreIcon(
-            modifier = Modifier
-                .size(30.dp)
-                .clicks { onShowMore() }
-        )
-    }
-}
-
-@Composable
-private fun CreateTableItem(
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 10.dp)
-            .clicks { onClick() }, verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.width(25.dp))
-        Text(text = stringResource(R.string.home_drawer_timetable_add_button))
-    }
-}
-
-@Composable
-private fun CourseBookPickerItem(name: String) {
-    Text(
-        text = name, fontSize = 14.sp, textAlign = TextAlign.Center
-    )
-}
-
-@Composable
-private fun ShowMoreBottomSheetContent(
-    onChangeTitle: () -> Unit,
-    onDeleteTable: () -> Unit,
-    onChangeTheme: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .background(Color.White)
-            .padding(5.dp)
-            .fillMaxWidth()
-    ) {
-        Box(modifier = Modifier.clicks { onChangeTitle() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
-            ) {
-                WriteIcon(modifier = Modifier.size(30.dp))
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "이름 변경")
+                .background(Color.White)
+                .padding(5.dp)
+                .fillMaxWidth()
+        ) {
+            Box(modifier = Modifier.clicks { onChangeTitle() }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                ) {
+                    WriteIcon(modifier = Modifier.size(30.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(text = "이름 변경")
+                }
             }
-        }
-        Box(modifier = Modifier.clicks { onDeleteTable() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
-            ) {
-                TrashIcon(modifier = Modifier.size(30.dp))
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 삭제")
+            Box(modifier = Modifier.clicks { onDeleteTable() }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                ) {
+                    TrashIcon(modifier = Modifier.size(30.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(text = "시간표 삭제")
+                }
             }
-        }
-        Box(modifier = Modifier.clicks { onChangeTheme() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
-            ) {
-                PaletteIcon(modifier = Modifier.size(30.dp))
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 색상 테마 변경")
+            Box(modifier = Modifier.clicks { onChangeTheme() }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                ) {
+                    PaletteIcon(modifier = Modifier.size(30.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(text = "시간표 색상 테마 변경")
+                }
             }
         }
     }
-}
 
-@Composable
-private fun ChangeTableTitleDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    value: String,
-    onValueChange: (String) -> Unit,
-) {
-    CustomDialog(
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-        title = stringResource(R.string.home_drawer_change_name_dialog_title)
+    @Composable
+    private fun ChangeTableTitleDialog(
+        onDismiss: () -> Unit,
+        onConfirm: () -> Unit,
+        value: String,
+        onValueChange: (String) -> Unit,
     ) {
-        EditText(
-            value = value, onValueChange = onValueChange
-        )
-    }
-}
-
-@Composable
-private fun DeleteTableDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    CustomDialog(
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-        title = stringResource(R.string.home_drawer_table_delete)
-    ) {
-        Text(stringResource(R.string.table_delete_alert_message))
-    }
-}
-
-@Composable
-private fun ChangeThemeBottomSheetContent(
-    onLaunch: () -> Unit,
-    onPreview: (Int) -> Unit,
-    onApply: () -> Unit,
-    onDispose: () -> Unit
-) {
-    LaunchedEffect(Unit) {
-        onLaunch()
-    }
-
-    DisposableEffect(LocalLifecycleOwner.current) {
-        onDispose { onDispose() }
-    }
-
-    val themeList = listOf(
-        stringResource(R.string.home_select_theme_snutt) to painterResource(R.drawable.theme_preview_snutt),
-        stringResource(R.string.home_select_theme_modern) to painterResource(R.drawable.theme_preview_modern),
-        stringResource(R.string.home_select_theme_autumn) to painterResource(R.drawable.theme_preview_autumn),
-        stringResource(R.string.home_select_theme_pink) to painterResource(R.drawable.theme_preview_pink),
-        stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
-        stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
-    )
-
-    Column(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxWidth()
-    ) {
-        Row(modifier = Modifier.padding(10.dp)) {
-            Text(
-                text = stringResource(R.string.home_drawer_table_theme_change),
-                modifier = Modifier.padding(10.dp)
+        CustomDialog(
+            onDismiss = onDismiss,
+            onConfirm = onConfirm,
+            title = stringResource(R.string.home_drawer_change_name_dialog_title)
+        ) {
+            EditText(
+                value = value, onValueChange = onValueChange
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Box(modifier = Modifier.clicks { onApply() }) {
+        }
+    }
+
+    @Composable
+    private fun DeleteTableDialog(
+        onDismiss: () -> Unit,
+        onConfirm: () -> Unit,
+    ) {
+        CustomDialog(
+            onDismiss = onDismiss,
+            onConfirm = onConfirm,
+            title = stringResource(R.string.home_drawer_table_delete)
+        ) {
+            Text(stringResource(R.string.table_delete_alert_message))
+        }
+    }
+
+    @Composable
+    private fun ChangeThemeBottomSheetContent(
+        onLaunch: () -> Unit,
+        onPreview: (Int) -> Unit,
+        onApply: () -> Unit,
+        onDispose: () -> Unit
+    ) {
+        LaunchedEffect(Unit) {
+            onLaunch()
+        }
+
+        DisposableEffect(LocalLifecycleOwner.current) {
+            onDispose { onDispose() }
+        }
+
+        val themeList = listOf(
+            stringResource(R.string.home_select_theme_snutt) to painterResource(R.drawable.theme_preview_snutt),
+            stringResource(R.string.home_select_theme_modern) to painterResource(R.drawable.theme_preview_modern),
+            stringResource(R.string.home_select_theme_autumn) to painterResource(R.drawable.theme_preview_autumn),
+            stringResource(R.string.home_select_theme_pink) to painterResource(R.drawable.theme_preview_pink),
+            stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
+            stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
+        )
+
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxWidth()
+        ) {
+            Row(modifier = Modifier.padding(10.dp)) {
                 Text(
-                    text = stringResource(R.string.home_select_theme_confirm),
+                    text = stringResource(R.string.home_drawer_table_theme_change),
                     modifier = Modifier.padding(10.dp)
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Box(modifier = Modifier.clicks { onApply() }) {
+                    Text(
+                        text = stringResource(R.string.home_select_theme_confirm),
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
             }
-        }
-        Row(
-            Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.width(10.dp))
-            themeList.forEachIndexed { themeIdx, nameAndIdPair ->
-                ThemeItem(
-                    name = nameAndIdPair.first,
-                    painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) }
-                )
-                Spacer(modifier = Modifier.width(20.dp))
+            Row(
+                Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.width(10.dp))
+                themeList.forEachIndexed { themeIdx, nameAndIdPair ->
+                    ThemeItem(
+                        name = nameAndIdPair.first,
+                        painter = nameAndIdPair.second,
+                        modifier = Modifier.clicks { onPreview(themeIdx) }
+                    )
+                    Spacer(modifier = Modifier.width(20.dp))
+                }
             }
         }
     }
-}
 
-@Composable
-private fun ThemeItem(
-    name: String,
-    painter: Painter,
-    modifier: Modifier
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        Image(
-            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = name, textAlign = TextAlign.Center)
+    @Composable
+    private fun ThemeItem(
+        name: String,
+        painter: Painter,
+        modifier: Modifier
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
+            Image(
+                painter = painter, contentDescription = "", modifier = Modifier.size(80.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = name, textAlign = TextAlign.Center)
+            }
         }
     }
-}
 
-@Preview
-@Composable
-fun HomeDrawerPreview() {
-}
+    @Preview
+    @Composable
+    fun HomeDrawerPreview() {
+    }
+    

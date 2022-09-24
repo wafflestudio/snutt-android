@@ -97,19 +97,19 @@ fun LectureDetailCustomPage() {
                     }
                 )
             }, actions = {
-                Text(
-                    text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
-                    else stringResource(R.string.lecture_detail_top_bar_edit),
-                    modifier = Modifier
-                        .clicks {
-                            if (editMode.not()) vm.setEditMode()
-                            else {
-                                if (vm.isAddMode()) {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            vm.createLecture2()
-                                            vm.unsetEditMode()
-                                            vm.setAddMode(false)
+            Text(
+                text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
+                else stringResource(R.string.lecture_detail_top_bar_edit),
+                modifier = Modifier
+                    .clicks {
+                        if (editMode.not()) vm.setEditMode()
+                        else {
+                            if (vm.isAddMode()) {
+                                scope.launch {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        vm.createLecture2()
+                                        vm.unsetEditMode()
+                                        vm.setAddMode(false)
                                             /* FIXME
                                          * 안드로이드는 여기서 그대로 detailPage 에 남는다.
                                          *
@@ -124,23 +124,23 @@ fun LectureDetailCustomPage() {
                                          * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
                                          * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
                                          */
-                                            scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                        }
+                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                     }
-                                } else {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            vm.updateLecture2()
-                                            vm.initializeEditingLectureDetail(editingLectureDetail)
-                                            vm.unsetEditMode()
-                                        }
+                                }
+                            } else {
+                                scope.launch {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        vm.updateLecture2()
+                                        vm.initializeEditingLectureDetail(editingLectureDetail)
+                                        vm.unsetEditMode()
                                     }
                                 }
                             }
                         }
-                        .padding(end = 16.dp)
-                )
-            }
+                    }
+                    .padding(end = 16.dp)
+            )
+        }
         )
         Column(
             modifier = Modifier.verticalScroll(scrollState)
@@ -376,106 +376,106 @@ fun LectureDetailCustomPage() {
     if (deleteTimeDialogState) {
         CustomDialog(
             onDismiss = { deleteTimeDialogState = false }, onConfirm = {
-                vm.editEditingLectureDetail(
-                    editingLectureDetail.copy(
-                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
-                            .also {
-                                it.removeAt(editingClassTimeIndex)
-                            }
-                    )
-                )
-                deleteTimeDialogState = false
-            }, title = stringResource(R.string.lecture_detail_delete_class_time_message)
-        ) {}
-    }
-    
-}
-
-@Composable
-fun DayAndTimeSelectorDialog(
-    classTime: ClassTimeDto,
-    onDismiss: () -> Unit,
-    onConfirm: (ClassTimeDto) -> Unit,
-) {
-    val weekDayList = stringArrayResource(R.array.week_days).toList()
-    val timeList = stringArrayResource(R.array.time_string).toList()
-
-    fun indexOf(time: Float): Int {
-        // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-        return (time * 2).roundToInt()
-    }
-
-    fun timeStringAtIndex(idx: Int): String {
-        return timeList[idx.coerceIn(0, timeList.size - 1)]
-    }
-
-    // 시작 시간에 따라 끝나는 시간 범위가 유동적으로 recompose 되어야 한다.
-    var startTime by remember {
-        // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-        mutableStateOf(classTime.start + 8f)
-    }
-    var endTime by remember {
-        // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-        mutableStateOf(classTime.start + classTime.len + 8f)
-    }
-    var day by remember { mutableStateOf(classTime.day) }
-
-    CustomDialog(
-        onDismiss = onDismiss,
-        onConfirm = {
-            onConfirm(
-                classTime.copy(
-                    day = day, start = startTime - 8f, // TODO: 24시간 개선시 반영
-                    len = endTime - startTime
+            vm.editEditingLectureDetail(
+                editingLectureDetail.copy(
+                    class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                        .also {
+                            it.removeAt(editingClassTimeIndex)
+                        }
                 )
             )
-        },
+            deleteTimeDialogState = false
+        }, title = stringResource(R.string.lecture_detail_delete_class_time_message)
+            ) {}
+        }
+    }
+
+    @Composable
+    fun DayAndTimeSelectorDialog(
+        classTime: ClassTimeDto,
+        onDismiss: () -> Unit,
+        onConfirm: (ClassTimeDto) -> Unit,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.weight(1f)) {
-                Picker(
-                    list = weekDayList,
-                    initialValue = weekDayList[day],
-                    onValueChanged = { day = it }
-                ) {
-                    Text(text = weekDayList[it])
-                }
-            }
-            Box(modifier = Modifier.weight(2f)) {
-                Picker(
-                    list = timeList.subList(
-                        indexOf(8f), // 아직 시작 시간은 8시가 하한     TODO: 24시간 개선시 변경
-                        indexOf(24f) // 시작 시간은 24:00 선택 불가
-                    ),
-                    initialValue = timeStringAtIndex(indexOf(startTime)), onValueChanged = {
-                        // 콜백되는 인덱스는 08시가 index 0인 리스트 기준
-                        startTime = (
-                            it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-                            ) + 8f // TODO: 24시간 개선시 변경
-                        if (endTime <= startTime) endTime =
-                            startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+        val weekDayList = stringArrayResource(R.array.week_days).toList()
+        val timeList = stringArrayResource(R.array.time_string).toList()
+
+        fun indexOf(time: Float): Int {
+            // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
+            return (time * 2).roundToInt()
+        }
+
+        fun timeStringAtIndex(idx: Int): String {
+            return timeList[idx.coerceIn(0, timeList.size - 1)]
+        }
+
+        // 시작 시간에 따라 끝나는 시간 범위가 유동적으로 recompose 되어야 한다.
+        var startTime by remember {
+            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
+            mutableStateOf(classTime.start + 8f)
+        }
+        var endTime by remember {
+            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
+            mutableStateOf(classTime.start + classTime.len + 8f)
+        }
+        var day by remember { mutableStateOf(classTime.day) }
+
+        CustomDialog(
+            onDismiss = onDismiss,
+            onConfirm = {
+                onConfirm(
+                    classTime.copy(
+                        day = day, start = startTime - 8f, // TODO: 24시간 개선시 반영
+                        len = endTime - startTime
+                    )
+                )
+            },
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.weight(1f)) {
+                    Picker(
+                        list = weekDayList,
+                        initialValue = weekDayList[day],
+                        onValueChanged = { day = it }
+                    ) {
+                        Text(text = weekDayList[it])
                     }
-                ) {
-                    // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경
-                    Text(text = timeStringAtIndex(it + indexOf(8f)))
                 }
-            }
-            Box(modifier = Modifier.weight(2f)) {
-                Picker(
-                    list = timeList.subList(
-                        // 선택할 수 있는 가장 이른 end는 start 30분 뒤
-                        indexOf(startTime + 0.5f), // TODO: 시간 최소 단위 바꾸면 변경
-                        timeList.size
-                    ),
-                    initialValue = timeStringAtIndex(indexOf(endTime)), onValueChanged = {
+                Box(modifier = Modifier.weight(2f)) {
+                    Picker(
+                        list = timeList.subList(
+                            indexOf(8f), // 아직 시작 시간은 8시가 하한     TODO: 24시간 개선시 변경
+                            indexOf(24f) // 시작 시간은 24:00 선택 불가
+                        ),
+                        initialValue = timeStringAtIndex(indexOf(startTime)), onValueChanged = {
+                            // 콜백되는 인덱스는 08시가 index 0인 리스트 기준
+                            startTime = (
+                                it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
+                                ) + 8f // TODO: 24시간 개선시 변경
+                            if (endTime <= startTime) endTime =
+                                startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        }
+                    ) {
+                        // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경
+                        Text(text = timeStringAtIndex(it + indexOf(8f)))
+                    }
+                }
+                Box(modifier = Modifier.weight(2f)) {
+                    Picker(
+                        list = timeList.subList(
+                            // 선택할 수 있는 가장 이른 end는 start 30분 뒤
+                            indexOf(startTime + 0.5f), // TODO: 시간 최소 단위 바꾸면 변경
+                            timeList.size
+                        ),
+                        initialValue = timeStringAtIndex(indexOf(endTime)), onValueChanged = {
+                            // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
+                            endTime = (it / 2f) + startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        }
+                    ) {
                         // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                        endTime = (it / 2f) + startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        Text(text = timeStringAtIndex(it + indexOf(startTime + 0.5f))) // TODO: 시간 최소 단위 바꾸면 변경
                     }
-                ) {
-                    // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                    Text(text = timeStringAtIndex(it + indexOf(startTime + 0.5f))) // TODO: 시간 최소 단위 바꾸면 변경
                 }
             }
         }
     }
-}
+    
