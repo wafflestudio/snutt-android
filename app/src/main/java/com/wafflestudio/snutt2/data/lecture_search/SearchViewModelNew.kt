@@ -1,8 +1,10 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -91,7 +93,11 @@ class SearchViewModelNew @Inject constructor(
                 )
             )
         }
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        PagingData.empty(),
+    )
 
     suspend fun setTitle(title: String) {
         _searchTitle.emit(title)

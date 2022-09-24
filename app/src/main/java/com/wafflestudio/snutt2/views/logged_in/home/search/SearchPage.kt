@@ -2,6 +2,7 @@
 
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -174,7 +175,6 @@ fun SearchPage(
                                         }
                                     }, onClickAdd = {
                                         scope.launch(Dispatchers.IO) {
-                                            // FIXME: data store 에서의 json 인코딩 문제로, 서버 500 발생
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 timetableViewModel.addLecture(
                                                     lecture = it.item,
@@ -184,8 +184,7 @@ fun SearchPage(
                                             }
                                         }
                                     }, onClickRemove = {
-                                        // FIXME: data store 에서의 json 인코딩 문제로, 서버 500 발생
-                                        scope.launch {
+                                        scope.launch(Dispatchers.IO) {
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 timetableViewModel.removeLecture(it.item)
                                                 searchViewModel.toggleLectureSelection(it.item)
