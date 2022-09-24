@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
@@ -38,6 +39,9 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,6 +61,8 @@ class RootActivity : BaseActivity() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
+    private var isInitialRefreshFinished = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
@@ -66,15 +72,16 @@ class RootActivity : BaseActivity() {
 
         val composeRoot = findViewById<ComposeView>(R.id.compose_root)
 
+        lifecycleScope.launch {
+            val token = userViewModel.accessToken.filterNotNull().first()
+            if (token.isNotEmpty()) {
+                homeViewModel.refreshData()
+            }
+            isInitialRefreshFinished = true
+        }
+
         composeRoot.setContent {
             val accessToken: String? by userViewModel.accessToken.collectAsState()
-
-            LaunchedEffect(accessToken) {
-                val token = accessToken
-                if (token != null) {
-                    homeViewModel.refreshData()
-                }
-            }
 
             SNUTTTheme {
                 val token = accessToken
@@ -112,14 +119,7 @@ class RootActivity : BaseActivity() {
     }
 
     fun isInitialConditionsSatisfied(): Boolean {
-        // 토큰을 store 에서 로드가 성공하지 않으면 기다린다.
-        val token = userViewModel.accessToken.value ?: return false
-        return if (token.isEmpty()) {
-            true
-        } else {
-            // 로그인된 상태(토큰이 공란이 아닐)일 경우, currentTable 의 로드가 완료되기까지 기다린다.
-            timetableViewModel.currentTable.value.id != ""
-        }
+        return isInitialRefreshFinished
     }
 
     @Composable

@@ -25,7 +25,7 @@ class UserViewModel @Inject constructor(
     )
 
     val accessToken = userRepository.accessToken().stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), null
+        viewModelScope, SharingStarted.Eagerly, null
     )
 
     suspend fun fetchUserInfo() {
