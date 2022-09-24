@@ -93,8 +93,7 @@ fun HomeDrawer() {
             ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } })
         }
         Divider(
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp),
-            color = SNUTTColors.Gray100
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -103,8 +102,7 @@ fun HomeDrawer() {
                 color = SNUTTColors.Gray200,
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "+",
+            Text(text = "+",
                 style = SNUTTTypography.subtitle1,
                 fontSize = 24.sp,
                 modifier = Modifier.clicks {
@@ -112,20 +110,17 @@ fun HomeDrawer() {
                         CourseBookDto(tableContext.table.semester, tableContext.table.year)
                     specificSemester = false
                     addNewTableDialogState = true
-                }
-            )
+                })
             Spacer(modifier = Modifier.width(10.dp))
         }
         LazyColumn {
-            items(courseBooksWhichHaveTable.sorted()) { courseBook ->
+            items(courseBooksWhichHaveTable) { courseBook ->
                 var expanded by remember { mutableStateOf(courseBook.year == tableContext.table.year && courseBook.semester == tableContext.table.semester) }
                 val rotation by animateFloatAsState(if (expanded) -180f else 0f)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(vertical = 10.dp)
-                        .clicks { expanded = expanded.not() }
-                ) {
+                        .clicks { expanded = expanded.not() }) {
                     Text(
                         text = courseBook.toFormattedString(context),
                         style = SNUTTTypography.h3,
@@ -144,8 +139,7 @@ fun HomeDrawer() {
                 AnimatedVisibility(visible = expanded) {
                     Column {
                         tableListOfEachCourseBook[courseBook]?.forEach {
-                            TableItem(
-                                tableDto = it,
+                            TableItem(tableDto = it,
                                 selected = it.id == tableContext.table.id,
                                 onSelect = { selectedTableId ->
                                     scope.launch {
@@ -173,8 +167,7 @@ fun HomeDrawer() {
                                 onShowMore = {
                                     showMoreClickedTable = it
                                     showMoreBottomSheetState = true
-                                }
-                            )
+                                })
                         }
                         if (tableListOfEachCourseBook[courseBook].isNullOrEmpty()) {
                             CreateTableItem {
@@ -286,22 +279,20 @@ fun HomeDrawer() {
     // 새로운 시간표 추가 다이럴로그
     if (addNewTableDialogState) {
         var newTableTitle by remember { mutableStateOf("") }
-        CustomDialog(
-            onDismiss = { addNewTableDialogState = false }, onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
-                        // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                        addNewTableDialogState = false
-                    }
+        CustomDialog(onDismiss = { addNewTableDialogState = false }, onConfirm = {
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
+                    // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
+                    addNewTableDialogState = false
                 }
-            }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
+            }
+        }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
         ) {
             Column {
                 if (specificSemester.not()) {
                     Spacer(modifier = Modifier.height(5.dp))
-                    Picker(
-                        list = allCourseBook,
+                    Picker(list = allCourseBook,
                         initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
                             ?: allCourseBook.first(),
                         onValueChanged = { index ->
@@ -313,8 +304,7 @@ fun HomeDrawer() {
                                     context
                                 )
                             )
-                        }
-                    )
+                        })
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 EditText(
@@ -360,25 +350,20 @@ private fun TableItem(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(
-                    R.string.home_drawer_table_credit,
-                    tableDto.totalCredit ?: 0L
+                    R.string.home_drawer_table_credit, tableDto.totalCredit ?: 0L
                 ),
                 style = SNUTTTypography.body2,
                 color = SNUTTColors.Gray200,
                 maxLines = 1,
             )
         }
-        DuplicateIcon(
-            modifier = Modifier
-                .size(30.dp)
-                .clicks { onDuplicate(tableDto) }
-        )
+        DuplicateIcon(modifier = Modifier
+            .size(30.dp)
+            .clicks { onDuplicate(tableDto) })
         Spacer(modifier = Modifier.width(10.dp))
-        MoreIcon(
-            modifier = Modifier
-                .size(30.dp)
-                .clicks { onShowMore() }
-        )
+        MoreIcon(modifier = Modifier
+            .size(30.dp)
+            .clicks { onShowMore() })
     }
 }
 
@@ -406,9 +391,7 @@ private fun CourseBookPickerItem(name: String) {
 
 @Composable
 private fun ShowMoreBottomSheetContent(
-    onChangeTitle: () -> Unit,
-    onDeleteTable: () -> Unit,
-    onChangeTheme: () -> Unit
+    onChangeTitle: () -> Unit, onDeleteTable: () -> Unit, onChangeTheme: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -489,10 +472,7 @@ private fun DeleteTableDialog(
 
 @Composable
 private fun ChangeThemeBottomSheetContent(
-    onLaunch: () -> Unit,
-    onPreview: (Int) -> Unit,
-    onApply: () -> Unit,
-    onDispose: () -> Unit
+    onLaunch: () -> Unit, onPreview: (Int) -> Unit, onApply: () -> Unit, onDispose: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onLaunch()
@@ -536,11 +516,9 @@ private fun ChangeThemeBottomSheetContent(
         ) {
             Spacer(modifier = Modifier.width(10.dp))
             themeList.forEachIndexed { themeIdx, nameAndIdPair ->
-                ThemeItem(
-                    name = nameAndIdPair.first,
+                ThemeItem(name = nameAndIdPair.first,
                     painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) }
-                )
+                    modifier = Modifier.clicks { onPreview(themeIdx) })
                 Spacer(modifier = Modifier.width(20.dp))
             }
         }
@@ -549,9 +527,7 @@ private fun ChangeThemeBottomSheetContent(
 
 @Composable
 private fun ThemeItem(
-    name: String,
-    painter: Painter,
-    modifier: Modifier
+    name: String, painter: Painter, modifier: Modifier
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
         Image(

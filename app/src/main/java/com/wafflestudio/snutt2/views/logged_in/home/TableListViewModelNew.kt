@@ -29,11 +29,9 @@ class TableListViewModelNew @Inject constructor(
     )
 
     val courseBooksWhichHaveTable = tableMap.map {
-        (
-            it.values.map { table ->
-                CourseBookDto(year = table.year, semester = table.semester)
-            } + mostRecentCourseBook.first()
-            ).distinct()
+        (it.values.map { table ->
+            CourseBookDto(year = table.year, semester = table.semester)
+        } + mostRecentCourseBook.first()).distinct().sorted()
     }
 
     val tableListOfEachCourseBook = courseBooksWhichHaveTable.map {
@@ -72,9 +70,7 @@ class TableListViewModelNew @Inject constructor(
 
     suspend fun createTableNew(courseBook: CourseBookDto, tableName: String) {
         tableRepository.createTable(
-            year = courseBook.year,
-            semester = courseBook.semester,
-            title = tableName
+            year = courseBook.year, semester = courseBook.semester, title = tableName
         )
     }
 
