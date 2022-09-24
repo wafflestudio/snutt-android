@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavController
@@ -29,10 +30,12 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
+    private val userViewModel: UserViewModel by viewModels()
 
     @Inject
     lateinit var snuttStorage: SNUTTStorage
@@ -43,8 +46,13 @@ class RootActivity : BaseActivity() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
+    lateinit var token: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        runBlocking {
+            token = userViewModel.getAccessToken()  // FIXME: .....
+        }
         setContentView(R.layout.activity_root)
         findViewById<ComposeView>(R.id.compose_root)
             .setContent {
@@ -72,7 +80,7 @@ class RootActivity : BaseActivity() {
         }
 
         val startDestination =
-            if (snuttStorage.accessToken.get().isEmpty()) NavigationDestination.Onboard
+            if (token.isEmpty()) NavigationDestination.Onboard
             else NavigationDestination.Home
 
         CompositionLocalProvider(

@@ -31,6 +31,10 @@ fun TeamInfoPage() {
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        userViewModel.fetchUserInfo()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(title = stringResource(R.string.settings_team_info),
             onClickNavigateBack = { navController.popBackStack() })
