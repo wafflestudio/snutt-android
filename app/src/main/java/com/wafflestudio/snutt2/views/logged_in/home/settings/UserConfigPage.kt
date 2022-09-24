@@ -50,35 +50,38 @@ fun UserConfigPage() {
 
     val callbackManager = CallbackManager.Factory.create()
     LoginManager.getInstance()
-        .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(result: LoginResult) {
-                // App code
-                val id = result.accessToken.userId
-                val token = result.accessToken.token
-                Timber.i("User ID: %s", result.accessToken.userId)
-                Timber.i("Auth Token: %s", result.accessToken.token)
-                scope.launch {
-                    viewModel.connectFacebook(id, token)
-                    facebookConnected = true
-                    // TODO: onSuccess, onError 분기
-                    viewModel.fetchUserFacebook().name
-                    // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
-                    // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
+        .registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    // App code
+                    val id = result.accessToken.userId
+                    val token = result.accessToken.token
+                    Timber.i("User ID: %s", result.accessToken.userId)
+                    Timber.i("Auth Token: %s", result.accessToken.token)
+                    scope.launch {
+                        viewModel.connectFacebook(id, token)
+                        facebookConnected = true
+                        // TODO: onSuccess, onError 분기
+                        viewModel.fetchUserFacebook().name
+                        // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
+                        // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
+                    }
+                }
+
+                override fun onCancel() {
+                    // App code
+                    Timber.w("Cancel")
+                    context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
+                }
+
+                override fun onError(error: FacebookException) {
+                    // App code
+                    Timber.e(error)
+                    context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
                 }
             }
-
-            override fun onCancel() {
-                // App code
-                Timber.w("Cancel")
-                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
-            }
-
-            override fun onError(error: FacebookException) {
-                // App code
-                Timber.e(error)
-                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
-            }
-        })
+        )
 
     LaunchedEffect(Unit) {
         viewModel.fetchUserInfo()
@@ -89,24 +92,30 @@ fun UserConfigPage() {
             .fillMaxSize()
             .background(Color(0xfff2f2f2)) // TODO: Color
     ) {
-        SimpleTopBar(title = stringResource(R.string.user_settings_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() })
+        SimpleTopBar(
+            title = stringResource(R.string.user_settings_app_bar_title),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(Color.White)) {
             if (hasLocalId) {
                 SettingItem(title = stringResource(R.string.sign_in_id_hint), content = {
                     Text(text = user.value.localId.toString())
                 })
-                SettingItem(title = stringResource(R.string.settings_user_config_change_password),
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_change_password),
                     content = {
                         ArrowRight(modifier = Modifier.size(16.dp))
-                    }) { passwordChangeDialogState = true }
+                    }
+                ) { passwordChangeDialogState = true }
             } else {
-                SettingItem(title = stringResource(R.string.settings_user_config_add_local_id),
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_add_local_id),
                     modifier = Modifier.background(Color.White),
                     content = {
                         ArrowRight(modifier = Modifier.size(16.dp))
-                    }) { addIdPasswordDialogState = true }
+                    }
+                ) { addIdPasswordDialogState = true }
             }
         }
         Margin(height = 10.dp)
@@ -115,17 +124,22 @@ fun UserConfigPage() {
                 title = stringResource(R.string.settings_user_config_facebook_name),
                 content = {
                     Text(text = user.value.fbName.toString())
-                }) {}
-            SettingItem(title = stringResource(R.string.settings_user_config_facebook_disconnect),
+                }
+            ) {}
+            SettingItem(
+                title = stringResource(R.string.settings_user_config_facebook_disconnect),
                 content = {
                     ArrowRight(modifier = Modifier.size(16.dp))
-                }) { disconnectFacebookDialogState = true }
+                }
+            ) { disconnectFacebookDialogState = true }
         } else {
-            SettingItem(title = stringResource(R.string.settings_user_config_connect_facebook),
+            SettingItem(
+                title = stringResource(R.string.settings_user_config_connect_facebook),
                 modifier = Modifier.background(Color.White),
                 content = {
                     ArrowRight(modifier = Modifier.size(16.dp))
-                }) {
+                }
+            ) {
                 LoginManager.getInstance().logInWithReadPermissions(
                     context as ActivityResultRegistryOwner, callbackManager, emptyList()
                 )
@@ -140,14 +154,17 @@ fun UserConfigPage() {
                 title = stringResource(R.string.settings_user_config_change_email),
                 content = {
                     ArrowRight(modifier = Modifier.size(16.dp))
-                }) { emailChangeDialogState = true }
+                }
+            ) { emailChangeDialogState = true }
         }
         Margin(height = 10.dp)
-        SettingItem(title = stringResource(R.string.settings_user_config_leave),
+        SettingItem(
+            title = stringResource(R.string.settings_user_config_leave),
             modifier = Modifier.background(Color.White),
             content = {
                 ArrowRight(modifier = Modifier.size(16.dp))
-            }) { leaveDialogState = true }
+            }
+        ) { leaveDialogState = true }
     }
 
     if (addIdPasswordDialogState) {
@@ -155,7 +172,8 @@ fun UserConfigPage() {
         var password by remember { mutableStateOf("") }
         var passwordConfirm by remember { mutableStateOf("") }
 
-        CustomDialog(onDismiss = { addIdPasswordDialogState = false },
+        CustomDialog(
+            onDismiss = { addIdPasswordDialogState = false },
             onConfirm = {
                 if (password != passwordConfirm) {
                     context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
@@ -199,7 +217,8 @@ fun UserConfigPage() {
     if (emailChangeDialogState) {
         var email by remember { mutableStateOf("") }
 
-        CustomDialog(onDismiss = { emailChangeDialogState = false },
+        CustomDialog(
+            onDismiss = { emailChangeDialogState = false },
             onConfirm = {
                 if (email.isEmpty()) {
                     context.toast(context.getString(R.string.settings_user_config_enter_email))
@@ -229,7 +248,8 @@ fun UserConfigPage() {
         var newPassword by remember { mutableStateOf("") }
         var newPasswordConfirm by remember { mutableStateOf("") }
 
-        CustomDialog(onDismiss = { passwordChangeDialogState = false },
+        CustomDialog(
+            onDismiss = { passwordChangeDialogState = false },
             onConfirm = {
                 if (newPassword != newPasswordConfirm) {
                     context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
@@ -273,7 +293,8 @@ fun UserConfigPage() {
     }
 
     if (leaveDialogState) {
-        CustomDialog(onDismiss = { leaveDialogState = false },
+        CustomDialog(
+            onDismiss = { leaveDialogState = false },
             onConfirm = {
                 scope.launch {
                     viewModel.leave()
@@ -287,7 +308,8 @@ fun UserConfigPage() {
     }
 
     if (disconnectFacebookDialogState) {
-        CustomDialog(onDismiss = { disconnectFacebookDialogState = false },
+        CustomDialog(
+            onDismiss = { disconnectFacebookDialogState = false },
             onConfirm = {
                 scope.launch {
                     viewModel.disconnectFacebook()

@@ -9,7 +9,6 @@ import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

@@ -61,14 +61,16 @@ fun SettingsPage() {
             }
         }
         Margin(height = 10.dp)
-        SettingItem(title = stringResource(R.string.settings_version_info),
+        SettingItem(
+            title = stringResource(R.string.settings_version_info),
             modifier = Modifier.background(Color.White),
             content = {
                 Text(
                     text = BuildConfig.VERSION_NAME,
                     style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                 )
-            })
+            }
+        )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(Color.White)) {
             SettingItem(title = stringResource(R.string.settings_team_info)) {
@@ -109,7 +111,8 @@ fun SettingsPage() {
     }
 
     if (logoutDialogState) {
-        CustomDialog(onDismiss = { logoutDialogState = false },
+        CustomDialog(
+            onDismiss = { logoutDialogState = false },
             onConfirm = {
 //                viewModel.performLogout()     TODO
             },

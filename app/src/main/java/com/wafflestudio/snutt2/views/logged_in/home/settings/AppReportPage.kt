@@ -40,27 +40,31 @@ fun AppReportPage() {
                 style = SNUTTTypography.h2,
             )
         }, navigationIcon = {
-            ArrowBackIcon(modifier = Modifier
-                .size(30.dp)
-                .clicks {
-                    navController.popBackStack()
-                })
-        }, actions = {
-            SendIcon(modifier = Modifier
-                .padding(6.dp)
-                .clicks {
-                    if (detail.isEmpty()) {
-                        context.toast(context.getString(R.string.feedback_empty_detail_warning))
-                    } else if (email.isEmailInvalid()) {
-                        context.toast(context.getString(R.string.feedback_invalid_email_warning))
-                    } else {
-                        scope.launch {
-                            userViewModel.sendFeedback(email, detail)
-                        }
-                        context.toast(context.getString(R.string.feedback_send_success_message))
+            ArrowBackIcon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clicks {
                         navController.popBackStack()
                     }
-                })
+            )
+        }, actions = {
+            SendIcon(
+                modifier = Modifier
+                    .padding(6.dp)
+                    .clicks {
+                        if (detail.isEmpty()) {
+                            context.toast(context.getString(R.string.feedback_empty_detail_warning))
+                        } else if (email.isEmailInvalid()) {
+                            context.toast(context.getString(R.string.feedback_invalid_email_warning))
+                        } else {
+                            scope.launch {
+                                userViewModel.sendFeedback(email, detail)
+                            }
+                            context.toast(context.getString(R.string.feedback_send_success_message))
+                            navController.popBackStack()
+                        }
+                    }
+            )
         })
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             Spacer(modifier = Modifier.height(18.dp))

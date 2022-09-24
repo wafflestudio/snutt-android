@@ -2,7 +2,6 @@
 
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -55,8 +54,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -87,13 +84,15 @@ fun SearchPage(
 
     Column {
         SearchTopBar {
-            SearchIcon(modifier = Modifier.clicks {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        searchViewModel.query()
+            SearchIcon(
+                modifier = Modifier.clicks {
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            searchViewModel.query()
+                        }
                     }
                 }
-            })
+            )
             Spacer(modifier = Modifier.width(12.dp))
             // FIXME: EditText 글자가 살짝 중간에서 아래로 치우쳐 있다.
             EditText(
@@ -122,9 +121,11 @@ fun SearchPage(
             )
             Spacer(modifier = Modifier.width(12.dp))
             if (searchEditTextFocused) ExitIcon(modifier = Modifier.clicks { scope.launch { searchViewModel.clearEditText() } })
-            else FilterIcon(modifier = Modifier.clicks {
-                searchOptionSheetState = true
-            })
+            else FilterIcon(
+                modifier = Modifier.clicks {
+                    searchOptionSheetState = true
+                }
+            )
         }
         Box(
             modifier = Modifier
@@ -253,11 +254,13 @@ fun LazyItemScope.SearchListItem(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Column(modifier = Modifier
-            .padding(top = 8.dp, bottom = 9.dp)
-            .clicks {
-                onSelect()
-            }) {
+        Column(
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 9.dp)
+                .clicks {
+                    onSelect()
+                }
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = lectureTitle,
@@ -324,29 +327,38 @@ fun LazyItemScope.SearchListItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(R.string.search_result_item_detail_button),
+                Text(
+                    text = stringResource(R.string.search_result_item_detail_button),
                     textAlign = TextAlign.Start,
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
                     modifier = Modifier
                         .weight(1f)
-                        .clicks { onClickDetail() })
-                Text(text = stringResource(R.string.search_result_item_review_button),
+                        .clicks { onClickDetail() }
+                )
+                Text(
+                    text = stringResource(R.string.search_result_item_review_button),
                     textAlign = TextAlign.Center,
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
                     modifier = Modifier
                         .weight(1f)
                         .clicks {
                             // TODO
-                        })
-                Text(text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
-                    R.string.search_result_item_add_button
-                ), textAlign = TextAlign.End, style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.White900, fontWeight = FontWeight.Bold
-                ), modifier = Modifier
-                    .weight(1f)
-                    .clicks {
-                        if (contained) onClickRemove() else onClickAdd()
-                    })
+                        }
+                )
+                Text(
+                    text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
+                        R.string.search_result_item_add_button
+                    ),
+                    textAlign = TextAlign.End,
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.White900, fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clicks {
+                            if (contained) onClickRemove() else onClickAdd()
+                        }
+                )
             }
         }
         Divider(color = SNUTTColors.White400)
@@ -420,7 +432,8 @@ fun SearchEmptyPage() {
 
 @Composable
 private fun LazyItemScope.TagCell(
-    tagDto: TagDto, onClick: () -> Unit
+    tagDto: TagDto,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -436,10 +449,12 @@ private fun LazyItemScope.TagCell(
             style = SNUTTTypography.body1.copy(fontSize = 15.sp, color = SNUTTColors.White900),
             textAlign = TextAlign.Center,
         )
-        WhiteCloseIcon(modifier = Modifier
-            .size(20.dp)
-            .padding(2.5.dp)
-            .clicks { onClick() })
+        WhiteCloseIcon(
+            modifier = Modifier
+                .size(20.dp)
+                .padding(2.5.dp)
+                .clicks { onClick() }
+        )
         Spacer(modifier = Modifier.width(10.dp))
     }
 }

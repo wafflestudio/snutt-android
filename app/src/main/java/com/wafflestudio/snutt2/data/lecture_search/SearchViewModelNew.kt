@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,7 +55,7 @@ class SearchViewModelNew @Inject constructor(
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
                 try {
-                    fetchSearchTagList()  // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
+                    fetchSearchTagList() // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
                 } catch (e: Exception) { }
             }
         }

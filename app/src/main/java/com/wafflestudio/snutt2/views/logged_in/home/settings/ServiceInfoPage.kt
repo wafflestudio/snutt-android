@@ -36,8 +36,10 @@ fun ServiceInfoPage() {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SimpleTopBar(title = stringResource(R.string.settings_service_info),
-            onClickNavigateBack = { navController.popBackStack() })
+        SimpleTopBar(
+            title = stringResource(R.string.settings_service_info),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
         if (webViewUrlReady) {
             AndroidView(factory = {
                 WebView(context).apply {

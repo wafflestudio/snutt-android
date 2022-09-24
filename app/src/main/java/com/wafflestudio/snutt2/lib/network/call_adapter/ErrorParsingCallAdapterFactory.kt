@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt2.lib.network.call_adapter
 
-import android.util.Log
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
-import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
@@ -26,6 +24,7 @@ class ErrorParsingCallAdapterFactory(
             delegation = delegationGeneratedCallAdapter,
             bodyType = (returnType as? ParameterizedType)?.let {
                 it.actualTypeArguments[0]
-            } ?: Unit::class.java)
+            } ?: Unit::class.java
+        )
     }
 }

@@ -6,10 +6,8 @@ import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.views.launchSuspendApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +26,11 @@ class TableListViewModelNew @Inject constructor(
     )
 
     val courseBooksWithTable = tableListOfEachCourseBook.map {
-        (it.values.map { table ->
-            CourseBookDto(year = table.year, semester = table.semester)
-        } + mostRecentCourseBook.first()).distinct()
+        (
+            it.values.map { table ->
+                CourseBookDto(year = table.year, semester = table.semester)
+            } + mostRecentCourseBook.first()
+            ).distinct()
     }
 
     val newSemesterNotify = tableRepository.tableMap.map { tableMap ->

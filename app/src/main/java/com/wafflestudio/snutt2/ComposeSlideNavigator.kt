@@ -95,7 +95,6 @@ fun NavHostWithSlideAnimation(
         }
     }.collectAsState(emptyList())
 
-
     var prevBackStackSize by remember { mutableStateOf(navController.backQueue.size) }
     var isForward by remember { mutableStateOf(true) }
     LaunchedEffect(navController.currentBackStackEntryAsState().value) {
@@ -112,7 +111,8 @@ fun NavHostWithSlideAnimation(
     if (backStackEntry != null) {
         // while in the scope of the composable, we provide the navBackStackEntry as the
         // ViewModelStoreOwner and LifecycleOwner
-        AnimatedContent(targetState = backStackEntry.id,
+        AnimatedContent(
+            targetState = backStackEntry.id,
             modifier = modifier,
             transitionSpec = {
                 if (isForward)

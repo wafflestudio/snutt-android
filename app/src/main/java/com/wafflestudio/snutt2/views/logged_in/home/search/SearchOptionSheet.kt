@@ -49,10 +49,12 @@ fun SearchOptionSheet(
         stringResource(R.string.search_option_tag_type_etc) to TagType.ETC
     )
 
-    Column(modifier = Modifier
-        .background(SNUTTColors.White900)
-        .fillMaxWidth()
-        .clicks { }) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxWidth()
+            .clicks { }
+    ) {
         Spacer(modifier = Modifier.height(40.dp))
         // tag column의 높이를 tagType column의 높이로 설정
         SubcomposeLayout(modifier = Modifier) { constraints ->
@@ -63,16 +65,20 @@ fun SearchOptionSheet(
                         .padding(start = 20.dp, bottom = 10.dp),
                 ) {
                     tagTypeList.forEach { (name, type) ->
-                        Text(text = name, style = SNUTTTypography.h2.copy(
-                            fontSize = 17.sp,
-                            color = if (type == selectedTagType) SNUTTColors.Black900
-                            else SNUTTColors.Gray200
-                        ), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                            .clicks {
-                                scope.launch { viewModel.setTagType(type) }
-                            })
+                        Text(
+                            text = name,
+                            style = SNUTTTypography.h2.copy(
+                                fontSize = 17.sp,
+                                color = if (type == selectedTagType) SNUTTColors.Black900
+                                else SNUTTColors.Gray200
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp)
+                                .clicks {
+                                    scope.launch { viewModel.setTagType(type) }
+                                }
+                        )
                     }
                 }
             }

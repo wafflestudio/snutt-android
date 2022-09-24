@@ -4,9 +4,7 @@ import android.graphics.Bitmap
 import android.webkit.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import java.net.URL
 
@@ -86,25 +83,25 @@ fun ReviewPage() {
             )
             setCookie(
                 reviewUrlHost,
-                "x-access-token=${accessToken}"
+                "x-access-token=$accessToken"
             )
         }.flush()
         webView.loadUrl(url)
     }
 
-    if(loadState == LoadState.InitialLoading(0)) {
+    if (loadState == LoadState.InitialLoading(0)) {
         reload(context.getString(R.string.review_base_url))
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (loadState is LoadState.InitialLoading) {
-            SimpleTopBar(title = stringResource(R.string.reviews_app_bar_title),
+            SimpleTopBar(
+                title = stringResource(R.string.reviews_app_bar_title),
                 onClickNavigateBack = {
-
-                })
+                }
+            )
         }
         if (loadState is LoadState.Error) {
-
         }
         if (tokenReady) {
             AndroidView(factory = { ctx ->

@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.storage
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
@@ -13,9 +12,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
-import okio.sink
 import okio.source
-import java.io.EOFException
 import java.io.InputStream
 import java.io.OutputStream
 
