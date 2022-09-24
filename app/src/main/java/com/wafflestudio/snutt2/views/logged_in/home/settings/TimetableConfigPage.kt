@@ -54,10 +54,13 @@ fun TimetableConfigPage() {
             .fillMaxSize()
             .background(SNUTTColors.Gray100)
     ) {
-        SimpleTopBar(title = stringResource(R.string.timetable_settings_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() })
+        SimpleTopBar(
+            title = stringResource(R.string.timetable_settings_app_bar_title),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
         Margin(height = 10.dp)
-        SettingItem(title = stringResource(R.string.settings_timetable_config_force_fit),
+        SettingItem(
+            title = stringResource(R.string.settings_timetable_config_force_fit),
             modifier = Modifier.background(Color.White),
             onClick = {
                 scope.launch {
@@ -66,7 +69,8 @@ fun TimetableConfigPage() {
             },
             content = {
                 PoorSwitch(state = trimParam.forceFitLectures)
-            })
+            }
+        )
         Margin(height = 10.dp)
         AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
             Column {
@@ -83,11 +87,13 @@ fun TimetableConfigPage() {
                 }
                 Margin(height = 10.dp)
                 RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
-                    RangeBar(initStart = trimParam.hourFrom - 8,    // TODO: 24시간 개선 시 변경
+                    RangeBar(
+                        initStart = trimParam.hourFrom - 8, // TODO: 24시간 개선 시 변경
                         initEnd = trimParam.hourTo - 8, // TODO: 24시간 개선 시 변경
-                        labelArray = Array(16) { (it + 8).toString() }) { start, end ->
+                        labelArray = Array(16) { (it + 8).toString() }
+                    ) { start, end ->
                         scope.launch {
-                            viewModel.setHourRange(start + 8, end + 8)  // TODO: 24시간 개선 시 변경
+                            viewModel.setHourRange(start + 8, end + 8) // TODO: 24시간 개선 시 변경
                         }
                     }
                 }
@@ -105,7 +111,8 @@ private fun PoorSwitch(state: Boolean) {
     Box(
         modifier = Modifier
             .width(60.dp)
-            .fillMaxHeight(), contentAlignment = Alignment.CenterEnd
+            .fillMaxHeight(),
+        contentAlignment = Alignment.CenterEnd
     ) {
         Row {
             Box(
@@ -171,7 +178,10 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
 
 @Composable
 private fun RangeBar(
-    initStart: Int, initEnd: Int, labelArray: Array<String>, onChange: (Int, Int) -> Unit
+    initStart: Int,
+    initEnd: Int,
+    labelArray: Array<String>,
+    onChange: (Int, Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
@@ -238,32 +248,37 @@ private fun Label(
 ) {
     val scope = rememberCoroutineScope()
 
-    Box(modifier = Modifier
-        .offset {
-            IntOffset(
-                (offset.value - 13.dp.toPx()).roundToInt(),
-                5.dp
-                    .toPx()
-                    .roundToInt()
-            )
-        }
-        .draggable(orientation = Orientation.Horizontal, state = rememberDraggableState { delta ->
-            scope.launch {
-                offset.snapTo(
-                    (offset.value + delta).coerceIn(0f, widthPx)
+    Box(
+        modifier = Modifier
+            .offset {
+                IntOffset(
+                    (offset.value - 13.dp.toPx()).roundToInt(),
+                    5.dp
+                        .toPx()
+                        .roundToInt()
                 )
             }
-        }, onDragStopped = {
-            offset.animateTo(
-                (offset.value / tickPx).roundToInt() * tickPx
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    scope.launch {
+                        offset.snapTo(
+                            (offset.value + delta).coerceIn(0f, widthPx)
+                        )
+                    }
+                },
+                onDragStopped = {
+                    offset.animateTo(
+                        (offset.value / tickPx).roundToInt() * tickPx
+                    )
+                    onChange()
+                }
             )
-            onChange()
-        })
-        .clip(CircleShape)
-        .width(26.dp)
-        .height(26.dp)
-        .background(Color.Black)
-        .clip(CircleShape),
+            .clip(CircleShape)
+            .width(26.dp)
+            .height(26.dp)
+            .background(Color.Black)
+            .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(text = labelText, color = Color.White)

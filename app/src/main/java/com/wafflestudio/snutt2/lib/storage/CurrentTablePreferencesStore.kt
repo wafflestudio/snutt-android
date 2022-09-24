@@ -12,9 +12,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
-import okio.sink
 import okio.source
-import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 

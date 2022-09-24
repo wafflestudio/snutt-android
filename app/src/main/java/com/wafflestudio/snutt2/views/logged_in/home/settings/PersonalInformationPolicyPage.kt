@@ -35,8 +35,10 @@ fun PersonalInformationPolicyPage() {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SimpleTopBar(title = stringResource(R.string.settings_personal_information_policy),
-            onClickNavigateBack = { navController.popBackStack() })
+        SimpleTopBar(
+            title = stringResource(R.string.settings_personal_information_policy),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
         if (webViewUrlReady) {
             AndroidView(factory = {
                 WebView(context).apply {

@@ -50,7 +50,7 @@ fun EditText(
             Column {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     leadingIcon()
-                    if (value.isNotEmpty() || isFocused) {      // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
+                    if (value.isNotEmpty() || isFocused) { // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
                         it()
                     } else {
                         hint?.let {
@@ -63,7 +63,7 @@ fun EditText(
                     trailingIcon()
                 }
 
-                if(underlineEnabled) {
+                if (underlineEnabled) {
                     Box(
                         modifier = Modifier
                             .padding(top = 8.dp)
