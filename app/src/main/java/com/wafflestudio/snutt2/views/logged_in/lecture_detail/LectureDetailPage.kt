@@ -38,8 +38,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -49,6 +48,8 @@ fun LectureDetailPage() {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val navController = LocalNavController.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -100,9 +101,11 @@ fun LectureDetailPage() {
                             if (editMode.not()) vm.setEditMode()
                             else {
                                 scope.launch {
-                                    vm.updateLecture2()
-                                    vm.initializeEditingLectureDetail(editingLectureDetail)
-                                    vm.unsetEditMode()
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        vm.updateLecture2()
+                                        vm.initializeEditingLectureDetail(editingLectureDetail)
+                                        vm.unsetEditMode()
+                                    }
                                 }
                             }
                         }
@@ -304,10 +307,12 @@ fun LectureDetailPage() {
                     Column(modifier = Modifier.background(Color.White)) {
                         LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
                             scope.launch {
-                                vm.getCourseBookUrl().let { url ->
-                                    val intent =
-                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                    context.startActivity(intent)
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    vm.getCourseBookUrl().let { url ->
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(intent)
+                                    }
                                 }
                             }
                         }
@@ -346,11 +351,13 @@ fun LectureDetailPage() {
             onDismiss = { deleteLectureDialogState = false },
             onConfirm = {
                 scope.launch {
-                    vm.removeLecture2()
-                    scope.launch(Dispatchers.Main) {
-                        navController.popBackStack()
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        vm.removeLecture2()
+                        scope.launch(Dispatchers.Main) {
+                            navController.popBackStack()
+                        }
+                        deleteLectureDialogState = false
                     }
-                    deleteLectureDialogState = false
                 }
             },
             title = stringResource(R.string.lecture_detail_delete_dialog_title)
@@ -378,10 +385,12 @@ fun LectureDetailPage() {
             onDismiss = { resetLectureDialogState = false },
             onConfirm = {
                 scope.launch {
-                    val resetLecture = vm.resetLecture2()
-                    vm.initializeEditingLectureDetail(resetLecture)
-                    vm.unsetEditMode()
-                    resetLectureDialogState = false
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        val resetLecture = vm.resetLecture2()
+                        vm.initializeEditingLectureDetail(resetLecture)
+                        vm.unsetEditMode()
+                        resetLectureDialogState = false
+                    }
                 }
             },
             title = stringResource(R.string.lecture_detail_reset_dialog_title)

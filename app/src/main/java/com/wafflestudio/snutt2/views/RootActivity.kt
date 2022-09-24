@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import androidx.activity.viewModels
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -35,10 +36,12 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
+    private val userViewModel: UserViewModel by viewModels()
 
     @Inject
     lateinit var snuttStorage: SNUTTStorage
@@ -49,11 +52,16 @@ class RootActivity : BaseActivity() {
     @Inject
     lateinit var apiOnError: ApiOnError
 
+    lateinit var token: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
+        runBlocking {
+            token = userViewModel.getAccessToken()  // FIXME: .....
+        }
         setContentView(R.layout.activity_root)
 
         val composeRoot = findViewById<ComposeView>(R.id.compose_root)
@@ -115,7 +123,7 @@ class RootActivity : BaseActivity() {
         }
 
         val startDestination =
-            if (snuttStorage.accessToken.get().isEmpty()) NavigationDestination.Onboard
+            if (token.isEmpty()) NavigationDestination.Onboard
             else NavigationDestination.Home
 
         CompositionLocalProvider(
@@ -185,4 +193,16 @@ fun NavController.navigateAsOrigin(route: String) {
         launchSingleTop = true
         restoreState = true
     }
+}
+
+suspend fun launchSuspendApi(apiOnProgress: ApiOnProgress, apiOnError: ApiOnError, api: suspend() -> Unit) {
+    try {
+        apiOnProgress.showProgress()
+        api.invoke()
+    } catch (e: Exception) {
+        apiOnError(e)
+    } finally {
+        apiOnProgress.hideProgress()
+    }
+
 }

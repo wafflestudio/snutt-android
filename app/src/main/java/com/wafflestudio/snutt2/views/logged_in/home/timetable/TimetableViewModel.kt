@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,12 +43,10 @@ class TimetableViewModel @Inject constructor(
     }
 
     suspend fun removeLecture(lecture: LectureDto) {
-        currentTable.collectLatest { table ->
-            table.lectureList.findLast { lec ->
-                lec.isLectureNumberEquals(lec)
-            }?.id?.let {
-                currentTableRepository.removeLecture(it)
-            }
+        currentTable.first().lectureList.findLast { lec ->
+            lec.isLectureNumberEquals(lecture)
+        }?.id?.let {
+            currentTableRepository.removeLecture(it)
         }
     }
 

@@ -31,7 +31,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.coroutineScope
@@ -45,6 +48,8 @@ fun HomeDrawer() {
     val tableContext = TableContext.current
     val showBottomSheet = ShowBottomSheet.current
     val hideBottomSheet = HideBottomSheet.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
@@ -144,21 +149,25 @@ fun HomeDrawer() {
                                     selected = it.id == tableContext.table.id,
                                     onSelect = { selectedTableId ->
                                         scope.launch {
-                                            tableListViewModel.changeSelectedTableNew(
-                                                selectedTableId
-                                            )
-                                            drawerState.close()
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                tableListViewModel.changeSelectedTableNew(
+                                                    selectedTableId
+                                                )
+                                                drawerState.close()
+                                            }
                                         }
                                     },
                                     onDuplicate = { table ->
                                         scope.launch {
-                                            tableListViewModel.copyTableNew(table.id)
-                                            context.toast(
-                                                context.getString(
-                                                    R.string.home_drawer_copy_success_message,
-                                                    table.title
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                tableListViewModel.copyTableNew(table.id)
+                                                context.toast(
+                                                    context.getString(
+                                                        R.string.home_drawer_copy_success_message,
+                                                        table.title
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
                                     },
                                     onShowMore = {
@@ -185,7 +194,9 @@ fun HomeDrawer() {
         var tableNewTitle by remember { mutableStateOf(showMoreClickedTable.title) }
         ChangeTableTitleDialog(onDismiss = { changeTitleDialogState = false }, onConfirm = {
             scope.launch {
-                tableListViewModel.changeNameTableNew(showMoreClickedTable.id, tableNewTitle)
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.changeNameTableNew(showMoreClickedTable.id, tableNewTitle)
+                }
             }
             changeTitleDialogState = false
         }, value = tableNewTitle, onValueChange = { tableNewTitle = it })
@@ -219,8 +230,10 @@ fun HomeDrawer() {
     if (deleteTableDialogState) {
         DeleteTableDialog(onDismiss = { deleteTableDialogState = false }, onConfirm = {
             scope.launch {
-                tableListViewModel.deleteTableNew(showMoreClickedTable.id)
-                context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.deleteTableNew(showMoreClickedTable.id)
+                    context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
+                }
             }
             scope.launch {
                 hideBottomSheet(false)
@@ -238,22 +251,30 @@ fun HomeDrawer() {
                 showBottomSheet(500.dp) {
                     ChangeThemeBottomSheetContent(onLaunch = {
                         scope.launch {
-                            timetableViewModel.setPreviewTheme(tableContext.table.theme)
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                timetableViewModel.setPreviewTheme(tableContext.table.theme)
+                            }
                         }
                     }, onPreview = { idx ->
                         scope.launch {
-                            timetableViewModel.setPreviewTheme(
-                                TimetableColorTheme.fromInt(idx)
-                            )
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                timetableViewModel.setPreviewTheme(
+                                    TimetableColorTheme.fromInt(idx)
+                                )
+                            }
                         }
                     }, onApply = {
                         scope.launch {
-                            timetableViewModel.updateTheme()
-                            scope.launch { hideBottomSheet(false) }
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                timetableViewModel.updateTheme()
+                                scope.launch { hideBottomSheet(false) }
+                            }
                         }
                     }, onDispose = {
                         scope.launch {
-                            timetableViewModel.setPreviewTheme(null) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                timetableViewModel.setPreviewTheme(null) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
+                            }
                         }
                     })
                 }
@@ -268,9 +289,11 @@ fun HomeDrawer() {
         CustomDialog(
             onDismiss = { addNewTableDialogState = false }, onConfirm = {
                 scope.launch {
-                    tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
-                    // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                    addNewTableDialogState = false
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
+                        // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
+                        addNewTableDialogState = false
+                    }
                 }
             }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
         ) {

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.storage.CurrentTablePreferences
@@ -31,7 +32,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         currentTableStore.updateData { prev ->
             val prevTable = prev.data
                 ?: throw IllegalStateException("cannot add lecture when current table not exists")
-            val response = api._postAddLecture(prevTable.id, lectureId, isForced)
+            val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
             prev.copy(data = response)
         }
     }

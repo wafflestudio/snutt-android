@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import android.os.Build
+import androidx.datastore.core.DataStore
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -9,11 +10,14 @@ import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
+import com.wafflestudio.snutt2.lib.storage.UserPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,16 +33,19 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        storage: SNUTTStorage
+        userStore: DataStore<UserPreferences>,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor { chain ->
+                val token = runBlocking {
+                    userStore.data.first().accessToken
+                }
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-access-token",
-                        storage.accessToken.get()
+                        token,
                     )
                     .build()
                 chain.proceed(newRequest)

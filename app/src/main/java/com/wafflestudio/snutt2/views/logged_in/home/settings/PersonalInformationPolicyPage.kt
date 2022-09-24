@@ -30,6 +30,10 @@ fun PersonalInformationPolicyPage() {
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        userViewModel.fetchUserInfo()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(title = stringResource(R.string.settings_personal_information_policy),
             onClickNavigateBack = { navController.popBackStack() })

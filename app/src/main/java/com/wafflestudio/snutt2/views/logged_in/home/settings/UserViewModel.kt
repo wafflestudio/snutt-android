@@ -24,11 +24,8 @@ class UserViewModel @Inject constructor(
     val userInfo = userRepository.user.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), UserDto()
     )
-
-    init {
-        viewModelScope.launch {
-            userRepository.fetchUserInfo()
-        }
+    suspend fun fetchUserInfo() {
+        userRepository.fetchUserInfo()
     }
 
     suspend fun setHourRange(from: Int, to: Int) {
@@ -41,6 +38,10 @@ class UserViewModel @Inject constructor(
 
     suspend fun setAutoTrim(enable: Boolean) {
         userRepository.setTableTrim(isAuto = enable)
+    }
+
+    suspend fun loginLocal(id: String, password: String) {
+        userRepository.postSignIn(id, password)
     }
 
     suspend fun addNewLocalId(id: String, password: String) {

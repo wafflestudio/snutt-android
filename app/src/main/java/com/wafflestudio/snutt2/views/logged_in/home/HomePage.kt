@@ -34,7 +34,10 @@ import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -44,6 +47,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 enum class HomeItem(@DrawableRes val icon: Int) {
@@ -81,32 +86,34 @@ fun HomePage() {
     var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var pageState by rememberSaveable { mutableStateOf(HomeItem.Timetable) }
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val userViewModel = hiltViewModel<UserViewModel>()
+//    val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            tableListViewModel.fetchTableMap()
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                tableListViewModel.fetchTableMap()
+                tableListViewModel.fetchCourseBooks()
+            }
         }
     }
     LaunchedEffect(pageState == HomeItem.Timetable) {
         if (pageState == HomeItem.Timetable) {
-            try {
+            launchSuspendApi(apiOnProgress, apiOnError) {
                 homeViewModel.getUncheckedNotificationsExist().let { uncheckedNotification = it }
-            } catch (e: Exception) {
             }
         }
-    }
-    LaunchedEffect(Unit) {
     }
 
     val table by timetableViewModel.currentTable.collectAsState(Defaults.defaultTableDto) // FIXME: 초기값 문제
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val trimParam by userViewModel.trimParam.collectAsState()
+    val trimParam = TableTrimParam.Default//by userViewModel.trimParam.collectAsState()
     val tableContext = TableContextBundle(table, trimParam, previewTheme)
 
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
@@ -160,10 +167,7 @@ fun HomePage() {
     ) {
         ModalDrawer(
             drawerContent = {
-                HomeDrawer(
-//                    tableListViewModel = tableListViewModel,
-//                    timetableViewModel = timetableViewModel,
-                )
+                HomeDrawer()
             },
             drawerState = drawerState,
             gesturesEnabled = (pageState == HomeItem.Timetable) && (bottomSheetState == BottomSheetState.HIDE)

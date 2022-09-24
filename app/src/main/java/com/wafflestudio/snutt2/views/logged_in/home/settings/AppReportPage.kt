@@ -29,6 +29,10 @@ fun AppReportPage() {
     var email by remember { mutableStateOf("") }
     var detail by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        userViewModel.fetchUserInfo()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(title = {
             Text(

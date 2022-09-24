@@ -27,8 +27,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,6 +38,8 @@ fun LectureDetailCustomPage() {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val navController = LocalNavController.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -105,10 +106,11 @@ fun LectureDetailCustomPage() {
                             else {
                                 if (vm.isAddMode()) {
                                     scope.launch {
-                                        vm.createLecture2()
-                                        vm.unsetEditMode()
-                                        vm.setAddMode(false)
-                                        /* FIXME
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.createLecture2()
+                                            vm.unsetEditMode()
+                                            vm.setAddMode(false)
+                                            /* FIXME
                                          * 안드로이드는 여기서 그대로 detailPage 에 남는다.
                                          *
                                          * 하지만 @POST("/tables/{id}/lecture") api 는
@@ -122,13 +124,16 @@ fun LectureDetailCustomPage() {
                                          * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
                                          * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
                                          */
-                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                            scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                        }
                                     }
                                 } else {
                                     scope.launch {
-                                        vm.updateLecture2()
-                                        vm.initializeEditingLectureDetail(editingLectureDetail)
-                                        vm.unsetEditMode()
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.updateLecture2()
+                                            vm.initializeEditingLectureDetail(editingLectureDetail)
+                                            vm.unsetEditMode()
+                                        }
                                     }
                                 }
                             }
@@ -320,11 +325,13 @@ fun LectureDetailCustomPage() {
             onDismiss = { deleteLectureDialogState = false },
             onConfirm = {
                 scope.launch {
-                    vm.removeLecture2()
-                    scope.launch(Dispatchers.Main) {
-                        navController.popBackStack()
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        vm.removeLecture2()
+                        scope.launch(Dispatchers.Main) {
+                            navController.popBackStack()
+                        }
+                        deleteLectureDialogState = false
                     }
-                    deleteLectureDialogState = false
                 }
             },
             title = stringResource(R.string.lecture_detail_delete_dialog_title)
