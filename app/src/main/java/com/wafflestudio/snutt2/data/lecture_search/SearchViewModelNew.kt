@@ -1,8 +1,10 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -53,7 +55,9 @@ class SearchViewModelNew @Inject constructor(
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
-                fetchSearchTagList()
+                try {
+                    fetchSearchTagList()  // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
+                } catch (e: Exception) { }
             }
         }
     }
@@ -89,7 +93,11 @@ class SearchViewModelNew @Inject constructor(
                 )
             )
         }
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        PagingData.empty(),
+    )
 
     suspend fun setTitle(title: String) {
         _searchTitle.emit(title)
@@ -131,7 +139,7 @@ class SearchViewModelNew @Inject constructor(
          */
     }
 
-    private suspend fun fetchSearchTagList() {
+    suspend fun fetchSearchTagList() {
         _searchTagList.emit(
             lectureSearchRepository.getSearchTags(
                 currentTable.value.year, currentTable.value.semester
