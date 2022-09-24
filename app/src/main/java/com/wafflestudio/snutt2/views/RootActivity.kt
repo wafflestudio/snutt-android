@@ -60,7 +60,7 @@ class RootActivity : BaseActivity() {
 
         super.onCreate(savedInstanceState)
         runBlocking {
-            token = userViewModel.getAccessToken()  // FIXME: .....
+            token = userViewModel.getAccessToken() // FIXME: .....
         }
         setContentView(R.layout.activity_root)
 
@@ -98,7 +98,6 @@ class RootActivity : BaseActivity() {
             }
         )
     }
-
 
     fun isInitialConditionsSatisfied(): Boolean {
         // TODO: 필요한 컨디션 체크하기
@@ -204,5 +203,4 @@ suspend fun launchSuspendApi(apiOnProgress: ApiOnProgress, apiOnError: ApiOnErro
     } finally {
         apiOnProgress.hideProgress()
     }
-
 }
