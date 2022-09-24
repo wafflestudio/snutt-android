@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
@@ -7,6 +9,7 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -19,18 +22,26 @@ class TableListViewModelNew @Inject constructor(
 
     private val _allCourseBook = MutableStateFlow(emptyList<CourseBookDto>())
     val allCourseBook = _allCourseBook.asStateFlow()
-    val mostRecentCourseBook = _allCourseBook.filter { it.isNotEmpty() }.map { it.first() }
+    private val mostRecentCourseBook = _allCourseBook.filter { it.isNotEmpty() }.map { it.first() }
 
-    val tableListOfEachCourseBook = tableRepository.tableMap.stateIn(
+    private val tableMap = tableRepository.tableMap.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), initialValue = mapOf()
     )
 
-    val courseBooksWithTable = tableListOfEachCourseBook.map {
+    val courseBooksWhichHaveTable = tableMap.map {
         (
             it.values.map { table ->
                 CourseBookDto(year = table.year, semester = table.semester)
             } + mostRecentCourseBook.first()
             ).distinct()
+    }
+
+    val tableListOfEachCourseBook = courseBooksWhichHaveTable.map {
+        it.associateWith { courseBook ->
+            tableMap.value.values.filter { table ->
+                table.year == courseBook.year && table.semester == courseBook.semester
+            }
+        }
     }
 
     val newSemesterNotify = tableRepository.tableMap.map { tableMap ->
