@@ -1,9 +1,15 @@
 package com.wafflestudio.snutt2.views
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.activity.viewModels
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.animation.AnticipateInterpolator
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
@@ -49,17 +55,54 @@ class RootActivity : BaseActivity() {
     lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         runBlocking {
             token = userViewModel.getAccessToken()  // FIXME: .....
         }
         setContentView(R.layout.activity_root)
-        findViewById<ComposeView>(R.id.compose_root)
-            .setContent {
-                SNUTTTheme {
-                    setUpUI()
+
+        val composeRoot = findViewById<ComposeView>(R.id.compose_root)
+
+        composeRoot.setContent {
+            SNUTTTheme {
+                setUpUI()
+            }
+        }
+
+        setUpSplashScreen(composeRoot)
+    }
+
+    private fun setUpSplashScreen(rootView: View) {
+        splashScreen.setOnExitAnimationListener { view ->
+            ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
+                interpolator = AnticipateInterpolator()
+                duration = 200L
+                doOnEnd { view.remove() }
+                start()
+            }
+        }
+
+        rootView.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (isInitialConditionsSatisfied()) {
+                        rootView.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
+        )
+    }
+
+
+    fun isInitialConditionsSatisfied(): Boolean {
+        // TODO: 필요한 컨디션 체크하기
+        return true
     }
 
     @Composable

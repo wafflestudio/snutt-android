@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.TimetableView
 import com.wafflestudio.snutt2.data.MyLectureRepository
 import com.wafflestudio.snutt2.data.SettingsRepository
-import com.wafflestudio.snutt2.views.SplashActivity
+import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ TimetableWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            val intent = Intent(context, SplashActivity::class.java)
+            val intent = Intent(context, RootActivity::class.java)
             val pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val views = RemoteViews(context.packageName, R.layout.widget_timetable)
