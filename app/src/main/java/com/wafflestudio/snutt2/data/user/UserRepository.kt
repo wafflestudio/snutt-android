@@ -54,4 +54,6 @@ interface UserRepository {
     )
 
     suspend fun getAccessToken(): String
+
+    fun accessToken(): Flow<String>
 }
