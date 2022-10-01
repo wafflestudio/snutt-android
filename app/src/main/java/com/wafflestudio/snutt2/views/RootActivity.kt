@@ -155,7 +155,7 @@ class RootActivity : BaseActivity() {
                 startDestination = startDestination
             ) {
 
-                onboardGraph(navController)
+                onboardGraph()
 
                 composable2(NavigationDestination.Home) { HomePage() }
 
@@ -176,7 +176,7 @@ class RootActivity : BaseActivity() {
         }
     }
 
-    private fun NavGraphBuilder.onboardGraph(navController: NavController) {
+    private fun NavGraphBuilder.onboardGraph() {
         navigation(
             startDestination = NavigationDestination.Tutorial,
             route = NavigationDestination.Onboard

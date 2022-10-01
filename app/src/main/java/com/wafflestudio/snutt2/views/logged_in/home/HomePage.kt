@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -22,19 +23,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -76,15 +76,17 @@ fun HomePage() {
     val scope = rememberCoroutineScope()
     var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val context = LocalContext.current
     var pageState by rememberSaveable { mutableStateOf(HomeItem.Timetable) }
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
-//    val userViewModel = hiltViewModel<UserViewModel>()
+    val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
+    val reviewWebView = remember { WebViewContainer(context, userViewModel.accessToken) }
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
@@ -155,6 +157,7 @@ fun HomePage() {
         HideBottomSheet provides hideBottomSheet,
         TableContext provides tableContext,
         LocalDrawerState provides drawerState,
+        LocalReviewWebView provides reviewWebView,
     ) {
         ModalDrawer(
             drawerContent = {
@@ -193,7 +196,6 @@ fun HomePage() {
                             )
                     )
                 }
-
                 BottomNavigation(pageState = pageState, onUpdatePageState = { pageState = it })
             }
         }
