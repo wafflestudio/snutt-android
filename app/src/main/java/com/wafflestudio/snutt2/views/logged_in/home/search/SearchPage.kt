@@ -211,6 +211,7 @@ fun SearchPage(
                                         }
                                     }, onClickDetail = {
                                         lectureDetailViewModel.initializeEditingLectureDetail(it.item)
+                                        lectureDetailViewModel.setViewMode(true)
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     })
                                 }
