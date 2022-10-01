@@ -10,9 +10,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DrawerValue
 import androidx.compose.material.Text
-import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -23,7 +21,9 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,11 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.CustomDialog
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
@@ -560,12 +562,7 @@ private fun shareScreenshotFromView(
 @Preview(showBackground = true)
 @Composable
 fun TimetablePagePreview() {
-    CompositionLocalProvider(
-        LocalNavController provides rememberNavController(),
-        LocalDrawerState provides rememberDrawerState(initialValue = DrawerValue.Closed)
-    ) {
         TimetablePage(
             uncheckedNotification = false
         )
-    }
 }

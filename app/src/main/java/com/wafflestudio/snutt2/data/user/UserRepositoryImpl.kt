@@ -157,6 +157,10 @@ class UserRepositoryImpl @Inject constructor(
         return userStore.data.first().accessToken
     }
 
+    override fun accessToken(): Flow<String> {
+        return userStore.data.map { it.accessToken }
+    }
+
     override suspend fun setTableTrim(
         dayOfWeekFrom: Int?,
         dayOfWeekTo: Int?,
