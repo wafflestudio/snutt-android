@@ -21,7 +21,7 @@ class TimetableViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable = currentTableRepository.currentTable.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(),
+        SharingStarted.Eagerly,
         Defaults.defaultTableDto
     )
 

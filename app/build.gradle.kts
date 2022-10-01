@@ -34,7 +34,7 @@ val versionProps = Properties().apply {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     repositories {
         mavenCentral()
@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
     }
 
     compileOptions {
@@ -187,7 +187,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.compose.runtime:runtime-rxjava3:1.1.1")
-    implementation("com.google.accompanist:accompanist-pager:0.24.5-alpha")
+    implementation("com.google.accompanist:accompanist-pager:0.26.4-beta")
 
     // misc
     implementation("androidx.core:core-ktx:1.7.0")
@@ -203,6 +203,7 @@ dependencies {
     implementation("com.appyvet:materialrangebar:1.3")
     implementation("com.google.code.gson:gson:2.9.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
 
     // glide
     implementation("com.github.bumptech.glide:glide:4.12.0")

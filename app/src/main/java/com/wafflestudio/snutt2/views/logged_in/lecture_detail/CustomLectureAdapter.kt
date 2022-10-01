@@ -241,6 +241,7 @@ class CustomLectureAdapter(
                     value.inputType = InputType.TYPE_CLASS_TEXT
                     value.hint = if (item.isEditable) "예) 홍길동" else "(없음)"
                 }
+                else -> {}
             }
         }
 

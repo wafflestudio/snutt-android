@@ -1,13 +1,13 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.data.TableRepository
-import com.wafflestudio.snutt2.data.UserRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
-import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,21 +15,18 @@ class HomeViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
     private val notificationRepository: NotificationRepository,
-    private val apiOnError: ApiOnError
 ) : ViewModel() {
 
-    fun refreshData() {
-        tableRepository.fetchDefaultTable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-
-        tableRepository.fetchTableList()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
-
-        userRepository.fetchUserInfo()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onError = apiOnError)
+    suspend fun refreshData() = coroutineScope {
+        try {
+            listOf(
+                async { tableRepository.fetchDefaultTable() },
+                async { tableRepository.getTableList() },
+                async { userRepository.fetchUserInfo() },
+            ).awaitAll()
+        } catch (e: Exception) {
+            // do nothing (just sync)
+        }
     }
 
     suspend fun getUncheckedNotificationsExist(): Boolean {

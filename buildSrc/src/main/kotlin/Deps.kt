@@ -3,7 +3,7 @@
 object Deps {
 
     object Version {
-        const val Kotlin = "1.6.10"
+        const val Kotlin = "1.7.0"
         const val Rx3Coroutine= "1.6.0"
         const val Moshi = "1.12.0"
         const val Retrofit = "2.9.0"
@@ -11,10 +11,10 @@ object Deps {
         const val RxKotlin = "3.0.1"
         const val RxAndroid = "3.0.0"
         const val RxBinding = "4.0.0"
-        const val Hilt = "2.38.1"
+        const val Hilt = "2.42"
         const val Navigation = "2.4.0"
         const val Paging = "3.1.0"
-        const val Compose = "1.2.0-alpha03"
+        const val Compose = "1.2.0"
         const val AndroidGradle = "7.0.4"
         const val KtLintGradle = "10.2.1"
         const val PagingCompose = "1.0.0-alpha14"
