@@ -89,6 +89,7 @@ fun SearchPage(
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             searchViewModel.query()
+                            keyBoardController?.hide()
                         }
                     }
                 }
@@ -99,7 +100,8 @@ fun SearchPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .onFocusChanged { searchEditTextFocused = it.isFocused },
+                    .onFocusChanged { searchEditTextFocused = it.isFocused }
+                    .clearFocusOnKeyboardDismiss(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     scope.launch {
@@ -118,9 +120,20 @@ fun SearchPage(
                 singleLine = true,
                 hint = stringResource(R.string.search_hint),
                 underlineEnabled = false,
+                clearFocusFlag = searchEditTextFocused.not(),
             )
             Spacer(modifier = Modifier.width(12.dp))
-            if (searchEditTextFocused) ExitIcon(modifier = Modifier.clicks { scope.launch { searchViewModel.clearEditText() } })
+            if (searchEditTextFocused) {
+                ExitIcon(
+                    modifier = Modifier.clicks {
+                        scope.launch {
+                            searchViewModel.clearEditText()
+                            searchEditTextFocused = false
+                            keyBoardController?.hide()
+                        }
+                    }
+                )
+            }
             else FilterIcon(
                 modifier = Modifier.clicks {
                     searchOptionSheetState = true
@@ -158,8 +171,13 @@ fun SearchPage(
                     }
                 }
                 when {
+                    // FIXME: loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1 -> {
-                        SearchPlaceHolder()
+                        SearchPlaceHolder ( onClickSearchIcon = {
+                            scope.launch {
+                                searchViewModel.query()
+                            }}
+                        )
                     }
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
                         SearchEmptyPage()
@@ -192,7 +210,6 @@ fun SearchPage(
                                             }
                                         }
                                     }, onClickDetail = {
-                                        // FIXME: PagingItem 정보 소실되는 문제
                                         lectureDetailViewModel.initializeEditingLectureDetail(it.item)
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     })
@@ -366,7 +383,7 @@ fun LazyItemScope.SearchListItem(
 }
 
 @Composable
-fun SearchPlaceHolder() {
+fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -379,6 +396,9 @@ fun SearchPlaceHolder() {
                 .width(78.dp)
                 .height(76.dp)
                 .padding(10.dp)
+                .clicks {
+                    onClickSearchIcon.invoke()
+                }
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
