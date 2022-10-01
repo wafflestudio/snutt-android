@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import com.wafflestudio.snutt2.DialogController
@@ -39,6 +40,7 @@ import kotlinx.coroutines.rx3.rxMaybe
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@ExperimentalAnimationApi
 @AndroidEntryPoint
 class HomeFragment : BaseFragment() {
 

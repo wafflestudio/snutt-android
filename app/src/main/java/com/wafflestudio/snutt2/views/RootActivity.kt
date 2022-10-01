@@ -6,20 +6,21 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
+import androidx.compose.animation.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
-import com.wafflestudio.snutt2.ComposeSlideNavigator
-import com.wafflestudio.snutt2.NavHostWithSlideAnimation
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.composable
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -44,6 +45,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalAnimationApi
 @AndroidEntryPoint
 class RootActivity : BaseActivity() {
     private val userViewModel: UserViewModel by viewModels()
@@ -124,7 +126,7 @@ class RootActivity : BaseActivity() {
 
     @Composable
     fun setUpUI(isLoggedOut: Boolean) {
-        val navController = rememberNavController(ComposeSlideNavigator())
+        val navController = rememberAnimatedNavController()
         var isProgressVisible by remember { mutableStateOf(false) }
 
         val apiOnProgress = remember {
@@ -148,28 +150,28 @@ class RootActivity : BaseActivity() {
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
         ) {
-            NavHostWithSlideAnimation(
+            AnimatedNavHost(
                 navController = navController,
                 startDestination = startDestination
             ) {
 
                 onboardGraph(navController)
 
-                composable(NavigationDestination.Home) { HomePage() }
+                composable2(NavigationDestination.Home) { HomePage() }
 
-                composable(NavigationDestination.Notification) { NotificationPage() }
+                composable2(NavigationDestination.Notification) { NotificationPage() }
 
-                composable(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
+                composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable(NavigationDestination.LectureDetail) { LectureDetailPage() }
+                composable2(NavigationDestination.LectureDetail) { LectureDetailPage() }
 
-                composable(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
+                composable2(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
 
-                composable(NavigationDestination.LectureColorSelector) {
+                composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
                 }
 
-                settingComposable()
+                settingcomposable2()
             }
         }
     }
@@ -179,25 +181,39 @@ class RootActivity : BaseActivity() {
             startDestination = NavigationDestination.Tutorial,
             route = NavigationDestination.Onboard
         ) {
-            composable(NavigationDestination.Tutorial) {
+            composable2(NavigationDestination.Tutorial) {
                 TutorialPage()
             }
-            composable(NavigationDestination.SignIn) {
+            composable2(NavigationDestination.SignIn) {
                 SignInPage()
             }
-            composable(NavigationDestination.SignUp) {
+            composable2(NavigationDestination.SignUp) {
                 SignUpPage()
             }
         }
     }
 
-    private fun NavGraphBuilder.settingComposable() {
-        composable(NavigationDestination.AppReport) { AppReportPage() }
-        composable(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
-        composable(NavigationDestination.TeamInfo) { TeamInfoPage() }
-        composable(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
-        composable(NavigationDestination.UserConfig) { UserConfigPage() }
-        composable(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
+    private fun NavGraphBuilder.composable2(
+        route: String,
+        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+    ) {
+        composable(
+            route,
+            enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
+            exitTransition = { fadeOut(targetAlpha = 0.0f) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) },
+            popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
+            content = content
+        )
+    }
+
+    private fun NavGraphBuilder.settingcomposable2() {
+        composable2(NavigationDestination.AppReport) { AppReportPage() }
+        composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
+        composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
+        composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
+        composable2(NavigationDestination.UserConfig) { UserConfigPage() }
+        composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
     }
 }
 
