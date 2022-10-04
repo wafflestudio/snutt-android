@@ -58,7 +58,7 @@ class WebViewContainer(
         this.settings.javaScriptEnabled = true
     }
 
-    suspend fun reload(url: String?) {
+    suspend fun openPage(url: String?) {
         val accessToken = accessToken.filterNotNull().first()
         val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
         CookieManager.getInstance().apply {
@@ -71,7 +71,22 @@ class WebViewContainer(
                 "x-access-token=$accessToken"
             )
         }.flush()
-        if (url == null) webView.reload()
-        else webView.loadUrl(url)
+        webView.loadUrl(url ?: context.getString(R.string.review_base_url))
+    }
+
+    suspend fun reload() {
+        val accessToken = accessToken.filterNotNull().first()
+        val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
+        CookieManager.getInstance().apply {
+            setCookie(
+                reviewUrlHost,
+                "x-access-apikey=${context.getString(R.string.api_key)}"
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-access-token=$accessToken"
+            )
+        }.flush()
+        webView.reload()
     }
 }

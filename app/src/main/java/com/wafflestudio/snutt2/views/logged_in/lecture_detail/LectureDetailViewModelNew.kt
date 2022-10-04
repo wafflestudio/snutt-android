@@ -3,7 +3,9 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
-import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LectureDetailViewModelNew @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
+    private val lectureSearchRepository: LectureSearchRepository,
 ) : ViewModel() {
     val currentTable = currentTableRepository.currentTable.stateIn(
         viewModelScope,
@@ -88,8 +91,11 @@ class LectureDetailViewModelNew @Inject constructor(
         return currentTableRepository.getLectureSyllabusUrl(courseNumber, lectureNumber)
     }
 
-    suspend fun getReviewContentsUrl() {
-        // TODO
+    suspend fun getReviewContentsUrl(): String? {
+        return lectureSearchRepository.getLectureReviewUrl(
+            courseNumber = editingLectureDetail.value.course_number ?: return null,
+            instructor = editingLectureDetail.value.instructor
+        )
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

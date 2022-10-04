@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 
 val LocalApiOnError = compositionLocalOf<ApiOnError> {
     throw RuntimeException("")
@@ -26,3 +27,9 @@ val LocalNavController = compositionLocalOf<NavController> {
 val LocalReviewWebView = compositionLocalOf<WebViewContainer> {
     throw RuntimeException("")
 }
+
+val LocalHomePageController = compositionLocalOf<HomePageController> {
+    throw RuntimeException("")
+}
+
+

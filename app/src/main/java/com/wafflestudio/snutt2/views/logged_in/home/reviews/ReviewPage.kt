@@ -25,13 +25,16 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReviewPage() {
     val context = LocalContext.current
     val webViewContainer = LocalReviewWebView.current
+    val homePageController = LocalHomePageController.current
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val scope = rememberCoroutineScope()
 
@@ -41,15 +44,9 @@ fun ReviewPage() {
                 if (webViewContainer.webView.canGoBack()) {
                     webViewContainer.webView.goBack()
                 } else {
-//                    homePagerController.update(com.wafflestudio.snutt2.lib.android.HomePage.Timetable)
+                    homePageController.update(HomeItem.Timetable)
                 }
             }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        if (webViewContainer.loadState.value is LoadState.InitialLoading) {
-            webViewContainer.reload(context.getString(R.string.review_base_url))
         }
     }
 
@@ -62,7 +59,7 @@ fun ReviewPage() {
         when (val loadState = webViewContainer.loadState.value) {
             LoadState.Error -> WebViewErrorPage(
                 modifier = Modifier.fillMaxSize(),
-                onRetry = { scope.launch { webViewContainer.reload(null) } }
+                onRetry = { scope.launch { webViewContainer.reload() } }
             )
             is LoadState.InitialLoading -> WebViewLoading(
                 modifier = Modifier.fillMaxSize(),
@@ -150,10 +147,8 @@ private fun WebViewLoading(modifier: Modifier, progress: Float) {
         modifier = modifier,
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(58.dp))
-
         LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().height(2.dp),
             progress = progress,
             color = SNUTTColors.Gray200
         )

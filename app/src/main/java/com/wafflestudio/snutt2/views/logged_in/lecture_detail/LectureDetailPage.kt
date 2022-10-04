@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -50,6 +51,7 @@ fun LectureDetailPage() {
     val navController = LocalNavController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val pageController = LocalHomePageController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -318,8 +320,9 @@ fun LectureDetailPage() {
                         }
                         LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                             scope.launch {
-                                vm.getReviewContentsUrl().let {
-                                    // TODO: 강의평 쪽 api 403 난다
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    pageController.update(HomeItem.Review(vm.getReviewContentsUrl()))
+                                    navController.popBackStack()
                                 }
                             }
                         }
