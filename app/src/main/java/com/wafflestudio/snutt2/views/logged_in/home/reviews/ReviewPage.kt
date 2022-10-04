@@ -25,13 +25,16 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReviewPage() {
     val context = LocalContext.current
     val webViewContainer = LocalReviewWebView.current
+    val homePageController = LocalHomePageController.current
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val scope = rememberCoroutineScope()
 
@@ -41,7 +44,7 @@ fun ReviewPage() {
                 if (webViewContainer.webView.canGoBack()) {
                     webViewContainer.webView.goBack()
                 } else {
-//                    homePagerController.update(com.wafflestudio.snutt2.lib.android.HomePage.Timetable)
+                    homePageController.update(HomeItem.Timetable)
                 }
             }
         }
