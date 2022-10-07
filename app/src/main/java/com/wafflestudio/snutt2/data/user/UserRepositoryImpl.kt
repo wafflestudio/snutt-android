@@ -182,7 +182,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun performLogout() {
+    override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         userStore.updateData {
             UserPreferences()

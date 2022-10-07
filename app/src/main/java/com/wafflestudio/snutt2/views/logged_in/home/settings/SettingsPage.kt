@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SettingsIcon
@@ -19,16 +20,20 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import de.psdev.licensesdialog.BuildConfig
 import de.psdev.licensesdialog.LicensesDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
+    val viewModel = hiltViewModel<UserViewModel>()
     var logoutDialogState by remember { mutableStateOf(false) }
 
     Column(
@@ -113,7 +118,13 @@ fun SettingsPage() {
         CustomDialog(
             onDismiss = { logoutDialogState = false },
             onConfirm = {
-//                viewModel.performLogout()     TODO
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        viewModel.performLogout()
+                        logoutDialogState = false
+                        navController.navigate(NavigationDestination.Onboard)
+                    }
+                }
             },
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title)
