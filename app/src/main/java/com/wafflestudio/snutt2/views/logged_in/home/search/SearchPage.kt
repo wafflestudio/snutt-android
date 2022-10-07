@@ -179,6 +179,7 @@ fun SearchPage(
                 if(placeHolderState) {
                     SearchPlaceHolder ( onClickSearchIcon = {
                         scope.launch {
+                            keyBoardController?.hide()
                             searchViewModel.query()
                         }}
                     )
