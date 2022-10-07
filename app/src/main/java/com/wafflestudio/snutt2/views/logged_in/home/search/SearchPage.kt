@@ -85,6 +85,7 @@ fun SearchPage(
     val selectedTagType by searchViewModel.selectedTagType.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     var searchOptionSheetState by remember { mutableStateOf(false) }
+    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
 
     Column {
         SearchTopBar {
@@ -174,15 +175,14 @@ fun SearchPage(
                         }
                     }
                 }
-                when {
-                    // FIXME: loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-                    loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1 -> {
-                        SearchPlaceHolder ( onClickSearchIcon = {
-                            scope.launch {
-                                searchViewModel.query()
-                            }}
-                        )
-                    }
+                // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
+                if(placeHolderState) {
+                    SearchPlaceHolder ( onClickSearchIcon = {
+                        scope.launch {
+                            searchViewModel.query()
+                        }}
+                    )
+                } else when {
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
                         SearchEmptyPage()
                     }
@@ -274,7 +274,12 @@ fun LazyItemScope.SearchListItem(
 
     Column(
         modifier = Modifier
-            .animateItemPlacement(animationSpec = spring(stiffness = Spring.StiffnessHigh, visibilityThreshold = IntOffset.VisibilityThreshold))
+            .animateItemPlacement(
+                animationSpec = spring(
+                    stiffness = Spring.StiffnessHigh,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+            )
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
