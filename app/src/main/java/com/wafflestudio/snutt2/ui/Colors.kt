@@ -18,6 +18,7 @@ object SNUTTColors {
     val Violet = Color(0xffaf56b3)
 
     val FacebookBlue = Color(0x993c5dd4)
+    val SNUTTTheme = Color(0x991BD0C8)
 
     val Transparent = Color(0x00000000)
     val Black050 = Color(0x0d000000)

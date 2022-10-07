@@ -2,17 +2,15 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
@@ -20,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +44,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeDrawer() {
     val scope = rememberCoroutineScope()
@@ -55,6 +55,7 @@ fun HomeDrawer() {
     val hideBottomSheet = HideBottomSheet.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val keyboardManager = LocalSoftwareKeyboardController.current
 
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
@@ -279,42 +280,28 @@ fun HomeDrawer() {
     // 새로운 시간표 추가 다이럴로그
     if (addNewTableDialogState) {
         var newTableTitle by remember { mutableStateOf("") }
-        CustomDialog(onDismiss = { addNewTableDialogState = false }, onConfirm = {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
-                    // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                    addNewTableDialogState = false
-                }
-            }
-        }, title = stringResource(R.string.home_drawer_create_table_dialog_title)
-        ) {
-            Column {
-                if (specificSemester.not()) {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Picker(list = allCourseBook,
-                        initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
-                            ?: allCourseBook.first(),
-                        onValueChanged = { index ->
-                            selectedCourseBook = allCourseBook[index]
-                        },
-                        PickerItemContent = { index ->
-                            CourseBookPickerItem(
-                                name = allCourseBook[index].toFormattedString(
-                                    context
-                                )
-                            )
-                        })
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-                EditText(
-                    value = newTableTitle,
-                    onValueChange = { newTableTitle = it },
-                    hint = stringResource(
-                        R.string.home_drawer_create_table_dialog_hint
-                    ),
+
+        LaunchedEffect(Unit) {
+            showBottomSheet(700.dp) {
+                CreateNewTableBottomSheet(
+                    newTitle = newTableTitle,
+                    onEditTextChange = { newTableTitle = it },
+                    onPickerChange = { selectedCourseBook = it },
+                    onCancel = { scope.launch { hideBottomSheet(false) } },
+                    onComplete = {
+                        keyboardManager?.hide()
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
+                                // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
+                                scope.launch { hideBottomSheet(false) }
+                            }
+                        }
+                    },
+                    specificSemester, allCourseBook, selectedCourseBook
                 )
             }
+            addNewTableDialogState = false
         }
     }
 }
@@ -385,7 +372,7 @@ private fun CreateTableItem(
 @Composable
 private fun CourseBookPickerItem(name: String) {
     Text(
-        text = name, fontSize = 14.sp, textAlign = TextAlign.Center
+        text = name, style = SNUTTTypography.button,
     )
 }
 
@@ -521,6 +508,62 @@ private fun ChangeThemeBottomSheetContent(
                     modifier = Modifier.clicks { onPreview(themeIdx) })
                 Spacer(modifier = Modifier.width(20.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun CreateNewTableBottomSheet(
+    newTitle: String,
+    onEditTextChange: (String) -> Unit,
+    onPickerChange: (CourseBookDto) -> Unit,
+    onCancel: () -> Unit,
+    onComplete: () -> Unit,
+    specificSemester: Boolean,
+    allCourseBook: List<CourseBookDto>,
+    selectedCourseBook: CourseBookDto,
+) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(SNUTTColors.White900)
+            .padding(25.dp)
+            .clicks{}
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(text = "취소", style = SNUTTTypography.body1, modifier = Modifier.clicks {
+                onCancel.invoke()
+            })
+            Spacer(modifier = Modifier.weight(1f))
+            Text("완료", style = SNUTTTypography.body1, modifier = Modifier.clicks {
+                onComplete.invoke()
+            })
+        }
+        Spacer(modifier = Modifier.height(25.dp))
+        Text(text = "새로운 시간표 만들기", style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600))
+        Spacer(modifier = Modifier.height(15.dp))
+        EditText(
+            value = newTitle,
+            onValueChange = { onEditTextChange(it) },
+            hint = "시간표 제목을 입력하세요",
+            underlineColor = if(specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
+            underlineColorFocused = if(specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
+            underlineWidth = 2.dp,
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+        if (specificSemester.not()) {
+            Spacer(modifier = Modifier.height(5.dp))
+            Picker(list = allCourseBook,
+                initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
+                    ?: allCourseBook.first(),
+                onValueChanged = { index ->
+                    onPickerChange(allCourseBook[index])
+                },
+                PickerItemContent = {
+                    CourseBookPickerItem(name = allCourseBook[it].toFormattedString(context))
+                })
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
