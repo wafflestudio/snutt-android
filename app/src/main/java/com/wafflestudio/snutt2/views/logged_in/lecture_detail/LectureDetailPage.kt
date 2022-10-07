@@ -157,27 +157,29 @@ fun LectureDetailPage() {
                         else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(
-                    title = stringResource(R.string.lecture_detail_color),
-                    modifier = Modifier.clicks {
-                        if (editMode) {
-                            navController.navigate(NavigationDestination.LectureColorSelector)
+                if(viewMode.not()) {
+                    LectureDetailItem(
+                        title = stringResource(R.string.lecture_detail_color),
+                        modifier = Modifier.clicks {
+                            if (editMode) {
+                                navController.navigate(NavigationDestination.LectureColorSelector)
+                            }
+                        }
+                    ) {
+                        Row {
+                            ColorBox(
+                                editingLectureDetail.colorIndex,
+                                editingLectureDetail.color,
+                                theme.value.theme
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            AnimatedVisibility(visible = editMode) {
+                                ArrowRight(modifier = Modifier.size(16.dp))
+                            }
                         }
                     }
-                ) {
-                    Row {
-                        ColorBox(
-                            editingLectureDetail.colorIndex,
-                            editingLectureDetail.color,
-                            theme.value.theme
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        AnimatedVisibility(visible = editMode) {
-                            ArrowRight(modifier = Modifier.size(16.dp))
-                        }
-                    }
+                    Margin(height = 4.dp)
                 }
-                Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
