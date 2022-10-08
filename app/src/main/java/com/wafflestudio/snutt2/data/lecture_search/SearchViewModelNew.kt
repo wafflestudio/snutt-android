@@ -50,10 +50,14 @@ class SearchViewModelNew @Inject constructor(
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
 
+    private val _placeHolderState = MutableStateFlow(true)
+    val placeHolderState = _placeHolderState.asStateFlow()
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
+                _placeHolderState.emit(true)
                 try {
                     fetchSearchTagList() // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
                 } catch (e: Exception) { }
@@ -120,6 +124,7 @@ class SearchViewModelNew @Inject constructor(
 
     suspend fun query() {
         _querySignal.emit(Unit)
+        _placeHolderState.emit(false)
         lazyListState = LazyListState(0, 0)
     }
 
@@ -131,6 +136,7 @@ class SearchViewModelNew @Inject constructor(
         _searchTitle.emit("")
         _selectedLecture.emit(null)
         _searchTagList.emit(emptyList())
+        _selectedTags.emit(emptyList())
         lazyListState = LazyListState(0, 0)
         /* TODO
          * 기존 구현은 보고 있는 학기가 바뀔 때 query signal 을 줘서 검색어 "" 로 재검색을 하게 한다.
