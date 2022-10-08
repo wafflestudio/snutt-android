@@ -164,5 +164,5 @@ private fun showLicenseDialog(context: Context) {
 @Preview
 @Composable
 fun SettingsPagePreview() {
-        SettingsPage()
+    SettingsPage()
 }

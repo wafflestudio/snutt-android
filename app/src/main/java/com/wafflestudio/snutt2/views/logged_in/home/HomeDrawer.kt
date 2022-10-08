@@ -103,7 +103,8 @@ fun HomeDrawer() {
                 color = SNUTTColors.Gray200,
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "+",
+            Text(
+                text = "+",
                 style = SNUTTTypography.subtitle1,
                 fontSize = 24.sp,
                 modifier = Modifier.clicks {
@@ -111,17 +112,20 @@ fun HomeDrawer() {
                         CourseBookDto(tableContext.table.semester, tableContext.table.year)
                     specificSemester = false
                     addNewTableDialogState = true
-                })
+                }
+            )
             Spacer(modifier = Modifier.width(10.dp))
         }
         LazyColumn {
             items(courseBooksWhichHaveTable) { courseBook ->
                 var expanded by remember { mutableStateOf(courseBook.year == tableContext.table.year && courseBook.semester == tableContext.table.semester) }
                 val rotation by animateFloatAsState(if (expanded) -180f else 0f)
-                Row(verticalAlignment = Alignment.CenterVertically,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(vertical = 10.dp)
-                        .clicks { expanded = expanded.not() }) {
+                        .clicks { expanded = expanded.not() }
+                ) {
                     Text(
                         text = courseBook.toFormattedString(context),
                         style = SNUTTTypography.h3,
@@ -140,7 +144,8 @@ fun HomeDrawer() {
                 AnimatedVisibility(visible = expanded) {
                     Column {
                         tableListOfEachCourseBook[courseBook]?.forEach {
-                            TableItem(tableDto = it,
+                            TableItem(
+                                tableDto = it,
                                 selected = it.id == tableContext.table.id,
                                 onSelect = { selectedTableId ->
                                     scope.launch {
@@ -168,7 +173,8 @@ fun HomeDrawer() {
                                 onShowMore = {
                                     showMoreClickedTable = it
                                     showMoreBottomSheetState = true
-                                })
+                                }
+                            )
                         }
                         if (tableListOfEachCourseBook[courseBook].isNullOrEmpty()) {
                             CreateTableItem {
@@ -344,13 +350,17 @@ private fun TableItem(
                 maxLines = 1,
             )
         }
-        DuplicateIcon(modifier = Modifier
-            .size(30.dp)
-            .clicks { onDuplicate(tableDto) })
+        DuplicateIcon(
+            modifier = Modifier
+                .size(30.dp)
+                .clicks { onDuplicate(tableDto) }
+        )
         Spacer(modifier = Modifier.width(10.dp))
-        MoreIcon(modifier = Modifier
-            .size(30.dp)
-            .clicks { onShowMore() })
+        MoreIcon(
+            modifier = Modifier
+                .size(30.dp)
+                .clicks { onShowMore() }
+        )
     }
 }
 
@@ -378,7 +388,9 @@ private fun CourseBookPickerItem(name: String) {
 
 @Composable
 private fun ShowMoreBottomSheetContent(
-    onChangeTitle: () -> Unit, onDeleteTable: () -> Unit, onChangeTheme: () -> Unit
+    onChangeTitle: () -> Unit,
+    onDeleteTable: () -> Unit,
+    onChangeTheme: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -459,7 +471,10 @@ private fun DeleteTableDialog(
 
 @Composable
 private fun ChangeThemeBottomSheetContent(
-    onLaunch: () -> Unit, onPreview: (Int) -> Unit, onApply: () -> Unit, onDispose: () -> Unit
+    onLaunch: () -> Unit,
+    onPreview: (Int) -> Unit,
+    onApply: () -> Unit,
+    onDispose: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onLaunch()
@@ -503,9 +518,11 @@ private fun ChangeThemeBottomSheetContent(
         ) {
             Spacer(modifier = Modifier.width(10.dp))
             themeList.forEachIndexed { themeIdx, nameAndIdPair ->
-                ThemeItem(name = nameAndIdPair.first,
+                ThemeItem(
+                    name = nameAndIdPair.first,
                     painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) })
+                    modifier = Modifier.clicks { onPreview(themeIdx) }
+                )
                 Spacer(modifier = Modifier.width(20.dp))
             }
         }
@@ -529,16 +546,22 @@ private fun CreateNewTableBottomSheet(
             .fillMaxWidth()
             .background(SNUTTColors.White900)
             .padding(25.dp)
-            .clicks{}
+            .clicks {}
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "취소", style = SNUTTTypography.body1, modifier = Modifier.clicks {
-                onCancel.invoke()
-            })
+            Text(
+                text = "취소", style = SNUTTTypography.body1,
+                modifier = Modifier.clicks {
+                    onCancel.invoke()
+                }
+            )
             Spacer(modifier = Modifier.weight(1f))
-            Text("완료", style = SNUTTTypography.body1, modifier = Modifier.clicks {
-                onComplete.invoke()
-            })
+            Text(
+                "완료", style = SNUTTTypography.body1,
+                modifier = Modifier.clicks {
+                    onComplete.invoke()
+                }
+            )
         }
         Spacer(modifier = Modifier.height(25.dp))
         Text(text = "새로운 시간표 만들기", style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600))
@@ -547,14 +570,15 @@ private fun CreateNewTableBottomSheet(
             value = newTitle,
             onValueChange = { onEditTextChange(it) },
             hint = "시간표 제목을 입력하세요",
-            underlineColor = if(specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
-            underlineColorFocused = if(specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
+            underlineColor = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
+            underlineColorFocused = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
             underlineWidth = 2.dp,
         )
         Spacer(modifier = Modifier.height(25.dp))
         if (specificSemester.not()) {
             Spacer(modifier = Modifier.height(5.dp))
-            Picker(list = allCourseBook,
+            Picker(
+                list = allCourseBook,
                 initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
                     ?: allCourseBook.first(),
                 onValueChanged = { index ->
@@ -562,7 +586,8 @@ private fun CreateNewTableBottomSheet(
                 },
                 PickerItemContent = {
                     CourseBookPickerItem(name = allCourseBook[it].toFormattedString(context))
-                })
+                }
+            )
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -570,7 +595,9 @@ private fun CreateNewTableBottomSheet(
 
 @Composable
 private fun ThemeItem(
-    name: String, painter: Painter, modifier: Modifier
+    name: String,
+    painter: Painter,
+    modifier: Modifier
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
         Image(

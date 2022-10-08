@@ -31,5 +31,3 @@ val LocalReviewWebView = compositionLocalOf<WebViewContainer> {
 val LocalHomePageController = compositionLocalOf<HomePageController> {
     throw RuntimeException("")
 }
-
-

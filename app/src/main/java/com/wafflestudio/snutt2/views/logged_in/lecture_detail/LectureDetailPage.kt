@@ -95,14 +95,14 @@ fun LectureDetailPage() {
                         .clicks {
                             if (editMode) editExitDialogState = true
                             else {
-                                if(viewMode) vm.setViewMode(false)
+                                if (viewMode) vm.setViewMode(false)
                                 navController.popBackStack()
                             }
                         }
                 )
             },
             actions = {
-                if(vm.isViewMode().not()) {
+                if (vm.isViewMode().not()) {
                     Text(
                         text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                         else stringResource(R.string.lecture_detail_top_bar_edit),
@@ -159,7 +159,7 @@ fun LectureDetailPage() {
                         else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                if(viewMode.not()) {
+                if (viewMode.not()) {
                     LectureDetailItem(
                         title = stringResource(R.string.lecture_detail_color),
                         modifier = Modifier.clicks {
@@ -341,7 +341,7 @@ fun LectureDetailPage() {
                     }
                 }
             }
-            if(vm.isViewMode().not()) {
+            if (vm.isViewMode().not()) {
                 Margin(height = 10.dp)
                 Box(modifier = Modifier.background(Color.White)) {
                     LectureDetailButton(

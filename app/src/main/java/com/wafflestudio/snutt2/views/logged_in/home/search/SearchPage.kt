@@ -140,8 +140,7 @@ fun SearchPage(
                         }
                     }
                 )
-            }
-            else FilterIcon(
+            } else FilterIcon(
                 modifier = Modifier.clicks {
                     searchOptionSheetState = true
                 }
@@ -178,12 +177,14 @@ fun SearchPage(
                     }
                 }
                 // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-                if(placeHolderState) {
-                    SearchPlaceHolder ( onClickSearchIcon = {
-                        scope.launch {
-                            keyBoardController?.hide()
-                            searchViewModel.query()
-                        }}
+                if (placeHolderState) {
+                    SearchPlaceHolder(
+                        onClickSearchIcon = {
+                            scope.launch {
+                                keyBoardController?.hide()
+                                searchViewModel.query()
+                            } 
+                        }
                     )
                 } else when {
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
