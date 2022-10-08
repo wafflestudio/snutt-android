@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
@@ -21,8 +22,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.base.BaseActivity
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -48,15 +47,12 @@ import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
-class RootActivity : BaseActivity() {
+class RootActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
 
     private val timetableViewModel: TimetableViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
-
-    @Inject
-    lateinit var snuttStorage: SNUTTStorage
 
     @Inject
     lateinit var popupState: PopupState

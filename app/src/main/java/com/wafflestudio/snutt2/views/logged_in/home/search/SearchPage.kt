@@ -40,8 +40,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.data.lecture_search.LectureStateNew
-import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
@@ -67,7 +65,7 @@ fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
 ) {
     val navController = LocalNavController.current
-    val searchViewModel = hiltViewModel<SearchViewModelNew>()
+    val searchViewModel = hiltViewModel<SearchViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val pageController = LocalHomePageController.current
 
