@@ -11,12 +11,8 @@
 
     <color name="colorTextCursor">#b2b2b2</color>
 
-    <color name="gray">#f2f2f2</color>
-    <color name="gray2">#b3b3b3</color>
     <color name="white">#ffffff</color>
-    <color name="gray_400">#FFBDBDBD</color>
     <color name="black">#FF000000</color>
-    <color name="black_a40">#60000000</color>
 
     <color name="transparent">#00000000</color>
 
@@ -80,7 +76,5 @@
     <color name="theme_grass_7">#476060</color>
     <color name="theme_grass_8">#3D7068</color>
     <color name="black_translucent_50">#80000000</color>
-
-    <color name="created_at">#777777</color>
 
 </resources>
