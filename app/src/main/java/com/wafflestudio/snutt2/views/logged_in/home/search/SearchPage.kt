@@ -181,7 +181,7 @@ fun SearchPage(
                             scope.launch {
                                 keyBoardController?.hide()
                                 searchViewModel.query()
-                            } 
+                            }
                         }
                     )
                 } else when {
