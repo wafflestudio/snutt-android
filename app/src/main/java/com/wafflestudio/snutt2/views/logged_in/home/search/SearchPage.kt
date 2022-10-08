@@ -2,7 +2,10 @@
 
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +85,7 @@ fun SearchPage(
     val selectedTagType by searchViewModel.selectedTagType.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     var searchOptionSheetState by remember { mutableStateOf(false) }
+    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
 
     Column {
         SearchTopBar {
@@ -89,6 +94,7 @@ fun SearchPage(
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             searchViewModel.query()
+                            keyBoardController?.hide()
                         }
                     }
                 }
@@ -99,7 +105,8 @@ fun SearchPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .onFocusChanged { searchEditTextFocused = it.isFocused },
+                    .onFocusChanged { searchEditTextFocused = it.isFocused }
+                    .clearFocusOnKeyboardDismiss(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     scope.launch {
@@ -118,9 +125,20 @@ fun SearchPage(
                 singleLine = true,
                 hint = stringResource(R.string.search_hint),
                 underlineEnabled = false,
+                clearFocusFlag = searchEditTextFocused.not(),
             )
             Spacer(modifier = Modifier.width(12.dp))
-            if (searchEditTextFocused) ExitIcon(modifier = Modifier.clicks { scope.launch { searchViewModel.clearEditText() } })
+            if (searchEditTextFocused) {
+                ExitIcon(
+                    modifier = Modifier.clicks {
+                        scope.launch {
+                            searchViewModel.clearEditText()
+                            searchEditTextFocused = false
+                            keyBoardController?.hide()
+                        }
+                    }
+                )
+            }
             else FilterIcon(
                 modifier = Modifier.clicks {
                     searchOptionSheetState = true
@@ -157,10 +175,15 @@ fun SearchPage(
                         }
                     }
                 }
-                when {
-                    loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached.not() && searchResultPagingItems.itemCount < 1 -> {
-                        SearchPlaceHolder()
-                    }
+                // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
+                if(placeHolderState) {
+                    SearchPlaceHolder ( onClickSearchIcon = {
+                        scope.launch {
+                            keyBoardController?.hide()
+                            searchViewModel.query()
+                        }}
+                    )
+                } else when {
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
                         SearchEmptyPage()
                     }
@@ -192,11 +215,14 @@ fun SearchPage(
                                             }
                                         }
                                     }, onClickDetail = {
-                                        // FIXME: PagingItem 정보 소실되는 문제
                                         lectureDetailViewModel.initializeEditingLectureDetail(it.item)
+                                        lectureDetailViewModel.setViewMode(true)
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     })
                                 }
+                            }
+                            item {
+                                Divider(color = SNUTTColors.White400)
                             }
                         }
                     }
@@ -249,11 +275,17 @@ fun LazyItemScope.SearchListItem(
 
     Column(
         modifier = Modifier
-            .animateItemPlacement()
+            .animateItemPlacement(
+                animationSpec = spring(
+                    stiffness = Spring.StiffnessHigh,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+            )
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
+        Divider(color = SNUTTColors.White400)
         Column(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 9.dp)
@@ -277,7 +309,7 @@ fun LazyItemScope.SearchListItem(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TagIcon(
                     modifier = Modifier.size(15.dp),
@@ -290,7 +322,7 @@ fun LazyItemScope.SearchListItem(
                     maxLines = 1,
                 )
             }
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
                     modifier = Modifier.size(15.dp),
@@ -303,7 +335,7 @@ fun LazyItemScope.SearchListItem(
                     maxLines = 1,
                 )
             }
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LocationIcon(
                     modifier = Modifier.size(15.dp),
@@ -317,13 +349,11 @@ fun LazyItemScope.SearchListItem(
                 )
             }
         }
-        // TODO: 리스트 마지막 아이템은 expand & shrink 애니메이션이 아니라 그냥 생기고 사라지는 걸루.
-        // TODO: 애니메이션 속도 좀 더 빠르게
         AnimatedVisibility(visible = lectureDataWithState.state.selected) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 13.dp, horizontal = 20.dp),
+                    .padding(vertical = 15.dp, horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -361,12 +391,11 @@ fun LazyItemScope.SearchListItem(
                 )
             }
         }
-        Divider(color = SNUTTColors.White400)
     }
 }
 
 @Composable
-fun SearchPlaceHolder() {
+fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -379,6 +408,9 @@ fun SearchPlaceHolder() {
                 .width(78.dp)
                 .height(76.dp)
                 .padding(10.dp)
+                .clicks {
+                    onClickSearchIcon.invoke()
+                }
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(

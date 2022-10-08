@@ -40,6 +40,11 @@ fun EditText(
     clearFocusFlag: Boolean = false,
     textStyle: TextStyle = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
 ) {
+    val focusManager = LocalFocusManager.current
+    LaunchedEffect(clearFocusFlag) {
+        if(clearFocusFlag) focusManager.clearFocus()
+    }
+
     var isFocused by remember { mutableStateOf(false) }
 
     BasicTextField(
