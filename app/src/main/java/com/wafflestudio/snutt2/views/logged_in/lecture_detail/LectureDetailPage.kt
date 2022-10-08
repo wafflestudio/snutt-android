@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -50,6 +51,7 @@ fun LectureDetailPage() {
     val navController = LocalNavController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val pageController = LocalHomePageController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -93,14 +95,14 @@ fun LectureDetailPage() {
                         .clicks {
                             if (editMode) editExitDialogState = true
                             else {
-                                if(viewMode) vm.setViewMode(false)
+                                if (viewMode) vm.setViewMode(false)
                                 navController.popBackStack()
                             }
                         }
                 )
             },
             actions = {
-                if(vm.isViewMode().not()) {
+                if (vm.isViewMode().not()) {
                     Text(
                         text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                         else stringResource(R.string.lecture_detail_top_bar_edit),
@@ -157,7 +159,7 @@ fun LectureDetailPage() {
                         else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                if(viewMode.not()) {
+                if (viewMode.not()) {
                     LectureDetailItem(
                         title = stringResource(R.string.lecture_detail_color),
                         modifier = Modifier.clicks {
@@ -330,15 +332,16 @@ fun LectureDetailPage() {
                         }
                         LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                             scope.launch {
-                                vm.getReviewContentsUrl().let {
-                                    // TODO
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    pageController.update(HomeItem.Review(vm.getReviewContentsUrl()))
+                                    navController.popBackStack()
                                 }
                             }
                         }
                     }
                 }
             }
-            if(vm.isViewMode().not()) {
+            if (vm.isViewMode().not()) {
                 Margin(height = 10.dp)
                 Box(modifier = Modifier.background(Color.White)) {
                     LectureDetailButton(

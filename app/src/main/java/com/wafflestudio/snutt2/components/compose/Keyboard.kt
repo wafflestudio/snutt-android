@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.LocalView
 
 fun View.isKeyboardOpen(): Boolean {
     val rect = Rect()
-    getWindowVisibleDisplayFrame(rect);
+    getWindowVisibleDisplayFrame(rect)
     val screenHeight = rootView.height
-    val keypadHeight = screenHeight - rect.bottom;
+    val keypadHeight = screenHeight - rect.bottom
     return keypadHeight > screenHeight * 0.15
 }
 
@@ -27,7 +27,7 @@ fun rememberIsKeyboardOpen(): State<Boolean> {
         val listener = OnGlobalLayoutListener { value = view.isKeyboardOpen() }
         viewTreeObserver.addOnGlobalLayoutListener(listener)
 
-        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener)  }
+        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
     }
 }
 
