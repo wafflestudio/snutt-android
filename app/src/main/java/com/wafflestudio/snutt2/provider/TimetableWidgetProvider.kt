@@ -15,21 +15,25 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.TimetableView
-import com.wafflestudio.snutt2.data.MyLectureRepository
-import com.wafflestudio.snutt2.data.SettingsRepository
+import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalAnimationApi
 class
 TimetableWidgetProvider : AppWidgetProvider() {
-    @Inject
-    lateinit var myLectureRepository: MyLectureRepository
 
     @Inject
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var currentLectureRepository: CurrentTableRepository
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onUpdate(
         context: Context,
@@ -55,26 +59,27 @@ TimetableWidgetProvider : AppWidgetProvider() {
         val width = context.displayWidth.toInt()
         val height = context.displayHeight.toInt()
 
-        myLectureRepository.lastViewedTable.get().value?.let { table ->
-            val tableView = TimetableView(context)
-
-            tableView.theme = table.theme
-            tableView.lectures = table.lectureList
-            tableView.trimParam = settingsRepository.tableTrimParam.get()
-
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-
-            tableView.measure(width, height)
-            tableView.layout(0, 0, width, height)
-            tableView.draw(canvas)
-
-            views.setViewVisibility(R.id.placeholder, View.GONE)
-            views.setViewVisibility(R.id.table, View.VISIBLE)
-            views.setImageViewBitmap(R.id.table, bitmap)
-        } ?: run {
+        GlobalScope.launch {
             views.setViewVisibility(R.id.placeholder, View.VISIBLE)
             views.setViewVisibility(R.id.table, View.GONE)
+            currentLectureRepository.currentTable.first().let { table ->
+                val tableView = TimetableView(context)
+
+                tableView.theme = table.theme
+                tableView.lectures = table.lectureList
+                tableView.trimParam = userRepository.tableTrimParam.first()
+
+                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+
+                tableView.measure(width, height)
+                tableView.layout(0, 0, width, height)
+                tableView.draw(canvas)
+
+                views.setViewVisibility(R.id.placeholder, View.GONE)
+                views.setViewVisibility(R.id.table, View.VISIBLE)
+                views.setImageViewBitmap(R.id.table, bitmap)
+            }
         }
     }
 

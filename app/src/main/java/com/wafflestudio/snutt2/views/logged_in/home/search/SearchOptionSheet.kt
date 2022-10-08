@@ -22,7 +22,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
@@ -36,7 +35,7 @@ fun SearchOptionSheet(
     selectedTagType: TagType,
     applyOption: () -> Unit,
 ) {
-    val viewModel = hiltViewModel<SearchViewModelNew>()
+    val viewModel = hiltViewModel<SearchViewModel>()
     val scope = rememberCoroutineScope()
 
     // TODO: 다른 곳에 const하게 박아 놓으면 좋을 것 같다.

@@ -32,7 +32,6 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx3.await
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -44,7 +43,6 @@ fun SignInPage() {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    val authViewModel = hiltViewModel<AuthViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
 
     var idField by remember { mutableStateOf("") }
@@ -68,10 +66,10 @@ fun SignInPage() {
             try {
                 apiOnProgress.showProgress()
                 val loginResult = facebookLogin(context)
-                authViewModel.loginFacebook(
+                userViewModel.loginFacebook(
                     loginResult.accessToken.userId,
                     loginResult.accessToken.token
-                ).await()
+                )
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)

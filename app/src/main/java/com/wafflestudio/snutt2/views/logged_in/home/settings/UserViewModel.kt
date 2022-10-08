@@ -48,6 +48,10 @@ class UserViewModel @Inject constructor(
         userRepository.postSignIn(id, password)
     }
 
+    suspend fun loginFacebook(facebookId: String, facebookToken: String) {
+        userRepository.postLoginFacebook(facebookId, facebookToken)
+    }
+
     suspend fun addNewLocalId(id: String, password: String) {
         userRepository.postUserPassword(id, password)
     }
@@ -86,5 +90,16 @@ class UserViewModel @Inject constructor(
 
     suspend fun performLogout() {
         userRepository.performLogout()
+    }
+
+    suspend fun signUpLocal(idField: String, emailField: String, passwordField: String) {
+        userRepository.postSignUp(id = idField, password = passwordField, email = emailField)
+    }
+
+    suspend fun signUpFacebook(id: String, token: String) {
+        userRepository.postLoginFacebook(
+            facebookId = id,
+            facebookToken = token
+        )
     }
 }
