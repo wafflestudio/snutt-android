@@ -49,7 +49,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postSingUp(id: String, password: String, email: String) {
+    override suspend fun postSignUp(id: String, password: String, email: String) {
         userStore.updateData { prev ->
             val response = api._postSignUp(PostSignUpParams(id, password, email))
             prev.copy(userId = response.userId, accessToken = response.token)

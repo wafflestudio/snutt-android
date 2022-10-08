@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
@@ -30,10 +29,9 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx3.await
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpPage() {
     val navController = LocalNavController.current
@@ -44,7 +42,7 @@ fun SignUpPage() {
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
 
-    val authViewModel = hiltViewModel<AuthViewModel>()
+    val userViewModel = hiltViewModel<UserViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
@@ -59,7 +57,7 @@ fun SignUpPage() {
             coroutineScope.launch {
                 try {
                     apiOnProgress.showProgress()
-                    authViewModel.signUpLocal(idField, emailField, passwordField).await()
+                    userViewModel.signUpLocal(idField, emailField, passwordField)
                     navController.navigateAsOrigin(NavigationDestination.Home)
                 } catch (e: Exception) {
                     apiOnError(e)
@@ -76,7 +74,7 @@ fun SignUpPage() {
                 val loginResult = facebookLogin(context)
                 val id = loginResult.accessToken.userId
                 val token = loginResult.accessToken.token
-                authViewModel.signUpFacebook(id, token).await()
+                userViewModel.signUpFacebook(id, token)
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)

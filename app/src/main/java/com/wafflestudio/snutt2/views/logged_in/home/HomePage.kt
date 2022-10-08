@@ -22,7 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
-import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -75,7 +75,7 @@ fun HomePage() {
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
-    val searchViewModel = hiltViewModel<SearchViewModelNew>()
+    val searchViewModel = hiltViewModel<SearchViewModel>()
     val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken) }
 
     LaunchedEffect(Unit) {

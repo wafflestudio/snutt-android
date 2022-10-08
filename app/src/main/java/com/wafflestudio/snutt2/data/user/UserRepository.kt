@@ -16,7 +16,7 @@ interface UserRepository {
     // login with facebook id
     suspend fun postLoginFacebook(facebookId: String, facebookToken: String)
 
-    suspend fun postSingUp(id: String, password: String, email: String)
+    suspend fun postSignUp(id: String, password: String, email: String)
 
     suspend fun fetchUserInfo()
 
