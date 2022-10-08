@@ -28,6 +28,7 @@ class LectureDetailViewModelNew @Inject constructor(
     )
 
     private var addMode = false
+    private var viewMode = false
     private val _editMode = MutableStateFlow(false)
     val editMode = _editMode.asStateFlow()
 
@@ -39,8 +40,16 @@ class LectureDetailViewModelNew @Inject constructor(
         return addMode
     }
 
+    fun isViewMode(): Boolean {
+        return viewMode
+    }
+
     fun setAddMode(value: Boolean) {
         addMode = value
+    }
+
+    fun setViewMode(value: Boolean) {
+        viewMode = value
     }
 
     fun setEditMode() {

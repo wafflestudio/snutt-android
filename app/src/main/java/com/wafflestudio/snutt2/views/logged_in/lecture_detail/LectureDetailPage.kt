@@ -58,6 +58,7 @@ fun LectureDetailPage() {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
     val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
+    val viewMode = vm.isViewMode()
     val editMode by vm.editMode.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val theme = vm.currentTable.collectAsState()
@@ -67,6 +68,10 @@ fun LectureDetailPage() {
     var editExitDialogState by remember { mutableStateOf(false) }
     BackHandler(enabled = editMode) {
         editExitDialogState = true
+    }
+    BackHandler(enabled = viewMode) {
+        vm.setViewMode(false)
+        navController.popBackStack()
     }
 
     Column(
@@ -89,30 +94,35 @@ fun LectureDetailPage() {
                         .size(30.dp)
                         .clicks {
                             if (editMode) editExitDialogState = true
-                            else navController.popBackStack()
+                            else {
+                                if(viewMode) vm.setViewMode(false)
+                                navController.popBackStack()
+                            }
                         }
                 )
             },
             actions = {
-                Text(
-                    text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
-                    else stringResource(R.string.lecture_detail_top_bar_edit),
-                    style = SNUTTTypography.subtitle2,
-                    modifier = Modifier
-                        .clicks {
-                            if (editMode.not()) vm.setEditMode()
-                            else {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        vm.updateLecture2()
-                                        vm.initializeEditingLectureDetail(editingLectureDetail)
-                                        vm.unsetEditMode()
+                if(vm.isViewMode().not()) {
+                    Text(
+                        text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
+                        else stringResource(R.string.lecture_detail_top_bar_edit),
+                        style = SNUTTTypography.subtitle2,
+                        modifier = Modifier
+                            .clicks {
+                                if (editMode.not()) vm.setEditMode()
+                                else {
+                                    scope.launch {
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.updateLecture2()
+                                            vm.initializeEditingLectureDetail(editingLectureDetail)
+                                            vm.unsetEditMode()
+                                        }
                                     }
                                 }
                             }
-                        }
-                        .padding(end = 16.dp)
-                )
+                            .padding(end = 16.dp)
+                    )
+                }
             }
         )
         Column(
@@ -149,27 +159,29 @@ fun LectureDetailPage() {
                         else stringResource(R.string.lecture_detail_hint_nothing),
                     )
                 }
-                LectureDetailItem(
-                    title = stringResource(R.string.lecture_detail_color),
-                    modifier = Modifier.clicks {
-                        if (editMode) {
-                            navController.navigate(NavigationDestination.LectureColorSelector)
+                if(viewMode.not()) {
+                    LectureDetailItem(
+                        title = stringResource(R.string.lecture_detail_color),
+                        modifier = Modifier.clicks {
+                            if (editMode) {
+                                navController.navigate(NavigationDestination.LectureColorSelector)
+                            }
+                        }
+                    ) {
+                        Row {
+                            ColorBox(
+                                editingLectureDetail.colorIndex,
+                                editingLectureDetail.color,
+                                theme.value.theme
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            AnimatedVisibility(visible = editMode) {
+                                ArrowRight(modifier = Modifier.size(16.dp))
+                            }
                         }
                     }
-                ) {
-                    Row {
-                        ColorBox(
-                            editingLectureDetail.colorIndex,
-                            editingLectureDetail.color,
-                            theme.value.theme
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        AnimatedVisibility(visible = editMode) {
-                            ArrowRight(modifier = Modifier.size(16.dp))
-                        }
-                    }
+                    Margin(height = 4.dp)
                 }
-                Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
             Column(modifier = Modifier.background(Color.White)) {
@@ -329,19 +341,21 @@ fun LectureDetailPage() {
                     }
                 }
             }
-            Margin(height = 10.dp)
-            Box(modifier = Modifier.background(Color.White)) {
-                LectureDetailButton(
-                    title = if (editMode) stringResource(R.string.lecture_detail_reset_button) else stringResource(
-                        R.string.lecture_detail_delete_button
-                    ),
-                    textStyle = SNUTTTypography.body1.copy(
-                        fontSize = 15.sp,
-                        color = SNUTTColors.Red
-                    )
-                ) {
-                    if (editMode) resetLectureDialogState = true
-                    else deleteLectureDialogState = true
+            if(vm.isViewMode().not()) {
+                Margin(height = 10.dp)
+                Box(modifier = Modifier.background(Color.White)) {
+                    LectureDetailButton(
+                        title = if (editMode) stringResource(R.string.lecture_detail_reset_button) else stringResource(
+                            R.string.lecture_detail_delete_button
+                        ),
+                        textStyle = SNUTTTypography.body1.copy(
+                            fontSize = 15.sp,
+                            color = SNUTTColors.Red
+                        )
+                    ) {
+                        if (editMode) resetLectureDialogState = true
+                        else deleteLectureDialogState = true
+                    }
                 }
             }
             Margin(height = 30.dp)
