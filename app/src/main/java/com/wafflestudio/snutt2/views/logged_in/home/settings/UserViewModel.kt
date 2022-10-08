@@ -2,11 +2,13 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -85,8 +87,7 @@ class UserViewModel @Inject constructor(
     }
 
     suspend fun performLogout() {
-        userRepository.deleteFirebaseToken()
-        // onSuccess, onError 분기 (settingsPage에서?)
-        // TODO
+        userRepository.performLogout()
+
     }
 }
