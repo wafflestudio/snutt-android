@@ -24,8 +24,12 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,6 +39,8 @@ fun UserConfigPage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
 
     val viewModel = hiltViewModel<UserViewModel>()
     val user = viewModel.userInfo.collectAsState()
@@ -45,7 +51,6 @@ fun UserConfigPage() {
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
     var leaveDialogState by remember { mutableStateOf(false) }
 
-    val hasLocalId by remember { mutableStateOf(user.value.localId.isNullOrEmpty().not()) }
     var facebookConnected by remember { mutableStateOf(user.value.fbName.isNullOrEmpty().not()) }
 
     val callbackManager = CallbackManager.Factory.create()
@@ -59,13 +64,15 @@ fun UserConfigPage() {
                     val token = result.accessToken.token
                     Timber.i("User ID: %s", result.accessToken.userId)
                     Timber.i("Auth Token: %s", result.accessToken.token)
+                    // FIXME: staging 에서 테스트 불가
                     scope.launch {
-                        viewModel.connectFacebook(id, token)
-                        facebookConnected = true
-                        // TODO: onSuccess, onError 분기
-                        viewModel.fetchUserFacebook().name
-                        // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
-                        // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            viewModel.connectFacebook(id, token)
+                            facebookConnected = true
+                            viewModel.fetchUserFacebook().name
+                            // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
+                            // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
+                        }
                     }
                 }
 
@@ -90,7 +97,7 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xfff2f2f2)) // TODO: Color
+            .background(SNUTTColors.Gray100)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
@@ -98,7 +105,7 @@ fun UserConfigPage() {
         )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(Color.White)) {
-            if (hasLocalId) {
+            if (user.value.localId.isNullOrEmpty().not()) {
                 SettingItem(title = stringResource(R.string.sign_in_id_hint), content = {
                     Text(text = user.value.localId.toString())
                 })
@@ -140,6 +147,7 @@ fun UserConfigPage() {
                     ArrowRight(modifier = Modifier.size(16.dp))
                 }
             ) {
+                // FIXME: 실패했을 때.
                 LoginManager.getInstance().logInWithReadPermissions(
                     context as ActivityResultRegistryOwner, callbackManager, emptyList()
                 )
@@ -179,8 +187,10 @@ fun UserConfigPage() {
                     context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
                 } else {
                     scope.launch {
-                        viewModel.addNewLocalId(id, password)
-                        context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            viewModel.addNewLocalId(id, password)
+                            context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
+                        }
                     }
                 }
             },
@@ -224,8 +234,11 @@ fun UserConfigPage() {
                     context.toast(context.getString(R.string.settings_user_config_enter_email))
                 } else {
                     scope.launch {
-                        viewModel.changeEmail(email)
-                        context.toast(context.getString(R.string.settings_user_config_change_email_success))
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            viewModel.changeEmail(email)
+                            context.toast(context.getString(R.string.settings_user_config_change_email_success))
+                            emailChangeDialogState = false
+                        }
                     }
                 }
             },
@@ -255,10 +268,13 @@ fun UserConfigPage() {
                     context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
                 } else {
                     scope.launch {
-                        viewModel.changePassword(
-                            currentPassword, newPassword
-                        )
-                        context.toast(context.getString(R.string.settings_user_config_change_password_success))
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            viewModel.changePassword(
+                                currentPassword, newPassword
+                            )
+                            context.toast(context.getString(R.string.settings_user_config_change_password_success))
+                            passwordChangeDialogState = false
+                        }
                     }
                 }
             },
@@ -297,7 +313,9 @@ fun UserConfigPage() {
             onDismiss = { leaveDialogState = false },
             onConfirm = {
                 scope.launch {
-                    viewModel.leave()
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        viewModel.leave()
+                    }
                 }
             },
             title = stringResource(R.string.settings_user_config_leave),
@@ -312,10 +330,12 @@ fun UserConfigPage() {
             onDismiss = { disconnectFacebookDialogState = false },
             onConfirm = {
                 scope.launch {
-                    viewModel.disconnectFacebook()
-                    // TODO: onSuccess, onError 분기
-                    LoginManager.getInstance().logOut()
-                    facebookConnected = true
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        viewModel.disconnectFacebook()
+                        LoginManager.getInstance().logOut()
+                        facebookConnected = false
+                        disconnectFacebookDialogState = false
+                    }
                 }
             },
             title = stringResource(R.string.settings_user_config_facebook_disconnect),
