@@ -123,7 +123,3 @@ class SearchResultAdapter(
     }
 }
 
-data class LectureState(
-    val selected: Boolean,
-    val contained: Boolean
-)
