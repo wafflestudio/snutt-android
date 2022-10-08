@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
+import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -127,6 +128,7 @@ class RootActivity : BaseActivity() {
     @Composable
     fun setUpUI(isLoggedOut: Boolean) {
         val navController = rememberAnimatedNavController()
+        val homePageController = remember { HomePageController() }
         var isProgressVisible by remember { mutableStateOf(false) }
 
         val apiOnProgress = remember {
@@ -149,13 +151,14 @@ class RootActivity : BaseActivity() {
             LocalNavController provides navController,
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
+            LocalHomePageController provides homePageController
         ) {
             AnimatedNavHost(
                 navController = navController,
                 startDestination = startDestination
             ) {
 
-                onboardGraph(navController)
+                onboardGraph()
 
                 composable2(NavigationDestination.Home) { HomePage() }
 
@@ -176,7 +179,7 @@ class RootActivity : BaseActivity() {
         }
     }
 
-    private fun NavGraphBuilder.onboardGraph(navController: NavController) {
+    private fun NavGraphBuilder.onboardGraph() {
         navigation(
             startDestination = NavigationDestination.Tutorial,
             route = NavigationDestination.Onboard
