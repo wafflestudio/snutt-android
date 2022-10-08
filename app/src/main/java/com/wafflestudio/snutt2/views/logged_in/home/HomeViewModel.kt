@@ -17,13 +17,15 @@ class HomeViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
 
-    suspend fun refreshData() = coroutineScope {
+    suspend fun refreshData() {
         try {
-            listOf(
-                async { tableRepository.fetchDefaultTable() },
-                async { tableRepository.getTableList() },
-                async { userRepository.fetchUserInfo() },
-            ).awaitAll()
+            coroutineScope {
+                awaitAll(
+                    async { tableRepository.fetchDefaultTable() },
+                    async { tableRepository.getTableList() },
+                    async { userRepository.fetchUserInfo() },
+                )
+            }
         } catch (e: Exception) {
             // do nothing (just sync)
         }

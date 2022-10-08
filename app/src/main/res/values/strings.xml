@@ -217,4 +217,6 @@
     <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>
     <string name="feedback_send_success_message">전송하였습니다.</string>
     <string name="example_email">example@gmail.com</string>
+    <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
+    <string name="reviews_error_retry">다시 불러오기</string>
 </resources>

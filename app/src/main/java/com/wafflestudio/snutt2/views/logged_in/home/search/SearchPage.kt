@@ -53,6 +53,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -68,6 +69,7 @@ fun SearchPage(
     val navController = LocalNavController.current
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
+    val pageController = LocalHomePageController.current
 
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
@@ -138,8 +140,7 @@ fun SearchPage(
                         }
                     }
                 )
-            }
-            else FilterIcon(
+            } else FilterIcon(
                 modifier = Modifier.clicks {
                     searchOptionSheetState = true
                 }
@@ -176,12 +177,14 @@ fun SearchPage(
                     }
                 }
                 // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-                if(placeHolderState) {
-                    SearchPlaceHolder ( onClickSearchIcon = {
-                        scope.launch {
-                            keyBoardController?.hide()
-                            searchViewModel.query()
-                        }}
+                if (placeHolderState) {
+                    SearchPlaceHolder(
+                        onClickSearchIcon = {
+                            scope.launch {
+                                keyBoardController?.hide()
+                                searchViewModel.query()
+                            } 
+                        }
                     )
                 } else when {
                     loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
@@ -218,6 +221,14 @@ fun SearchPage(
                                         lectureDetailViewModel.initializeEditingLectureDetail(it.item)
                                         lectureDetailViewModel.setViewMode(true)
                                         navController.navigate(NavigationDestination.LectureDetail)
+                                    }, onClickReview = {
+                                        scope.launch {
+                                            pageController.update(
+                                                HomeItem.Review(
+                                                    searchViewModel.getLectureReviewUrl(it.item)
+                                                )
+                                            )
+                                        }
                                     })
                                 }
                             }
@@ -257,6 +268,7 @@ fun LazyItemScope.SearchListItem(
     onClickAdd: () -> Unit,
     onClickRemove: () -> Unit,
     onClickDetail: () -> Unit,
+    onClickReview: () -> Unit,
 ) {
     val selected = lectureDataWithState.state.selected
     val contained = lectureDataWithState.state.contained
@@ -371,9 +383,7 @@ fun LazyItemScope.SearchListItem(
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
                     modifier = Modifier
                         .weight(1f)
-                        .clicks {
-                            // TODO
-                        }
+                        .clicks { onClickReview() }
                 )
                 Text(
                     text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
