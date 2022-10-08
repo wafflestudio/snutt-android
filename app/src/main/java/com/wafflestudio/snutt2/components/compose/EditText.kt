@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +41,7 @@ fun EditText(
 ) {
     val focusManager = LocalFocusManager.current
     LaunchedEffect(clearFocusFlag) {
-        if(clearFocusFlag) focusManager.clearFocus()
+        if (clearFocusFlag) focusManager.clearFocus()
     }
 
     var isFocused by remember { mutableStateOf(false) }

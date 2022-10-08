@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -13,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi
+    private val api: SNUTTRestApi,
+    private val snuttUrls: SnuttUrls
 ) : LectureSearchRepository {
 
     override fun getLectureSearchResultStream(
@@ -39,6 +41,11 @@ class LectureSearchRepositoryImpl @Inject constructor(
                 )
             }
         ).flow
+    }
+
+    override suspend fun getLectureReviewUrl(courseNumber: String, instructor: String): String {
+        val response = api._getLecturesId(courseNumber, instructor)
+        return snuttUrls.getReviewDetail(response.id)
     }
 
     override suspend fun getSearchTags(year: Long, semester: Long): List<TagDto> {

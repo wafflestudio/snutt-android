@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.model.TagDto
 import kotlinx.coroutines.flow.Flow
 
 interface LectureSearchRepository {
+
     fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
@@ -13,6 +14,11 @@ interface LectureSearchRepository {
         tags: List<TagDto>,
         lecturesMask: List<Int>?
     ): Flow<PagingData<LectureDto>>
+
+    suspend fun getLectureReviewUrl(
+        courseNumber: String,
+        instructor: String,
+    ): String
 
     suspend fun getSearchTags(year: Long, semester: Long): List<TagDto>
 }

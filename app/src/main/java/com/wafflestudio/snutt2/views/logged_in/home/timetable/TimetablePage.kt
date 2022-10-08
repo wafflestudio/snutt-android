@@ -562,7 +562,7 @@ private fun shareScreenshotFromView(
 @Preview(showBackground = true)
 @Composable
 fun TimetablePagePreview() {
-        TimetablePage(
-            uncheckedNotification = false
-        )
+    TimetablePage(
+        uncheckedNotification = false
+    )
 }

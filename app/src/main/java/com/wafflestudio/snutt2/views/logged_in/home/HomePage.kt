@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -10,44 +9,35 @@ import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.lecture_search.SearchViewModelNew
+import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-
-enum class HomeItem(@DrawableRes val icon: Int) {
-    Timetable(R.drawable.ic_timetable),
-    Search(R.drawable.ic_search),
-    Review(R.drawable.ic_review),
-    Settings(R.drawable.ic_setting)
-}
 
 enum class BottomSheetState() {
     SHOW, HIDE
@@ -76,15 +66,17 @@ fun HomePage() {
     val scope = rememberCoroutineScope()
     var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    var pageState by rememberSaveable { mutableStateOf(HomeItem.Timetable) }
+    val context = LocalContext.current
+    val pageController = LocalHomePageController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
-//    val userViewModel = hiltViewModel<UserViewModel>()
+    val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModelNew>()
+    val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken) }
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
@@ -94,8 +86,9 @@ fun HomePage() {
             }
         }
     }
-    LaunchedEffect(pageState == HomeItem.Timetable) {
-        if (pageState == HomeItem.Timetable) {
+
+    LaunchedEffect(pageController.homePageState.value) {
+        if (pageController.homePageState.value == HomeItem.Timetable) {
             launchSuspendApi(apiOnProgress, apiOnError) {
                 homeViewModel.getUncheckedNotificationsExist().let { uncheckedNotification = it }
             }
@@ -150,18 +143,23 @@ fun HomePage() {
         )
     }
 
+    LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
+        reviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
+    }
+
     CompositionLocalProvider(
         ShowBottomSheet provides showBottomSheet,
         HideBottomSheet provides hideBottomSheet,
         TableContext provides tableContext,
         LocalDrawerState provides drawerState,
+        LocalReviewWebView provides reviewWebViewContainer,
     ) {
         ModalDrawer(
             drawerContent = {
                 HomeDrawer()
             },
             drawerState = drawerState,
-            gesturesEnabled = (pageState == HomeItem.Timetable) && (bottomSheetState == BottomSheetState.HIDE)
+            gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && (bottomSheetState == BottomSheetState.HIDE)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -170,12 +168,14 @@ fun HomePage() {
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    when (pageState) {
+                    when (pageController.homePageState.value) {
                         HomeItem.Timetable -> TimetablePage(uncheckedNotification = uncheckedNotification)
                         HomeItem.Search -> SearchPage(
                             searchResultPagingItems,
                         )
-                        HomeItem.Review -> ReviewPage()
+                        is HomeItem.Review -> {
+                            ReviewPage()
+                        }
                         HomeItem.Settings -> SettingsPage()
                     }
 
@@ -193,8 +193,10 @@ fun HomePage() {
                             )
                     )
                 }
-
-                BottomNavigation(pageState = pageState, onUpdatePageState = { pageState = it })
+                BottomNavigation(
+                    pageState = pageController.homePageState.value,
+                    onUpdatePageState = { pageController.update(it) }
+                )
             }
         }
     }
@@ -244,12 +246,12 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
                 .weight(1f)
                 .fillMaxHeight(),
             onClick = {
-                onUpdatePageState(HomeItem.Review)
+                onUpdatePageState(HomeItem.Review())
             },
         ) {
             ReviewIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Review
+                isSelected = pageState is HomeItem.Review
             )
         }
 
