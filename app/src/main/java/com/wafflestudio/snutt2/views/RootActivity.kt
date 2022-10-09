@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import android.animation.ObjectAnimator
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -94,12 +95,14 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun setUpSplashScreen(rootView: View) {
-        splashScreen.setOnExitAnimationListener { view ->
-            ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
-                interpolator = AnticipateInterpolator()
-                duration = 200L
-                doOnEnd { view.remove() }
-                start()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { view ->
+                ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
+                    interpolator = AnticipateInterpolator()
+                    duration = 200L
+                    doOnEnd { view.remove() }
+                    start()
+                }
             }
         }
 
