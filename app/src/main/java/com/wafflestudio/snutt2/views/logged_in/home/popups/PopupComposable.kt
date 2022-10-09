@@ -16,14 +16,16 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
     Box(
         modifier = Modifier
-            .zIndex(2f) // TODO: zIndex들도 정리해야
+            .zIndex(2f)
             .fillMaxSize()
-            .background(Color(0x80000000)),
+            .clicks {}
+            .background(SNUTTColors.Black500),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -57,7 +59,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(3f)
                         .clicks { onClickFewDays() },
                     textAlign = TextAlign.Center,
-                    color = Color.White // TODO: Color
+                    color = SNUTTColors.White900
                 )
                 Spacer(
                     modifier = Modifier
@@ -76,7 +78,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(2f)
                         .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
-                    color = Color.White // TODO: Color
+                    color = SNUTTColors.White900
                 )
             }
         }

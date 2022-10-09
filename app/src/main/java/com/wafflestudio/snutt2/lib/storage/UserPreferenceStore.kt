@@ -58,7 +58,8 @@ data class UserPreferences(
     val userId: String = "",
     val accessToken: String = "",
     val data: UserDto? = null,
-    val tableTrimParam: TableTrimParam = TableTrimParam.Default
+    val tableTrimParam: TableTrimParam = TableTrimParam.Default,
+    val popupTimeStamp: Map<String, Long> = mapOf(),
 )
 
 // TODO: DataStore 에서 데이터 업데이트 시 read flow 에 serialize 과정 없이 업데이트가 전달되는지 확인하기

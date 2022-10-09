@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
@@ -62,7 +63,7 @@ val HideBottomSheet = compositionLocalOf<suspend (Boolean) -> Unit> {
 }
 
 @Composable
-fun HomePage() {
+fun HomePage(homeViewModel: HomeViewModel) {
     val scope = rememberCoroutineScope()
     var uncheckedNotification by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -71,12 +72,13 @@ fun HomePage() {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
 
-    val homeViewModel = hiltViewModel<HomeViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken) }
+    val showPopupState by homeViewModel.popupState.collectAsState()
+    val popupInfo by homeViewModel.popupInfo.collectAsState()
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
@@ -200,6 +202,22 @@ fun HomePage() {
             }
         }
     }
+
+    if(showPopupState && popupInfo != null) {
+        Popup(
+            url = popupInfo!!.url,
+            onClickFewDays = {
+                scope.launch {
+                    homeViewModel.updatePopupTimeStampByHiddenDays()
+                }
+            },
+            onClickClose = {
+                scope.launch {
+                    homeViewModel.closePopup()
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -275,5 +293,5 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
 @Preview
 @Composable
 fun HomePagePreview() {
-    HomePage()
+//    HomePage()
 }

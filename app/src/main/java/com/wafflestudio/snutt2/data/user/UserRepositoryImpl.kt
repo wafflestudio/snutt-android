@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
@@ -31,6 +32,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override val tableTrimParam: Flow<TableTrimParam> = userStore.data
         .map { it.tableTrimParam }
+        .filterNotNull()
+
+    override val popupTimeStamp: Flow<Map<String, Long>> = userStore.data
+        .map { it.popupTimeStamp }
         .filterNotNull()
 
     override suspend fun postSignIn(id: String, password: String) {
@@ -188,6 +193,30 @@ class UserRepositoryImpl @Inject constructor(
             UserPreferences()
         }
     }
+
+    override suspend fun updatePopupTimeStamp(key: String, value: Long) {
+        userStore.updateData { prev ->
+            val prevTimeStamp = prev.popupTimeStamp.toMutableMap()
+            prevTimeStamp[key] = value
+            prev.copy(
+                popupTimeStamp = prevTimeStamp.toMap()
+            )
+        }
+    }
+
+    override suspend fun getPopup(): GetPopupResults {
+        Log.d("aaaa", "popup api")
+        return GetPopupResults(
+            popups = listOf(GetPopupResults.Popup(
+                key = "1236",
+                url = "https://postfiles.pstatic.net/MjAyMjA5MjBfOCAg/MDAxNjYzNjYwNTY4NjQ4.ACAqF1MNObyk_PJRvxzOZdgCS68sqiZiRWpErr2N8twg.FnCSqgRkRgA0Ji7zK0zF7jpCGWmSPh3PkHjvnCHGsOQg.JPEG.naver_diary/2_네이버코드_한글의_역사_매거진.JPG?type=w773",
+                popupHideDays = 1,
+            ))
+        )
+//        return api._getPopup()
+    }
+
+
 
     private suspend fun registerFirebaseToken() {
         val token = getFirebaseToken()

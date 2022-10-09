@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -9,6 +10,8 @@ interface UserRepository {
     val user: Flow<UserDto>
 
     val tableTrimParam: Flow<TableTrimParam>
+
+    val popupTimeStamp: Flow<Map<String, Long>>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -58,4 +61,8 @@ interface UserRepository {
     fun accessToken(): Flow<String>
 
     suspend fun performLogout()
+
+    suspend fun getPopup(): GetPopupResults
+
+    suspend fun updatePopupTimeStamp(key: String, value: Long)
 }

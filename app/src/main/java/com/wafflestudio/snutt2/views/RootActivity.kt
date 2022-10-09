@@ -29,7 +29,6 @@ import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -56,9 +55,6 @@ class RootActivity : AppCompatActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
 
     @Inject
-    lateinit var popupState: PopupState
-
-    @Inject
     lateinit var apiOnError: ApiOnError
 
     private var isInitialRefreshFinished = false
@@ -76,6 +72,7 @@ class RootActivity : AppCompatActivity() {
             val token = userViewModel.accessToken.filterNotNull().first()
             if (token.isNotEmpty()) {
                 homeViewModel.refreshData()
+                homeViewModel.fetchPopup()
             }
             isInitialRefreshFinished = true
         }
@@ -159,7 +156,7 @@ class RootActivity : AppCompatActivity() {
 
                 onboardGraph()
 
-                composable2(NavigationDestination.Home) { HomePage() }
+                composable2(NavigationDestination.Home) { HomePage(homeViewModel) }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 
