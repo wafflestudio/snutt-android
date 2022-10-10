@@ -122,7 +122,7 @@ fun SettingsPage() {
                     launchSuspendApi(apiOnProgress, apiOnError) {
                         viewModel.performLogout()
                         logoutDialogState = false
-                        navController.navigate(NavigationDestination.Onboard)
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
                     }
                 }
             },

@@ -15,7 +15,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -62,6 +61,8 @@ class RootActivity : AppCompatActivity() {
 
     private var isInitialRefreshFinished = false
 
+    private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
@@ -69,28 +70,25 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
 
-        val composeRoot = findViewById<ComposeView>(R.id.compose_root)
-
         lifecycleScope.launch {
             val token = userViewModel.accessToken.filterNotNull().first()
             if (token.isNotEmpty()) {
                 homeViewModel.refreshData()
             }
+            val startDestination =
+                if (token.isEmpty()) NavigationDestination.Onboard else NavigationDestination.Home
+            setUpContents(startDestination)
             isInitialRefreshFinished = true
         }
+        setUpSplashScreen(composeRoot)
+    }
 
+    private fun setUpContents(startDestination: String) {
         composeRoot.setContent {
-            val accessToken: String? by userViewModel.accessToken.collectAsState()
-
             SNUTTTheme {
-                val token = accessToken
-                if (token != null) {
-                    setUpUI(isLoggedOut = token.isEmpty())
-                }
+                setUpUI(startDestination)
             }
         }
-
-        setUpSplashScreen(composeRoot)
     }
 
     private fun setUpSplashScreen(rootView: View) {
@@ -122,7 +120,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun setUpUI(isLoggedOut: Boolean) {
+    fun setUpUI(startDestination: String) {
         val navController = rememberAnimatedNavController()
         val homePageController = remember { HomePageController() }
         var isProgressVisible by remember { mutableStateOf(false) }
@@ -139,10 +137,6 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
-        val startDestination =
-            if (isLoggedOut) NavigationDestination.Onboard
-            else NavigationDestination.Home
-
         CompositionLocalProvider(
             LocalNavController provides navController,
             LocalApiOnProgress provides apiOnProgress,
@@ -156,7 +150,7 @@ class RootActivity : AppCompatActivity() {
 
                 onboardGraph()
 
-                composable2(NavigationDestination.Home) { HomePage() }
+                composableRoot(NavigationDestination.Home) { HomePage() }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 
@@ -180,7 +174,7 @@ class RootActivity : AppCompatActivity() {
             startDestination = NavigationDestination.Tutorial,
             route = NavigationDestination.Onboard
         ) {
-            composable2(NavigationDestination.Tutorial) {
+            composableRoot(NavigationDestination.Tutorial) {
                 TutorialPage()
             }
             composable2(NavigationDestination.SignIn) {
@@ -206,6 +200,20 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
+    private fun NavGraphBuilder.composableRoot(
+        route: String,
+        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+    ) {
+        composable(
+            route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut(targetAlpha = 0.0f) },
+            popExitTransition = { fadeOut() },
+            popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
+            content = content
+        )
+    }
+
     private fun NavGraphBuilder.settingcomposable2() {
         composable2(NavigationDestination.AppReport) { AppReportPage() }
         composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
@@ -218,9 +226,8 @@ class RootActivity : AppCompatActivity() {
 
 fun NavController.navigateAsOrigin(route: String) {
     navigate(route) {
-        popUpTo(this@navigateAsOrigin.graph.findStartDestination().id) {
-            saveState = true
-            inclusive = true
+        while (popBackStack()) {
+            /* pop back until end */
         }
         launchSingleTop = true
         restoreState = true
