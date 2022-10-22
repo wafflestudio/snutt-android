@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,7 +63,7 @@ TimetableWidgetProvider : AppWidgetProvider() {
         GlobalScope.launch {
             views.setViewVisibility(R.id.placeholder, View.VISIBLE)
             views.setViewVisibility(R.id.table, View.GONE)
-            currentLectureRepository.currentTable.first().let { table ->
+            currentLectureRepository.currentTable.filterNotNull().first().let { table ->
                 val tableView = TimetableView(context)
 
                 tableView.theme = table.theme

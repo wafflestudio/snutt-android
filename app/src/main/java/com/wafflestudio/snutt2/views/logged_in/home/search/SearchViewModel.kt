@@ -12,7 +12,6 @@ import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -42,12 +41,12 @@ class SearchViewModel @Inject constructor(
 
     private val _searchTagList = MutableStateFlow(listOf<TagDto>())
 
-    private val currentTable = currentTableRepository.currentTable.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), Defaults.defaultTableDto
-    )
+    private val currentTable = currentTableRepository.currentTable
 
     private val semesterChange =
-        currentTable.map { it.year * 10 + it.semester } // .distinctUntilChanged()
+        currentTable
+            .filterNotNull()
+            .map { it.year * 10 + it.semester } // .distinctUntilChanged()
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
 
@@ -77,15 +76,16 @@ class SearchViewModel @Inject constructor(
 
     val queryResults = combine(
         _querySignal.flatMapLatest {
+            val currentTable = currentTable.filterNotNull().first()
             lectureSearchRepository.getLectureSearchResultStream(
-                year = currentTable.value.year,
-                semester = currentTable.value.semester,
+                year = currentTable.year,
+                semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                lecturesMask = currentTable.value.lectureList.getClassTimeMask()
+                lecturesMask = currentTable.lectureList.getClassTimeMask()
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable
+        _selectedLecture, currentTable.filterNotNull()
     ) { pagingData, selectedLecture, currentTable ->
         pagingData.map { searchedLecture ->
             searchedLecture.toDataWithState(
@@ -152,10 +152,11 @@ class SearchViewModel @Inject constructor(
          */
     }
 
-    suspend fun fetchSearchTagList() {
+    private suspend fun fetchSearchTagList() {
+        val currentTable = currentTable.filterNotNull().first()
         _searchTagList.emit(
             lectureSearchRepository.getSearchTags(
-                currentTable.value.year, currentTable.value.semester
+                currentTable.year, currentTable.semester
             )
         )
     }

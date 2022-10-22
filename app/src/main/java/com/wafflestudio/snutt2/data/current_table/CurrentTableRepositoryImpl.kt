@@ -1,27 +1,29 @@
 package com.wafflestudio.snutt2.data.current_table
 
-import androidx.datastore.core.DataStore
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.storage.CurrentTablePreferences
-import kotlinx.coroutines.flow.*
+import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.lib.unwrap
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
-    private val currentTableStore: DataStore<CurrentTablePreferences>
+    private val storage: SNUTTStorage,
 ) : CurrentTableRepository {
 
-    override val currentTable: Flow<TableDto> = currentTableStore.data
-        .map { it.data }
-        .filterNotNull()
-        .distinctUntilChanged()
+    override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
+        .unwrap(GlobalScope)
 
     private val _previewTheme = MutableStateFlow<TimetableColorTheme?>(null)
 
@@ -29,48 +31,38 @@ class CurrentTableRepositoryImpl @Inject constructor(
         get() = _previewTheme
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
-        currentTableStore.updateData { prev ->
-            val prevTable = prev.data
-                ?: throw IllegalStateException("cannot add lecture when current table not exists")
-            val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
-            prev.copy(data = response)
-        }
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot add lecture when current table not exists")
+        val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun removeLecture(lectureId: String) {
-        currentTableStore.updateData { prev ->
-            val prevTable = prev.data
-                ?: throw IllegalStateException("cannot remove lecture when current table not exists")
-            val response = api._deleteLecture(prevTable.id, lectureId)
-            prev.copy(data = response)
-        }
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot remove lecture when current table not exists")
+        val response = api._deleteLecture(prevTable.id, lectureId)
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun createCustomLecture(lecture: PostCustomLectureParams) {
-        currentTableStore.updateData { prev ->
-            val prevTable = prev.data
-                ?: throw IllegalStateException("cannot create custom lecture when current table not exists")
-            val response = api._postCustomLecture(prevTable.id, lecture)
-            prev.copy(data = response)
-        }
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot create custom lecture when current table not exists")
+        val response = api._postCustomLecture(prevTable.id, lecture)
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun resetLecture(lectureId: String) {
-        currentTableStore.updateData { prev ->
-            val prevTable = prev.data
-                ?: throw IllegalStateException("cannot reset lecture when current table not exists")
-            val response = api._resetLecture(prevTable.id, lectureId)
-            prev.copy(data = response)
-        }
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot reset lecture when current table not exists")
+        val response = api._resetLecture(prevTable.id, lectureId)
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun updateLecture(lectureId: String, target: PutLectureParams) {
-        currentTableStore.updateData { prev ->
-            val prevTable = prev.data
-                ?: throw IllegalStateException("cannot update lecture when current table not exists")
-            val response = api._putLecture(prevTable.id, lectureId, target)
-            prev.copy(data = response)
-        }
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot update lecture when current table not exists")
+        val response = api._putLecture(prevTable.id, lectureId, target)
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?) {
@@ -81,7 +73,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         courseNumber: String,
         lectureNumber: String
     ): String {
-        val prevTable = currentTableStore.data.first().data
+        val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
         return api._getCoursebooksOfficial(
             prevTable.year,
