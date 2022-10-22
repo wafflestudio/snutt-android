@@ -51,7 +51,7 @@ fun BottomSheet(
         )
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(topStartPercent = 8, topEndPercent = 8))
+                .clip(RoundedCornerShape(topStartPercent = 4, topEndPercent = 4))
                 .zIndex(with(LocalDensity.current) { (DrawerDefaults.Elevation + 1.dp).toPx() })
                 .offset(y = animatedOffset.value.dp)
         ) {

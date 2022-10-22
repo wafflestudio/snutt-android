@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,20 +107,22 @@ fun HomePage() {
 
     // BottomSheet 관련
     var bottomSheetState by remember { mutableStateOf(BottomSheetState.HIDE) }
-    var bottomSheetHeight by remember { mutableStateOf(200.dp) }
+    var bottomSheetHeight by remember { mutableStateOf(0.dp) }
     val bottomSheetHeightPx = with(LocalDensity.current) { bottomSheetHeight.toPx() }
     val bottomSheetOffset = remember { androidx.compose.animation.core.Animatable(0f) }
     val bottomSheetDim = remember { Animatable(SNUTTColors.Transparent) }
     var bottomSheetContent by remember { mutableStateOf<@Composable () -> Unit>({}) }
+    val screenHeight = with(LocalDensity.current) { LocalConfiguration.current.screenHeightDp.dp.toPx() }
 
     val showBottomSheet: suspend (Dp, @Composable () -> Unit) -> Unit = { contentHeight, content ->
+        bottomSheetState = BottomSheetState.SHOW
+        bottomSheetHeight = contentHeight
+        bottomSheetOffset.snapTo(screenHeight)
+        bottomSheetContent = content
+
         coroutineScope {
-            bottomSheetHeight = contentHeight
-            bottomSheetOffset.snapTo(bottomSheetHeightPx)
-            bottomSheetContent = content
-            bottomSheetState = BottomSheetState.SHOW
-            launch { bottomSheetDim.animateTo(SNUTTColors.Black600) }
-            launch { bottomSheetOffset.animateTo(0f) }
+            launch { bottomSheetDim.animateTo(SNUTTColors.Black600, animationSpec = SpringSpec(stiffness = Spring.StiffnessLow)) }
+            launch { bottomSheetOffset.animateTo(0f, animationSpec = SpringSpec(stiffness = Spring.StiffnessMediumLow)) }
         }
     }
     val hideBottomSheet: suspend (Boolean) -> Unit = { fast ->
@@ -127,6 +131,7 @@ fun HomePage() {
             launch {
                 bottomSheetOffset.animateTo(
                     targetValue = bottomSheetHeightPx,
+                    // "시간표 색상 테마 변경"을 누르면 최대한 빨리 현재 bottomSheet를 내리고 테마 bottomSheet를 펼쳐야 하기 때문에 fast=true를 줘서 StiffnessHigh로 적용한다.
                     animationSpec = spring(stiffness = if (fast) Spring.StiffnessHigh else Spring.StiffnessMedium)
                 )
                 bottomSheetState = BottomSheetState.HIDE
