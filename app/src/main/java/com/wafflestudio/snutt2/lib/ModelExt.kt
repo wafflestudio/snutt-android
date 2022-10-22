@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.lib
 import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -40,15 +41,28 @@ fun List<LectureDto>.getClassTimeMask(): List<Int> {
     return masks.toList()
 }
 
-fun CourseBookDto.toFormattedString(context: Context): String {
+@Composable
+fun CourseBookDto.toFormattedString(): String {
     val semesterStr = when (this.semester) {
-        1L -> context.getString(R.string.course_book_spring_semster)
-        2L -> context.getString(R.string.course_book_summer_semester)
-        3L -> context.getString(R.string.course_book_authum)
-        4L -> context.getString(R.string.course_book_winter)
+        1L -> stringResource(id = R.string.course_book_spring_semster)
+        2L -> stringResource(id = R.string.course_book_summer_semester)
+        3L -> stringResource(id = R.string.course_book_authum)
+        4L -> stringResource(id = R.string.course_book_winter)
         else -> "-"
     }
-    return "${this.year} $semesterStr"
+    return "${this.year}년 $semesterStr"
+}
+
+@Composable
+fun CourseBookDto.toFormattedStringShort(): String {
+    val semesterStr = when (this.semester) {
+        1L -> stringResource(id = R.string.course_book_spring_semster)
+        2L -> stringResource(id = R.string.course_book_summer_semester_short)
+        3L -> stringResource(id = R.string.course_book_authum)
+        4L -> stringResource(id = R.string.course_book_winter_short)
+        else -> "-"
+    }
+    return "${this.year}년 $semesterStr"
 }
 
 fun TagType.color(): Int {

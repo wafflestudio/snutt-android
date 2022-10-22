@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object SNUTTColors {
     val Gray100 = Color(0xfff2f2f2)
-    val Gray200 = Color(0xffbdbdbd)
+    val Gray200 = Color(0xffb3b3b3)
     val Gray300 = Color(0xffaaaaaa)
     val Gray400 = Color(0xff999999)
     val Gray600 = Color(0xff777777)

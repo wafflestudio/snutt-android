@@ -93,7 +93,7 @@ fun ExitIcon(
     modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = modifier.size(30.dp),
+        modifier = modifier,
         painter = painterResource(id = R.drawable.ic_exit),
         contentDescription = ""
     )
@@ -353,7 +353,7 @@ fun SendIcon(
 
 @Composable
 fun RedDot() {
-    Canvas(modifier = Modifier.size(5.dp)) {
+    Canvas(modifier = Modifier.size(4.dp)) {
         drawCircle(SNUTTColors.Red)
     }
 }

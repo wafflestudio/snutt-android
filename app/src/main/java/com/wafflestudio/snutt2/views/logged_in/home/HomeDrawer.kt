@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toFormattedString
+import com.wafflestudio.snutt2.lib.toFormattedStringShort
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
@@ -85,16 +87,18 @@ fun HomeDrawer() {
     Column(modifier = Modifier.padding(20.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             LogoIcon(modifier = Modifier.size(20.dp))
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(11.5.dp))
             Text(
                 text = stringResource(R.string.sign_in_logo_title),
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } })
+            ExitIcon(modifier = Modifier
+                .size(30.dp)
+                .clicks { scope.launch { drawerState.close() } })
         }
         Divider(
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100
+            modifier = Modifier.padding(top = 23.5.dp, bottom = 22.dp), color = SNUTTColors.Gray100
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -103,23 +107,22 @@ fun HomeDrawer() {
                 color = SNUTTColors.Gray200,
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "+",
-                style = SNUTTTypography.subtitle1,
-                fontSize = 24.sp,
-                modifier = Modifier.clicks {
+            ExitIcon(modifier = Modifier
+                .size(20.dp)
+                .rotate(45f)
+                .clicks {
                     selectedCourseBook =
                         CourseBookDto(tableContext.table.semester, tableContext.table.year)
                     specificSemester = false
                     addNewTableDialogState = true
-                }
-            )
-            Spacer(modifier = Modifier.width(10.dp))
+                })
+            Spacer(modifier = Modifier.width(5.dp))
         }
+        Spacer(modifier = Modifier.height(7.5.dp))
         LazyColumn {
             items(courseBooksWhichHaveTable) { courseBook ->
                 var expanded by remember { mutableStateOf(courseBook.year == tableContext.table.year && courseBook.semester == tableContext.table.semester) }
-                val rotation by animateFloatAsState(if (expanded) -180f else 0f)
+                val rotation by animateFloatAsState(if (expanded) 0f else -90f)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -127,7 +130,7 @@ fun HomeDrawer() {
                         .clicks { expanded = expanded.not() }
                 ) {
                     Text(
-                        text = courseBook.toFormattedString(context),
+                        text = courseBook.toFormattedString(),
                         style = SNUTTTypography.h3,
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -288,7 +291,7 @@ fun HomeDrawer() {
         var newTableTitle by remember { mutableStateOf("") }
 
         LaunchedEffect(Unit) {
-            showBottomSheet(700.dp) {
+            showBottomSheet(600.dp) {
                 CreateNewTableBottomSheet(
                     newTitle = newTableTitle,
                     onEditTextChange = { newTableTitle = it },
@@ -331,7 +334,7 @@ private fun TableItem(
         ) {
             VividCheckedIcon(
                 modifier = Modifier
-                    .size(15.dp)
+                    .size(14.dp)
                     .alpha(if (selected) 1f else 0f)
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -407,7 +410,7 @@ private fun ShowMoreBottomSheetContent(
             ) {
                 WriteIcon(modifier = Modifier.size(30.dp))
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "이름 변경")
+                Text(text = stringResource(id = R.string.change_name))
             }
         }
         Box(modifier = Modifier.clicks { onDeleteTable() }) {
@@ -419,7 +422,7 @@ private fun ShowMoreBottomSheetContent(
             ) {
                 TrashIcon(modifier = Modifier.size(30.dp))
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 삭제")
+                Text(text = stringResource(id = R.string.home_drawer_table_delete))
             }
         }
         Box(modifier = Modifier.clicks { onChangeTheme() }) {
@@ -431,7 +434,7 @@ private fun ShowMoreBottomSheetContent(
             ) {
                 PaletteIcon(modifier = Modifier.size(30.dp))
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 색상 테마 변경")
+                Text(text = stringResource(id = R.string.home_drawer_table_theme_change))
             }
         }
     }
@@ -540,7 +543,6 @@ private fun CreateNewTableBottomSheet(
     allCourseBook: List<CourseBookDto>,
     selectedCourseBook: CourseBookDto,
 ) {
-    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -550,26 +552,26 @@ private fun CreateNewTableBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "취소", style = SNUTTTypography.body1,
+                text = stringResource(id = R.string.common_cancel), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     onCancel.invoke()
                 }
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                "완료", style = SNUTTTypography.body1,
+                stringResource(id = R.string.common_ok), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     onComplete.invoke()
                 }
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = "새로운 시간표 만들기", style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600))
+        Text(text = stringResource(id = R.string.create_new_table), style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600))
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = newTitle,
             onValueChange = { onEditTextChange(it) },
-            hint = "시간표 제목을 입력하세요",
+            hint = stringResource(id = R.string.create_new_table_hint),
             underlineColor = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
             underlineColorFocused = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
             underlineWidth = 2.dp,
@@ -585,7 +587,7 @@ private fun CreateNewTableBottomSheet(
                     onPickerChange(allCourseBook[index])
                 },
                 PickerItemContent = {
-                    CourseBookPickerItem(name = allCourseBook[it].toFormattedString(context))
+                    CourseBookPickerItem(name = allCourseBook[it].toFormattedStringShort())
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
