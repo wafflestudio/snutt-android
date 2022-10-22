@@ -1,14 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,17 +14,11 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    val trimParam = userRepository.tableTrimParam.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), TableTrimParam.Default
-    )
+    val trimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
 
-    val userInfo = userRepository.user.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), UserDto()
-    )
+    val userInfo: StateFlow<UserDto?> = userRepository.user
 
-    val accessToken = userRepository.accessToken().stateIn(
-        viewModelScope, SharingStarted.Eagerly, null
-    )
+    val accessToken: StateFlow<String> = userRepository.accessToken
 
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()

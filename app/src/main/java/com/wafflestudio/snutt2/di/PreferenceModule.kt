@@ -40,31 +40,4 @@ object PreferenceModule {
     fun providePrefCache(): PrefCache {
         return PrefCacheImpl(64)
     }
-
-    @Provides
-    @Singleton
-    fun provideUserPreferencesStore(@ApplicationContext context: Context, moshi: Moshi): DataStore<UserPreferences> {
-        UserPreferencesSerializer.moshi = moshi
-        return context.userPreferencesStore
-    }
-
-    @Singleton
-    @Provides
-    fun provideCurrentTablePreferencesStore(
-        @ApplicationContext context: Context,
-        moshi: Moshi
-    ): DataStore<CurrentTablePreferences> {
-        CurrentTablePreferencesSerializer.moshi = moshi
-        return context.currentTablePreferencesStore
-    }
-
-    @Provides
-    @Singleton
-    fun provideTableMapPreferencesStore(
-        @ApplicationContext context: Context,
-        moshi: Moshi
-    ): DataStore<TableMapPreferences> {
-        TableMapPreferencesSerializer.moshi = moshi
-        return context.tableMapPreferencesStore
-    }
 }

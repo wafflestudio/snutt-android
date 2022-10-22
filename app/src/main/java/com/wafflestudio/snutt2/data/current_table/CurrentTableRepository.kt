@@ -1,13 +1,15 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
-    val currentTable: Flow<TableDto>
+    val currentTable: StateFlow<TableDto?>
 
     val previewTheme: Flow<TimetableColorTheme?>
 

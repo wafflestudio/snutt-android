@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,11 +20,7 @@ class LectureDetailViewModelNew @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
 ) : ViewModel() {
-    val currentTable = currentTableRepository.currentTable.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(),
-        Defaults.defaultTableDto
-    )
+    val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
     private var addMode = false
     private var viewMode = false
@@ -84,7 +79,7 @@ class LectureDetailViewModelNew @Inject constructor(
 
     suspend fun resetLecture2(): LectureDto {
         currentTableRepository.resetLecture(_editingLectureDetail.value.id)
-        return currentTable.value.lectureList.find { it.id == editingLectureDetail.value.id }!! // TODO: 왜 resetLecture 의 api 응답이 TableDto 인지..
+        return currentTable.value?.lectureList?.find { it.id == editingLectureDetail.value.id }!! // TODO: 왜 resetLecture 의 api 응답이 TableDto 인지..
     }
 
     suspend fun createLecture2() {

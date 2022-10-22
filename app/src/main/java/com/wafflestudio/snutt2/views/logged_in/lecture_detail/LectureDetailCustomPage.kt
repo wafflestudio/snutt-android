@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -48,7 +49,8 @@ fun LectureDetailCustomPage() {
     val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
     val editMode by vm.editMode.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
-    val currentTable = vm.currentTable.collectAsState()
+    val currentTable by vm.currentTable.collectAsState()
+    val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
     var editExitDialogState by remember { mutableStateOf(false) }
@@ -110,7 +112,7 @@ fun LectureDetailCustomPage() {
                                         vm.createLecture2()
                                         vm.unsetEditMode()
                                         vm.setAddMode(false)
-                                            /* FIXME
+                                        /* FIXME
                                          * 안드로이드는 여기서 그대로 detailPage 에 남는다.
                                          *
                                          * 하지만 @POST("/tables/{id}/lecture") api 는
@@ -187,7 +189,7 @@ fun LectureDetailCustomPage() {
                         ColorBox(
                             editingLectureDetail.colorIndex,
                             editingLectureDetail.color,
-                            currentTable.value.theme
+                            tableColorTheme,
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         AnimatedVisibility(visible = editMode) {
@@ -478,4 +480,3 @@ fun LectureDetailCustomPage() {
             }
         }
     }
-    

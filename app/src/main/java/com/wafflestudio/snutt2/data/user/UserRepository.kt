@@ -1,14 +1,18 @@
 package com.wafflestudio.snutt2.data.user
 
+import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
-    val user: Flow<UserDto>
+    val user: StateFlow<UserDto?>
 
-    val tableTrimParam: Flow<TableTrimParam>
+    val tableTrimParam: StateFlow<TableTrimParam>
+
+    val accessToken: StateFlow<String>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -54,8 +58,6 @@ interface UserRepository {
     )
 
     suspend fun getAccessToken(): String
-
-    fun accessToken(): Flow<String>
 
     suspend fun performLogout()
 }

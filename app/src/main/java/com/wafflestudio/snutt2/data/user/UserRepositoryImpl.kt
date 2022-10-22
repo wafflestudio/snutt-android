@@ -1,18 +1,16 @@
 package com.wafflestudio.snutt2.data.user
 
-import androidx.datastore.core.DataStore
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
-import com.wafflestudio.snutt2.lib.storage.UserPreferences
+import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -22,56 +20,50 @@ import kotlin.coroutines.suspendCoroutine
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
-    private val userStore: DataStore<UserPreferences>
+    private val storage: SNUTTStorage,
 ) : UserRepository {
 
-    override val user: Flow<UserDto> = userStore.data
-        .map { it.data }
-        .filterNotNull()
+    override val user = storage.user.asStateFlow()
+        .unwrap(GlobalScope)
 
-    override val tableTrimParam: Flow<TableTrimParam> = userStore.data
-        .map { it.tableTrimParam }
-        .filterNotNull()
+    override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
+
+    override val accessToken = storage.accessToken.asStateFlow()
+
 
     override suspend fun postSignIn(id: String, password: String) {
-        userStore.updateData { prev ->
-            val response = api._postSignIn(PostSignInParams(id, password))
-            prev.copy(userId = response.userId, accessToken = response.token)
-        }
+        val response = api._postSignIn(PostSignInParams(id, password))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
         registerFirebaseToken()
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        userStore.updateData { prev ->
-            val response =
-                api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
-            prev.copy(userId = response.userId, accessToken = response.token)
-        }
+        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+        registerFirebaseToken()
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
-        userStore.updateData { prev ->
-            val response = api._postSignUp(PostSignUpParams(id, password, email))
-            prev.copy(userId = response.userId, accessToken = response.token)
-        }
+        val response = api._postSignUp(PostSignUpParams(id, password, email))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+        registerFirebaseToken()
     }
 
     override suspend fun fetchUserInfo() {
-        userStore.updateData { prev ->
-            val response = api._getUserInfo()
-            prev.copy(data = response)
-        }
+        val response = api._getUserInfo()
+        storage.user.update(response.toOptional())
     }
 
     override suspend fun putUserInfo(email: String) {
-        userStore.updateData { prev ->
-            api._putUserInfo(PutUserInfoParams(email))
-            prev.data?.let {
-                prev.copy(
-                    data = it.copy(email = email)
-                )
-            } ?: prev
-        }
+        api._putUserInfo(PutUserInfoParams(email))
+        storage.user.update(
+            storage.user.get().value?.copy(
+                email = email
+            ).toOptional()
+        )
     }
 
     override suspend fun deleteUserAccount() {
@@ -83,15 +75,13 @@ class UserRepositoryImpl @Inject constructor(
         oldPassword: String,
         newPassword: String
     ) {
-        userStore.updateData { prev ->
-            val response = api._putUserPassword(
-                PutUserPasswordParams(
-                    newPassword = newPassword,
-                    oldPassword = oldPassword
-                )
+        val response = api._putUserPassword(
+            PutUserPasswordParams(
+                newPassword = newPassword,
+                oldPassword = oldPassword
             )
-            prev.copy(accessToken = response.token)
-        }
+        )
+        storage.accessToken.update(response.token)
     }
 
     override suspend fun getUserFacebook(): GetUserFacebookResults {
@@ -99,37 +89,31 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postUserPassword(id: String, password: String) {
-        userStore.updateData { prev ->
-            val response = api._postUserPassword(
-                PostUserPasswordParams(
-                    id = id,
-                    password = password
-                )
+        val response = api._postUserPassword(
+            PostUserPasswordParams(
+                id = id,
+                password = password
             )
-            prev.copy(accessToken = response.token)
-        }
+        )
+        storage.accessToken.update(response.token)
     }
 
     override suspend fun deleteUserFacebook() {
-        userStore.updateData { prev ->
-            val response = api._deleteUserFacebook()
-            prev.copy(accessToken = response.token)
-        }
+        val response = api._deleteUserFacebook()
+        storage.accessToken.update(response.token)
     }
 
     override suspend fun postUserFacebook(
         facebookId: String,
         facebookToken: String
     ) {
-        userStore.updateData { prev ->
-            val response = api._postUserFacebook(
-                PostUserFacebookParams(
-                    facebookId = facebookId,
-                    facebookToken = facebookToken
-                )
+        val response = api._postUserFacebook(
+            PostUserFacebookParams(
+                facebookId = facebookId,
+                facebookToken = facebookToken
             )
-            prev.copy(accessToken = response.token)
-        }
+        )
+        storage.accessToken.update(response.token)
     }
 
     override suspend fun postFeedback(email: String, detail: String) {
@@ -143,7 +127,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postForceLogout() {
         val firebaseToken = getFirebaseToken()
-        val userId = userStore.data.first().userId
+        val userId = storage.prefKeyUserId.get().value ?: return
         api._postForceLogout(
             PostForceLogoutParams(
                 userId = userId,
@@ -154,11 +138,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAccessToken(): String {
-        return userStore.data.first().accessToken
-    }
-
-    override fun accessToken(): Flow<String> {
-        return userStore.data.map { it.accessToken }
+        return storage.accessToken.get()
     }
 
     override suspend fun setTableTrim(
@@ -168,25 +148,21 @@ class UserRepositoryImpl @Inject constructor(
         hourTo: Int?,
         isAuto: Boolean?
     ) {
-        userStore.updateData { prev ->
-            val prevTrimParam = prev.tableTrimParam
-            prev.copy(
-                tableTrimParam = TableTrimParam(
-                    dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
-                    dayOfWeekTo = dayOfWeekTo ?: prevTrimParam.dayOfWeekTo,
-                    hourFrom = hourFrom ?: prevTrimParam.hourFrom,
-                    hourTo = hourTo ?: prevTrimParam.hourTo,
-                    forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-                )
+        val prevTrimParam = storage.tableTrimParam.get()
+        storage.tableTrimParam.update(
+            TableTrimParam(
+                dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
+                dayOfWeekTo = dayOfWeekTo ?: prevTrimParam.dayOfWeekTo,
+                hourFrom = hourFrom ?: prevTrimParam.hourFrom,
+                hourTo = hourTo ?: prevTrimParam.hourTo,
+                forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
             )
-        }
+        )
     }
 
     override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
-        userStore.updateData {
-            UserPreferences()
-        }
+        storage.clearLoginScope()
     }
 
     private suspend fun registerFirebaseToken() {
