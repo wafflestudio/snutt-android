@@ -76,7 +76,7 @@ fun AppReportPage() {
             EditText(
                 value = email,
                 onValueChange = { email = it },
-                hint = "example@gmail.com",
+                hint = stringResource(id = R.string.example_email),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -87,7 +87,7 @@ fun AppReportPage() {
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
                 value = detail, onValueChange = { detail = it },
-                hint = "불편한 점이나 버그를 적어주세요",
+                hint = stringResource(id = R.string.settings_app_report_hint),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
             )
         }

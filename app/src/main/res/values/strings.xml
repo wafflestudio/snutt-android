@@ -84,8 +84,10 @@
     <string name="common_network_failure">네트워크 연결 상태를 확인해주세요.</string>
     <string name="course_book_spring_semster">1학기</string>
     <string name="course_book_summer_semester">여름학기</string>
+    <string name="course_book_summer_semester_short">여름</string>
     <string name="course_book_authum">2학기</string>
     <string name="course_book_winter">겨울학기</string>
+    <string name="course_book_winter_short">겨울</string>
     <string name="home_drawer_timetable_add_button">+ 시간표 추가하기</string>
     <string name="common_ok">확인</string>
     <string name="common_cancel">취소</string>
@@ -139,6 +141,7 @@
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
+    <string name="settings_app_report_hint">불편한 점이나 버그를 적어주세요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
@@ -201,4 +204,7 @@
     <string name="example_email">example@gmail.com</string>
     <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
     <string name="reviews_error_retry">다시 불러오기</string>
+    <string name="create_new_table">새로운 시간표 만들기</string>
+    <string name="create_new_table_hint">시간표 제목을 입력하세요</string>
+    <string name="change_name">이름 변경</string>
 </resources>
