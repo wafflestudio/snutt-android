@@ -64,12 +64,19 @@ class ErrorParsingCallAdapter<R>(
     }
 
     private fun parseErrorBody(response: Response<*>): Throwable {
-        return response.errorBody()?.string()?.let {
-            ErrorParsedHttpException(
-                response,
-                serializer.deserialize(it, ErrorDTO::class.java)
+        val errorBodyStr =
+            response.errorBody()?.string() ?: return IllegalStateException("ErrorBody is null")
+        val errorDTO = kotlin.runCatching {
+            serializer.deserialize<ErrorDTO>(
+                errorBodyStr,
+                ErrorDTO::class.java
             )
-        } ?: IllegalStateException("ErrorBody is null!")
+        }.getOrNull()
+            ?: return IllegalStateException("ErrorBody parsing failed")
+        return ErrorParsedHttpException(
+            response,
+            errorDTO
+        )
     }
 
     override fun responseType(): Type {
