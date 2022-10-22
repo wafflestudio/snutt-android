@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto

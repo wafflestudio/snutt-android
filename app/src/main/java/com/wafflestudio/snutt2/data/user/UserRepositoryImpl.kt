@@ -30,7 +30,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override val accessToken = storage.accessToken.asStateFlow()
 
-
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())

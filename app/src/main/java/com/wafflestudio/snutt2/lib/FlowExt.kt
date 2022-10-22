@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-
 fun <T, R> StateFlow<T>.map(scope: CoroutineScope, mapper: (T) -> R): StateFlow<R> {
     return this.map(mapper)
         .stateIn(scope, started = SharingStarted.Eagerly, initialValue = mapper(this.value))

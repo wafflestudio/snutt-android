@@ -1,12 +1,10 @@
 package com.wafflestudio.snutt2.lib.preferences.context
 
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.data.DataValue
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 
 class PrefValue<T : Any> constructor(
     private val prefContext: PrefContext,

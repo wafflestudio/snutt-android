@@ -38,7 +38,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 enum class BottomSheetState() {
     SHOW, HIDE

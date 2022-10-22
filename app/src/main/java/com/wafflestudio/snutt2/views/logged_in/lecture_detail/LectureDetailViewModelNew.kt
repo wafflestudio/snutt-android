@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto

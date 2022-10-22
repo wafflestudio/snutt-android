@@ -480,3 +480,4 @@ fun LectureDetailCustomPage() {
             }
         }
     }
+    

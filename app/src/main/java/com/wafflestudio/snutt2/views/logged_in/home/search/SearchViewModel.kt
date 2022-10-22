@@ -12,7 +12,6 @@ import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
