@@ -2,10 +2,13 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -50,7 +53,6 @@ fun HomeDrawer() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val drawerState = LocalDrawerState.current
-    val tableContext = TableContext.current
     val showBottomSheet = ShowBottomSheet.current
     val hideBottomSheet = HideBottomSheet.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -60,6 +62,8 @@ fun HomeDrawer() {
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
 
+    val table by timetableViewModel.currentTable.collectAsState()
+    val blockedTable = table ?: Defaults.defaultTableDto
     val allCourseBook by tableListViewModel.allCourseBook.collectAsState()
     val courseBooksWhichHaveTable by tableListViewModel.courseBooksWhichHaveTable.collectAsState(
         initial = listOf()
@@ -76,7 +80,7 @@ fun HomeDrawer() {
     var addNewTableDialogState by remember { mutableStateOf(false) }
     var specificSemester by remember { mutableStateOf(false) }
     var selectedCourseBook by remember {
-        mutableStateOf(CourseBookDto(tableContext.table.year, tableContext.table.semester))
+        mutableStateOf(CourseBookDto(blockedTable.year, blockedTable.semester))
     }
     // drawer 에서 (...) 버튼을 누르면, 해당 table 의 정보를 여기에 저장.
     // bottomSheet 에서 이름 변경 선택 후 dialog confirm 시 이 정보를 vm 에게 전달
@@ -109,7 +113,7 @@ fun HomeDrawer() {
                 fontSize = 24.sp,
                 modifier = Modifier.clicks {
                     selectedCourseBook =
-                        CourseBookDto(tableContext.table.semester, tableContext.table.year)
+                        CourseBookDto(blockedTable.semester, blockedTable.year)
                     specificSemester = false
                     addNewTableDialogState = true
                 }
@@ -118,7 +122,7 @@ fun HomeDrawer() {
         }
         LazyColumn {
             items(courseBooksWhichHaveTable) { courseBook ->
-                var expanded by remember { mutableStateOf(courseBook.year == tableContext.table.year && courseBook.semester == tableContext.table.semester) }
+                var expanded by remember { mutableStateOf(courseBook.year == blockedTable.year && courseBook.semester == blockedTable.semester) }
                 val rotation by animateFloatAsState(if (expanded) -180f else 0f)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -146,7 +150,7 @@ fun HomeDrawer() {
                         tableListOfEachCourseBook[courseBook]?.forEach {
                             TableItem(
                                 tableDto = it,
-                                selected = it.id == tableContext.table.id,
+                                selected = it.id == blockedTable.id,
                                 onSelect = { selectedTableId ->
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
@@ -160,11 +164,11 @@ fun HomeDrawer() {
                                 onDuplicate = { table ->
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                            tableListViewModel.copyTableNew(table.id)
+                                            tableListViewModel.copyTableNew(blockedTable.id)
                                             context.toast(
                                                 context.getString(
                                                     R.string.home_drawer_copy_success_message,
-                                                    table.title
+                                                    blockedTable.title
                                                 )
                                             )
                                         }
@@ -252,7 +256,7 @@ fun HomeDrawer() {
                     ChangeThemeBottomSheetContent(onLaunch = {
                         scope.launch {
                             launchSuspendApi(apiOnProgress, apiOnError) {
-                                timetableViewModel.setPreviewTheme(tableContext.table.theme)
+                                timetableViewModel.setPreviewTheme(blockedTable.theme)
                             }
                         }
                     }, onPreview = { idx ->

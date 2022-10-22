@@ -24,6 +24,7 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
@@ -43,7 +44,7 @@ fun UserConfigPage() {
     val apiOnError = LocalApiOnError.current
 
     val viewModel = hiltViewModel<UserViewModel>()
-    val user = viewModel.userInfo.collectAsState()
+    val user: UserDto? by viewModel.userInfo.collectAsState()
 
     var addIdPasswordDialogState by remember { mutableStateOf(false) }
     var passwordChangeDialogState by remember { mutableStateOf(false) }
@@ -51,7 +52,11 @@ fun UserConfigPage() {
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
     var leaveDialogState by remember { mutableStateOf(false) }
 
-    var facebookConnected by remember { mutableStateOf(user.value.fbName.isNullOrEmpty().not()) }
+    var facebookConnected by remember(user?.fbName) {
+        mutableStateOf(
+            user?.fbName.isNullOrEmpty().not()
+        )
+    }
 
     val callbackManager = CallbackManager.Factory.create()
     LoginManager.getInstance()
@@ -105,9 +110,9 @@ fun UserConfigPage() {
         )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(Color.White)) {
-            if (user.value.localId.isNullOrEmpty().not()) {
+            if (user?.localId.isNullOrEmpty().not()) {
                 SettingItem(title = stringResource(R.string.sign_in_id_hint), content = {
-                    Text(text = user.value.localId.toString())
+                    Text(text = user?.localId.toString())
                 })
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_change_password),
@@ -130,7 +135,7 @@ fun UserConfigPage() {
             SettingItem(
                 title = stringResource(R.string.settings_user_config_facebook_name),
                 content = {
-                    Text(text = user.value.fbName.toString())
+                    Text(text = user?.fbName ?: "")
                 }
             ) {}
             SettingItem(
@@ -156,7 +161,7 @@ fun UserConfigPage() {
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(Color.White)) {
             SettingItem(title = stringResource(R.string.settings_app_report_email), content = {
-                Text(text = user.value.email ?: "")
+                Text(text = user?.email ?: "")
             })
             SettingItem(
                 title = stringResource(R.string.settings_user_config_change_email),

@@ -9,6 +9,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -44,8 +46,8 @@ fun LecturesOfTablePage() {
     }
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
 
-    val currentTable = viewModel.currentTable.collectAsState(Defaults.defaultTableDto)
-    val lectureList = currentTable.value.lectureList
+    val currentTable: TableDto? by viewModel.currentTable.collectAsState()
+    val lectureList = currentTable?.lectureList ?: emptyList()
 
     Column {
         SimpleTopBar(

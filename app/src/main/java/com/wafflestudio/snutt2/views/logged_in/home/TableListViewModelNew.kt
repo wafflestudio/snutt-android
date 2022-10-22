@@ -3,7 +3,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -24,9 +23,7 @@ class TableListViewModelNew @Inject constructor(
     val allCourseBook = _allCourseBook.asStateFlow()
     private val mostRecentCourseBook = _allCourseBook.filter { it.isNotEmpty() }.map { it.first() }
 
-    private val tableMap = tableRepository.tableMap.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), initialValue = mapOf()
-    )
+    private val tableMap = tableRepository.tableMap
 
     val courseBooksWhichHaveTable = tableMap.map {
         (
@@ -81,14 +78,18 @@ class TableListViewModelNew @Inject constructor(
     }
 
     suspend fun checkTableDeletableNew(tableId: String): Boolean {
-        return currentTableRepository.currentTable.map {
-            it.id != tableId
-        }.first()
+        return currentTableRepository.currentTable
+            .filterNotNull()
+            .map {
+                it.id != tableId
+            }.first()
     }
 
     suspend fun checkTableThemeChangeableNew(tableId: String): Boolean {
-        return currentTableRepository.currentTable.map {
-            it.id == tableId
-        }.first()
+        return currentTableRepository.currentTable
+            .filterNotNull()
+            .map {
+                it.id == tableId
+            }.first()
     }
 }

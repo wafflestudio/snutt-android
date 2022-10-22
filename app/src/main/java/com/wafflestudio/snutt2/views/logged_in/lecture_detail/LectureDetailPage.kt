@@ -61,7 +61,7 @@ fun LectureDetailPage() {
     val viewMode = vm.isViewMode()
     val editMode by vm.editMode.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
-    val theme = vm.currentTable.collectAsState()
+    val currentTable by vm.currentTable.collectAsState()
 
     var deleteLectureDialogState by remember { mutableStateOf(false) }
     var resetLectureDialogState by remember { mutableStateOf(false) }
@@ -172,7 +172,7 @@ fun LectureDetailPage() {
                             ColorBox(
                                 editingLectureDetail.colorIndex,
                                 editingLectureDetail.color,
-                                theme.value.theme
+                                currentTable?.theme!!
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             AnimatedVisibility(visible = editMode) {

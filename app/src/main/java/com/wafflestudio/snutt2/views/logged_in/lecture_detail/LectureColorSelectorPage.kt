@@ -43,7 +43,8 @@ fun LectureColorSelectorPage() {
 
     val lectureState by vm.editingLectureDetail.collectAsState()
 
-    val currentTable = vm.currentTable.collectAsState()
+    val currentTable by vm.currentTable.collectAsState()
+    val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
 
     Column {
         SimpleTopBar(
@@ -56,7 +57,7 @@ fun LectureColorSelectorPage() {
         for (idx in 1L..9L) ColorItem(
             color = null,
             index = idx,
-            theme = currentTable.value.theme,
+            theme = tableColorTheme,
             isSelected = (idx == lectureState.colorIndex)
         ) {
             vm.editEditingLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
@@ -65,7 +66,7 @@ fun LectureColorSelectorPage() {
         ColorItem(
             color = lectureState.color,
             index = 0,
-            theme = currentTable.value.theme,
+            theme = tableColorTheme,
             isSelected = (lectureState.colorIndex == 0L)
         ) {
             colorSelectorDialog(context, "글자 색")
