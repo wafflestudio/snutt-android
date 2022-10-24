@@ -98,7 +98,7 @@ class UserViewModel @Inject constructor(
     }
 
     suspend fun fetchPopup() {
-       userRepository.fetchAndSetPopup()
+        userRepository.fetchAndSetPopup()
     }
 
     suspend fun closePopupWithHiddenDays() {
