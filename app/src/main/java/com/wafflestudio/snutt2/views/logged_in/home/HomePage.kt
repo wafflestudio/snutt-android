@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
@@ -70,6 +71,8 @@ fun HomePage() {
     val pageController = LocalHomePageController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val popupState = LocalPopupState.current
+    var popupReady by remember { mutableStateOf(popupState.popup != null) }
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
@@ -200,6 +203,24 @@ fun HomePage() {
                 )
             }
         }
+    }
+
+    if(popupReady) {
+        Popup(
+            url = popupState.popup?.url?:"",
+            onClickFewDays = {
+                scope.launch {
+                    userViewModel.closePopupWithHiddenDays()
+                    popupReady = false
+                }
+            },
+            onClickClose = {
+                scope.launch {
+                    userViewModel.closePopup()
+                    popupReady = false
+                }
+            }
+        )
     }
 }
 

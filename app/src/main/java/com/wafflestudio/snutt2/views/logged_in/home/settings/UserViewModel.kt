@@ -5,13 +5,15 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val popupState: PopupState,
 ) : ViewModel() {
 
     val trimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
@@ -93,5 +95,17 @@ class UserViewModel @Inject constructor(
             facebookId = id,
             facebookToken = token
         )
+    }
+
+    suspend fun fetchPopup() {
+       userRepository.fetchAndSetPopup()
+    }
+
+    suspend fun closePopupWithHiddenDays() {
+        userRepository.closePopupWithHiddenDays()
+    }
+
+    suspend fun closePopup() {
+        userRepository.closePopup()
     }
 }

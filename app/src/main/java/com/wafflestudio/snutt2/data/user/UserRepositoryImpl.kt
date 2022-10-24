@@ -9,8 +9,11 @@ import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -21,6 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
+    private val popupState: PopupState,
 ) : UserRepository {
 
     override val user = storage.user.asStateFlow()
@@ -163,6 +167,42 @@ class UserRepositoryImpl @Inject constructor(
         LoginManager.getInstance().logOut()
         storage.clearLoginScope()
     }
+
+    override suspend fun fetchAndSetPopup() {
+        val latestPopup = api._getPopup().popups.firstOrNull {
+            val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
+            val currentMillis = System.currentTimeMillis()
+
+            (expireMillis == null || currentMillis >= expireMillis)
+        }
+
+        popupState.popup = latestPopup
+    }
+
+    override suspend fun closePopupWithHiddenDays() {
+        val popup = popupState.popup
+
+        if (popup != null) {
+            val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
+                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
+            } ?: PopupViewModel.INFINITE_LONG_MILLIS
+
+            storage.shownPopupIdsAndTimestamp.update(
+                storage.shownPopupIdsAndTimestamp.get()
+                    .toMutableMap()
+                    .also {
+                        it[popup.key] = expiredDay
+                    }
+            )
+
+            popupState.popup = null
+        }
+    }
+
+    override suspend fun closePopup() {
+        popupState.popup = null
+    }
+
 
     private suspend fun registerFirebaseToken() {
         val token = getFirebaseToken()

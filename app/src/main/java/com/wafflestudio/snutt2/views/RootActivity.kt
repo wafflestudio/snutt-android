@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import android.animation.ObjectAnimator
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -8,8 +9,12 @@ import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.IntOffset
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -74,6 +79,7 @@ class RootActivity : AppCompatActivity() {
             val token = userViewModel.accessToken.filterNotNull().first()
             if (token.isNotEmpty()) {
                 homeViewModel.refreshData()
+                userViewModel.fetchPopup()
             }
             val startDestination =
                 if (token.isEmpty()) NavigationDestination.Onboard else NavigationDestination.Home
@@ -92,12 +98,14 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun setUpSplashScreen(rootView: View) {
-        splashScreen.setOnExitAnimationListener { view ->
-            ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
-                interpolator = AnticipateInterpolator()
-                duration = 200L
-                doOnEnd { view.remove() }
-                start()
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { view ->
+                ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
+                    interpolator = AnticipateInterpolator()
+                    duration = 200L
+                    doOnEnd { view.remove() }
+                    start()
+                }
             }
         }
 
@@ -141,7 +149,8 @@ class RootActivity : AppCompatActivity() {
             LocalNavController provides navController,
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
-            LocalHomePageController provides homePageController
+            LocalHomePageController provides homePageController,
+            LocalPopupState provides popupState,
         ) {
             AnimatedNavHost(
                 navController = navController,
@@ -192,7 +201,15 @@ class RootActivity : AppCompatActivity() {
     ) {
         composable(
             route,
-            enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = spring(
+                        stiffness = Spring.StiffnessMedium,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    )
+                )
+            },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) },
             popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
