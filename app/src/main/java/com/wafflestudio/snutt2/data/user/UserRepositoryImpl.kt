@@ -10,7 +10,6 @@ import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
@@ -185,7 +184,7 @@ class UserRepositoryImpl @Inject constructor(
         if (popup != null) {
             val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
-            } ?: PopupViewModel.INFINITE_LONG_MILLIS
+            } ?: INFINITE_LONG_MILLIS
 
             storage.shownPopupIdsAndTimestamp.update(
                 storage.shownPopupIdsAndTimestamp.get()
@@ -202,7 +201,6 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun closePopup() {
         popupState.popup = null
     }
-
 
     private suspend fun registerFirebaseToken() {
         val token = getFirebaseToken()
@@ -225,5 +223,9 @@ class UserRepositoryImpl @Inject constructor(
                 }
             )
         }
+    }
+
+    companion object {
+        const val INFINITE_LONG_MILLIS = Long.MAX_VALUE
     }
 }
