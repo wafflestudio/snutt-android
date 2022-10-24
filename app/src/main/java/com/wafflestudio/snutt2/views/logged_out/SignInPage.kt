@@ -53,6 +53,7 @@ fun SignInPage() {
             try {
                 apiOnProgress.showProgress()
                 userViewModel.loginLocal(idField, passwordField)
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
@@ -70,6 +71,7 @@ fun SignInPage() {
                     loginResult.accessToken.userId,
                     loginResult.accessToken.token
                 )
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
