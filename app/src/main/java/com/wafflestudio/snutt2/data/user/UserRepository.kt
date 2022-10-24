@@ -58,4 +58,6 @@ interface UserRepository {
     suspend fun getAccessToken(): String
 
     suspend fun performLogout()
+
+    suspend fun registerToken()
 }

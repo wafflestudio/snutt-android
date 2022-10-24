@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import android.util.Log
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -10,6 +11,8 @@ import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,21 +37,18 @@ class UserRepositoryImpl @Inject constructor(
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
         val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
         val response = api._postSignUp(PostSignUpParams(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun fetchUserInfo() {
@@ -164,7 +164,7 @@ class UserRepositoryImpl @Inject constructor(
         storage.clearLoginScope()
     }
 
-    private suspend fun registerFirebaseToken() {
+    override suspend fun registerToken() {
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
