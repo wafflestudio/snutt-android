@@ -103,9 +103,11 @@ fun HomePage() {
         }
     }
 
-    combine(timetableViewModel.currentTable, userViewModel.trimParam) { _, _ ->
-        TimetableWidgetProvider.refreshWidget(context)
-    }.launchIn(scope)
+    LaunchedEffect(Unit) {
+        combine(timetableViewModel.currentTable, userViewModel.trimParam) { _, _ ->
+            TimetableWidgetProvider.refreshWidget(context)
+        }.launchIn(this)
+    }
 
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
