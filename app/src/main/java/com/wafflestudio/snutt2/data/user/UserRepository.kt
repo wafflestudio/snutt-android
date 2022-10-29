@@ -64,4 +64,6 @@ interface UserRepository {
     suspend fun closePopupWithHiddenDays()
 
     suspend fun closePopup()
+
+    suspend fun registerToken()
 }

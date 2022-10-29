@@ -87,6 +87,7 @@ class RootActivity : AppCompatActivity() {
             isInitialRefreshFinished = true
         }
         setUpSplashScreen(composeRoot)
+        startUpdatingPushToken()
     }
 
     private fun setUpContents(startDestination: String) {
@@ -238,6 +239,18 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
+    }
+
+    private fun startUpdatingPushToken() {
+        lifecycleScope.launch {
+            userViewModel.accessToken.collect {
+                if (it.isNotEmpty()) {
+                    kotlin.runCatching {
+                        userViewModel.registerPushToken()
+                    } // do nothing on error.
+                }
+            }
+        }
     }
 }
 

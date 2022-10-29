@@ -86,6 +86,10 @@ class UserViewModel @Inject constructor(
         userRepository.performLogout()
     }
 
+    suspend fun registerPushToken() {
+        userRepository.registerToken()
+    }
+
     suspend fun signUpLocal(idField: String, emailField: String, passwordField: String) {
         userRepository.postSignUp(id = idField, password = passwordField, email = emailField)
     }
