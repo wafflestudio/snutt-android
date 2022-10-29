@@ -34,21 +34,18 @@ class UserRepositoryImpl @Inject constructor(
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
         val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
         val response = api._postSignUp(PostSignUpParams(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
-        registerFirebaseToken()
     }
 
     override suspend fun fetchUserInfo() {
@@ -164,7 +161,7 @@ class UserRepositoryImpl @Inject constructor(
         storage.clearLoginScope()
     }
 
-    private suspend fun registerFirebaseToken() {
+    override suspend fun registerToken() {
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
