@@ -199,8 +199,6 @@ class UserRepositoryImpl @Inject constructor(
         popupState.popup = null
     }
 
-    private suspend fun registerFirebaseToken() {
-
     override suspend fun registerToken() {
         val token = getFirebaseToken()
         api._registerFirebaseToken(
