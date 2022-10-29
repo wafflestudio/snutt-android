@@ -30,6 +30,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -44,6 +45,7 @@ fun SignInPage() {
     val focusManager = LocalFocusManager.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
+    val homeViewModel = hiltViewModel<HomeViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
@@ -53,6 +55,8 @@ fun SignInPage() {
             try {
                 apiOnProgress.showProgress()
                 userViewModel.loginLocal(idField, passwordField)
+                homeViewModel.refreshData()
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
@@ -70,6 +74,7 @@ fun SignInPage() {
                     loginResult.accessToken.userId,
                     loginResult.accessToken.token
                 )
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)

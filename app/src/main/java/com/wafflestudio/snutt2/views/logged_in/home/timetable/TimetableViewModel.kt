@@ -22,7 +22,7 @@ class TimetableViewModel @Inject constructor(
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
     val previewTheme = currentTableRepository.previewTheme.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), initialValue = TimetableColorTheme.SNUTT
+        viewModelScope, SharingStarted.WhileSubscribed(), initialValue = null
     )
 
     suspend fun addLecture(lecture: LectureDto, is_force: Boolean) {

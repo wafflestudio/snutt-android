@@ -377,4 +377,7 @@ interface SNUTTRestApi {
         @Query(value = "course_number") courseNumber: String,
         @Query(value = "instructor") instructor: String
     ): GetLecturesIdResults
+
+    @GET("/v1/popups")
+    suspend fun _getPopup(): GetPopupResults
 }

@@ -59,5 +59,11 @@ interface UserRepository {
 
     suspend fun performLogout()
 
+    suspend fun fetchAndSetPopup()
+
+    suspend fun closePopupWithHiddenDays()
+
+    suspend fun closePopup()
+
     suspend fun registerToken()
 }
