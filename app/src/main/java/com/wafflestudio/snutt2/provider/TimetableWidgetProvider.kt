@@ -19,10 +19,6 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,28 +43,18 @@ TimetableWidgetProvider : AppWidgetProvider() {
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val views = RemoteViews(context.packageName, R.layout.widget_timetable)
             views.setOnClickPendingIntent(R.id.layout, pendingIntent)
-            renderViews(context, views)
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
-    }
 
-    private fun renderViews(
-        context: Context,
-        views: RemoteViews
-    ) {
-        val width = context.displayWidth.toInt()
-        val height = context.displayHeight.toInt()
-
-        GlobalScope.launch {
+            // render views
+            val width = context.displayWidth.toInt()
+            val height = context.displayHeight.toInt()
             views.setViewVisibility(R.id.placeholder, View.VISIBLE)
             views.setViewVisibility(R.id.table, View.GONE)
-            currentLectureRepository.currentTable.filterNotNull().first().let { table ->
+            currentLectureRepository.currentTable.value?.let { table ->
                 val tableView = TimetableView(context)
 
                 tableView.theme = table.theme
                 tableView.lectures = table.lectureList
-                tableView.trimParam = userRepository.tableTrimParam.first()
+                tableView.trimParam = userRepository.tableTrimParam.value
 
                 val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
@@ -81,7 +67,10 @@ TimetableWidgetProvider : AppWidgetProvider() {
                 views.setViewVisibility(R.id.table, View.VISIBLE)
                 views.setImageViewBitmap(R.id.table, bitmap)
             }
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
     companion object {
