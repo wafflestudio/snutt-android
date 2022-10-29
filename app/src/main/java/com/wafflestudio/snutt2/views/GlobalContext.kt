@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
+import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 
 val LocalApiOnError = compositionLocalOf<ApiOnError> {
     throw RuntimeException("")
@@ -29,5 +30,9 @@ val LocalReviewWebView = compositionLocalOf<WebViewContainer> {
 }
 
 val LocalHomePageController = compositionLocalOf<HomePageController> {
+    throw RuntimeException("")
+}
+
+val LocalPopupState = compositionLocalOf<PopupState> {
     throw RuntimeException("")
 }
