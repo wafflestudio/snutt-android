@@ -192,7 +192,7 @@ fun SearchPage(
                         LazyColumn(
                             state = lazyListState, modifier = Modifier.fillMaxSize()
                         ) {
-                            items(searchResultPagingItems, key = { it.item.id }) {
+                            items(searchResultPagingItems) {
                                 it?.let {
                                     SearchListItem(lectureDataWithState = it, onSelect = {
                                         scope.launch {
