@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
@@ -38,6 +40,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
 enum class BottomSheetState() {
@@ -62,6 +66,7 @@ val HideBottomSheet = compositionLocalOf<suspend (Boolean) -> Unit> {
     throw RuntimeException("")
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomePage() {
     val scope = rememberCoroutineScope()
@@ -98,9 +103,15 @@ fun HomePage() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        combine(timetableViewModel.currentTable, userViewModel.trimParam) { _, _ ->
+            TimetableWidgetProvider.refreshWidget(context)
+        }.launchIn(this)
+    }
+
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val trimParam = TableTrimParam.Default // by userViewModel.trimParam.collectAsState()
+    val trimParam by userViewModel.trimParam.collectAsState()
     val tableContext =
         TableContextBundle(table ?: Defaults.defaultTableDto, trimParam, previewTheme)
 
