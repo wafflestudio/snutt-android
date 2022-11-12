@@ -50,9 +50,7 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -112,6 +110,8 @@ fun TimetablePage(
 
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table
@@ -127,12 +127,14 @@ fun TimetablePage(
                 keyboardManager?.hide()
             }, onConfirm = { newTitle ->
             scope.launch {
-                tableListViewModel.changeNameTableNew(
-                    tableId = table.id,
-                    name = newTitle
-                )
-                changeTitleDialogState = false
-                keyboardManager?.hide()
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.changeNameTableNew(
+                        tableId = table.id,
+                        name = newTitle
+                    )
+                    changeTitleDialogState = false
+                    keyboardManager?.hide()
+                }
             }
         }, oldTitle = table.title
         )
