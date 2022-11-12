@@ -334,7 +334,7 @@ fun LectureDetailPage() {
                             scope.launch {
                                 launchSuspendApi(apiOnProgress, apiOnError) {
                                     pageController.update(HomeItem.Review(vm.getReviewContentsUrl()))
-                                    navController.popBackStack()
+                                    navController.popBackStack(route = NavigationDestination.Home, inclusive = false)
                                 }
                             }
                         }
