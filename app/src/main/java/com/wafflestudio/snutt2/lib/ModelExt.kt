@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -128,3 +129,7 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
         hourTo = (flatMap { it.class_time_json.map { ceil(it.endTimeInFloat).toInt() - 1 } } + tableTrimParam.hourTo).maxOf { it },
         forceFitLectures = true
     )
+
+fun ClassTimeDto.isContainedInTrimParam(tableTrimParam: TableTrimParam): Boolean =
+    tableTrimParam.dayOfWeekFrom <= this.day && this.day <= tableTrimParam.dayOfWeekTo &&
+        tableTrimParam.hourFrom <= this.startTimeHour && this.endTimeHour <= tableTrimParam.hourTo + 1

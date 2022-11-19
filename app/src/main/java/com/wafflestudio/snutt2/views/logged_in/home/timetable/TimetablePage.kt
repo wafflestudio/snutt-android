@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
+import com.wafflestudio.snutt2.lib.isContainedInTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
@@ -359,8 +360,11 @@ private fun DrawTableGrid() {
 private fun DrawLecture(lecture: LectureDto) {
     val context = LocalContext.current
     val theme = TableContext.current.previewTheme ?: TableContext.current.table.theme
+    val fittedTrimParam = LocalCanvasContext.current.fittedTrimParam
 
-    lecture.class_time_json.forEach {
+    lecture.class_time_json.filter {
+        it.isContainedInTrimParam(fittedTrimParam)
+    }.forEach {
         DrawClassTime(
             classTime = it,
             courseTitle = lecture.course_title,
