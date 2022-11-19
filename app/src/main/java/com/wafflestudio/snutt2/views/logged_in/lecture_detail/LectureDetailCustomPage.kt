@@ -497,3 +497,4 @@ fun LectureDetailCustomPage() {
             }
         }
     }
+    
