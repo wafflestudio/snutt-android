@@ -31,11 +31,11 @@ data class ClassTimeDto(
         get() = startTimeInFloat.toInt()
 
     val startTimeMinute: Int
-        get() = start_time.split(':')[1].toInt()
+        get() = start_time.split(':')[1].toInt()    // FIXME
 
     val endTimeHour: Int
         get() = endTimeInFloat.toInt()
 
     val endTimeMinute: Int
-        get() = end_time.split(':')[1].toInt()
+        get() = end_time.split(':')[1].toInt()      // FIXME
 }
