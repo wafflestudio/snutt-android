@@ -583,8 +583,7 @@ private fun CreateNewTableBottomSheet(
             Spacer(modifier = Modifier.height(5.dp))
             Picker(
                 list = allCourseBook,
-                initialValue = allCourseBook.find { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester }
-                    ?: allCourseBook.first(),
+                initialCenterIndex = allCourseBook.indexOfFirst { it.year == selectedCourseBook.year && it.semester == selectedCourseBook.semester },
                 onValueChanged = { index ->
                     onPickerChange(allCourseBook[index])
                 },

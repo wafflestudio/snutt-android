@@ -33,7 +33,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlap
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun LectureDetailCustomPage() {
@@ -440,23 +439,11 @@ fun LectureDetailCustomPage() {
         val weekDayList = stringArrayResource(R.array.week_days).toList()
         val timeList = stringArrayResource(R.array.time_string).toList()
 
-        fun indexOf(time: Float): Int {
-            // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-            return (time * 2).roundToInt()
+        var startTimeIndex: Int by remember {
+            mutableStateOf(classTime.startTimeHour.toInt() * 12 + classTime.startTimeMinute / 5)
         }
-
-        fun timeStringAtIndex(idx: Int): String {
-            return timeList[idx.coerceIn(0, timeList.size - 1)]
-        }
-
-        // 시작 시간에 따라 끝나는 시간 범위가 유동적으로 recompose 되어야 한다.
-        var startTime by remember {
-            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-            mutableStateOf(classTime.start + 8f)
-        }
-        var endTime by remember {
-            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-            mutableStateOf(classTime.start + classTime.len + 8f)
+        var endTimeIndex: Int by remember {
+            mutableStateOf(classTime.endTimeHour.toInt() * 12 + classTime.endTimeMinute / 5)
         }
         var day by remember { mutableStateOf(classTime.day) }
 
@@ -465,8 +452,9 @@ fun LectureDetailCustomPage() {
             onConfirm = {
                 onConfirm(
                     classTime.copy(
-                        day = day, start = startTime - 8f, // TODO: 24시간 개선시 반영
-                        len = endTime - startTime
+                        day = day,
+                        start_time = timeList[startTimeIndex],
+                        end_time = timeList[endTimeIndex],
                     )
                 )
             },
@@ -475,7 +463,7 @@ fun LectureDetailCustomPage() {
                 Box(modifier = Modifier.weight(1f)) {
                     Picker(
                         list = weekDayList,
-                        initialValue = weekDayList[day],
+                        initialCenterIndex = day,
                         onValueChanged = { day = it }
                     ) {
                         Text(text = weekDayList[it])
@@ -483,40 +471,29 @@ fun LectureDetailCustomPage() {
                 }
                 Box(modifier = Modifier.weight(2f)) {
                     Picker(
-                        list = timeList.subList(
-                            indexOf(8f), // 아직 시작 시간은 8시가 하한     TODO: 24시간 개선시 변경
-                            indexOf(24f) // 시작 시간은 24:00 선택 불가
-                        ),
-                        initialValue = timeStringAtIndex(indexOf(startTime)), onValueChanged = {
-                            // 콜백되는 인덱스는 08시가 index 0인 리스트 기준
-                            startTime = (
-                                it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-                                ) + 8f // TODO: 24시간 개선시 변경
-                            if (endTime <= startTime) endTime =
-                                startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        list = timeList,
+                        initialCenterIndex = startTimeIndex,
+                        onValueChanged = { selectedTimeIndex ->
+                            startTimeIndex = selectedTimeIndex
+                            if (endTimeIndex <= startTimeIndex) endTimeIndex = startTimeIndex + 1
                         }
                     ) {
-                        // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경
-                        Text(text = timeStringAtIndex(it + indexOf(8f)))
+                        Text(text = timeList[it])
                     }
                 }
                 Box(modifier = Modifier.weight(2f)) {
                     Picker(
-                        list = timeList.subList(
-                            // 선택할 수 있는 가장 이른 end는 start 30분 뒤
-                            indexOf(startTime + 0.5f), // TODO: 시간 최소 단위 바꾸면 변경
-                            timeList.size
-                        ),
-                        initialValue = timeStringAtIndex(indexOf(endTime)), onValueChanged = {
-                            // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                            endTime = (it / 2f) + startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        list = timeList.subList(startTimeIndex + 1, timeList.size),
+                        initialCenterIndex = endTimeIndex - startTimeIndex - 1,
+                        onValueChanged = { selectedTimeIndex ->
+                            // 콜백되는 인덱스는 (startTimeIndex+1)이 index 0인 리스트 기준
+                            endTimeIndex = selectedTimeIndex + startTimeIndex + 1
                         }
                     ) {
-                        // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                        Text(text = timeStringAtIndex(it + indexOf(startTime + 0.5f))) // TODO: 시간 최소 단위 바꾸면 변경
+                        // 콜백되는 인덱스는 (startTimeIndex+1)이 index 0인 리스트 기준
+                        Text(text = timeList[it + startTimeIndex + 1])
                     }
                 }
             }
         }
     }
-    

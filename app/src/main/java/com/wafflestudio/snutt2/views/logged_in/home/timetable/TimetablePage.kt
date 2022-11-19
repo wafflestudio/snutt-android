@@ -257,7 +257,7 @@ fun TimeTable(
                             val day =
                                 ((event.x - canvasContext.hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
                             val time =
-                                ((event.y - canvasContext.dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom - 8
+                                ((event.y - canvasContext.dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom
 
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
@@ -391,9 +391,9 @@ private fun DrawClassTime(
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset = Pair(
-        max(classTime.start - fittedTrimParam.hourFrom + 8, 0f),
+        max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
         min(
-            classTime.start + classTime.len - fittedTrimParam.hourFrom + 8,
+            classTime.endTimeInFloat - fittedTrimParam.hourFrom,
             fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
         )
     )
@@ -510,7 +510,7 @@ object Defaults {
         class_time_mask = emptyList()
     )
     val defaultClassTimeDto = ClassTimeDto(
-        day = 0, start = 0f, len = 1f, place = "", id = null
+        day = 0, place = "", id = null, start_time = "9:30", end_time = "10:45",
     )
 }
 
