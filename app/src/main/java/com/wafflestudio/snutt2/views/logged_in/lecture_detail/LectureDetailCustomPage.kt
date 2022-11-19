@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,6 +58,8 @@ fun LectureDetailCustomPage() {
     var editTimeDialogState by remember { mutableStateOf(false) }
     var editingClassTimeIndex by remember { mutableStateOf(0) }
     var deleteTimeDialogState by remember { mutableStateOf(false) }
+    var lectureOverlapDialogState by remember { mutableStateOf(false) }
+    var lectureOverlapDialogMessage by remember { mutableStateOf("") }
     BackHandler(enabled = editMode) {
         if (vm.isAddMode()) navController.popBackStack() // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
         else editExitDialogState = true
@@ -106,32 +109,35 @@ fun LectureDetailCustomPage() {
                     .clicks {
                         if (editMode.not()) vm.setEditMode()
                         else {
-                            if (vm.isAddMode()) {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                            scope.launch {
+                                lectureApiWithOverlapDialog(
+                                    apiOnProgress,
+                                    apiOnError,
+                                    onLectureOverlap = { message ->
+                                        lectureOverlapDialogMessage = message
+                                        lectureOverlapDialogState = true
+                                    }
+                                ) {
+                                    if (vm.isAddMode()) {
                                         vm.createLecture2()
                                         vm.unsetEditMode()
                                         vm.setAddMode(false)
-                                        /* FIXME
-                                         * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                         *
-                                         * 하지만 @POST("/tables/{id}/lecture") api 는
-                                         * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                         * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                         * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                         *
-                                         * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                         * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                         *
-                                         * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                         * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                         */
+                                            /* FIXME
+                                             * 안드로이드는 여기서 그대로 detailPage 에 남는다.
+                                             *
+                                             * 하지만 @POST("/tables/{id}/lecture") api 는
+                                             * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
+                                             * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
+                                             * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
+                                             *
+                                             * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
+                                             * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
+                                             *
+                                             * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
+                                             * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
+                                             */
                                         scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                    }
-                                }
-                            } else {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                    } else {
                                         vm.updateLecture2()
                                         vm.initializeEditingLectureDetail(editingLectureDetail)
                                         vm.unsetEditMode()
@@ -389,6 +395,39 @@ fun LectureDetailCustomPage() {
             deleteTimeDialogState = false
         }, title = stringResource(R.string.lecture_detail_delete_class_time_message)
             ) {}
+        }
+
+        // 강의 겹침 다이얼로그
+        if (lectureOverlapDialogState) {
+            CustomDialog(
+                onDismiss = { lectureOverlapDialogState = false },
+                onConfirm = {
+                    scope.launch {
+                        if (vm.isAddMode()) {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    vm.createLecture2(is_forced = true)
+                                    vm.unsetEditMode()
+                                    vm.setAddMode(false)
+                                    scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                }
+                            }
+                        } else {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    vm.updateLecture2(is_forced = true)
+                                    vm.initializeEditingLectureDetail(editingLectureDetail)
+                                    vm.unsetEditMode()
+                                }
+                            }
+                        }
+                        lectureOverlapDialogState = false
+                    }
+                },
+                title = stringResource(id = R.string.lecture_overlap_error_message)
+            ) {
+                Text(text = lectureOverlapDialogMessage)
+            }
         }
     }
 
