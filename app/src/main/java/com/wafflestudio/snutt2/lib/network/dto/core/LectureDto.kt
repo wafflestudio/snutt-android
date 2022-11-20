@@ -19,6 +19,7 @@ data class LectureDto(
     @Json(name = "class_time_mask") val class_time_mask: List<Long>,
     @Json(name = "class_time_json") val class_time_json: List<ClassTimeDto>,
     @Json(name = "instructor") val instructor: String,
+    @Json(name = "quota") val quota: Long = 0,
     @Json(name = "remark") val remark: String,
     @Json(name = "category") val category: String?,
     @Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
