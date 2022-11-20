@@ -76,10 +76,10 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
 
         lifecycleScope.launch {
-            val token = userViewModel.accessToken.filterNotNull().first()
+            var token = userViewModel.accessToken.filterNotNull().first()
             if (token.isNotEmpty()) {
-                homeViewModel.refreshData()
-                userViewModel.fetchPopup()
+                // token authentication이 실패할 경우 empty string으로 token 교체
+                token = homeViewModel.refreshDataAndCheckToken(token)
             }
             val startDestination =
                 if (token.isEmpty()) NavigationDestination.Onboard else NavigationDestination.Home

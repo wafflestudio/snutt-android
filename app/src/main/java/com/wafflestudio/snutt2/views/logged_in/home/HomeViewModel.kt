@@ -17,18 +17,21 @@ class HomeViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
 
-    suspend fun refreshData() {
+    suspend fun refreshDataAndCheckToken(token: String): String {
         try {
             coroutineScope {
                 awaitAll(
                     async { tableRepository.fetchDefaultTable() },
                     async { tableRepository.getTableList() },
                     async { userRepository.fetchUserInfo() },
+                    async { userRepository.fetchAndSetPopup() },
                 )
             }
         } catch (e: Exception) {
-            // do nothing (just sync)
+            // when
+            return ""
         }
+        return token
     }
 
     suspend fun getUncheckedNotificationsExist(): Boolean {
