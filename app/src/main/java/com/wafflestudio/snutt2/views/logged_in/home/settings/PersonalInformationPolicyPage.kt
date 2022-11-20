@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
@@ -22,11 +23,13 @@ fun PersonalInformationPolicyPage() {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
+    val isDarkMode = isSystemInDarkTheme()
 
     var accessToken: String
     val url = stringResource(R.string.api_server) + stringResource(R.string.privacy)
     val headers = HashMap<String, String>()
     headers["x-access-apikey"] = stringResource(R.string.api_key)
+    headers["dark"] = if (isDarkMode) "dark" else ""
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
@@ -50,6 +53,7 @@ fun PersonalInformationPolicyPage() {
         scope.launch {
             accessToken = userViewModel.getAccessToken()
             headers["x-access-token"] = accessToken
+            headers["dark"] = if (isDarkMode) "dark" else ""
             webViewUrlReady = true
         }
     }

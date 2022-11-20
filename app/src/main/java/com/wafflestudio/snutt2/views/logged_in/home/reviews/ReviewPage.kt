@@ -4,6 +4,7 @@ import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -12,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +57,7 @@ fun ReviewPage() {
         onDispose { onBackPressedCallback.remove() }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(SNUTTColors.White900)) {
         when (val loadState = webViewContainer.loadState.value) {
             LoadState.Error -> WebViewErrorPage(
                 modifier = Modifier.fillMaxSize(),
@@ -92,7 +94,8 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
             navigationIcon = {
                 TimetableIcon(
                     modifier = Modifier.size(30.dp),
-                    isSelected = true
+                    isSelected = true,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }
         )
