@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -36,73 +37,86 @@ fun ListIcon(
 @Composable
 fun NotificationIcon(
     modifier: Modifier = Modifier,
+    new: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_alarm_default),
-        contentDescription = ""
+        painter = painterResource(if (new) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default),
+        contentDescription = "",
+        colorFilter = colorFilter
     )
 }
 
 @Composable
 fun ShareIcon(
     modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_share),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun ArrowBackIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_arrow_back),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun SearchIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_search_unselected),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter
     )
 }
 
 @Composable
 fun FilterIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_filter),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun ExitIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_exit),
-        contentDescription = ""
+        painter = painterResource(R.drawable.ic_exit),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun TagIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
@@ -151,12 +165,14 @@ fun LogoIcon(
 
 @Composable
 fun ArrowDownIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_arrow_down),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -184,104 +200,134 @@ fun VividUncheckedIcon(
 
 @Composable
 fun DuplicateIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_duplicate),
-        contentDescription = ""
+        painter = painterResource(id = R.drawable.ic_duplicate),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun MoreIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_more),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun WriteIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_write),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun TrashIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_trash),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun PaletteIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_palette),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(if (isSelected) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected),
-        contentDescription = ""
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_timetable_selected
+            else R.drawable.ic_timetable_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun SearchIcon(
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(if (isSelected) R.drawable.ic_search_selected else R.drawable.ic_search_unselected),
-        contentDescription = ""
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_search_selected
+            else R.drawable.ic_search_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun ReviewIcon(
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(if (isSelected) R.drawable.ic_review_selected else R.drawable.ic_review_unselected),
-        contentDescription = ""
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_review_selected
+            else R.drawable.ic_review_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun SettingIcon(
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(if (isSelected) R.drawable.ic_setting_selected else R.drawable.ic_setting_unselected),
-        contentDescription = ""
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_setting_selected
+            else R.drawable.ic_setting_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -298,12 +344,14 @@ fun TipCloseIcon(
 
 @Composable
 fun ArrowRight(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.arrowright),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -325,17 +373,6 @@ fun WhiteCloseIcon(
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_close_white),
-        contentDescription = ""
-    )
-}
-
-@Composable
-fun SettingsIcon(
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.ic_setting_unselected),
         contentDescription = ""
     )
 }
@@ -390,5 +427,18 @@ fun AlarmOnIcon(
         modifier = modifier,
         painter = painterResource(R.drawable.tab_alarm_on),
         contentDescription = ""
+    )
+}
+
+@Composable
+fun LectureListIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_lecture_list),
+        contentDescription = stringResource(R.string.home_timetable_drawer),
+        colorFilter = colorFilter,
     )
 }
