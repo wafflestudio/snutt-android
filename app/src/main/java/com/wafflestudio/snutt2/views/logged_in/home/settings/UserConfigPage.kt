@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -109,23 +109,29 @@ fun UserConfigPage() {
             onClickNavigateBack = { navController.popBackStack() }
         )
         Margin(height = 10.dp)
-        Column(modifier = Modifier.background(Color.White)) {
+        Column(modifier = Modifier.background(SNUTTColors.White900)) {
             if (user?.localId.isNullOrEmpty().not()) {
                 SettingItem(title = stringResource(R.string.sign_in_id_hint), content = {
-                    Text(text = user?.localId.toString())
+                    Text(text = user?.localId.toString(), style = SNUTTTypography.body2)
                 })
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_change_password),
                     content = {
-                        ArrowRight(modifier = Modifier.size(16.dp))
+                        ArrowRight(
+                            modifier = Modifier.size(16.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                        )
                     }
                 ) { passwordChangeDialogState = true }
             } else {
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_add_local_id),
-                    modifier = Modifier.background(Color.White),
+                    modifier = Modifier.background(SNUTTColors.White900),
                     content = {
-                        ArrowRight(modifier = Modifier.size(16.dp))
+                        ArrowRight(
+                            modifier = Modifier.size(16.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                        )
                     }
                 ) { addIdPasswordDialogState = true }
             }
@@ -141,15 +147,21 @@ fun UserConfigPage() {
             SettingItem(
                 title = stringResource(R.string.settings_user_config_facebook_disconnect),
                 content = {
-                    ArrowRight(modifier = Modifier.size(16.dp))
+                    ArrowRight(
+                        modifier = Modifier.size(16.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    )
                 }
             ) { disconnectFacebookDialogState = true }
         } else {
             SettingItem(
                 title = stringResource(R.string.settings_user_config_connect_facebook),
-                modifier = Modifier.background(Color.White),
+                modifier = Modifier.background(SNUTTColors.White900),
                 content = {
-                    ArrowRight(modifier = Modifier.size(16.dp))
+                    ArrowRight(
+                        modifier = Modifier.size(16.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    )
                 }
             ) {
                 // FIXME: 실패했을 때.
@@ -159,23 +171,29 @@ fun UserConfigPage() {
             }
         }
         Margin(height = 10.dp)
-        Column(modifier = Modifier.background(Color.White)) {
+        Column(modifier = Modifier.background(SNUTTColors.White900)) {
             SettingItem(title = stringResource(R.string.settings_app_report_email), content = {
-                Text(text = user?.email ?: "")
+                Text(text = user?.email ?: "", style = SNUTTTypography.body2)
             })
             SettingItem(
                 title = stringResource(R.string.settings_user_config_change_email),
                 content = {
-                    ArrowRight(modifier = Modifier.size(16.dp))
+                    ArrowRight(
+                        modifier = Modifier.size(16.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    )
                 }
             ) { emailChangeDialogState = true }
         }
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_user_config_leave),
-            modifier = Modifier.background(Color.White),
+            modifier = Modifier.background(SNUTTColors.White900),
             content = {
-                ArrowRight(modifier = Modifier.size(16.dp))
+                ArrowRight(
+                    modifier = Modifier.size(16.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                )
             }
         ) { leaveDialogState = true }
     }
@@ -326,7 +344,7 @@ fun UserConfigPage() {
             title = stringResource(R.string.settings_user_config_leave),
             positiveButtonText = stringResource(R.string.settings_user_config_leave)
         ) {
-            Text(text = stringResource(R.string.settings_leave_message))
+            Text(text = stringResource(R.string.settings_leave_message), style = SNUTTTypography.body2)
         }
     }
 

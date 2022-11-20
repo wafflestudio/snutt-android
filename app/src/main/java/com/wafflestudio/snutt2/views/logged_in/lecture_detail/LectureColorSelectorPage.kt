@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
@@ -46,7 +48,7 @@ fun LectureColorSelectorPage() {
     val currentTable by vm.currentTable.collectAsState()
     val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
 
-    Column {
+    Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = "강의 색상 선택하기"
         ) {

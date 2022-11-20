@@ -9,6 +9,7 @@ import android.view.View
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -17,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -35,10 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
@@ -69,14 +69,20 @@ class CanvasContext(
     val dayLabelHeight = 28.5f.dp(context)
     val cellPadding = 4.dp(context)
 
-    val dayLabelTextPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = android.graphics.Color.argb(180, 0, 0, 0)
+    val dayLabelTextPaint: Paint @Composable get() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val darkMode = isSystemInDarkTheme()
+        color =
+            if (darkMode) android.graphics.Color.argb(180, 119, 119, 119)
+            else android.graphics.Color.argb(180, 0, 0, 0)
         textSize = 12.sp(context)
         textAlign = Paint.Align.CENTER
         typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
     }
-    val hourLabelTextPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = android.graphics.Color.argb(180, 0, 0, 0)
+    val hourLabelTextPaint: Paint @Composable get() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val darkMode = isSystemInDarkTheme()
+        color =
+            if (darkMode) android.graphics.Color.argb(180, 119, 119, 119)
+            else android.graphics.Color.argb(180, 0, 0, 0)
         textSize = 12.sp(context)
         textAlign = Paint.Align.RIGHT
         typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
@@ -141,7 +147,7 @@ fun TimetablePage(
         )
     }
 
-    Column(Modifier.background(SNUTTColors.White900)) { // 스크린샷 때문에 background 추가
+    Column(Modifier.background(SNUTTColors.White900)) {
         TopBar(
             title = {
                 val creditText = stringResource(
@@ -171,36 +177,33 @@ fun TimetablePage(
                             scope.launch { drawerState.open() }
                         },
                     painter = painterResource(if (newSemesterNotify) R.drawable.ic_drawer_notify else R.drawable.ic_drawer),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                    contentDescription = stringResource(R.string.home_timetable_drawer),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
             actions = {
-                Image(
+                LectureListIcon(
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
-                    painter = painterResource(id = R.drawable.ic_lecture_list),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Image(
+                ShareIcon(
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {
                             shareScreenshotFromView(view, context, topBarHeight, timetableHeight)
                         },
-                    painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Image(
+                NotificationIcon(
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { navController.navigate(NavigationDestination.Notification) },
-                    painter = painterResource(
-                        id = if (uncheckedNotification) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default
-                    ),
-                    contentDescription = stringResource(R.string.home_timetable_drawer)
+                    new = uncheckedNotification,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
             },
@@ -300,6 +303,9 @@ private fun DrawTableGrid() {
     val dayLabelTextPaint = LocalCanvasContext.current.dayLabelTextPaint
     val hourLabelTextPaint = LocalCanvasContext.current.hourLabelTextPaint
 
+    val gridColor = SNUTTColors.TableGrid
+    val gridColor2 = SNUTTColors.TableGrid2
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
             (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
@@ -313,12 +319,19 @@ private fun DrawTableGrid() {
         val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
         var startHeight = dayLabelHeight
 
-        repeat(verticalLines) {
+//        drawLine(
+//            start = Offset(x = 0f, y = startHeight - unitHeight / 2),
+//            end = Offset(x = size.width, y = startHeight - unitHeight / 2),
+//            color = gridColor,
+//            strokeWidth = (1f).dp(context)
+//        )
+
+        repeat(verticalLines + 1) {
             drawLine(
                 start = Offset(x = startWidth, y = 0f),
                 end = Offset(x = startWidth, y = size.height),
-                color = Color(235, 235, 235),
-                strokeWidth = 0.5f
+                color = gridColor,
+                strokeWidth = (0.5f).dp(context)
             )
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.drawText(
@@ -334,13 +347,13 @@ private fun DrawTableGrid() {
             drawLine(
                 start = Offset(x = 0f, y = startHeight),
                 end = Offset(x = size.width, y = startHeight),
-                color = Color(235, 235, 235),
+                color = gridColor,
                 strokeWidth = (0.5f).dp(context)
             )
             drawLine(
                 start = Offset(x = hourLabelWidth, y = startHeight + (unitHeight * 0.5f)),
                 end = Offset(x = size.width, y = startHeight + (unitHeight * 0.5f)),
-                color = Color(243, 243, 243),
+                color = gridColor2,
                 strokeWidth = (0.5f).dp(context)
             )
             drawIntoCanvas { canvas ->
@@ -368,9 +381,11 @@ private fun DrawLecture(lecture: LectureDto) {
         DrawClassTime(
             classTime = it,
             courseTitle = lecture.course_title,
-            bgColor = if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!! else theme.getColorByIndex(
-                context, lecture.colorIndex
-            ),
+            bgColor =
+            if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!!
+            else theme.getColorByIndexComposable(
+                lecture.colorIndex
+            ).toArgb(),
             fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
                 R.color.white
             )
@@ -509,6 +524,7 @@ object Defaults {
         classification = null,
         course_number = null,
         lecture_number = null,
+        quota = 0L,
         remark = "",
         class_time_json = emptyList(),
         class_time_mask = emptyList()

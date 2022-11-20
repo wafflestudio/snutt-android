@@ -241,7 +241,7 @@ private fun TutorialScreen(
                 .padding(30.dp)
                 .align(Alignment.CenterHorizontally),
             pagerState = pagerState,
-            activeColor = SNUTTColors.Gray400,
+            activeColor = SNUTTColors.Gray200,
             inactiveColor = SNUTTColors.Gray100,
             indicatorHeight = 12.dp,
             indicatorWidth = 12.dp,
