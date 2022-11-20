@@ -32,8 +32,6 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -57,9 +55,8 @@ fun SignInPage() {
             try {
                 apiOnProgress.showProgress()
                 userViewModel.loginLocal(idField, passwordField)
-
-                var token = userViewModel.accessToken.filterNotNull().first()
-                token = homeViewModel.refreshDataAndCheckToken(token)
+                homeViewModel.refreshData()
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
@@ -77,9 +74,7 @@ fun SignInPage() {
                     loginResult.accessToken.userId,
                     loginResult.accessToken.token
                 )
-                try {
-                    userViewModel.fetchPopup()
-                } catch (_: Exception) {}
+                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
