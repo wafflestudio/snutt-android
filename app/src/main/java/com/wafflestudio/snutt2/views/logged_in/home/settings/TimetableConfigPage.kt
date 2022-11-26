@@ -32,7 +32,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -42,12 +45,17 @@ import kotlin.math.roundToInt
 @Composable
 fun TimetableConfigPage() {
     val navController = LocalNavController.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<UserViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        viewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            viewModel.fetchUserInfo()
+        }
     }
 
     Column(

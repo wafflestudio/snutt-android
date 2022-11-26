@@ -14,13 +14,18 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
 @Composable
 fun ServiceInfoPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
@@ -34,8 +39,11 @@ fun ServiceInfoPage() {
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        userViewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            userViewModel.fetchUserInfo()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

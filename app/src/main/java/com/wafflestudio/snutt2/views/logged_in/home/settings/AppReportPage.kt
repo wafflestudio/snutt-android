@@ -17,21 +17,29 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppReportPage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
 
     var email by remember { mutableStateOf("") }
     var detail by remember { mutableStateOf("") }
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        userViewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            userViewModel.fetchUserInfo()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -60,10 +68,13 @@ fun AppReportPage() {
                             context.toast(context.getString(R.string.feedback_invalid_email_warning))
                         } else {
                             scope.launch {
-                                userViewModel.sendFeedback(email, detail)
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    userViewModel.sendFeedback(email, detail)
+                                    context.toast(context.getString(R.string.feedback_send_success_message))
+                                    navController.popBackStack()
+                                }
                             }
-                            context.toast(context.getString(R.string.feedback_send_success_message))
-                            navController.popBackStack()
+
                         }
                     }
             )

@@ -239,11 +239,13 @@ fun SearchPage(
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     }, onClickReview = {
                                         scope.launch {
-                                            pageController.update(
-                                                HomeItem.Review(
-                                                    searchViewModel.getLectureReviewUrl(it.item)
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                pageController.update(
+                                                    HomeItem.Review(
+                                                        searchViewModel.getLectureReviewUrl(it.item)
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
                                     })
                                 }

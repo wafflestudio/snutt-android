@@ -95,8 +95,11 @@ fun UserConfigPage() {
             }
         )
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        viewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            viewModel.fetchUserInfo()
+        }
     }
 
     Column(
