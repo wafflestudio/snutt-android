@@ -83,8 +83,8 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                    if (isDarkMode) "dark"
-                    else "light"
+                if (isDarkMode) "dark"
+                else "light"
                 }"
             )
         }.flush()
@@ -110,8 +110,8 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                    if (isDarkMode) "dark"
-                    else "light"
+                if (isDarkMode) "dark"
+                else "light"
                 }"
             )
         }.flush()
