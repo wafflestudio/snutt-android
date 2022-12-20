@@ -17,7 +17,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -525,19 +524,21 @@ private fun ChangeThemeBottomSheetContent(
 
     Column(
         modifier = Modifier
-            .background(Color.White)
+            .background(SNUTTColors.White900)
             .fillMaxWidth()
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Text(
                 text = stringResource(R.string.home_drawer_table_theme_change),
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(10.dp),
+                style = SNUTTTypography.body1,
             )
             Spacer(modifier = Modifier.weight(1f))
             Box(modifier = Modifier.clicks { onApply() }) {
                 Text(
                     text = stringResource(R.string.home_select_theme_confirm),
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(10.dp),
+                    style = SNUTTTypography.body1,
                 )
             }
         }
@@ -637,7 +638,7 @@ private fun ThemeItem(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = name, textAlign = TextAlign.Center)
+            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1,)
         }
     }
 }

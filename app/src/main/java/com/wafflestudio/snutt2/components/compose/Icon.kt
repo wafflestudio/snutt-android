@@ -333,12 +333,14 @@ fun SettingIcon(
 
 @Composable
 fun TipCloseIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.btntipclose),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -439,6 +441,32 @@ fun LectureListIcon(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_lecture_list),
         contentDescription = stringResource(R.string.home_timetable_drawer),
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun CalendarIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_calendar),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun RefreshIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_refresh),
+        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
