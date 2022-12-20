@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
+import com.wafflestudio.snutt2.lib.isContainedInTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
@@ -50,9 +51,7 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -112,6 +111,8 @@ fun TimetablePage(
 
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table
@@ -127,12 +128,14 @@ fun TimetablePage(
                 keyboardManager?.hide()
             }, onConfirm = { newTitle ->
             scope.launch {
-                tableListViewModel.changeNameTableNew(
-                    tableId = table.id,
-                    name = newTitle
-                )
-                changeTitleDialogState = false
-                keyboardManager?.hide()
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.changeNameTableNew(
+                        tableId = table.id,
+                        name = newTitle
+                    )
+                    changeTitleDialogState = false
+                    keyboardManager?.hide()
+                }
             }
         }, oldTitle = table.title
         )
@@ -255,7 +258,7 @@ fun TimeTable(
                             val day =
                                 ((event.x - canvasContext.hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
                             val time =
-                                ((event.y - canvasContext.dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom - 8
+                                ((event.y - canvasContext.dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom
 
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
@@ -357,8 +360,11 @@ private fun DrawTableGrid() {
 private fun DrawLecture(lecture: LectureDto) {
     val context = LocalContext.current
     val theme = TableContext.current.previewTheme ?: TableContext.current.table.theme
+    val fittedTrimParam = LocalCanvasContext.current.fittedTrimParam
 
-    lecture.class_time_json.forEach {
+    lecture.class_time_json.filter {
+        it.isContainedInTrimParam(fittedTrimParam)
+    }.forEach {
         DrawClassTime(
             classTime = it,
             courseTitle = lecture.course_title,
@@ -389,9 +395,9 @@ private fun DrawClassTime(
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset = Pair(
-        max(classTime.start - fittedTrimParam.hourFrom + 8, 0f),
+        max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
         min(
-            classTime.start + classTime.len - fittedTrimParam.hourFrom + 8,
+            classTime.endTimeInFloat - fittedTrimParam.hourFrom,
             fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
         )
     )
@@ -508,7 +514,7 @@ object Defaults {
         class_time_mask = emptyList()
     )
     val defaultClassTimeDto = ClassTimeDto(
-        day = 0, start = 0f, len = 1f, place = "", id = null
+        day = 0, place = "", id = null, start_time = "9:30", end_time = "10:45", start = 9.5f, len = 1.25f,
     )
 }
 

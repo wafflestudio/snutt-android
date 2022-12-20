@@ -201,4 +201,5 @@
     <string name="example_email">example@gmail.com</string>
     <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
     <string name="reviews_error_retry">다시 불러오기</string>
+    <string name="lecture_overlap_error_message">시간대 겹침</string>
 </resources>

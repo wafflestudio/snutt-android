@@ -29,10 +29,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun LectureDetailCustomPage() {
@@ -57,6 +57,8 @@ fun LectureDetailCustomPage() {
     var editTimeDialogState by remember { mutableStateOf(false) }
     var editingClassTimeIndex by remember { mutableStateOf(0) }
     var deleteTimeDialogState by remember { mutableStateOf(false) }
+    var lectureOverlapDialogState by remember { mutableStateOf(false) }
+    var lectureOverlapDialogMessage by remember { mutableStateOf("") }
     BackHandler(enabled = editMode) {
         if (vm.isAddMode()) navController.popBackStack() // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
         else editExitDialogState = true
@@ -106,32 +108,35 @@ fun LectureDetailCustomPage() {
                     .clicks {
                         if (editMode.not()) vm.setEditMode()
                         else {
-                            if (vm.isAddMode()) {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                            scope.launch {
+                                lectureApiWithOverlapDialog(
+                                    apiOnProgress,
+                                    apiOnError,
+                                    onLectureOverlap = { message ->
+                                        lectureOverlapDialogMessage = message
+                                        lectureOverlapDialogState = true
+                                    }
+                                ) {
+                                    if (vm.isAddMode()) {
                                         vm.createLecture2()
                                         vm.unsetEditMode()
                                         vm.setAddMode(false)
-                                        /* FIXME
-                                         * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                         *
-                                         * 하지만 @POST("/tables/{id}/lecture") api 는
-                                         * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                         * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                         * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                         *
-                                         * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                         * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                         *
-                                         * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                         * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                         */
+                                            /* FIXME
+                                             * 안드로이드는 여기서 그대로 detailPage 에 남는다.
+                                             *
+                                             * 하지만 @POST("/tables/{id}/lecture") api 는
+                                             * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
+                                             * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
+                                             * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
+                                             *
+                                             * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
+                                             * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
+                                             *
+                                             * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
+                                             * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
+                                             */
                                         scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                    }
-                                }
-                            } else {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                    } else {
                                         vm.updateLecture2()
                                         vm.initializeEditingLectureDetail(editingLectureDetail)
                                         vm.unsetEditMode()
@@ -390,6 +395,39 @@ fun LectureDetailCustomPage() {
         }, title = stringResource(R.string.lecture_detail_delete_class_time_message)
             ) {}
         }
+
+        // 강의 겹침 다이얼로그
+        if (lectureOverlapDialogState) {
+            CustomDialog(
+                onDismiss = { lectureOverlapDialogState = false },
+                onConfirm = {
+                    scope.launch {
+                        if (vm.isAddMode()) {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    vm.createLecture2(is_forced = true)
+                                    vm.unsetEditMode()
+                                    vm.setAddMode(false)
+                                    scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                }
+                            }
+                        } else {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    vm.updateLecture2(is_forced = true)
+                                    vm.initializeEditingLectureDetail(editingLectureDetail)
+                                    vm.unsetEditMode()
+                                }
+                            }
+                        }
+                        lectureOverlapDialogState = false
+                    }
+                },
+                title = stringResource(id = R.string.lecture_overlap_error_message)
+            ) {
+                Text(text = lectureOverlapDialogMessage)
+            }
+        }
     }
 
     @Composable
@@ -401,23 +439,11 @@ fun LectureDetailCustomPage() {
         val weekDayList = stringArrayResource(R.array.week_days).toList()
         val timeList = stringArrayResource(R.array.time_string).toList()
 
-        fun indexOf(time: Float): Int {
-            // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-            return (time * 2).roundToInt()
+        var startTimeIndex: Int by remember {
+            mutableStateOf(classTime.startTimeHour.toInt() * 12 + classTime.startTimeMinute / 5)
         }
-
-        fun timeStringAtIndex(idx: Int): String {
-            return timeList[idx.coerceIn(0, timeList.size - 1)]
-        }
-
-        // 시작 시간에 따라 끝나는 시간 범위가 유동적으로 recompose 되어야 한다.
-        var startTime by remember {
-            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-            mutableStateOf(classTime.start + 8f)
-        }
-        var endTime by remember {
-            // 현재 서버에서는 start=0 이 8시이다. TODO: 24시간 개선시 변경
-            mutableStateOf(classTime.start + classTime.len + 8f)
+        var endTimeIndex: Int by remember {
+            mutableStateOf(classTime.endTimeHour.toInt() * 12 + classTime.endTimeMinute / 5)
         }
         var day by remember { mutableStateOf(classTime.day) }
 
@@ -426,8 +452,9 @@ fun LectureDetailCustomPage() {
             onConfirm = {
                 onConfirm(
                     classTime.copy(
-                        day = day, start = startTime - 8f, // TODO: 24시간 개선시 반영
-                        len = endTime - startTime
+                        day = day,
+                        start_time = timeList[startTimeIndex],
+                        end_time = timeList[endTimeIndex],
                     )
                 )
             },
@@ -436,7 +463,7 @@ fun LectureDetailCustomPage() {
                 Box(modifier = Modifier.weight(1f)) {
                     Picker(
                         list = weekDayList,
-                        initialValue = weekDayList[day],
+                        initialCenterIndex = day,
                         onValueChanged = { day = it }
                     ) {
                         Text(text = weekDayList[it])
@@ -444,37 +471,27 @@ fun LectureDetailCustomPage() {
                 }
                 Box(modifier = Modifier.weight(2f)) {
                     Picker(
-                        list = timeList.subList(
-                            indexOf(8f), // 아직 시작 시간은 8시가 하한     TODO: 24시간 개선시 변경
-                            indexOf(24f) // 시작 시간은 24:00 선택 불가
-                        ),
-                        initialValue = timeStringAtIndex(indexOf(startTime)), onValueChanged = {
-                            // 콜백되는 인덱스는 08시가 index 0인 리스트 기준
-                            startTime = (
-                                it / 2f // TODO: 시간 최소 단위를 바꾼다면(현재 30분) 변경
-                                ) + 8f // TODO: 24시간 개선시 변경
-                            if (endTime <= startTime) endTime =
-                                startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        list = timeList,
+                        initialCenterIndex = startTimeIndex,
+                        onValueChanged = { selectedTimeIndex ->
+                            startTimeIndex = selectedTimeIndex
+                            if (endTimeIndex <= startTimeIndex) endTimeIndex = startTimeIndex + 1
                         }
                     ) {
-                        // 콜백되는 인덱스는 08시가 index 0인 리스트 기준       TODO: 24시간 개선시 변경
-                        Text(text = timeStringAtIndex(it + indexOf(8f)))
+                        Text(text = timeList[it])
                     }
                 }
                 Box(modifier = Modifier.weight(2f)) {
                     Picker(
-                        list = timeList.subList(
-                            // 선택할 수 있는 가장 이른 end는 start 30분 뒤
-                            indexOf(startTime + 0.5f), // TODO: 시간 최소 단위 바꾸면 변경
-                            timeList.size
-                        ),
-                        initialValue = timeStringAtIndex(indexOf(endTime)), onValueChanged = {
-                            // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                            endTime = (it / 2f) + startTime + 0.5f // TODO: 시간 최소 단위 바꾸면 변경
+                        list = timeList.subList(startTimeIndex + 1, timeList.size),
+                        initialCenterIndex = endTimeIndex - startTimeIndex - 1,
+                        onValueChanged = { selectedTimeIndex ->
+                            // 콜백되는 인덱스는 (startTimeIndex+1)이 index 0인 리스트 기준
+                            endTimeIndex = selectedTimeIndex + startTimeIndex + 1
                         }
                     ) {
-                        // 콜백되는 인덱스는 (startTime+0.5f)가 index 0인 리스트 기준
-                        Text(text = timeStringAtIndex(it + indexOf(startTime + 0.5f))) // TODO: 시간 최소 단위 바꾸면 변경
+                        // 콜백되는 인덱스는 (startTimeIndex+1)이 index 0인 리스트 기준
+                        Text(text = timeList[it + startTimeIndex + 1])
                     }
                 }
             }

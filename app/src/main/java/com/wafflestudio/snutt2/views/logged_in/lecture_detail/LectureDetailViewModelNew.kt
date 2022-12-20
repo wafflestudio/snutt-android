@@ -10,7 +10,9 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -67,8 +69,9 @@ class LectureDetailViewModelNew @Inject constructor(
         viewModelScope.launch { _editingLectureDetail.emit(newLectureDto) }
     }
 
-    suspend fun updateLecture2() {
+    suspend fun updateLecture2(is_forced: Boolean = false) {
         val param = buildPutLectureParams()
+        param.isForced = is_forced
         currentTableRepository.updateLecture(_editingLectureDetail.value.id, param)
     }
 
@@ -81,8 +84,9 @@ class LectureDetailViewModelNew @Inject constructor(
         return currentTable.value?.lectureList?.find { it.id == editingLectureDetail.value.id }!! // TODO: 왜 resetLecture 의 api 응답이 TableDto 인지..
     }
 
-    suspend fun createLecture2() {
+    suspend fun createLecture2(is_forced: Boolean = false) {
         val param = buildPostLectureParams()
+        param.isForced = is_forced
         currentTableRepository.createCustomLecture(param)
     }
 

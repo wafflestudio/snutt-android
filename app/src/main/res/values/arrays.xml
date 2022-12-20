@@ -10,55 +10,293 @@
         <item>일</item>
     </string-array>
     <string-array name="time_string">
-        <!-- 24시 적용할 때를 위해 -->
         <item>0:00</item>
+        <item>0:05</item>
+        <item>0:10</item>
+        <item>0:15</item>
+        <item>0:20</item>
+        <item>0:25</item>
         <item>0:30</item>
+        <item>0:35</item>
+        <item>0:40</item>
+        <item>0:45</item>
+        <item>0:50</item>
+        <item>0:55</item>
         <item>1:00</item>
+        <item>1:05</item>
+        <item>1:10</item>
+        <item>1:15</item>
+        <item>1:20</item>
+        <item>1:25</item>
         <item>1:30</item>
+        <item>1:35</item>
+        <item>1:40</item>
+        <item>1:45</item>
+        <item>1:50</item>
+        <item>1:55</item>
         <item>2:00</item>
+        <item>2:05</item>
+        <item>2:10</item>
+        <item>2:15</item>
+        <item>2:20</item>
+        <item>2:25</item>
         <item>2:30</item>
+        <item>2:35</item>
+        <item>2:40</item>
+        <item>2:45</item>
+        <item>2:50</item>
+        <item>2:55</item>
         <item>3:00</item>
+        <item>3:05</item>
+        <item>3:10</item>
+        <item>3:15</item>
+        <item>3:20</item>
+        <item>3:25</item>
         <item>3:30</item>
+        <item>3:35</item>
+        <item>3:40</item>
+        <item>3:45</item>
+        <item>3:50</item>
+        <item>3:55</item>
         <item>4:00</item>
+        <item>4:05</item>
+        <item>4:10</item>
+        <item>4:15</item>
+        <item>4:20</item>
+        <item>4:25</item>
         <item>4:30</item>
+        <item>4:35</item>
+        <item>4:40</item>
+        <item>4:45</item>
+        <item>4:50</item>
+        <item>4:55</item>
         <item>5:00</item>
+        <item>5:05</item>
+        <item>5:10</item>
+        <item>5:15</item>
+        <item>5:20</item>
+        <item>5:25</item>
         <item>5:30</item>
+        <item>5:35</item>
+        <item>5:40</item>
+        <item>5:45</item>
+        <item>5:50</item>
+        <item>5:55</item>
         <item>6:00</item>
+        <item>6:05</item>
+        <item>6:10</item>
+        <item>6:15</item>
+        <item>6:20</item>
+        <item>6:25</item>
         <item>6:30</item>
+        <item>6:35</item>
+        <item>6:40</item>
+        <item>6:45</item>
+        <item>6:50</item>
+        <item>6:55</item>
         <item>7:00</item>
+        <item>7:05</item>
+        <item>7:10</item>
+        <item>7:15</item>
+        <item>7:20</item>
+        <item>7:25</item>
         <item>7:30</item>
+        <item>7:35</item>
+        <item>7:40</item>
+        <item>7:45</item>
+        <item>7:50</item>
+        <item>7:55</item>
         <item>8:00</item>
+        <item>8:05</item>
+        <item>8:10</item>
+        <item>8:15</item>
+        <item>8:20</item>
+        <item>8:25</item>
         <item>8:30</item>
+        <item>8:35</item>
+        <item>8:40</item>
+        <item>8:45</item>
+        <item>8:50</item>
+        <item>8:55</item>
         <item>9:00</item>
+        <item>9:05</item>
+        <item>9:10</item>
+        <item>9:15</item>
+        <item>9:20</item>
+        <item>9:25</item>
         <item>9:30</item>
+        <item>9:35</item>
+        <item>9:40</item>
+        <item>9:45</item>
+        <item>9:50</item>
+        <item>9:55</item>
         <item>10:00</item>
+        <item>10:05</item>
+        <item>10:10</item>
+        <item>10:15</item>
+        <item>10:20</item>
+        <item>10:25</item>
         <item>10:30</item>
+        <item>10:35</item>
+        <item>10:40</item>
+        <item>10:45</item>
+        <item>10:50</item>
+        <item>10:55</item>
         <item>11:00</item>
+        <item>11:05</item>
+        <item>11:10</item>
+        <item>11:15</item>
+        <item>11:20</item>
+        <item>11:25</item>
         <item>11:30</item>
+        <item>11:35</item>
+        <item>11:40</item>
+        <item>11:45</item>
+        <item>11:50</item>
+        <item>11:55</item>
         <item>12:00</item>
+        <item>12:05</item>
+        <item>12:10</item>
+        <item>12:15</item>
+        <item>12:20</item>
+        <item>12:25</item>
         <item>12:30</item>
+        <item>12:35</item>
+        <item>12:40</item>
+        <item>12:45</item>
+        <item>12:50</item>
+        <item>12:55</item>
         <item>13:00</item>
+        <item>13:05</item>
+        <item>13:10</item>
+        <item>13:15</item>
+        <item>13:20</item>
+        <item>13:25</item>
         <item>13:30</item>
+        <item>13:35</item>
+        <item>13:40</item>
+        <item>13:45</item>
+        <item>13:50</item>
+        <item>13:55</item>
         <item>14:00</item>
+        <item>14:05</item>
+        <item>14:10</item>
+        <item>14:15</item>
+        <item>14:20</item>
+        <item>14:25</item>
         <item>14:30</item>
+        <item>14:35</item>
+        <item>14:40</item>
+        <item>14:45</item>
+        <item>14:50</item>
+        <item>14:55</item>
         <item>15:00</item>
+        <item>15:05</item>
+        <item>15:10</item>
+        <item>15:15</item>
+        <item>15:20</item>
+        <item>15:25</item>
         <item>15:30</item>
+        <item>15:35</item>
+        <item>15:40</item>
+        <item>15:45</item>
+        <item>15:50</item>
+        <item>15:55</item>
         <item>16:00</item>
+        <item>16:05</item>
+        <item>16:10</item>
+        <item>16:15</item>
+        <item>16:20</item>
+        <item>16:25</item>
         <item>16:30</item>
+        <item>16:35</item>
+        <item>16:40</item>
+        <item>16:45</item>
+        <item>16:50</item>
+        <item>16:55</item>
         <item>17:00</item>
+        <item>17:05</item>
+        <item>17:10</item>
+        <item>17:15</item>
+        <item>17:20</item>
+        <item>17:25</item>
         <item>17:30</item>
+        <item>17:35</item>
+        <item>17:40</item>
+        <item>17:45</item>
+        <item>17:50</item>
+        <item>17:55</item>
         <item>18:00</item>
+        <item>18:05</item>
+        <item>18:10</item>
+        <item>18:15</item>
+        <item>18:20</item>
+        <item>18:25</item>
         <item>18:30</item>
+        <item>18:35</item>
+        <item>18:40</item>
+        <item>18:45</item>
+        <item>18:50</item>
+        <item>18:55</item>
         <item>19:00</item>
+        <item>19:05</item>
+        <item>19:10</item>
+        <item>19:15</item>
+        <item>19:20</item>
+        <item>19:25</item>
         <item>19:30</item>
+        <item>19:35</item>
+        <item>19:40</item>
+        <item>19:45</item>
+        <item>19:50</item>
+        <item>19:55</item>
         <item>20:00</item>
+        <item>20:05</item>
+        <item>20:10</item>
+        <item>20:15</item>
+        <item>20:20</item>
+        <item>20:25</item>
         <item>20:30</item>
+        <item>20:35</item>
+        <item>20:40</item>
+        <item>20:45</item>
+        <item>20:50</item>
+        <item>20:55</item>
         <item>21:00</item>
+        <item>21:05</item>
+        <item>21:10</item>
+        <item>21:15</item>
+        <item>21:20</item>
+        <item>21:25</item>
         <item>21:30</item>
+        <item>21:35</item>
+        <item>21:40</item>
+        <item>21:45</item>
+        <item>21:50</item>
+        <item>21:55</item>
         <item>22:00</item>
+        <item>22:05</item>
+        <item>22:10</item>
+        <item>22:15</item>
+        <item>22:20</item>
+        <item>22:25</item>
         <item>22:30</item>
+        <item>22:35</item>
+        <item>22:40</item>
+        <item>22:45</item>
+        <item>22:50</item>
+        <item>22:55</item>
         <item>23:00</item>
+        <item>23:05</item>
+        <item>23:10</item>
+        <item>23:15</item>
+        <item>23:20</item>
+        <item>23:25</item>
         <item>23:30</item>
-        <item>24:00</item>
+        <item>23:35</item>
+        <item>23:40</item>
+        <item>23:45</item>
+        <item>23:50</item>
+        <item>23:55</item>
     </string-array>
 </resources>
