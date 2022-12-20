@@ -13,22 +13,28 @@ data class ClassTimeDto(
     @Json(name = "_id") val id: String? = null,
     @Json(name = "start_time") val start_time: String = "",
     @Json(name = "end_time") val end_time: String = "",
+    @Json(name = "start") val start: Float,     // old
+    @Json(name = "len") val len: Float,         // old
 ) : Parcelable {
 
     val startTimeInFloat: Float
-        get() = start_time.split(':')[0].toFloat() + start_time.split(':')[1].toFloat() / 60f
+        get() =
+            if (start_time.isNotEmpty()) start_time.split(':')[0].toFloat() + start_time.split(':')[1].toFloat() / 60f
+            else start
 
     val endTimeInFloat: Float
-        get() = end_time.split(':')[0].toFloat() + end_time.split(':')[1].toFloat() / 60f
+        get() =
+            if (end_time.isNotEmpty()) end_time.split(':')[0].toFloat() + end_time.split(':')[1].toFloat() / 60f
+            else start + len
 
-    val startTimeHour: Float
-        get() = start_time.split(':')[0].toFloat()
+    val startTimeHour: Int
+        get() = startTimeInFloat.toInt()
 
     val startTimeMinute: Int
         get() = start_time.split(':')[1].toInt()
 
-    val endTimeHour: Float
-        get() = end_time.split(':')[0].toFloat()
+    val endTimeHour: Int
+        get() = endTimeInFloat.toInt()
 
     val endTimeMinute: Int
         get() = end_time.split(':')[1].toInt()
