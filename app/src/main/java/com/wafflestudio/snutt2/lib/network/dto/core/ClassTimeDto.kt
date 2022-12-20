@@ -13,8 +13,8 @@ data class ClassTimeDto(
     @Json(name = "_id") val id: String? = null,
     @Json(name = "start_time") val start_time: String = "",
     @Json(name = "end_time") val end_time: String = "",
-    @Json(name = "start") val start: Float,     // old
-    @Json(name = "len") val len: Float,         // old
+    @Json(name = "start") val start: Float, // old
+    @Json(name = "len") val len: Float, // old
 ) : Parcelable {
 
     val startTimeInFloat: Float
