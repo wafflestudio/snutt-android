@@ -74,7 +74,6 @@ fun AppReportPage() {
                                     navController.popBackStack()
                                 }
                             }
-
                         }
                     }
             )
