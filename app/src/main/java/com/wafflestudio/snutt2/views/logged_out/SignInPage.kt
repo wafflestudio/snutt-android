@@ -56,7 +56,6 @@ fun SignInPage() {
                 apiOnProgress.showProgress()
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
-                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)
