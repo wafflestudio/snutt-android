@@ -76,10 +76,14 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
 
         lifecycleScope.launch {
-            val token = userViewModel.accessToken.filterNotNull().first()
+            var token = userViewModel.accessToken.filterNotNull().first()
             if (token.isNotEmpty()) {
-                homeViewModel.refreshData()
-                userViewModel.fetchPopup()
+                try {
+                    homeViewModel.refreshData()
+                } catch (e: Exception) {
+                    // when storage's token is invalid
+                    token = ""
+                }
             }
             val startDestination =
                 if (token.isEmpty()) NavigationDestination.Onboard else NavigationDestination.Home
