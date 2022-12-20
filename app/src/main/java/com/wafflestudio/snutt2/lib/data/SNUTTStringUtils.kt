@@ -7,7 +7,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import timber.log.Timber
 import java.text.DateFormat
-import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,25 +29,23 @@ object SNUTTStringUtils {
 
     // 간소화된 강의 시간
     fun getSimplifiedClassTime(lectureDto: LectureDto): String {
-        var text = ""
+        val texts = StringBuilder()
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            val day = classTimeDto.day
-            val start = classTimeDto.start
-            val len = classTimeDto.len
-            val place = classTimeDto.place
-            text += SNUTTUtils.numberToWday(day.toInt()) + DecimalFormat().format(start.toDouble())
-            if (index != lectureDto.class_time_json.size - 1) text += "/"
+            texts.append(SNUTTUtils.numberToWday(classTimeDto.day))
+            texts.append(" ")
+            texts.append(classTimeDto.start_time)
+            texts.append("~")
+            texts.append(classTimeDto.end_time)
+            if (index != lectureDto.class_time_json.size - 1) texts.append("/")
         }
-        if (text.isEmpty()) text = "(없음)"
-        return text
+        if (texts.isEmpty()) texts.append("(없음)")
+        return texts.toString()
     }
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
         var text = ""
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
             val day = classTimeDto.day
-            val start = classTimeDto.start
-            val len = classTimeDto.len
             val place = classTimeDto.place
             text += place
             if (index != lectureDto.class_time_json.size - 1) text += "/"
@@ -105,9 +102,13 @@ object SNUTTStringUtils {
     }
 
     fun getClassTimeText(classTime: ClassTimeDto): String {
-        return SNUTTUtils.numberToWday(classTime.day) + " " +
-            SNUTTUtils.numberToTime(classTime.start) + "~" +
-            SNUTTUtils.numberToEndTimeAdjusted(classTime.start, classTime.len)
+        return StringBuilder()
+            .append(SNUTTUtils.numberToWday(classTime.day))
+            .append(" ")
+            .append(classTime.start_time)
+            .append("~")
+            .append(classTime.end_time)
+            .toString()
     }
 
     fun String.isEmailInvalid(): Boolean {

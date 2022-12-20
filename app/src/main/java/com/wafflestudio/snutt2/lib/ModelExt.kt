@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -15,9 +16,8 @@ import kotlin.math.floor
 fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
     for (classTimeDto in this.class_time_json) {
         val day1 = classTimeDto.day
-        val start1 = classTimeDto.start
-        val len1 = classTimeDto.len
-        val end1 = start1 + len1
+        val start1 = classTimeDto.startTimeInFloat
+        val end1 = classTimeDto.endTimeInFloat
         val len2 = 0.5f
         val end2 = queryTime + len2
         if (day1 != queryDay) continue
@@ -125,7 +125,11 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
     TableTrimParam(
         dayOfWeekFrom = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekFrom).minOf { it },
         dayOfWeekTo = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekTo).maxOf { it },
-        hourFrom = (flatMap { it.class_time_json.map { floor(it.start).toInt() + 8 } } + tableTrimParam.hourFrom).minOf { it },
-        hourTo = (flatMap { it.class_time_json.map { ceil(it.start + it.len).toInt() - 1 + 8 } } + tableTrimParam.hourTo).maxOf { it },
+        hourFrom = (flatMap { it.class_time_json.map { floor(it.startTimeInFloat).toInt() } } + tableTrimParam.hourFrom).minOf { it },
+        hourTo = (flatMap { it.class_time_json.map { ceil(it.endTimeInFloat).toInt() - 1 } } + tableTrimParam.hourTo).maxOf { it },
         forceFitLectures = true
     )
+
+fun ClassTimeDto.isContainedInTrimParam(tableTrimParam: TableTrimParam): Boolean =
+    tableTrimParam.dayOfWeekFrom <= this.day && this.day <= tableTrimParam.dayOfWeekTo &&
+        tableTrimParam.hourFrom <= this.startTimeHour && this.endTimeHour <= tableTrimParam.hourTo + 1

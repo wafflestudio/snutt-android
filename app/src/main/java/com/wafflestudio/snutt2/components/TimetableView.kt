@@ -255,9 +255,9 @@ class TimetableView : View {
     ) {
         val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
         val hourRangeOffset = Pair(
-            max(classTime.start - fittedTrimParam.hourFrom + 8, 0f),
+            max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
-                classTime.start + classTime.len - fittedTrimParam.hourFrom + 8,
+                classTime.endTimeInFloat - fittedTrimParam.hourFrom,
                 fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
             )
         )

@@ -2,7 +2,7 @@
 
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
@@ -45,6 +45,10 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.getColor
+import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.lib.network.ErrorCode.LECTURE_TIME_OVERLAP
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -86,6 +90,9 @@ fun SearchPage(
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     var searchOptionSheetState by remember { mutableStateOf(false) }
     val placeHolderState by searchViewModel.placeHolderState.collectAsState()
+
+    var lectureOverlapDialogState by remember { mutableStateOf(false) }
+    var lectureOverlapDialogMessage by remember { mutableStateOf("") }
 
     Column {
         SearchTopBar {
@@ -192,7 +199,7 @@ fun SearchPage(
                         LazyColumn(
                             state = lazyListState, modifier = Modifier.fillMaxSize()
                         ) {
-                            items(searchResultPagingItems, key = { it.item.id }) {
+                            items(searchResultPagingItems) {
                                 it?.let {
                                     SearchListItem(lectureDataWithState = it, onSelect = {
                                         scope.launch {
@@ -200,10 +207,17 @@ fun SearchPage(
                                         }
                                     }, onClickAdd = {
                                         scope.launch(Dispatchers.IO) {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                            lectureApiWithOverlapDialog(
+                                                apiOnProgress,
+                                                apiOnError,
+                                                onLectureOverlap = { message ->
+                                                    lectureOverlapDialogMessage = message
+                                                    lectureOverlapDialogState = true
+                                                }
+                                            ) {
                                                 timetableViewModel.addLecture(
                                                     lecture = it.item,
-                                                    is_force = false // TODO: is_forced
+                                                    is_force = false
                                                 )
                                                 searchViewModel.toggleLectureSelection(it.item)
                                             }
@@ -255,6 +269,29 @@ fun SearchPage(
                 }
             }
             searchOptionSheetState = false
+        }
+    }
+
+    if (lectureOverlapDialogState) {
+        CustomDialog(
+            onDismiss = { lectureOverlapDialogState = false },
+            onConfirm = {
+                scope.launch {
+                    selectedLecture?.let { lecture ->
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            timetableViewModel.addLecture(
+                                lecture = lecture,
+                                is_force = true
+                            )
+                            searchViewModel.toggleLectureSelection(lecture)
+                        }
+                    }
+                    lectureOverlapDialogState = false
+                }
+            },
+            title = stringResource(id = R.string.lecture_overlap_error_message)
+        ) {
+            Text(text = lectureOverlapDialogMessage)
         }
     }
 }
@@ -496,6 +533,29 @@ private fun LazyItemScope.TagCell(
                 .clicks { onClick() }
         )
         Spacer(modifier = Modifier.width(10.dp))
+    }
+}
+
+suspend fun lectureApiWithOverlapDialog(
+    apiOnProgress: ApiOnProgress,
+    apiOnError: ApiOnError,
+    onLectureOverlap: (String) -> Unit,
+    api: suspend () -> Unit
+) {
+    try {
+        apiOnProgress.showProgress()
+        api.invoke()
+    } catch (e: Exception) {
+        when (e) {
+            is ErrorParsedHttpException -> {
+                if (e.errorDTO?.code == LECTURE_TIME_OVERLAP) {
+                    onLectureOverlap(e.errorDTO.ext!!["confirm_message"] ?: "")
+                } else apiOnError(e)
+            }
+            else -> apiOnError(e)
+        }
+    } finally {
+        apiOnProgress.hideProgress()
     }
 }
 

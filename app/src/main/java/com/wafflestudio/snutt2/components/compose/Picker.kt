@@ -20,14 +20,14 @@ import kotlin.math.roundToInt
 @Composable
 fun <T> Picker(
     list: List<T>,
-    initialValue: T,
+    initialCenterIndex: Int,
     onValueChanged: (Int) -> Unit,
     PickerItemContent: @Composable (Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val columnHeightDp = 35.dp
 
-    val animatedOffset = remember { Animatable(list.indexOf(initialValue) * columnHeightDp.value) }
+    val animatedOffset = remember { Animatable(initialCenterIndex * columnHeightDp.value) }
         .apply {
             updateBounds(0f, (columnHeightDp.value * list.size))
         }
@@ -50,7 +50,7 @@ fun <T> Picker(
     // list 자체의 변경에 따른 변화를 반영한다. (recompose 로 되는 방법 찾기)
     // FIXME: 시작 시간의 변경에 따라 끝나는 시간의 list 가 바뀌는데, 이때 미세한 떨림 존재
     LaunchedEffect(list.size) {
-        centerItemIndex = list.indexOf(initialValue)
+        centerItemIndex = initialCenterIndex
         animatedOffset.snapTo(columnHeightDp.value * centerItemIndex)
     }
 
@@ -63,7 +63,7 @@ fun <T> Picker(
                 orientation = Orientation.Vertical,
                 state = rememberDraggableState { delta ->
                     scope.launch {
-                        animatedOffset.snapTo(animatedOffset.value - delta / 2)
+                        animatedOffset.snapTo(animatedOffset.value - delta / 4)
                     }
                 },
                 onDragStopped = { velocity ->
