@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,7 +38,10 @@ fun SimpleTopBar(
             )
         },
         navigationIcon = {
-            ArrowBackIcon(modifier = Modifier.clicks { onClickNavigateBack() })
+            ArrowBackIcon(
+                modifier = Modifier.clicks { onClickNavigateBack() },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
         }
     )
 }
@@ -141,7 +145,7 @@ fun TopBarPreview() {
             actions = {
                 ListIcon(Modifier.padding(end = 8.dp))
                 ShareIcon(Modifier.padding(end = 8.dp))
-                NotificationIcon(Modifier.padding(end = 12.dp))
+                NotificationIcon(Modifier.padding(end = 12.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             }
         )
         Box(modifier = Modifier.weight(1f))

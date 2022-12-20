@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data
 
 import android.content.Context
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.squareup.moshi.FromJson
@@ -90,74 +91,146 @@ enum class TimetableColorTheme(val code: Int) {
     // TODO: 나중에 위에꺼 지우고 이름 바꾸기
     @Composable
     fun getColorByIndexComposable(colorIndex: Long): androidx.compose.ui.graphics.Color {
-        return when (this) {
-            SNUTT -> listOf(
-                colorResource(R.color.theme_snutt_0),
-                colorResource(R.color.theme_snutt_1),
-                colorResource(R.color.theme_snutt_2),
-                colorResource(R.color.theme_snutt_3),
-                colorResource(R.color.theme_snutt_4),
-                colorResource(R.color.theme_snutt_5),
-                colorResource(R.color.theme_snutt_6),
-                colorResource(R.color.theme_snutt_7),
-                colorResource(R.color.theme_snutt_8),
-            )
-            MODERN -> listOf(
-                colorResource(R.color.theme_modern_0),
-                colorResource(R.color.theme_modern_1),
-                colorResource(R.color.theme_modern_2),
-                colorResource(R.color.theme_modern_3),
-                colorResource(R.color.theme_modern_4),
-                colorResource(R.color.theme_modern_5),
-                colorResource(R.color.theme_modern_6),
-                colorResource(R.color.theme_modern_7),
-                colorResource(R.color.theme_modern_8),
-            )
-            AUTUMN -> listOf(
-                colorResource(R.color.theme_autumn_0),
-                colorResource(R.color.theme_autumn_1),
-                colorResource(R.color.theme_autumn_2),
-                colorResource(R.color.theme_autumn_3),
-                colorResource(R.color.theme_autumn_4),
-                colorResource(R.color.theme_autumn_5),
-                colorResource(R.color.theme_autumn_6),
-                colorResource(R.color.theme_autumn_7),
-                colorResource(R.color.theme_autumn_8),
-            )
-            CHERRY -> listOf(
-                colorResource(R.color.theme_cherry_0),
-                colorResource(R.color.theme_cherry_1),
-                colorResource(R.color.theme_cherry_2),
-                colorResource(R.color.theme_cherry_3),
-                colorResource(R.color.theme_cherry_4),
-                colorResource(R.color.theme_cherry_5),
-                colorResource(R.color.theme_cherry_6),
-                colorResource(R.color.theme_cherry_7),
-                colorResource(R.color.theme_cherry_8),
-            )
-            ICE -> listOf(
-                colorResource(R.color.theme_ice_0),
-                colorResource(R.color.theme_ice_1),
-                colorResource(R.color.theme_ice_2),
-                colorResource(R.color.theme_ice_3),
-                colorResource(R.color.theme_ice_4),
-                colorResource(R.color.theme_ice_5),
-                colorResource(R.color.theme_ice_6),
-                colorResource(R.color.theme_ice_7),
-                colorResource(R.color.theme_ice_8),
-            )
-            GRASS -> listOf(
-                colorResource(R.color.theme_grass_0),
-                colorResource(R.color.theme_grass_1),
-                colorResource(R.color.theme_grass_2),
-                colorResource(R.color.theme_grass_3),
-                colorResource(R.color.theme_grass_4),
-                colorResource(R.color.theme_grass_5),
-                colorResource(R.color.theme_grass_6),
-                colorResource(R.color.theme_grass_7),
-                colorResource(R.color.theme_grass_8),
-            )
-        }[colorIndex.toInt() - 1]
+        val darkMode = isSystemInDarkTheme()
+        return if (darkMode) {
+            when (this) {
+                SNUTT -> listOf(
+                    colorResource(R.color.theme_snutt_dark_0),
+                    colorResource(R.color.theme_snutt_dark_1),
+                    colorResource(R.color.theme_snutt_dark_2),
+                    colorResource(R.color.theme_snutt_dark_3),
+                    colorResource(R.color.theme_snutt_dark_4),
+                    colorResource(R.color.theme_snutt_dark_5),
+                    colorResource(R.color.theme_snutt_dark_6),
+                    colorResource(R.color.theme_snutt_dark_7),
+                    colorResource(R.color.theme_snutt_dark_8),
+                )
+                MODERN -> listOf(
+                    colorResource(R.color.theme_modern_0),
+                    colorResource(R.color.theme_modern_1),
+                    colorResource(R.color.theme_modern_2),
+                    colorResource(R.color.theme_modern_3),
+                    colorResource(R.color.theme_modern_4),
+                    colorResource(R.color.theme_modern_5),
+                    colorResource(R.color.theme_modern_6),
+                    colorResource(R.color.theme_modern_7),
+                    colorResource(R.color.theme_modern_8),
+                )
+                AUTUMN -> listOf(
+                    colorResource(R.color.theme_autumn_0),
+                    colorResource(R.color.theme_autumn_1),
+                    colorResource(R.color.theme_autumn_2),
+                    colorResource(R.color.theme_autumn_3),
+                    colorResource(R.color.theme_autumn_4),
+                    colorResource(R.color.theme_autumn_5),
+                    colorResource(R.color.theme_autumn_6),
+                    colorResource(R.color.theme_autumn_7),
+                    colorResource(R.color.theme_autumn_8),
+                )
+                CHERRY -> listOf(
+                    colorResource(R.color.theme_cherry_0),
+                    colorResource(R.color.theme_cherry_1),
+                    colorResource(R.color.theme_cherry_2),
+                    colorResource(R.color.theme_cherry_3),
+                    colorResource(R.color.theme_cherry_4),
+                    colorResource(R.color.theme_cherry_5),
+                    colorResource(R.color.theme_cherry_6),
+                    colorResource(R.color.theme_cherry_7),
+                    colorResource(R.color.theme_cherry_8),
+                )
+                ICE -> listOf(
+                    colorResource(R.color.theme_ice_0),
+                    colorResource(R.color.theme_ice_1),
+                    colorResource(R.color.theme_ice_2),
+                    colorResource(R.color.theme_ice_3),
+                    colorResource(R.color.theme_ice_4),
+                    colorResource(R.color.theme_ice_5),
+                    colorResource(R.color.theme_ice_6),
+                    colorResource(R.color.theme_ice_7),
+                    colorResource(R.color.theme_ice_8),
+                )
+                GRASS -> listOf(
+                    colorResource(R.color.theme_grass_0),
+                    colorResource(R.color.theme_grass_1),
+                    colorResource(R.color.theme_grass_2),
+                    colorResource(R.color.theme_grass_3),
+                    colorResource(R.color.theme_grass_4),
+                    colorResource(R.color.theme_grass_5),
+                    colorResource(R.color.theme_grass_6),
+                    colorResource(R.color.theme_grass_7),
+                    colorResource(R.color.theme_grass_8),
+                )
+            }[colorIndex.toInt() - 1]
+        } else {
+            when (this) {
+                SNUTT -> listOf(
+                    colorResource(if (darkMode) R.color.theme_snutt_dark_0 else R.color.theme_snutt_0),
+                    colorResource(R.color.theme_snutt_1),
+                    colorResource(R.color.theme_snutt_2),
+                    colorResource(R.color.theme_snutt_3),
+                    colorResource(R.color.theme_snutt_4),
+                    colorResource(R.color.theme_snutt_5),
+                    colorResource(R.color.theme_snutt_6),
+                    colorResource(R.color.theme_snutt_7),
+                    colorResource(R.color.theme_snutt_8),
+                )
+                MODERN -> listOf(
+                    colorResource(R.color.theme_modern_0),
+                    colorResource(R.color.theme_modern_1),
+                    colorResource(R.color.theme_modern_2),
+                    colorResource(R.color.theme_modern_3),
+                    colorResource(R.color.theme_modern_4),
+                    colorResource(R.color.theme_modern_5),
+                    colorResource(R.color.theme_modern_6),
+                    colorResource(R.color.theme_modern_7),
+                    colorResource(R.color.theme_modern_8),
+                )
+                AUTUMN -> listOf(
+                    colorResource(R.color.theme_autumn_0),
+                    colorResource(R.color.theme_autumn_1),
+                    colorResource(R.color.theme_autumn_2),
+                    colorResource(R.color.theme_autumn_3),
+                    colorResource(R.color.theme_autumn_4),
+                    colorResource(R.color.theme_autumn_5),
+                    colorResource(R.color.theme_autumn_6),
+                    colorResource(R.color.theme_autumn_7),
+                    colorResource(R.color.theme_autumn_8),
+                )
+                CHERRY -> listOf(
+                    colorResource(R.color.theme_cherry_0),
+                    colorResource(R.color.theme_cherry_1),
+                    colorResource(R.color.theme_cherry_2),
+                    colorResource(R.color.theme_cherry_3),
+                    colorResource(R.color.theme_cherry_4),
+                    colorResource(R.color.theme_cherry_5),
+                    colorResource(R.color.theme_cherry_6),
+                    colorResource(R.color.theme_cherry_7),
+                    colorResource(R.color.theme_cherry_8),
+                )
+                ICE -> listOf(
+                    colorResource(R.color.theme_ice_0),
+                    colorResource(R.color.theme_ice_1),
+                    colorResource(R.color.theme_ice_2),
+                    colorResource(R.color.theme_ice_3),
+                    colorResource(R.color.theme_ice_4),
+                    colorResource(R.color.theme_ice_5),
+                    colorResource(R.color.theme_ice_6),
+                    colorResource(R.color.theme_ice_7),
+                    colorResource(R.color.theme_ice_8),
+                )
+                GRASS -> listOf(
+                    colorResource(R.color.theme_grass_0),
+                    colorResource(R.color.theme_grass_1),
+                    colorResource(R.color.theme_grass_2),
+                    colorResource(R.color.theme_grass_3),
+                    colorResource(R.color.theme_grass_4),
+                    colorResource(R.color.theme_grass_5),
+                    colorResource(R.color.theme_grass_6),
+                    colorResource(R.color.theme_grass_7),
+                    colorResource(R.color.theme_grass_8),
+                )
+            }[colorIndex.toInt() - 1]
+        }
     }
 
     companion object {

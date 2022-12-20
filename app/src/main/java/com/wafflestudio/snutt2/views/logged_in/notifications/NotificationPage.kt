@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
@@ -36,7 +37,7 @@ fun NotificationPage() {
     val refreshState = notificationList.loadState.refresh
     val appendState = notificationList.loadState.append
 
-    Column {
+    Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = stringResource(R.string.notifications_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
@@ -103,12 +104,12 @@ fun NotificationError() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray400)
+            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200)
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.common_network_failure),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray400)
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200)
         )
     }
 }
@@ -128,13 +129,13 @@ fun NotificationPlaceholder() {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.notifications_placeholder_title),
-            style = SNUTTTypography.h2.copy(color = SNUTTColors.Gray300),
+            style = SNUTTTypography.h2.copy(color = SNUTTColors.Gray200),
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.notifications_placeholder_description),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray300),
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
             textAlign = TextAlign.Center,
         )
     }

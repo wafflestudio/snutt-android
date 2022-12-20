@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,21 +17,29 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppReportPage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
 
     var email by remember { mutableStateOf("") }
     var detail by remember { mutableStateOf("") }
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        userViewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            userViewModel.fetchUserInfo()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -45,7 +54,8 @@ fun AppReportPage() {
                     .size(30.dp)
                     .clicks {
                         navController.popBackStack()
-                    }
+                    },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }, actions = {
             SendIcon(
@@ -58,10 +68,12 @@ fun AppReportPage() {
                             context.toast(context.getString(R.string.feedback_invalid_email_warning))
                         } else {
                             scope.launch {
-                                userViewModel.sendFeedback(email, detail)
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    userViewModel.sendFeedback(email, detail)
+                                    context.toast(context.getString(R.string.feedback_send_success_message))
+                                    navController.popBackStack()
+                                }
                             }
-                            context.toast(context.getString(R.string.feedback_send_success_message))
-                            navController.popBackStack()
                         }
                     }
             )

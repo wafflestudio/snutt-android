@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,8 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -49,7 +51,7 @@ fun LecturesOfTablePage() {
     val currentTable: TableDto? by viewModel.currentTable.collectAsState()
     val lectureList = currentTable?.lectureList ?: emptyList()
 
-    Column {
+    Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
@@ -85,7 +87,7 @@ fun LecturesOfTable(
                 lecture = lectureDto,
                 onClickLecture = onClickLecture
             )
-            Row(Modifier.padding(horizontal = 20.dp)) {
+            Row(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
                 Divider(thickness = 1.dp, color = SNUTTColors.Black050)
             }
         }
@@ -100,6 +102,8 @@ private fun TableLectureItem(
     lecture: LectureDto,
     onClickLecture: (lecture: LectureDto) -> Unit
 ) {
+    val darkMode = isSystemInDarkTheme()
+
     val tagText = SNUTTStringUtils.getLectureTagText(lecture)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
     val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
@@ -130,20 +134,22 @@ private fun TableLectureItem(
         }
         Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_tag),
-                contentDescription = "tag icon",
+            TagIcon(
                 modifier = Modifier.size(15.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
             Spacer(Modifier.width(10.dp))
-            Text(text = tagText, style = SNUTTTypography.body2, modifier = Modifier.alpha(0.8f))
+            Text(
+                text = tagText,
+                style = SNUTTTypography.body2,
+                modifier = Modifier.alpha(0.8f)
+            )
         }
         Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_clock),
-                contentDescription = "time icon",
+            ClockIcon(
                 modifier = Modifier.size(15.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
             Spacer(Modifier.width(10.dp))
             Text(
@@ -154,10 +160,9 @@ private fun TableLectureItem(
         }
         Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_location),
-                contentDescription = "location icon",
+            LocationIcon(
                 modifier = Modifier.size(15.dp, 15.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
             Spacer(Modifier.width(10.dp))
             Text(

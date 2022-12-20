@@ -31,7 +31,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -41,12 +45,17 @@ import kotlin.math.roundToInt
 @Composable
 fun TimetableConfigPage() {
     val navController = LocalNavController.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<UserViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
 
+    // FIXME : 다른 형태로 바꾸기
     LaunchedEffect(Unit) {
-        viewModel.fetchUserInfo()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            viewModel.fetchUserInfo()
+        }
     }
 
     Column(
@@ -61,7 +70,7 @@ fun TimetableConfigPage() {
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_timetable_config_force_fit),
-            modifier = Modifier.background(Color.White),
+            modifier = Modifier.background(SNUTTColors.White900),
             onClick = {
                 scope.launch {
                     viewModel.setAutoTrim(trimParam.forceFitLectures.not())
@@ -131,7 +140,7 @@ private fun PoorSwitch(state: Boolean) {
                     .size(20.dp)
                     .clip(CircleShape)
                     .background(
-                        if (state) Color.Black
+                        if (state) SNUTTColors.Black600
                         else Color.LightGray
                     )
                     .zIndex(5f)
@@ -146,7 +155,7 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(SNUTTColors.White900)
     ) {
         Row(
             modifier = Modifier
@@ -155,7 +164,7 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
                 .fillMaxWidth()
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = title, modifier = Modifier.weight(18f))
+            Text(text = title, modifier = Modifier.weight(18f), style = SNUTTTypography.body1)
             Spacer(modifier = Modifier.weight(1f))
         }
         Row(
@@ -196,6 +205,7 @@ private fun RangeBar(
     val startTick = (barStart.value / tickPx).roundToInt()
     val barEnd = remember { Animatable(initEnd * tickPx) }
     val endTick = (barEnd.value / tickPx).roundToInt()
+    val Black = SNUTTColors.Black600
 
     Canvas(
         modifier = Modifier.fillMaxSize()
@@ -209,21 +219,21 @@ private fun RangeBar(
             strokeWidth = 1.dp.toPx()
         )
         for (tick in 0..tickNum) {
-            drawCircle(Color.Black, (1.5).dp.toPx(), Offset(x = tickPx * tick, y = lineOffset))
+            drawCircle(Black, (1.5).dp.toPx(), Offset(x = tickPx * tick, y = lineOffset))
         }
         drawLine(
-            color = Color.Black,
+            color = Black,
             start = Offset(x = barStart.value, y = lineOffset),
             end = Offset(x = barEnd.value, y = lineOffset),
             strokeWidth = 3.dp.toPx()
         )
         drawCircle(
-            color = Color.Black,
+            color = Black,
             radius = 6.dp.toPx(),
             center = Offset(x = barStart.value, y = lineOffset)
         )
         drawCircle(
-            color = Color.Black,
+            color = Black,
             radius = 6.dp.toPx(),
             center = Offset(x = barEnd.value, y = lineOffset)
         )
@@ -277,11 +287,11 @@ private fun Label(
             .clip(CircleShape)
             .width(26.dp)
             .height(26.dp)
-            .background(Color.Black)
+            .background(SNUTTColors.Black600)
             .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = labelText, color = Color.White)
+        Text(text = labelText, color = SNUTTColors.White900)
     }
 }
 
