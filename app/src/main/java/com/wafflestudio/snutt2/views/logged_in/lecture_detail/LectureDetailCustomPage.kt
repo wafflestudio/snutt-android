@@ -106,7 +106,7 @@ fun LectureDetailCustomPage() {
             Text(
                 text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                 else stringResource(R.string.lecture_detail_top_bar_edit),
-                style = SNUTTTypography.subtitle2,
+                style = SNUTTTypography.body1,
                 modifier = Modifier
                     .clicks {
                         if (editMode.not()) vm.setEditMode()
@@ -201,7 +201,7 @@ fun LectureDetailCustomPage() {
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         AnimatedVisibility(visible = editMode) {
-                            ArrowRight(modifier = Modifier.size(16.dp))
+                            ArrowRight(modifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                         }
                     }
                 }

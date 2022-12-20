@@ -176,9 +176,16 @@ fun TimetablePage(
                         .clicks {
                             scope.launch { drawerState.open() }
                         },
-                    painter = painterResource(if (newSemesterNotify) R.drawable.ic_drawer_notify else R.drawable.ic_drawer),
+                    painter = painterResource(
+                        if (newSemesterNotify) {
+                            if (isSystemInDarkTheme()) R.drawable.ic_drawer_notify_dark
+                            else R.drawable.ic_drawer_notify
+                        } else {
+                            if (isSystemInDarkTheme()) R.drawable.ic_drawer_dark
+                            else R.drawable.ic_drawer
+                        }
+                    ),
                     contentDescription = stringResource(R.string.home_timetable_drawer),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
             actions = {

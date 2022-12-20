@@ -108,7 +108,7 @@ fun LectureDetailPage() {
                     Text(
                         text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                         else stringResource(R.string.lecture_detail_top_bar_edit),
-                        style = SNUTTTypography.subtitle2,
+                        style = SNUTTTypography.body1,
                         modifier = Modifier
                             .clicks {
                                 if (editMode.not()) vm.setEditMode()
@@ -178,7 +178,7 @@ fun LectureDetailPage() {
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             AnimatedVisibility(visible = editMode) {
-                                ArrowRight(modifier = Modifier.size(16.dp))
+                                ArrowRight(modifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                             }
                         }
                     }
@@ -387,7 +387,7 @@ fun LectureDetailPage() {
             },
             title = stringResource(R.string.lecture_detail_delete_dialog_title)
         ) {
-            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message), style = SNUTTTypography.body2)
+            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message), style = SNUTTTypography.body1)
         }
     }
 
@@ -577,7 +577,7 @@ fun LectureDetailTimeAndLocation(
                             .clicks { onClickDeleteIcon() },
                         contentAlignment = Alignment.Center
                     ) {
-                        TipCloseIcon(Modifier.size(16.dp))
+                        TipCloseIcon(modifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                     }
                 }
             }
