@@ -65,6 +65,11 @@ fun SettingsPage() {
                     NavigationDestination.TimeTableConfig
                 )
             }
+            SettingItem(title = stringResource(R.string.settings_select_color_mode_title)) {
+                navController.navigate(
+                    NavigationDestination.ThemeModeSelect
+                )
+            }
         }
         Margin(height = 10.dp)
         SettingItem(

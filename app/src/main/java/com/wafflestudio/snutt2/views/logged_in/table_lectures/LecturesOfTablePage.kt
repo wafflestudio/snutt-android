@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.table_lectures
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -102,8 +101,6 @@ private fun TableLectureItem(
     lecture: LectureDto,
     onClickLecture: (lecture: LectureDto) -> Unit
 ) {
-    val darkMode = isSystemInDarkTheme()
-
     val tagText = SNUTTStringUtils.getLectureTagText(lecture)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
     val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)

@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
     primary = SNUTTColors.White900,
@@ -28,13 +29,25 @@ private val DarkThemeColors @Composable get() = darkColors(
     onSurface = SNUTTColors.Black900,
 )
 
+enum class ThemeMode {
+    DARK, LIGHT, AUTO,
+}
+
+@Composable
+fun isDarkMode(): Boolean {
+    return when (LocalThemeState.current) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+        ThemeMode.AUTO -> isSystemInDarkTheme()
+    }
+}
+
 @Composable
 fun SNUTTTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = if (darkTheme) DarkThemeColors else LightThemeColors,
+        colors = if (isDarkMode()) DarkThemeColors else LightThemeColors,
         typography = SNUTTTypography,
         content = content
     )

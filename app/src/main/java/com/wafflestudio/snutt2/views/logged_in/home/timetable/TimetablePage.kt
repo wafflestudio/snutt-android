@@ -9,7 +9,6 @@ import android.view.View
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -51,6 +50,7 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
@@ -63,25 +63,24 @@ import kotlin.math.min
 
 class CanvasContext(
     val context: Context,
-    val fittedTrimParam: TableTrimParam
+    val fittedTrimParam: TableTrimParam,
+    val isDarkMode: Boolean,
 ) {
     val hourLabelWidth = 24.5f.dp(context)
     val dayLabelHeight = 28.5f.dp(context)
     val cellPadding = 4.dp(context)
 
     val dayLabelTextPaint: Paint @Composable get() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        val darkMode = isSystemInDarkTheme()
         color =
-            if (darkMode) android.graphics.Color.argb(180, 119, 119, 119)
+            if (isDarkMode) android.graphics.Color.argb(180, 119, 119, 119)
             else android.graphics.Color.argb(180, 0, 0, 0)
         textSize = 12.sp(context)
         textAlign = Paint.Align.CENTER
         typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
     }
     val hourLabelTextPaint: Paint @Composable get() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        val darkMode = isSystemInDarkTheme()
         color =
-            if (darkMode) android.graphics.Color.argb(180, 119, 119, 119)
+            if (isDarkMode) android.graphics.Color.argb(180, 119, 119, 119)
             else android.graphics.Color.argb(180, 0, 0, 0)
         textSize = 12.sp(context)
         textAlign = Paint.Align.RIGHT
@@ -250,7 +249,7 @@ fun TimeTable(
     } else trimParam
 
     val canvasContext = CanvasContext(
-        context = context, fittedTrimParam = fittedTrimParam
+        context = context, fittedTrimParam = fittedTrimParam, isDarkMode = isDarkMode(),
     )
 
     Canvas(

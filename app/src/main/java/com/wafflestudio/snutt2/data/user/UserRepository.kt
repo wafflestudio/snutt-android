@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.user
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
@@ -11,6 +12,8 @@ interface UserRepository {
     val tableTrimParam: StateFlow<TableTrimParam>
 
     val accessToken: StateFlow<String>
+
+    val themeMode: StateFlow<ThemeMode>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -66,4 +69,6 @@ interface UserRepository {
     suspend fun closePopup()
 
     suspend fun registerToken()
+
+    suspend fun setThemeMode(mode: ThemeMode)
 }

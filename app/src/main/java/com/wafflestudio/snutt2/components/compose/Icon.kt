@@ -359,12 +359,14 @@ fun ArrowRight(
 
 @Composable
 fun CheckedIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.checked),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
