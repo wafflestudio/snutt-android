@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.ui
 
 import androidx.compose.material.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -15,7 +16,7 @@ private val SpoqaHanSans = FontFamily(
     Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
 )
 
-val SNUTTTypography = Typography(
+val SNUTTTypography @Composable get() = Typography(
     defaultFontFamily = SpoqaHanSans,
     h1 = TextStyle(
         color = SNUTTColors.Black900,
@@ -48,13 +49,13 @@ val SNUTTTypography = Typography(
         fontWeight = FontWeight.Bold
     ),
     subtitle1 = TextStyle(
-        color = SNUTTColors.Gray400,
+        color = SNUTTColors.Gray200,
         fontSize = 17.sp,
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Medium
     ),
     subtitle2 = TextStyle(
-        color = SNUTTColors.Gray400,
+        color = SNUTTColors.Gray200,
         fontSize = 14.sp,
         fontFamily = SpoqaHanSans,
         fontWeight = FontWeight.Medium
@@ -65,10 +66,12 @@ val SNUTTTypography = Typography(
         fontFamily = SpoqaHanSans,
     ),
     body1 = TextStyle(
+        color = SNUTTColors.Black900,
         fontSize = 14.sp,
         fontFamily = SpoqaHanSans,
     ),
     body2 = TextStyle(
+        color = SNUTTColors.Black900,
         fontSize = 12.sp,
         fontFamily = SpoqaHanSans,
     )

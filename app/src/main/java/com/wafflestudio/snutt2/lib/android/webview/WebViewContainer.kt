@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.android.webview
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.webkit.*
 import androidx.compose.runtime.MutableState
@@ -17,6 +18,9 @@ class WebViewContainer(
     private val accessToken: StateFlow<String?>
 ) {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
+
+    private val darkModeFlag = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    private val isDarkMode: Boolean = darkModeFlag == Configuration.UI_MODE_NIGHT_YES
 
     val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
@@ -61,6 +65,7 @@ class WebViewContainer(
     suspend fun openPage(url: String?) {
         val accessToken = accessToken.filterNotNull().first()
         val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
+
         CookieManager.getInstance().apply {
             setCookie(
                 reviewUrlHost,
@@ -69,6 +74,10 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "x-access-token=$accessToken"
+            )
+            setCookie(
+                reviewUrlHost,
+                "theme=${if (isDarkMode) "dark" else ""}"
             )
         }.flush()
         webView.loadUrl(url ?: context.getString(R.string.review_base_url))
@@ -85,6 +94,10 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "x-access-token=$accessToken"
+            )
+            setCookie(
+                reviewUrlHost,
+                "theme=${if (isDarkMode) "dark" else ""}"
             )
         }.flush()
         webView.reload()

@@ -104,7 +104,8 @@ fun SearchPage(
                             keyBoardController?.hide()
                         }
                     }
-                }
+                },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900)
             )
             Spacer(modifier = Modifier.width(12.dp))
             // FIXME: EditText 글자가 살짝 중간에서 아래로 치우쳐 있다.
@@ -143,23 +144,26 @@ fun SearchPage(
                             searchEditTextFocused = false
                             keyBoardController?.hide()
                         }
-                    }
+                    },
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             } else FilterIcon(
                 modifier = Modifier.clicks {
                     searchOptionSheetState = true
-                }
+                },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
         Box(
             modifier = Modifier
                 .weight(1f)
+                .background(SNUTTColors.White900)
                 .fillMaxWidth()
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
             Column(
                 modifier = Modifier
-                    .background(SNUTTColors.Black500)
+                    .background(SNUTTColors.Dim2)
                     .fillMaxSize()
             ) {
                 AnimatedVisibility(visible = selectedTags.isNotEmpty()) {
@@ -235,11 +239,13 @@ fun SearchPage(
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     }, onClickReview = {
                                         scope.launch {
-                                            pageController.update(
-                                                HomeItem.Review(
-                                                    searchViewModel.getLectureReviewUrl(it.item)
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                pageController.update(
+                                                    HomeItem.Review(
+                                                        searchViewModel.getLectureReviewUrl(it.item)
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
                                     })
                                 }
@@ -291,7 +297,7 @@ fun SearchPage(
             },
             title = stringResource(id = R.string.lecture_overlap_error_message)
         ) {
-            Text(text = lectureOverlapDialogMessage)
+            Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body2)
         }
     }
 }
@@ -318,7 +324,7 @@ fun LazyItemScope.SearchListItem(
     val tagText = getLectureTagText(lectureDataWithState.item)
     val classTimeText = getSimplifiedClassTime(lectureDataWithState.item)
 
-    val backgroundColor = if (selected) SNUTTColors.Black400 else SNUTTColors.Transparent
+    val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(
         modifier = Modifier
@@ -343,7 +349,7 @@ fun LazyItemScope.SearchListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = lectureTitle,
-                    style = SNUTTTypography.h4.copy(color = SNUTTColors.White900),
+                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite),
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -351,7 +357,7 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = instructorCreditText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -360,12 +366,12 @@ fun LazyItemScope.SearchListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TagIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     maxLines = 1,
                 )
             }
@@ -373,12 +379,12 @@ fun LazyItemScope.SearchListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = classTimeText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     maxLines = 1,
                 )
             }
@@ -386,12 +392,12 @@ fun LazyItemScope.SearchListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LocationIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.White900)
+                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = getSimplifiedLocation(lectureDataWithState.item),
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White800),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     maxLines = 1,
                 )
             }
@@ -407,7 +413,7 @@ fun LazyItemScope.SearchListItem(
                 Text(
                     text = stringResource(R.string.search_result_item_detail_button),
                     textAlign = TextAlign.Start,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     modifier = Modifier
                         .weight(1f)
                         .clicks { onClickDetail() }
@@ -415,7 +421,7 @@ fun LazyItemScope.SearchListItem(
                 Text(
                     text = stringResource(R.string.search_result_item_review_button),
                     textAlign = TextAlign.Center,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.White900),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     modifier = Modifier
                         .weight(1f)
                         .clicks { onClickReview() }
@@ -426,7 +432,7 @@ fun LazyItemScope.SearchListItem(
                     ),
                     textAlign = TextAlign.End,
                     style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.White900, fontWeight = FontWeight.Bold
+                        color = SNUTTColors.AllWhite, fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
                         .weight(1f)

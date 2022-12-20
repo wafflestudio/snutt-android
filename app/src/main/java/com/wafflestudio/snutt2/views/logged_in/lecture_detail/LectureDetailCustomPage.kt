@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -98,12 +99,14 @@ fun LectureDetailCustomPage() {
                             if (editMode) editExitDialogState = true
                             else navController.popBackStack()
                         }
-                    }
+                    },
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }, actions = {
             Text(
                 text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                 else stringResource(R.string.lecture_detail_top_bar_edit),
+                style = SNUTTTypography.subtitle2,
                 modifier = Modifier
                     .clicks {
                         if (editMode.not()) vm.setEditMode()
@@ -219,9 +222,9 @@ fun LectureDetailCustomPage() {
                 Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Margin(height = 4.dp)
-                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark)) {
+                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark), editMode = editMode) {
                     EditText(
                         value = editingLectureDetail.remark,
                         onValueChange = {
@@ -237,7 +240,7 @@ fun LectureDetailCustomPage() {
                 }
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Text(
                     text = stringResource(R.string.lecture_detail_class_time),
                     modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
@@ -343,7 +346,7 @@ fun LectureDetailCustomPage() {
             },
             title = stringResource(R.string.lecture_detail_delete_dialog_title)
         ) {
-            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message))
+            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message), style = SNUTTTypography.body2)
         }
     }
 
@@ -425,7 +428,7 @@ fun LectureDetailCustomPage() {
                 },
                 title = stringResource(id = R.string.lecture_overlap_error_message)
             ) {
-                Text(text = lectureOverlapDialogMessage)
+                Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body2)
             }
         }
     }
@@ -466,7 +469,7 @@ fun LectureDetailCustomPage() {
                         initialCenterIndex = day,
                         onValueChanged = { day = it }
                     ) {
-                        Text(text = weekDayList[it])
+                        Text(text = weekDayList[it], style = SNUTTTypography.button,)
                     }
                 }
                 Box(modifier = Modifier.weight(2f)) {
@@ -478,7 +481,7 @@ fun LectureDetailCustomPage() {
                             if (endTimeIndex <= startTimeIndex) endTimeIndex = startTimeIndex + 1
                         }
                     ) {
-                        Text(text = timeList[it])
+                        Text(text = timeList[it], style = SNUTTTypography.button,)
                     }
                 }
                 Box(modifier = Modifier.weight(2f)) {
@@ -491,7 +494,7 @@ fun LectureDetailCustomPage() {
                         }
                     ) {
                         // 콜백되는 인덱스는 (startTimeIndex+1)이 index 0인 리스트 기준
-                        Text(text = timeList[it + startTimeIndex + 1])
+                        Text(text = timeList[it + startTimeIndex + 1], style = SNUTTTypography.button,)
                     }
                 }
             }

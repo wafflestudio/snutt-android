@@ -26,6 +26,16 @@
     <color name="theme_snutt_7">#4F48C4</color>
     <color name="theme_snutt_8">#AF56B3</color>
 
+    <color name="theme_snutt_dark_0">#D95F71</color>
+    <color name="theme_snutt_dark_1">#DF6E3C</color>
+    <color name="theme_snutt_dark_2">#E68937</color>
+    <color name="theme_snutt_dark_3">#95B03E</color>
+    <color name="theme_snutt_dark_4">#419343</color>
+    <color name="theme_snutt_dark_5">#5BA0D7</color>
+    <color name="theme_snutt_dark_6">#58C1B7</color>
+    <color name="theme_snutt_dark_7">#3E35A7</color>
+    <color name="theme_snutt_dark_8">#783891</color>
+
     <color name="theme_autumn_0">#B82E31</color>
     <color name="theme_autumn_1">#DB701C</color>
     <color name="theme_autumn_2">#EAA32A</color>

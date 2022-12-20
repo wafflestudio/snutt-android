@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -86,7 +87,12 @@ fun HomeDrawer() {
     // bottomSheet 에서 이름 변경 선택 후 dialog confirm 시 이 정보를 vm 에게 전달
     var showMoreClickedTable by remember { mutableStateOf(Defaults.defaultSimpleTableDto) }
 
-    Column(modifier = Modifier.padding(20.dp)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize()
+            .padding(20.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             LogoIcon(modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(10.dp))
@@ -95,7 +101,10 @@ fun HomeDrawer() {
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } })
+            ExitIcon(
+                modifier = Modifier.clicks { scope.launch { drawerState.close() } },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
         }
         Divider(
             modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100
@@ -138,7 +147,8 @@ fun HomeDrawer() {
                     ArrowDownIcon(
                         modifier = Modifier
                             .size(22.dp)
-                            .rotate(rotation)
+                            .rotate(rotation),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     if (tableListOfEachCourseBook[courseBook].isNullOrEmpty()) {
@@ -349,21 +359,22 @@ private fun TableItem(
                 text = stringResource(
                     R.string.home_drawer_table_credit, tableDto.totalCredit ?: 0L
                 ),
-                style = SNUTTTypography.body2,
-                color = SNUTTColors.Gray200,
+                style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,
             )
         }
         DuplicateIcon(
             modifier = Modifier
                 .size(30.dp)
-                .clicks { onDuplicate(tableDto) }
+                .clicks { onDuplicate(tableDto) },
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
         Spacer(modifier = Modifier.width(10.dp))
         MoreIcon(
             modifier = Modifier
                 .size(30.dp)
-                .clicks { onShowMore() }
+                .clicks { onShowMore() },
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
     }
 }
@@ -379,7 +390,7 @@ private fun CreateTableItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(25.dp))
-        Text(text = stringResource(R.string.home_drawer_timetable_add_button))
+        Text(text = stringResource(R.string.home_drawer_timetable_add_button), style = SNUTTTypography.body1)
     }
 }
 
@@ -398,7 +409,7 @@ private fun ShowMoreBottomSheetContent(
 ) {
     Column(
         modifier = Modifier
-            .background(Color.White)
+            .background(SNUTTColors.White900)
             .padding(5.dp)
             .fillMaxWidth()
     ) {
@@ -409,9 +420,14 @@ private fun ShowMoreBottomSheetContent(
                     .padding(12.dp)
                     .fillMaxWidth()
             ) {
-                WriteIcon(modifier = Modifier.size(30.dp))
+                WriteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "이름 변경")
+                Text(
+                    text = stringResource(R.string.home_drawer_table_title_change), style = SNUTTTypography.body1,
+                )
             }
         }
         Box(modifier = Modifier.clicks { onDeleteTable() }) {
@@ -421,9 +437,14 @@ private fun ShowMoreBottomSheetContent(
                     .padding(12.dp)
                     .fillMaxWidth()
             ) {
-                TrashIcon(modifier = Modifier.size(30.dp))
+                TrashIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 삭제")
+                Text(
+                    text = stringResource(R.string.home_drawer_table_delete), style = SNUTTTypography.body1,
+                )
             }
         }
         Box(modifier = Modifier.clicks { onChangeTheme() }) {
@@ -433,9 +454,14 @@ private fun ShowMoreBottomSheetContent(
                     .padding(12.dp)
                     .fillMaxWidth()
             ) {
-                PaletteIcon(modifier = Modifier.size(30.dp))
+                PaletteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 Spacer(modifier = Modifier.width(15.dp))
-                Text(text = "시간표 색상 테마 변경")
+                Text(
+                    text = stringResource(R.string.home_drawer_table_theme_change), style = SNUTTTypography.body1,
+                )
             }
         }
     }
@@ -469,7 +495,7 @@ private fun DeleteTableDialog(
         onConfirm = onConfirm,
         title = stringResource(R.string.home_drawer_table_delete)
     ) {
-        Text(stringResource(R.string.table_delete_alert_message))
+        Text(stringResource(R.string.table_delete_alert_message), style = SNUTTTypography.body2)
     }
 }
 

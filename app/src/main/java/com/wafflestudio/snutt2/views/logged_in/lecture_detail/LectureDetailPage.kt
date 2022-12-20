@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -98,7 +99,8 @@ fun LectureDetailPage() {
                                 if (viewMode) vm.setViewMode(false)
                                 navController.popBackStack()
                             }
-                        }
+                        },
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
             actions = {
@@ -184,7 +186,7 @@ fun LectureDetailPage() {
                 }
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Margin(height = 4.dp)
                 LectureDetailItem(title = stringResource(R.string.lecture_detail_department)) {
                     EditText(
@@ -270,10 +272,16 @@ fun LectureDetailPage() {
                         )
                     )
                 }
-                LectureDetailItem(title = "인원") {
-                    Text(text = "TODO")
+                LectureDetailItem(title = stringResource(R.string.lecture_detail_quota)) {
+                    Text(
+                        text = editingLectureDetail.quota.toString(),
+                        style = SNUTTTypography.body1.copy(
+                            fontSize = 15.sp,
+                            color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
+                        )
+                    )
                 }
-                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark)) {
+                LectureDetailRemark(title = stringResource(R.string.lecture_detail_remark), editMode = editMode) {
                     EditText(
                         value = editingLectureDetail.remark,
                         onValueChange = {
@@ -290,7 +298,7 @@ fun LectureDetailPage() {
                 Margin(height = 4.dp)
             }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(Color.White)) {
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
                 Text(
                     text = stringResource(R.string.lecture_detail_class_time),
                     modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
@@ -318,7 +326,7 @@ fun LectureDetailPage() {
             ) {
                 Column {
                     Margin(height = 30.dp)
-                    Column(modifier = Modifier.background(Color.White)) {
+                    Column(modifier = Modifier.background(SNUTTColors.White900)) {
                         LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
                             scope.launch {
                                 launchSuspendApi(apiOnProgress, apiOnError) {
@@ -379,7 +387,7 @@ fun LectureDetailPage() {
             },
             title = stringResource(R.string.lecture_detail_delete_dialog_title)
         ) {
-            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message))
+            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message), style = SNUTTTypography.body2)
         }
     }
 
@@ -412,7 +420,7 @@ fun LectureDetailPage() {
             },
             title = stringResource(R.string.lecture_detail_reset_dialog_title)
         ) {
-            Text(text = stringResource(R.string.lecture_detail_reset_dialog_message))
+            Text(text = stringResource(R.string.lecture_detail_reset_dialog_message), style = SNUTTTypography.body2)
         }
     }
 }
@@ -445,6 +453,7 @@ fun LectureDetailItem(
 @Composable
 fun LectureDetailRemark(
     title: String,
+    editMode: Boolean,
     content: @Composable () -> Unit
 ) {
     Row(
@@ -454,7 +463,11 @@ fun LectureDetailRemark(
             .padding(vertical = 10.dp)
     ) {
         Spacer(modifier = Modifier.width(20.dp))
-        Text(text = title, modifier = Modifier.width(76.dp))
+        Text(
+            text = title,
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+            modifier = Modifier.width(76.dp)
+        )
         Box(modifier = Modifier.weight(1f)) {
             content()
         }
@@ -470,6 +483,7 @@ fun LectureDetailButton(
 ) {
     Box(
         modifier = Modifier
+            .background(SNUTTColors.White900)
             .fillMaxWidth()
             .height(45.dp)
             .clicks { onClick() },

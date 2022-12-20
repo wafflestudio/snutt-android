@@ -25,7 +25,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
         modifier = Modifier
             .zIndex(2f)
             .fillMaxSize()
-            .background(SNUTTColors.Black500)
+            .background(SNUTTColors.Dim2)
             .clicks {},
         contentAlignment = Alignment.Center
     ) {
@@ -59,7 +59,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(3f)
                         .clicks { onClickFewDays() },
                     textAlign = TextAlign.Center,
-                    color = SNUTTColors.White900
+                    color = SNUTTColors.AllWhite
                 )
                 Spacer(
                     modifier = Modifier
@@ -78,7 +78,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .weight(2f)
                         .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
-                    color = SNUTTColors.White900
+                    color = SNUTTColors.AllWhite
                 )
             }
         }

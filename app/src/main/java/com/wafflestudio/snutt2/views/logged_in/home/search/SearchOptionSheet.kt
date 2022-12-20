@@ -139,7 +139,7 @@ fun SearchOptionSheet(
             Text(
                 text = stringResource(R.string.search_option_apply_button),
                 textAlign = TextAlign.Center,
-                style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.White900),
+                style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.AllWhite),
                 modifier = Modifier.padding(vertical = 20.dp)
             )
         }

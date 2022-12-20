@@ -7,17 +7,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.SettingsIcon
-import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -49,7 +46,12 @@ fun SettingsPage() {
                     style = SNUTTTypography.h2,
                 )
             },
-            navigationIcon = { SettingsIcon(modifier = Modifier.size(30.dp)) },
+            navigationIcon = {
+                SettingIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            },
         )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(SNUTTColors.White900)) {
@@ -67,7 +69,7 @@ fun SettingsPage() {
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_version_info),
-            modifier = Modifier.background(Color.White),
+            modifier = Modifier.background(SNUTTColors.White900),
             content = {
                 Text(
                     text = BuildConfig.VERSION_NAME,
@@ -76,7 +78,7 @@ fun SettingsPage() {
             }
         )
         Margin(height = 10.dp)
-        Column(modifier = Modifier.background(Color.White)) {
+        Column(modifier = Modifier.background(SNUTTColors.White900)) {
             SettingItem(title = stringResource(R.string.settings_team_info)) {
                 navController.navigate(
                     NavigationDestination.TeamInfo
@@ -89,7 +91,7 @@ fun SettingsPage() {
             }
         }
         Margin(height = 10.dp)
-        Column(modifier = Modifier.background(Color.White)) {
+        Column(modifier = Modifier.background(SNUTTColors.White900)) {
             SettingItem(title = stringResource(R.string.settings_licenses_title)) {
                 showLicenseDialog(context)
             }
@@ -107,7 +109,7 @@ fun SettingsPage() {
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_logout_title),
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(SNUTTColors.White900)
         ) {
             logoutDialogState = true
         }
@@ -129,7 +131,7 @@ fun SettingsPage() {
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title)
         ) {
-            Text(text = stringResource(R.string.settings_logout_message))
+            Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
         }
     }
 }

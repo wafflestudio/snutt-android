@@ -15,10 +15,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
@@ -66,7 +66,7 @@ fun CustomDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface {
-            Column(modifier = Modifier.width(screenWidthInDp - 50.dp)) {
+            Column(modifier = Modifier.width(screenWidthInDp - 50.dp).background(SNUTTColors.White900)) {
                 title?.let {
                     Row {
                         Box(modifier = Modifier.padding(20.dp)) {
@@ -86,11 +86,11 @@ fun CustomDialog(
                 Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
                     Box(modifier = Modifier.weight(1f))
                     Box(modifier = Modifier.clicks { onDismiss() }) {
-                        Text(text = negativeButtonText, fontSize = 14.sp)
+                        Text(text = negativeButtonText, style = SNUTTTypography.body1)
                     }
                     Spacer(modifier = Modifier.width(30.dp))
                     Box(modifier = Modifier.clicks { onConfirm() }) {
-                        Text(text = positiveButtonText, fontSize = 14.sp)
+                        Text(text = positiveButtonText, style = SNUTTTypography.body1)
                     }
                 }
             }

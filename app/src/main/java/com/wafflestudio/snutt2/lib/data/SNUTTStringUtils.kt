@@ -43,15 +43,13 @@ object SNUTTStringUtils {
     }
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
-        var text = ""
+        val text = StringBuilder()
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            val day = classTimeDto.day
-            val place = classTimeDto.place
-            text += place
-            if (index != lectureDto.class_time_json.size - 1) text += "/"
+            text.append(classTimeDto.place)
+            if (index != lectureDto.class_time_json.size - 1 && classTimeDto.place.isNotEmpty()) text.append("/")
         }
-        if (text.isEmpty()) text = "(없음)"
-        return text
+        if (text.isEmpty()) text.append("(없음)")
+        return text.toString()
     }
 
     fun getNotificationTime(info: NotificationDto): String {

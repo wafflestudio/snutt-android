@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -125,6 +126,7 @@ fun HomePage() {
     val bottomSheetOffset = remember { androidx.compose.animation.core.Animatable(0f) }
     val bottomSheetDim = remember { Animatable(SNUTTColors.Transparent) }
     var bottomSheetContent by remember { mutableStateOf<@Composable () -> Unit>({}) }
+    val dimColor = SNUTTColors.Dim
 
     val showBottomSheet: suspend (Dp, @Composable () -> Unit) -> Unit = { contentHeight, content ->
         coroutineScope {
@@ -132,7 +134,9 @@ fun HomePage() {
             bottomSheetOffset.snapTo(bottomSheetHeightPx)
             bottomSheetContent = content
             bottomSheetState = BottomSheetState.SHOW
-            launch { bottomSheetDim.animateTo(SNUTTColors.Black600) }
+            launch {
+                bottomSheetDim.animateTo(dimColor)
+            }
             launch { bottomSheetOffset.animateTo(0f) }
         }
     }
@@ -254,7 +258,8 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
         ) {
             TimetableIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Timetable
+                isSelected = pageState == HomeItem.Timetable,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
 
@@ -269,7 +274,8 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
         ) {
             SearchIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Search
+                isSelected = pageState == HomeItem.Search,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
 
@@ -284,7 +290,8 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
         ) {
             ReviewIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState is HomeItem.Review
+                isSelected = pageState is HomeItem.Review,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
 
@@ -299,7 +306,8 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
         ) {
             SettingIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Settings
+                isSelected = pageState == HomeItem.Settings,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
     }
