@@ -89,6 +89,7 @@ fun SignInPage() {
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
+            .background(SNUTTColors.White900)
             .padding(30.dp)
             .clicks { focusManager.clearFocus() }
     ) {
