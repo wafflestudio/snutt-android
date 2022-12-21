@@ -34,7 +34,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailCustomPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
@@ -44,8 +43,6 @@ import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,8 +50,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
-
-    private val timetableViewModel: TimetableViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
 
@@ -76,20 +71,14 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
 
         lifecycleScope.launch {
-            var token = userViewModel.accessToken.filterNotNull().first()
-            if (token.isNotEmpty()) {
-                try {
-                    homeViewModel.refreshData()
-                } catch (e: Exception) {
-                    // when storage's token is invalid
-                    token = ""
-                }
-            }
-            val startDestination =
-                if (token.isEmpty()) NavigationDestination.Onboard else NavigationDestination.Home
-            setUpContents(startDestination)
+            homeViewModel.refreshData()
             isInitialRefreshFinished = true
         }
+        val token = userViewModel.accessToken.value
+        setUpContents(
+            if (token.isEmpty()) NavigationDestination.Onboard
+            else NavigationDestination.Home
+        )
         setUpSplashScreen(composeRoot)
         startUpdatingPushToken()
     }
