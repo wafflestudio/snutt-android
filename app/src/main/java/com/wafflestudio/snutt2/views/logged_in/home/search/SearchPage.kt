@@ -42,6 +42,7 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
@@ -55,13 +56,12 @@ import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -73,6 +73,7 @@ fun SearchPage(
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val pageController = LocalHomePageController.current
+    val reviewWebViewContainer = LocalReviewWebView.current
 
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
@@ -95,6 +96,21 @@ fun SearchPage(
 
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
+
+    reviewWebViewContainer.apply {
+        this.webView.addJavascriptInterface(
+            CloseBridge(
+                onClose = { scope.launch { sheetState.hide() } }
+            ),
+            "Snutt"
+        )
+    }
+
+    LaunchedEffect(sheetState.isVisible) {
+        if (!sheetState.isVisible) {
+            reviewWebViewContainer.openPage(null)
+        }
+    }
 
     Column {
         SearchTopBar {
@@ -254,12 +270,19 @@ fun SearchPage(
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     }, onClickReview = {
                                         scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                pageController.update(
-                                                    HomeItem.Review(
-                                                        searchViewModel.getLectureReviewUrl(it.item)
-                                                    )
-                                                )
+                                            val job: CompletableJob = Job()
+                                            scope.launch {
+                                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                                    reviewWebViewContainer.openPage(searchViewModel.getLectureReviewUrl(it.item) + "&on_back=close")
+                                                    job.complete()
+                                                }
+                                            }
+                                            joinAll(job)
+                                            scope.launch {
+                                                bottomSheetContentSetter.invoke {
+                                                    ReviewWebView(0.95f)
+                                                }
+                                                sheetState.show()
                                             }
                                         }
                                     })
