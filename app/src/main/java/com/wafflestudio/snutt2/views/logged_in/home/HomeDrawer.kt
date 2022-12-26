@@ -96,7 +96,6 @@ fun HomeDrawer() {
                                 selectedCourseBook,
                                 newTableTitle
                             )
-                            // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
                             scope.launch {
                                 sheetState.hide()
                                 keyboardManager?.hide()
