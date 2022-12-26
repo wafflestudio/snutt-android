@@ -177,10 +177,10 @@ fun TimetablePage(
                         },
                     painter = painterResource(
                         if (newSemesterNotify) {
-                            if (isSystemInDarkTheme()) R.drawable.ic_drawer_notify_dark
+                            if (isDarkMode()) R.drawable.ic_drawer_notify_dark
                             else R.drawable.ic_drawer_notify
                         } else {
-                            if (isSystemInDarkTheme()) R.drawable.ic_drawer_dark
+                            if (isDarkMode()) R.drawable.ic_drawer_dark
                             else R.drawable.ic_drawer
                         }
                     ),
