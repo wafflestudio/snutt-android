@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +33,8 @@ class UserRepositoryImpl @Inject constructor(
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
 
     override val accessToken = storage.accessToken.asStateFlow()
+
+    override val themeMode = storage.themeMode.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -205,6 +208,10 @@ class UserRepositoryImpl @Inject constructor(
             token,
             RegisterFirebaseTokenParams()
         )
+    }
+
+    override suspend fun setThemeMode(mode: ThemeMode) {
+        storage.themeMode.update(mode)
     }
 
     private suspend fun getFirebaseToken(): String {

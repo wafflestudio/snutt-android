@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,8 @@ class UserViewModel @Inject constructor(
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
     val accessToken: StateFlow<String> = userRepository.accessToken
+
+    val themeMode: StateFlow<ThemeMode> = userRepository.themeMode
 
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
@@ -111,5 +114,9 @@ class UserViewModel @Inject constructor(
 
     suspend fun closePopup() {
         userRepository.closePopup()
+    }
+
+    suspend fun setThemeMode(mode: ThemeMode) {
+        userRepository.setThemeMode(mode)
     }
 }

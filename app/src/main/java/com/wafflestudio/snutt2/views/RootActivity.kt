@@ -92,8 +92,11 @@ class RootActivity : AppCompatActivity() {
 
     private fun setUpContents(startDestination: String) {
         composeRoot.setContent {
-            SNUTTTheme {
-                setUpUI(startDestination)
+            val themeMode by userViewModel.themeMode.collectAsState()
+            CompositionLocalProvider(LocalThemeState provides themeMode) {
+                SNUTTTheme {
+                    setUpUI(startDestination)
+                }
             }
         }
     }
@@ -239,6 +242,7 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
+        composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
     }
 
     private fun startUpdatingPushToken() {

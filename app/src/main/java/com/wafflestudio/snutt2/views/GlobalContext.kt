@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 
@@ -34,5 +35,9 @@ val LocalHomePageController = compositionLocalOf<HomePageController> {
 }
 
 val LocalPopupState = compositionLocalOf<PopupState> {
+    throw RuntimeException("")
+}
+
+val LocalThemeState = compositionLocalOf<ThemeMode> {
     throw RuntimeException("")
 }

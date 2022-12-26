@@ -14,6 +14,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -29,13 +30,20 @@ fun ServiceInfoPage() {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
-    val isDarkMode = isSystemInDarkTheme()
+    val themeMode by userViewModel.themeMode.collectAsState()
 
     var accessToken: String
     val url = stringResource(R.string.api_server) + stringResource(R.string.terms)
     val headers = HashMap<String, String>()
     headers["x-access-apikey"] = stringResource(R.string.api_key)
-    headers["dark"] = if (isDarkMode) "dark" else ""
+    headers["dark"] = when (themeMode) {
+        ThemeMode.DARK -> "dark"
+        ThemeMode.LIGHT -> "light"
+        ThemeMode.AUTO -> {
+            if (isSystemInDarkTheme()) "dark"
+            else "light"
+        }
+    }
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
@@ -62,7 +70,6 @@ fun ServiceInfoPage() {
         scope.launch {
             accessToken = userViewModel.getAccessToken()
             headers["x-access-token"] = accessToken
-            headers["dark"] = if (isDarkMode) "dark" else ""
             webViewUrlReady = true
         }
     }

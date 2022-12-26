@@ -1,12 +1,12 @@
 package com.wafflestudio.snutt2.data
 
 import android.content.Context
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 enum class TimetableColorTheme(val code: Int) {
 
@@ -91,8 +91,7 @@ enum class TimetableColorTheme(val code: Int) {
     // TODO: 나중에 위에꺼 지우고 이름 바꾸기
     @Composable
     fun getColorByIndexComposable(colorIndex: Long): androidx.compose.ui.graphics.Color {
-        val darkMode = isSystemInDarkTheme()
-        return if (darkMode) {
+        return if (isDarkMode()) {
             when (this) {
                 SNUTT -> listOf(
                     colorResource(R.color.theme_snutt_dark_0),
@@ -164,7 +163,7 @@ enum class TimetableColorTheme(val code: Int) {
         } else {
             when (this) {
                 SNUTT -> listOf(
-                    colorResource(if (darkMode) R.color.theme_snutt_dark_0 else R.color.theme_snutt_0),
+                    colorResource(if (isDarkMode()) R.color.theme_snutt_dark_0 else R.color.theme_snutt_0),
                     colorResource(R.color.theme_snutt_1),
                     colorResource(R.color.theme_snutt_2),
                     colorResource(R.color.theme_snutt_3),
