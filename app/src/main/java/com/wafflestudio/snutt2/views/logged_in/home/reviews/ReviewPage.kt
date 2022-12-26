@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,12 +36,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReviewPage(height: Float = 1.0f) {
-    val context = LocalContext.current
+fun ReviewPage() {
     val webViewContainer = LocalReviewWebView.current
     val homePageController = LocalHomePageController.current
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    val scope = rememberCoroutineScope()
 
     val onBackPressedCallback = remember {
         object : OnBackPressedCallback(true) {
@@ -60,6 +57,14 @@ fun ReviewPage(height: Float = 1.0f) {
         onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
         onDispose { onBackPressedCallback.remove() }
     }
+
+    ReviewWebView()
+}
+
+@Composable
+fun ReviewWebView(height: Float = 1.0f) {
+    val webViewContainer = LocalReviewWebView.current
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
