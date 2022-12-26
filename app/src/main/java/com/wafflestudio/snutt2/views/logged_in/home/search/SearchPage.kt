@@ -57,6 +57,7 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -71,6 +72,7 @@ fun SearchPage(
     val navController = LocalNavController.current
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
+    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val pageController = LocalHomePageController.current
 
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
@@ -224,6 +226,7 @@ fun SearchPage(
                                                     is_force = false
                                                 )
                                                 searchViewModel.toggleLectureSelection(it.item)
+                                                tableListViewModel.fetchTableMap()
                                             }
                                         }
                                     }, onClickRemove = {
@@ -231,6 +234,7 @@ fun SearchPage(
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 timetableViewModel.removeLecture(it.item)
                                                 searchViewModel.toggleLectureSelection(it.item)
+                                                tableListViewModel.fetchTableMap()
                                             }
                                         }
                                     }, onClickDetail = {
@@ -341,7 +345,7 @@ fun LazyItemScope.SearchListItem(
         Divider(color = SNUTTColors.White400)
         Column(
             modifier = Modifier
-                .padding(top = 8.dp, bottom = 9.dp)
+                .padding(top = 10.dp, bottom = 10.dp)
                 .clicks {
                     onSelect()
                 }
@@ -371,7 +375,7 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
                     maxLines = 1,
                 )
             }
@@ -384,7 +388,7 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = classTimeText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
                     maxLines = 1,
                 )
             }
@@ -397,7 +401,7 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = getSimplifiedLocation(lectureDataWithState.item),
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
                     maxLines = 1,
                 )
             }
@@ -508,7 +512,7 @@ fun SearchEmptyPage() {
         Spacer(modifier = Modifier.height(35.dp))
         Text(
             text = stringResource(R.string.search_result_empty),
-            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White900, fontSize = 18.sp)
+            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp)
         )
     }
 }
@@ -529,7 +533,7 @@ private fun LazyItemScope.TagCell(
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = tagDto.name,
-            style = SNUTTTypography.body1.copy(fontSize = 15.sp, color = SNUTTColors.White900),
+            style = SNUTTTypography.body1.copy(fontSize = 15.sp, color = SNUTTColors.AllWhite),
             textAlign = TextAlign.Center,
         )
         WhiteCloseIcon(

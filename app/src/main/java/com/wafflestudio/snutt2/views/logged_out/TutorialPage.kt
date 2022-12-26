@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,6 +20,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
@@ -30,6 +32,7 @@ fun TutorialPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(SNUTTColors.White900)
     ) {
         HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) { page ->
             TutorialPage(
@@ -58,6 +61,7 @@ fun TutorialPage() {
             pagerState = pagerState,
             indicatorHeight = 12.dp,
             indicatorWidth = 12.dp,
+            activeColor = SNUTTColors.Black900,
         )
 
         Column(
@@ -83,7 +87,7 @@ fun TutorialPage() {
                 ) {
                     Text(
                         text = stringResource(R.string.tutorial_sign_in_button),
-                        style = MaterialTheme.typography.button
+                        style = SNUTTTypography.button,
                     )
                 }
 
@@ -103,7 +107,7 @@ fun TutorialPage() {
                 ) {
                     Text(
                         text = stringResource(R.string.tutorial_sign_up_button),
-                        style = MaterialTheme.typography.button
+                        style = SNUTTTypography.button,
                     )
                 }
             }
@@ -124,6 +128,7 @@ fun TutorialPage(modifier: Modifier = Modifier, titleImg: Painter, contentImg: P
                 .width(250.dp)
                 .height(40.dp),
             painter = titleImg,
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             contentDescription = "tutorial title"
         )
 

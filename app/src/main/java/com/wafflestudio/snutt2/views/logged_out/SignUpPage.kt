@@ -91,6 +91,7 @@ fun SignUpPage() {
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
+            .background(SNUTTColors.White900)
             .padding(30.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

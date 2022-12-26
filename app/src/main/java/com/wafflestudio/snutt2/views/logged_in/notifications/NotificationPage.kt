@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,9 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.AlarmOnIcon
-import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.components.compose.WarningIcon
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -59,13 +55,10 @@ fun NotificationPage() {
 fun NotificationItem(info: NotificationDto?) {
     Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
         when (info?.type) {
-            0 -> painterResource(R.drawable.ic_warning)
-            1 -> painterResource(R.drawable.ic_calendar)
-            2 -> painterResource(R.drawable.ic_refresh)
-            3 -> painterResource(R.drawable.ic_trash)
-            else -> null
-        }?.let {
-            Image(painter = it, contentDescription = "Message", modifier = Modifier.size(20.dp))
+            0 -> WarningIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            1 -> CalendarIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            2 -> RefreshIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            3 -> TrashIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
         Spacer(modifier = Modifier.width(10.dp))
         Column {
