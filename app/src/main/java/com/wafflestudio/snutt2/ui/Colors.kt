@@ -52,13 +52,13 @@ object SNUTTColors {
     val Colors.Black900 @Composable get() = if (isLight) Color(0xff000000) else Color(0xffffffff)
     val Black900 @Composable get() = MaterialTheme.colors.Black900
 
-    val Colors.White400 @Composable get() = if (isLight) Color(0x4dffffff) else Color(0x4d2b2b2b)
+    val Colors.White400 @Composable get() = if (isLight) Color(0x4dffffff) else Color(0x4dffffff)
     val White400 @Composable get() = MaterialTheme.colors.White400
 
-    val Colors.White500 @Composable get() = if (isLight) Color(0x80ffffff) else Color(0x802b2b2b)
+    val Colors.White500 @Composable get() = if (isLight) Color(0x80ffffff) else Color(0x80ffffff)
     val White500 @Composable get() = MaterialTheme.colors.White500
 
-    val Colors.White700 @Composable get() = if (isLight) Color(0xb3ffffff) else Color(0xb32b2b2b)
+    val Colors.White700 @Composable get() = if (isLight) Color(0xb3ffffff) else Color(0xb3ffffff)
     val White700 @Composable get() = MaterialTheme.colors.White700
 
     val Colors.White800 @Composable get() = if (isLight) Color(0xccffffff) else Color(0xcc2b2b2b)
@@ -70,7 +70,7 @@ object SNUTTColors {
     val Colors.Dim @Composable get() = if (isLight) Color(0x99000000) else Color(0x99000000)
     val Dim @Composable get() = MaterialTheme.colors.Dim
 
-    val Colors.Dim2 @Composable get() = if (isLight) Color(0x80000000) else Color(0x80000000)
+    val Colors.Dim2 @Composable get() = if (isLight) Color(0x80000000) else Color(0x60000000)
     val Dim2 @Composable get() = MaterialTheme.colors.Dim2
 
     val Colors.TableGrid @Composable get() = if (isLight) Color(0xffebebeb) else Color(0xff3c3c3c)

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -42,7 +43,11 @@ fun AppReportPage() {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SNUTTColors.White900)
+    ) {
         TopBar(title = {
             Text(
                 text = stringResource(R.string.settings_app_report_title),
