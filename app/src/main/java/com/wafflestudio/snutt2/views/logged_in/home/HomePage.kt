@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
@@ -85,7 +86,8 @@ fun HomePage() {
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
-    val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken) }
+    val isDarkMode = isDarkMode()
+    val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {

@@ -167,6 +167,10 @@
     <string name="settings_user_config_change_password_success">비밀번호를 변경하였습니다.</string>
     <string name="settings_leave_message">SNUTT 회원 탈퇴를 하겠습니까?</string>
     <string name="settings_user_config_disconnect_facebook_message">페이스북 연동을 끊겠습니까?</string>
+    <string name="settings_select_color_mode_title">색상 모드</string>
+    <string name="settings_select_color_mode_light">라이트 모드</string>
+    <string name="settings_select_color_mode_dark">다크 모드</string>
+    <string name="settings_select_color_mode_auto">자동</string>
     <string name="lecture_detail_lecture_title_hint">예) 기초 영어</string>
     <string name="lecture_detail_lecture_title">강의명</string>
     <string name="lecture_detail_instructor">교수</string>

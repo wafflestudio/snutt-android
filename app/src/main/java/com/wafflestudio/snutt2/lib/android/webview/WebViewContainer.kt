@@ -15,12 +15,13 @@ import java.net.URL
 
 class WebViewContainer(
     private val context: Context,
-    private val accessToken: StateFlow<String?>
+    private val accessToken: StateFlow<String?>,
+    private val isDarkMode: Boolean,
 ) {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
 
-    private val darkModeFlag = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-    private val isDarkMode: Boolean = darkModeFlag == Configuration.UI_MODE_NIGHT_YES
+    private val darkModeFlag =
+        context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
     val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
@@ -81,7 +82,10 @@ class WebViewContainer(
             )
             setCookie(
                 reviewUrlHost,
-                "theme=${if (isDarkMode) "dark" else ""}"
+                "theme=${
+                if (isDarkMode) "dark"
+                else "light"
+                }"
             )
         }.flush()
         webView.loadUrl(url ?: context.getString(R.string.review_base_url))
@@ -105,7 +109,10 @@ class WebViewContainer(
             )
             setCookie(
                 reviewUrlHost,
-                "theme=${if (isDarkMode) "dark" else ""}"
+                "theme=${
+                if (isDarkMode) "dark"
+                else "light"
+                }"
             )
         }.flush()
         webView.reload()

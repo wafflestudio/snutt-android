@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
+import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -86,6 +87,16 @@ class SNUTTStorage @Inject constructor(
             key = "table_trim_param",
             type = TableTrimParam::class.java,
             defaultValue = TableTrimParam.Default
+        )
+    )
+
+    val themeMode = PrefValue<ThemeMode>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "theme_mode",
+            type = ThemeMode::class.java,
+            defaultValue = ThemeMode.AUTO
         )
     )
 
