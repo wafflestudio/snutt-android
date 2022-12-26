@@ -106,9 +106,14 @@ fun SearchPage(
         )
     }
 
+    // 강의평 바텀시트가 한번 올라왔다가 내려갈 때 원래 보던 창으로 돌아가기 위해 goBack() 수행
+    // * 처음 SearchPage에 진입할 때도 sheetState는 invisible일 텐데, 이 때는 goBack() 하지 않아야 한다. (sheetWasShown 변수 존재 이유)
+    var sheetWasShown by remember { mutableStateOf(false) }
     LaunchedEffect(sheetState.isVisible) {
-        if (!sheetState.isVisible) {
+        if (!sheetState.isVisible && sheetWasShown) {
             reviewWebViewContainer.webView.goBack()
+        } else {
+            sheetWasShown = true
         }
     }
 
