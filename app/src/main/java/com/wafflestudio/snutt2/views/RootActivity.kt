@@ -12,6 +12,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
@@ -28,6 +30,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
@@ -149,7 +152,13 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
+        val customTextSelectionColors = TextSelectionColors(
+            handleColor = SNUTTColors.Transparent,
+            backgroundColor = SNUTTColors.Transparent
+        )
+
         CompositionLocalProvider(
+            LocalTextSelectionColors provides customTextSelectionColors,
             LocalNavController provides navController,
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
