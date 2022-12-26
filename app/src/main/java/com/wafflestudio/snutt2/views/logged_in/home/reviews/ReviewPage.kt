@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.reviews
 
+import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -10,7 +11,10 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -57,7 +61,11 @@ fun ReviewPage() {
         onDispose { onBackPressedCallback.remove() }
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SNUTTColors.White900)
+    ) {
         when (val loadState = webViewContainer.loadState.value) {
             LoadState.Error -> WebViewErrorPage(
                 modifier = Modifier.fillMaxSize(),
@@ -140,7 +148,14 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
 @Composable
 private fun WebViewSuccess(modifier: Modifier, webView: WebView) {
     Column(modifier = modifier.fillMaxSize()) {
-        AndroidView(factory = { webView })
+        AndroidView(factory = {
+            webView.apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }
+        })
     }
 }
 
@@ -151,7 +166,9 @@ private fun WebViewLoading(modifier: Modifier, progress: Float) {
         verticalArrangement = Arrangement.Top
     ) {
         LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth().height(2.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp),
             progress = progress,
             color = SNUTTColors.Gray200
         )
