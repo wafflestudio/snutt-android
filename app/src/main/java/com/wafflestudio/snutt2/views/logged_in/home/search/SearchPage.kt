@@ -108,7 +108,7 @@ fun SearchPage(
 
     LaunchedEffect(sheetState.isVisible) {
         if (!sheetState.isVisible) {
-            reviewWebViewContainer.openPage(null)
+            reviewWebViewContainer.webView.goBack()
         }
     }
 
