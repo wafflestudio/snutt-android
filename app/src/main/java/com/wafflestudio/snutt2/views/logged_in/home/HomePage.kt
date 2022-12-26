@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -121,6 +122,9 @@ fun HomePage() {
         if (!sheetState.isVisible) {
             bottomSheetContent = { Box(modifier = Modifier.size(1.dp)) }
         }
+    }
+    BackHandler(enabled = sheetState.isVisible) {
+        scope.launch { sheetState.hide() }
     }
 
     CompositionLocalProvider(

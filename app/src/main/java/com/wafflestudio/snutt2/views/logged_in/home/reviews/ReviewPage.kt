@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReviewPage() {
+fun ReviewPage(height: Float = 1.0f) {
     val context = LocalContext.current
     val webViewContainer = LocalReviewWebView.current
     val homePageController = LocalHomePageController.current
@@ -63,7 +63,8 @@ fun ReviewPage() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .fillMaxHeight(height)
             .background(SNUTTColors.White900)
     ) {
         when (val loadState = webViewContainer.loadState.value) {
