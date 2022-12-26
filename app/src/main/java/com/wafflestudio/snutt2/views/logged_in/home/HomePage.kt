@@ -123,8 +123,14 @@ fun HomePage() {
             bottomSheetContent = { Box(modifier = Modifier.size(1.dp)) }
         }
     }
-    BackHandler(enabled = sheetState.isVisible) {
-        scope.launch { sheetState.hide() }
+    BackHandler(enabled = sheetState.isVisible || drawerState.isOpen || pageController.homePageState.value != HomeItem.Timetable) {
+        if (sheetState.isVisible) {
+            scope.launch { sheetState.hide() }
+        } else if (drawerState.isOpen) {
+            scope.launch { drawerState.close() }
+        } else {
+            pageController.update(HomeItem.Timetable)
+        }
     }
 
     CompositionLocalProvider(
