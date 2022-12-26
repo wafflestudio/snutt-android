@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -54,9 +55,7 @@ import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -64,7 +63,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
@@ -82,6 +81,8 @@ fun SearchPage(
     val keyBoardController = LocalSoftwareKeyboardController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
+    val sheetState = LocalBottomSheetState.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -90,7 +91,6 @@ fun SearchPage(
     val tagsByTagType by searchViewModel.tagsByTagType.collectAsState()
     val selectedTagType by searchViewModel.selectedTagType.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
-    var searchOptionSheetState by remember { mutableStateOf(false) }
     val placeHolderState by searchViewModel.placeHolderState.collectAsState()
 
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
@@ -151,7 +151,18 @@ fun SearchPage(
                 )
             } else FilterIcon(
                 modifier = Modifier.clicks {
-                    searchOptionSheetState = true
+                    // 강의 검색 필터 sheet 띄우기
+                    bottomSheetContentSetter.invoke {
+                        SearchOptionSheet(tagsByTagType, selectedTagType) {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    searchViewModel.query()
+                                }
+                            }
+                            scope.launch { sheetState.hide() }
+                        }
+                    }
+                    scope.launch { sheetState.show() }
                 },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
@@ -264,24 +275,6 @@ fun SearchPage(
         }
     }
 
-    val showBottomSheet = ShowBottomSheet.current
-    val hideBottomSheet = HideBottomSheet.current
-    if (searchOptionSheetState) {
-        LaunchedEffect(Unit) {
-            showBottomSheet(380.dp) {
-                SearchOptionSheet(tagsByTagType, selectedTagType) {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            searchViewModel.query()
-                        }
-                    }
-                    scope.launch { hideBottomSheet.invoke(false) }
-                }
-            }
-            searchOptionSheetState = false
-        }
-    }
-
     if (lectureOverlapDialogState) {
         CustomDialog(
             onDismiss = { lectureOverlapDialogState = false },
@@ -375,7 +368,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }
@@ -388,7 +384,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = classTimeText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }
@@ -401,7 +400,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = getSimplifiedLocation(lectureDataWithState.item),
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }
