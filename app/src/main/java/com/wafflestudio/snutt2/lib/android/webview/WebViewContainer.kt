@@ -77,6 +77,10 @@ class WebViewContainer(
             )
             setCookie(
                 reviewUrlHost,
+                "x-os-type=android"
+            )
+            setCookie(
+                reviewUrlHost,
                 "theme=${if (isDarkMode) "dark" else ""}"
             )
         }.flush()
@@ -94,6 +98,10 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "x-access-token=$accessToken"
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-os-type=android"
             )
             setCookie(
                 reviewUrlHost,
