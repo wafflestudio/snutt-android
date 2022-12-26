@@ -80,6 +80,36 @@ fun HomeDrawer() {
     // bottomSheet 에서 이름 변경 선택 후 dialog confirm 시 이 정보를 vm 에게 전달
     var showMoreClickedTable by remember { mutableStateOf(Defaults.defaultSimpleTableDto) }
 
+    // FIXME: 새 시간표 만드는 바텀시트를 띄우는 코드. 이걸 쓰는 곳이 두 군데라서 재사용 하면 좋을 것 같아 따로 빼 놨는데 모양이 좋지 않다.
+    val showCreateTableBottomSheet = {
+        sheetContentSetter.invoke {
+            var newTableTitle by remember { mutableStateOf("") }
+            CreateNewTableBottomSheet(
+                newTitle = newTableTitle,
+                onEditTextChange = { newTableTitle = it },
+                onPickerChange = { selectedCourseBook = it },
+                onCancel = { scope.launch { sheetState.hide() } },
+                onComplete = {
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            tableListViewModel.createTableNew(
+                                selectedCourseBook,
+                                newTableTitle
+                            )
+                            // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
+                            scope.launch {
+                                sheetState.hide()
+                                keyboardManager?.hide()
+                            }
+                        }
+                    }
+                },
+                specificSemester, allCourseBook, selectedCourseBook
+            )
+        }
+        scope.launch { sheetState.show() }
+    }
+
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
@@ -117,31 +147,7 @@ fun HomeDrawer() {
                     selectedCourseBook =
                         CourseBookDto(blockedTable.semester, blockedTable.year)
                     specificSemester = false
-
-                    sheetContentSetter.invoke {
-                        var newTableTitle by remember { mutableStateOf("") }
-                        CreateNewTableBottomSheet(
-                            newTitle = newTableTitle,
-                            onEditTextChange = { newTableTitle = it },
-                            onPickerChange = { selectedCourseBook = it },
-                            onCancel = { scope.launch { sheetState.hide() } },
-                            onComplete = {
-                                keyboardManager?.hide()
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        tableListViewModel.createTableNew(
-                                            selectedCourseBook,
-                                            newTableTitle
-                                        )
-                                        // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                                        scope.launch { sheetState.hide() }
-                                    }
-                                }
-                            },
-                            specificSemester, allCourseBook, selectedCourseBook
-                        )
-                    }
-                    scope.launch { sheetState.show() }
+                    showCreateTableBottomSheet.invoke()
                 }
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -191,11 +197,11 @@ fun HomeDrawer() {
                                 onDuplicate = { table ->
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                            tableListViewModel.copyTableNew(blockedTable.id)
+                                            tableListViewModel.copyTableNew(table.id)
                                             context.toast(
                                                 context.getString(
                                                     R.string.home_drawer_copy_success_message,
-                                                    blockedTable.title
+                                                    table.title
                                                 )
                                             )
                                         }
@@ -283,35 +289,12 @@ fun HomeDrawer() {
                                 }
                             )
                         }
+                        // 가장 최근 학기에 시간표가 없을 때, "+ 시간표 추가하기" 를 누르면 시간표 추가 바텀시트 보여주기
                         if (tableListOfEachCourseBook[courseBook].isNullOrEmpty()) {
                             CreateTableItem {
                                 specificSemester = true
                                 selectedCourseBook = courseBook
-
-                                sheetContentSetter.invoke {
-                                    var newTableTitle by remember { mutableStateOf("") }
-                                    CreateNewTableBottomSheet(
-                                        newTitle = newTableTitle,
-                                        onEditTextChange = { newTableTitle = it },
-                                        onPickerChange = { selectedCourseBook = it },
-                                        onCancel = { scope.launch { sheetState.hide() } },
-                                        onComplete = {
-                                            keyboardManager?.hide()
-                                            scope.launch {
-                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                    tableListViewModel.createTableNew(
-                                                        selectedCourseBook,
-                                                        newTableTitle
-                                                    )
-                                                    // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                                                    scope.launch { sheetState.hide() }
-                                                }
-                                            }
-                                        },
-                                        specificSemester, allCourseBook, selectedCourseBook
-                                    )
-                                }
-                                scope.launch { sheetState.show() }
+                                showCreateTableBottomSheet.invoke()
                             }
                         }
                     }
@@ -327,9 +310,10 @@ fun HomeDrawer() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     tableListViewModel.changeNameTableNew(showMoreClickedTable.id, tableNewTitle)
+                    changeTitleDialogState = false
+                    scope.launch { sheetState.hide() }
                 }
             }
-            changeTitleDialogState = false
         }, value = tableNewTitle, onValueChange = { tableNewTitle = it })
     }
 
@@ -339,12 +323,10 @@ fun HomeDrawer() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     tableListViewModel.deleteTableNew(showMoreClickedTable.id)
+                    deleteTableDialogState = false
                     context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
+                    scope.launch { sheetState.hide() }
                 }
-            }
-            scope.launch {
-                sheetState.hide()
-                deleteTableDialogState = false
             }
         })
     }
