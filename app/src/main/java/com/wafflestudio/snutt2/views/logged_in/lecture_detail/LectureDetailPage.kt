@@ -44,7 +44,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.*
 
@@ -111,6 +111,9 @@ fun LectureDetailPage() {
                 )
             }
         }
+    BackHandler(enabled = sheetState.isVisible) {
+        scope.launch { sheetState.hide() }
+    }
 
     CompositionLocalProvider(
         LocalReviewWebView provides reviewWebViewContainer,
@@ -419,7 +422,7 @@ fun LectureDetailPage() {
                                         joinAll(job)
                                         scope.launch {
                                             sheetContentSetter.invoke {
-                                                ReviewPage(0.95f)
+                                                ReviewWebView(0.95f)
                                             }
                                             sheetState.show()
                                         }
