@@ -119,4 +119,8 @@ class UserViewModel @Inject constructor(
     suspend fun setThemeMode(mode: ThemeMode) {
         userRepository.setThemeMode(mode)
     }
+
+    suspend fun findIdByEmail(email: String) {
+        userRepository.findIdByEmail(email)
+    }
 }

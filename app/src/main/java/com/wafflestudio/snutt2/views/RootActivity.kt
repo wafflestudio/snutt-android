@@ -40,9 +40,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelect
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
-import com.wafflestudio.snutt2.views.logged_out.SignInPage
-import com.wafflestudio.snutt2.views.logged_out.SignUpPage
-import com.wafflestudio.snutt2.views.logged_out.TutorialPage
+import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -191,6 +189,10 @@ class RootActivity : AppCompatActivity() {
             }
             composable2(NavigationDestination.SignUp) {
                 SignUpPage()
+            }
+
+            composable2(NavigationDestination.FindId) {
+                FindIdPage()
             }
         }
     }

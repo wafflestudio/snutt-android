@@ -259,6 +259,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_ref_lecture_not_found),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.USER_NOT_FOUND -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_no_such_user_with_that_email),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         ErrorCode.COLORLIST_NOT_FOUND -> Toast.makeText(
                             context,
                             context.getString(R.string.error_colorlist_not_found),
@@ -331,6 +336,7 @@ object ErrorCode {
     const val TIMETABLE_NOT_FOUND = 0x4001
     const val LECTURE_NOT_FOUND = 0x4002
     const val REF_LECTURE_NOT_FOUND = 0x4003
+    const val USER_NOT_FOUND = 0x4004
     const val COLORLIST_NOT_FOUND = 0x4005
 }
 

@@ -214,6 +214,12 @@ class UserRepositoryImpl @Inject constructor(
         storage.themeMode.update(mode)
     }
 
+    override suspend fun findIdByEmail(email: String) {
+        api._postFindId(
+            PostFindIdParams(email)
+        )
+    }
+
     private suspend fun getFirebaseToken(): String {
         return suspendCoroutine { cont ->
             FirebaseMessaging.getInstance().token.addOnCompleteListener(

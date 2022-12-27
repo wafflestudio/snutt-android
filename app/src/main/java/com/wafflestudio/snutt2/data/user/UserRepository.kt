@@ -71,4 +71,6 @@ interface UserRepository {
     suspend fun registerToken()
 
     suspend fun setThemeMode(mode: ThemeMode)
+
+    suspend fun findIdByEmail(email: String)
 }

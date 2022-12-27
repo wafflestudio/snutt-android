@@ -324,6 +324,11 @@ interface SNUTTRestApi {
         @Body body: PostForceLogoutParams
     ): PostForceLogoutResults
 
+    @POST("/auth/find_id")
+    suspend fun _postFindId(
+        @Body body: PostFindIdParams
+    ): PostFindIdResults
+
     @GET("/user/info")
     suspend fun _getUserInfo(): GetUserInfoResults
 
