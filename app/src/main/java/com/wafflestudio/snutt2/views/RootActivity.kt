@@ -194,6 +194,10 @@ class RootActivity : AppCompatActivity() {
             composable2(NavigationDestination.FindId) {
                 FindIdPage()
             }
+
+            composable2(NavigationDestination.FindPassword) {
+                FindPasswordPage()
+            }
         }
     }
 
