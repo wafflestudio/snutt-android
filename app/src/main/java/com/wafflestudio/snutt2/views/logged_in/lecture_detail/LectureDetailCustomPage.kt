@@ -547,16 +547,20 @@ fun DayTimePickerSheet(
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
                 onClick = {
+                    var tempDayIndex by mutableStateOf(dayIndex)
                     modalState
                         .set(
-                            onDismiss = { modalState.hide() },
+                            onDismiss = {
+                                dayIndex = tempDayIndex
+                                modalState.hide()
+                            },
                             width = 150.dp,
                         ) {
                             Picker(
                                 list = dayList,
                                 initialCenterIndex = dayIndex,
                                 columnHeightDp = 45.dp,
-                                onValueChanged = { dayIndex = it }
+                                onValueChanged = { tempDayIndex = it }
                             ) {
                                 Text(
                                     text = dayList[it],
@@ -581,10 +585,12 @@ fun DayTimePickerSheet(
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
                 onClick = {
+                    var tempStartTime by mutableStateOf(startTime.copy())
                     editingStartTime = true
                     modalState
                         .set(
                             onDismiss = {
+                                startTime = tempStartTime
                                 editingStartTime = false
                                 modalState.hide()
                             },
@@ -595,7 +601,9 @@ fun DayTimePickerSheet(
                                         list = amPmList,
                                         initialCenterIndex = startTime.amPm,
                                         columnHeightDp = 45.dp,
-                                        onValueChanged = { startTime = startTime.copy(amPm = it) }
+                                        onValueChanged = {
+                                            tempStartTime = tempStartTime.copy(amPm = it)
+                                        }
                                     ) {
                                         Text(
                                             text = amPmList[it],
@@ -604,11 +612,13 @@ fun DayTimePickerSheet(
                                     }
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
+                                    CircularPicker(
                                         list = hourList,
                                         initialCenterIndex = startTime.hour,
                                         columnHeightDp = 45.dp,
-                                        onValueChanged = { startTime = startTime.copy(hour = it) }
+                                        onValueChanged = {
+                                            tempStartTime = tempStartTime.copy(hour = it)
+                                        }
                                     ) {
                                         Text(
                                             text = hourList[it],
@@ -617,12 +627,12 @@ fun DayTimePickerSheet(
                                     }
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
+                                    CircularPicker(
                                         list = minuteList,
                                         initialCenterIndex = startTime.minute / 5,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            startTime = startTime.copy(minute = it * 5)
+                                            tempStartTime = tempStartTime.copy(minute = it * 5)
                                         }
                                     ) {
                                         Text(
@@ -653,10 +663,12 @@ fun DayTimePickerSheet(
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
                 onClick = {
+                    var tempEndTime by mutableStateOf(endTime.copy())
                     editingEndTime = true
                     modalState
                         .set(
                             onDismiss = {
+                                endTime = tempEndTime
                                 editingEndTime = false
                                 modalState.hide()
                             },
@@ -667,7 +679,9 @@ fun DayTimePickerSheet(
                                         list = amPmList,
                                         initialCenterIndex = endTime.amPm,
                                         columnHeightDp = 45.dp,
-                                        onValueChanged = { endTime = endTime.copy(amPm = it) }
+                                        onValueChanged = {
+                                            tempEndTime = tempEndTime.copy(amPm = it)
+                                        }
                                     ) {
                                         Text(
                                             text = amPmList[it],
@@ -676,11 +690,13 @@ fun DayTimePickerSheet(
                                     }
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
+                                    CircularPicker(
                                         list = hourList,
                                         initialCenterIndex = endTime.hour,
                                         columnHeightDp = 45.dp,
-                                        onValueChanged = { endTime = endTime.copy(hour = it) }
+                                        onValueChanged = {
+                                            tempEndTime = tempEndTime.copy(hour = it)
+                                        }
                                     ) {
                                         Text(
                                             text = hourList[it],
@@ -689,12 +705,12 @@ fun DayTimePickerSheet(
                                     }
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
+                                    CircularPicker(
                                         list = minuteList,
                                         initialCenterIndex = endTime.minute / 5,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            endTime = endTime.copy(minute = it * 5)
+                                            tempEndTime = tempEndTime.copy(minute = it * 5)
                                         }
                                     ) {
                                         Text(
