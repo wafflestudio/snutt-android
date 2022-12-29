@@ -51,6 +51,8 @@
     <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
     <string name="error_no_such_user_with_that_email">해당 이메일로 가입된 사용자가 없습니다.</string>
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
+    <string name="error_expired_verification_code">만료된 인증코드입니다.</string>
+    <string name="error_wrong_verification_code">잘못된 인증코드입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_id_hint">아이디</string>
@@ -68,6 +70,23 @@
     <string name="sign_in_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
+    <string name="find_password_title">비밀번호 재설정</string>
+    <string name="find_password_check_email_content">비밀번호 재설정을 위해\n연동된 아이디가 필요합니다.</string>
+    <string name="find_password_check_email_dialog_title">이메일 확인</string>
+    <string name="find_password_check_email_dialog_content">연동된 이메일은 %s입니다. 해당 이메일로 인증 코드를 발송하시겠습니까?</string>
+    <string name="find_password_check_email_dialog_negative">다른 아이디 확인하기</string>
+    <string name="find_password_enter_id_hint">아이디를 입력해주세요.</string>
+    <string name="find_password_send_code_hint">인증 코드 입력</string>
+    <string name="find_password_send_code_label">인증 번호</string>
+    <string name="find_password_send_code_resend">다시 요청</string>
+    <string name="find_password_verification_code_content">%s으로 전송된\n인증번호를 입력해주세요.</string>
+    <string name="find_password_enter_verification_code_empty_alert">인증 코드를 입력해주세요.</string>
+    <string name="find_password_enter_verification_code_success_alert">인증에 성공하였습니다.</string>
+    <string name="find_password_enter_password_label">새로운 비밀번호</string>
+    <string name="find_password_enter_password_confirm_label">새로운 비밀번호 확인</string>
+    <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
+    <string name="find_password_enter_password_confirm_fail_alert">비밀번호 확인이 일치하지 않습니다.</string>
+    <string name="find_password_enter_password_success_alert">비밀번호 재설정이 완료되었습니다.</string>
     <string name="common_day_mon">월</string>
     <string name="common_day_tue">화</string>
     <string name="common_day_wed">수</string>
