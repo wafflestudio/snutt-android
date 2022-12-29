@@ -499,13 +499,22 @@ fun DayTimePickerSheet(
     var editingStartTime by remember { mutableStateOf(false) }
     var editingEndTime by remember { mutableStateOf(false) }
 
-    if (startTime >= endTime) {
-        if (editingStartTime) {
-            if (startTime.isLast()) startTime = startTime.copy(minute = 50)
-            else endTime = startTime.next()
-        } else if (editingEndTime) {
-            if (endTime.isFirst()) endTime = endTime.copy(minute = 5)
-            else startTime = endTime.prev()
+    /* 시작 시간이 끝나는 시간보다 같거나 더 나중일 때, 경계값 신경써서 조정하는 함수 */
+    val checkBoundary = {
+        if (startTime >= endTime) {
+            // 시작 시간을 끝나는 시간보다 나중으로 수정했으면, 끝나는 시간을 5분 뒤로 설정
+            if (editingStartTime) {
+                if (startTime.isLast()) {
+                    startTime = startTime.prev()
+                    endTime = startTime.next()
+                } else endTime = startTime.next()
+                // 끝나는 시간을 시작 시간보다 앞서게 수정했으면, 시작 시간을 5분 앞으로 설정
+            } else if (editingEndTime) {
+                if (endTime.isFirst()) {
+                    endTime = endTime.next()
+                    startTime = endTime.prev()
+                } else startTime = endTime.prev()
+            }
         }
     }
 
@@ -591,6 +600,7 @@ fun DayTimePickerSheet(
                         .set(
                             onDismiss = {
                                 startTime = tempStartTime
+                                checkBoundary()
                                 editingStartTime = false
                                 modalState.hide()
                             },
@@ -669,6 +679,7 @@ fun DayTimePickerSheet(
                         .set(
                             onDismiss = {
                                 endTime = tempEndTime
+                                checkBoundary()
                                 editingEndTime = false
                                 modalState.hide()
                             },
