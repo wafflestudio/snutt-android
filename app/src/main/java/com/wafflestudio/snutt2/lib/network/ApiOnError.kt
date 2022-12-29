@@ -279,6 +279,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_colorlist_not_found),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.EMAIL_NOT_FOUND -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_no_registered_email),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         else -> Toast.makeText(
                             context,
                             context.getString(R.string.error_unknown),
@@ -350,6 +355,7 @@ object ErrorCode {
     const val REF_LECTURE_NOT_FOUND = 0x4003
     const val USER_NOT_FOUND = 0x4004
     const val COLORLIST_NOT_FOUND = 0x4005
+    const val EMAIL_NOT_FOUND = 0x4006
 }
 
 @JsonClass(generateAdapter = true)
