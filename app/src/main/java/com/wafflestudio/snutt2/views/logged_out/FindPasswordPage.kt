@@ -83,6 +83,8 @@ fun FindPasswordPage() {
         coroutineScope.launch {
             if (codeField.isEmpty()) {
                 context.toast(context.getString(R.string.find_password_enter_verification_code_empty_alert))
+            } else if (timerState.isEnded) {
+                context.toast(context.getString(R.string.find_password_enter_verification_code_expire_alert))
             } else {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     userViewModel.verifyCode(idField, codeField)
@@ -210,6 +212,11 @@ fun FindPasswordPage() {
                                                 else SNUTTColors.SNUTTTheme
                                             ),
                                             modifier = Modifier.clicks {
+                                                coroutineScope.launch {
+                                                    userViewModel.sendCodeToEmail(emailResponse)
+                                                    timerState.reset()
+                                                    timerState.start()
+                                                }
                                             }
                                         )
                                     }
@@ -219,6 +226,12 @@ fun FindPasswordPage() {
                                 .fillMaxWidth()
                                 .padding(vertical = 10.dp),
                         )
+                        if (timerState.isEnded) {
+                            Text(
+                                text = stringResource(R.string.find_password_enter_verification_code_expire_message),
+                                style = SNUTTTypography.body2.copy(color = SNUTTColors.Red)
+                            )
+                        }
                     }
                     FlowState.ResetPassword -> {
                         Spacer(modifier = Modifier.height(25.dp))
