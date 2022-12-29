@@ -277,13 +277,21 @@ fun FindPasswordPage() {
                     }
                 }
                 Spacer(modifier = Modifier.height(30.dp))
-                WebViewStyleButton(modifier = Modifier.fillMaxWidth(), onClick = {
-                    when (flowState) {
-                        FlowState.CheckEmail -> handleCheckEmailById()
-                        FlowState.SendCode -> handleEnterCode()
-                        FlowState.ResetPassword -> handleResetPassword()
+                WebViewStyleButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = when (flowState) {
+                        FlowState.CheckEmail -> if (idField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
+                        FlowState.SendCode -> if (codeField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
+                        FlowState.ResetPassword -> if (passwordField.isEmpty() || passwordConfirmField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
+                    },
+                    onClick = {
+                        when (flowState) {
+                            FlowState.CheckEmail -> handleCheckEmailById()
+                            FlowState.SendCode -> handleEnterCode()
+                            FlowState.ResetPassword -> handleResetPassword()
+                        }
                     }
-                }) {
+                ) {
                     Text(
                         text = stringResource(R.string.common_ok),
                         style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite)
