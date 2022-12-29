@@ -109,6 +109,16 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_no_lecture_title),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.EXPIRED_PASSWORD_RESET_CODE -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_expired_verification_code),
+                            Toast.LENGTH_SHORT
+                        )
+                        ErrorCode.WRONG_PASSWORD_RESET_CODE -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_wrong_verification_code),
+                            Toast.LENGTH_SHORT
+                        )
                         ErrorCode.WRONG_API_KEY -> Toast.makeText(
                             context,
                             context.getString(R.string.error_wrong_api_key),
@@ -303,6 +313,8 @@ object ErrorCode {
     const val INVALID_TIMEMASK = 0x1009
     const val INVALID_COLOR = 0x100A
     const val NO_LECTURE_TITLE = 0x100B
+    const val EXPIRED_PASSWORD_RESET_CODE = 0x2010
+    const val WRONG_PASSWORD_RESET_CODE = 0x2011
 
     /* 403 - Authorization-related */
     const val WRONG_API_KEY = 0x2000

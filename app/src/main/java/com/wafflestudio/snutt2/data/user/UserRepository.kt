@@ -73,4 +73,12 @@ interface UserRepository {
     suspend fun setThemeMode(mode: ThemeMode)
 
     suspend fun findIdByEmail(email: String)
+
+    suspend fun checkEmailById(id: String): String
+
+    suspend fun sendCodeToEmail(email: String)
+
+    suspend fun verifyCode(id: String, code: String)
+
+    suspend fun resetPassword(id: String, password: String)
 }
