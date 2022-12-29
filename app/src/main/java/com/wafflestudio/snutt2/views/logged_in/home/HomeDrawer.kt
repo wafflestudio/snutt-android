@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,23 +40,19 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalDrawerState
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeDrawer() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val drawerState = LocalDrawerState.current
-    val showBottomSheet = ShowBottomSheet.current
-    val hideBottomSheet = HideBottomSheet.current
+    val sheetState = LocalBottomSheetState.current
+    val sheetContentSetter = LocalBottomSheetContentSetter.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val keyboardManager = LocalSoftwareKeyboardController.current
@@ -74,10 +72,6 @@ fun HomeDrawer() {
 
     var changeTitleDialogState by remember { mutableStateOf(false) }
     var deleteTableDialogState by remember { mutableStateOf(false) }
-    var changeThemeBottomSheetState by remember { mutableStateOf(false) }
-    var showMoreBottomSheetState by remember { mutableStateOf(false) }
-
-    var addNewTableDialogState by remember { mutableStateOf(false) }
     var specificSemester by remember { mutableStateOf(false) }
     var selectedCourseBook by remember {
         mutableStateOf(CourseBookDto(blockedTable.year, blockedTable.semester))
@@ -85,6 +79,35 @@ fun HomeDrawer() {
     // drawer 에서 (...) 버튼을 누르면, 해당 table 의 정보를 여기에 저장.
     // bottomSheet 에서 이름 변경 선택 후 dialog confirm 시 이 정보를 vm 에게 전달
     var showMoreClickedTable by remember { mutableStateOf(Defaults.defaultSimpleTableDto) }
+
+    // FIXME: 새 시간표 만드는 바텀시트를 띄우는 코드. 이걸 쓰는 곳이 두 군데라서 재사용 하면 좋을 것 같아 따로 빼 놨는데 모양이 좋지 않다.
+    val showCreateTableBottomSheet = {
+        sheetContentSetter.invoke {
+            var newTableTitle by remember { mutableStateOf("") }
+            CreateNewTableBottomSheet(
+                newTitle = newTableTitle,
+                onEditTextChange = { newTableTitle = it },
+                onPickerChange = { selectedCourseBook = it },
+                onCancel = { scope.launch { sheetState.hide() } },
+                onComplete = {
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            tableListViewModel.createTableNew(
+                                selectedCourseBook,
+                                newTableTitle
+                            )
+                            scope.launch {
+                                sheetState.hide()
+                                keyboardManager?.hide()
+                            }
+                        }
+                    }
+                },
+                specificSemester, allCourseBook, selectedCourseBook
+            )
+        }
+        scope.launch { sheetState.show() }
+    }
 
     Column(
         modifier = Modifier
@@ -123,7 +146,7 @@ fun HomeDrawer() {
                     selectedCourseBook =
                         CourseBookDto(blockedTable.semester, blockedTable.year)
                     specificSemester = false
-                    addNewTableDialogState = true
+                    showCreateTableBottomSheet.invoke()
                 }
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -173,27 +196,104 @@ fun HomeDrawer() {
                                 onDuplicate = { table ->
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                            tableListViewModel.copyTableNew(blockedTable.id)
+                                            tableListViewModel.copyTableNew(table.id)
                                             context.toast(
                                                 context.getString(
                                                     R.string.home_drawer_copy_success_message,
-                                                    blockedTable.title
+                                                    table.title
                                                 )
                                             )
                                         }
                                     }
                                 },
                                 onShowMore = {
+                                    // 시간표 (더 보기) bottomSheet
                                     showMoreClickedTable = it
-                                    showMoreBottomSheetState = true
+                                    sheetContentSetter.invoke {
+                                        ShowMoreBottomSheetContent(onChangeTitle = {
+                                            changeTitleDialogState = true
+                                        }, onDeleteTable = {
+                                            scope.launch {
+                                                if (tableListViewModel.checkTableDeletableNew(
+                                                        showMoreClickedTable.id
+                                                    )
+                                                ) {
+                                                    deleteTableDialogState = true
+                                                } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                                            }
+                                        }, onChangeTheme = {
+                                            // 테마 변경 bottomSheet
+                                            scope.launch {
+                                                if (tableListViewModel.checkTableThemeChangeableNew(
+                                                        showMoreClickedTable.id
+                                                    )
+                                                ) {
+                                                    sheetState.snapTo(ModalBottomSheetValue.Hidden)
+                                                    drawerState.close()
+
+                                                    sheetContentSetter.invoke {
+                                                        ChangeThemeBottomSheetContent(onLaunch = {
+                                                            scope.launch {
+                                                                launchSuspendApi(
+                                                                    apiOnProgress,
+                                                                    apiOnError
+                                                                ) {
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        blockedTable.theme
+                                                                    )
+                                                                }
+                                                            }
+                                                        }, onPreview = { idx ->
+                                                            scope.launch {
+                                                                launchSuspendApi(
+                                                                    apiOnProgress,
+                                                                    apiOnError
+                                                                ) {
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        TimetableColorTheme.fromInt(
+                                                                            idx
+                                                                        )
+                                                                    )
+                                                                }
+                                                            }
+                                                        }, onApply = {
+                                                            scope.launch {
+                                                                launchSuspendApi(
+                                                                    apiOnProgress,
+                                                                    apiOnError
+                                                                ) {
+                                                                    timetableViewModel.updateTheme()
+                                                                    scope.launch { sheetState.hide() }
+                                                                }
+                                                            }
+                                                        }, onDispose = {
+                                                            scope.launch {
+                                                                launchSuspendApi(
+                                                                    apiOnProgress,
+                                                                    apiOnError
+                                                                ) {
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        null
+                                                                    ) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
+                                                                }
+                                                            }
+                                                        })
+                                                    }
+                                                    sheetState.show()
+                                                } else context.toast(context.getString(R.string.home_drawer_change_theme_unable_alert_message))
+                                            }
+                                        })
+                                    }
+                                    scope.launch { sheetState.show() }
                                 }
                             )
                         }
+                        // 가장 최근 학기에 시간표가 없을 때, "+ 시간표 추가하기" 를 누르면 시간표 추가 바텀시트 보여주기
                         if (tableListOfEachCourseBook[courseBook].isNullOrEmpty()) {
                             CreateTableItem {
                                 specificSemester = true
                                 selectedCourseBook = courseBook
-                                addNewTableDialogState = true
+                                showCreateTableBottomSheet.invoke()
                             }
                         }
                     }
@@ -209,34 +309,11 @@ fun HomeDrawer() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     tableListViewModel.changeNameTableNew(showMoreClickedTable.id, tableNewTitle)
+                    changeTitleDialogState = false
+                    scope.launch { sheetState.hide() }
                 }
             }
-            changeTitleDialogState = false
         }, value = tableNewTitle, onValueChange = { tableNewTitle = it })
-    }
-
-    // drawer의 각 시간표 '더 보기' 버튼
-    if (showMoreBottomSheetState) {
-        LaunchedEffect(Unit) {
-            showBottomSheet(150.dp) {
-                ShowMoreBottomSheetContent(onChangeTitle = {
-                    changeTitleDialogState = true
-                }, onDeleteTable = {
-                    scope.launch {
-                        if (tableListViewModel.checkTableDeletableNew(showMoreClickedTable.id)) {
-                            deleteTableDialogState = true
-                        } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
-                    }
-                }, onChangeTheme = {
-                    scope.launch {
-                        if (tableListViewModel.checkTableThemeChangeableNew(showMoreClickedTable.id)) {
-                            changeThemeBottomSheetState = true
-                        } else context.toast(context.getString(R.string.home_drawer_change_theme_unable_alert_message))
-                    }
-                })
-            }
-            showMoreBottomSheetState = false
-        }
     }
 
     // drawer의 각 시간표 삭제 다이얼로그
@@ -245,83 +322,12 @@ fun HomeDrawer() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     tableListViewModel.deleteTableNew(showMoreClickedTable.id)
+                    deleteTableDialogState = false
                     context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
+                    scope.launch { sheetState.hide() }
                 }
-            }
-            scope.launch {
-                hideBottomSheet(false)
-                deleteTableDialogState = false
             }
         })
-    }
-
-    // drawer의 각 시간표 테마 설정
-    if (changeThemeBottomSheetState) {
-        scope.launch {
-            launch { drawerState.close() }
-            coroutineScope {
-                hideBottomSheet(true)
-                showBottomSheet(500.dp) {
-                    ChangeThemeBottomSheetContent(onLaunch = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                timetableViewModel.setPreviewTheme(blockedTable.theme)
-                            }
-                        }
-                    }, onPreview = { idx ->
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                timetableViewModel.setPreviewTheme(
-                                    TimetableColorTheme.fromInt(idx)
-                                )
-                            }
-                        }
-                    }, onApply = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                timetableViewModel.updateTheme()
-                                scope.launch { hideBottomSheet(false) }
-                            }
-                        }
-                    }, onDispose = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                timetableViewModel.setPreviewTheme(null) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
-                            }
-                        }
-                    })
-                }
-            }
-            changeThemeBottomSheetState = false
-        }
-    }
-
-    // 새로운 시간표 추가 다이럴로그
-    if (addNewTableDialogState) {
-        var newTableTitle by remember { mutableStateOf("") }
-
-        LaunchedEffect(Unit) {
-            showBottomSheet(700.dp) {
-                CreateNewTableBottomSheet(
-                    newTitle = newTableTitle,
-                    onEditTextChange = { newTableTitle = it },
-                    onPickerChange = { selectedCourseBook = it },
-                    onCancel = { scope.launch { hideBottomSheet(false) } },
-                    onComplete = {
-                        keyboardManager?.hide()
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                tableListViewModel.createTableNew(selectedCourseBook, newTableTitle)
-                                // TODO: 새로 만들면 바로 그 시간표로 이동하면 좋지 않을까? (create의 응답으로 tableId가 와야 한다)
-                                scope.launch { hideBottomSheet(false) }
-                            }
-                        }
-                    },
-                    specificSemester, allCourseBook, selectedCourseBook
-                )
-            }
-            addNewTableDialogState = false
-        }
     }
 }
 
@@ -389,7 +395,10 @@ private fun CreateTableItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(25.dp))
-        Text(text = stringResource(R.string.home_drawer_timetable_add_button), style = SNUTTTypography.body1)
+        Text(
+            text = stringResource(R.string.home_drawer_timetable_add_button),
+            style = SNUTTTypography.body1
+        )
     }
 }
 
@@ -425,7 +434,8 @@ private fun ShowMoreBottomSheetContent(
                 )
                 Spacer(modifier = Modifier.width(15.dp))
                 Text(
-                    text = stringResource(R.string.home_drawer_table_title_change), style = SNUTTTypography.body1,
+                    text = stringResource(R.string.home_drawer_table_title_change),
+                    style = SNUTTTypography.body1,
                 )
             }
         }
@@ -442,7 +452,8 @@ private fun ShowMoreBottomSheetContent(
                 )
                 Spacer(modifier = Modifier.width(15.dp))
                 Text(
-                    text = stringResource(R.string.home_drawer_table_delete), style = SNUTTTypography.body1,
+                    text = stringResource(R.string.home_drawer_table_delete),
+                    style = SNUTTTypography.body1,
                 )
             }
         }
@@ -459,7 +470,8 @@ private fun ShowMoreBottomSheetContent(
                 )
                 Spacer(modifier = Modifier.width(15.dp))
                 Text(
-                    text = stringResource(R.string.home_drawer_table_theme_change), style = SNUTTTypography.body1,
+                    text = stringResource(R.string.home_drawer_table_theme_change),
+                    style = SNUTTTypography.body1,
                 )
             }
         }
@@ -595,7 +607,10 @@ private fun CreateNewTableBottomSheet(
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
-        Text(text = "새로운 시간표 만들기", style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600))
+        Text(
+            text = "새로운 시간표 만들기",
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600)
+        )
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = newTitle,
@@ -638,7 +653,7 @@ private fun ThemeItem(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1,)
+            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
         }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
@@ -54,17 +56,14 @@ import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.HideBottomSheet
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.ShowBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
@@ -74,6 +73,7 @@ fun SearchPage(
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val pageController = LocalHomePageController.current
+    val reviewWebViewContainer = LocalReviewWebView.current
 
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
@@ -82,6 +82,8 @@ fun SearchPage(
     val keyBoardController = LocalSoftwareKeyboardController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
+    val sheetState = LocalBottomSheetState.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -90,11 +92,30 @@ fun SearchPage(
     val tagsByTagType by searchViewModel.tagsByTagType.collectAsState()
     val selectedTagType by searchViewModel.selectedTagType.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
-    var searchOptionSheetState by remember { mutableStateOf(false) }
     val placeHolderState by searchViewModel.placeHolderState.collectAsState()
 
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
+
+    reviewWebViewContainer.apply {
+        this.webView.addJavascriptInterface(
+            CloseBridge(
+                onClose = { scope.launch { sheetState.hide() } }
+            ),
+            "Snutt"
+        )
+    }
+
+    // 강의평 바텀시트가 한번 올라왔다가 내려갈 때 원래 보던 창으로 돌아가기 위해 goBack() 수행
+    // * 처음 SearchPage에 진입할 때도 sheetState는 invisible일 텐데, 이 때는 goBack() 하지 않아야 한다. (sheetWasShown 변수 존재 이유)
+    var sheetWasShown by remember { mutableStateOf(false) }
+    LaunchedEffect(sheetState.isVisible) {
+        if (!sheetState.isVisible && sheetWasShown) {
+            reviewWebViewContainer.webView.goBack()
+        } else {
+            sheetWasShown = true
+        }
+    }
 
     Column {
         SearchTopBar {
@@ -151,7 +172,18 @@ fun SearchPage(
                 )
             } else FilterIcon(
                 modifier = Modifier.clicks {
-                    searchOptionSheetState = true
+                    // 강의 검색 필터 sheet 띄우기
+                    bottomSheetContentSetter.invoke {
+                        SearchOptionSheet(tagsByTagType, selectedTagType) {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    searchViewModel.query()
+                                }
+                            }
+                            scope.launch { sheetState.hide() }
+                        }
+                    }
+                    scope.launch { sheetState.show() }
                 },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
@@ -243,12 +275,19 @@ fun SearchPage(
                                         navController.navigate(NavigationDestination.LectureDetail)
                                     }, onClickReview = {
                                         scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                pageController.update(
-                                                    HomeItem.Review(
-                                                        searchViewModel.getLectureReviewUrl(it.item)
-                                                    )
-                                                )
+                                            val job: CompletableJob = Job()
+                                            scope.launch {
+                                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                                    reviewWebViewContainer.openPage(searchViewModel.getLectureReviewUrl(it.item) + "&on_back=close")
+                                                    job.complete()
+                                                }
+                                            }
+                                            joinAll(job)
+                                            scope.launch {
+                                                bottomSheetContentSetter.invoke {
+                                                    ReviewWebView(0.95f)
+                                                }
+                                                sheetState.show()
                                             }
                                         }
                                     })
@@ -261,24 +300,6 @@ fun SearchPage(
                     }
                 }
             }
-        }
-    }
-
-    val showBottomSheet = ShowBottomSheet.current
-    val hideBottomSheet = HideBottomSheet.current
-    if (searchOptionSheetState) {
-        LaunchedEffect(Unit) {
-            showBottomSheet(380.dp) {
-                SearchOptionSheet(tagsByTagType, selectedTagType) {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            searchViewModel.query()
-                        }
-                    }
-                    scope.launch { hideBottomSheet.invoke(false) }
-                }
-            }
-            searchOptionSheetState = false
         }
     }
 
@@ -375,7 +396,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }
@@ -388,7 +412,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = classTimeText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }
@@ -401,7 +428,10 @@ fun LazyItemScope.SearchListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = getSimplifiedLocation(lectureDataWithState.item),
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.Light),
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
                     maxLines = 1,
                 )
             }

@@ -1,6 +1,10 @@
 package com.wafflestudio.snutt2.views
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.DrawerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
@@ -21,6 +25,16 @@ val LocalApiOnProgress = compositionLocalOf<ApiOnProgress> {
 val LocalDrawerState = compositionLocalOf<DrawerState> {
     throw RuntimeException("")
 }
+
+@OptIn(ExperimentalMaterialApi::class)
+val LocalBottomSheetState = compositionLocalOf<ModalBottomSheetState> {
+    throw RuntimeException("")
+}
+
+val LocalBottomSheetContentSetter =
+    compositionLocalOf<(@Composable ColumnScope.() -> Unit) -> Unit> {
+        throw RuntimeException("")
+    }
 
 val LocalNavController = compositionLocalOf<NavController> {
     throw RuntimeException("")
