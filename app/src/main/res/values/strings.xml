@@ -70,6 +70,9 @@
     <string name="sign_in_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
+    <string name="find_id_content">아이디를 찾기 위해\n연동된 이메일 주소가 필요합니다.</string>
+    <string name="find_id_wrong_email_format">올바른 형식의 이메일을 입력해주세요.</string>
+    <string name="find_id_send_email_success_message">해당 이메일로 아이디가 전송되었습니다.</string>
     <string name="find_password_title">비밀번호 재설정</string>
     <string name="find_password_check_email_content">비밀번호 재설정을 위해\n연동된 아이디가 필요합니다.</string>
     <string name="find_password_check_email_dialog_title">이메일 확인</string>

@@ -1,27 +1,23 @@
 package com.wafflestudio.snutt2.views.logged_out
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
@@ -46,129 +42,69 @@ fun FindIdPage() {
     val userViewModel = hiltViewModel<UserViewModel>()
 
     var emailField by remember { mutableStateOf("") }
-    var sendDone by remember { mutableStateOf(false) }
 
     val handleSendIdToEmail = {
         coroutineScope.launch {
             if (emailField.isEmpty()) {
-                context.toast("이메일을 입력해주세요.")
+                context.toast(context.getString(R.string.settings_user_config_enter_email))
             } else if (emailField.isEmailInvalid()) {
-                context.toast("올바른 이메일을 입력해주세요.")
+                context.toast(context.getString(R.string.find_id_wrong_email_format))
             } else {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     userViewModel.findIdByEmail(emailField)
-                    sendDone = true
+                    context.toast(context.getString(R.string.find_id_send_email_success_message))
                 }
             }
         }
     }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .padding(30.dp)
             .clicks { focusManager.clearFocus() }
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-            )
-
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h1,
-            )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(25.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 50.dp, bottom = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = "아이디 찾기",
-                    style = SNUTTTypography.body2,
-                    color = SNUTTColors.Gray200
-                )
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
+        SimpleTopBar(
+            title = stringResource(R.string.sign_in_find_id_button),
+            onClickNavigateBack = {
+                navController.popBackStack()
             }
+        )
 
+        Column(modifier = Modifier.padding(horizontal = 25.dp)) {
+            Text(
+                text = stringResource(R.string.find_id_content),
+                style = SNUTTTypography.h3,
+                modifier = Modifier.padding(vertical = 25.dp),
+            )
+            Text(
+                text = stringResource(R.string.settings_app_report_email),
+                style = SNUTTTypography.h4
+            )
             EditText(
                 value = emailField,
                 onValueChange = { emailField = it },
-                hint = stringResource(R.string.sign_up_email_input_hint),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                hint = stringResource(R.string.settings_user_config_enter_email),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(
+                        FocusDirection.Down
+                    )
+                }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
             )
-
-            BorderButton(
+            Spacer(modifier = Modifier.height(30.dp))
+            WebViewStyleButton(
                 modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.Gray200,
+                color = if (emailField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme,
                 onClick = { handleSendIdToEmail() }
             ) {
                 Text(
-                    text = "이메일로 아이디 전송", style = SNUTTTypography.button
-                )
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
-                if (sendDone) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        text = "전송 완료!",
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.SNUTTTheme),
-                        color = SNUTTColors.SNUTTTheme
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
-            }
-
-            BorderButton(
-                modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.Gray100,
-                onClick = {
-                    if (sendDone) {
-                        navController.popBackStack()
-                    }
-                }
-            ) {
-                Text(
-                    text = "로그인하러 가기",
-                    style = SNUTTTypography.button.copy(color = if (sendDone) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200)
+                    text = stringResource(R.string.common_ok),
+                    style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite)
                 )
             }
         }
