@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -43,6 +44,7 @@ fun SignUpPage() {
     val coroutineScope = rememberCoroutineScope()
 
     val userViewModel = hiltViewModel<UserViewModel>()
+    val homeViewModel = hiltViewModel<HomeViewModel>()
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
@@ -58,7 +60,7 @@ fun SignUpPage() {
                 try {
                     apiOnProgress.showProgress()
                     userViewModel.signUpLocal(idField, emailField, passwordField)
-                    userViewModel.fetchPopup()
+                    homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
                 } catch (e: Exception) {
                     apiOnError(e)
