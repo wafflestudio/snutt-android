@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.android.webview
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.webkit.*
 import androidx.compose.runtime.MutableState
@@ -19,9 +18,6 @@ class WebViewContainer(
     private val isDarkMode: Boolean,
 ) {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
-
-    private val darkModeFlag =
-        context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
     val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
@@ -116,5 +112,12 @@ class WebViewContainer(
             )
         }.flush()
         webView.reload()
+    }
+}
+
+class CloseBridge(val onClose: () -> (Unit)) {
+    @JavascriptInterface
+    fun postMessage(response: String) {
+        onClose()
     }
 }

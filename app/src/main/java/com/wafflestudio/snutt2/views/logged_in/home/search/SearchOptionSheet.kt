@@ -52,7 +52,6 @@ fun SearchOptionSheet(
         modifier = Modifier
             .background(SNUTTColors.White900)
             .fillMaxWidth()
-            .clicks { }
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         // tag column의 높이를 tagType column의 높이로 설정

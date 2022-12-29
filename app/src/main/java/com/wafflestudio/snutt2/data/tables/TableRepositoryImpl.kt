@@ -40,6 +40,11 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun createTable(year: Long, semester: Long, title: String?) {
         val response = api._postTable(PostTableParams(year, semester, title))
         snuttStorage.tableMap.update(response.associateBy { it.id })
+        response
+            .firstOrNull { it.year == year && it.semester == semester && it.title == title }
+            ?.let {
+                fetchTableById(it.id)
+            }
     }
 
     override suspend fun deleteTable(id: String) {
