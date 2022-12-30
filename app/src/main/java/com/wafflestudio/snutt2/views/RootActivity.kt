@@ -37,7 +37,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailCustomPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
@@ -169,8 +168,6 @@ class RootActivity : AppCompatActivity() {
                 composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
                 composable2(NavigationDestination.LectureDetail) { LectureDetailPage() }
-
-                composable2(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
 
                 composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
