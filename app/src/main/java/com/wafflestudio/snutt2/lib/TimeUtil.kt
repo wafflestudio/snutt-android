@@ -43,11 +43,11 @@ data class Time12(
     }
 
     /*
-     * 예시: 9:30, 23:05, 0:00 (자정), 12:00 (정오)
+     * 예시: 09:30, 23:05, 00:00 (자정), 12:00 (정오)
     */
     fun toString24(): String {
         return StringBuilder()
-            .append(amPm * 12 + hour)
+            .append("%02d".format(amPm * 12 + hour))
             .append(":")
             .append("%02d".format(minute))
             .toString()

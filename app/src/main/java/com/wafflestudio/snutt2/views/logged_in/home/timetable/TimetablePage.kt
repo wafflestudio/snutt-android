@@ -534,7 +534,7 @@ object Defaults {
         class_time_mask = emptyList()
     )
     val defaultClassTimeDto = ClassTimeDto(
-        day = 0, place = "", id = null, start_time = "9:30", end_time = "10:45", start = 9.5f, len = 1.25f,
+        day = 0, place = "", id = null, start_time = "09:30", end_time = "10:45", start = 9.5f, len = 1.25f,
     )
 }
 
