@@ -211,20 +211,6 @@ fun LectureDetailPage() {
                                                         vm.createLecture2()
                                                         vm.unsetEditMode()
                                                         vm.setAddMode(false)
-                                                        /* FIXME
-                                                             * 안드로이드는 여기서 그대로 detailPage 에 남는다.
-                                                             *
-                                                             * 하지만 @POST("/tables/{id}/lecture") api 는
-                                                             * tableDTO만 주기 때문에, 새로 추가된 커스텀 강의가 부여받은 id를
-                                                             * 알 수가 없다. (알려면 lectureList에서 find해야 되는데 nullable문제 및 compare 기준 문제 존재)
-                                                             * 그래서 바로 편집을 누르면 id를 모르는 강의에 대해 PUT을 하기 때문에 403이 난다.
-                                                             *
-                                                             * 그런데 기존 앱은 코드가 잘못 짜여져 있어서, 완료 후 바로 편집을 누르고
-                                                             * 완료를 다시 누르면 수정이 되는 게 아니라 또 추가가 된다. (계속 POST api를 쏜다)
-                                                             *
-                                                             * ios는 완료를 누르면 창이 닫히고 lecturesOfTable로 돌아가도록 돼 있다.
-                                                             * ios를 따라갈것인지, 서버 응답을 tableDto에서 lectureDto로 바꿔달라고 할 지 결정
-                                                             */
                                                         scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                                     } else {
                                                         vm.updateLecture2()
@@ -461,7 +447,10 @@ fun LectureDetailPage() {
                                             }
                                         )
                                     }
-                                    scope.launch { sheetState.show() }
+                                    scope.launch {
+                                        focusManager.clearFocus()
+                                        sheetState.show()
+                                    }
                                 },
                                 onLocationTextChange = { changedLocation ->
                                     vm.editEditingLectureDetail(
