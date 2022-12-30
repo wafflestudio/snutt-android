@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -51,11 +52,12 @@ class CurrentTableRepositoryImpl @Inject constructor(
         storage.lastViewedTable.update(response.toOptional())
     }
 
-    override suspend fun resetLecture(lectureId: String) {
+    override suspend fun resetLecture(lectureId: String): LectureDto {
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot reset lecture when current table not exists")
         val response = api._resetLecture(prevTable.id, lectureId)
         storage.lastViewedTable.update(response.toOptional())
+        return response.lectureList.find { it.id == lectureId }!!
     }
 
     override suspend fun updateLecture(lectureId: String, target: PutLectureParams) {

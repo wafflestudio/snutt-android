@@ -80,8 +80,7 @@ class LectureDetailViewModelNew @Inject constructor(
     }
 
     suspend fun resetLecture2(): LectureDto {
-        currentTableRepository.resetLecture(_editingLectureDetail.value.id)
-        return currentTable.value?.lectureList?.find { it.id == editingLectureDetail.value.id }!! // TODO: 왜 resetLecture 의 api 응답이 TableDto 인지..
+        return currentTableRepository.resetLecture(_editingLectureDetail.value.id)
     }
 
     suspend fun createLecture2(is_forced: Boolean = false) {
