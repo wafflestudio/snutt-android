@@ -682,7 +682,7 @@ fun LectureDetailPage() {
             },
             title = stringResource(id = R.string.lecture_overlap_error_message)
         ) {
-            Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body2)
+            Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body1)
         }
     }
 }
