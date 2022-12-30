@@ -914,10 +914,14 @@ fun DayTimePickerSheet(
 ) {
     val modalState = LocalModalState.current
     val context = LocalContext.current
-    val dayList = remember { context.resources.getStringArray(R.array.week_days).map { it + "요일" } }
+    val dayList = remember {
+        context.resources.getStringArray(R.array.week_days).map {
+            it + context.getString(R.string.settings_timetable_config_week_day)
+        }
+    }
     var dayIndex by remember { mutableStateOf(classTime.day) }
 
-    val amPmList = remember { listOf("오전", "오후") }
+    val amPmList = remember { listOf(context.getString(R.string.morning), context.getString(R.string.afternoon)) }
     val hourList = remember { List(12) { if (it == 0) "12" else it.toString() } }
     val minuteList = remember { List(12) { "%02d".format(it * 5) } }
 
@@ -979,7 +983,7 @@ fun DayTimePickerSheet(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "요일", style = SNUTTTypography.button)
+            Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
@@ -1017,7 +1021,7 @@ fun DayTimePickerSheet(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "시작", style = SNUTTTypography.button)
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
@@ -1096,7 +1100,7 @@ fun DayTimePickerSheet(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "종료", style = SNUTTTypography.button)
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
