@@ -234,6 +234,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_is_custom_lecture),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.EMAIL_NOT_VERIFIED -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_email_not_verified),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         ErrorCode.TAG_NOT_FOUND -> Toast.makeText(
                             context,
                             context.getString(R.string.error_tag_not_found),
@@ -319,6 +324,7 @@ object ErrorCode {
     const val NOT_CUSTOM_LECTURE = 0x300B
     const val LECTURE_TIME_OVERLAP = 0x300C
     const val IS_CUSTOM_LECTURE = 0x300D
+    const val EMAIL_NOT_VERIFIED = 0x3011
 
     /* 404 - NOT found */
     const val TAG_NOT_FOUND = 0x4000

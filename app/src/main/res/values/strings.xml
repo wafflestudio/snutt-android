@@ -47,6 +47,7 @@
     <string name="error_not_custom_lecture">직접 만든 강좌가 아닙니다</string>
     <string name="error_lecture_time_overlap">시간표의 시간과 겹칩니다</string>
     <string name="error_is_custom_lecture">직접 만든 강좌입니다</string>
+    <string name="error_email_not_verified">이메일 인증이 필요합니다. 강의평 탭에서 SNU 메일 인증을 진행해 주세요.</string>
     <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
     <string name="error_unknown">알수없는 에러입니다</string>
