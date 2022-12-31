@@ -209,4 +209,8 @@
     <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
     <string name="reviews_error_retry">다시 불러오기</string>
     <string name="lecture_overlap_error_message">시간대 겹침</string>
+    <string name="morning">오전</string>
+    <string name="afternoon">오후</string>
+    <string name="lecture_detail_edit_class_time_sheet_start_time_label">시작</string>
+    <string name="lecture_detail_edit_class_time_sheet_end_time_label">종료</string>
 </resources>

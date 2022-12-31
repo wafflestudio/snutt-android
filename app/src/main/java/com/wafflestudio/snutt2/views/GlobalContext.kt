@@ -7,6 +7,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
+import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
@@ -53,5 +54,9 @@ val LocalPopupState = compositionLocalOf<PopupState> {
 }
 
 val LocalThemeState = compositionLocalOf<ThemeMode> {
+    throw RuntimeException("")
+}
+
+val LocalModalState = compositionLocalOf<ModalState> {
     throw RuntimeException("")
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -56,8 +57,9 @@ fun CustomDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     title: String? = null,
-    positiveButtonText: String = stringResource(R.string.common_ok),
-    negativeButtonText: String = stringResource(R.string.common_cancel),
+    positiveButtonText: String? = stringResource(R.string.common_ok),
+    negativeButtonText: String? = stringResource(R.string.common_cancel),
+    width: Dp? = null,
     content: @Composable () -> Unit
 ) {
     val screenWidthInDp = with(LocalDensity.current) { LocalView.current.width.toDp() }
@@ -66,7 +68,7 @@ fun CustomDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface {
-            Column(modifier = Modifier.width(screenWidthInDp - 50.dp).background(SNUTTColors.White900)) {
+            Column(modifier = Modifier.width(width ?: (screenWidthInDp - 50.dp)).background(SNUTTColors.White900)) {
                 title?.let {
                     Row {
                         Box(modifier = Modifier.padding(20.dp)) {
@@ -83,14 +85,18 @@ fun CustomDialog(
                     content()
                 }
 
-                Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
-                    Box(modifier = Modifier.weight(1f))
-                    Box(modifier = Modifier.clicks { onDismiss() }) {
-                        Text(text = negativeButtonText, style = SNUTTTypography.body1)
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
-                    Box(modifier = Modifier.clicks { onConfirm() }) {
-                        Text(text = positiveButtonText, style = SNUTTTypography.body1)
+                negativeButtonText?.let {
+                    positiveButtonText?.let {
+                        Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
+                            Box(modifier = Modifier.weight(1f))
+                            Box(modifier = Modifier.clicks { onDismiss() }) {
+                                Text(text = negativeButtonText, style = SNUTTTypography.body1)
+                            }
+                            Spacer(modifier = Modifier.width(30.dp))
+                            Box(modifier = Modifier.clicks { onConfirm() }) {
+                                Text(text = positiveButtonText, style = SNUTTTypography.body1)
+                            }
+                        }
                     }
                 }
             }

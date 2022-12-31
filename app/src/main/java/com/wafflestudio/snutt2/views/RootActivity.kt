@@ -26,6 +26,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.ShowModal
+import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -35,7 +37,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailCustomPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
@@ -142,12 +143,16 @@ class RootActivity : AppCompatActivity() {
             }
         }
 
+        val dialogState = rememberModalState()
+        ShowModal(state = dialogState)
+
         CompositionLocalProvider(
             LocalNavController provides navController,
             LocalApiOnProgress provides apiOnProgress,
             LocalApiOnError provides apiOnError,
             LocalHomePageController provides homePageController,
             LocalPopupState provides popupState,
+            LocalModalState provides dialogState,
         ) {
             AnimatedNavHost(
                 navController = navController,
@@ -163,8 +168,6 @@ class RootActivity : AppCompatActivity() {
                 composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
                 composable2(NavigationDestination.LectureDetail) { LectureDetailPage() }
-
-                composable2(NavigationDestination.LectureDetailCustom) { LectureDetailCustomPage() }
 
                 composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
