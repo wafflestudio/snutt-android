@@ -11,4 +11,10 @@ data class SimpleTableDto(
     @Json(name = "title") val title: String,
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
-)
+) {
+    companion object {
+        val Default = SimpleTableDto(
+            id = "", year = 2022, semester = 1L, title = "", updatedAt = "", totalCredit = null
+        )
+    }
+}

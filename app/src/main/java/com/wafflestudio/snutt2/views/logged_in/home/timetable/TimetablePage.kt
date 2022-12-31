@@ -522,43 +522,6 @@ private fun bitmapToUri(image: Bitmap, context: Context): Uri {
     )
 }
 
-object Defaults {
-    val defaultTableDto = TableDto(
-        id = "",
-        year = 2022,
-        semester = 1,
-        title = "나의 시간표",
-        lectureList = emptyList(),
-        updatedAt = "default",
-        totalCredit = 0,
-        theme = TimetableColorTheme.SNUTT
-    )
-    val defaultSimpleTableDto = SimpleTableDto(
-        id = "", year = 2022, semester = 1L, title = "", updatedAt = "", totalCredit = null
-    )
-    val defaultLectureDto = LectureDto(
-        id = "",
-        course_title = "",
-        instructor = "",
-        colorIndex = 1L,
-        color = ColorDto(),
-        department = null,
-        academic_year = null,
-        credit = 0,
-        category = null,
-        classification = null,
-        course_number = null,
-        lecture_number = null,
-        quota = 0L,
-        remark = "",
-        class_time_json = emptyList(),
-        class_time_mask = emptyList()
-    )
-    val defaultClassTimeDto = ClassTimeDto(
-        day = 0, place = "", id = null, start_time = "09:30", end_time = "10:45", start = 9.5f, len = 1.25f,
-    )
-}
-
 private fun shareScreenshotFromView(
     view: View,
     context: Context,
