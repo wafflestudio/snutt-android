@@ -51,7 +51,6 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -490,7 +489,7 @@ fun LectureDetailPage() {
                                             editingLectureDetail.copy(
                                                 class_time_json = editingLectureDetail.class_time_json
                                                     .toMutableList()
-                                                    .also { it.add(Defaults.defaultClassTimeDto) }
+                                                    .also { it.add(ClassTimeDto.Default) }
                                             )
                                         )
                                     },

@@ -31,7 +31,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 
@@ -60,7 +59,7 @@ fun LecturesOfTablePage() {
             onClickAdd = {
                 lectureDetailViewModel.setAddMode(true)
                 lectureDetailViewModel.setEditMode()
-                lectureDetailViewModel.initializeEditingLectureDetail(Defaults.defaultLectureDto)
+                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default)
                 navController.navigate(NavigationDestination.LectureDetail)
             },
             onClickLecture = { lecture ->

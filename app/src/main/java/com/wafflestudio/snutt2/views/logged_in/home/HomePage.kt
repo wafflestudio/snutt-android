@@ -32,7 +32,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +39,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
+@Stable
 data class TableContextBundle(
     val table: TableDto,
     val trimParam: TableTrimParam,
@@ -99,7 +99,7 @@ fun HomePage() {
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val tableContext =
-        TableContextBundle(table ?: Defaults.defaultTableDto, trimParam, previewTheme)
+        TableContextBundle(table ?: TableDto.Default, trimParam, previewTheme)
 
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
