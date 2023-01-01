@@ -27,10 +27,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -341,6 +338,8 @@ fun UserConfigPage() {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
                         viewModel.leave()
+                        leaveDialogState = false
+                        navController.navigateAsOrigin(NavigationDestination.Tutorial)
                     }
                 }
             },
