@@ -4,7 +4,9 @@
     <string name="member" translatable="false">member</string>
 
     <!-- For sign up fragment -->
-    <string name="sign_up_terms">회원가입을 누르시면 <u><b>일반 이용 약관</b></u>에 동의하시게 됩니다.</string>
+    <string name="sign_up_terms_1">회원가입을 누르시면</string>
+    <string name="sign_up_terms_2">일반 이용 약관</string>
+    <string name="sign_up_terms_3">에 동의하시게 됩니다.</string>
 
     <!--error-message-->
     <string name="popup_hide_message">당분간 보지 않기</string>
