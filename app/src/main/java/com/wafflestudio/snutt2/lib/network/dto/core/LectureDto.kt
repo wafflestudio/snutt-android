@@ -28,4 +28,25 @@ data class LectureDto(
 
     val isCustom: Boolean
         get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
+
+    companion object {
+        val Default = LectureDto(
+            id = "",
+            course_title = "",
+            instructor = "",
+            colorIndex = 1L,
+            color = ColorDto(),
+            department = null,
+            academic_year = null,
+            credit = 0,
+            category = null,
+            classification = null,
+            course_number = null,
+            lecture_number = null,
+            quota = 0L,
+            remark = "",
+            class_time_json = emptyList(),
+            class_time_mask = emptyList()
+        )
+    }
 }

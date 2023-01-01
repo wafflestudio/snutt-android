@@ -39,4 +39,16 @@ data class ClassTimeDto(
 
     val endTimeMinute: Int
         get() = (60 * (endTimeInFloat - endTimeHour)).roundToInt()
+
+    companion object {
+        val Default = ClassTimeDto(
+            day = 0,
+            place = "",
+            id = null,
+            start_time = "09:30",
+            end_time = "10:45",
+            start = 9.5f,
+            len = 1.25f,
+        )
+    }
 }

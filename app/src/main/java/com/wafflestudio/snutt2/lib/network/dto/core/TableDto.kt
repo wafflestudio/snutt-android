@@ -29,4 +29,17 @@ data class TableDto(
         }
         return 0
     }
+
+    companion object {
+        val Default = TableDto(
+            id = "",
+            year = 2022,
+            semester = 1,
+            title = "나의 시간표",
+            lectureList = emptyList(),
+            updatedAt = "default",
+            totalCredit = 0,
+            theme = TimetableColorTheme.SNUTT
+        )
+    }
 }

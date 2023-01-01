@@ -37,11 +37,11 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.launch
 
@@ -61,7 +61,7 @@ fun HomeDrawer() {
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
 
     val table by timetableViewModel.currentTable.collectAsState()
-    val blockedTable = table ?: Defaults.defaultTableDto
+    val blockedTable = table ?: TableDto.Default
     val allCourseBook by tableListViewModel.allCourseBook.collectAsState()
     val courseBooksWhichHaveTable by tableListViewModel.courseBooksWhichHaveTable.collectAsState(
         initial = listOf()
@@ -78,7 +78,7 @@ fun HomeDrawer() {
     }
     // drawer 에서 (...) 버튼을 누르면, 해당 table 의 정보를 여기에 저장.
     // bottomSheet 에서 이름 변경 선택 후 dialog confirm 시 이 정보를 vm 에게 전달
-    var showMoreClickedTable by remember { mutableStateOf(Defaults.defaultSimpleTableDto) }
+    var showMoreClickedTable by remember { mutableStateOf(SimpleTableDto.Default) }
 
     // FIXME: 새 시간표 만드는 바텀시트를 띄우는 코드. 이걸 쓰는 곳이 두 군데라서 재사용 하면 좋을 것 같아 따로 빼 놨는데 모양이 좋지 않다.
     val showCreateTableBottomSheet = {

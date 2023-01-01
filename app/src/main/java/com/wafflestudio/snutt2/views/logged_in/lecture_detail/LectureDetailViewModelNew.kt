@@ -8,7 +8,6 @@ import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.Defaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +27,7 @@ class LectureDetailViewModelNew @Inject constructor(
     private val _editMode = MutableStateFlow(false)
     val editMode = _editMode.asStateFlow()
 
-    private var fixedLectureDetail = Defaults.defaultLectureDto
+    private var fixedLectureDetail = LectureDto.Default
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
 
@@ -57,7 +56,7 @@ class LectureDetailViewModelNew @Inject constructor(
     }
 
     fun initializeEditingLectureDetail(lecture: LectureDto?) {
-        fixedLectureDetail = lecture ?: Defaults.defaultLectureDto // null 문제 (reset에서 비롯됨)
+        fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch { _editingLectureDetail.emit(fixedLectureDetail) }
     }
 
