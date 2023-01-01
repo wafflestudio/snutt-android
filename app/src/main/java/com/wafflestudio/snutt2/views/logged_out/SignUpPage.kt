@@ -25,6 +25,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -95,6 +97,7 @@ fun SignUpPage() {
             .fillMaxSize()
             .background(SNUTTColors.White900)
             .padding(30.dp)
+            .clicks { focusManager.clearFocus() }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -125,7 +128,7 @@ fun SignUpPage() {
                 hint = stringResource(R.string.sign_up_id_hint),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -134,7 +137,7 @@ fun SignUpPage() {
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 hint = stringResource(R.string.sign_up_email_input_hint),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -147,7 +150,7 @@ fun SignUpPage() {
                     keyboardType = KeyboardType.Password
                 ),
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -160,7 +163,7 @@ fun SignUpPage() {
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 hint = stringResource(R.string.sign_up_password_confirm_hint),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
             )
         }
 
