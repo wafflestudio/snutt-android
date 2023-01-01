@@ -2,7 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.compose.BackHandler
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
@@ -102,19 +103,29 @@ fun LectureDetailPage() {
     }
 
     /* 뒤로가기 핸들링 */
-    BackHandler {
-        if (sheetState.isVisible) {
-            scope.launch { sheetState.hide() }
-        } else if (editMode) {
-            if (vm.isAddMode()) { // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
-                navController.popBackStack()
-            } else editExitDialogState = true
-        } else if (viewMode) {
-            vm.setViewMode(false)
-            navController.popBackStack()
-        } else {
-            navController.popBackStack()
+    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
+    val onBackPressedCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (sheetState.isVisible) {
+                    scope.launch { sheetState.hide() }
+                } else if (editMode) {
+                    if (vm.isAddMode()) { // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
+                        vm.unsetEditMode()
+                        navController.popBackStack()
+                    } else editExitDialogState = true
+                } else if (viewMode) {
+                    vm.setViewMode(false)
+                    navController.popBackStack()
+                } else {
+                    navController.popBackStack()
+                }
+            }
         }
+    }
+    DisposableEffect(Unit) {
+        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
+        onDispose { onBackPressedCallback.remove() }
     }
 
     /* TODO (진행중)
@@ -171,18 +182,7 @@ fun LectureDetailPage() {
                             modifier = Modifier
                                 .size(30.dp)
                                 .clicks {
-                                    if (editMode) {
-                                        editExitDialogState = true
-                                    } else if (vm.isAddMode()) {
-                                        vm.setAddMode(false)
-                                        vm.unsetEditMode()
-                                        navController.popBackStack()
-                                    } else if (viewMode) {
-                                        vm.setViewMode(false)
-                                        navController.popBackStack()
-                                    } else {
-                                        navController.popBackStack()
-                                    }
+                                    onBackPressedCallback.handleOnBackPressed()
                                 },
                             colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                         )
