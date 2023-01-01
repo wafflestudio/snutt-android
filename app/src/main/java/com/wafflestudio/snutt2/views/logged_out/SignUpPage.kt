@@ -96,19 +96,6 @@ fun SignUpPage() {
             .background(SNUTTColors.White900)
             .padding(30.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 40.dp, bottom = 15.dp),
-            )
-
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h1,
-            )
-        }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -117,6 +104,21 @@ fun SignUpPage() {
                 .padding(top = 60.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = stringResource(R.string.sign_in_logo_title),
+                    modifier = Modifier.padding(bottom = 15.dp),
+                )
+                Text(
+                    text = stringResource(R.string.sign_in_logo_title),
+                    style = SNUTTTypography.h1,
+                )
+            }
+
             EditText(
                 value = idField,
                 onValueChange = { idField = it },
