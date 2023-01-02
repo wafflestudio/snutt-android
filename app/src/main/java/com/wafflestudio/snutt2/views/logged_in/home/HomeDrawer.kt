@@ -38,6 +38,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toFullString
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -99,6 +100,11 @@ fun HomeDrawer() {
                             scope.launch {
                                 sheetState.hide()
                                 keyboardManager?.hide()
+                                drawerState.close()
+                                context.toast(
+                                    context.getString(R.string.home_drawer_create_success_message)
+                                        .format(selectedCourseBook.toFullString(context), newTableTitle)
+                                )
                             }
                         }
                     }
@@ -272,9 +278,7 @@ fun HomeDrawer() {
                                                                     apiOnProgress,
                                                                     apiOnError
                                                                 ) {
-                                                                    timetableViewModel.setPreviewTheme(
-                                                                        null
-                                                                    ) // FIXME : 애니메이션 다 끝나고 적용돼서 너무 느리다!
+                                                                    timetableViewModel.setPreviewTheme(null)
                                                                 }
                                                             }
                                                         })
