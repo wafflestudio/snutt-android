@@ -63,7 +63,7 @@ fun FindPasswordPage() {
 
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
-        endTime = 300,
+        endTime = 180,
     )
     val handleCheckEmailById = {
         coroutineScope.launch {
@@ -84,7 +84,7 @@ fun FindPasswordPage() {
             if (codeField.isEmpty()) {
                 context.toast(context.getString(R.string.find_password_enter_verification_code_empty_alert))
             } else if (timerState.isEnded) {
-                context.toast(context.getString(R.string.find_password_enter_verification_code_expire_alert))
+                context.toast(context.getString(R.string.find_password_enter_verification_code_expire_message))
             } else {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     userViewModel.verifyCode(idField, codeField)
@@ -195,7 +195,7 @@ fun FindPasswordPage() {
                                 )
                             }),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Number
+                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Ascii
                             ),
                             singleLine = true,
                             trailingIcon = {
@@ -213,9 +213,11 @@ fun FindPasswordPage() {
                                             ),
                                             modifier = Modifier.clicks {
                                                 coroutineScope.launch {
-                                                    userViewModel.sendCodeToEmail(emailResponse)
-                                                    timerState.reset()
-                                                    timerState.start()
+                                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                                        userViewModel.sendCodeToEmail(emailResponse)
+                                                        timerState.reset()
+                                                        timerState.start()
+                                                    }
                                                 }
                                             }
                                         )
@@ -308,15 +310,17 @@ fun FindPasswordPage() {
             onConfirm = {
                 checkEmailDialogState = false
                 coroutineScope.launch {
-                    userViewModel.sendCodeToEmail(emailResponse)
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        userViewModel.sendCodeToEmail(emailResponse)
+                        flowState = FlowState.SendCode
+                        timerState.start()
+                    }
                 }
-                flowState = FlowState.SendCode
-                timerState.start()
             },
             positiveButtonText = stringResource(R.string.common_ok),
             negativeButtonText = stringResource(R.string.find_password_check_email_dialog_negative)
         ) {
-            Text(text = stringResource(R.string.find_password_check_email_dialog_content))
+            Text(text = stringResource(R.string.find_password_check_email_dialog_content).format(emailResponse))
         }
     }
 }
