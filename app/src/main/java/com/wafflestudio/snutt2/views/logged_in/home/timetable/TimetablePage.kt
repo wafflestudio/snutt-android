@@ -258,13 +258,12 @@ fun TimeTable(
     val dayLabelHeight = CanvasPalette.dayLabelHeight
 
     val trimParam = TableContext.current.trimParam
-    val fittedTrimParam = remember {
+    val fittedTrimParam =
         if (trimParam.forceFitLectures) {
             (selectedLecture?.let { lectures + it } ?: lectures).getFittingTrimParam(
                 TableTrimParam.Default
             )
         } else trimParam
-    }
 
     Canvas(
         modifier = Modifier
@@ -420,7 +419,7 @@ private fun DrawClassTime(
     val lectureCellBorderPaint = CanvasPalette.lectureCellBorderPaint
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
-    val hourRangeOffset = remember {
+    val hourRangeOffset =
         Pair(
             max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
@@ -428,7 +427,6 @@ private fun DrawClassTime(
                 fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
             )
         )
-    }
 
     Canvas(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
