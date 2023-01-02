@@ -54,6 +54,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_server_fault),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.INVALID_EMAIL -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_invalid_email),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         ErrorCode.NO_FB_ID_OR_TOKEN -> Toast.makeText(
                             context,
                             context.getString(R.string.error_no_fb_id_or_token),
@@ -113,12 +118,12 @@ class ApiOnError @Inject constructor(
                             context,
                             context.getString(R.string.error_expired_verification_code),
                             Toast.LENGTH_SHORT
-                        )
+                        ).show()
                         ErrorCode.WRONG_PASSWORD_RESET_CODE -> Toast.makeText(
                             context,
                             context.getString(R.string.error_wrong_verification_code),
                             Toast.LENGTH_SHORT
-                        )
+                        ).show()
                         ErrorCode.WRONG_API_KEY -> Toast.makeText(
                             context,
                             context.getString(R.string.error_wrong_api_key),
@@ -305,6 +310,9 @@ class ApiOnError @Inject constructor(
 
 object ErrorCode {
     const val SERVER_FAULT = 0x0000
+
+    /* 400 - Bad request */
+    const val INVALID_EMAIL = 0x300F
 
     /* 401 - Request was invalid */
     const val NO_FB_ID_OR_TOKEN = 0x1001
