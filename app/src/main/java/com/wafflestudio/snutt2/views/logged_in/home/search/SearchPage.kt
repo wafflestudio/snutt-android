@@ -60,6 +60,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.*
 
@@ -272,7 +273,12 @@ fun SearchPage(
                                     }, onClickDetail = {
                                         lectureDetailViewModel.initializeEditingLectureDetail(it.item)
                                         lectureDetailViewModel.setViewMode(true)
-                                        navController.navigate(NavigationDestination.LectureDetail)
+                                        bottomSheetContentSetter.invoke {
+                                            LectureDetailPage(onCloseViewMode = {
+                                                scope.launch { sheetState.hide() }
+                                            })
+                                        }
+                                        scope.launch { sheetState.show() }
                                     }, onClickReview = {
                                         scope.launch {
                                             val job: CompletableJob = Job()

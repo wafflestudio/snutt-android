@@ -56,7 +56,7 @@ import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LectureDetailPage() {
+fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -116,7 +116,7 @@ fun LectureDetailPage() {
                     } else editExitDialogState = true
                 } else if (viewMode) {
                     vm.setViewMode(false)
-                    navController.popBackStack()
+                    onCloseViewMode()
                 } else {
                     navController.popBackStack()
                 }
