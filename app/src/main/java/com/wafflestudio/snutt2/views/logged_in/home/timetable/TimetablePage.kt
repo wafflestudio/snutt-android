@@ -9,7 +9,6 @@ import android.view.View
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -69,7 +68,7 @@ object CanvasPalette {
         @Composable get() =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color =
-                    if (isSystemInDarkTheme()) Color.argb(180, 119, 119, 119)
+                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
                     else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.CENTER
@@ -87,7 +86,7 @@ object CanvasPalette {
         @Composable get() =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color =
-                    if (isSystemInDarkTheme()) Color.argb(180, 119, 119, 119)
+                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
                     else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.RIGHT
