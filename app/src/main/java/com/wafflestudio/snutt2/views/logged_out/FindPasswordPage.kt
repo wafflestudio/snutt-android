@@ -322,7 +322,7 @@ fun FindPasswordPage() {
             positiveButtonText = stringResource(R.string.common_ok),
             negativeButtonText = stringResource(R.string.find_password_check_email_dialog_negative)
         ) {
-            Text(text = stringResource(R.string.find_password_check_email_dialog_content).format(emailResponse))
+            Text(text = stringResource(R.string.find_password_check_email_dialog_content).format(emailResponse), style = SNUTTTypography.body1)
         }
     }
 }
