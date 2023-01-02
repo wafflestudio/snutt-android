@@ -212,11 +212,13 @@ fun FindPasswordPage() {
                                                 else SNUTTColors.SNUTTTheme
                                             ),
                                             modifier = Modifier.clicks {
-                                                coroutineScope.launch {
-                                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                                        userViewModel.sendCodeToEmail(emailResponse)
-                                                        timerState.reset()
-                                                        timerState.start()
+                                                if (timerState.isEnded) {
+                                                    coroutineScope.launch {
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            userViewModel.sendCodeToEmail(emailResponse)
+                                                            timerState.reset()
+                                                            timerState.start()
+                                                        }
                                                     }
                                                 }
                                             }
