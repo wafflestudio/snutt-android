@@ -112,6 +112,7 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                 } else if (editMode) {
                     if (vm.isAddMode()) { // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
                         vm.unsetEditMode()
+                        vm.setAddMode(false)
                         navController.popBackStack()
                     } else editExitDialogState = true
                 } else if (viewMode) {
