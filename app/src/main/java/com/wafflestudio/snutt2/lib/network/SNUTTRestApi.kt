@@ -324,7 +324,7 @@ interface SNUTTRestApi {
         @Body body: PostForceLogoutParams
     ): PostForceLogoutResults
 
-    @POST("/auth/find_id")
+    @POST("/auth/id/find")
     suspend fun _postFindId(
         @Body body: PostFindIdParams
     ): PostFindIdResults
@@ -339,12 +339,12 @@ interface SNUTTRestApi {
         @Body body: PostSendCodeParams
     )
 
-    @POST("/auth/password/reset/verification")
+    @POST("/v1/auth/password/reset/verification/code")
     suspend fun _postVerifyCodeToResetPassword(
         @Body body: PostVerifyCodeParams
     )
 
-    @POST("/auth/password/reset")
+    @POST("/v1/auth/password/reset")
     suspend fun _postResetPassword(
         @Body body: PostResetPasswordParams
     )
