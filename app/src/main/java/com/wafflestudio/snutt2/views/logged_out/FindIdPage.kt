@@ -54,6 +54,7 @@ fun FindIdPage() {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     userViewModel.findIdByEmail(emailField)
                     context.toast(context.getString(R.string.find_id_send_email_success_message).format(emailField))
+                    navController.popBackStack()
                 }
             }
         }
