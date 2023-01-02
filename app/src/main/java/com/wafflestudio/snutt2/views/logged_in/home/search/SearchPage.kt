@@ -113,6 +113,7 @@ fun SearchPage(
     LaunchedEffect(sheetState.isVisible) {
         if (!sheetState.isVisible && sheetWasShown) {
             reviewWebViewContainer.webView.goBack()
+            lectureDetailViewModel.setViewMode(false)
         } else {
             sheetWasShown = true
         }
