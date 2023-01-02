@@ -46,6 +46,7 @@ class TimerState(
 
     fun reset() {
         currentValue = TimerValue.Initial
+        time = endTimeInSecond
     }
 
     companion object {
