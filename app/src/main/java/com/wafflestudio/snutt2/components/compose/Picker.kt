@@ -69,44 +69,46 @@ fun <T> Picker(
                 }
             ),
     ) {
-        if (centerItemIndex > 1) {
+        if (list.isNotEmpty()) {
+            if (centerItemIndex > 1) {
+                PickerItem(
+                    modifier = Modifier
+                        .offset(y = -columnHeightDp * 2 + localOffset.dp)
+                        .alpha((columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
+                    content = {
+                        PickerItemContent(centerItemIndex - 2)
+                    }
+                )
+            }
+            if (centerItemIndex > 0) {
+                PickerItem(
+                    modifier = Modifier
+                        .offset(y = -columnHeightDp + localOffset.dp)
+                        .alpha((columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
+                    content = { PickerItemContent(centerItemIndex - 1) }
+                )
+            }
+            Box(modifier = Modifier.height(columnHeightDp).fillMaxWidth().background(SNUTTColors.Gray100, RoundedCornerShape(30f)).offset(y = -columnHeightDp / 2).zIndex(-5f))
             PickerItem(
-                modifier = Modifier
-                    .offset(y = -columnHeightDp * 2 + localOffset.dp)
-                    .alpha((columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
-                content = {
-                    PickerItemContent(centerItemIndex - 2)
-                }
+                modifier = Modifier.offset(y = localOffset.dp),
+                content = { PickerItemContent(centerItemIndex) }
             )
-        }
-        if (centerItemIndex > 0) {
-            PickerItem(
-                modifier = Modifier
-                    .offset(y = -columnHeightDp + localOffset.dp)
-                    .alpha((columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
-                content = { PickerItemContent(centerItemIndex - 1) }
-            )
-        }
-        Box(modifier = Modifier.height(columnHeightDp).fillMaxWidth().background(SNUTTColors.Gray100, RoundedCornerShape(30f)).offset(y = -columnHeightDp / 2).zIndex(-5f))
-        PickerItem(
-            modifier = Modifier.offset(y = localOffset.dp),
-            content = { PickerItemContent(centerItemIndex) }
-        )
-        if (list.isNotEmpty() && centerItemIndex < list.size - 1) {
-            PickerItem(
-                modifier = Modifier
-                    .offset(y = columnHeightDp + localOffset.dp)
-                    .alpha(-(-columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
-                content = { PickerItemContent(centerItemIndex + 1) }
-            )
-        }
-        if (list.isNotEmpty() && centerItemIndex < list.size - 2) {
-            PickerItem(
-                modifier = Modifier
-                    .offset(y = columnHeightDp * 2 + localOffset.dp)
-                    .alpha(-(-columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
-                content = { PickerItemContent(centerItemIndex + 2) }
-            )
+            if (centerItemIndex < list.size - 1) {
+                PickerItem(
+                    modifier = Modifier
+                        .offset(y = columnHeightDp + localOffset.dp)
+                        .alpha(-(-columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
+                    content = { PickerItemContent(centerItemIndex + 1) }
+                )
+            }
+            if (centerItemIndex < list.size - 2) {
+                PickerItem(
+                    modifier = Modifier
+                        .offset(y = columnHeightDp * 2 + localOffset.dp)
+                        .alpha(-(-columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
+                    content = { PickerItemContent(centerItemIndex + 2) }
+                )
+            }
         }
     }
 }
