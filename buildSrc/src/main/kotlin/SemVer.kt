@@ -10,8 +10,8 @@ object SemVer {
             semVerRegex.find(semanticVersion)?.groupValues?.get(5)?.toLongOrNull() ?: 999L
 
         return listOf(major, minor, patch, releaseCandidate)
-            .fold(0) { acc, next ->
-                acc * 100 + next
-            } + 2009000000
+            .fold(0L) { acc, next ->
+                acc * 1000 + next
+            }
     }
 }
