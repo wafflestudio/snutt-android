@@ -92,7 +92,7 @@ fun <T> Picker(
             modifier = Modifier.offset(y = localOffset.dp),
             content = { PickerItemContent(centerItemIndex) }
         )
-        if (centerItemIndex < list.size - 1) {
+        if (list.isNotEmpty() && centerItemIndex < list.size - 1) {
             PickerItem(
                 modifier = Modifier
                     .offset(y = columnHeightDp + localOffset.dp)
@@ -100,7 +100,7 @@ fun <T> Picker(
                 content = { PickerItemContent(centerItemIndex + 1) }
             )
         }
-        if (centerItemIndex < list.size - 2) {
+        if (list.isNotEmpty() && centerItemIndex < list.size - 2) {
             PickerItem(
                 modifier = Modifier
                     .offset(y = columnHeightDp * 2 + localOffset.dp)
