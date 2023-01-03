@@ -596,7 +596,7 @@ suspend fun lectureApiWithOverlapDialog(
         when (e) {
             is ErrorParsedHttpException -> {
                 if (e.errorDTO?.code == LECTURE_TIME_OVERLAP) {
-                    onLectureOverlap(e.errorDTO.ext!!["confirm_message"] ?: "")
+                    onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
                 } else apiOnError(e)
             }
             else -> apiOnError(e)
