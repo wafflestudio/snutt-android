@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,15 +18,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -95,20 +101,8 @@ fun SignUpPage() {
             .fillMaxSize()
             .background(SNUTTColors.White900)
             .padding(30.dp)
+            .clicks { focusManager.clearFocus() }
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 40.dp, bottom = 15.dp),
-            )
-
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h1,
-            )
-        }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -117,13 +111,30 @@ fun SignUpPage() {
                 .padding(top = 60.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = stringResource(R.string.sign_in_logo_title),
+                    modifier = Modifier.padding(bottom = 15.dp),
+                )
+                Text(
+                    text = stringResource(R.string.sign_in_logo_title),
+                    style = SNUTTTypography.h1,
+                )
+            }
+
             EditText(
                 value = idField,
                 onValueChange = { idField = it },
                 hint = stringResource(R.string.sign_up_id_hint),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -132,7 +143,9 @@ fun SignUpPage() {
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 hint = stringResource(R.string.sign_up_email_input_hint),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -145,7 +158,9 @@ fun SignUpPage() {
                     keyboardType = KeyboardType.Password
                 ),
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
             )
 
             EditText(
@@ -158,7 +173,9 @@ fun SignUpPage() {
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 hint = stringResource(R.string.sign_up_password_confirm_hint),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
             )
         }
 
@@ -221,15 +238,30 @@ fun SignUpPage() {
                 }
             }
 
-            Text(
-                text = stringResource(id = R.string.sign_up_terms),
-                modifier = Modifier.padding(top = 20.dp),
-                style = SNUTTTypography.body2
-            )
+            Row(modifier = Modifier.padding(top = 20.dp)) {
+                Text(
+                    text = stringResource(id = R.string.sign_up_terms_1) + " ",
+                    style = SNUTTTypography.body2,
+                )
+                Text(
+                    text = stringResource(id = R.string.sign_up_terms_2),
+                    style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clicks {
+                        val termsPageUrl =
+                            context.getString(R.string.api_server) + context.getString(R.string.terms)
+                        val intent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl))
+                        context.startActivity(intent)
+                    }
+                )
+                Text(
+                    text = stringResource(id = R.string.sign_up_terms_3),
+                    style = SNUTTTypography.body2,
+                )
+            }
         }
     }
-
-    // TODO: 이용 약관 버튼
 }
 
 @Preview
