@@ -39,10 +39,11 @@ class TimetableViewModel @Inject constructor(
     }
 
     suspend fun updateTheme() {
-        tableRepository.updateTableTheme(
-            currentTable.value?.id!!,
-            previewTheme.value!!
-        ) // FIXME
+        currentTable.value?.id?.let { id ->
+            previewTheme.value?.let { theme ->
+                tableRepository.updateTableTheme(id, theme)
+            }
+        }
     }
 
     suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?) {
