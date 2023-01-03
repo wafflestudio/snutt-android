@@ -54,6 +54,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_server_fault),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.INVALID_EMAIL -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_invalid_email),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         ErrorCode.NO_FB_ID_OR_TOKEN -> Toast.makeText(
                             context,
                             context.getString(R.string.error_no_fb_id_or_token),
@@ -107,6 +112,16 @@ class ApiOnError @Inject constructor(
                         ErrorCode.NO_LECTURE_TITLE -> Toast.makeText(
                             context,
                             context.getString(R.string.error_no_lecture_title),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        ErrorCode.EXPIRED_PASSWORD_RESET_CODE -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_expired_verification_code),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        ErrorCode.WRONG_PASSWORD_RESET_CODE -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_wrong_verification_code),
                             Toast.LENGTH_SHORT
                         ).show()
                         ErrorCode.WRONG_API_KEY -> Toast.makeText(
@@ -259,9 +274,19 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_ref_lecture_not_found),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.USER_NOT_FOUND -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_no_such_user_with_that_email),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         ErrorCode.COLORLIST_NOT_FOUND -> Toast.makeText(
                             context,
                             context.getString(R.string.error_colorlist_not_found),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        ErrorCode.EMAIL_NOT_FOUND -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_no_registered_email),
                             Toast.LENGTH_SHORT
                         ).show()
                         else -> Toast.makeText(
@@ -286,6 +311,9 @@ class ApiOnError @Inject constructor(
 object ErrorCode {
     const val SERVER_FAULT = 0x0000
 
+    /* 400 - Bad request */
+    const val INVALID_EMAIL = 0x300F
+
     /* 401 - Request was invalid */
     const val NO_FB_ID_OR_TOKEN = 0x1001
     const val NO_YEAR_OR_SEMESTER = 0x1002
@@ -298,6 +326,8 @@ object ErrorCode {
     const val INVALID_TIMEMASK = 0x1009
     const val INVALID_COLOR = 0x100A
     const val NO_LECTURE_TITLE = 0x100B
+    const val EXPIRED_PASSWORD_RESET_CODE = 0x2010
+    const val WRONG_PASSWORD_RESET_CODE = 0x2011
 
     /* 403 - Authorization-related */
     const val WRONG_API_KEY = 0x2000
@@ -331,7 +361,9 @@ object ErrorCode {
     const val TIMETABLE_NOT_FOUND = 0x4001
     const val LECTURE_NOT_FOUND = 0x4002
     const val REF_LECTURE_NOT_FOUND = 0x4003
+    const val USER_NOT_FOUND = 0x4004
     const val COLORLIST_NOT_FOUND = 0x4005
+    const val EMAIL_NOT_FOUND = 0x4006
 }
 
 @JsonClass(generateAdapter = true)

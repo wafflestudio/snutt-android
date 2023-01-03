@@ -324,6 +324,31 @@ interface SNUTTRestApi {
         @Body body: PostForceLogoutParams
     ): PostForceLogoutResults
 
+    @POST("/auth/id/find")
+    suspend fun _postFindId(
+        @Body body: PostFindIdParams
+    ): PostFindIdResults
+
+    @POST("/auth/password/reset/email/check")
+    suspend fun _postCheckEmailById(
+        @Body body: PostCheckEmailByIdParams
+    ): PostCheckEmailByIdResults
+
+    @POST("/auth/password/reset/email/send")
+    suspend fun _postSendCodeToEmailById(
+        @Body body: PostSendCodeParams
+    )
+
+    @POST("/v1/auth/password/reset/verification/code")
+    suspend fun _postVerifyCodeToResetPassword(
+        @Body body: PostVerifyCodeParams
+    )
+
+    @POST("/v1/auth/password/reset")
+    suspend fun _postResetPassword(
+        @Body body: PostResetPasswordParams
+    )
+
     @GET("/user/info")
     suspend fun _getUserInfo(): GetUserInfoResults
 

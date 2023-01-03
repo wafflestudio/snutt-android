@@ -4,7 +4,9 @@
     <string name="member" translatable="false">member</string>
 
     <!-- For sign up fragment -->
-    <string name="sign_up_terms">회원가입을 누르시면 <u><b>일반 이용 약관</b></u>에 동의하시게 됩니다.</string>
+    <string name="sign_up_terms_1">회원가입을 누르시면</string>
+    <string name="sign_up_terms_2">일반 이용 약관</string>
+    <string name="sign_up_terms_3">에 동의하시게 됩니다.</string>
 
     <!--error-message-->
     <string name="popup_hide_message">당분간 보지 않기</string>
@@ -49,7 +51,12 @@
     <string name="error_is_custom_lecture">직접 만든 강좌입니다</string>
     <string name="error_email_not_verified">이메일 인증이 필요합니다. 강의평 탭에서 SNU 메일 인증을 진행해 주세요.</string>
     <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
+    <string name="error_no_such_user_with_that_email">해당 이메일로 가입된 사용자가 없습니다.</string>
     <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
+    <string name="error_no_registered_email">등록된 이메일이 없습니다.</string>
+    <string name="error_expired_verification_code">만료된 인증코드입니다.</string>
+    <string name="error_wrong_verification_code">잘못된 인증코드입니다.</string>
+    <string name="error_invalid_email">올바른 이메일을 입력해주세요.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_id_hint">아이디</string>
@@ -61,10 +68,34 @@
     <string name="sign_in_logo_title">SNUTT</string>
     <string name="sign_in_sign_in_button">로그인</string>
     <string name="sign_in_sign_in_facebook_button">페이스북으로 시작하기</string>
+    <string name="sign_in_find_id_button">아이디 찾기</string>
+    <string name="sign_in_find_password_button">비밀번호 찾기</string>
     <string name="sign_in_id_hint">아이디</string>
     <string name="sign_in_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
+    <string name="find_id_content">아이디를 찾기 위해\n연동된 이메일 주소가 필요합니다.</string>
+    <string name="find_id_wrong_email_format">올바른 형식의 이메일을 입력해주세요.</string>
+    <string name="find_id_send_email_success_message">\"%s\"로 아이디가 전송되었습니다.</string>
+    <string name="find_password_title">비밀번호 재설정</string>
+    <string name="find_password_check_email_content">비밀번호 재설정을 위해\n연동된 아이디가 필요합니다.</string>
+    <string name="find_password_check_email_dialog_title">이메일 확인</string>
+    <string name="find_password_check_email_dialog_content">연동된 이메일은 %s입니다. 해당 이메일로 인증 코드를 발송하시겠습니까?</string>
+    <string name="find_password_check_email_dialog_negative">다른 아이디 확인하기</string>
+    <string name="find_password_enter_id_hint">아이디를 입력해주세요.</string>
+    <string name="find_password_send_code_hint">인증 코드 입력</string>
+    <string name="find_password_send_code_label">인증 번호</string>
+    <string name="find_password_send_code_resend">다시 요청</string>
+    <string name="find_password_verification_code_content">%s으로 전송된\n인증번호를 입력해주세요.</string>
+    <string name="find_password_enter_verification_code_empty_alert">인증 코드를 입력해주세요.</string>
+    <string name="find_password_enter_verification_code_expire_alert">인증 코드를 입력해주세요.</string>
+    <string name="find_password_enter_verification_code_expire_message">시간이 초과되었습니다. 다시 시도해주세요.</string>
+    <string name="find_password_enter_verification_code_success_alert">인증에 성공하였습니다.</string>
+    <string name="find_password_enter_password_label">새로운 비밀번호</string>
+    <string name="find_password_enter_password_confirm_label">새로운 비밀번호 확인</string>
+    <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
+    <string name="find_password_enter_password_confirm_fail_alert">비밀번호 확인이 일치하지 않습니다.</string>
+    <string name="find_password_enter_password_success_alert">비밀번호 재설정이 완료되었습니다.</string>
     <string name="common_day_mon">월</string>
     <string name="common_day_tue">화</string>
     <string name="common_day_wed">수</string>

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -96,7 +97,7 @@ fun SignInPage() {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 40.dp, bottom = 15.dp),
+                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
             )
 
             Text(
@@ -110,7 +111,7 @@ fun SignInPage() {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
                 .weight(1f)
-                .padding(top = 60.dp, bottom = 20.dp)
+                .padding(top = 50.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             EditText(
@@ -192,6 +193,37 @@ fun SignInPage() {
                         style = SNUTTTypography.button
                     )
                 }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .background(SNUTTColors.Gray100)
+                        .height(1.dp)
+                        .weight(1f)
+                )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.sign_in_find_id_button),
+                    style = SNUTTTypography.subtitle2,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindId) }
+                )
+
+                Text(
+                    text = "|",
+                    style = SNUTTTypography.subtitle2,
+                    modifier = Modifier.padding(horizontal = 15.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.sign_in_find_password_button),
+                    style = SNUTTTypography.subtitle2,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindPassword) }
+                )
             }
         }
     }

@@ -119,4 +119,24 @@ class UserViewModel @Inject constructor(
     suspend fun setThemeMode(mode: ThemeMode) {
         userRepository.setThemeMode(mode)
     }
+
+    suspend fun findIdByEmail(email: String) {
+        userRepository.findIdByEmail(email)
+    }
+
+    suspend fun checkEmailById(id: String): String {
+        return userRepository.checkEmailById(id)
+    }
+
+    suspend fun sendCodeToEmail(email: String) {
+        userRepository.sendCodeToEmail(email)
+    }
+
+    suspend fun verifyCode(id: String, code: String) {
+        userRepository.verifyCode(id, code)
+    }
+
+    suspend fun resetPassword(id: String, password: String) {
+        userRepository.resetPassword(id, password)
+    }
 }

@@ -214,6 +214,36 @@ class UserRepositoryImpl @Inject constructor(
         storage.themeMode.update(mode)
     }
 
+    override suspend fun findIdByEmail(email: String) {
+        api._postFindId(
+            PostFindIdParams(email)
+        )
+    }
+
+    override suspend fun checkEmailById(id: String): String {
+        return api._postCheckEmailById(
+            PostCheckEmailByIdParams(id)
+        ).email
+    }
+
+    override suspend fun sendCodeToEmail(email: String) {
+        api._postSendCodeToEmailById(
+            PostSendCodeParams(email)
+        )
+    }
+
+    override suspend fun verifyCode(id: String, code: String) {
+        api._postVerifyCodeToResetPassword(
+            PostVerifyCodeParams(id, code)
+        )
+    }
+
+    override suspend fun resetPassword(id: String, password: String) {
+        api._postResetPassword(
+            PostResetPasswordParams(id, password)
+        )
+    }
+
     private suspend fun getFirebaseToken(): String {
         return suspendCoroutine { cont ->
             FirebaseMessaging.getInstance().token.addOnCompleteListener(
