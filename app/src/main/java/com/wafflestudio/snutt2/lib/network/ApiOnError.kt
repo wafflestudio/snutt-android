@@ -296,6 +296,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                     }
                 }
+                is kotlinx.coroutines.CancellationException -> {} // do nothing
                 else -> {
                     Toast.makeText(
                         context,
