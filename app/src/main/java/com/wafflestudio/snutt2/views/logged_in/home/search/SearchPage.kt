@@ -25,6 +25,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +44,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
+import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedClassTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
@@ -55,9 +57,11 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
@@ -69,13 +73,11 @@ import kotlinx.coroutines.*
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
 ) {
-    val navController = LocalNavController.current
+    val context = LocalContext.current
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
-    val pageController = LocalHomePageController.current
-    val reviewWebViewContainer = LocalReviewWebView.current
-
+    val userViewModel = hiltViewModel<UserViewModel>()
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
     val searchKeyword = searchViewModel.searchTitle.collectAsState()
@@ -98,6 +100,11 @@ fun SearchPage(
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
 
+    val isDarkMode = isDarkMode()
+    val reviewWebViewContainer =
+        remember {
+            WebViewContainer(context, userViewModel.accessToken, isDarkMode)
+        }
     reviewWebViewContainer.apply {
         this.webView.addJavascriptInterface(
             CloseBridge(
@@ -292,7 +299,11 @@ fun SearchPage(
                                             joinAll(job)
                                             scope.launch {
                                                 bottomSheetContentSetter.invoke {
-                                                    ReviewWebView(0.95f)
+                                                    CompositionLocalProvider(
+                                                        LocalReviewWebView provides reviewWebViewContainer
+                                                    ) {
+                                                        ReviewWebView(0.95f)
+                                                    }
                                                 }
                                                 sheetState.show()
                                             }
