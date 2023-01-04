@@ -291,7 +291,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                         else -> Toast.makeText(
                             context,
-                            context.getString(R.string.error_unknown),
+                            error.errorDTO?.message?:context.getString(R.string.error_unknown),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
