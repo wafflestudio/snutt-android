@@ -66,6 +66,9 @@ jobs:
           SLACK_TITLE: ${{ env.TITLE }}
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
+          file_type: 'apk'
+          file_name: 'app-staging-debug.apk'
+          file_path: './app/build/outputs/apk/debug/app-staging-debug.apk'
 
   build-staging:
     runs-on: ubuntu-18.04
