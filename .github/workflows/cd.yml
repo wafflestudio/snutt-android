@@ -68,7 +68,6 @@ jobs:
           SLACK_USERNAME: BuildNoti
 
       - name: Slack Upload APK
-        run: './gradlew assembleRelease'
         uses: MeilCli/slack-upload-file@v1
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
