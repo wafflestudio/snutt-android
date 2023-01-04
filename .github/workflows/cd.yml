@@ -74,6 +74,7 @@ jobs:
           file_path: 'app/build/outputs/apk/staging/debug/app-staging-debug.apk'
           file_name: 'app-staging-debug.apk'
           file_type: 'apk'
+          initial_comment: 'staging-debug APK'
 
   build-staging:
     runs-on: ubuntu-18.04
