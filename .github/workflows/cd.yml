@@ -59,6 +59,16 @@ jobs:
           MESSAGE="${VERSION} 빌드 완료"
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+
+      - name: Slack Upload APK
+        uses: MeilCli/slack-upload-file@v1
+        with:
+          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          file_path: './app/build/outputs/apk/staging/debug/app-staging-debug.apk'
+          file_name: 'app-staging-debug.apk'
+          file_type: 'apk'
+          initial_comment: 'staging-debug APK'
+
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -66,15 +76,6 @@ jobs:
           SLACK_TITLE: ${{ env.TITLE }}
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
-
-      - name: Slack Upload APK
-        uses: MeilCli/slack-upload-file@v1
-        with:
-          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
-          file_path: 'app/build/outputs/apk/staging/debug/app-staging-debug.apk'
-          file_name: 'app-staging-debug.apk'
-          file_type: 'apk'
-          initial_comment: 'staging-debug APK'
 
   build-staging:
     runs-on: ubuntu-18.04
