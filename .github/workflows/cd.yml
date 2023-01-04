@@ -59,7 +59,6 @@ jobs:
           MESSAGE="${VERSION} 빌드 완료"
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
-
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -115,6 +114,7 @@ jobs:
         uses: MeilCli/slack-upload-file@v1
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          channels: ${{ secrets.SLACK_DEPLOY_CHANNEL }}
           file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
           file_name: 'app-staging-release.apk'
           file_type: 'apk'
