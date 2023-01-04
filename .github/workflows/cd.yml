@@ -8,64 +8,64 @@ on:
       - 'version.properties'
 
 jobs:
-#  build-live:
-#    runs-on: ubuntu-18.04
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#      - name: Setup Java
-#        uses: actions/setup-java@v2
-#        with:
-#          java-version: 11
-#          distribution: 'adopt'
-#      - name: Clean build
-#        run: ./gradlew clean
-#      - name: Setup google-services.json (Live)
-#        run: |
-#          mkdir -p ./app/src/live
-#          cat << EOF > ./app/src/live/google-services.json
-#          ${{ secrets.google_services_json_live }}
-#          EOF
-#      - name: Setup gcp-service-account.json (Live)
-#        run: |
-#          cat << EOF > ./gcp-service-account-live.json
-#          ${{ secrets.app_distribution_service_account_live }}
-#          EOF
-#      - name: Setup secrets.xml (Live)
-#        run: |
-#          mkdir -p ./app/src/live/res/values
-#          cat << EOF > ./app/src/live/res/values/secrets.xml
-#          ${{ secrets.secrets_xml_live }}
-#          EOF
-#      - name: Decode Keystore
-#        env:
-#          ENCODED_STRING: ${{ secrets.KEYSTORE }}
-#        run: |
-#          mkdir -p ./app/keystore
-#          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
-#      - name: Build production apk
-#        run: ./gradlew bundleLiveRelease
-#        env:
-#          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-#          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-#          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-#      - name: Upload artifact to Firebase App Distribution
-#        run: ./gradlew appDistributionUploadLiveRelease
-#      - name: Set Message
-#        run: |
-#          PROPERTY=$(head -n 1 version.properties)
-#          VERSION="${PROPERTY/snuttVersionName=}"
-#          TITLE="SNUTT Android 빌드 알림"
-#          MESSAGE="${VERSION} 빌드 완료"
-#          echo "TITLE=$TITLE" >> $GITHUB_ENV
-#          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
-#      - name: Slack Notification
-#        uses: rtCamp/action-slack-notify@v2
-#        env:
-#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-#          SLACK_TITLE: ${{ env.TITLE }}
-#          SLACK_MESSAGE: ${{ env.MESSAGE }}
-#          SLACK_USERNAME: BuildNoti
+  build-live:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+      - name: Clean build
+        run: ./gradlew clean
+      - name: Setup google-services.json (Live)
+        run: |
+          mkdir -p ./app/src/live
+          cat << EOF > ./app/src/live/google-services.json
+          ${{ secrets.google_services_json_live }}
+          EOF
+      - name: Setup gcp-service-account.json (Live)
+        run: |
+          cat << EOF > ./gcp-service-account-live.json
+          ${{ secrets.app_distribution_service_account_live }}
+          EOF
+      - name: Setup secrets.xml (Live)
+        run: |
+          mkdir -p ./app/src/live/res/values
+          cat << EOF > ./app/src/live/res/values/secrets.xml
+          ${{ secrets.secrets_xml_live }}
+          EOF
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE }}
+        run: |
+          mkdir -p ./app/keystore
+          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
+      - name: Build production apk
+        run: ./gradlew bundleLiveRelease
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Upload artifact to Firebase App Distribution
+        run: ./gradlew appDistributionUploadLiveRelease
+      - name: Set Message
+        run: |
+          PROPERTY=$(head -n 1 version.properties)
+          VERSION="${PROPERTY/snuttVersionName=}"
+          TITLE="SNUTT Android 빌드 알림"
+          MESSAGE="${VERSION} 빌드 완료"
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: ${{ env.TITLE }}
+          SLACK_MESSAGE: ${{ env.MESSAGE }}
+          SLACK_USERNAME: BuildNoti
 
   build-staging:
     runs-on: ubuntu-18.04
@@ -108,8 +108,8 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-#      - name: Upload artifact to Firebase App Distribution
-#        run: ./gradlew appDistributionUploadStagingRelease
+      - name: Upload artifact to Firebase App Distribution
+        run: ./gradlew appDistributionUploadStagingRelease
       - name: Slack Upload APK
         uses: MeilCli/slack-upload-file@v1
         with:
@@ -118,4 +118,4 @@ jobs:
           file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
           file_name: 'app-staging-release.apk'
           file_type: 'apk'
-          initial_comment: 'staging-release APK 업로드'
+          initial_comment: 'staging-release APK'
