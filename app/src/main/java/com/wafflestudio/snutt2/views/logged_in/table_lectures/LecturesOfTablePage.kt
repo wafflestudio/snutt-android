@@ -188,7 +188,8 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = "add arrow",
-                modifier = Modifier.size(22.dp, 22.dp)
+                modifier = Modifier.size(22.dp, 22.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
     }

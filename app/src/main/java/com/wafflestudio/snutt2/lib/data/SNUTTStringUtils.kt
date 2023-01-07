@@ -31,11 +31,7 @@ object SNUTTStringUtils {
     fun getSimplifiedClassTime(lectureDto: LectureDto): String {
         val texts = StringBuilder()
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            texts.append(SNUTTUtils.numberToWday(classTimeDto.day))
-            texts.append(" ")
-            texts.append(classTimeDto.start_time)
-            texts.append("~")
-            texts.append(classTimeDto.end_time)
+            texts.append(getClassTimeText(classTimeDto))
             if (index != lectureDto.class_time_json.size - 1) texts.append("/")
         }
         if (texts.isEmpty()) texts.append("(없음)")
@@ -103,9 +99,9 @@ object SNUTTStringUtils {
         return StringBuilder()
             .append(SNUTTUtils.numberToWday(classTime.day))
             .append(" ")
-            .append(classTime.start_time)
+            .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
             .append("~")
-            .append(classTime.end_time)
+            .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
             .toString()
     }
 
