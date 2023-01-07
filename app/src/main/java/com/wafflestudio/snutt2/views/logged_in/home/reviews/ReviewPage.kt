@@ -7,6 +7,8 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LinearProgressIndicator
@@ -18,12 +20,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.widget.NestedScrollView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
@@ -58,11 +62,11 @@ fun ReviewPage() {
         onDispose { onBackPressedCallback.remove() }
     }
 
-    ReviewWebView()
+    ReviewWebView(page = true)
 }
 
 @Composable
-fun ReviewWebView(height: Float = 1.0f) {
+fun ReviewWebView(height: Float = 1.0f, page: Boolean = false) {
     val webViewContainer = LocalReviewWebView.current
     val scope = rememberCoroutineScope()
 
@@ -87,7 +91,8 @@ fun ReviewWebView(height: Float = 1.0f) {
             )
             LoadState.Success -> WebViewSuccess(
                 modifier = Modifier.fillMaxSize(),
-                webView = webViewContainer.webView
+                webView = webViewContainer.webView,
+                page = page,
             )
         }
     }
@@ -152,16 +157,36 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
 }
 
 @Composable
-private fun WebViewSuccess(modifier: Modifier, webView: WebView) {
+private fun WebViewSuccess(modifier: Modifier, webView: WebView, page: Boolean) {
+    val context = LocalContext.current
+    val scrollState = rememberScrollState()
+
     Column(modifier = modifier.fillMaxSize()) {
-        AndroidView(factory = {
-            webView.apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
+        AndroidView(
+            factory = {
+                webView.apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                }
+                if (!page) {
+                    NestedScrollView(context).apply {
+                        if (webView.parent != null) (webView.parent as ViewGroup).removeView(
+                            webView
+                        )
+                        addView(webView)
+                    }
+                } else webView
+            },
+            modifier =
+            if (page) {
+                Modifier
+            } else {
+                Modifier.verticalScroll(scrollState)
             }
-        })
+
+        )
     }
 }
 
