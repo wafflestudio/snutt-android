@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.lib.preferences.storage
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import java.lang.reflect.Type
 
@@ -31,9 +30,6 @@ class PrefStorageImpl(
                     try {
                         serializer.deserialize<T>(rawValue, type)
                     } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(
-                            Throwable(cause = e, message = "rawValue : $rawValue\ntype : $type")
-                        )
                         null
                     }
                 }
