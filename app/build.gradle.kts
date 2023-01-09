@@ -186,21 +186,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.compose.runtime:runtime-rxjava3:1.1.1")
-    implementation("com.google.accompanist:accompanist-pager:0.26.4-beta")
 
     // misc
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.accompanist:accompanist-pager:0.20.3")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
-    implementation("androidx.drawerlayout:drawerlayout:1.1.1")
     implementation("com.facebook.android:facebook-login:15.0.1")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
     implementation("com.uber.rxdogtag2:rxdogtag:2.0.1")
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
-    implementation("com.tbuonomo:dotsindicator:4.2")
-    implementation("com.appyvet:materialrangebar:1.3")
-    implementation("com.google.code.gson:gson:2.9.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
 
