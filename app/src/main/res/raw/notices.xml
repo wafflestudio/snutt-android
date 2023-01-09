@@ -16,12 +16,6 @@
 
 <notices>
     <notice>
-        <name>MaterialRangeBar</name>
-        <url>https://github.com/oli107/material-range-bar</url>
-        <copyright>Copyright 2015, AppyVet, Inc.</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
         <name>Color Picker</name>
         <url>https://github.com/QuadFlask/colorpicker</url>
         <copyright>Copyright 2014-2017 QuadFlask</copyright>
@@ -42,14 +36,6 @@
         <name>OkHttp</name>
         <url>http://square.github.io/okhttp/</url>
         <copyright>Copyright 2016 Square, Inc.</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
-        <name>ViewPagerIndicator</name>
-        <url>https://github.com/JakeWharton/ViewPagerIndicator</url>
-        <copyright>Copyright 2012 Jake Wharton&#xD;Copyright 2011 Patrik Åkerfeldt&#xD;Copyright
-            2011 Francisco Figueiredo Jr.
-        </copyright>
         <license>Apache Software License 2.0</license>
     </notice>
 </notices>

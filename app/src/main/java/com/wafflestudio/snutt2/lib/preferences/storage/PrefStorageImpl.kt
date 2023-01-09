@@ -25,10 +25,14 @@ class PrefStorageImpl(
                 Float::class.java -> sharedPreferences.getFloat(key, 0f) as T
                 Boolean::class.java -> sharedPreferences.getBoolean(key, false) as T
                 String::class.java -> sharedPreferences.getString(key, "") as T
-                else -> serializer.deserialize(
-                    sharedPreferences.getString(key, null) ?: return null,
-                    type
-                )
+                else -> {
+                    val rawValue = sharedPreferences.getString(key, null) ?: return null
+                    try {
+                        serializer.deserialize<T>(rawValue, type)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
             }
         }
     }
