@@ -24,7 +24,9 @@ class HomeViewModel @Inject constructor(
             coroutineScope {
                 awaitAll(
                     async {
-                        currentTableRepository.currentTable.value ?: tableRepository.fetchDefaultTable()
+                        currentTableRepository.currentTable.value?.let {
+                            tableRepository.fetchTableById(it.id)
+                        } ?: tableRepository.fetchDefaultTable()
                     },
                     async { userRepository.fetchUserInfo() },
                     async { userRepository.fetchAndSetPopup() },
