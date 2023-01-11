@@ -25,6 +25,8 @@ class UserViewModel @Inject constructor(
 
     val themeMode: StateFlow<ThemeMode> = userRepository.themeMode
 
+    val compactMode: StateFlow<Boolean> = userRepository.compactMode
+
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
@@ -138,5 +140,9 @@ class UserViewModel @Inject constructor(
 
     suspend fun resetPassword(id: String, password: String) {
         userRepository.resetPassword(id, password)
+    }
+
+    suspend fun setCompactMode(compact: Boolean) {
+        userRepository.setCompactMode(compact)
     }
 }
