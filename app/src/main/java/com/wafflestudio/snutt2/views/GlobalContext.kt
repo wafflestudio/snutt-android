@@ -60,3 +60,7 @@ val LocalThemeState = compositionLocalOf<ThemeMode> {
 val LocalModalState = compositionLocalOf<ModalState> {
     throw RuntimeException("")
 }
+
+val LocalCompactState = compositionLocalOf<Boolean> {
+    throw RuntimeException("")
+}
