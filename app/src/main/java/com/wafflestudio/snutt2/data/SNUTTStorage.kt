@@ -100,6 +100,16 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
+    val compactMode = PrefValue<Boolean>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "compact_mode",
+            type = Boolean::class.java,
+            defaultValue = false
+        )
+    )
+
     val courseBooks = PrefValue<List<CourseBookDto>>(
         prefContext,
         PrefListValueMetaData(

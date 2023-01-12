@@ -36,6 +36,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override val themeMode = storage.themeMode.asStateFlow()
 
+    override val compactMode = storage.compactMode.asStateFlow()
+
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
@@ -242,6 +244,10 @@ class UserRepositoryImpl @Inject constructor(
         api._postResetPassword(
             PostResetPasswordParams(id, password)
         )
+    }
+
+    override suspend fun setCompactMode(compact: Boolean) {
+        storage.compactMode.update(compact)
     }
 
     private suspend fun getFirebaseToken(): String {

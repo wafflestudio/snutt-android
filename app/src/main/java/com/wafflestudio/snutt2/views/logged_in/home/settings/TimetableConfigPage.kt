@@ -10,8 +10,10 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,16 +28,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.TableContext
+import com.wafflestudio.snutt2.views.logged_in.home.TableContextBundle
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -45,23 +50,22 @@ import kotlin.math.roundToInt
 @Composable
 fun TimetableConfigPage() {
     val navController = LocalNavController.current
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<UserViewModel>()
+    val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
+    val compactMode by viewModel.compactMode.collectAsState()
 
-    // FIXME : 다른 형태로 바꾸기
-    LaunchedEffect(Unit) {
-        launchSuspendApi(apiOnProgress, apiOnError) {
-            viewModel.fetchUserInfo()
-        }
-    }
+    val table by timetableViewModel.currentTable.collectAsState()
+    val previewTheme by timetableViewModel.previewTheme.collectAsState()
+    val tableContext =
+        TableContextBundle(table ?: TableDto.Default, trimParam, previewTheme)
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(SNUTTColors.Gray100)
+            .verticalScroll(rememberScrollState())
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_settings_app_bar_title),
@@ -106,8 +110,50 @@ fun TimetableConfigPage() {
                         }
                     }
                 }
+                Margin(height = 10.dp)
             }
         }
+        SettingItem(
+            title = stringResource(R.string.settings_compact_mode),
+            modifier = Modifier.background(SNUTTColors.White900),
+            content = {
+                PoorSwitch(state = compactMode)
+            }
+        ) {
+            scope.launch {
+                viewModel.setCompactMode(compactMode.not())
+            }
+        }
+        Row(
+            modifier = Modifier
+                .height(40.dp)
+                .padding(horizontal = 20.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (compactMode) {
+                Text(
+                    text = stringResource(R.string.settings_compact_mode_message),
+                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                )
+            }
+        }
+        Margin(height = 10.dp)
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(5))
+                .background(SNUTTColors.White900)
+                .padding(5.dp)
+                .size(
+                    (LocalConfiguration.current.screenWidthDp * 0.8).dp,
+                    (LocalConfiguration.current.screenHeightDp * 0.6).dp
+                )
+                .align(Alignment.CenterHorizontally)
+        ) {
+            CompositionLocalProvider(TableContext provides tableContext) {
+                TimeTable(selectedLecture = null, touchEnabled = false)
+            }
+        }
+        Margin(height = 25.dp)
     }
 }
 

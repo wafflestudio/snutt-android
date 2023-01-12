@@ -10,6 +10,7 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 object SNUTTStringUtils {
     fun getFullSemester(tableDto: TableDto): String {
@@ -103,6 +104,11 @@ object SNUTTStringUtils {
             .append("~")
             .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
             .toString()
+    }
+
+    // 9.5f -> "09:30"
+    fun Float.toFormattedTimeString(): String {
+        return "%02d:%02d".format(this.toInt(), (60 * (this - this.toInt())).roundToInt())
     }
 
     fun String.isEmailInvalid(): Boolean {
