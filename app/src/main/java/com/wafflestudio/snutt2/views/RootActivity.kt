@@ -128,6 +128,7 @@ class RootActivity : AppCompatActivity() {
         val navController = rememberAnimatedNavController()
         val homePageController = remember { HomePageController() }
         var isProgressVisible by remember { mutableStateOf(false) }
+        val compactMode by userViewModel.compactMode.collectAsState()
 
         val apiOnProgress = remember {
             object : ApiOnProgress {
@@ -151,6 +152,7 @@ class RootActivity : AppCompatActivity() {
             LocalHomePageController provides homePageController,
             LocalPopupState provides popupState,
             LocalModalState provides dialogState,
+            LocalCompactState provides compactMode,
         ) {
             AnimatedNavHost(
                 navController = navController,

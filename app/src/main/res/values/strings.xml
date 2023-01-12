@@ -204,6 +204,8 @@
     <string name="settings_select_color_mode_light">라이트 모드</string>
     <string name="settings_select_color_mode_dark">다크 모드</string>
     <string name="settings_select_color_mode_auto">자동</string>
+    <string name="settings_compact_mode">꽉 찬 시간표</string>
+    <string name="settings_compact_mode_message">꽉 찬 시간표를 표시합니다. 직접 추가한 강의와 일부 겹치는 현상이 발생할 수 있습니다.</string>
     <string name="lecture_detail_lecture_title_hint">예) 기초 영어</string>
     <string name="lecture_detail_lecture_title">강의명</string>
     <string name="lecture_detail_instructor">교수</string>

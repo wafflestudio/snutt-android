@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -12,6 +13,8 @@ import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 
 fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
     for (classTimeDto in this.class_time_json) {
@@ -128,6 +131,18 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
         forceFitLectures = true
     )
 
-fun ClassTimeDto.isContainedInTrimParam(tableTrimParam: TableTrimParam): Boolean =
-    tableTrimParam.dayOfWeekFrom <= this.day && this.day <= tableTrimParam.dayOfWeekTo &&
-        tableTrimParam.hourFrom <= this.startTimeHour && this.endTimeHour <= tableTrimParam.hourTo + 1
+fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? {
+    if (tableTrimParam.dayOfWeekFrom > this.day || this.day > tableTrimParam.dayOfWeekTo) return null
+    if (tableTrimParam.hourFrom >= this.endTimeInFloat || tableTrimParam.hourTo + 1 <= this.startTimeInFloat) return null
+
+    return this.copy(
+        start_time = max(tableTrimParam.hourFrom.toFloat(), this.startTimeInFloat).toFormattedTimeString(),
+        end_time = min(this.endTimeInFloat, tableTrimParam.hourTo.toFloat() + 1).toFormattedTimeString()
+    )
+}
+
+fun roundToCompact(f: Float): Float {
+    return if (f - f.toInt() == 0f) f
+    else if (f - f.toInt() <= 0.5) f.toInt() + 0.5f
+    else f.toInt() + 1f
+}

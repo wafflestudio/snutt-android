@@ -36,14 +36,11 @@ import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.TextRect
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
-import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.lib.isContainedInTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
-import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -301,8 +298,8 @@ fun TimeTable(
     DrawTableGrid(fittedTrimParam)
     lectures.forEach { lecture ->
         lecture.class_time_json
-            .filter {
-                it.isContainedInTrimParam(fittedTrimParam)
+            .mapNotNull {
+                it.trimByTrimParam(fittedTrimParam)
             }
             .forEach { classTime ->
                 DrawLecture(lecture, classTime, fittedTrimParam)
@@ -336,7 +333,7 @@ private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
         val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
         var startHeight = dayLabelHeight
 
-        repeat(verticalLines + 1) {
+        repeat(verticalLines) {
             drawLine(
                 start = Offset(x = startWidth, y = 0f),
                 end = Offset(x = startWidth, y = size.height),
@@ -399,7 +396,8 @@ private fun DrawLecture(
         ).toArgb(),
         fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
             R.color.white
-        )
+        ),
+        isCustom = lecture.isCustom,
     )
 }
 
@@ -410,6 +408,7 @@ private fun DrawClassTime(
     courseTitle: String,
     bgColor: Int,
     fgColor: Int,
+    isCustom: Boolean = false,
 ) {
     val hourLabelWidth = CanvasPalette.hourLabelWidth
     val dayLabelHeight = CanvasPalette.dayLabelHeight
@@ -417,13 +416,14 @@ private fun DrawClassTime(
     val lectureCellTextRect = CanvasPalette.lectureCellTextRect
     val lectureCellSubTextRect = CanvasPalette.lectureCellSubTextRect
     val lectureCellBorderPaint = CanvasPalette.lectureCellBorderPaint
+    val compactMode = LocalCompactState.current
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
         Pair(
             max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
-                classTime.endTimeInFloat - fittedTrimParam.hourFrom,
+                classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
                 fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
             )
         )
@@ -481,7 +481,6 @@ private fun DrawClassTime(
 @Composable
 private fun DrawSelectedLecture(selectedLecture: LectureDto, fittedTrimParam: TableTrimParam) {
     for (classTime in selectedLecture.class_time_json) {
-        selectedLecture.color.bgRaw
         DrawClassTime(
             fittedTrimParam, classTime, selectedLecture.course_title, -0x1f1f20, -0xcccccd
         )

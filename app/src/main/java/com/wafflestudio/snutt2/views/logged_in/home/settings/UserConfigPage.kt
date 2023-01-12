@@ -92,13 +92,6 @@ fun UserConfigPage() {
             }
         )
 
-    // FIXME : 다른 형태로 바꾸기
-    LaunchedEffect(Unit) {
-        launchSuspendApi(apiOnProgress, apiOnError) {
-            viewModel.fetchUserInfo()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

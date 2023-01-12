@@ -15,6 +15,8 @@ interface UserRepository {
 
     val themeMode: StateFlow<ThemeMode>
 
+    val compactMode: StateFlow<Boolean>
+
     // login with local id
     suspend fun postSignIn(id: String, password: String)
 
@@ -81,4 +83,6 @@ interface UserRepository {
     suspend fun verifyCode(id: String, code: String)
 
     suspend fun resetPassword(id: String, password: String)
+
+    suspend fun setCompactMode(compact: Boolean)
 }

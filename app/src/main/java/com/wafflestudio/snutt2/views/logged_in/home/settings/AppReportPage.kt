@@ -36,13 +36,6 @@ fun AppReportPage() {
     var email by remember { mutableStateOf("") }
     var detail by remember { mutableStateOf("") }
 
-    // FIXME : 다른 형태로 바꾸기
-    LaunchedEffect(Unit) {
-        launchSuspendApi(apiOnProgress, apiOnError) {
-            userViewModel.fetchUserInfo()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
