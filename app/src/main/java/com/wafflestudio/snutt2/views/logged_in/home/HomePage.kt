@@ -108,7 +108,10 @@ fun HomePage() {
         reviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
     }
 
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+    )
     var bottomSheetContent by remember {
         mutableStateOf<@Composable ColumnScope.() -> Unit>({
             Box(modifier = Modifier.size(1.dp))
