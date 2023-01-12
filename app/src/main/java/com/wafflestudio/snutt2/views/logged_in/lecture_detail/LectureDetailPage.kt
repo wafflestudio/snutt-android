@@ -49,7 +49,9 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.search.handleReviewPageWithEmailVerifyCheck
 import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.*
@@ -64,6 +66,8 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val focusManager = LocalFocusManager.current
+    val modalState = LocalModalState.current
+    val pageController = LocalHomePageController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -87,7 +91,10 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
 
     /* 바텀시트 관련 */
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+    )
     var bottomSheetContent by remember {
         mutableStateOf<@Composable ColumnScope.() -> Unit>({
             Box(modifier = Modifier.size(1.dp))
@@ -119,7 +126,8 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                     vm.setViewMode(false)
                     onCloseViewMode()
                 } else {
-                    navController.popBackStack()
+                    // FIXME: 다른 방법으로 대응해야...
+                    if (navController.backQueue.size >= 3) navController.popBackStack()
                 }
             }
         }
@@ -537,20 +545,47 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                                     }
                                     LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                                         scope.launch {
-                                            val job: CompletableJob = Job()
-                                            scope.launch {
-                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                    reviewWebViewContainer.openPage(vm.getReviewContentsUrl() + "&on_back=close")
-                                                    job.complete()
+                                            handleReviewPageWithEmailVerifyCheck(
+                                                apiOnProgress, apiOnError,
+                                                api = {
+                                                    val url = vm.getReviewContentsUrl()
+                                                    val job: CompletableJob = Job()
+                                                    scope.launch {
+                                                        reviewWebViewContainer.openPage("$url&on_back=close")
+                                                        job.complete()
+                                                    }
+                                                    joinAll(job)
+                                                    scope.launch {
+                                                        bottomSheetContentSetter.invoke {
+                                                            CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
+                                                                ReviewWebView(0.95f)
+                                                            }
+                                                        }
+                                                        sheetState.show()
+                                                    }
+                                                },
+                                                onUnVerified = {
+                                                    modalState
+                                                        .set(
+                                                            onDismiss = { modalState.hide() },
+                                                            title = context.getString(R.string.email_unverified_cta_title),
+                                                            positiveButton = context.getString(R.string.common_ok),
+                                                            negativeButton = context.getString(R.string.common_cancel),
+                                                            onConfirm = {
+                                                                modalState.hide()
+                                                                scope.launch {
+                                                                    navController.navigateAsOrigin(NavigationDestination.Home)
+                                                                    pageController.update(HomeItem.Review())
+                                                                }
+                                                            }
+                                                        ) {
+                                                            Text(
+                                                                text = stringResource(R.string.email_unverified_cta_message),
+                                                                style = SNUTTTypography.button,
+                                                            )
+                                                        }.show()
                                                 }
-                                            }
-                                            joinAll(job)
-                                            scope.launch {
-                                                bottomSheetContentSetter.invoke {
-                                                    ReviewWebView(0.95f)
-                                                }
-                                                sheetState.show()
-                                            }
+                                            )
                                         }
                                     }
                                 }

@@ -268,7 +268,7 @@ fun TimeTable(
             .pointerInteropFilter { event ->
                 when (event.action) {
                     MotionEvent.ACTION_UP -> {
-                        if (touchEnabled) {
+                        if (touchEnabled && navigator.backQueue.size == 2) { // FIXME: 다른 방법으로 대응해야...
                             val unitWidth =
                                 (canvasSize.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
                             val unitHeight =
@@ -282,7 +282,9 @@ fun TimeTable(
                             for (lecture in lectures) {
                                 if (lecture.contains(day, time)) {
                                     lectureDetailViewModel.initializeEditingLectureDetail(lecture)
-                                    navigator.navigate(NavigationDestination.LectureDetail)
+                                    navigator.navigate(NavigationDestination.LectureDetail) {
+                                        launchSingleTop = true
+                                    }
                                     break
                                 }
                             }
