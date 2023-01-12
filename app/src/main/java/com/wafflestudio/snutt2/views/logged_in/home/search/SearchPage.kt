@@ -316,9 +316,9 @@ fun SearchPage(
                                                     modalState
                                                         .set(
                                                             onDismiss = { modalState.hide() },
-                                                            title = "인증 필요",
-                                                            positiveButton = "인증하러 가기",
-                                                            negativeButton = "나중에 하기",
+                                                            title = context.getString(R.string.email_unverified_cta_title),
+                                                            positiveButton = context.getString(R.string.common_ok),
+                                                            negativeButton = context.getString(R.string.common_cancel),
                                                             onConfirm = {
                                                                 modalState.hide()
                                                                 scope.launch {
@@ -327,7 +327,7 @@ fun SearchPage(
                                                             }
                                                         ) {
                                                             Text(
-                                                                text = "강의평 확인을 위해 이메일 인증이 필요합니다.",
+                                                                text = stringResource(R.string.email_unverified_cta_message),
                                                                 style = SNUTTTypography.button,
                                                             )
                                                         }.show()
