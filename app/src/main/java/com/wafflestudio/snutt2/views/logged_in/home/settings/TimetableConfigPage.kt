@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -113,7 +114,7 @@ fun TimetableConfigPage() {
             }
         }
         SettingItem(
-            title = "꽉 찬 모드",
+            title = stringResource(R.string.settings_compact_mode),
             modifier = Modifier.background(SNUTTColors.White900),
             content = {
                 PoorSwitch(state = compactMode)
@@ -123,12 +124,20 @@ fun TimetableConfigPage() {
                 viewModel.setCompactMode(compactMode.not())
             }
         }
-        if (compactMode) {
-            Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 3.dp)) {
-                Text(text = "※ 꽉 찬 모드를 사용하면 일부 강의가 겹쳐 보일 수 있습니다.", style = SNUTTTypography.body2.copy(color = SNUTTColors.Red))
+        Row(
+            modifier = Modifier
+                .height(40.dp)
+                .padding(horizontal = 20.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (compactMode) {
+                Text(
+                    text = stringResource(R.string.settings_compact_mode_message),
+                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                )
             }
         }
-        Margin(height = 25.dp)
+        Margin(height = 10.dp)
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(5))
