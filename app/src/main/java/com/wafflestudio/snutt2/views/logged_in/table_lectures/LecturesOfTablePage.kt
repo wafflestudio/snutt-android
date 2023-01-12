@@ -63,9 +63,10 @@ fun LecturesOfTablePage() {
                 navController.navigate(NavigationDestination.LectureDetail)
             },
             onClickLecture = { lecture ->
-                // TODO: [자세히] 눌러서 들어간 화면은 조금 달라야 한다. (색깔, 편집 버튼, 삭제 버튼 없어야)
                 lectureDetailViewModel.initializeEditingLectureDetail(lecture)
-                navController.navigate(NavigationDestination.LectureDetail)
+                navController.navigate(NavigationDestination.LectureDetail) {
+                    launchSingleTop = true
+                }
             }
         )
     }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -234,7 +233,7 @@ fun HomeDrawer() {
                                                         showMoreClickedTable.id
                                                     )
                                                 ) {
-                                                    sheetState.snapTo(ModalBottomSheetValue.Hidden)
+                                                    sheetState.hide()
                                                     drawerState.close()
 
                                                     sheetContentSetter.invoke {

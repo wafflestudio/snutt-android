@@ -51,6 +51,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getSimplifiedLocation
 import com.wafflestudio.snutt2.lib.getColor
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.lib.network.ErrorCode.EMAIL_NOT_VERIFIED
 import com.wafflestudio.snutt2.lib.network.ErrorCode.LECTURE_TIME_OVERLAP
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -59,6 +60,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -87,6 +89,8 @@ fun SearchPage(
     val apiOnError = LocalApiOnError.current
     val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
     val sheetState = LocalBottomSheetState.current
+    val modalState = LocalModalState.current
+    val pageController = LocalHomePageController.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -289,24 +293,46 @@ fun SearchPage(
                                         scope.launch { sheetState.show() }
                                     }, onClickReview = {
                                         scope.launch {
-                                            val job: CompletableJob = Job()
-                                            scope.launch {
-                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                    reviewWebViewContainer.openPage(searchViewModel.getLectureReviewUrl(it.item) + "&on_back=close")
-                                                    job.complete()
-                                                }
-                                            }
-                                            joinAll(job)
-                                            scope.launch {
-                                                bottomSheetContentSetter.invoke {
-                                                    CompositionLocalProvider(
-                                                        LocalReviewWebView provides reviewWebViewContainer
-                                                    ) {
-                                                        ReviewWebView(0.95f)
+                                            handleReviewPageWithEmailVerifyCheck(
+                                                apiOnProgress, apiOnError,
+                                                api = {
+                                                    val url = searchViewModel.getLectureReviewUrl(it.item)
+                                                    val job: CompletableJob = Job()
+                                                    scope.launch {
+                                                        reviewWebViewContainer.openPage("$url&on_back=close")
+                                                        job.complete()
                                                     }
+                                                    joinAll(job)
+                                                    scope.launch {
+                                                        bottomSheetContentSetter.invoke {
+                                                            CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
+                                                                ReviewWebView(0.95f)
+                                                            }
+                                                        }
+                                                        sheetState.show()
+                                                    }
+                                                },
+                                                onUnVerified = {
+                                                    modalState
+                                                        .set(
+                                                            onDismiss = { modalState.hide() },
+                                                            title = context.getString(R.string.email_unverified_cta_title),
+                                                            positiveButton = context.getString(R.string.common_ok),
+                                                            negativeButton = context.getString(R.string.common_cancel),
+                                                            onConfirm = {
+                                                                modalState.hide()
+                                                                scope.launch {
+                                                                    pageController.update(HomeItem.Review())
+                                                                }
+                                                            }
+                                                        ) {
+                                                            Text(
+                                                                text = stringResource(R.string.email_unverified_cta_message),
+                                                                style = SNUTTTypography.button,
+                                                            )
+                                                        }.show()
                                                 }
-                                                sheetState.show()
-                                            }
+                                            )
                                         }
                                     })
                                 }
@@ -608,6 +634,29 @@ suspend fun lectureApiWithOverlapDialog(
             is ErrorParsedHttpException -> {
                 if (e.errorDTO?.code == LECTURE_TIME_OVERLAP) {
                     onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
+                } else apiOnError(e)
+            }
+            else -> apiOnError(e)
+        }
+    } finally {
+        apiOnProgress.hideProgress()
+    }
+}
+
+suspend fun handleReviewPageWithEmailVerifyCheck(
+    apiOnProgress: ApiOnProgress,
+    apiOnError: ApiOnError,
+    onUnVerified: () -> Unit,
+    api: suspend () -> Unit
+) {
+    try {
+        apiOnProgress.showProgress()
+        api.invoke()
+    } catch (e: Exception) {
+        when (e) {
+            is ErrorParsedHttpException -> {
+                if (e.errorDTO?.code == EMAIL_NOT_VERIFIED) {
+                    onUnVerified()
                 } else apiOnError(e)
             }
             else -> apiOnError(e)
