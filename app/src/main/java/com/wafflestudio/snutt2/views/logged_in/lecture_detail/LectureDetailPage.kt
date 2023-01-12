@@ -91,7 +91,10 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
 
     /* 바텀시트 관련 */
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+    )
     var bottomSheetContent by remember {
         mutableStateOf<@Composable ColumnScope.() -> Unit>({
             Box(modifier = Modifier.size(1.dp))
@@ -123,7 +126,8 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                     vm.setViewMode(false)
                     onCloseViewMode()
                 } else {
-                    navController.popBackStack()
+                    // FIXME: 다른 방법으로 대응해야...
+                    if (navController.backQueue.size >= 3) navController.popBackStack()
                 }
             }
         }
