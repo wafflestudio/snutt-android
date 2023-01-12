@@ -49,7 +49,9 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.search.handleReviewPageWithEmailVerifyCheck
 import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.*
@@ -64,6 +66,8 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val focusManager = LocalFocusManager.current
+    val modalState = LocalModalState.current
+    val pageController = LocalHomePageController.current
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
@@ -537,20 +541,47 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                                     }
                                     LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                                         scope.launch {
-                                            val job: CompletableJob = Job()
-                                            scope.launch {
-                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                    reviewWebViewContainer.openPage(vm.getReviewContentsUrl() + "&on_back=close")
-                                                    job.complete()
+                                            handleReviewPageWithEmailVerifyCheck(
+                                                apiOnProgress, apiOnError,
+                                                api = {
+                                                    val url = vm.getReviewContentsUrl()
+                                                    val job: CompletableJob = Job()
+                                                    scope.launch {
+                                                        reviewWebViewContainer.openPage("$url&on_back=close")
+                                                        job.complete()
+                                                    }
+                                                    joinAll(job)
+                                                    scope.launch {
+                                                        bottomSheetContentSetter.invoke {
+                                                            CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
+                                                                ReviewWebView(0.95f)
+                                                            }
+                                                        }
+                                                        sheetState.show()
+                                                    }
+                                                },
+                                                onUnVerified = {
+                                                    modalState
+                                                        .set(
+                                                            onDismiss = { modalState.hide() },
+                                                            title = "인증 필요",
+                                                            positiveButton = "인증하러 가기",
+                                                            negativeButton = "나중에 하기",
+                                                            onConfirm = {
+                                                                modalState.hide()
+                                                                scope.launch {
+                                                                    navController.navigateAsOrigin(NavigationDestination.Home)
+                                                                    pageController.update(HomeItem.Review())
+                                                                }
+                                                            }
+                                                        ) {
+                                                            Text(
+                                                                text = "강의평 확인을 위해 이메일 인증이 필요합니다.",
+                                                                style = SNUTTTypography.button,
+                                                            )
+                                                        }.show()
                                                 }
-                                            }
-                                            joinAll(job)
-                                            scope.launch {
-                                                bottomSheetContentSetter.invoke {
-                                                    ReviewWebView(0.95f)
-                                                }
-                                                sheetState.show()
-                                            }
+                                            )
                                         }
                                     }
                                 }
