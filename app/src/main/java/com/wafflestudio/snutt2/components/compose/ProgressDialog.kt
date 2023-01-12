@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -67,7 +68,7 @@ fun CustomDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Surface {
+        Surface(shape = RoundedCornerShape(10)) {
             Column(modifier = Modifier.width(width ?: (screenWidthInDp - 50.dp)).background(SNUTTColors.White900)) {
                 title?.let {
                     Row {
