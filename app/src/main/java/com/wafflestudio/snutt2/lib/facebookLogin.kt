@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import androidx.activity.result.ActivityResultRegistryOwner
