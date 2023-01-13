@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
@@ -107,8 +108,15 @@ class TimetableView : View {
     private val unitHeight: Float
         get() = (height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
+    private var compactMode: Boolean = false
+
     constructor(context: Context) : super(context) {
         init()
+    }
+
+    constructor(context: Context, compactMode: Boolean) : super(context) {
+        init()
+        this.compactMode = compactMode
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -224,6 +232,7 @@ class TimetableView : View {
                 if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
                     R.color.white
                 ),
+                isCustom = lecture.isCustom,
             )
         }
     }
@@ -252,12 +261,13 @@ class TimetableView : View {
         courseTitle: String,
         bgColor: Int,
         fgColor: Int,
+        isCustom: Boolean = false,
     ) {
         val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
         val hourRangeOffset = Pair(
             max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
-                classTime.endTimeInFloat - fittedTrimParam.hourFrom,
+                classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
                 fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
             )
         )

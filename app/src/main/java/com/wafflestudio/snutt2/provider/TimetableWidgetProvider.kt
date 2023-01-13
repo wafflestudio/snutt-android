@@ -45,12 +45,13 @@ TimetableWidgetProvider : AppWidgetProvider() {
             views.setOnClickPendingIntent(R.id.layout, pendingIntent)
 
             // render views
+            val compactMode = userRepository.compactMode.value
             val width = context.displayWidth.toInt()
             val height = context.displayHeight.toInt()
             views.setViewVisibility(R.id.placeholder, View.VISIBLE)
             views.setViewVisibility(R.id.table, View.GONE)
             currentLectureRepository.currentTable.value?.let { table ->
-                val tableView = TimetableView(context)
+                val tableView = TimetableView(context, compactMode)
 
                 tableView.theme = table.theme
                 tableView.lectures = table.lectureList
