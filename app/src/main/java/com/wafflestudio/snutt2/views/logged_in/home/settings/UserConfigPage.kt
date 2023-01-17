@@ -133,12 +133,14 @@ fun UserConfigPage() {
         if (facebookConnected) {
             SettingItem(
                 title = stringResource(R.string.settings_user_config_facebook_name),
+                modifier = Modifier.background(SNUTTColors.White900),
                 content = {
                     Text(text = user?.fbName ?: "")
                 }
             ) {}
             SettingItem(
                 title = stringResource(R.string.settings_user_config_facebook_disconnect),
+                modifier = Modifier.background(SNUTTColors.White900),
                 content = {
                     ArrowRight(
                         modifier = Modifier.size(16.dp),
