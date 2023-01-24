@@ -318,12 +318,14 @@ fun ReviewIcon(
 fun SettingIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
+    uncheckedNotificationExist: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(
             if (isSelected) R.drawable.ic_setting_selected
+            else if (uncheckedNotificationExist) R.drawable.ic_setting_notify
             else R.drawable.ic_setting_unselected
         ),
         contentDescription = "",
@@ -470,5 +472,40 @@ fun RefreshIcon(
         painter = painterResource(id = R.drawable.ic_refresh),
         contentDescription = "",
         colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BookmarkIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+    marked: Boolean = false,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = if (marked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BookmarkPageIcon(
+    modifier: Modifier = Modifier,
+    darkMode: Boolean = false,
+    notify: Boolean = false,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (darkMode) {
+                if (notify) R.drawable.ic_bookmark_notify_dark
+                else R.drawable.ic_bookmark_page_dark
+            } else {
+                if (notify) R.drawable.ic_bookmark_notify
+                else R.drawable.ic_bookmark_page
+            }
+        ),
+        contentDescription = "",
     )
 }
