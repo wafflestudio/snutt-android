@@ -89,6 +89,7 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     var deleteTimeDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
+    var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
 
     /* 바텀시트 관련 */
     val sheetState = rememberModalBottomSheetState(
@@ -338,8 +339,9 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                         }
                         LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
                             EditText(
-                                value = editingLectureDetail.credit.toString(),
+                                value = creditText,
                                 onValueChange = {
+                                    creditText = it
                                     vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
                                 },
                                 enabled = editMode,
