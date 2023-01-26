@@ -335,20 +335,22 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
                                     hint = stringResource(R.string.lecture_detail_hint_nothing),
                                 )
                             }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
-                                EditText(
-                                    value = editingLectureDetail.credit.toString(),
-                                    onValueChange = {
-                                        vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
-                                    },
-                                    enabled = editMode,
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    modifier = Modifier.fillMaxWidth(),
-                                    underlineEnabled = false,
-                                    textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                    hint = "0",
-                                )
-                            }
+                        }
+                        LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
+                            EditText(
+                                value = editingLectureDetail.credit.toString(),
+                                onValueChange = {
+                                    vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
+                                },
+                                enabled = editMode,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth(),
+                                underlineEnabled = false,
+                                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+                                hint = "0",
+                            )
+                        }
+                        if (isCustom.not()) {
                             LectureDetailItem(title = stringResource(R.string.lecture_detail_classification)) {
                                 EditText(
                                     value = editingLectureDetail.classification ?: "",
