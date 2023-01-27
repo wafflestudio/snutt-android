@@ -18,11 +18,13 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 @Composable
 fun DrawerIcon(
     modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_drawer),
-        contentDescription = ""
+        contentDescription = stringResource(R.string.home_timetable_drawer),
+        colorFilter = colorFilter,
     )
 }
 
@@ -40,12 +42,11 @@ fun ListIcon(
 @Composable
 fun NotificationIcon(
     modifier: Modifier = Modifier,
-    new: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
-        painter = painterResource(if (new) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default),
+        painter = painterResource(R.drawable.ic_alarm_default),
         contentDescription = "",
         colorFilter = colorFilter
     )
@@ -321,14 +322,12 @@ fun ReviewIcon(
 fun SettingIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
-    uncheckedNotificationExist: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(
             if (isSelected) R.drawable.ic_setting_selected
-            else if (uncheckedNotificationExist) R.drawable.ic_setting_notify
             else R.drawable.ic_setting_unselected
         ),
         contentDescription = "",
@@ -495,21 +494,13 @@ fun BookmarkIcon(
 @Composable
 fun BookmarkPageIcon(
     modifier: Modifier = Modifier,
-    darkMode: Boolean = false,
-    notify: Boolean = false,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(
-            if (darkMode) {
-                if (notify) R.drawable.ic_bookmark_notify_dark
-                else R.drawable.ic_bookmark_page_dark
-            } else {
-                if (notify) R.drawable.ic_bookmark_notify
-                else R.drawable.ic_bookmark_page
-            }
-        ),
+        painter = painterResource(R.drawable.ic_bookmark_page),
         contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 

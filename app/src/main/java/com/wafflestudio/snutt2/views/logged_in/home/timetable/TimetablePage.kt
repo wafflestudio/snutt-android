@@ -217,13 +217,14 @@ fun TimetablePage() {
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                BookmarkPageIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.Bookmark) },
-                    darkMode = isDarkMode(),
-                    notify = firstBookmarkAlert,
-                )
+                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
+                    BookmarkPageIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Bookmark) },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
             },
             modifier = Modifier.onGloballyPositioned {

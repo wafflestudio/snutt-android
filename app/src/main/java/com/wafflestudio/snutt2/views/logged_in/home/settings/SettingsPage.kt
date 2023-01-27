@@ -55,13 +55,14 @@ fun SettingsPage(
                 )
             },
             actions = {
-                NotificationIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.Notification) },
-                    new = uncheckedNotification,
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                )
+                IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
+                    NotificationIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Notification) },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
             }
         )

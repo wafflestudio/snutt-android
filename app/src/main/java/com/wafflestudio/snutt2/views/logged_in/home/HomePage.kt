@@ -282,12 +282,13 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
                 onUpdatePageState(HomeItem.Settings)
             },
         ) {
-            SettingIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Settings,
-                uncheckedNotificationExist = uncheckedNotification,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
+            IconWithAlertDot(uncheckedNotification && pageState != HomeItem.Settings) { centerAlignedModifier ->
+                SettingIcon(
+                    modifier = centerAlignedModifier.size(30.dp),
+                    isSelected = pageState == HomeItem.Settings,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            }
         }
     }
 }
