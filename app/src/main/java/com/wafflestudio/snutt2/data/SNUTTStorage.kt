@@ -110,6 +110,16 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
+    val firstBookmarkAlert = PrefValue<Boolean>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "first_bookmark_alert",
+            type = Boolean::class.java,
+            defaultValue = true
+        )
+    )
+
     val courseBooks = PrefValue<List<CourseBookDto>>(
         prefContext,
         PrefListValueMetaData(

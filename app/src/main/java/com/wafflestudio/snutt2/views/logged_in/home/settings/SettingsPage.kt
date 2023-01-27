@@ -24,7 +24,9 @@ import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsPage() {
+fun SettingsPage(
+    uncheckedNotification: Boolean
+) {
     val navController = LocalNavController.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -52,6 +54,17 @@ fun SettingsPage() {
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
+            actions = {
+                IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
+                    NotificationIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Notification) },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+            }
         )
         Margin(height = 10.dp)
         Column(modifier = Modifier.background(SNUTTColors.White900)) {
@@ -171,5 +184,5 @@ private fun showLicenseDialog(context: Context) {
 @Preview
 @Composable
 fun SettingsPagePreview() {
-    SettingsPage()
+    SettingsPage(false)
 }

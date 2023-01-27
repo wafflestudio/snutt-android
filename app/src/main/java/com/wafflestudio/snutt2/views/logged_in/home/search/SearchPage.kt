@@ -43,6 +43,7 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getLectureTagText
@@ -73,7 +74,7 @@ import kotlinx.coroutines.*
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchPage(
-    searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureStateNew>>,
+    searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
 ) {
     val context = LocalContext.current
     val searchViewModel = hiltViewModel<SearchViewModel>()
@@ -89,8 +90,6 @@ fun SearchPage(
     val apiOnError = LocalApiOnError.current
     val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
     val sheetState = LocalBottomSheetState.current
-    val modalState = LocalModalState.current
-    val pageController = LocalHomePageController.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -100,9 +99,7 @@ fun SearchPage(
     val selectedTagType by searchViewModel.selectedTagType.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val placeHolderState by searchViewModel.placeHolderState.collectAsState()
-
-    var lectureOverlapDialogState by remember { mutableStateOf(false) }
-    var lectureOverlapDialogMessage by remember { mutableStateOf("") }
+    val isFirstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
 
     val isDarkMode = isDarkMode()
     val reviewWebViewContainer =
@@ -252,89 +249,16 @@ fun SearchPage(
                         ) {
                             items(searchResultPagingItems) {
                                 it?.let {
-                                    SearchListItem(lectureDataWithState = it, onSelect = {
-                                        scope.launch {
-                                            searchViewModel.toggleLectureSelection(it.item)
-                                        }
-                                    }, onClickAdd = {
-                                        scope.launch(Dispatchers.IO) {
-                                            lectureApiWithOverlapDialog(
-                                                apiOnProgress,
-                                                apiOnError,
-                                                onLectureOverlap = { message ->
-                                                    lectureOverlapDialogMessage = message
-                                                    lectureOverlapDialogState = true
-                                                }
-                                            ) {
-                                                timetableViewModel.addLecture(
-                                                    lecture = it.item,
-                                                    is_force = false
-                                                )
-                                                searchViewModel.toggleLectureSelection(it.item)
-                                                tableListViewModel.fetchTableMap()
-                                            }
-                                        }
-                                    }, onClickRemove = {
-                                        scope.launch(Dispatchers.IO) {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                timetableViewModel.removeLecture(it.item)
-                                                searchViewModel.toggleLectureSelection(it.item)
-                                                tableListViewModel.fetchTableMap()
-                                            }
-                                        }
-                                    }, onClickDetail = {
-                                        lectureDetailViewModel.initializeEditingLectureDetail(it.item)
-                                        lectureDetailViewModel.setViewMode(true)
-                                        bottomSheetContentSetter.invoke {
-                                            LectureDetailPage(onCloseViewMode = {
-                                                scope.launch { sheetState.hide() }
-                                            })
-                                        }
-                                        scope.launch { sheetState.show() }
-                                    }, onClickReview = {
-                                        scope.launch {
-                                            handleReviewPageWithEmailVerifyCheck(
-                                                apiOnProgress, apiOnError,
-                                                api = {
-                                                    val url = searchViewModel.getLectureReviewUrl(it.item)
-                                                    val job: CompletableJob = Job()
-                                                    scope.launch {
-                                                        reviewWebViewContainer.openPage("$url&on_back=close")
-                                                        job.complete()
-                                                    }
-                                                    joinAll(job)
-                                                    scope.launch {
-                                                        bottomSheetContentSetter.invoke {
-                                                            CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                                                                ReviewWebView(0.95f)
-                                                            }
-                                                        }
-                                                        sheetState.show()
-                                                    }
-                                                },
-                                                onUnVerified = {
-                                                    modalState
-                                                        .set(
-                                                            onDismiss = { modalState.hide() },
-                                                            title = context.getString(R.string.email_unverified_cta_title),
-                                                            positiveButton = context.getString(R.string.common_ok),
-                                                            negativeButton = context.getString(R.string.common_cancel),
-                                                            onConfirm = {
-                                                                modalState.hide()
-                                                                scope.launch {
-                                                                    pageController.update(HomeItem.Review())
-                                                                }
-                                                            }
-                                                        ) {
-                                                            Text(
-                                                                text = stringResource(R.string.email_unverified_cta_message),
-                                                                style = SNUTTTypography.button,
-                                                            )
-                                                        }.show()
-                                                }
-                                            )
-                                        }
-                                    })
+                                    SearchListItem(
+                                        lectureDataWithState = it,
+                                        searchViewModel,
+                                        timetableViewModel,
+                                        tableListViewModel,
+                                        lectureDetailViewModel,
+                                        reviewWebViewContainer,
+                                        isFirstBookmark = isFirstBookmarkAlert,
+                                        showFirstBookmarkAlert = { scope.launch { userViewModel.setFirstBookmarkAlertShown() } },
+                                    )
                                 }
                             }
                             item {
@@ -346,42 +270,33 @@ fun SearchPage(
             }
         }
     }
-
-    if (lectureOverlapDialogState) {
-        CustomDialog(
-            onDismiss = { lectureOverlapDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    selectedLecture?.let { lecture ->
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            timetableViewModel.addLecture(
-                                lecture = lecture,
-                                is_force = true
-                            )
-                            searchViewModel.toggleLectureSelection(lecture)
-                        }
-                    }
-                    lectureOverlapDialogState = false
-                }
-            },
-            title = stringResource(id = R.string.lecture_overlap_error_message)
-        ) {
-            Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body1)
-        }
-    }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LazyItemScope.SearchListItem(
-    lectureDataWithState: DataWithState<LectureDto, LectureStateNew>,
-    onSelect: () -> Unit,
-    onClickAdd: () -> Unit,
-    onClickRemove: () -> Unit,
-    onClickDetail: () -> Unit,
-    onClickReview: () -> Unit,
+    lectureDataWithState: DataWithState<LectureDto, LectureState>,
+    searchViewModel: SearchViewModel,
+    timetableViewModel: TimetableViewModel,
+    tableListViewModel: TableListViewModelNew,
+    lectureDetailViewModel: LectureDetailViewModelNew,
+    reviewWebViewContainer: WebViewContainer,
+    isBookmarkPage: Boolean = false,
+    isFirstBookmark: Boolean = false,
+    showFirstBookmarkAlert: () -> Unit = {},
 ) {
+    val scope = rememberCoroutineScope()
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
+    val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
+    val sheetState = LocalBottomSheetState.current
+    val modalState = LocalModalState.current
+    val pageController = LocalHomePageController.current
+    val context = LocalContext.current
+
     val selected = lectureDataWithState.state.selected
     val contained = lectureDataWithState.state.contained
+    val bookmarked = lectureDataWithState.state.bookmarked
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText = stringResource(
@@ -412,7 +327,9 @@ fun LazyItemScope.SearchListItem(
             modifier = Modifier
                 .padding(top = 10.dp, bottom = 10.dp)
                 .clicks {
-                    onSelect()
+                    scope.launch {
+                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                    }
                 }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -484,17 +401,28 @@ fun LazyItemScope.SearchListItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 15.dp, horizontal = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .padding(vertical = 15.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(R.string.search_result_item_detail_button),
-                    textAlign = TextAlign.Start,
+                    textAlign = TextAlign.Center,
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     modifier = Modifier
                         .weight(1f)
-                        .clicks { onClickDetail() }
+                        .clicks {
+                            lectureDetailViewModel.initializeEditingLectureDetail(
+                                lectureDataWithState.item
+                            )
+                            lectureDetailViewModel.setViewMode(true)
+                            bottomSheetContentSetter.invoke {
+                                LectureDetailPage(onCloseViewMode = {
+                                    scope.launch { sheetState.hide() }
+                                }, vm = lectureDetailViewModel)
+                            }
+                            scope.launch { sheetState.show() }
+                        }
                 )
                 Text(
                     text = stringResource(R.string.search_result_item_review_button),
@@ -502,20 +430,186 @@ fun LazyItemScope.SearchListItem(
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
                     modifier = Modifier
                         .weight(1f)
-                        .clicks { onClickReview() }
+                        .clicks {
+                            scope.launch {
+                                handleReviewPageWithEmailVerifyCheck(
+                                    apiOnProgress, apiOnError,
+                                    api = {
+                                        val url =
+                                            searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                        val job: CompletableJob = Job()
+                                        scope.launch {
+                                            reviewWebViewContainer.openPage("$url&on_back=close")
+                                            job.complete()
+                                        }
+                                        joinAll(job)
+                                        scope.launch {
+                                            bottomSheetContentSetter.invoke {
+                                                CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
+                                                    ReviewWebView(0.95f)
+                                                }
+                                            }
+                                            sheetState.show()
+                                        }
+                                    },
+                                    onUnVerified = {
+                                        modalState
+                                            .set(
+                                                onDismiss = { modalState.hide() },
+                                                title = context.getString(R.string.email_unverified_cta_title),
+                                                positiveButton = context.getString(R.string.common_ok),
+                                                negativeButton = context.getString(R.string.common_cancel),
+                                                onConfirm = {
+                                                    modalState.hide()
+                                                    scope.launch {
+                                                        pageController.update(HomeItem.Review())
+                                                    }
+                                                }
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.email_unverified_cta_message),
+                                                    style = SNUTTTypography.button,
+                                                )
+                                            }
+                                            .show()
+                                    }
+                                )
+                            }
+                        }
                 )
+                Spacer(modifier = Modifier.weight(0.3f))
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clicks {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    if (isBookmarkPage) {
+                                        modalState
+                                            .set(
+                                                onDismiss = { modalState.hide() },
+                                                onConfirm = {
+                                                    scope.launch {
+                                                        launchSuspendApi(
+                                                            apiOnProgress,
+                                                            apiOnError
+                                                        ) {
+                                                            searchViewModel.deleteBookmark(
+                                                                lectureDataWithState.item
+                                                            )
+                                                            modalState.hide()
+                                                            context.toast(context.getString(R.string.bookmark_remove_toast))
+                                                        }
+                                                    }
+                                                },
+                                                title = context.getString(R.string.notifications_app_bar_title),
+                                                content = {
+                                                    Text(
+                                                        text = stringResource(R.string.bookmark_remove_check_message),
+                                                        style = SNUTTTypography.body1
+                                                    )
+                                                },
+                                                positiveButton = context.getString(R.string.common_ok),
+                                                negativeButton = context.getString(R.string.common_cancel),
+                                            )
+                                            .show()
+                                    } else {
+                                        if (lectureDataWithState.state.bookmarked) {
+                                            searchViewModel.deleteBookmark(lectureDataWithState.item)
+                                        } else {
+                                            searchViewModel.addBookmark(lectureDataWithState.item)
+                                            if (isFirstBookmark) {
+                                                showFirstBookmarkAlert()
+                                                context.toast(context.getString(R.string.bookmark_first_alert_message))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    BookmarkIcon(
+                        modifier = Modifier
+                            .size(15.dp),
+                        marked = bookmarked,
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(
+                        text = stringResource(R.string.search_result_item_bookmark_button),
+                        textAlign = TextAlign.Center,
+                        style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    )
+                }
                 Text(
                     text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
                         R.string.search_result_item_add_button
                     ),
-                    textAlign = TextAlign.End,
+                    textAlign = TextAlign.Center,
                     style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.AllWhite, fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
                         .weight(1f)
                         .clicks {
-                            if (contained) onClickRemove() else onClickAdd()
+                            if (contained) {
+                                scope.launch(Dispatchers.IO) {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        timetableViewModel.removeLecture(lectureDataWithState.item)
+                                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                        tableListViewModel.fetchTableMap()
+                                    }
+                                }
+                            } else {
+                                scope.launch(Dispatchers.IO) {
+                                    lectureApiWithOverlapDialog(
+                                        apiOnProgress,
+                                        apiOnError,
+                                        onLectureOverlap = { message ->
+                                            modalState
+                                                .set(
+                                                    onDismiss = { modalState.hide() },
+                                                    onConfirm = {
+                                                        scope.launch {
+                                                            searchViewModel.selectedLecture.value?.let { lecture ->
+                                                                launchSuspendApi(
+                                                                    apiOnProgress,
+                                                                    apiOnError
+                                                                ) {
+                                                                    timetableViewModel.addLecture(
+                                                                        lecture = lecture,
+                                                                        is_force = true
+                                                                    )
+                                                                    searchViewModel.toggleLectureSelection(
+                                                                        lecture
+                                                                    )
+                                                                }
+                                                            }
+                                                            modalState.hide()
+                                                        }
+                                                    },
+                                                    title = context.getString(R.string.lecture_overlap_error_message),
+                                                    positiveButton = context.getString(R.string.common_ok),
+                                                    negativeButton = context.getString(R.string.common_cancel),
+                                                    content = {
+                                                        Text(
+                                                            text = message,
+                                                            style = SNUTTTypography.body1
+                                                        )
+                                                    }
+                                                )
+                                                .show()
+                                        }
+                                    ) {
+                                        timetableViewModel.addLecture(
+                                            lecture = lectureDataWithState.item,
+                                            is_force = false
+                                        )
+                                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                        tableListViewModel.fetchTableMap()
+                                    }
+                                }
+                            }
                         }
                 )
             }

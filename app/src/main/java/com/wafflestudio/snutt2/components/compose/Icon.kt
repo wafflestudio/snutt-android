@@ -2,9 +2,12 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -15,11 +18,13 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 @Composable
 fun DrawerIcon(
     modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_drawer),
-        contentDescription = ""
+        contentDescription = stringResource(R.string.home_timetable_drawer),
+        colorFilter = colorFilter,
     )
 }
 
@@ -37,12 +42,11 @@ fun ListIcon(
 @Composable
 fun NotificationIcon(
     modifier: Modifier = Modifier,
-    new: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier.size(30.dp),
-        painter = painterResource(if (new) R.drawable.ic_alarm_active else R.drawable.ic_alarm_default),
+        painter = painterResource(R.drawable.ic_alarm_default),
         contentDescription = "",
         colorFilter = colorFilter
     )
@@ -471,4 +475,47 @@ fun RefreshIcon(
         contentDescription = "",
         colorFilter = colorFilter,
     )
+}
+
+@Composable
+fun BookmarkIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+    marked: Boolean = false,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = if (marked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BookmarkPageIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_bookmark_page),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun IconWithAlertDot(
+    redDotExist: Boolean = false,
+    color: Color = SNUTTColors.Red,
+    Icon: @Composable (modifier: Modifier) -> Unit,
+) {
+    Box {
+        Icon(modifier = Modifier.align(Alignment.Center))
+        if (redDotExist) {
+            Canvas(modifier = Modifier.size(5.dp).align(Alignment.TopEnd)) {
+                drawCircle(color)
+            }
+        }
+    }
 }

@@ -19,4 +19,5 @@ object NavigationDestination {
     const val UserConfig = "user_config"
     const val PersonalInformationPolicy = "personal_information_policy"
     const val ThemeModeSelect = "theme_mode_select"
+    const val Bookmark = "bookmark"
 }
