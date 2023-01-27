@@ -170,7 +170,13 @@ class RootActivity : AppCompatActivity() {
 
                 composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable2(NavigationDestination.LectureDetail) { LectureDetailPage() }
+                composable2(NavigationDestination.LectureDetail) {
+                    val parentEntry = remember(it) {
+                        navController.getBackStackEntry(NavigationDestination.Home)
+                    }
+                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(parentEntry)
+                    LectureDetailPage(lectureDetailViewModel)
+                }
 
                 composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
