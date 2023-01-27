@@ -90,6 +90,10 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     var lectureOverlapDialogState by remember { mutableStateOf(false) }
     var lectureOverlapDialogMessage by remember { mutableStateOf("") }
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
+    // FIXME: 이걸 이렇게밖에 못하나..
+    LaunchedEffect(editMode) {
+        if (editMode.not()) creditText = editingLectureDetail.credit.toString()
+    }
 
     /* 바텀시트 관련 */
     val sheetState = rememberModalBottomSheetState(
