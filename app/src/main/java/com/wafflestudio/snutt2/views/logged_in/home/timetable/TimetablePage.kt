@@ -48,6 +48,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import kotlinx.coroutines.launch
 import java.io.File
@@ -118,9 +119,7 @@ object CanvasPalette {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TimetablePage(
-    uncheckedNotification: Boolean
-) {
+fun TimetablePage() {
     val context = LocalContext.current
     val view = LocalView.current
     var timetableHeight by remember { mutableStateOf(0) }
@@ -131,10 +130,12 @@ fun TimetablePage(
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
+    val userViewModel = hiltViewModel<UserViewModel>()
     val keyboardManager = LocalSoftwareKeyboardController.current
     val table = TableContext.current.table
     val scope = rememberCoroutineScope()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
+    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
     var changeTitleDialogState by remember {
         mutableStateOf(false)
     }
@@ -216,12 +217,12 @@ fun TimetablePage(
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                NotificationIcon(
+                BookmarkPageIcon(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.Notification) },
-                    new = uncheckedNotification,
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                        .clicks { navController.navigate(NavigationDestination.Bookmark) },
+                    darkMode = isDarkMode(),
+                    notify = firstBookmarkAlert,
                 )
                 Spacer(modifier = Modifier.width(12.dp))
             },
@@ -549,7 +550,5 @@ private fun shareScreenshotFromView(
 @Preview(showBackground = true)
 @Composable
 fun TimetablePagePreview() {
-    TimetablePage(
-        uncheckedNotification = false
-    )
+    TimetablePage()
 }
