@@ -7,7 +7,6 @@ import android.net.Uri
 import android.view.MotionEvent
 import android.view.View
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -25,7 +24,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -181,24 +179,13 @@ fun TimetablePage() {
                 )
             },
             navigationIcon = {
-                Image(
-                    modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .clicks {
-                            scope.launch { drawerState.open() }
-                        },
-                    painter = painterResource(
-                        if (newSemesterNotify) {
-                            if (isDarkMode()) R.drawable.ic_drawer_notify_dark
-                            else R.drawable.ic_drawer_notify
-                        } else {
-                            if (isDarkMode()) R.drawable.ic_drawer_dark
-                            else R.drawable.ic_drawer
-                        }
-                    ),
-                    contentDescription = stringResource(R.string.home_timetable_drawer),
-                )
+                IconWithAlertDot(newSemesterNotify) { centerAlignedModifier ->
+                    DrawerIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { scope.launch { drawerState.open() } }
+                    )
+                }
             },
             actions = {
                 LectureListIcon(
