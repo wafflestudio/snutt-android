@@ -161,8 +161,3 @@ class SearchViewModel @Inject constructor(
         )
     }
 }
-
-data class LectureStateNew(
-    val selected: Boolean,
-    val contained: Boolean
-)
