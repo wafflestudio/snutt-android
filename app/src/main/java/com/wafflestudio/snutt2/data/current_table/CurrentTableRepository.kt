@@ -31,4 +31,10 @@ interface CurrentTableRepository {
         courseNumber: String,
         lectureNumber: String
     ): String
+
+    suspend fun getBookmarks(): List<LectureDto>
+
+    suspend fun addBookmark(lecture: LectureDto)
+
+    suspend fun deleteBookmark(lecture: LectureDto)
 }

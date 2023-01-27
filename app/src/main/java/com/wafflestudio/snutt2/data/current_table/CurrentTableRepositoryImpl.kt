@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.current_table
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -83,5 +84,19 @@ class CurrentTableRepositoryImpl @Inject constructor(
             courseNumber,
             lectureNumber
         ).url
+    }
+
+    override suspend fun getBookmarks(): List<LectureDto> {
+        return currentTable.value?.let {
+            api._getBookmarkList(it.year, it.semester).lectures
+        } ?: emptyList()
+    }
+
+    override suspend fun addBookmark(lecture: LectureDto) {
+        api._addBookmark(PostBookmarkParams(lecture.id))
+    }
+
+    override suspend fun deleteBookmark(lecture: LectureDto) {
+        api._deleteBookmark(PostBookmarkParams(lecture.id))
     }
 }

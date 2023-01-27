@@ -405,4 +405,20 @@ interface SNUTTRestApi {
 
     @GET("/v1/popups")
     suspend fun _getPopup(): GetPopupResults
+
+    @GET("/v1/bookmarks")
+    suspend fun _getBookmarkList(
+        @Query(value = "year") year: Long,
+        @Query(value = "semester") semester: Long,
+    ): GetBookmarkListResults
+
+    @POST("/v1/bookmarks/lecture")
+    suspend fun _addBookmark(
+        @Body body: PostBookmarkParams
+    )
+
+    @HTTP(method = "DELETE", path = "/v1/bookmarks/lecture", hasBody = true)
+    suspend fun _deleteBookmark(
+        @Body body: PostBookmarkParams
+    )
 }
