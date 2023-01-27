@@ -27,6 +27,8 @@ class UserViewModel @Inject constructor(
 
     val compactMode: StateFlow<Boolean> = userRepository.compactMode
 
+    val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
+
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
@@ -144,5 +146,9 @@ class UserViewModel @Inject constructor(
 
     suspend fun setCompactMode(compact: Boolean) {
         userRepository.setCompactMode(compact)
+    }
+
+    suspend fun setFirstBookmarkAlertShown() {
+        userRepository.setFirstBookmarkAlertShown()
     }
 }
