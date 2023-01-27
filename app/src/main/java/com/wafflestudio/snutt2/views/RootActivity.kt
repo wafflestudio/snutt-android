@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -34,10 +35,13 @@ import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_out.*
@@ -167,10 +171,24 @@ class RootActivity : AppCompatActivity() {
 
                 composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable2(NavigationDestination.LectureDetail) { LectureDetailPage() }
+                composable2(NavigationDestination.LectureDetail) {
+                    val parentEntry = remember(it) {
+                        navController.getBackStackEntry(NavigationDestination.Home)
+                    }
+                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(parentEntry)
+                    LectureDetailPage(lectureDetailViewModel)
+                }
 
                 composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
+                }
+
+                composable2(NavigationDestination.Bookmark) {
+                    val parentEntry = remember(it) {
+                        navController.getBackStackEntry(NavigationDestination.Home)
+                    }
+                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
+                    BookmarkPage(searchViewModel)
                 }
 
                 settingcomposable2()

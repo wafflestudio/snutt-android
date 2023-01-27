@@ -38,6 +38,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override val compactMode = storage.compactMode.asStateFlow()
 
+    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
+
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
@@ -248,6 +250,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setCompactMode(compact: Boolean) {
         storage.compactMode.update(compact)
+    }
+
+    override suspend fun setFirstBookmarkAlertShown() {
+        storage.firstBookmarkAlert.update(false)
     }
 
     private suspend fun getFirebaseToken(): String {

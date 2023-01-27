@@ -164,14 +164,14 @@ fun HomePage() {
                         contentAlignment = Alignment.BottomCenter
                     ) {
                         when (pageController.homePageState.value) {
-                            HomeItem.Timetable -> TimetablePage(uncheckedNotification = uncheckedNotification)
+                            HomeItem.Timetable -> TimetablePage()
                             HomeItem.Search -> SearchPage(
                                 searchResultPagingItems,
                             )
                             is HomeItem.Review -> {
                                 ReviewPage()
                             }
-                            HomeItem.Settings -> SettingsPage()
+                            HomeItem.Settings -> SettingsPage(uncheckedNotification = uncheckedNotification)
                         }
 
                         Box(
@@ -190,7 +190,8 @@ fun HomePage() {
                     }
                     BottomNavigation(
                         pageState = pageController.homePageState.value,
-                        onUpdatePageState = { pageController.update(it) }
+                        onUpdatePageState = { pageController.update(it) },
+                        uncheckedNotification = uncheckedNotification,
                     )
                 }
             }
@@ -217,7 +218,7 @@ fun HomePage() {
 }
 
 @Composable
-private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) -> Unit) {
+private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) -> Unit, uncheckedNotification: Boolean,) {
     Row(
         modifier = Modifier
             .height(56.dp)
@@ -281,11 +282,13 @@ private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) 
                 onUpdatePageState(HomeItem.Settings)
             },
         ) {
-            SettingIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Settings,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
+            IconWithAlertDot(uncheckedNotification && pageState != HomeItem.Settings) { centerAlignedModifier ->
+                SettingIcon(
+                    modifier = centerAlignedModifier.size(30.dp),
+                    isSelected = pageState == HomeItem.Settings,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            }
         }
     }
 }

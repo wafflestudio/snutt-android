@@ -134,6 +134,7 @@
     <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
     <string name="search_result_item_detail_button">자세히</string>
     <string name="search_result_item_review_button">강의평</string>
+    <string name="search_result_item_bookmark_button">관심강좌</string>
     <string name="search_result_empty">검색 결과가 없습니다.</string>
     <string name="search_result_placeholder_1">SNUTT 검색 꿀팁 🍯</string>
     <string name="search_result_placeholder_2">다양한 조합으로 검색해보세요.</string>
@@ -249,4 +250,11 @@
     <string name="lecture_detail_edit_class_time_sheet_end_time_label">종료</string>
     <string name="email_unverified_cta_title">인증 필요</string>
     <string name="email_unverified_cta_message">강의평 확인을 위해 이메일 인증이 필요합니다.\n이메일 인증을 진행하시겠습니까?</string>
+    <string name="bookmark_remove_toast">관심강좌 목록에서 제거하였습니다.</string>
+    <string name="bookmark_remove_check_message">강의를 관심강좌 목록에서 제외하시겠습니까?</string>
+    <string name="bookmark_first_alert_message">시간표 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
+    <string name="bookmark_page_title">관심강좌</string>
+    <string name="bookmark_page_placeholder_1">추가한 관심강좌가 없습니다</string>
+    <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>
+    <string name="bookmark_page_placeholder_3">관리해보세요.</string>
 </resources>

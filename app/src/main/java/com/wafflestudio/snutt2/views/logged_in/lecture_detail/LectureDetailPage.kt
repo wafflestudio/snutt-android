@@ -58,7 +58,7 @@ import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
+fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -69,11 +69,6 @@ fun LectureDetailPage(onCloseViewMode: () -> Unit = {}) {
     val modalState = LocalModalState.current
     val pageController = LocalHomePageController.current
 
-    // share viewModel
-    val backStackEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationDestination.Home)
-    }
-    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
     val userViewModel = hiltViewModel<UserViewModel>()
     val viewMode = vm.isViewMode()
     val editMode by vm.editMode.collectAsState()
@@ -1210,7 +1205,7 @@ fun DayTimePickerSheet(
 @Preview(showBackground = true, widthDp = 480, heightDp = 880)
 @Composable
 fun LectureDetailPagePreview() {
-    LectureDetailPage()
+//    LectureDetailPage()
 }
 
 fun String.stringToLong(): Long {
