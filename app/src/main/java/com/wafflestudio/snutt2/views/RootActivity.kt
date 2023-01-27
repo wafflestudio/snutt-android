@@ -37,6 +37,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
@@ -182,7 +183,13 @@ class RootActivity : AppCompatActivity() {
                     LectureColorSelectorPage()
                 }
 
-                composable2(NavigationDestination.Bookmark) { BookmarkPage() }
+                composable2(NavigationDestination.Bookmark) {
+                    val parentEntry = remember(it) {
+                        navController.getBackStackEntry(NavigationDestination.Home)
+                    }
+                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
+                    BookmarkPage(searchViewModel)
+                }
 
                 settingcomposable2()
             }
