@@ -49,6 +49,7 @@ class SearchViewModel @Inject constructor(
             .map { it.year * 10 + it.semester } // .distinctUntilChanged()
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
+    private val _getBookmarkListSignal = MutableSharedFlow<Unit>(replay = 0)
 
     private val _placeHolderState = MutableStateFlow(true)
     val placeHolderState = _placeHolderState.asStateFlow()
@@ -60,6 +61,7 @@ class SearchViewModel @Inject constructor(
                 _placeHolderState.emit(true)
                 try {
                     fetchSearchTagList() // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
+                    getBookmarkList()
                 } catch (e: Exception) { }
             }
         }
@@ -74,6 +76,34 @@ class SearchViewModel @Inject constructor(
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    val bookmarkList = combine(
+        _getBookmarkListSignal.flatMapLatest {
+            try {
+                flowOf(currentTableRepository.getBookmarks())
+            } catch (e: Exception) {
+                flowOf(emptyList())
+            }
+        },
+        _selectedLecture,
+        currentTable.filterNotNull()
+    ) { bookmarks, selectedLecture, currentTable ->
+        bookmarks.map { bookmarkedLecture ->
+            bookmarkedLecture.toDataWithState(
+                LectureState(
+                    selected = selectedLecture == bookmarkedLecture,
+                    contained = currentTable.lectureList.any { lectureOfCurrentTable ->
+                        lectureOfCurrentTable.isLectureNumberEquals(bookmarkedLecture)
+                    },
+                    bookmarked = true,
+                )
+            )
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList(),
+    )
+
     val queryResults = combine(
         _querySignal.flatMapLatest {
             val currentTable = currentTable.filterNotNull().first()
@@ -85,15 +115,16 @@ class SearchViewModel @Inject constructor(
                 lecturesMask = currentTable.lectureList.getClassTimeMask()
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable.filterNotNull()
-    ) { pagingData, selectedLecture, currentTable ->
+        _selectedLecture, currentTable.filterNotNull(), bookmarkList,
+    ) { pagingData, selectedLecture, currentTable, bookmarkList ->
         pagingData.map { searchedLecture ->
             searchedLecture.toDataWithState(
-                LectureStateNew(
+                LectureState(
                     selected = selectedLecture == searchedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(searchedLecture)
-                    }
+                    },
+                    bookmarked = bookmarkList.map { it.item.id }.contains(searchedLecture.id),
                 )
             )
         }
@@ -129,6 +160,10 @@ class SearchViewModel @Inject constructor(
         lazyListState = LazyListState(0, 0)
     }
 
+    suspend fun getBookmarkList() {
+        _getBookmarkListSignal.emit(Unit)
+    }
+
     suspend fun clearEditText() {
         _searchTitle.emit("")
     }
@@ -138,6 +173,16 @@ class SearchViewModel @Inject constructor(
             courseNumber = lecture.course_number ?: return null,
             instructor = lecture.instructor
         )
+    }
+
+    suspend fun addBookmark(lecture: LectureDto) {
+        currentTableRepository.addBookmark(lecture)
+        getBookmarkList()
+    }
+
+    suspend fun deleteBookmark(lecture: LectureDto) {
+        currentTableRepository.deleteBookmark(lecture)
+        getBookmarkList()
     }
 
     private suspend fun clear() {
