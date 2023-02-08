@@ -1210,7 +1210,7 @@ fun LectureDetailPagePreview() {
 
 fun String.stringToLong(): Long {
     return try {
-        this.toLong()
+        this.toLong().coerceAtLeast(0L)
     } catch (e: Exception) {
         0
     }
