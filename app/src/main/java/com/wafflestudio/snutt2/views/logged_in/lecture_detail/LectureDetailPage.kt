@@ -341,7 +341,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit
                                 value = creditText,
                                 onValueChange = {
                                     creditText = it
-                                    vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.stringToLong()))
+                                    vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
                                 },
                                 enabled = editMode,
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -1208,7 +1208,7 @@ fun LectureDetailPagePreview() {
 //    LectureDetailPage()
 }
 
-fun String.stringToLong(): Long {
+fun String.creditStringToLong(): Long {
     return try {
         this.toLong().coerceAtLeast(0L)
     } catch (e: Exception) {
