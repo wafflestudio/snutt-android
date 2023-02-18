@@ -87,7 +87,7 @@ fun AppReportPage() {
             SendIcon(
                 modifier = Modifier
                     .padding(6.dp)
-                    .clicks { sendFeedback() }
+                    .clicks(throttleMs = 1000L) { sendFeedback() }
             )
         })
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
