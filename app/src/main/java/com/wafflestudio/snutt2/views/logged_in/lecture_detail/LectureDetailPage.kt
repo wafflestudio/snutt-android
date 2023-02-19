@@ -348,7 +348,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit
                                     vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
                                 },
                                 enabled = editMode,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 modifier = Modifier.fillMaxWidth(),
                                 underlineEnabled = false,
                                 textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
