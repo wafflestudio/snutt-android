@@ -40,6 +40,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
@@ -51,6 +52,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.handleReviewPageWithEmailVerifyCheck
 import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -58,7 +60,7 @@ import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit = {}) {
+fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchViewModel, onCloseViewMode: (scope: CoroutineScope) -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -128,7 +130,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit
                     } else editExitDialogState = true
                 } else if (viewMode) {
                     vm.setViewMode(false)
-                    onCloseViewMode()
+                    onCloseViewMode(scope)
                 } else {
                     // FIXME: 다른 방법으로 대응해야...
                     if (navController.backQueue.size >= 3) navController.popBackStack()
@@ -139,6 +141,16 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit
     DisposableEffect(Unit) {
         onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
         onDispose { onBackPressedCallback.remove() }
+    }
+
+    val bookmarkList by searchViewModel.bookmarkList.collectAsState()
+    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.id) }
+    LaunchedEffect(Unit) {
+        if (isCustom.not()) {
+            scope.launch {
+                searchViewModel.getBookmarkList()
+            }
+        }
     }
 
     /* TODO (진행중)
@@ -593,6 +605,21 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, onCloseViewMode: () -> Unit
                                                         }.show()
                                                 }
                                             )
+                                        }
+                                    }
+                                    LectureDetailButton(
+                                        title = if (isBookmarked) stringResource(R.string.lecture_detail_remove_bookmark_button) else stringResource(R.string.lecture_detail_add_bookmark_button)
+                                    ) {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                if (isBookmarked) {
+                                                    searchViewModel.deleteBookmark(editingLectureDetail)
+                                                    context.toast("관심장좌 목록에서 제외하였습니다.")
+                                                } else {
+                                                    searchViewModel.addBookmark(editingLectureDetail)
+                                                    context.toast("관심장좌 목록에 추가하였습니다.")
+                                                }
+                                            }
                                         }
                                     }
                                 }
