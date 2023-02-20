@@ -39,7 +39,7 @@ fun SimpleTopBar(
         },
         navigationIcon = {
             ArrowBackIcon(
-                modifier = Modifier.clicks { onClickNavigateBack() },
+                modifier = Modifier.clicks(1000L) { onClickNavigateBack() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
