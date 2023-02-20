@@ -209,7 +209,7 @@ fun TimetablePage() {
                     BookmarkPageIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks { navController.navigate(NavigationDestination.Bookmark) },
+                            .clicks { navController.navigate(NavigationDestination.Bookmark) { launchSingleTop = true } },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900)
                     )
                 }
