@@ -417,9 +417,11 @@ fun LazyItemScope.SearchListItem(
                             )
                             lectureDetailViewModel.setViewMode(true)
                             bottomSheetContentSetter.invoke {
-                                LectureDetailPage(onCloseViewMode = {
-                                    scope.launch { sheetState.hide() }
-                                }, vm = lectureDetailViewModel)
+                                LectureDetailPage(onCloseViewMode = { scope ->
+                                    scope.launch {
+                                        sheetState.hide()
+                                    }
+                                }, vm = lectureDetailViewModel, searchViewModel = searchViewModel)
                             }
                             scope.launch { sheetState.show() }
                         }
