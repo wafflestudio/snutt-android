@@ -183,7 +183,8 @@ fun TimetablePage() {
                     DrawerIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks { scope.launch { drawerState.open() } }
+                            .clicks { scope.launch { drawerState.open() } },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 }
             },
