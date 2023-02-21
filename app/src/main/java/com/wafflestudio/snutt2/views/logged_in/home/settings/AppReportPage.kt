@@ -86,8 +86,10 @@ fun AppReportPage() {
         }, actions = {
             SendIcon(
                 modifier = Modifier
-                    .padding(6.dp)
-                    .clicks(throttleMs = 1000L) { sendFeedback() }
+                    .padding(end = 10.dp)
+                    .size(20.dp)
+                    .clicks(throttleMs = 1000L) { sendFeedback() },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         })
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
