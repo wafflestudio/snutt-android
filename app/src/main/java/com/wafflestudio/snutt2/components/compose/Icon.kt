@@ -387,12 +387,14 @@ fun WhiteCloseIcon(
 
 @Composable
 fun SendIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_send),
-        contentDescription = ""
+        colorFilter = colorFilter,
+        contentDescription = "",
     )
 }
 
