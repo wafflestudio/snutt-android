@@ -50,7 +50,7 @@ fun EditText(
     var isFocused by remember { mutableStateOf(false) }
     val customTextSelectionColors = TextSelectionColors(
         handleColor = SNUTTColors.Black900,
-        backgroundColor = SNUTTColors.Black900
+        backgroundColor = SNUTTColors.Black300
     )
     CompositionLocalProvider(
         LocalTextSelectionColors provides customTextSelectionColors,
