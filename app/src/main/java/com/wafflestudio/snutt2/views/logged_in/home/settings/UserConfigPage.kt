@@ -3,12 +3,19 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -274,6 +281,22 @@ fun UserConfigPage() {
         }
     }
 
+    val checkAndPostPasswordChange: (String, String, String) -> Unit = { currentPassword, newPassword, newPasswordConfirm ->
+        if (newPassword != newPasswordConfirm) {
+            context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
+        } else {
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    viewModel.changePassword(
+                        currentPassword, newPassword
+                    )
+                    context.toast(context.getString(R.string.settings_user_config_change_password_success))
+                    passwordChangeDialogState = false
+                }
+            }
+        }
+    }
+
     if (passwordChangeDialogState) {
         var currentPassword by remember { mutableStateOf("") }
         var newPassword by remember { mutableStateOf("") }
@@ -281,31 +304,21 @@ fun UserConfigPage() {
 
         CustomDialog(
             onDismiss = { passwordChangeDialogState = false },
-            onConfirm = {
-                if (newPassword != newPasswordConfirm) {
-                    context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
-                } else {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.changePassword(
-                                currentPassword, newPassword
-                            )
-                            context.toast(context.getString(R.string.settings_user_config_change_password_success))
-                            passwordChangeDialogState = false
-                        }
-                    }
-                }
-            },
+            onConfirm = { checkAndPostPasswordChange(currentPassword, newPassword, newPasswordConfirm) },
             title = stringResource(R.string.settings_user_config_change_password),
             positiveButtonText = stringResource(
                 R.string.notifications_noti_change
             )
         ) {
+            val focusManager = LocalFocusManager.current
             Column {
                 EditText(
                     value = currentPassword,
                     onValueChange = { currentPassword = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.settings_user_config_current_password_hint)
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -313,6 +326,9 @@ fun UserConfigPage() {
                     value = newPassword,
                     onValueChange = { newPassword = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.settings_user_config_new_password_hint)
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -320,6 +336,9 @@ fun UserConfigPage() {
                     value = newPasswordConfirm,
                     onValueChange = { newPasswordConfirm = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { checkAndPostPasswordChange(currentPassword, newPassword, newPasswordConfirm) }),
+                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.settings_user_config_new_password_confirm_hint)
                 )
             }

@@ -124,10 +124,6 @@ fun AppReportPage() {
                 value = detail, onValueChange = { detail = it },
                 hint = "불편한 점이나 버그를 적어주세요",
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done, keyboardType = KeyboardType.Ascii,
-                ),
-                keyboardActions = KeyboardActions(onDone = { sendFeedback() }),
             )
         }
     }
