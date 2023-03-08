@@ -44,17 +44,26 @@ fun AppReportPage() {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
 
-    var email by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf(userViewModel.userInfo.value?.email ?: "") }
     var detail by remember { mutableStateOf("") }
 
+    var sentEnabled by mutableStateOf(true)
     val sendFeedback = {
         if (detail.isEmpty()) {
             context.toast(context.getString(R.string.feedback_empty_detail_warning))
         } else if (email.isEmailInvalid()) {
             context.toast(context.getString(R.string.feedback_invalid_email_warning))
         } else {
+            sentEnabled = false
             scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
+                launchSuspendApi(
+                    apiOnProgress, apiOnError,
+                    onError = {
+                        sentEnabled = true
+                        apiOnProgress.hideProgress()
+                    },
+                    context.getString(R.string.settings_app_report_loading_indicator_title)
+                ) {
                     userViewModel.sendFeedback(email, detail)
                     keyboardManager?.hide()
                     context.toast(context.getString(R.string.feedback_send_success_message))
@@ -88,7 +97,7 @@ fun AppReportPage() {
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .size(20.dp)
-                    .clicks(throttleMs = 1000L) { sendFeedback() },
+                    .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         })
@@ -102,7 +111,7 @@ fun AppReportPage() {
             EditText(
                 value = email,
                 onValueChange = { email = it },
-                hint = "example@gmail.com",
+                hint = stringResource(R.string.example_email),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
@@ -122,7 +131,7 @@ fun AppReportPage() {
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
                 value = detail, onValueChange = { detail = it },
-                hint = "불편한 점이나 버그를 적어주세요",
+                hint = stringResource(R.string.settings_app_report_content_hint),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
             )
         }
