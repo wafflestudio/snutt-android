@@ -304,14 +304,17 @@ fun NavController.navigateAsOrigin(route: String) {
 suspend fun launchSuspendApi(
     apiOnProgress: ApiOnProgress,
     apiOnError: ApiOnError,
+    onError: () -> Unit = {},
+    loadingIndicatorTitle: String? = null,
     api: suspend () -> Unit
 ) {
     try {
-        apiOnProgress.showProgress()
+        loadingIndicatorTitle?.let { apiOnProgress.showProgress(it) }
         api.invoke()
     } catch (e: Exception) {
         apiOnError(e)
+        onError()
     } finally {
-        apiOnProgress.hideProgress()
+        if (loadingIndicatorTitle != null) apiOnProgress.hideProgress()
     }
 }
