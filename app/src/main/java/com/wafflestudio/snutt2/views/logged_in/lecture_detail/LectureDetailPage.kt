@@ -214,6 +214,26 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                     },
                     actions = {
                         if (vm.isViewMode().not()) {
+                            if(isCustom.not()) {
+                                BookmarkIcon(
+                                    modifier = Modifier.size(30.dp).clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                if (isBookmarked) {
+                                                    searchViewModel.deleteBookmark(editingLectureDetail)
+                                                    context.toast("관심강좌 목록에서 제외하였습니다.")
+                                                } else {
+                                                    searchViewModel.addBookmark(editingLectureDetail)
+                                                    context.toast("관심장좌 목록에 추가하였습니다.")
+                                                }
+                                            }
+                                        }
+                                    },
+                                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                    marked = isBookmarked,
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                            }
                             Text(
                                 text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                                 else stringResource(R.string.lecture_detail_top_bar_edit),
@@ -605,21 +625,6 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                                         }.show()
                                                 }
                                             )
-                                        }
-                                    }
-                                    LectureDetailButton(
-                                        title = if (isBookmarked) stringResource(R.string.lecture_detail_remove_bookmark_button) else stringResource(R.string.lecture_detail_add_bookmark_button)
-                                    ) {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                if (isBookmarked) {
-                                                    searchViewModel.deleteBookmark(editingLectureDetail)
-                                                    context.toast("관심장좌 목록에서 제외하였습니다.")
-                                                } else {
-                                                    searchViewModel.addBookmark(editingLectureDetail)
-                                                    context.toast("관심장좌 목록에 추가하였습니다.")
-                                                }
-                                            }
                                         }
                                     }
                                 }
