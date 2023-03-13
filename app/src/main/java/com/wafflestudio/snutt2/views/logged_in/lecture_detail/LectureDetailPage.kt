@@ -144,7 +144,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
     }
 
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
-    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.id) }
+    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id) }
     LaunchedEffect(Unit) {
         if (isCustom.not()) {
             scope.launch {
