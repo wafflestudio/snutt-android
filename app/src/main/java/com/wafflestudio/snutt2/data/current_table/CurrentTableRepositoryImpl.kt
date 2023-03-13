@@ -95,10 +95,10 @@ class CurrentTableRepositoryImpl @Inject constructor(
     // 유저 시간표 내의 강의는 id가 바뀌어 저장되기 때문에, parent id인 lecture_id 필드를 사용한다.
     // 검색 결과 혹은 관심강좌의 강의는 원본 그대로이므로 lecture_id == null이며, id 필드를 그대로 사용한다.
     override suspend fun addBookmark(lecture: LectureDto) {
-        api._addBookmark(PostBookmarkParams(lecture.lecture_id?:lecture.id))
+        api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
     }
 
     override suspend fun deleteBookmark(lecture: LectureDto) {
-        api._deleteBookmark(PostBookmarkParams(lecture.lecture_id?:lecture.id))
+        api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
     }
 }

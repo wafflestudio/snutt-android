@@ -144,7 +144,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
     }
 
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
-    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id?:editingLectureDetail.id) }
+    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
     LaunchedEffect(Unit) {
         if (isCustom.not()) {
             scope.launch {
@@ -213,7 +213,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                         )
                     },
                     actions = {
-                        if(isCustom.not()) {
+                        if (isCustom.not()) {
                             BookmarkIcon(
                                 modifier = Modifier.size(30.dp).clicks {
                                     scope.launch {
