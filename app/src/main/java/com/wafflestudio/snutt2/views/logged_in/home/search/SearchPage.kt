@@ -499,6 +499,7 @@ fun LazyItemScope.SearchListItem(
                                                             searchViewModel.deleteBookmark(
                                                                 lectureDataWithState.item
                                                             )
+                                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
                                                             modalState.hide()
                                                             context.toast(context.getString(R.string.bookmark_remove_toast))
                                                         }
