@@ -213,7 +213,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                         )
                     },
                     actions = {
-                        if (isCustom.not()) {
+                        if (isCustom.not() && editMode.not()) {
                             BookmarkIcon(
                                 modifier = Modifier.size(30.dp).clicks {
                                     scope.launch {
