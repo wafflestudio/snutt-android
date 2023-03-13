@@ -144,7 +144,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
     }
 
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
-    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id) }
+    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id?:editingLectureDetail.id) }
     LaunchedEffect(Unit) {
         if (isCustom.not()) {
             scope.launch {
@@ -213,27 +213,27 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                         )
                     },
                     actions = {
-                        if (vm.isViewMode().not()) {
-                            if(isCustom.not()) {
-                                BookmarkIcon(
-                                    modifier = Modifier.size(30.dp).clicks {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                if (isBookmarked) {
-                                                    searchViewModel.deleteBookmark(editingLectureDetail)
-                                                    context.toast("관심강좌 목록에서 제외하였습니다.")
-                                                } else {
-                                                    searchViewModel.addBookmark(editingLectureDetail)
-                                                    context.toast("관심장좌 목록에 추가하였습니다.")
-                                                }
+                        if(isCustom.not()) {
+                            BookmarkIcon(
+                                modifier = Modifier.size(30.dp).clicks {
+                                    scope.launch {
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            if (isBookmarked) {
+                                                searchViewModel.deleteBookmark(editingLectureDetail)
+                                                context.toast("관심강좌 목록에서 제외하였습니다.")
+                                            } else {
+                                                searchViewModel.addBookmark(editingLectureDetail)
+                                                context.toast("관심장좌 목록에 추가하였습니다.")
                                             }
                                         }
-                                    },
-                                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                                    marked = isBookmarked,
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
-                            }
+                                    }
+                                },
+                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                marked = isBookmarked,
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                        }
+                        if (vm.isViewMode().not()) {
                             Text(
                                 text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
                                 else stringResource(R.string.lecture_detail_top_bar_edit),
