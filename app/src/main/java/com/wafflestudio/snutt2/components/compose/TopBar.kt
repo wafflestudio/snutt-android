@@ -89,7 +89,10 @@ fun TopBar(
                 verticalAlignment = Alignment.CenterVertically
             ) { title() }
 
-            Row(modifier = Modifier.wrapContentWidth()) { actions() }
+            Row(
+                modifier = Modifier.wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) { actions() }
         }
     }
 }
