@@ -32,7 +32,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.TextRect
+import com.wafflestudio.snutt2.components.view.TextRect
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
