@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -143,58 +142,47 @@ fun HomePage() {
         LocalReviewWebView provides reviewWebViewContainer,
         LocalBottomSheetContentSetter provides bottomSheetContentSetter,
     ) {
-        ModalBottomSheetLayout(
-            sheetContent = bottomSheetContent,
+        ModalDrawerWithBottomSheetLayout(
+            bottomSheetContent = bottomSheetContent,
             sheetState = sheetState,
-            sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
-            // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
+            drawerContent = { HomeDrawer() },
+            drawerState = drawerState,
+            gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && !sheetState.isVisible,
         ) {
-            ModalDrawer(
-                drawerContent = {
-                    HomeDrawer()
-                },
-                drawerState = drawerState,
-                gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && !sheetState.isVisible,
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.BottomCenter
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        when (pageController.homePageState.value) {
-                            HomeItem.Timetable -> TimetablePage()
-                            HomeItem.Search -> SearchPage(
-                                searchResultPagingItems,
-                            )
-                            is HomeItem.Review -> {
-                                ReviewPage()
-                            }
-                            HomeItem.Settings -> SettingsPage(uncheckedNotification = uncheckedNotification)
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        listOf(
-                                            Color.Transparent,
-                                            SNUTTColors.Gray100
-                                        )
-                                    ),
-                                )
-                        )
-                    }
-                    BottomNavigation(
-                        pageState = pageController.homePageState.value,
-                        onUpdatePageState = { pageController.update(it) },
-                        uncheckedNotification = uncheckedNotification,
+                when (pageController.homePageState.value) {
+                    HomeItem.Timetable -> TimetablePage()
+                    HomeItem.Search -> SearchPage(
+                        searchResultPagingItems,
                     )
+                    is HomeItem.Review -> {
+                        ReviewPage()
+                    }
+                    HomeItem.Settings -> SettingsPage(uncheckedNotification = uncheckedNotification)
                 }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    SNUTTColors.Gray100
+                                )
+                            ),
+                        )
+                )
             }
+            BottomNavigation(
+                pageState = pageController.homePageState.value,
+                onUpdatePageState = { pageController.update(it) },
+                uncheckedNotification = uncheckedNotification,
+            )
         }
     }
 
@@ -218,7 +206,11 @@ fun HomePage() {
 }
 
 @Composable
-private fun BottomNavigation(pageState: HomeItem, onUpdatePageState: (HomeItem) -> Unit, uncheckedNotification: Boolean,) {
+private fun BottomNavigation(
+    pageState: HomeItem,
+    onUpdatePageState: (HomeItem) -> Unit,
+    uncheckedNotification: Boolean,
+) {
     Row(
         modifier = Modifier
             .height(56.dp)
