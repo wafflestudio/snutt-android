@@ -27,6 +27,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.LoadingIndicator
 import com.wafflestudio.snutt2.components.compose.ShowModal
 import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -131,23 +132,32 @@ class RootActivity : AppCompatActivity() {
     fun setUpUI(startDestination: String) {
         val navController = rememberAnimatedNavController()
         val homePageController = remember { HomePageController() }
-        var isProgressVisible by remember { mutableStateOf(false) }
         val compactMode by userViewModel.compactMode.collectAsState()
-
-        val apiOnProgress = remember {
-            object : ApiOnProgress {
-                override fun showProgress() {
-                    isProgressVisible = true
-                }
-
-                override fun hideProgress() {
-                    isProgressVisible = false
-                }
-            }
-        }
 
         val dialogState = rememberModalState()
         ShowModal(state = dialogState)
+
+        val apiOnProgress = remember {
+            object : ApiOnProgress {
+                override var progressShowing: Boolean = false
+
+                override fun showProgress(title: String?) {
+                    if (title != null) {
+                        progressShowing = true
+                        dialogState.set(onDismiss = {}, title = title) {
+                        LoadingIndicator()
+                    }.show()
+                    }
+                }
+
+                override fun hideProgress() {
+                    if (progressShowing) {
+                        dialogState.hide()
+                        progressShowing = false
+                    }
+                }
+            }
+        }
 
         CompositionLocalProvider(
             LocalNavController provides navController,
@@ -294,14 +304,17 @@ fun NavController.navigateAsOrigin(route: String) {
 suspend fun launchSuspendApi(
     apiOnProgress: ApiOnProgress,
     apiOnError: ApiOnError,
+    onError: () -> Unit = {},
+    loadingIndicatorTitle: String? = null,
     api: suspend () -> Unit
 ) {
     try {
-        apiOnProgress.showProgress()
+        loadingIndicatorTitle?.let { apiOnProgress.showProgress(it) }
         api.invoke()
     } catch (e: Exception) {
         apiOnError(e)
+        onError()
     } finally {
-        apiOnProgress.hideProgress()
+        if (loadingIndicatorTitle != null) apiOnProgress.hideProgress()
     }
 }

@@ -55,7 +55,7 @@ fun SignInPage() {
     val handleLocalSignIn = {
         coroutineScope.launch {
             try {
-                apiOnProgress.showProgress()
+                apiOnProgress.showProgress(context.getString(R.string.sign_in_sign_in_button))
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
@@ -69,7 +69,7 @@ fun SignInPage() {
     val handleFacebookSignIn = {
         coroutineScope.launch {
             try {
-                apiOnProgress.showProgress()
+                apiOnProgress.showProgress(context.getString(R.string.sign_in_sign_in_button))
                 val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
                     loginResult.accessToken.userId,

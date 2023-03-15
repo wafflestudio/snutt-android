@@ -65,7 +65,7 @@ fun SignUpPage() {
         } else {
             coroutineScope.launch {
                 try {
-                    apiOnProgress.showProgress()
+                    apiOnProgress.showProgress("회원가입")
                     userViewModel.signUpLocal(idField, emailField, passwordField)
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
@@ -80,7 +80,7 @@ fun SignUpPage() {
     val handleFacebookSignUp = {
         coroutineScope.launch {
             try {
-                apiOnProgress.showProgress()
+                apiOnProgress.showProgress("페이스북 회원가입")
                 val loginResult = facebookLogin(context)
                 val id = loginResult.accessToken.userId
                 val token = loginResult.accessToken.token

@@ -174,6 +174,8 @@
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
+    <string name="settings_app_report_loading_indicator_title">피드백 전송</string>
+    <string name="settings_app_report_content_hint">불편한 점이나 버그를 적어주세요</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
@@ -259,4 +261,5 @@
     <string name="bookmark_page_placeholder_1">추가한 관심강좌가 없습니다</string>
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>
     <string name="bookmark_page_placeholder_3">관리해보세요.</string>
+    <string name="loading_indicator_message">잠시만 기다려 주세요…</string>
 </resources>
