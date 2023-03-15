@@ -39,7 +39,7 @@ fun SimpleTopBar(
         },
         navigationIcon = {
             ArrowBackIcon(
-                modifier = Modifier.clicks { onClickNavigateBack() },
+                modifier = Modifier.clicks(1000L) { onClickNavigateBack() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -89,7 +89,10 @@ fun TopBar(
                 verticalAlignment = Alignment.CenterVertically
             ) { title() }
 
-            Row(modifier = Modifier.wrapContentWidth()) { actions() }
+            Row(
+                modifier = Modifier.wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) { actions() }
         }
     }
 }

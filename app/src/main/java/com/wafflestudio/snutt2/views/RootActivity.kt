@@ -176,7 +176,8 @@ class RootActivity : AppCompatActivity() {
                         navController.getBackStackEntry(NavigationDestination.Home)
                     }
                     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(parentEntry)
-                    LectureDetailPage(lectureDetailViewModel)
+                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
+                    LectureDetailPage(lectureDetailViewModel, searchViewModel)
                 }
 
                 composable2(NavigationDestination.LectureColorSelector) {
