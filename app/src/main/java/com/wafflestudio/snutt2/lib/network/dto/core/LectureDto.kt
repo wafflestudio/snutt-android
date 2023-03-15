@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LectureDto(
     @Json(name = "_id") val id: String,
+    @Json(name = "lecture_id") val lecture_id: String? = null,
     @Json(name = "classification") val classification: String?,
     @Json(name = "department") val department: String?,
     @Json(name = "academic_year") val academic_year: String?,

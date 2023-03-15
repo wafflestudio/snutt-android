@@ -417,9 +417,11 @@ fun LazyItemScope.SearchListItem(
                             )
                             lectureDetailViewModel.setViewMode(true)
                             bottomSheetContentSetter.invoke {
-                                LectureDetailPage(onCloseViewMode = {
-                                    scope.launch { sheetState.hide() }
-                                }, vm = lectureDetailViewModel)
+                                LectureDetailPage(onCloseViewMode = { scope ->
+                                    scope.launch {
+                                        sheetState.hide()
+                                    }
+                                }, vm = lectureDetailViewModel, searchViewModel = searchViewModel)
                             }
                             scope.launch { sheetState.show() }
                         }
@@ -497,6 +499,7 @@ fun LazyItemScope.SearchListItem(
                                                             searchViewModel.deleteBookmark(
                                                                 lectureDataWithState.item
                                                             )
+                                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
                                                             modalState.hide()
                                                             context.toast(context.getString(R.string.bookmark_remove_toast))
                                                         }

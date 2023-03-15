@@ -229,6 +229,8 @@
     <string name="lecture_detail_review_button">강의평</string>
     <string name="lecture_detail_reset_button">초기화</string>
     <string name="lecture_detail_delete_button">삭제</string>
+    <string name="lecture_detail_add_bookmark_button">관심강좌 지정</string>
+    <string name="lecture_detail_remove_bookmark_button">관심강좌 제외</string>
     <string name="lecture_detail_remark_hint">비고를 입력해주세요</string>
     <string name="lecture_detail_add_class_time">+ 시간 및 장소 추가</string>
     <string name="lecture_detail_delete_dialog_title">강의 삭제</string>
