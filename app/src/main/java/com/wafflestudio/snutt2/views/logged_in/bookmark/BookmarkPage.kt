@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.bookmark
+package com.wafflestudio.snutt2.views.logged_in.bookmark
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background

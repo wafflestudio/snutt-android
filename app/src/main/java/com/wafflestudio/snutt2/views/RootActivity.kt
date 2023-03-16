@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkPage
+import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
