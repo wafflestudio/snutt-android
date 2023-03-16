@@ -219,7 +219,6 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                                 marked = isBookmarked,
                             )
-                            Spacer(modifier = Modifier.width(10.dp))
                         }
                         if (vm.isViewMode().not()) {
                             Text(
@@ -255,7 +254,6 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                             }
                                         }
                                     }
-                                    .padding(end = 16.dp)
                             )
                         }
                     }

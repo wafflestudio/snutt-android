@@ -90,8 +90,9 @@ fun TopBar(
             ) { title() }
 
             Row(
-                modifier = Modifier.wrapContentWidth(),
+                modifier = Modifier.wrapContentWidth().padding(end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) { actions() }
         }
     }
