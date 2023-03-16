@@ -10,17 +10,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -31,6 +28,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,39 +36,34 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
-@Stable
-data class TableContextBundle(
-    val table: TableDto,
-    val trimParam: TableTrimParam,
-    val previewTheme: TimetableColorTheme?,
-)
-
-val TableContext = compositionLocalOf<TableContextBundle> {
-    throw RuntimeException("")
-}
-
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomePage() {
     val scope = rememberCoroutineScope()
-    var uncheckedNotification by remember { mutableStateOf(false) }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val context = LocalContext.current
     val pageController = LocalHomePageController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val popupState = LocalPopupState.current
     val bottomSheet = LocalBottomSheetState.current
-    var popupReady by remember { mutableStateOf(popupState.popup != null) }
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
+
+    val uncheckedNotification by homeViewModel.unCheckedNotificationExist.collectAsState()
+    val table by timetableViewModel.currentTable.collectAsState()
+    val previewTheme by timetableViewModel.previewTheme.collectAsState()
+    val trimParam by userViewModel.trimParam.collectAsState()
+    val tableState = TableState(table ?: TableDto.Default, trimParam, previewTheme)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    var popupReady by remember { mutableStateOf(popupState.popup != null) }
     val isDarkMode = isDarkMode()
-    val reviewWebViewContainer =
-        remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
+    val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
+    // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
+    val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
@@ -81,28 +74,19 @@ fun HomePage() {
         }
     }
 
-    LaunchedEffect(pageController.homePageState.value) {
-        if (pageController.homePageState.value == HomeItem.Timetable) {
-            launchSuspendApi(apiOnProgress, apiOnError) {
-                homeViewModel.getUncheckedNotificationsExist().let { uncheckedNotification = it }
-            }
-        }
-    }
-
     LaunchedEffect(Unit) {
         combine(timetableViewModel.currentTable, userViewModel.trimParam) { _, _ ->
             TimetableWidgetProvider.refreshWidget(context)
         }.launchIn(this)
     }
 
-    val table by timetableViewModel.currentTable.collectAsState()
-    val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val trimParam by userViewModel.trimParam.collectAsState()
-    val tableContext =
-        TableContextBundle(table ?: TableDto.Default, trimParam, previewTheme)
-
-    // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
-    val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
+    LaunchedEffect(pageController.homePageState.value) {
+        if (pageController.homePageState.value == HomeItem.Timetable) {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                homeViewModel.checkUncheckedNotificationsExist()
+            }
+        }
+    }
 
     LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
         reviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
@@ -119,17 +103,11 @@ fun HomePage() {
     }
 
     CompositionLocalProvider(
-        TableContext provides tableContext,
+        LocalTableState provides tableState,
         LocalDrawerState provides drawerState,
         LocalReviewWebView provides reviewWebViewContainer,
     ) {
-        ModalDrawerWithBottomSheetLayout(
-            bottomSheetContent = bottomSheet.content,
-            sheetState = bottomSheet.state,
-            drawerContent = { HomeDrawer() },
-            drawerState = drawerState,
-            gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && !bottomSheet.isVisible,
-        ) {
+        ModalDrawerWithBottomSheetLayout(drawerState = drawerState) {
             Box(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.BottomCenter
@@ -183,86 +161,6 @@ fun HomePage() {
                 }
             }
         )
-    }
-}
-
-@Composable
-private fun BottomNavigation(
-    pageState: HomeItem,
-    onUpdatePageState: (HomeItem) -> Unit,
-    uncheckedNotification: Boolean,
-) {
-    Row(
-        modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth()
-            .background(SNUTTColors.White900)
-    ) {
-        BorderButton(
-            color = SNUTTColors.White900,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            onClick = {
-                onUpdatePageState(HomeItem.Timetable)
-            },
-        ) {
-            TimetableIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Timetable,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
-        }
-
-        BorderButton(
-            color = SNUTTColors.White900,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            onClick = {
-                onUpdatePageState(HomeItem.Search)
-            },
-        ) {
-            SearchIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Search,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
-        }
-
-        BorderButton(
-            color = SNUTTColors.White900,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            onClick = {
-                onUpdatePageState(HomeItem.Review())
-            },
-        ) {
-            ReviewIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState is HomeItem.Review,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
-        }
-
-        BorderButton(
-            color = SNUTTColors.White900,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            onClick = {
-                onUpdatePageState(HomeItem.Settings)
-            },
-        ) {
-            IconWithAlertDot(uncheckedNotification && pageState != HomeItem.Settings) { centerAlignedModifier ->
-                SettingIcon(
-                    modifier = centerAlignedModifier.size(30.dp),
-                    isSelected = pageState == HomeItem.Settings,
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                )
-            }
-        }
     }
 }
 
