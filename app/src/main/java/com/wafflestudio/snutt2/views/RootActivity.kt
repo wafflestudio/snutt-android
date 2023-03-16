@@ -27,6 +27,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.LoadingIndicator
 import com.wafflestudio.snutt2.components.compose.ShowModal
 import com.wafflestudio.snutt2.components.compose.rememberModalState
@@ -134,6 +135,7 @@ class RootActivity : AppCompatActivity() {
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
 
+        val bottomSheet = BottomSheet()
         val dialogState = rememberModalState()
         ShowModal(state = dialogState)
 
@@ -167,6 +169,7 @@ class RootActivity : AppCompatActivity() {
             LocalPopupState provides popupState,
             LocalModalState provides dialogState,
             LocalCompactState provides compactMode,
+            LocalBottomSheetState provides bottomSheet,
         ) {
             AnimatedNavHost(
                 navController = navController,

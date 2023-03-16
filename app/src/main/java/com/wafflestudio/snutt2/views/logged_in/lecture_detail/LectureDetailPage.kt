@@ -97,31 +97,15 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
     }
 
     /* 바텀시트 관련 */
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true,
-    )
-    var bottomSheetContent by remember {
-        mutableStateOf<@Composable ColumnScope.() -> Unit>({
-            Box(modifier = Modifier.size(1.dp))
-        })
-    }
-    val bottomSheetContentSetter: (@Composable ColumnScope.() -> Unit) -> Unit = {
-        bottomSheetContent = it
-    }
-    LaunchedEffect(sheetState.isVisible) {
-        if (!sheetState.isVisible) {
-            bottomSheetContent = { Box(modifier = Modifier.size(1.dp)) }
-        }
-    }
+    val bottomSheet = BottomSheet()
 
     /* 뒤로가기 핸들링 */
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val onBackPressedCallback = remember {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (sheetState.isVisible) {
-                    scope.launch { sheetState.hide() }
+                if (bottomSheet.isVisible) {
+                    scope.launch { bottomSheet.hide() }
                 } else if (editMode) {
                     if (vm.isAddMode()) { // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
                         vm.unsetEditMode()
@@ -165,7 +149,7 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
     val isDarkMode = isDarkMode()
     val bridge = remember {
         CloseBridge(
-            onClose = { scope.launch { sheetState.hide() } }
+            onClose = { scope.launch { bottomSheet.hide() } }
         )
     }
     val reviewWebViewContainer =
@@ -182,8 +166,8 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
         LocalReviewWebView provides reviewWebViewContainer,
     ) {
         ModalBottomSheetLayout(
-            sheetContent = bottomSheetContent,
-            sheetState = sheetState,
+            sheetContent = bottomSheet.content,
+            sheetState = bottomSheet.state,
             sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
             // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
         ) {
@@ -215,19 +199,23 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                     actions = {
                         if (isCustom.not() && editMode.not()) {
                             BookmarkIcon(
-                                modifier = Modifier.size(30.dp).clicks {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            if (isBookmarked) {
-                                                searchViewModel.deleteBookmark(editingLectureDetail)
-                                                context.toast("관심강좌 목록에서 제외하였습니다.")
-                                            } else {
-                                                searchViewModel.addBookmark(editingLectureDetail)
-                                                context.toast("관심장좌 목록에 추가하였습니다.")
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                if (isBookmarked) {
+                                                    searchViewModel.deleteBookmark(
+                                                        editingLectureDetail
+                                                    )
+                                                    context.toast("관심강좌 목록에서 제외하였습니다.")
+                                                } else {
+                                                    searchViewModel.addBookmark(editingLectureDetail)
+                                                    context.toast("관심장좌 목록에 추가하였습니다.")
+                                                }
                                             }
                                         }
-                                    }
-                                },
+                                    },
                                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                                 marked = isBookmarked,
                             )
@@ -477,10 +465,10 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                 timeText = SNUTTStringUtils.getClassTimeText(classTime),
                                 locationText = classTime.place,
                                 editTime = {
-                                    bottomSheetContentSetter.invoke {
+                                    bottomSheet.setSheetContent {
                                         DayTimePickerSheet(
                                             classTime = classTime,
-                                            onDismiss = { scope.launch { sheetState.hide() } },
+                                            onDismiss = { scope.launch { bottomSheet.hide() } },
                                             onConfirm = { editedClassTime ->
                                                 vm.editEditingLectureDetail(
                                                     editingLectureDetail.copy(
@@ -490,13 +478,13 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                                             }
                                                     )
                                                 )
-                                                scope.launch { sheetState.hide() }
+                                                scope.launch { bottomSheet.hide() }
                                             }
                                         )
                                     }
                                     scope.launch {
                                         focusManager.clearFocus()
-                                        sheetState.show()
+                                        bottomSheet.show()
                                     }
                                 },
                                 onLocationTextChange = { changedLocation ->
@@ -532,7 +520,9 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                     .height(32.dp)
                                     .clicks {
                                         classTimeAnimationState =
-                                            MutableTransitionState(false).apply { targetState = true }
+                                            MutableTransitionState(false).apply {
+                                                targetState = true
+                                            }
                                         vm.editEditingLectureDetail(
                                             editingLectureDetail.copy(
                                                 class_time_json = editingLectureDetail.class_time_json
@@ -595,12 +585,12 @@ fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchView
                                                     }
                                                     joinAll(job)
                                                     scope.launch {
-                                                        bottomSheetContentSetter.invoke {
+                                                        bottomSheet.setSheetContent {
                                                             CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
                                                                 ReviewWebView(0.95f)
                                                             }
                                                         }
-                                                        sheetState.show()
+                                                        bottomSheet.show()
                                                     }
                                                 },
                                                 onUnVerified = {

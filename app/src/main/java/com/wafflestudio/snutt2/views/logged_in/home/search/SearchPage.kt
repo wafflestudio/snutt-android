@@ -88,8 +88,7 @@ fun SearchPage(
     val keyBoardController = LocalSoftwareKeyboardController.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
-    val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
-    val sheetState = LocalBottomSheetState.current
+    val bottomSheet = LocalBottomSheetState.current
 
     val scope = rememberCoroutineScope()
     val lazyListState = searchViewModel.lazyListState
@@ -109,7 +108,7 @@ fun SearchPage(
     reviewWebViewContainer.apply {
         this.webView.addJavascriptInterface(
             CloseBridge(
-                onClose = { scope.launch { sheetState.hide() } }
+                onClose = { scope.launch { bottomSheet.hide() } }
             ),
             "Snutt"
         )
@@ -118,8 +117,8 @@ fun SearchPage(
     // 강의평 바텀시트가 한번 올라왔다가 내려갈 때 원래 보던 창으로 돌아가기 위해 goBack() 수행
     // * 처음 SearchPage에 진입할 때도 sheetState는 invisible일 텐데, 이 때는 goBack() 하지 않아야 한다. (sheetWasShown 변수 존재 이유)
     var sheetWasShown by remember { mutableStateOf(false) }
-    LaunchedEffect(sheetState.isVisible) {
-        if (!sheetState.isVisible && sheetWasShown) {
+    LaunchedEffect(bottomSheet.isVisible) {
+        if (!bottomSheet.isVisible && sheetWasShown) {
             reviewWebViewContainer.webView.goBack()
             lectureDetailViewModel.setViewMode(false)
         } else {
@@ -183,17 +182,17 @@ fun SearchPage(
             } else FilterIcon(
                 modifier = Modifier.clicks {
                     // 강의 검색 필터 sheet 띄우기
-                    bottomSheetContentSetter.invoke {
+                    bottomSheet.setSheetContent {
                         SearchOptionSheet(tagsByTagType, selectedTagType) {
                             scope.launch {
                                 launchSuspendApi(apiOnProgress, apiOnError) {
                                     searchViewModel.query()
                                 }
                             }
-                            scope.launch { sheetState.hide() }
+                            scope.launch { bottomSheet.hide() }
                         }
                     }
-                    scope.launch { sheetState.show() }
+                    scope.launch { bottomSheet.show() }
                 },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
@@ -288,8 +287,7 @@ fun LazyItemScope.SearchListItem(
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
-    val bottomSheetContentSetter = LocalBottomSheetContentSetter.current
-    val sheetState = LocalBottomSheetState.current
+    val bottomSheet = LocalBottomSheetState.current
     val modalState = LocalModalState.current
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
@@ -416,14 +414,14 @@ fun LazyItemScope.SearchListItem(
                                 lectureDataWithState.item
                             )
                             lectureDetailViewModel.setViewMode(true)
-                            bottomSheetContentSetter.invoke {
+                            bottomSheet.setSheetContent {
                                 LectureDetailPage(onCloseViewMode = { scope ->
                                     scope.launch {
-                                        sheetState.hide()
+                                        bottomSheet.hide()
                                     }
                                 }, vm = lectureDetailViewModel, searchViewModel = searchViewModel)
                             }
-                            scope.launch { sheetState.show() }
+                            scope.launch { bottomSheet.show() }
                         }
                 )
                 Text(
@@ -445,13 +443,13 @@ fun LazyItemScope.SearchListItem(
                                             job.complete()
                                         }
                                         joinAll(job)
-                                        scope.launch {
-                                            bottomSheetContentSetter.invoke {
+                                        scope.launch(Dispatchers.Main) {
+                                            bottomSheet.setSheetContent {
                                                 CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
                                                     ReviewWebView(0.95f)
                                                 }
                                             }
-                                            sheetState.show()
+                                            bottomSheet.show()
                                         }
                                     },
                                     onUnVerified = {

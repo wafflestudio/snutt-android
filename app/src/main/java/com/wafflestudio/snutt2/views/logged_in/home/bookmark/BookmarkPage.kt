@@ -47,30 +47,12 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
+    val bottomSheet = LocalBottomSheetState.current
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
-
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true,
-    )
-    var bottomSheetContent by remember {
-        mutableStateOf<@Composable ColumnScope.() -> Unit>({
-            Box(modifier = Modifier.size(1.dp))
-        })
-    }
-    val bottomSheetContentSetter: (@Composable ColumnScope.() -> Unit) -> Unit = {
-        bottomSheetContent = it
-    }
-    LaunchedEffect(sheetState.isVisible) {
-        // 숨겨질 때, 내부 content를 초기화 해 줘야 한다.
-        if (!sheetState.isVisible) {
-            bottomSheetContent = { Box(modifier = Modifier.size(1.dp)) }
-        }
-    }
 
     val isDarkMode = isDarkMode()
     val reviewWebViewContainer =
@@ -80,14 +62,14 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     reviewWebViewContainer.apply {
         this.webView.addJavascriptInterface(
             CloseBridge(
-                onClose = { scope.launch { sheetState.hide() } }
+                onClose = { scope.launch { bottomSheet.hide() } }
             ),
             "Snutt"
         )
     }
 
-    BackHandler(sheetState.isVisible) {
-        scope.launch { sheetState.hide() }
+    BackHandler(bottomSheet.isVisible) {
+        scope.launch { bottomSheet.hide() }
     }
 
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
@@ -104,41 +86,36 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
         }
     }
 
-    CompositionLocalProvider(
-        LocalBottomSheetState provides sheetState,
-        LocalBottomSheetContentSetter provides bottomSheetContentSetter,
+    ModalBottomSheetLayout(
+        sheetContent = bottomSheet.content,
+        sheetState = bottomSheet.state,
+        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
     ) {
-        ModalBottomSheetLayout(
-            sheetContent = bottomSheetContent,
-            sheetState = sheetState,
-            sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
+        Column(
+            modifier = Modifier
+                .background(SNUTTColors.White900)
+                .fillMaxWidth()
         ) {
-            Column(
+            SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { navController.popBackStack() })
+            Box(
                 modifier = Modifier
-                    .background(SNUTTColors.White900)
+                    .weight(1f)
                     .fillMaxWidth()
             ) {
-                SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { navController.popBackStack() })
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                ) {
-                    CompositionLocalProvider(TableContext provides tableContext) {
-                        TimeTable(selectedLecture = selectedLecture, touchEnabled = false)
-                    }
-                    if (bookmarks.isEmpty()) {
-                        BookmarkPlaceHolder()
-                    } else {
-                        BookmarkList(
-                            bookmarks,
-                            searchViewModel,
-                            timetableViewModel,
-                            tableListViewModel,
-                            lectureDetailViewModel,
-                            reviewWebViewContainer
-                        )
-                    }
+                CompositionLocalProvider(TableContext provides tableContext) {
+                    TimeTable(selectedLecture = selectedLecture, touchEnabled = false)
+                }
+                if (bookmarks.isEmpty()) {
+                    BookmarkPlaceHolder()
+                } else {
+                    BookmarkList(
+                        bookmarks,
+                        searchViewModel,
+                        timetableViewModel,
+                        tableListViewModel,
+                        lectureDetailViewModel,
+                        reviewWebViewContainer
+                    )
                 }
             }
         }

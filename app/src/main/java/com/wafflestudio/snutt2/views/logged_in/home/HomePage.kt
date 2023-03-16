@@ -60,6 +60,7 @@ fun HomePage() {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val popupState = LocalPopupState.current
+    val bottomSheet = LocalBottomSheetState.current
     var popupReady by remember { mutableStateOf(popupState.popup != null) }
 
     val homeViewModel = hiltViewModel<HomeViewModel>()
@@ -107,27 +108,9 @@ fun HomePage() {
         reviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
     }
 
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true,
-    )
-    var bottomSheetContent by remember {
-        mutableStateOf<@Composable ColumnScope.() -> Unit>({
-            Box(modifier = Modifier.size(1.dp))
-        })
-    }
-    val bottomSheetContentSetter: (@Composable ColumnScope.() -> Unit) -> Unit = {
-        bottomSheetContent = it
-    }
-    LaunchedEffect(sheetState.isVisible) {
-        // 숨겨질 때, 내부 content를 초기화 해 주지 않으면 다른 sheet를 띄울 때 어색한 모습이 된다. (높이 널뛰기)
-        if (!sheetState.isVisible) {
-            bottomSheetContent = { Box(modifier = Modifier.size(1.dp)) }
-        }
-    }
-    BackHandler(enabled = sheetState.isVisible || drawerState.isOpen || pageController.homePageState.value != HomeItem.Timetable) {
-        if (sheetState.isVisible) {
-            scope.launch { sheetState.hide() }
+    BackHandler(enabled = bottomSheet.isVisible || drawerState.isOpen || pageController.homePageState.value != HomeItem.Timetable) {
+        if (bottomSheet.isVisible) {
+            scope.launch { bottomSheet.hide() }
         } else if (drawerState.isOpen) {
             scope.launch { drawerState.close() }
         } else {
@@ -138,16 +121,14 @@ fun HomePage() {
     CompositionLocalProvider(
         TableContext provides tableContext,
         LocalDrawerState provides drawerState,
-        LocalBottomSheetState provides sheetState,
         LocalReviewWebView provides reviewWebViewContainer,
-        LocalBottomSheetContentSetter provides bottomSheetContentSetter,
     ) {
         ModalDrawerWithBottomSheetLayout(
-            bottomSheetContent = bottomSheetContent,
-            sheetState = sheetState,
+            bottomSheetContent = bottomSheet.content,
+            sheetState = bottomSheet.state,
             drawerContent = { HomeDrawer() },
             drawerState = drawerState,
-            gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && !sheetState.isVisible,
+            gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && !bottomSheet.isVisible,
         ) {
             Box(
                 modifier = Modifier.weight(1f),

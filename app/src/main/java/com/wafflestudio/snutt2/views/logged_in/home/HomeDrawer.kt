@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
@@ -51,8 +52,7 @@ fun HomeDrawer() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val drawerState = LocalDrawerState.current
-    val sheetState = LocalBottomSheetState.current
-    val sheetContentSetter = LocalBottomSheetContentSetter.current
+    val bottomSheet = LocalBottomSheetState.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val keyboardManager = LocalSoftwareKeyboardController.current
@@ -82,13 +82,13 @@ fun HomeDrawer() {
 
     // FIXME: 새 시간표 만드는 바텀시트를 띄우는 코드. 이걸 쓰는 곳이 두 군데라서 재사용 하면 좋을 것 같아 따로 빼 놨는데 모양이 좋지 않다.
     val showCreateTableBottomSheet = {
-        sheetContentSetter.invoke {
+        bottomSheet.setSheetContent {
             var newTableTitle by remember { mutableStateOf("") }
             CreateNewTableBottomSheet(
                 newTitle = newTableTitle,
                 onEditTextChange = { newTableTitle = it },
                 onPickerChange = { selectedCourseBook = it },
-                onCancel = { scope.launch { sheetState.hide() } },
+                onCancel = { scope.launch { bottomSheet.hide() } },
                 onComplete = {
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
@@ -97,7 +97,7 @@ fun HomeDrawer() {
                                 newTableTitle
                             )
                             scope.launch {
-                                sheetState.hide()
+                                bottomSheet.hide()
                                 keyboardManager?.hide()
                                 drawerState.close()
                                 context.toast(
@@ -111,7 +111,7 @@ fun HomeDrawer() {
                 specificSemester, allCourseBook, selectedCourseBook
             )
         }
-        scope.launch { sheetState.show() }
+        scope.launch { bottomSheet.show() }
     }
 
     Column(
@@ -214,7 +214,7 @@ fun HomeDrawer() {
                                 onShowMore = {
                                     // 시간표 (더 보기) bottomSheet
                                     showMoreClickedTable = it
-                                    sheetContentSetter.invoke {
+                                    bottomSheet.setSheetContent {
                                         ShowMoreBottomSheetContent(onChangeTitle = {
                                             changeTitleDialogState = true
                                         }, onDeleteTable = {
@@ -228,15 +228,15 @@ fun HomeDrawer() {
                                             }
                                         }, onChangeTheme = {
                                             // 테마 변경 bottomSheet
-                                            scope.launch {
+                                            scope.launch(Dispatchers.Main) {
                                                 if (tableListViewModel.checkTableThemeChangeableNew(
                                                         showMoreClickedTable.id
                                                     )
                                                 ) {
-                                                    sheetState.hide()
+                                                    bottomSheet.hide()
                                                     drawerState.close()
 
-                                                    sheetContentSetter.invoke {
+                                                    bottomSheet.setSheetContent {
                                                         ChangeThemeBottomSheetContent(onLaunch = {
                                                             scope.launch {
                                                                 launchSuspendApi(
@@ -268,7 +268,7 @@ fun HomeDrawer() {
                                                                     apiOnError
                                                                 ) {
                                                                     timetableViewModel.updateTheme()
-                                                                    scope.launch { sheetState.hide() }
+                                                                    scope.launch { bottomSheet.hide() }
                                                                 }
                                                             }
                                                         }, onDispose = {
@@ -282,12 +282,12 @@ fun HomeDrawer() {
                                                             }
                                                         })
                                                     }
-                                                    sheetState.show()
+                                                    bottomSheet.show()
                                                 } else context.toast(context.getString(R.string.home_drawer_change_theme_unable_alert_message))
                                             }
                                         })
                                     }
-                                    scope.launch { sheetState.show() }
+                                    scope.launch { bottomSheet.show() }
                                 }
                             )
                         }
@@ -313,7 +313,7 @@ fun HomeDrawer() {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     tableListViewModel.changeNameTableNew(showMoreClickedTable.id, tableNewTitle)
                     changeTitleDialogState = false
-                    scope.launch { sheetState.hide() }
+                    scope.launch { bottomSheet.hide() }
                 }
             }
         }, value = tableNewTitle, onValueChange = { tableNewTitle = it })
@@ -327,7 +327,7 @@ fun HomeDrawer() {
                     tableListViewModel.deleteTableNew(showMoreClickedTable.id)
                     deleteTableDialogState = false
                     context.toast(context.getString(R.string.home_drawer_delete_table_success_alert_message))
-                    scope.launch { sheetState.hide() }
+                    scope.launch { bottomSheet.hide() }
                 }
             }
         })
