@@ -32,17 +32,14 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.view.TextRect
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.rx.dp
-import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -52,67 +49,6 @@ import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.max
 import kotlin.math.min
-
-@Stable
-object CanvasPalette {
-    val hourLabelWidth @Composable get() = 24.5f.dp(LocalContext.current)
-    val dayLabelHeight @Composable get() = 28.5f.dp(LocalContext.current)
-    val cellPadding @Composable get() = 4.dp(LocalContext.current)
-
-    val dayLabelTextPaint
-        @Composable get() =
-            Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color =
-                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
-                    else Color.argb(180, 0, 0, 0)
-                textSize = 12.sp(LocalContext.current)
-                textAlign = Paint.Align.CENTER
-                typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_light)
-            }
-    val dayLabelTextHeight: Float
-        @Composable get() {
-            val text = "월"
-            val bounds = Rect()
-            dayLabelTextPaint.getTextBounds(text, 0, text.length, bounds)
-            return bounds.height().toFloat()
-        }
-
-    val hourLabelTextPaint
-        @Composable get() =
-            Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color =
-                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
-                    else Color.argb(180, 0, 0, 0)
-                textSize = 12.sp(LocalContext.current)
-                textAlign = Paint.Align.RIGHT
-                typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_light)
-            }
-
-    val lectureCellTextRect
-        @Composable get() =
-            TextRect(
-                Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 10f.sp(LocalContext.current)
-                    typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_regular)
-                }
-            )
-
-    val lectureCellSubTextRect
-        @Composable get() =
-            TextRect(
-                Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 11f.sp(LocalContext.current)
-                    typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_bold)
-                }
-            )
-
-    val lectureCellBorderPaint: Paint =
-        Paint().apply {
-            style = Paint.Style.STROKE
-            color = 0x0d000000
-            strokeWidth = 1.dp.value
-        }
-}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -240,8 +176,8 @@ fun TimeTable(
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val navigator = LocalNavController.current
     val lectures = LocalTableState.current.table.lectureList
-    val hourLabelWidth = CanvasPalette.hourLabelWidth
-    val dayLabelHeight = CanvasPalette.dayLabelHeight
+    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
+    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
 
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
@@ -304,11 +240,11 @@ fun TimeTable(
 @Composable
 private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
-    val hourLabelWidth = CanvasPalette.hourLabelWidth
-    val dayLabelHeight = CanvasPalette.dayLabelHeight
-    val dayLabelTextPaint = CanvasPalette.dayLabelTextPaint
-    val hourLabelTextPaint = CanvasPalette.hourLabelTextPaint
-    val textHeight = CanvasPalette.dayLabelTextHeight
+    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
+    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
+    val dayLabelTextPaint = TimetableCanvasObjects.dayLabelTextPaint
+    val hourLabelTextPaint = TimetableCanvasObjects.hourLabelTextPaint
+    val textHeight = TimetableCanvasObjects.dayLabelTextHeight
 
     val gridColor = SNUTTColors.TableGrid
     val gridColor2 = SNUTTColors.TableGrid2
@@ -401,12 +337,12 @@ private fun DrawClassTime(
     fgColor: Int,
     isCustom: Boolean = false,
 ) {
-    val hourLabelWidth = CanvasPalette.hourLabelWidth
-    val dayLabelHeight = CanvasPalette.dayLabelHeight
-    val cellPadding = CanvasPalette.cellPadding
-    val lectureCellTextRect = CanvasPalette.lectureCellTextRect
-    val lectureCellSubTextRect = CanvasPalette.lectureCellSubTextRect
-    val lectureCellBorderPaint = CanvasPalette.lectureCellBorderPaint
+    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
+    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
+    val cellPadding = TimetableCanvasObjects.cellPadding
+    val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
+    val lectureCellSubTextRect = TimetableCanvasObjects.lectureCellSubTextRect
+    val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
     val compactMode = LocalCompactState.current
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
