@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,10 +32,8 @@ fun TimetablePage() {
     val view = LocalView.current
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
-    val modalState = LocalModalState.current
     val table = LocalTableState.current.table
+    val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
@@ -42,29 +41,6 @@ fun TimetablePage() {
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
-
-    val showTitleChangeDialog = {
-        var newTitle by mutableStateOf(table.title)
-        modalState.set(
-            onDismiss = { modalState.hide() },
-            onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        tableListViewModel.changeNameTableNew(
-                            tableId = table.id,
-                            name = newTitle
-                        )
-                        modalState.hide()
-                    }
-                }
-            },
-            title = context.getString(R.string.home_drawer_change_name_dialog_title),
-            positiveButton = context.getString(R.string.common_ok),
-            negativeButton = context.getString(R.string.common_cancel),
-        ) {
-            EditText(value = newTitle, onValueChange = { newTitle = it })
-        }.show()
-    }
 
     Column(Modifier.background(SNUTTColors.White900)) {
         TopBar(
@@ -78,7 +54,9 @@ fun TimetablePage() {
                     style = SNUTTTypography.h2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.clicks { showTitleChangeDialog() }
+                    modifier = Modifier.clicks {
+                        showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeNameTableNew)
+                    }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
