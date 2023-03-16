@@ -28,13 +28,12 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableContext
-import com.wafflestudio.snutt2.views.logged_in.home.TableContextBundle
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchListItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -77,8 +76,8 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     val trimParam by userViewModel.trimParam.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val tableContext =
-        TableContextBundle(table ?: TableDto.Default, trimParam, previewTheme)
+    val tableState =
+        TableState(table ?: TableDto.Default, trimParam, previewTheme)
 
     LaunchedEffect(Unit) {
         launchSuspendApi(apiOnProgress, apiOnError) {
@@ -102,7 +101,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                CompositionLocalProvider(TableContext provides tableContext) {
+                CompositionLocalProvider(LocalTableState provides tableState) {
                     TimeTable(selectedLecture = selectedLecture, touchEnabled = false)
                 }
                 if (bookmarks.isEmpty()) {

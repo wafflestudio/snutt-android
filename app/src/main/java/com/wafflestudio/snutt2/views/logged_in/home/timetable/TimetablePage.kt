@@ -44,7 +44,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableContext
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
@@ -130,7 +129,7 @@ fun TimetablePage() {
     val tableListViewModel = hiltViewModel<TableListViewModelNew>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val keyboardManager = LocalSoftwareKeyboardController.current
-    val table = TableContext.current.table
+    val table = LocalTableState.current.table
     val scope = rememberCoroutineScope()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
@@ -240,11 +239,11 @@ fun TimeTable(
 
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val navigator = LocalNavController.current
-    val lectures = TableContext.current.table.lectureList
+    val lectures = LocalTableState.current.table.lectureList
     val hourLabelWidth = CanvasPalette.hourLabelWidth
     val dayLabelHeight = CanvasPalette.dayLabelHeight
 
-    val trimParam = TableContext.current.trimParam
+    val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
             (selectedLecture?.let { lectures + it } ?: lectures).getFittingTrimParam(
@@ -375,7 +374,7 @@ private fun DrawLecture(
     fittedTrimParam: TableTrimParam
 ) {
     val context = LocalContext.current
-    val theme = TableContext.current.previewTheme ?: TableContext.current.table.theme
+    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
 
     DrawClassTime(
         fittedTrimParam = fittedTrimParam,

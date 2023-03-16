@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 
 val LocalApiOnError = compositionLocalOf<ApiOnError> {
     throw RuntimeException("")
@@ -53,5 +54,9 @@ val LocalModalState = compositionLocalOf<ModalState> {
 }
 
 val LocalCompactState = compositionLocalOf<Boolean> {
+    throw RuntimeException("")
+}
+
+val LocalTableState = compositionLocalOf<TableState> {
     throw RuntimeException("")
 }
