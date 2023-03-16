@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
@@ -46,7 +47,7 @@ fun CreateTableBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "취소", style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_cancel), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     scope.launch {
                         bottomSheet.hide()
@@ -55,7 +56,7 @@ fun CreateTableBottomSheet(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                "완료", style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
@@ -76,14 +77,14 @@ fun CreateTableBottomSheet(
         }
         Spacer(modifier = Modifier.height(25.dp))
         Text(
-            text = "새로운 시간표 만들기",
+            text = stringResource(R.string.home_drawer_create_table_bottom_sheet_title),
             style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600)
         )
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = newTitle,
             onValueChange = { newTitle = it },
-            hint = "시간표 제목을 입력하세요",
+            hint = stringResource(R.string.home_drawer_create_table_bottom_sheet_hint),
             underlineColor = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
             underlineColorFocused = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
             underlineWidth = 2.dp,
