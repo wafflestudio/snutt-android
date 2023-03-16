@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalHomePageController
-import com.wafflestudio.snutt2.views.logged_in.home.HomeDrawer
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.HomeDrawer
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 
 @OptIn(ExperimentalMaterialApi::class)
