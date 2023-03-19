@@ -30,7 +30,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchListItem
+import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
@@ -137,13 +137,9 @@ fun BookmarkList(
             .fillMaxSize()
     ) {
         items(bookmarks) {
-            SearchListItem(
+            LectureListItem(
                 lectureDataWithState = it,
-                searchViewModel,
-                timetableViewModel,
-                tableListViewModel,
-                lectureDetailViewModel,
-                reviewWebViewContainer,
+                reviewWebViewContainer = reviewWebViewContainer,
                 isBookmarkPage = true,
             )
         }
