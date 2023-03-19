@@ -212,7 +212,7 @@ fun LazyItemScope.LectureListItem(
                     modifier = Modifier
                         .weight(1f)
                         .clicks {
-                            verifyEmailBeforeApi(scope, apiOnError, onUnverified = {
+                            verifyEmailBeforeApi(scope, apiOnError, modalState, context, onUnverified = {
                                 if (isBookmarkPage) navController.navigateAsOrigin(NavigationDestination.Home)
                                 pageController.update(HomeItem.Review())
                             }) {

@@ -575,7 +575,7 @@ fun LectureDetailPage(
                                         }
                                     }
                                     LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
-                                        verifyEmailBeforeApi(scope, apiOnError, onUnverified = {
+                                        verifyEmailBeforeApi(scope, apiOnError, modalState, context, onUnverified = {
                                             onCloseViewMode(scope)
                                             navController.navigateAsOrigin(NavigationDestination.Home)
                                             pageController.update(HomeItem.Review())
