@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +24,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -31,11 +31,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SearchOptionSheet(
-    tagsByTagType: List<Selectable<TagDto>>,
-    selectedTagType: TagType,
     applyOption: () -> Unit,
 ) {
     val viewModel = hiltViewModel<SearchViewModel>()
+    val tagsByTagType by viewModel.tagsByTagType.collectAsState()
+    val selectedTagType by viewModel.selectedTagType.collectAsState()
     val scope = rememberCoroutineScope()
 
     // TODO: 다른 곳에 const하게 박아 놓으면 좋을 것 같다.
