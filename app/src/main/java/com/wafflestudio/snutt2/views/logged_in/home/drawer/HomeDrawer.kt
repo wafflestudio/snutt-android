@@ -79,7 +79,7 @@ fun HomeDrawer() {
                             scope,
                             allCourseBook,
                             CourseBookDto(table.semester, table.year),
-                            onConfirm = tableListViewModel::createTableNew
+                            onConfirm = tableListViewModel::createTable
                         )
                     }
                     scope.launch {
@@ -130,7 +130,7 @@ fun HomeDrawer() {
                                         allCourseBook,
                                         courseBook,
                                         true,
-                                        tableListViewModel::createTableNew
+                                        tableListViewModel::createTable
                                     )
                                 }
                                 scope.launch {

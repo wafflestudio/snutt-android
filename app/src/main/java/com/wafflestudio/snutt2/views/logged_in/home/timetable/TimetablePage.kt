@@ -55,7 +55,7 @@ fun TimetablePage() {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.clicks {
-                        showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeNameTableNew)
+                        showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))

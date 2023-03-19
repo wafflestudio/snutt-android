@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -53,29 +52,29 @@ class TableListViewModel @Inject constructor(
         tableRepository.getTableList()
     }
 
-    suspend fun changeSelectedTableNew(tableId: String) {
+    suspend fun changeSelectedTable(tableId: String) {
         tableRepository.fetchTableById(tableId)
     }
 
-    suspend fun changeNameTableNew(tableId: String, name: String) {
+    suspend fun changeTableName(tableId: String, name: String) {
         return tableRepository.updateTableName(tableId, name)
     }
 
-    suspend fun deleteTableNew(tableId: String) {
+    suspend fun deleteTable(tableId: String) {
         return tableRepository.deleteTable(tableId)
     }
 
-    suspend fun createTableNew(courseBook: CourseBookDto, tableName: String) {
+    suspend fun createTable(courseBook: CourseBookDto, tableName: String) {
         tableRepository.createTable(
             year = courseBook.year, semester = courseBook.semester, title = tableName
         )
     }
 
-    suspend fun copyTableNew(tableId: String) {
+    suspend fun copyTable(tableId: String) {
         tableRepository.copyTable(tableId)
     }
 
-    suspend fun checkTableDeletableNew(tableId: String): Boolean {
+    suspend fun checkTableDeletable(tableId: String): Boolean {
         return currentTableRepository.currentTable
             .filterNotNull()
             .map {
@@ -83,7 +82,7 @@ class TableListViewModel @Inject constructor(
             }.first()
     }
 
-    suspend fun checkTableThemeChangeableNew(tableId: String): Boolean {
+    suspend fun checkTableThemeChangeable(tableId: String): Boolean {
         return currentTableRepository.currentTable
             .filterNotNull()
             .map {

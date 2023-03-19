@@ -45,7 +45,7 @@ fun DrawerTableItem(
                 .clicks {
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
-                            tableListViewModel.changeSelectedTableNew(table.id)
+                            tableListViewModel.changeSelectedTable(table.id)
                             drawerState.close()
                         }
                     }
@@ -78,7 +78,7 @@ fun DrawerTableItem(
                 .clicks {
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
-                            tableListViewModel.copyTableNew(table.id)
+                            tableListViewModel.copyTable(table.id)
                             context.toast(
                                 context.getString(
                                     R.string.home_drawer_copy_success_message,

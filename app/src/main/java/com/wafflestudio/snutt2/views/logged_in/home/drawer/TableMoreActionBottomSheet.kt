@@ -51,15 +51,15 @@ fun TableMoreActionBottomSheet(
             Icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change)
         ) {
-            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeNameTableNew)
+            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
         }
         MoreActionItem(
             Icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_delete),
         ) {
             scope.launch {
-                if (tableListViewModel.checkTableDeletableNew(table.id)) {
-                    showTableDeleteDialog(table.id, composableStates, tableListViewModel::deleteTableNew)
+                if (tableListViewModel.checkTableDeletable(table.id)) {
+                    showTableDeleteDialog(table.id, composableStates, tableListViewModel::deleteTable)
                 } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
             }
         }
@@ -68,7 +68,7 @@ fun TableMoreActionBottomSheet(
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
             scope.launch(Dispatchers.Main) {
-                if (tableListViewModel.checkTableThemeChangeableNew(table.id)) {
+                if (tableListViewModel.checkTableThemeChangeable(table.id)) {
                     bottomSheet.hide()
                     drawerState.close()
 
