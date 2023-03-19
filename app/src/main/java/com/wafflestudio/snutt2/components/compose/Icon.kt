@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 @Composable
 fun DrawerIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),
@@ -54,8 +54,8 @@ fun NotificationIcon(
 
 @Composable
 fun ShareIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    modifier: Modifier = Modifier.size(30.dp),
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),
@@ -81,7 +81,7 @@ fun ArrowBackIcon(
 @Composable
 fun SearchIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),
@@ -94,7 +94,7 @@ fun SearchIcon(
 @Composable
 fun FilterIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),
@@ -107,7 +107,7 @@ fun FilterIcon(
 @Composable
 fun ExitIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),
@@ -133,7 +133,7 @@ fun TagIcon(
 @Composable
 fun ClockIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -146,7 +146,7 @@ fun ClockIcon(
 @Composable
 fun LocationIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -170,7 +170,7 @@ fun LogoIcon(
 @Composable
 fun ArrowDownIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -231,7 +231,7 @@ fun MoreIcon(
 @Composable
 fun WriteIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -244,7 +244,7 @@ fun WriteIcon(
 @Composable
 fun TrashIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -257,7 +257,7 @@ fun TrashIcon(
 @Composable
 fun PaletteIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -443,7 +443,7 @@ fun AlarmOnIcon(
 @Composable
 fun LectureListIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -495,8 +495,8 @@ fun BookmarkIcon(
 
 @Composable
 fun BookmarkPageIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    modifier: Modifier = Modifier.size(30.dp),
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
@@ -520,4 +520,30 @@ fun IconWithAlertDot(
             }
         }
     }
+}
+
+@Composable
+fun RightArrowIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_arrow_right),
+        contentDescription = "add arrow",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun RemarkIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_remark),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
 }
