@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
@@ -13,7 +11,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class TableListViewModelNew @Inject constructor(
+class TableListViewModel @Inject constructor(
     private val courseBookRepository: CourseBookRepository,
     private val tableRepository: TableRepository,
     private val currentTableRepository: CurrentTableRepository,

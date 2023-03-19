@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,7 +34,7 @@ fun DrawerTableItem(
     val drawerState = LocalDrawerState.current
     val selected = table.id == LocalTableState.current.table.id
 
-    val tableListViewModel: TableListViewModelNew = hiltViewModel()
+    val tableListViewModel: TableListViewModel = hiltViewModel()
 
     Row(
         modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically

@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTableDeleteDialog
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -37,7 +37,7 @@ fun TableMoreActionBottomSheet(
     val bottomSheet = LocalBottomSheetState.current
     val drawerState = LocalDrawerState.current
     val composableStates = ComposableStatesWithScope(scope)
-    val tableListViewModel: TableListViewModelNew = hiltViewModel()
+    val tableListViewModel: TableListViewModel = hiltViewModel()
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val theme = LocalTableState.current.table.theme
 

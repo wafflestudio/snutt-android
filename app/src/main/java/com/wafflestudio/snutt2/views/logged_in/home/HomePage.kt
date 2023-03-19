@@ -50,7 +50,7 @@ fun HomePage() {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
-    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
+    val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
     val uncheckedNotification by homeViewModel.unCheckedNotificationExist.collectAsState()

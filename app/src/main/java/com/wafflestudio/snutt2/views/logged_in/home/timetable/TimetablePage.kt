@@ -20,7 +20,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLecture
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
@@ -34,7 +34,7 @@ fun TimetablePage() {
     val drawerState = LocalDrawerState.current
     val table = LocalTableState.current.table
     val composableStates = ComposableStatesWithScope(scope)
-    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
+    val tableListViewModel = hiltViewModel<TableListViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()

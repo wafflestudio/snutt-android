@@ -28,7 +28,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchListItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
@@ -50,7 +50,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
-    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
+    val tableListViewModel = hiltViewModel<TableListViewModel>()
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
 
     val isDarkMode = isDarkMode()
@@ -126,7 +126,7 @@ fun BookmarkList(
     bookmarks: List<DataWithState<LectureDto, LectureState>>,
     searchViewModel: SearchViewModel,
     timetableViewModel: TimetableViewModel,
-    tableListViewModel: TableListViewModelNew,
+    tableListViewModel: TableListViewModel,
     lectureDetailViewModel: LectureDetailViewModelNew,
     reviewWebViewContainer: WebViewContainer,
 ) {

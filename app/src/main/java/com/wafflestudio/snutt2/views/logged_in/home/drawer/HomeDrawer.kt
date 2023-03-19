@@ -25,7 +25,7 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -36,7 +36,7 @@ fun HomeDrawer() {
     val bottomSheet = LocalBottomSheetState.current
     val table = LocalTableState.current.table
 
-    val tableListViewModel = hiltViewModel<TableListViewModelNew>()
+    val tableListViewModel = hiltViewModel<TableListViewModel>()
     val allCourseBook by tableListViewModel.allCourseBook.collectAsState()
     val courseBooksWhichHaveTable by tableListViewModel.courseBooksWhichHaveTable.collectAsState(
         initial = listOf()
