@@ -107,14 +107,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
                 if (bookmarks.isEmpty()) {
                     BookmarkPlaceHolder()
                 } else {
-                    BookmarkList(
-                        bookmarks,
-                        searchViewModel,
-                        timetableViewModel,
-                        tableListViewModel,
-                        lectureDetailViewModel,
-                        reviewWebViewContainer
-                    )
+                    BookmarkList(bookmarks, searchViewModel, reviewWebViewContainer)
                 }
             }
         }
@@ -125,9 +118,6 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
 fun BookmarkList(
     bookmarks: List<DataWithState<LectureDto, LectureState>>,
     searchViewModel: SearchViewModel,
-    timetableViewModel: TimetableViewModel,
-    tableListViewModel: TableListViewModel,
-    lectureDetailViewModel: LectureDetailViewModel,
     reviewWebViewContainer: WebViewContainer,
 ) {
     LazyColumn(
@@ -139,6 +129,7 @@ fun BookmarkList(
         items(bookmarks) {
             LectureListItem(
                 lectureDataWithState = it,
+                searchViewModel = searchViewModel,
                 reviewWebViewContainer = reviewWebViewContainer,
                 isBookmarkPage = true,
             )

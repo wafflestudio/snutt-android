@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +35,12 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,6 +61,7 @@ fun LazyItemScope.LectureListItem(
     val modalState = LocalModalState.current
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
+    val navController = LocalNavController.current
 
     val selected = lectureDataWithState.state.selected
     val contained = lectureDataWithState.state.contained
@@ -76,7 +76,6 @@ fun LazyItemScope.LectureListItem(
     val remarkText = lectureDataWithState.item.remark
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithState.item)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithState.item)
-
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(
@@ -99,7 +98,8 @@ fun LazyItemScope.LectureListItem(
                     scope.launch {
                         searchViewModel.toggleLectureSelection(lectureDataWithState.item)
                     }
-                }
+                },
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -109,7 +109,6 @@ fun LazyItemScope.LectureListItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = instructorCreditText,
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
@@ -117,7 +116,6 @@ fun LazyItemScope.LectureListItem(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TagIcon(
                     modifier = Modifier.size(15.dp),
@@ -125,7 +123,7 @@ fun LazyItemScope.LectureListItem(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = if (selected && remarkText.isNotBlank()) remarkText else tagText, // TODO: MARQUEE effect
+                    text = tagText,
                     style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.AllWhite,
                         fontWeight = FontWeight.Light
@@ -133,7 +131,6 @@ fun LazyItemScope.LectureListItem(
                     maxLines = 1,
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
                     modifier = Modifier.size(15.dp),
@@ -149,7 +146,6 @@ fun LazyItemScope.LectureListItem(
                     maxLines = 1,
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LocationIcon(
                     modifier = Modifier.size(15.dp),
@@ -163,6 +159,22 @@ fun LazyItemScope.LectureListItem(
                         fontWeight = FontWeight.Light
                     ),
                     maxLines = 1,
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RemarkIcon(
+                    modifier = Modifier.size(15.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = remarkText.ifEmpty { "없음" },
+                    style = SNUTTTypography.body2.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.Light
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -187,10 +199,8 @@ fun LazyItemScope.LectureListItem(
                             lectureDetailViewModel.setViewMode(true)
                             bottomSheet.setSheetContent {
                                 LectureDetailPage(onCloseViewMode = { scope ->
-                                    scope.launch {
-                                        bottomSheet.hide()
-                                    }
-                                }, vm = lectureDetailViewModel, searchViewModel = searchViewModel)
+                                    scope.launch { bottomSheet.hide() }
+                                })
                             }
                             scope.launch { bottomSheet.show() }
                         }
@@ -202,49 +212,13 @@ fun LazyItemScope.LectureListItem(
                     modifier = Modifier
                         .weight(1f)
                         .clicks {
-                            scope.launch {
-                                handleReviewPageWithEmailVerifyCheck(
-                                    apiOnProgress, apiOnError,
-                                    api = {
-                                        val url =
-                                            searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
-                                        val job: CompletableJob = Job()
-                                        scope.launch {
-                                            reviewWebViewContainer.openPage("$url&on_back=close")
-                                            job.complete()
-                                        }
-                                        joinAll(job)
-                                        scope.launch(Dispatchers.Main) {
-                                            bottomSheet.setSheetContent {
-                                                CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                                                    ReviewWebView(0.95f)
-                                                }
-                                            }
-                                            bottomSheet.show()
-                                        }
-                                    },
-                                    onUnVerified = {
-                                        modalState
-                                            .set(
-                                                onDismiss = { modalState.hide() },
-                                                title = context.getString(R.string.email_unverified_cta_title),
-                                                positiveButton = context.getString(R.string.common_ok),
-                                                negativeButton = context.getString(R.string.common_cancel),
-                                                onConfirm = {
-                                                    modalState.hide()
-                                                    scope.launch {
-                                                        pageController.update(HomeItem.Review())
-                                                    }
-                                                }
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.email_unverified_cta_message),
-                                                    style = SNUTTTypography.button,
-                                                )
-                                            }
-                                            .show()
-                                    }
-                                )
+                            verifyEmailBeforeApi(scope, apiOnError, onUnverified = {
+                                if (isBookmarkPage) navController.navigateAsOrigin(NavigationDestination.Home)
+                                pageController.update(HomeItem.Review())
+                            }) {
+                                val url =
+                                    searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
                             }
                         }
                 )
@@ -292,7 +266,7 @@ fun LazyItemScope.LectureListItem(
                                             searchViewModel.deleteBookmark(lectureDataWithState.item)
                                         } else {
                                             searchViewModel.addBookmark(lectureDataWithState.item)
-                                            if(userViewModel.firstBookmarkAlert.value) {
+                                            if (userViewModel.firstBookmarkAlert.value) {
                                                 userViewModel.setFirstBookmarkAlertShown()
                                                 context.toast(context.getString(R.string.bookmark_first_alert_message))
                                             }

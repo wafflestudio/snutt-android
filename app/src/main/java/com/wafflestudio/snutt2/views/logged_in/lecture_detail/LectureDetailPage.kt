@@ -51,16 +51,20 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.handleReviewPageWithEmailVerifyCheck
 import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
+import com.wafflestudio.snutt2.views.logged_in.home.search.openReviewBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.search.verifyEmailBeforeApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LectureDetailPage(vm: LectureDetailViewModel, searchViewModel: SearchViewModel, onCloseViewMode: (scope: CoroutineScope) -> Unit = {}) {
+fun LectureDetailPage(
+    vm: LectureDetailViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    onCloseViewMode: (scope: CoroutineScope) -> Unit = {}
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -571,48 +575,13 @@ fun LectureDetailPage(vm: LectureDetailViewModel, searchViewModel: SearchViewMod
                                         }
                                     }
                                     LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
-                                        scope.launch {
-                                            handleReviewPageWithEmailVerifyCheck(
-                                                apiOnProgress, apiOnError,
-                                                api = {
-                                                    val url = vm.getReviewContentsUrl()
-                                                    val job: CompletableJob = Job()
-                                                    scope.launch {
-                                                        reviewWebViewContainer.openPage("$url&on_back=close")
-                                                        job.complete()
-                                                    }
-                                                    joinAll(job)
-                                                    scope.launch {
-                                                        bottomSheet.setSheetContent {
-                                                            CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                                                                ReviewWebView(0.95f)
-                                                            }
-                                                        }
-                                                        bottomSheet.show()
-                                                    }
-                                                },
-                                                onUnVerified = {
-                                                    modalState
-                                                        .set(
-                                                            onDismiss = { modalState.hide() },
-                                                            title = context.getString(R.string.email_unverified_cta_title),
-                                                            positiveButton = context.getString(R.string.common_ok),
-                                                            negativeButton = context.getString(R.string.common_cancel),
-                                                            onConfirm = {
-                                                                modalState.hide()
-                                                                scope.launch {
-                                                                    navController.navigateAsOrigin(NavigationDestination.Home)
-                                                                    pageController.update(HomeItem.Review())
-                                                                }
-                                                            }
-                                                        ) {
-                                                            Text(
-                                                                text = stringResource(R.string.email_unverified_cta_message),
-                                                                style = SNUTTTypography.button,
-                                                            )
-                                                        }.show()
-                                                }
-                                            )
+                                        verifyEmailBeforeApi(scope, apiOnError, onUnverified = {
+                                            onCloseViewMode(scope)
+                                            navController.navigateAsOrigin(NavigationDestination.Home)
+                                            pageController.update(HomeItem.Review())
+                                        }) {
+                                            val url = vm.getReviewContentsUrl()
+                                            openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
                                         }
                                     }
                                 }
