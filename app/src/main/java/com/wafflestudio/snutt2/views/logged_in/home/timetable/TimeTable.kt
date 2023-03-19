@@ -27,7 +27,7 @@ import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlin.math.max
 import kotlin.math.min
 
@@ -55,7 +55,7 @@ fun TimeTable(
 @Composable
 private fun DrawClickEventCanvas(touchEnabled: Boolean, lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     val navigator = LocalNavController.current
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight

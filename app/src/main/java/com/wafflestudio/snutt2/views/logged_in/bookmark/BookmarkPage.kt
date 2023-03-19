@@ -36,7 +36,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -51,7 +51,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModel>()
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>()
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
     val isDarkMode = isDarkMode()
     val reviewWebViewContainer =
@@ -127,7 +127,7 @@ fun BookmarkList(
     searchViewModel: SearchViewModel,
     timetableViewModel: TimetableViewModel,
     tableListViewModel: TableListViewModel,
-    lectureDetailViewModel: LectureDetailViewModelNew,
+    lectureDetailViewModel: LectureDetailViewModel,
     reviewWebViewContainer: WebViewContainer,
 ) {
     LazyColumn(

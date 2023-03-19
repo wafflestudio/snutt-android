@@ -60,7 +60,7 @@ import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LectureDetailPage(vm: LectureDetailViewModelNew, searchViewModel: SearchViewModel, onCloseViewMode: (scope: CoroutineScope) -> Unit = {}) {
+fun LectureDetailPage(vm: LectureDetailViewModel, searchViewModel: SearchViewModel, onCloseViewMode: (scope: CoroutineScope) -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()

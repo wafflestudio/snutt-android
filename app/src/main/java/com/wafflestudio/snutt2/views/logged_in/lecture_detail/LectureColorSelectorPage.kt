@@ -41,7 +41,7 @@ fun LectureColorSelectorPage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
+    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     val lectureState by vm.editingLectureDetail.collectAsState()
 

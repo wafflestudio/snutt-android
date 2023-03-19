@@ -43,7 +43,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_out.*
@@ -188,7 +188,7 @@ class RootActivity : AppCompatActivity() {
                     val parentEntry = remember(it) {
                         navController.getBackStackEntry(NavigationDestination.Home)
                     }
-                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(parentEntry)
+                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
                     val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
                     LectureDetailPage(lectureDetailViewModel, searchViewModel)
                 }

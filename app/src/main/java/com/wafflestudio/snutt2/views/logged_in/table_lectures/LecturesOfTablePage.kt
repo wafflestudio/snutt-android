@@ -28,7 +28,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 
 @Composable
 fun LecturesOfTablePage() {
@@ -39,7 +39,7 @@ fun LecturesOfTablePage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     val currentTable: TableDto? by viewModel.currentTable.collectAsState()
     val lectureList = currentTable?.lectureList ?: emptyList()
