@@ -1,15 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import android.content.Context
 import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
-import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
-import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ErrorCode
 import com.wafflestudio.snutt2.lib.network.ErrorCode.EMAIL_NOT_VERIFIED
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
@@ -17,17 +14,18 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 fun verifyEmailBeforeApi(
-    scope: CoroutineScope,
-    apiOnError: ApiOnError,
-    modalState: ModalState,
-    context: Context,
+    composableStates: ComposableStates,
     onUnverified: () -> Unit,
     api: suspend () -> Unit,
 ) {
+    val scope = composableStates.scope
+    val context = composableStates.context
+    val apiOnError = composableStates.apiOnError
+    val modalState = composableStates.modalState
+
     scope.launch {
         try {
             api()
@@ -105,7 +103,7 @@ fun checkLectureOverlap(
 fun showLectureOverlapDialog(
     composableStates: ComposableStates,
     message: String,
-    onForceAdd: suspend () -> Unit,
+    forceAddApi: suspend () -> Unit,
 ) {
     val modalState = composableStates.modalState
     val scope = composableStates.scope
@@ -122,7 +120,7 @@ fun showLectureOverlapDialog(
                         apiOnProgress,
                         apiOnError
                     ) {
-                        onForceAdd()
+                        forceAddApi()
                         modalState.hide()
                     }
                 }
