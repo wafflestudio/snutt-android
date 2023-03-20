@@ -482,7 +482,7 @@ fun RefreshIcon(
 @Composable
 fun BookmarkIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
     marked: Boolean = false,
 ) {
     Image(
