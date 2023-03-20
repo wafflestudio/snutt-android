@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -67,7 +70,8 @@ fun LazyItemScope.LectureListItem(
 
     val selected = lectureDataWithState.state.selected
     val contained = lectureDataWithState.state.contained
-    val bookmarked = lectureDataWithState.state.bookmarked
+    val bookmarkList by searchViewModel.bookmarkList.collectAsState()
+    val bookmarked = bookmarkList.map { it.item.id }.contains(lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id)
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText = stringResource(
@@ -196,13 +200,15 @@ fun LazyItemScope.LectureListItem(
                         .weight(1f)
                         .clicks {
                             lectureDetailViewModel.initializeEditingLectureDetail(
-                                lectureDataWithState.item
+                                lectureDataWithState.item, ModeType.Viewing
                             )
-                            lectureDetailViewModel.setViewMode(true)
                             bottomSheet.setSheetContent {
-                                LectureDetailPage(onCloseViewMode = { scope ->
-                                    scope.launch { bottomSheet.hide() }
-                                })
+                                LectureDetailPage(
+                                    searchViewModel = searchViewModel,
+                                    onCloseViewMode = { scope ->
+                                        scope.launch { bottomSheet.hide() }
+                                    }
+                                )
                             }
                             scope.launch { bottomSheet.show() }
                         }
@@ -215,12 +221,10 @@ fun LazyItemScope.LectureListItem(
                         .weight(1f)
                         .clicks {
                             verifyEmailBeforeApi(
-                                scope,
-                                apiOnError,
-                                modalState,
-                                context,
+                                composableStates,
                                 api = {
-                                    val url = searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                    val url =
+                                        searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
                                     openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
                                 },
                                 onUnverified = {
@@ -242,10 +246,12 @@ fun LazyItemScope.LectureListItem(
                                     if (isBookmarkPage) {
                                         showDeleteBookmarkDialog(composableStates, onConfirm = {
                                             searchViewModel.deleteBookmark(lectureDataWithState.item)
-                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                            searchViewModel.toggleLectureSelection(
+                                                lectureDataWithState.item
+                                            )
                                         })
                                     } else {
-                                        if (lectureDataWithState.state.bookmarked) {
+                                        if (bookmarked) {
                                             searchViewModel.deleteBookmark(lectureDataWithState.item)
                                         } else {
                                             searchViewModel.addBookmark(lectureDataWithState.item)
@@ -264,6 +270,7 @@ fun LazyItemScope.LectureListItem(
                         modifier = Modifier
                             .size(15.dp),
                         marked = bookmarked,
+                        colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                     Spacer(modifier = Modifier.width(3.dp))
                     Text(
@@ -303,13 +310,19 @@ fun LazyItemScope.LectureListItem(
                                         tableListViewModel.fetchTableMap()
                                     },
                                     onLectureOverlap = { message ->
-                                        showLectureOverlapDialog(composableStates, message, onForceAdd = {
-                                            timetableViewModel.addLecture(
-                                                lecture = lectureDataWithState.item,
-                                                is_force = true
-                                            )
-                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-                                        })
+                                        showLectureOverlapDialog(
+                                            composableStates,
+                                            message,
+                                            forceAddApi = {
+                                                timetableViewModel.addLecture(
+                                                    lecture = lectureDataWithState.item,
+                                                    is_force = true
+                                                )
+                                                searchViewModel.toggleLectureSelection(
+                                                    lectureDataWithState.item
+                                                )
+                                            }
+                                        )
                                     }
                                 )
                             }

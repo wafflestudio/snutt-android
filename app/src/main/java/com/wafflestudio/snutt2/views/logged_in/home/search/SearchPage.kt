@@ -76,7 +76,6 @@ fun SearchPage(
     LaunchedEffect(bottomSheet.isVisible) {
         if (!bottomSheet.isVisible && sheetWasShown) {
             reviewWebViewContainer.webView.goBack()
-            lectureDetailViewModel.setViewMode(false)
         } else {
             sheetWasShown = true
         }
@@ -169,7 +168,7 @@ fun SearchPage(
                         ) {
                             items(searchResultPagingItems) { lectureDataWithState ->
                                 lectureDataWithState?.let {
-                                    LectureListItem(lectureDataWithState, reviewWebViewContainer)
+                                    LectureListItem(lectureDataWithState, reviewWebViewContainer, searchViewModel = searchViewModel)
                                 }
                             }
                             item {
