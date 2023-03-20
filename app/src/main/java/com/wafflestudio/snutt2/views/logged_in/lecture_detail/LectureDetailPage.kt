@@ -52,7 +52,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.lectureApiWithOverlapDialog
+import com.wafflestudio.snutt2.views.logged_in.home.search.checkLectureOverlap
 import com.wafflestudio.snutt2.views.logged_in.home.search.openReviewBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.search.verifyEmailBeforeApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -234,7 +234,7 @@ fun LectureDetailPage(
                                         if (editMode.not()) vm.setEditMode()
                                         else {
                                             scope.launch {
-                                                lectureApiWithOverlapDialog(
+                                                checkLectureOverlap(
                                                     apiOnProgress,
                                                     apiOnError,
                                                     onLectureOverlap = { message ->

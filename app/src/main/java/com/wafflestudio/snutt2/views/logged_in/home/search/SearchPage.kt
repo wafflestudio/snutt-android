@@ -24,10 +24,6 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
-import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.lib.network.ErrorCode.LECTURE_TIME_OVERLAP
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -252,29 +248,6 @@ private fun SearchEmptyPage() {
             text = stringResource(R.string.search_result_empty),
             style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp)
         )
-    }
-}
-
-suspend fun lectureApiWithOverlapDialog(
-    apiOnProgress: ApiOnProgress,
-    apiOnError: ApiOnError,
-    onLectureOverlap: (String) -> Unit,
-    api: suspend () -> Unit
-) {
-    try {
-        apiOnProgress.showProgress()
-        api.invoke()
-    } catch (e: Exception) {
-        when (e) {
-            is ErrorParsedHttpException -> {
-                if (e.errorDTO?.code == LECTURE_TIME_OVERLAP) {
-                    onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
-                } else apiOnError(e)
-            }
-            else -> apiOnError(e)
-        }
-    } finally {
-        apiOnProgress.hideProgress()
     }
 }
 

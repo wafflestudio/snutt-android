@@ -33,6 +33,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -62,6 +63,7 @@ fun LazyItemScope.LectureListItem(
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val composableStates = ComposableStatesWithScope(scope)
 
     val selected = lectureDataWithState.state.selected
     val contained = lectureDataWithState.state.contained
@@ -212,14 +214,22 @@ fun LazyItemScope.LectureListItem(
                     modifier = Modifier
                         .weight(1f)
                         .clicks {
-                            verifyEmailBeforeApi(scope, apiOnError, modalState, context, onUnverified = {
-                                if (isBookmarkPage) navController.navigateAsOrigin(NavigationDestination.Home)
-                                pageController.update(HomeItem.Review())
-                            }) {
-                                val url =
-                                    searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
-                                openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
-                            }
+                            verifyEmailBeforeApi(
+                                scope,
+                                apiOnError,
+                                modalState,
+                                context,
+                                api = {
+                                    val url = searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                    openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
+                                },
+                                onUnverified = {
+                                    if (isBookmarkPage) navController.navigateAsOrigin(
+                                        NavigationDestination.Home
+                                    )
+                                    pageController.update(HomeItem.Review())
+                                }
+                            )
                         }
                 )
                 Spacer(modifier = Modifier.weight(0.3f))
@@ -230,37 +240,10 @@ fun LazyItemScope.LectureListItem(
                             scope.launch {
                                 launchSuspendApi(apiOnProgress, apiOnError) {
                                     if (isBookmarkPage) {
-                                        modalState
-                                            .set(
-                                                onDismiss = { modalState.hide() },
-                                                onConfirm = {
-                                                    scope.launch {
-                                                        launchSuspendApi(
-                                                            apiOnProgress,
-                                                            apiOnError
-                                                        ) {
-                                                            searchViewModel.deleteBookmark(
-                                                                lectureDataWithState.item
-                                                            )
-                                                            searchViewModel.toggleLectureSelection(
-                                                                lectureDataWithState.item
-                                                            )
-                                                            modalState.hide()
-                                                            context.toast(context.getString(R.string.bookmark_remove_toast))
-                                                        }
-                                                    }
-                                                },
-                                                title = context.getString(R.string.notifications_app_bar_title),
-                                                content = {
-                                                    Text(
-                                                        text = stringResource(R.string.bookmark_remove_check_message),
-                                                        style = SNUTTTypography.body1
-                                                    )
-                                                },
-                                                positiveButton = context.getString(R.string.common_ok),
-                                                negativeButton = context.getString(R.string.common_cancel),
-                                            )
-                                            .show()
+                                        showDeleteBookmarkDialog(composableStates, onConfirm = {
+                                            searchViewModel.deleteBookmark(lectureDataWithState.item)
+                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                        })
                                     } else {
                                         if (lectureDataWithState.state.bookmarked) {
                                             searchViewModel.deleteBookmark(lectureDataWithState.item)
@@ -309,54 +292,26 @@ fun LazyItemScope.LectureListItem(
                                     }
                                 }
                             } else {
-                                scope.launch(Dispatchers.IO) {
-                                    lectureApiWithOverlapDialog(
-                                        apiOnProgress,
-                                        apiOnError,
-                                        onLectureOverlap = { message ->
-                                            modalState
-                                                .set(
-                                                    onDismiss = { modalState.hide() },
-                                                    onConfirm = {
-                                                        scope.launch {
-                                                            searchViewModel.selectedLecture.value?.let { lecture ->
-                                                                launchSuspendApi(
-                                                                    apiOnProgress,
-                                                                    apiOnError
-                                                                ) {
-                                                                    timetableViewModel.addLecture(
-                                                                        lecture = lecture,
-                                                                        is_force = true
-                                                                    )
-                                                                    searchViewModel.toggleLectureSelection(
-                                                                        lecture
-                                                                    )
-                                                                }
-                                                            }
-                                                            modalState.hide()
-                                                        }
-                                                    },
-                                                    title = context.getString(R.string.lecture_overlap_error_message),
-                                                    positiveButton = context.getString(R.string.common_ok),
-                                                    negativeButton = context.getString(R.string.common_cancel),
-                                                    content = {
-                                                        Text(
-                                                            text = message,
-                                                            style = SNUTTTypography.body1
-                                                        )
-                                                    }
-                                                )
-                                                .show()
-                                        }
-                                    ) {
+                                checkLectureOverlap(
+                                    composableStates,
+                                    api = {
                                         timetableViewModel.addLecture(
                                             lecture = lectureDataWithState.item,
                                             is_force = false
                                         )
                                         searchViewModel.toggleLectureSelection(lectureDataWithState.item)
                                         tableListViewModel.fetchTableMap()
+                                    },
+                                    onLectureOverlap = { message ->
+                                        showLectureOverlapDialog(composableStates, message, onForceAdd = {
+                                            timetableViewModel.addLecture(
+                                                lecture = lectureDataWithState.item,
+                                                is_force = true
+                                            )
+                                            searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                        })
                                     }
-                                }
+                                )
                             }
                         }
                 )
