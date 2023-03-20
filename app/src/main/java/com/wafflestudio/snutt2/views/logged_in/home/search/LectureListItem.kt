@@ -62,7 +62,6 @@ fun LazyItemScope.LectureListItem(
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
-    val modalState = LocalModalState.current
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
     val navController = LocalNavController.current
