@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 
 @Composable
 fun LecturesOfTablePage() {
@@ -52,13 +53,11 @@ fun LecturesOfTablePage() {
         LecturesOfTable(
             lectures = lectureList,
             onClickAdd = {
-                lectureDetailViewModel.setAddMode(true)
-                lectureDetailViewModel.setEditMode()
-                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default)
+                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default, ModeType.Editing(true))
                 navController.navigate(NavigationDestination.LectureDetail)
             },
             onClickLecture = { lecture ->
-                lectureDetailViewModel.initializeEditingLectureDetail(lecture)
+                lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
                 navController.navigate(NavigationDestination.LectureDetail) {
                     launchSingleTop = true
                 }

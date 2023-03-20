@@ -15,6 +15,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class ModeType {
+    object Normal : ModeType()
+    data class Editing(val adding: Boolean = false) : ModeType()
+    object Viewing : ModeType()
+}
+
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
@@ -22,67 +28,50 @@ class LectureDetailViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
-    private var addMode = false
-    private var viewMode = false
-    private val _editMode = MutableStateFlow(false)
-    val editMode = _editMode.asStateFlow()
+    private val _modeType = MutableStateFlow<ModeType>(ModeType.Normal)
+    val modeType = _modeType.asStateFlow()
 
     private var fixedLectureDetail = LectureDto.Default
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
 
-    fun isAddMode(): Boolean {
-        return addMode
+    fun setEditMode(adding: Boolean = false) {
+        viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
 
-    fun isViewMode(): Boolean {
-        return viewMode
-    }
-
-    fun setAddMode(value: Boolean) {
-        addMode = value
-    }
-
-    fun setViewMode(value: Boolean) {
-        viewMode = value
-    }
-
-    fun setEditMode() {
-        viewModelScope.launch { _editMode.emit(true) }
-    }
-
-    fun unsetEditMode() {
-        viewModelScope.launch { _editMode.emit(false) }
-    }
-
-    fun initializeEditingLectureDetail(lecture: LectureDto?) {
+    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
-        viewModelScope.launch { _editingLectureDetail.emit(fixedLectureDetail) }
+        viewModelScope.launch {
+            _modeType.emit(modeType)
+            _editingLectureDetail.emit(fixedLectureDetail)
+        }
     }
 
     fun abandonEditingLectureDetail() {
-        viewModelScope.launch { _editingLectureDetail.emit(fixedLectureDetail) }
+        initializeEditingLectureDetail(fixedLectureDetail, ModeType.Normal)
     }
 
-    fun editEditingLectureDetail(newLectureDto: LectureDto) {
-        viewModelScope.launch { _editingLectureDetail.emit(newLectureDto) }
+    fun editLectureDetail(editedLecture: LectureDto) {
+        viewModelScope.launch { _editingLectureDetail.emit(editedLecture) }
     }
 
-    suspend fun updateLecture2(is_forced: Boolean = false) {
+    suspend fun updateLecture(is_forced: Boolean = false) {
         val param = buildPutLectureParams()
         param.isForced = is_forced
         currentTableRepository.updateLecture(_editingLectureDetail.value.id, param)
+        initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal)
     }
 
-    suspend fun removeLecture2() {
+    suspend fun removeLecture() {
         currentTableRepository.removeLecture(_editingLectureDetail.value.id)
     }
 
-    suspend fun resetLecture2(): LectureDto {
-        return currentTableRepository.resetLecture(_editingLectureDetail.value.id)
+    suspend fun resetLecture() {
+        val originLecture = currentTableRepository.resetLecture(_editingLectureDetail.value.id)
+        initializeEditingLectureDetail(originLecture, ModeType.Normal)
     }
 
-    suspend fun createLecture2(is_forced: Boolean = false) {
+    suspend fun createLecture(is_forced: Boolean = false) {
         val param = buildPostLectureParams()
         param.isForced = is_forced
         currentTableRepository.createCustomLecture(param)

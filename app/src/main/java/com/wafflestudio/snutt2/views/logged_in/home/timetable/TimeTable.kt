@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import kotlin.math.max
 import kotlin.math.min
 
@@ -77,7 +78,7 @@ private fun DrawClickEventCanvas(touchEnabled: Boolean, lectures: List<LectureDt
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
-                            lectureDetailViewModel.initializeEditingLectureDetail(lecture)
+                            lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
                             }
