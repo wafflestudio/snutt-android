@@ -10,10 +10,10 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,10 +40,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.*
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -51,10 +51,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.checkLectureOverlap
-import com.wafflestudio.snutt2.views.logged_in.home.search.openReviewBottomSheet
-import com.wafflestudio.snutt2.views.logged_in.home.search.verifyEmailBeforeApi
+import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.*
 
@@ -72,32 +69,24 @@ fun LectureDetailPage(
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val focusManager = LocalFocusManager.current
-    val modalState = LocalModalState.current
     val pageController = LocalHomePageController.current
+    val composableStates = ComposableStatesWithScope(scope)
 
     val userViewModel = hiltViewModel<UserViewModel>()
-    val viewMode = vm.isViewMode()
-    val editMode by vm.editMode.collectAsState()
+    val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val currentTable by vm.currentTable.collectAsState()
     val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
     val isCustom = editingLectureDetail.isCustom
-
-    var deleteLectureDialogState by remember { mutableStateOf(false) }
-    var resetLectureDialogState by remember { mutableStateOf(false) }
-    var editExitDialogState by remember { mutableStateOf(false) }
-    var editingClassTimeIndex by remember { mutableStateOf(0) }
-    var deleteTimeDialogState by remember { mutableStateOf(false) }
-    var lectureOverlapDialogState by remember { mutableStateOf(false) }
-    var lectureOverlapDialogMessage by remember { mutableStateOf("") }
+    val bookmarkList by searchViewModel.bookmarkList.collectAsState()
+    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
-    // FIXME: 이걸 이렇게밖에 못하나..
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
      * 이때 다른 정보들은 editingLectureDetail 따라서 바뀌니까 모드가 바뀌어도 따로 할 게 없는데, 얘는 편집모드->일반모드로 바뀔 때 따로 변경해 줘야 한다. 그것이 아래의 코드.
      */
-    LaunchedEffect(editMode) {
-        if (editMode.not()) creditText = editingLectureDetail.credit.toString()
+    LaunchedEffect(modeType) {
+        if (modeType is ModeType.Editing) creditText = editingLectureDetail.credit.toString()
     }
 
     /* 바텀시트 관련 */
@@ -110,18 +99,22 @@ fun LectureDetailPage(
             override fun handleOnBackPressed() {
                 if (bottomSheet.isVisible) {
                     scope.launch { bottomSheet.hide() }
-                } else if (editMode) {
-                    if (vm.isAddMode()) { // 새 커스텀 강의 추가일 때는 뒤로가기 하면 바로 나가기
-                        vm.unsetEditMode()
-                        vm.setAddMode(false)
+                } else when (modeType) {
+                    ModeType.Normal -> {
                         navController.popBackStack()
-                    } else editExitDialogState = true
-                } else if (viewMode) {
-                    vm.setViewMode(false)
-                    onCloseViewMode(scope)
-                } else {
-                    // FIXME: 다른 방법으로 대응해야...
-                    if (navController.backQueue.size >= 3) navController.popBackStack()
+                    }
+                    is ModeType.Editing -> {
+                        if ((modeType as ModeType.Editing).adding) {
+                            navController.popBackStack()
+                        } else {
+                            showExitEditModeDialog(composableStates, onConfirm = {
+                                vm.abandonEditingLectureDetail()
+                            })
+                        }
+                    }
+                    ModeType.Viewing -> {
+                        onCloseViewMode(scope)
+                    }
                 }
             }
         }
@@ -130,17 +123,6 @@ fun LectureDetailPage(
         onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
         onDispose { onBackPressedCallback.remove() }
     }
-
-    val bookmarkList by searchViewModel.bookmarkList.collectAsState()
-    val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
-    LaunchedEffect(Unit) {
-        if (isCustom.not()) {
-            scope.launch {
-                searchViewModel.getBookmarkList()
-            }
-        }
-    }
-
     /* TODO (진행중)
      * 시간 및 장소 item 추가했을 때 애니메이션 적용하기 (LazyColumn 의 기능 모방)
      * 추가시 애니메이션은 되는데 삭제시는 방법을 고민중
@@ -179,7 +161,7 @@ fun LectureDetailPage(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(SNUTTColors.Gray100)
-                    .clicks { focusManager.clearFocus() }
+//                    .clicks { focusManager.clearFocus() }
             ) {
                 TopBar(
                     title = {
@@ -201,61 +183,56 @@ fun LectureDetailPage(
                         )
                     },
                     actions = {
-                        if (isCustom.not() && editMode.not()) {
+                        if (isCustom.not() && (modeType !is ModeType.Editing)) {
                             BookmarkIcon(
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clicks {
                                         scope.launch {
                                             launchSuspendApi(apiOnProgress, apiOnError) {
-                                                if (isBookmarked) {
-                                                    searchViewModel.deleteBookmark(
-                                                        editingLectureDetail
-                                                    )
-                                                    context.toast("관심강좌 목록에서 제외하였습니다.")
-                                                } else {
-                                                    searchViewModel.addBookmark(editingLectureDetail)
-                                                    context.toast("관심장좌 목록에 추가하였습니다.")
-                                                }
+                                                if (isBookmarked) searchViewModel.deleteBookmark(editingLectureDetail)
+                                                else searchViewModel.addBookmark(editingLectureDetail)
+                                                searchViewModel.getBookmarkList()
                                             }
                                         }
                                     },
-                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                                 marked = isBookmarked,
                             )
                         }
-                        if (vm.isViewMode().not()) {
+                        if (modeType != ModeType.Viewing) {
                             Text(
-                                text = if (editMode) stringResource(R.string.lecture_detail_top_bar_complete)
-                                else stringResource(R.string.lecture_detail_top_bar_edit),
+                                text = when (modeType) {
+                                    is ModeType.Editing -> stringResource(R.string.lecture_detail_top_bar_complete)
+                                    else -> stringResource(R.string.lecture_detail_top_bar_edit)
+                                },
                                 style = SNUTTTypography.body1,
                                 modifier = Modifier
                                     .clicks {
-                                        if (editMode.not()) vm.setEditMode()
-                                        else {
-                                            scope.launch {
-                                                checkLectureOverlap(
-                                                    apiOnProgress,
-                                                    apiOnError,
-                                                    onLectureOverlap = { message ->
-                                                        lectureOverlapDialogMessage = message
-                                                        lectureOverlapDialogState = true
-                                                    }
-                                                ) {
-                                                    if (vm.isAddMode()) {
-                                                        vm.createLecture2()
-                                                        vm.unsetEditMode()
-                                                        vm.setAddMode(false)
+                                        focusManager.clearFocus()
+                                        if (modeType == ModeType.Normal) {
+                                            vm.setEditMode()
+                                        } else {
+                                            checkLectureOverlap(
+                                                composableStates,
+                                                api = {
+                                                    if ((modeType as ModeType.Editing).adding) {
+                                                        vm.createLecture()
                                                         scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                                     } else {
-                                                        vm.updateLecture2()
-                                                        vm.initializeEditingLectureDetail(
-                                                            editingLectureDetail
-                                                        )
-                                                        vm.unsetEditMode()
+                                                        vm.updateLecture()
                                                     }
+                                                },
+                                                onLectureOverlap = { message ->
+                                                    showLectureOverlapDialog(composableStates, message, forceAddApi = {
+                                                        if ((modeType as ModeType.Editing).adding) {
+                                                            vm.createLecture(is_forced = true)
+                                                            scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                                        } else {
+                                                            vm.updateLecture(is_forced = true)
+                                                        }
+                                                    })
                                                 }
-                                            }
+                                            )
                                         }
                                     }
                             )
@@ -263,60 +240,44 @@ fun LectureDetailPage(
                     }
                 )
                 Column(
-                    modifier = Modifier.verticalScroll(scrollState)
+                    modifier = Modifier.verticalScroll(scrollState).padding(vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Margin(height = 10.dp)
-                    Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                        Margin(height = 4.dp)
-                        LectureDetailItem(title = stringResource(R.string.lecture_detail_lecture_title)) {
-                            EditText(
-                                value = editingLectureDetail.course_title,
-                                onValueChange = {
-                                    vm.editEditingLectureDetail(
-                                        editingLectureDetail.copy(
-                                            course_title = it
-                                        )
-                                    )
-                                },
-                                enabled = editMode,
-                                modifier = Modifier.fillMaxWidth(),
-                                underlineEnabled = false,
-                                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                hint = if (editMode) stringResource(R.string.lecture_detail_lecture_title_hint)
-                                else stringResource(R.string.lecture_detail_hint_nothing),
-                            )
-                        }
-                        LectureDetailItem(title = stringResource(R.string.lecture_detail_instructor)) {
-                            EditText(
-                                value = editingLectureDetail.instructor,
-                                onValueChange = {
-                                    vm.editEditingLectureDetail(editingLectureDetail.copy(instructor = it))
-                                },
-                                enabled = editMode,
-                                modifier = Modifier.fillMaxWidth(),
-                                underlineEnabled = false,
-                                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                hint = if (editMode) stringResource(R.string.lecture_detail_instructor_hint)
-                                else stringResource(R.string.lecture_detail_hint_nothing),
-                            )
-                        }
-                        if (viewMode.not()) {
+                    Column(
+                        modifier = Modifier
+                            .background(SNUTTColors.White900)
+                            .padding(vertical = 4.dp)
+                    ) {
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_lecture_title),
+                            value = editingLectureDetail.course_title,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(course_title = it)) },
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_lecture_title_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            enabled = modeType is ModeType.Editing,
+                        )
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_instructor),
+                            value = editingLectureDetail.instructor,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(instructor = it)) },
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_instructor_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            enabled = modeType is ModeType.Editing,
+                        )
+                        if (modeType != ModeType.Viewing) {
                             LectureDetailItem(
                                 title = stringResource(R.string.lecture_detail_color),
-                                modifier = Modifier.clicks {
-                                    if (editMode) {
+                            ) {
+                                Row(
+                                    modifier = Modifier.clicks(enabled = modeType != ModeType.Normal) {
                                         navController.navigate(NavigationDestination.LectureColorSelector)
                                     }
-                                }
-                            ) {
-                                Row {
+                                ) {
                                     ColorBox(
                                         editingLectureDetail.colorIndex,
                                         editingLectureDetail.color,
                                         tableColorTheme,
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
-                                    AnimatedVisibility(visible = editMode) {
+                                    AnimatedVisibility(visible = modeType is ModeType.Editing) {
                                         ArrowRight(
                                             modifier = Modifier.size(16.dp),
                                             colorFilter = ColorFilter.tint(SNUTTColors.Black900)
@@ -324,139 +285,93 @@ fun LectureDetailPage(
                                     }
                                 }
                             }
-                            Margin(height = 4.dp)
                         }
                     }
-                    Margin(height = 10.dp)
-                    Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                        Margin(height = 4.dp)
+                    Column(
+                        modifier = Modifier
+                            .background(SNUTTColors.White900)
+                            .padding(vertical = 4.dp)
+                    ) {
                         if (isCustom.not()) {
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_department)) {
-                                EditText(
-                                    value = editingLectureDetail.department ?: "",
-                                    onValueChange = {
-                                        vm.editEditingLectureDetail(editingLectureDetail.copy(department = it))
-                                    },
-                                    enabled = editMode,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    underlineEnabled = false,
-                                    textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                    hint = stringResource(R.string.lecture_detail_hint_nothing),
-                                )
-                            }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_academic_year)) {
-                                EditText(
-                                    value = editingLectureDetail.academic_year ?: "",
-                                    onValueChange = {
-                                        vm.editEditingLectureDetail(
-                                            editingLectureDetail.copy(
-                                                academic_year = it
-                                            )
-                                        )
-                                    },
-                                    enabled = editMode,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    underlineEnabled = false,
-                                    textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                    hint = stringResource(R.string.lecture_detail_hint_nothing),
-                                )
-                            }
-                        }
-                        LectureDetailItem(title = stringResource(R.string.lecture_detail_credit)) {
-                            EditText(
-                                value = creditText,
-                                onValueChange = {
-                                    creditText = it
-                                    vm.editEditingLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
-                                },
-                                enabled = editMode,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                modifier = Modifier.fillMaxWidth(),
-                                underlineEnabled = false,
-                                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                hint = "0",
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_department),
+                                value = editingLectureDetail.department ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(department = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_academic_year),
+                                value = editingLectureDetail.academic_year ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(academic_year = it)) },
+                                enabled = modeType is ModeType.Editing,
                             )
                         }
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_credit),
+                            value = creditText,
+                            onValueChange = {
+                                creditText = it
+                                vm.editLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
+                            },
+                            enabled = modeType is ModeType.Editing,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                            hint = "0",
+                        )
                         if (isCustom.not()) {
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_classification)) {
-                                EditText(
-                                    value = editingLectureDetail.classification ?: "",
-                                    onValueChange = {
-                                        vm.editEditingLectureDetail(
-                                            editingLectureDetail.copy(
-                                                classification = it
-                                            )
-                                        )
-                                    },
-                                    enabled = editMode,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    underlineEnabled = false,
-                                    textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                    hint = stringResource(R.string.lecture_detail_hint_nothing),
-                                )
-                            }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_category)) {
-                                EditText(
-                                    value = editingLectureDetail.category ?: "",
-                                    onValueChange = {
-                                        vm.editEditingLectureDetail(editingLectureDetail.copy(category = it))
-                                    },
-                                    enabled = editMode,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    underlineEnabled = false,
-                                    textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                    hint = stringResource(R.string.lecture_detail_hint_nothing),
-                                )
-                            }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_course_number)) {
-                                Text(
-                                    text = editingLectureDetail.course_number ?: "",
-                                    style = SNUTTTypography.body1.copy(
-                                        fontSize = 15.sp,
-                                        color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
-                                    )
-                                )
-                            }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_lecture_number)) {
-                                Text(
-                                    text = editingLectureDetail.lecture_number ?: "",
-                                    style = SNUTTTypography.body1.copy(
-                                        fontSize = 15.sp,
-                                        color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
-                                    )
-                                )
-                            }
-                            LectureDetailItem(title = stringResource(R.string.lecture_detail_quota)) {
-                                Text(
-                                    text = editingLectureDetail.quota.toString(),
-                                    style = SNUTTTypography.body1.copy(
-                                        fontSize = 15.sp,
-                                        color = if (editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
-                                    )
-                                )
-                            }
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_classification),
+                                value = editingLectureDetail.classification ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(classification = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_category),
+                                value = editingLectureDetail.category ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(category = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_course_number),
+                                value = editingLectureDetail.course_number ?: "",
+                                textStyle = SNUTTTypography.body1.copy(
+                                    fontSize = 15.sp,
+                                    color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900
+                                ),
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_lecture_number),
+                                value = editingLectureDetail.lecture_number ?: "",
+                                textStyle = SNUTTTypography.body1.copy(
+                                    fontSize = 15.sp,
+                                    color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900
+                                ),
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_quota),
+                                value = editingLectureDetail.quota.toString(),
+                                textStyle = SNUTTTypography.body1.copy(
+                                    fontSize = 15.sp,
+                                    color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900
+                                ),
+                            )
                         }
-                        LectureDetailRemark(
+                        LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_remark),
-                            editMode = editMode
-                        ) {
-                            EditText(
-                                value = editingLectureDetail.remark,
-                                onValueChange = {
-                                    vm.editEditingLectureDetail(editingLectureDetail.copy(remark = it))
-                                },
-                                enabled = editMode,
-                                modifier = Modifier.fillMaxWidth(),
-                                underlineEnabled = false,
-                                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
-                                hint = if (editMode) stringResource(R.string.lecture_detail_remark_hint)
-                                else stringResource(R.string.lecture_detail_hint_nothing),
-                            )
-                        }
-                        Margin(height = 4.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 40.dp)
+                                .padding(vertical = 10.dp),
+                            value = editingLectureDetail.remark,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(remark = it)) },
+                            enabled = modeType is ModeType.Editing,
+                            singleLine = false,
+                            keyboardOptions = KeyboardOptions.Default,
+                            keyboardActions = KeyboardActions.Default,
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_remark_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            labelVerticalAlignment = Alignment.Top,
+                        )
                     }
-                    Margin(height = 10.dp)
-                    Column(modifier = Modifier.background(SNUTTColors.White900)) {
+                    Column(modifier = Modifier.background(SNUTTColors.White900).padding(bottom = 10.dp)) {
                         Text(
                             text = stringResource(R.string.lecture_detail_class_time),
                             modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
@@ -472,7 +387,7 @@ fun LectureDetailPage(
                                             classTime = classTime,
                                             onDismiss = { scope.launch { bottomSheet.hide() } },
                                             onConfirm = { editedClassTime ->
-                                                vm.editEditingLectureDetail(
+                                                vm.editLectureDetail(
                                                     editingLectureDetail.copy(
                                                         class_time_json = editingLectureDetail.class_time_json.toMutableList()
                                                             .also {
@@ -490,31 +405,35 @@ fun LectureDetailPage(
                                     }
                                 },
                                 onLocationTextChange = { changedLocation ->
-                                    vm.editEditingLectureDetail(
+                                    vm.editLectureDetail(
                                         editingLectureDetail.copy(
                                             class_time_json = editingLectureDetail.class_time_json.toMutableList()
                                                 .also {
-                                                    it[idx] = classTime.copy(place = changedLocation)
+                                                    it[idx] =
+                                                        classTime.copy(place = changedLocation)
                                                 }
                                         )
                                     )
                                 },
                                 onClickDeleteIcon = {
-                                    editingClassTimeIndex = idx
-                                    deleteTimeDialogState = true
+                                    showDeleteClassTimeDialog(composableStates, onConfirm = {
+                                        vm.editLectureDetail(
+                                            editingLectureDetail.copy(
+                                                class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                                                    .also {
+                                                        it.removeAt(idx)
+                                                    }
+                                            )
+                                        )
+                                    })
                                 },
-                                onLongClick = {
-                                    editingClassTimeIndex = idx
-                                    deleteTimeDialogState = true
-                                },
-                                editMode = editMode,
-                                isCustom = true,
+                                editMode = modeType is ModeType.Editing,
                                 visible = if (idx == editingLectureDetail.class_time_json.lastIndex) classTimeAnimationState
                                 else MutableTransitionState(true)
                             )
                         }
                         AnimatedVisibility(
-                            visible = editMode
+                            visible = modeType is ModeType.Editing
                         ) {
                             Box(
                                 modifier = Modifier
@@ -525,7 +444,7 @@ fun LectureDetailPage(
                                             MutableTransitionState(false).apply {
                                                 targetState = true
                                             }
-                                        vm.editEditingLectureDetail(
+                                        vm.editLectureDetail(
                                             editingLectureDetail.copy(
                                                 class_time_json = editingLectureDetail.class_time_json
                                                     .toMutableList()
@@ -542,13 +461,11 @@ fun LectureDetailPage(
                                 )
                             }
                         }
-                        Margin(height = 7.dp)
                     }
                     AnimatedVisibility(
-                        visible = editMode.not()
+                        visible = modeType !is ModeType.Editing
                     ) {
                         Column {
-                            Margin(height = 30.dp)
                             if (isCustom) {
                                 Box(modifier = Modifier.background(Color.White)) {
                                     LectureDetailButton(
@@ -558,7 +475,12 @@ fun LectureDetailPage(
                                             color = SNUTTColors.Red
                                         )
                                     ) {
-                                        deleteLectureDialogState = true
+                                        showDeleteLectureDialog(composableStates, onConfirm = {
+                                            vm.removeLecture()
+                                            scope.launch(Dispatchers.Main) {
+                                                navController.popBackStack()
+                                            }
+                                        })
                                     }
                                 }
                             } else {
@@ -567,32 +489,38 @@ fun LectureDetailPage(
                                         scope.launch {
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 vm.getCourseBookUrl().let { url ->
-                                                    val intent =
-                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                                     context.startActivity(intent)
                                                 }
                                             }
                                         }
                                     }
                                     LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
-                                        verifyEmailBeforeApi(scope, apiOnError, modalState, context, onUnverified = {
-                                            onCloseViewMode(scope)
-                                            navController.navigateAsOrigin(NavigationDestination.Home)
-                                            pageController.update(HomeItem.Review())
-                                        }) {
-                                            val url = vm.getReviewContentsUrl()
-                                            openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
-                                        }
+                                        verifyEmailBeforeApi(
+                                            composableStates,
+                                            api = {
+                                                val url = vm.getReviewContentsUrl()
+                                                openReviewBottomSheet(
+                                                    url,
+                                                    reviewWebViewContainer,
+                                                    bottomSheet
+                                                )
+                                            },
+                                            onUnverified = {
+                                                onCloseViewMode(scope)
+                                                navController.navigateAsOrigin(NavigationDestination.Home)
+                                                pageController.update(HomeItem.Review())
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
                     }
-                    if (isCustom.not() && vm.isViewMode().not()) {
-                        Margin(height = 10.dp)
+                    if (isCustom.not() && modeType != ModeType.Viewing) {
                         Box(modifier = Modifier.background(Color.White)) {
                             LectureDetailButton(
-                                title = if (editMode) stringResource(R.string.lecture_detail_reset_button) else stringResource(
+                                title = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_reset_button) else stringResource(
                                     R.string.lecture_detail_delete_button
                                 ),
                                 textStyle = SNUTTTypography.body1.copy(
@@ -600,8 +528,18 @@ fun LectureDetailPage(
                                     color = SNUTTColors.Red
                                 )
                             ) {
-                                if (editMode) resetLectureDialogState = true
-                                else deleteLectureDialogState = true
+                                if (modeType is ModeType.Editing) {
+                                    showResetLectureDialog(composableStates, onConfirm = {
+                                        vm.resetLecture()
+                                    })
+                                } else {
+                                    showDeleteLectureDialog(composableStates, onConfirm = {
+                                        vm.removeLecture()
+                                        scope.launch(Dispatchers.Main) {
+                                            navController.popBackStack()
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
@@ -610,166 +548,10 @@ fun LectureDetailPage(
             }
         }
     }
-
-    // 강의 삭제 다이얼로그
-    if (deleteLectureDialogState) {
-        CustomDialog(
-            onDismiss = { deleteLectureDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        vm.removeLecture2()
-                        scope.launch(Dispatchers.Main) {
-                            navController.popBackStack()
-                        }
-                        deleteLectureDialogState = false
-                    }
-                }
-            },
-            title = stringResource(R.string.lecture_detail_delete_dialog_title)
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_delete_dialog_message), style = SNUTTTypography.body1)
-        }
-    }
-
-    // 편집 취소하고 나가기 다이얼로그
-    if (editExitDialogState) {
-        CustomDialog(
-            onDismiss = { editExitDialogState = false },
-            onConfirm = {
-                vm.abandonEditingLectureDetail()
-                editExitDialogState = false
-                vm.unsetEditMode()
-            },
-            title = stringResource(R.string.lecture_detail_exit_edit_dialog_message)
-        ) {}
-    }
-
-    // 강의 초기화 다이얼로그
-    if (resetLectureDialogState) {
-        CustomDialog(
-            onDismiss = { resetLectureDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        val resetLecture = vm.resetLecture2()
-                        vm.initializeEditingLectureDetail(resetLecture)
-                        vm.unsetEditMode()
-                        resetLectureDialogState = false
-                    }
-                }
-            },
-            title = stringResource(R.string.lecture_detail_reset_dialog_title)
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_reset_dialog_message), style = SNUTTTypography.body2)
-        }
-    }
-
-    // 강의 시간대 삭제 다이얼로그
-    if (deleteTimeDialogState) {
-        CustomDialog(
-            onDismiss = { deleteTimeDialogState = false },
-            onConfirm = {
-                vm.editEditingLectureDetail(
-                    editingLectureDetail.copy(
-                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
-                            .also {
-                                it.removeAt(editingClassTimeIndex)
-                            }
-                    )
-                )
-                deleteTimeDialogState = false
-            },
-            title = stringResource(R.string.lecture_detail_delete_class_time_message)
-        ) {}
-    }
-
-    // 강의 겹침 다이얼로그
-    if (lectureOverlapDialogState) {
-        CustomDialog(
-            onDismiss = { lectureOverlapDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    if (vm.isAddMode()) {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                vm.createLecture2(is_forced = true)
-                                vm.unsetEditMode()
-                                vm.setAddMode(false)
-                                scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                            }
-                        }
-                    } else {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                vm.updateLecture2(is_forced = true)
-                                vm.initializeEditingLectureDetail(editingLectureDetail)
-                                vm.unsetEditMode()
-                            }
-                        }
-                    }
-                    lectureOverlapDialogState = false
-                }
-            },
-            title = stringResource(id = R.string.lecture_overlap_error_message)
-        ) {
-            Text(text = lectureOverlapDialogMessage, style = SNUTTTypography.body1)
-        }
-    }
 }
 
 @Composable
-fun LectureDetailItem(
-    title: String,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(40.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.width(20.dp))
-        Text(
-            text = title,
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
-        )
-        Box(modifier = Modifier.weight(1f)) {
-            content()
-        }
-        Spacer(modifier = Modifier.width(20.dp))
-    }
-}
-
-@Composable
-fun LectureDetailRemark(
-    title: String,
-    editMode: Boolean,
-    content: @Composable () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 40.dp)
-            .padding(vertical = 10.dp)
-    ) {
-        Spacer(modifier = Modifier.width(20.dp))
-        Text(
-            text = title,
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
-        )
-        Box(modifier = Modifier.weight(1f)) {
-            content()
-        }
-        Spacer(modifier = Modifier.width(20.dp))
-    }
-}
-
-@Composable
-fun LectureDetailButton(
+private fun LectureDetailButton(
     title: String,
     textStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
     onClick: () -> Unit
@@ -787,15 +569,13 @@ fun LectureDetailButton(
 }
 
 @Composable
-fun LectureDetailTimeAndLocation(
+private fun LectureDetailTimeAndLocation(
     timeText: String,
     locationText: String,
     editTime: () -> Unit = {},
     onLocationTextChange: (String) -> Unit,
     onClickDeleteIcon: () -> Unit = {},
-    onLongClick: () -> Unit = {},
     editMode: Boolean,
-    isCustom: Boolean = false,
     visible: MutableTransitionState<Boolean> = MutableTransitionState(true)
 ) {
     AnimatedVisibility(
@@ -806,10 +586,6 @@ fun LectureDetailTimeAndLocation(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .pointerInput(Unit) {
-                    // TODO: 중요하지 않은 기능이지만.. 하위 editText의 clicks{} 가 상위의 tap event를 가로챈다.
-                    detectTapGestures(onLongPress = { onLongClick() })
-                }
                 .height(60.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -833,11 +609,11 @@ fun LectureDetailTimeAndLocation(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clicks {
-                                if (editMode && isCustom) editTime()
+                                if (editMode) editTime()
                             },
                         style = SNUTTTypography.body1.copy(
                             fontSize = 15.sp,
-                            color = if (isCustom.not() && editMode) SNUTTColors.Gray200 else SNUTTColors.Black900
+                            color = SNUTTColors.Black900,
                         ),
                     )
                 }
@@ -862,16 +638,14 @@ fun LectureDetailTimeAndLocation(
                     )
                 }
             }
-            if (isCustom) {
-                AnimatedVisibility(visible = editMode) {
-                    Box(
-                        modifier = Modifier
-                            .width(36.dp)
-                            .clicks { onClickDeleteIcon() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        TipCloseIcon(modifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-                    }
+            AnimatedVisibility(visible = editMode) {
+                Box(
+                    modifier = Modifier
+                        .width(36.dp)
+                        .clicks { onClickDeleteIcon() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    TipCloseIcon(modifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 }
             }
         }
@@ -926,285 +700,8 @@ fun ColorBox(
     }
 }
 
-@Composable
-fun DayTimePickerSheet(
-    classTime: ClassTimeDto,
-    onDismiss: () -> Unit,
-    onConfirm: (ClassTimeDto) -> Unit,
-) {
-    val modalState = LocalModalState.current
-    val context = LocalContext.current
-    val dayList = remember {
-        context.resources.getStringArray(R.array.week_days).map {
-            it + context.getString(R.string.settings_timetable_config_week_day)
-        }
-    }
-    var dayIndex by remember { mutableStateOf(classTime.day) }
-
-    val amPmList = remember { listOf(context.getString(R.string.morning), context.getString(R.string.afternoon)) }
-    val hourList = remember { List(12) { if (it == 0) "12" else it.toString() } }
-    val minuteList = remember { List(12) { "%02d".format(it * 5) } }
-
-    var startTime: Time12 by remember { mutableStateOf(classTime.startTime12()) }
-    var endTime: Time12 by remember { mutableStateOf(classTime.endTime12()) }
-
-    var editingStartTime by remember { mutableStateOf(false) }
-    var editingEndTime by remember { mutableStateOf(false) }
-
-    /* 시작 시간이 끝나는 시간보다 같거나 더 나중일 때, 경계값 신경써서 조정하는 함수 */
-    val checkBoundary = {
-        if (startTime >= endTime) {
-            // 시작 시간을 끝나는 시간보다 나중으로 수정했으면, 끝나는 시간을 5분 뒤로 설정
-            if (editingStartTime) {
-                if (startTime.isLast()) {
-                    startTime = startTime.prev()
-                    endTime = startTime.next()
-                } else endTime = startTime.next()
-                // 끝나는 시간을 시작 시간보다 앞서게 수정했으면, 시작 시간을 5분 앞으로 설정
-            } else if (editingEndTime) {
-                if (endTime.isFirst()) {
-                    endTime = endTime.next()
-                    startTime = endTime.prev()
-                } else startTime = endTime.prev()
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .background(SNUTTColors.White900)
-            .padding(15.dp)
-    ) {
-        Row(modifier = Modifier.padding(5.dp)) {
-            Text(
-                text = stringResource(R.string.common_cancel),
-                style = SNUTTTypography.body1,
-                modifier = Modifier.clicks { onDismiss() },
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.common_ok),
-                style = SNUTTTypography.body1,
-                modifier = Modifier.clicks {
-                    onConfirm(
-                        classTime.copy(
-                            day = dayIndex,
-                            start_time = startTime.toString24(),
-                            end_time = endTime.toString24(),
-                        )
-                    )
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(30.dp))
-        Row(
-            modifier = Modifier
-                .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
-                    var tempDayIndex by mutableStateOf(dayIndex)
-                    modalState
-                        .set(
-                            onDismiss = {
-                                dayIndex = tempDayIndex
-                                modalState.hide()
-                            },
-                            width = 150.dp,
-                        ) {
-                            Picker(
-                                list = dayList,
-                                initialCenterIndex = dayIndex,
-                                columnHeightDp = 45.dp,
-                                onValueChanged = { tempDayIndex = it }
-                            ) {
-                                Text(
-                                    text = dayList[it],
-                                    style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                )
-                            }
-                        }.show()
-                },
-            ) {
-                Text(text = dayList[dayIndex], style = SNUTTTypography.button)
-            }
-        }
-        Divider(color = SNUTTColors.Black250)
-        Row(
-            modifier = Modifier
-                .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
-                    var tempStartTime by mutableStateOf(startTime.copy())
-                    editingStartTime = true
-                    modalState
-                        .set(
-                            onDismiss = {
-                                startTime = tempStartTime
-                                checkBoundary()
-                                editingStartTime = false
-                                modalState.hide()
-                            },
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
-                                        list = amPmList,
-                                        initialCenterIndex = startTime.amPm,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(amPm = it)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = amPmList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                                Box(modifier = Modifier.weight(1f)) {
-                                    CircularPicker(
-                                        list = hourList,
-                                        initialCenterIndex = startTime.hour,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(hour = it)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = hourList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                                Box(modifier = Modifier.weight(1f)) {
-                                    CircularPicker(
-                                        list = minuteList,
-                                        initialCenterIndex = startTime.minute / 5,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(minute = it * 5)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = minuteList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                            }
-                        }.show()
-                },
-            ) {
-                Text(
-                    text = startTime.toString(),
-                    style = SNUTTTypography.button
-                )
-            }
-        }
-        Divider(color = SNUTTColors.Black250)
-        Row(
-            modifier = Modifier
-                .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
-                    var tempEndTime by mutableStateOf(endTime.copy())
-                    editingEndTime = true
-                    modalState
-                        .set(
-                            onDismiss = {
-                                endTime = tempEndTime
-                                checkBoundary()
-                                editingEndTime = false
-                                modalState.hide()
-                            },
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.weight(1f)) {
-                                    Picker(
-                                        list = amPmList,
-                                        initialCenterIndex = endTime.amPm,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(amPm = it)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = amPmList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                                Box(modifier = Modifier.weight(1f)) {
-                                    CircularPicker(
-                                        list = hourList,
-                                        initialCenterIndex = endTime.hour,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(hour = it)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = hourList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                                Box(modifier = Modifier.weight(1f)) {
-                                    CircularPicker(
-                                        list = minuteList,
-                                        initialCenterIndex = endTime.minute / 5,
-                                        columnHeightDp = 45.dp,
-                                        onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(minute = it * 5)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = minuteList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                        )
-                                    }
-                                }
-                            }
-                        }.show()
-                },
-            ) {
-                Text(
-                    text = endTime.toString(),
-                    style = SNUTTTypography.button
-                )
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true, widthDp = 480, heightDp = 880)
 @Composable
 fun LectureDetailPagePreview() {
 //    LectureDetailPage()
-}
-
-fun String.creditStringToLong(): Long {
-    return try {
-        this.toLong().coerceAtLeast(0L)
-    } catch (e: Exception) {
-        0
-    }
 }
