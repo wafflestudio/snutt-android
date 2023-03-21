@@ -31,7 +31,6 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlinx.coroutines.*
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -46,7 +45,6 @@ fun SearchPage(
     val bottomSheet = LocalBottomSheetState.current
     val keyBoardController = LocalSoftwareKeyboardController.current
 
-    val lectureDetailViewModel: LectureDetailViewModel = hiltViewModel()
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
@@ -57,27 +55,9 @@ fun SearchPage(
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
-    val reviewWebViewContainer =
-        remember {
-            WebViewContainer(context, userViewModel.accessToken, isDarkMode)
-        }
-    reviewWebViewContainer.apply {
-        this.webView.addJavascriptInterface(
-            CloseBridge(
-                onClose = { scope.launch { bottomSheet.hide() } }
-            ),
-            "Snutt"
-        )
-    }
-
-    // 강의평 바텀시트가 한번 올라왔다가 내려갈 때 원래 보던 창으로 돌아가기 위해 goBack() 수행
-    // * 처음 SearchPage에 진입할 때도 sheetState는 invisible일 텐데, 이 때는 goBack() 하지 않아야 한다. (sheetWasShown 변수 존재 이유)
-    var sheetWasShown by remember { mutableStateOf(false) }
-    LaunchedEffect(bottomSheet.isVisible) {
-        if (!bottomSheet.isVisible && sheetWasShown) {
-            reviewWebViewContainer.webView.goBack()
-        } else {
-            sheetWasShown = true
+    val reviewBottomSheetWebViewContainer = remember {
+        WebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
+            this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
         }
     }
 
@@ -168,7 +148,7 @@ fun SearchPage(
                         ) {
                             items(searchResultPagingItems) { lectureDataWithState ->
                                 lectureDataWithState?.let {
-                                    LectureListItem(lectureDataWithState, reviewWebViewContainer, searchViewModel = searchViewModel)
+                                    LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer, searchViewModel = searchViewModel)
                                 }
                             }
                             item {
