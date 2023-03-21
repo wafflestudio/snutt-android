@@ -25,6 +25,8 @@ interface BottomSheet {
     suspend fun show() = state.show()
 
     suspend fun hide() = state.hide()
+
+    suspend fun hideAndDisposeContent()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -41,12 +43,10 @@ fun BottomSheet(): BottomSheet {
                 Box(modifier = Modifier.size(1.dp))
             })
         }
-    }.also { bottomSheet ->
-        LaunchedEffect(bottomSheet.isVisible) {
-            // LectureDetailPage를 바텀시트로 띄웠다가 닫을 때, content를 초기화해서 LectureDetailPage를 dispose시키지 않으면 닫힌 LectureDetailPage의 backHandler가 계속 작동한다.
-            if (!bottomSheet.isVisible) {
-                bottomSheet.setSheetContent { Box(modifier = Modifier.size(1.dp)) }
-            }
+
+        override suspend fun hideAndDisposeContent() {
+            hide()
+            content = { Box(modifier = Modifier.size(1.dp)) }
         }
     }
 }
