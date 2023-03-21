@@ -61,7 +61,7 @@ fun HomePage() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var popupReady by remember { mutableStateOf(popupState.popup != null) }
     val isDarkMode = isDarkMode()
-    val reviewWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
+    val reviewPageWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
 
@@ -89,7 +89,7 @@ fun HomePage() {
     }
 
     LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
-        reviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
+        reviewPageWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
     }
 
     BackHandler(enabled = bottomSheet.isVisible || drawerState.isOpen || pageController.homePageState.value != HomeItem.Timetable) {
@@ -105,7 +105,6 @@ fun HomePage() {
     CompositionLocalProvider(
         LocalTableState provides tableState,
         LocalDrawerState provides drawerState,
-        LocalReviewWebView provides reviewWebViewContainer,
     ) {
         ModalDrawerWithBottomSheetLayout(drawerState = drawerState) {
             Box(
@@ -114,13 +113,13 @@ fun HomePage() {
             ) {
                 when (pageController.homePageState.value) {
                     HomeItem.Timetable -> TimetablePage()
-                    HomeItem.Search -> SearchPage(
-                        searchResultPagingItems,
-                    )
+                    HomeItem.Search -> SearchPage(searchResultPagingItems)
                     is HomeItem.Review -> {
-                        ReviewPage()
+                        CompositionLocalProvider(LocalReviewWebView provides reviewPageWebViewContainer) {
+                            ReviewPage()
+                        }
                     }
-                    HomeItem.Settings -> SettingsPage(uncheckedNotification = uncheckedNotification)
+                    HomeItem.Settings -> SettingsPage(uncheckedNotification)
                 }
 
                 Box(
