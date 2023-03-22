@@ -31,7 +31,7 @@ interface BottomSheet {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheet(): BottomSheet {
+fun bottomSheet(): BottomSheet {
     return object : BottomSheet {
         override val state: ModalBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,

@@ -89,7 +89,7 @@ fun LectureDetailPage(
     }
 
     /* 바텀시트 관련 */
-    val bottomSheet = BottomSheet()
+    val bottomSheet = bottomSheet()
 
     /* 뒤로가기 핸들링 */
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
