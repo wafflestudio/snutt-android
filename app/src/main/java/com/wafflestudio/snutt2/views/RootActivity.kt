@@ -135,7 +135,7 @@ class RootActivity : AppCompatActivity() {
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
 
-        val bottomSheet = BottomSheet()
+        val bottomSheet = bottomSheet()
         val dialogState = rememberModalState()
         ShowModal(state = dialogState)
 
