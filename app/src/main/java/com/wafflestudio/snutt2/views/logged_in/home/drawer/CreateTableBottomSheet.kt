@@ -2,19 +2,20 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Picker
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.toFullString
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CreateTableBottomSheet(
-    scope: CoroutineScope = rememberCoroutineScope(),
+    scope: CoroutineScope,
     allCourseBook: List<CourseBookDto>,
     currentCourseBook: CourseBookDto,
     specificSemester: Boolean = false,
@@ -35,8 +36,19 @@ fun CreateTableBottomSheet(
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
     val drawerState = LocalDrawerState.current
-    var newTitle by remember { mutableStateOf("") }
+    var newTitle by remember(bottomSheet.isVisible) { mutableStateOf("") }
     var pickedCourseBook by remember { mutableStateOf(currentCourseBook) }
+
+    val handleDoneClick: () -> Unit = {
+        scope.launch {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                if (specificSemester) onConfirm(pickedCourseBook, newTitle)
+                else onConfirm(pickedCourseBook, newTitle)
+                drawerState.close()
+                bottomSheet.hide()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -57,22 +69,7 @@ fun CreateTableBottomSheet(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
-                modifier = Modifier.clicks {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            if (specificSemester) onConfirm(pickedCourseBook, newTitle)
-                            else onConfirm(pickedCourseBook, newTitle)
-                        }
-                        scope.launch {
-                            bottomSheet.hide()
-                            drawerState.close()
-                            context.toast(
-                                context.getString(R.string.home_drawer_create_success_message)
-                                    .format(pickedCourseBook.toFullString(context), newTitle)
-                            )
-                        }
-                    }
-                }
+                modifier = Modifier.clicks { handleDoneClick() }
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
@@ -88,6 +85,9 @@ fun CreateTableBottomSheet(
             underlineColor = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray200,
             underlineColorFocused = if (specificSemester.not()) SNUTTColors.SNUTTTheme else SNUTTColors.Black900,
             underlineWidth = 2.dp,
+            keyboardActions = KeyboardActions(onDone = { handleDoneClick() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            clearFocusFlag = bottomSheet.isVisible.not(),
         )
         Spacer(modifier = Modifier.height(25.dp))
         if (specificSemester.not()) {

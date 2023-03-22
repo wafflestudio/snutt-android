@@ -380,6 +380,7 @@ fun LectureDetailPage(
                             editTime = {
                                 bottomSheet.setSheetContent {
                                     DayTimePickerSheet(
+                                        bottomSheet = bottomSheet,
                                         classTime = classTime,
                                         onDismiss = { scope.launch { bottomSheet.hide() } },
                                         onConfirm = { editedClassTime ->
