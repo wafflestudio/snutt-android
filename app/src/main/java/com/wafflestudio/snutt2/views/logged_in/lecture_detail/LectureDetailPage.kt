@@ -100,7 +100,7 @@ fun LectureDetailPage(
                     scope.launch { bottomSheet.hide() }
                 } else when (modeType) {
                     ModeType.Normal -> {
-                        navController.popBackStack()
+                        if (navController.backQueue.size >= 3) navController.popBackStack()
                     }
                     is ModeType.Editing -> {
                         if ((modeType as ModeType.Editing).adding) {

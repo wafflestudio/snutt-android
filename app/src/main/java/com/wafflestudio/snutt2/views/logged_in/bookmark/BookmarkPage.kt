@@ -1,13 +1,17 @@
 package com.wafflestudio.snutt2.views.logged_in.bookmark
 
-import androidx.activity.compose.BackHandler
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,8 +64,20 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
         )
     }
 
-    BackHandler(bottomSheet.isVisible) {
-        scope.launch { bottomSheet.hide() }
+    /* 뒤로가기 핸들링 */
+    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
+    val onBackPressedCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (bottomSheet.isVisible) {
+                    scope.launch { bottomSheet.hide() }
+                } else if (navController.backQueue.size >= 3) navController.popBackStack()
+            }
+        }
+    }
+    DisposableEffect(Unit) {
+        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
+        onDispose { onBackPressedCallback.remove() }
     }
 
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
@@ -88,7 +104,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
                 .background(SNUTTColors.White900)
                 .fillMaxWidth()
         ) {
-            SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { navController.popBackStack() })
+            SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { onBackPressedCallback.handleOnBackPressed() })
             Box(
                 modifier = Modifier
                     .weight(1f)
