@@ -32,13 +32,8 @@ fun <T> Picker(
         .apply {
             updateBounds(columnHeightDp.value * (- 0.5f), columnHeightDp.value * (list.size - 0.5f))
         }
-    // 중앙에 두 item의 중간이 위치할 때 threshold 및 centerItemIndex 값이 변경
-    val threshold = (animatedOffset.value + columnHeightDp.value / 2) % columnHeightDp.value
-    val centerItemIndex by remember(threshold) {
-        mutableStateOf(
-            (animatedOffset.value / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1)
-        )
-    }
+    val centerItemIndex = (animatedOffset.value / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1)
+
     /* localOffset
      * 기본값 0 (스크롤 하지 않았을 때)
      * 아래로 스크롤: item 높이 절반만큼 스크롤하면 -{columnHeightDp.value/2}, 경계에서 {columnHeightDp.value/2}으로 상승 후 item 높이만큼 스크롤 하면 다시 0
