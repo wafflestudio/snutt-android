@@ -148,7 +148,7 @@ fun SearchPage(
                         ) {
                             items(searchResultPagingItems) { lectureDataWithState ->
                                 lectureDataWithState?.let {
-                                    LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer, searchViewModel = searchViewModel)
+                                    LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer)
                                 }
                             }
                             item {
