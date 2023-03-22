@@ -12,10 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CircularPicker
-import com.wafflestudio.snutt2.components.compose.Picker
-import com.wafflestudio.snutt2.components.compose.RoundBorderButton
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -24,25 +21,21 @@ import com.wafflestudio.snutt2.views.LocalModalState
 
 @Composable
 fun DayTimePickerSheet(
+    bottomSheet: BottomSheet,
     classTime: ClassTimeDto,
     onDismiss: () -> Unit,
     onConfirm: (ClassTimeDto) -> Unit,
 ) {
     val modalState = LocalModalState.current
     val context = LocalContext.current
-    val dayList = remember {
-        context.resources.getStringArray(R.array.week_days).map {
-            it + context.getString(R.string.settings_timetable_config_week_day)
-        }
-    }
-    var dayIndex by remember { mutableStateOf(classTime.day) }
-
+    val dayList = remember { context.resources.getStringArray(R.array.week_days).map { it + context.getString(R.string.settings_timetable_config_week_day) } }
     val amPmList = remember { listOf(context.getString(R.string.morning), context.getString(R.string.afternoon)) }
     val hourList = remember { List(12) { if (it == 0) "12" else it.toString() } }
     val minuteList = remember { List(12) { "%02d".format(it * 5) } }
 
-    var startTime: Time12 by remember { mutableStateOf(classTime.startTime12()) }
-    var endTime: Time12 by remember { mutableStateOf(classTime.endTime12()) }
+    var dayIndex by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.day) }
+    var startTime: Time12 by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.startTime12()) }
+    var endTime: Time12 by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.endTime12()) }
 
     var editingStartTime by remember { mutableStateOf(false) }
     var editingEndTime by remember { mutableStateOf(false) }
@@ -120,7 +113,7 @@ fun DayTimePickerSheet(
                                 onValueChanged = { tempDayIndex = it }
                             ) {
                                 Text(
-                                    text = dayList[it],
+                                    text = dayList[it].tempBlank(it),
                                     style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                 )
                             }
@@ -164,7 +157,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = amPmList[it],
+                                            text = amPmList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -179,7 +172,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = hourList[it],
+                                            text = hourList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -194,7 +187,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = minuteList[it],
+                                            text = minuteList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -289,4 +282,13 @@ fun DayTimePickerSheet(
             }
         }
     }
+}
+
+/* FIXME
+ * Picker의 인접한 item끼리 Text에 들어갈 String의 길이가 같으면 드래그할 때 글리치가 생긴다. (원인 불명)
+ * 길이가 다르면 문제가 없다. 임시 대처용 함수
+ */
+private fun String.tempBlank(a: Int): String {
+    return if (a % 2 == 0) this
+    else " $this "
 }
