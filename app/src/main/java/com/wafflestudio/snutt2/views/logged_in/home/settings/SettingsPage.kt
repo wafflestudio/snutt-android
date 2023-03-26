@@ -59,7 +59,9 @@ fun SettingsPage(
                     NotificationIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks { navController.navigate(NavigationDestination.Notification) },
+                            .clicks {
+                                // TODO
+                            },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 }
