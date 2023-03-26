@@ -90,8 +90,9 @@ fun TopBar(
             ) { title() }
 
             Row(
-                modifier = Modifier.wrapContentWidth(),
+                modifier = Modifier.wrapContentWidth().padding(end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) { actions() }
         }
     }
@@ -116,7 +117,8 @@ fun SearchTopBar(
                 .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
                 .fillMaxSize()
                 .padding(horizontal = 8.dp, vertical = 3.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             content()
         }

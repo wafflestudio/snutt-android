@@ -93,8 +93,7 @@ class SearchViewModel @Inject constructor(
                     selected = selectedLecture == bookmarkedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(bookmarkedLecture)
-                    },
-                    bookmarked = true,
+                    }
                 )
             )
         }
@@ -115,16 +114,15 @@ class SearchViewModel @Inject constructor(
                 lecturesMask = currentTable.lectureList.getClassTimeMask()
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable.filterNotNull(), bookmarkList,
-    ) { pagingData, selectedLecture, currentTable, bookmarkList ->
+        _selectedLecture, currentTable.filterNotNull()
+    ) { pagingData, selectedLecture, currentTable ->
         pagingData.map { searchedLecture ->
             searchedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == searchedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(searchedLecture)
-                    },
-                    bookmarked = bookmarkList.map { it.item.id }.contains(searchedLecture.id),
+                    }
                 )
             )
         }

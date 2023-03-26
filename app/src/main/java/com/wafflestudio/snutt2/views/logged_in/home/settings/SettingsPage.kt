@@ -63,7 +63,6 @@ fun SettingsPage(
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
             }
         )
         Margin(height = 10.dp)

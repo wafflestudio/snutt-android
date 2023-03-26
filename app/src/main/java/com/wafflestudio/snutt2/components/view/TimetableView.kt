@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.components
+package com.wafflestudio.snutt2.components.view
 
 import android.annotation.SuppressLint
 import android.content.Context

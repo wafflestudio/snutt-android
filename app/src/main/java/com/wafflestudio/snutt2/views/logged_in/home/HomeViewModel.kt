@@ -9,6 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +20,9 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
+
+    private val _unCheckedNotificationExist = MutableStateFlow(false)
+    val unCheckedNotificationExist = _unCheckedNotificationExist.asStateFlow()
 
     suspend fun refreshData() {
         try {
@@ -37,8 +42,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getUncheckedNotificationsExist(): Boolean {
-        val count = notificationRepository.getNotificationCount()
-        return count > 0
+    suspend fun checkUncheckedNotificationsExist() {
+        _unCheckedNotificationExist.emit(notificationRepository.getNotificationCount() > 0)
     }
 }

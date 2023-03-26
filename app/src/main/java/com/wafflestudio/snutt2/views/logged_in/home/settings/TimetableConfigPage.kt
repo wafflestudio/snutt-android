@@ -37,8 +37,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.logged_in.home.TableContext
-import com.wafflestudio.snutt2.views.logged_in.home.TableContextBundle
+import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
@@ -58,8 +58,8 @@ fun TimetableConfigPage() {
 
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
-    val tableContext =
-        TableContextBundle(table ?: TableDto.Default, trimParam, previewTheme)
+    val tableState =
+        TableState(table ?: TableDto.Default, trimParam, previewTheme)
 
     Column(
         modifier = Modifier
@@ -149,7 +149,7 @@ fun TimetableConfigPage() {
                 )
                 .align(Alignment.CenterHorizontally)
         ) {
-            CompositionLocalProvider(TableContext provides tableContext) {
+            CompositionLocalProvider(LocalTableState provides tableState) {
                 TimeTable(selectedLecture = null, touchEnabled = false)
             }
         }

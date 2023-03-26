@@ -119,7 +119,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Deps.Version.Compose
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
 }
 
@@ -177,9 +177,9 @@ dependencies {
     // Compose
     implementation("androidx.compose.runtime:runtime:${Deps.Version.Compose}")
     implementation("androidx.compose.ui:ui:${Deps.Version.Compose}")
-    implementation("androidx.compose.foundation:foundation:${Deps.Version.Compose}")
-    implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.Compose}")
-    implementation("androidx.compose.material:material:${Deps.Version.Compose}")
+    implementation("androidx.compose.foundation:foundation:${Deps.Version.ComposeFoundation}")
+    implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.ComposeFoundation}")
+    implementation("androidx.compose.material:material:1.4.0-alpha04")
     implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
     implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")

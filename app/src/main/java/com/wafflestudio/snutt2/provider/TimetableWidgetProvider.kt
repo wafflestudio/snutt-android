@@ -14,7 +14,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
-import com.wafflestudio.snutt2.components.TimetableView
+import com.wafflestudio.snutt2.components.view.TimetableView
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity

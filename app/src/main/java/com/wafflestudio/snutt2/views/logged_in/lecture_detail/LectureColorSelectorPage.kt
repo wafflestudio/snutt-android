@@ -41,7 +41,7 @@ fun LectureColorSelectorPage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val vm = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
+    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     val lectureState by vm.editingLectureDetail.collectAsState()
 
@@ -62,7 +62,7 @@ fun LectureColorSelectorPage() {
             theme = tableColorTheme,
             isSelected = (idx == lectureState.colorIndex)
         ) {
-            vm.editEditingLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
+            vm.editLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
             navController.popBackStack()
         }
         ColorItem(
@@ -76,7 +76,7 @@ fun LectureColorSelectorPage() {
                     colorSelectorDialog(context, "배경 색").map { Pair(fgColor, it) }
                 }
                 .subscribeBy { (fgColor, bgColor) ->
-                    vm.editEditingLectureDetail(
+                    vm.editLectureDetail(
                         lectureState.copy(
                             colorIndex = 0L,
                             color = ColorDto(fgColor, bgColor)

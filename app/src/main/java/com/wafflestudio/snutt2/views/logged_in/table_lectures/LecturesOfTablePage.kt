@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,8 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,9 +28,9 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LecturesOfTablePage() {
     val navController = LocalNavController.current
@@ -44,7 +40,7 @@ fun LecturesOfTablePage() {
     val backStackEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(NavigationDestination.Home)
     }
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(backStackEntry)
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     val currentTable: TableDto? by viewModel.currentTable.collectAsState()
     val lectureList = currentTable?.lectureList ?: emptyList()
@@ -57,13 +53,11 @@ fun LecturesOfTablePage() {
         LecturesOfTable(
             lectures = lectureList,
             onClickAdd = {
-                lectureDetailViewModel.setAddMode(true)
-                lectureDetailViewModel.setEditMode()
-                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default)
+                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default, ModeType.Editing(true))
                 navController.navigate(NavigationDestination.LectureDetail)
             },
             onClickLecture = { lecture ->
-                lectureDetailViewModel.initializeEditingLectureDetail(lecture)
+                lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
                 navController.navigate(NavigationDestination.LectureDetail) {
                     launchSingleTop = true
                 }
@@ -71,8 +65,6 @@ fun LecturesOfTablePage() {
         )
     }
 }
-
-@ExperimentalFoundationApi
 @Composable
 fun LecturesOfTable(
     lectures: List<LectureDto>,
@@ -107,33 +99,26 @@ private fun TableLectureItem(
     Column(
         modifier = Modifier
             .clicks { onClickLecture(lecture) }
-            .padding(horizontal = 20.dp, vertical = 7.dp)
+            .padding(horizontal = 20.dp, vertical = 7.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = lecture.course_title,
-                    style = SNUTTTypography.h4,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Column {
-                Text(
-                    text = SNUTTStringUtils.getInstructorAndCreditText(lecture),
-                    style = SNUTTTypography.body2,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-        Spacer(Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TagIcon(
-                modifier = Modifier.size(15.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            Text(
+                text = lecture.course_title,
+                style = SNUTTTypography.h4,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = SNUTTStringUtils.getInstructorAndCreditText(lecture),
+                style = SNUTTTypography.body2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TagIcon(modifier = Modifier.size(15.dp))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = tagText,
@@ -141,12 +126,8 @@ private fun TableLectureItem(
                 modifier = Modifier.alpha(0.8f)
             )
         }
-        Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            ClockIcon(
-                modifier = Modifier.size(15.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
+            ClockIcon(modifier = Modifier.size(15.dp))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = classTimeText,
@@ -154,12 +135,8 @@ private fun TableLectureItem(
                 modifier = Modifier.alpha(0.8f),
             )
         }
-        Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            LocationIcon(
-                modifier = Modifier.size(15.dp, 15.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
+            LocationIcon(modifier = Modifier.size(15.dp, 15.dp))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = locationText,
@@ -178,20 +155,12 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
             .padding(horizontal = 20.dp, vertical = 10.dp)
     ) {
         Row {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.lecture_list_add_button),
-                    style = SNUTTTypography.body1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Image(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = "add arrow",
-                modifier = Modifier.size(22.dp, 22.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            Text(
+                text = stringResource(R.string.lecture_list_add_button),
+                style = SNUTTTypography.body1,
             )
+            Spacer(modifier = Modifier.weight(1f))
+            RightArrowIcon(modifier = Modifier.size(22.dp, 22.dp),)
         }
     }
     Spacer(Modifier.height(20.dp))
