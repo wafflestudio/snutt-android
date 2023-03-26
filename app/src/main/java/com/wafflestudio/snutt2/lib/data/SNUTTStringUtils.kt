@@ -124,4 +124,12 @@ object SNUTTStringUtils {
         return if (this.isEmpty()) true
         else regex.matches(this).not()
     }
+
+    fun String.creditStringToLong(): Long {
+        return try {
+            this.toLong().coerceAtLeast(0L)
+        } catch (e: Exception) {
+            0
+        }
+    }
 }

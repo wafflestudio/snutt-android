@@ -27,22 +27,20 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.LoadingIndicator
-import com.wafflestudio.snutt2.components.compose.ShowModal
-import com.wafflestudio.snutt2.components.compose.rememberModalState
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkPage
+import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_out.*
@@ -134,6 +132,7 @@ class RootActivity : AppCompatActivity() {
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
 
+        val bottomSheet = bottomSheet()
         val dialogState = rememberModalState()
         ShowModal(state = dialogState)
 
@@ -167,6 +166,7 @@ class RootActivity : AppCompatActivity() {
             LocalPopupState provides popupState,
             LocalModalState provides dialogState,
             LocalCompactState provides compactMode,
+            LocalBottomSheetState provides bottomSheet,
         ) {
             AnimatedNavHost(
                 navController = navController,
@@ -185,9 +185,8 @@ class RootActivity : AppCompatActivity() {
                     val parentEntry = remember(it) {
                         navController.getBackStackEntry(NavigationDestination.Home)
                     }
-                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModelNew>(parentEntry)
-                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    LectureDetailPage(lectureDetailViewModel, searchViewModel)
+                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
+                    LectureDetailPage(lectureDetailViewModel)
                 }
 
                 composable2(NavigationDestination.LectureColorSelector) {

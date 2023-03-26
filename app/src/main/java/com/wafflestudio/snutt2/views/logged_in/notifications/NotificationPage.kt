@@ -36,7 +36,7 @@ fun NotificationPage() {
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() }
+            onClickNavigateBack = { if (navController.backQueue.size >= 3) navController.popBackStack() }
         )
 
         when {

@@ -95,7 +95,6 @@ fun AppReportPage() {
         }, actions = {
             SendIcon(
                 modifier = Modifier
-                    .padding(end = 10.dp)
                     .size(20.dp)
                     .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
