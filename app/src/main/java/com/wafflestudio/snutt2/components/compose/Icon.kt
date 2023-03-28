@@ -158,12 +158,14 @@ fun LocationIcon(
 
 @Composable
 fun LogoIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.logo),
-        contentDescription = ""
+        contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
