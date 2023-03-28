@@ -7,7 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.ui.SNUTTColorMatrix
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 internal fun BottomNavigation(
@@ -66,6 +68,22 @@ internal fun BottomNavigation(
                 modifier = Modifier.size(30.dp),
                 isSelected = pageState is HomeItem.Review,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
+        }
+
+        BorderButton(
+            color = SNUTTColors.White900,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            onClick = {
+                onUpdatePageState(HomeItem.Share)
+            }
+        ) {
+            ShareTableIcon(
+                modifier = Modifier.size(30.dp),
+                isSelected = pageState == HomeItem.Share,
+                colorFilter = if (isDarkMode()) SNUTTColorMatrix.BlackWhiteInversionMatrix else null,
             )
         }
 

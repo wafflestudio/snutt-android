@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.share.ShareTablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -119,6 +120,7 @@ fun HomePage() {
                             ReviewPage()
                         }
                     }
+                    HomeItem.Share -> ShareTablePage()
                     HomeItem.Settings -> SettingsPage(uncheckedNotification)
                 }
 
