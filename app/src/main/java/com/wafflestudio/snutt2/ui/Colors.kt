@@ -4,6 +4,8 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 
 object SNUTTColors {
     val Colors.Gray100 @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff505050)
@@ -84,6 +86,19 @@ object SNUTTColors {
 
     val Colors.AllWhite @Composable get() = Color(0xffffffff)
     val AllWhite @Composable get() = MaterialTheme.colors.AllWhite
+}
+
+object SNUTTColorMatrix {
+    val BlackWhiteInversionMatrix = ColorFilter.colorMatrix(
+        ColorMatrix(
+            floatArrayOf(
+                -1f, 0f, 0f, 0f, 255f,
+                -1f, 0f, 0f, 0f, 255f,
+                -1f, 0f, 0f, 0f, 255f,
+                0f, 0f, 0f, 1f, 0f,
+            )
+        )
+    )
 }
 
 val theme_snutt_0 = Color(0xffE54459)

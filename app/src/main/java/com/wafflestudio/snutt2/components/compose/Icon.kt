@@ -547,3 +547,17 @@ fun RemarkIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun ShareTableIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean,
+    colorFilter: ColorFilter?,
+) {
+    Image(
+        modifier = modifier,
+        painter = if (isSelected) painterResource(R.drawable.ic_share_table_selected) else painterResource(R.drawable.ic_share_table),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
