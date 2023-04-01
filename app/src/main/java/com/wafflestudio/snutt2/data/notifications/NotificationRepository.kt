@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
 
-    suspend fun getNotificationResultStream(): Flow<PagingData<NotificationDto>>
+    fun getNotificationResultStream(): Flow<PagingData<NotificationDto>>
 
     suspend fun getNotificationCount(): Long
 }

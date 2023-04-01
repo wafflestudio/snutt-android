@@ -60,7 +60,9 @@ fun SettingsPage(
                         modifier = centerAlignedModifier
                             .size(30.dp)
                             .clicks {
-                                // TODO
+                                navController.navigate(
+                                    NavigationDestination.Notification
+                                )
                             },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
