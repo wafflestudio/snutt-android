@@ -18,7 +18,7 @@ jobs:
           access_token: ${{ github.token }}
 
   static-check:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: cancel-workflow
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
           path: ./**/build/reports/ktlint/**/*.html
 
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: static-check
     steps:
       - name: Checkout
