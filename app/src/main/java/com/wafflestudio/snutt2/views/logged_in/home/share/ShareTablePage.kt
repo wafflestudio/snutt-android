@@ -60,6 +60,7 @@ import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.MoreActionItem
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -86,6 +87,7 @@ fun ShareTablePage(sharedTableList: List<Map.Entry<CourseBookDto, List<SimpleSha
     val deepLinkTableId =
         (LocalHomePageController.current.homePageState.value as? HomeItem.Share)?.tableId
     val vm: ShareTableViewModel = hiltViewModel()
+    val tableListViewModel: TableListViewModel = hiltViewModel()
 
 //    var pageState: ShareTablePageState by remember { mutableStateOf(ShareTablePageState.List) }
     var sharedNewTableTitleField by remember { mutableStateOf("") }
@@ -158,28 +160,42 @@ fun ShareTablePage(sharedTableList: List<Map.Entry<CourseBookDto, List<SimpleSha
                             bottomSheet.setSheetContent {
                                 SharedTableActionBottomSheet(it, onChangeTitle = { title ->
                                     scope.launch {
-                                        vm.changeSharedTableTitle(it.id, title)
-                                        vm.fetchSharedTableList()
-                                        context.toast("시간표 이름을 변경하였습니다.")
-                                        modalState.hide()
-                                        bottomSheet.hide()
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.changeSharedTableTitle(it.id, title)
+                                            vm.fetchSharedTableList()
+                                            context.toast("시간표 이름을 변경하였습니다.")
+                                            modalState.hide()
+                                            bottomSheet.hide()
+                                        }
                                     }
                                 }, onDelete = {
                                     scope.launch {
-                                        vm.deleteSharedTable(it.id)
-                                        vm.fetchSharedTableList()
-                                        modalState.hide()
-                                        bottomSheet.hide()
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.deleteSharedTable(it.id)
+                                            vm.fetchSharedTableList()
+                                            context.toast("공유된 시간표를 삭제하였습니다.")
+                                            modalState.hide()
+                                            bottomSheet.hide()
+                                        }
                                     }
                                 }, onAdd = {
-
+                                    scope.launch {
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vm.copySharedTable(it.id)
+                                            vm.fetchSharedTableList()
+                                            tableListViewModel.fetchTableMap()
+                                            context.toast("내 시간표로 복제하였습니다.")
+                                            modalState.hide()
+                                            bottomSheet.hide()
+                                        }
+                                    }
                                 })
                             }
                             scope.launch { bottomSheet.show() }
-                        }, onClickItem = { tableId ->
+                        }, onClickItem = { tableId, myTitle ->
                             scope.launch {
-                                vm.getSharedTableById(tableId).let {
-                                    updatePageState(ShareTablePageState.Table(it.timetable))
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    updatePageState(ShareTablePageState.Table(vm.getSharedTableById(tableId).timetable.copy(title = myTitle)))
                                 }
                             }
                         })
@@ -235,7 +251,7 @@ fun ShareTablePage(sharedTableList: List<Map.Entry<CourseBookDto, List<SimpleSha
 fun SharedTableList(
     sharedTableList: List<Map.Entry<CourseBookDto, List<SimpleSharedTableDto>>>,
     onClickKebabIcon: (SimpleSharedTableDto) -> Unit,
-    onClickItem: (String) -> Unit
+    onClickItem: (String, String) -> Unit
 ) {
     val bottomSheet = LocalBottomSheetState.current
 
@@ -267,7 +283,7 @@ fun SharedTableList(
                             .fillMaxWidth()
                             .height(54.dp)
                             .clicks {
-                                onClickItem(table.id)
+                                onClickItem(table.id, table.title)
                             },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
