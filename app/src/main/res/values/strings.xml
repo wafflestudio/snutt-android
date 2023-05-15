@@ -265,4 +265,13 @@
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>
     <string name="bookmark_page_placeholder_3">관리해보세요.</string>
     <string name="loading_indicator_message">잠시만 기다려 주세요…</string>
+    <string name="share_table_page_title">공유된 시간표</string>
+    <string name="share_table_page_tutorial_text_1">시간표 링크 공유 기능</string>
+    <string name="share_table_page_tutorial_text_2">이제 친구와 더 쉽게 시간표를 공유할 수 있게 되었어요!</string>
+    <string name="share_table_page_tutorial_text_3">친구가 보낸 링크를 클릭하면 이 곳에 공유된 시간표가 쌓여요</string>
+    <string name="share_table_page_tutorial_text_4">공유 버튼을 클릭해 링크를 복사할 수 있어요</string>
+    <string name="share_table_page_tutorial_text_5">*공유한 시간표를 수정하면 공유받은 사람에게도 반영돼요</string>
+    <string name="share_table_page_tutorial_text_6">**공유받은 시간표를 내 시간표 목록에 추가하여 사용할 수도 있어요</string>
+    <string name="share_table_page_tutorial_text_7">***시간표는 공유 받는 사람이 제목을 새로 정해요</string>
+    <string name="shared_table_more_action_add_to_my_table">내 시간표에 추가</string>
 </resources>

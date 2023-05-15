@@ -144,7 +144,7 @@ fun FindPasswordPage() {
         SimpleTopBar(title = stringResource(R.string.find_password_title), onClickNavigateBack = {
             onBackPressedCallback.handleOnBackPressed()
         })
-        AnimatedContent(targetState = flowState) { targetState ->
+        AnimatedContent(targetState = flowState, label = "") { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
                 when (targetState) {
                     FlowState.CheckEmail -> {
