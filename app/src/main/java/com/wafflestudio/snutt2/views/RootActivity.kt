@@ -8,11 +8,21 @@ import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
-import androidx.compose.runtime.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.core.animation.doOnEnd
@@ -21,29 +31,46 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.LoadingIndicator
+import com.wafflestudio.snutt2.components.compose.ShowModal
+import com.wafflestudio.snutt2.components.compose.bottomSheet
+import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ColorModeSelectPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.PersonalInformationPolicyPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.TimetableConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
-import com.wafflestudio.snutt2.views.logged_out.*
+import com.wafflestudio.snutt2.views.logged_out.FindIdPage
+import com.wafflestudio.snutt2.views.logged_out.FindPasswordPage
+import com.wafflestudio.snutt2.views.logged_out.SignInPage
+import com.wafflestudio.snutt2.views.logged_out.SignUpPage
+import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -175,7 +202,18 @@ class RootActivity : AppCompatActivity() {
 
                 onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage() }
+                composableRoot(
+                    NavigationDestination.Home,
+                    deepLinks = listOf(navDeepLink { uriPattern = "https://snutt-dev.wafflestudio.com?mobileCtaLink=snutt://share?timetableId={id}" })
+                ) {navBackStackEntry ->
+                    LaunchedEffect(Unit) {
+                        navBackStackEntry.arguments?.getString("id")?.let { timetableId ->
+                            navBackStackEntry.arguments?.clear()
+                            homePageController.update(HomeItem.Share(timetableId))
+                        }
+                    }
+                    HomePage()
+                }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 
@@ -233,10 +271,12 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.composable2(
         route: String,
+        deepLinks: List<NavDeepLink> = emptyList(),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
             route,
+            deepLinks = deepLinks,
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> fullWidth },
@@ -255,10 +295,12 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.composableRoot(
         route: String,
+        deepLinks: List<NavDeepLink> = emptyList(),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
             route,
+            deepLinks = deepLinks,
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { fadeOut() },
