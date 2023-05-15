@@ -421,4 +421,28 @@ interface SNUTTRestApi {
     suspend fun _deleteBookmark(
         @Body body: PostBookmarkParams
     )
+
+    @GET("/v1/shared-tables")
+    suspend fun _getSharedTableList(): GetSharedTableListResults
+
+    @POST("/v1/shared-tables")
+    suspend fun _createSharedTable(
+        @Body body: PostSharedTableParams
+    )
+
+    @GET("/v1/shared-tables/{id}")
+    suspend fun _getSharedTable(
+        @Path("id") id: String,
+    ): GetSharedTableResults
+
+    @PUT("/v1/shared-tables/{id}")
+    suspend fun _putSharedTable(
+        @Path("id") id: String,
+        @Body body: PutSharedTableParams
+    )
+
+    @DELETE("/v1/shared-tables/{id}")
+    suspend fun _deleteSharedTable(
+        @Path("id") id: String,
+    )
 }

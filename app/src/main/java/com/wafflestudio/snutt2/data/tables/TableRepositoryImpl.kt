@@ -3,9 +3,13 @@ package com.wafflestudio.snutt2.data.tables
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.PostSharedTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
+import com.wafflestudio.snutt2.lib.network.dto.PutSharedTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.core.SharedTableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleSharedTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import kotlinx.coroutines.flow.StateFlow
@@ -81,4 +85,25 @@ class TableRepositoryImpl @Inject constructor(
         val response = api._copyTable(id)
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
+
+    override suspend fun fetchSharedTableList(): List<SimpleSharedTableDto> {
+        return api._getSharedTableList().content
+    }
+
+    override suspend fun createSharedTable(title: String, tableId: String) {
+        return api._createSharedTable(PostSharedTableParams(title, tableId))
+    }
+
+    override suspend fun getSharedTableById(tableId: String): SharedTableDto {
+        return api._getSharedTable(tableId)
+    }
+
+    override suspend fun deleteSharedTable(tableId: String) {
+        return api._deleteSharedTable(tableId)
+    }
+
+    override suspend fun updateSharedTableTitle(tableId: String, title: String) {
+        return api._putSharedTable(tableId, PutSharedTableParams(title))
+    }
+
 }
