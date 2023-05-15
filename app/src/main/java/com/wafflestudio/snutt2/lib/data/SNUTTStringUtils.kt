@@ -4,7 +4,6 @@ import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException

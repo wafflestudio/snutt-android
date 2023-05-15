@@ -19,10 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -117,15 +115,17 @@ fun HomePage() {
         LocalTableState provides tableState,
         LocalDrawerState provides drawerState,
     ) {
-        var pageState by rememberSaveable(saver = object : Saver<MutableState<ShareTablePageState>, TableDto> {
-            override fun restore(value: TableDto): MutableState<ShareTablePageState> {
-                return if(value.id.isEmpty()) mutableStateOf(ShareTablePageState.List) else mutableStateOf(ShareTablePageState.Table(value))
+        var pageState by rememberSaveable(
+            saver = object : Saver<MutableState<ShareTablePageState>, TableDto> {
+                override fun restore(value: TableDto): MutableState<ShareTablePageState> {
+                    return if (value.id.isEmpty()) mutableStateOf(ShareTablePageState.List) else mutableStateOf(ShareTablePageState.Table(value))
+                }
+                override fun SaverScope.save(value: MutableState<ShareTablePageState>): TableDto {
+                    return if (value.value is ShareTablePageState.Table) (value.value as ShareTablePageState.Table).table
+                    else TableDto.Default
+                }
             }
-            override fun SaverScope.save(value: MutableState<ShareTablePageState>): TableDto {
-                return if(value.value is ShareTablePageState.Table) (value.value as ShareTablePageState.Table).table
-                else TableDto.Default
-            }
-        }) {
+        ) {
             val state: MutableState<ShareTablePageState> = mutableStateOf(ShareTablePageState.List)
             return@rememberSaveable object : MutableState<ShareTablePageState> by state {
                 override var value: ShareTablePageState

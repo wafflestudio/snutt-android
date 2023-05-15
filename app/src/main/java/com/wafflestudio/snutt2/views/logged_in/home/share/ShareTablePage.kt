@@ -72,7 +72,6 @@ sealed class ShareTablePageState {
 
     fun isStateList() = this == List
     fun isStateTable() = this is Table
-
 }
 
 @OptIn(ExperimentalAnimationApi::class)

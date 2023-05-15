@@ -109,5 +109,4 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun copySharedTable(tableId: String) {
         return api._copySharedTable(tableId)
     }
-
 }

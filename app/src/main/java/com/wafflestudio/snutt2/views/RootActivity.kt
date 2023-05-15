@@ -205,7 +205,7 @@ class RootActivity : AppCompatActivity() {
                 composableRoot(
                     NavigationDestination.Home,
                     deepLinks = listOf(navDeepLink { uriPattern = "https://snutt-dev.wafflestudio.com?mobileCtaLink=snutt://share?timetableId={id}" })
-                ) {navBackStackEntry ->
+                ) { navBackStackEntry ->
                     LaunchedEffect(Unit) {
                         navBackStackEntry.arguments?.getString("id")?.let { timetableId ->
                             navBackStackEntry.arguments?.clear()
