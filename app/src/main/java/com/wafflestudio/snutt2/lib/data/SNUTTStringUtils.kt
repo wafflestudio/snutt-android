@@ -13,19 +13,19 @@ import java.util.*
 import kotlin.math.roundToInt
 
 object SNUTTStringUtils {
-    fun getFullSemester(tableDto: TableDto): String {
-        val yearString = tableDto.year.toString()
-        val semesterString = when (tableDto.semester) {
+
+    fun getFullSemester(year: Long, semester: Long): String {
+        val semesterString = when (semester) {
             1L -> "1"
-            2L -> "S"
+            2L -> "여름"
             3L -> "2"
-            4L -> "W"
+            4L -> "겨울"
             else -> {
                 Timber.e("semester is out of range!!")
                 ""
             }
         }
-        return "$yearString-$semesterString"
+        return "${year}년 ${semesterString}학기"
     }
 
     // 간소화된 강의 시간
