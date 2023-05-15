@@ -124,7 +124,7 @@ fun TableMoreActionBottomSheet(
 }
 
 @Composable
-private fun MoreActionItem(
+fun MoreActionItem(
     Icon: @Composable () -> Unit,
     text: String,
     onClick: () -> Unit,
