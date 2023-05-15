@@ -3,21 +3,14 @@ package com.wafflestudio.snutt2.views.logged_in.home.share
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SharedTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleSharedTableDto
-import com.wafflestudio.snutt2.lib.toOptional
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.security.cert.PKIXRevocationChecker.Option
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,5 +47,9 @@ class ShareTableViewModel @Inject constructor(
 
     suspend fun changeSharedTableTitle(tableId: String, newTitle: String) {
         tableRepository.updateSharedTableTitle(tableId, newTitle)
+    }
+
+    suspend fun copySharedTable(tableId: String) {
+        tableRepository.copySharedTable(tableId)
     }
 }

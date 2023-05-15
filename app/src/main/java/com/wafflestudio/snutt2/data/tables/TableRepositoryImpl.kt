@@ -106,4 +106,8 @@ class TableRepositoryImpl @Inject constructor(
         return api._putSharedTable(tableId, PutSharedTableParams(title))
     }
 
+    override suspend fun copySharedTable(tableId: String) {
+        return api._copySharedTable(tableId)
+    }
+
 }

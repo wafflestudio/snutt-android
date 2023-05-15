@@ -35,4 +35,6 @@ interface TableRepository {
     suspend fun updateSharedTableTitle(tableId: String, title: String)
 
     suspend fun deleteSharedTable(tableId: String)
+
+    suspend fun copySharedTable(tableId: String)
 }

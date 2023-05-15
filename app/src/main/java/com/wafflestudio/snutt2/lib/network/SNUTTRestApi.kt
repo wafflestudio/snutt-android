@@ -445,4 +445,9 @@ interface SNUTTRestApi {
     suspend fun _deleteSharedTable(
         @Path("id") id: String,
     )
+
+    @POST("/v1/shared-tables/{shared-timetable-id}/copy")
+    suspend fun _copySharedTable(
+        @Path("shared-timetable-id") id: String,
+    )
 }
