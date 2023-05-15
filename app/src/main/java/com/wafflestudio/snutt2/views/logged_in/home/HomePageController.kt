@@ -25,7 +25,7 @@ sealed class HomeItem {
     object Search : HomeItem()
     data class Review(val landingPage: String? = null) : HomeItem()
 
-    object Share : HomeItem()
+    data class Share(val tableId: String? = null) : HomeItem()
 
     object Settings : HomeItem()
 }

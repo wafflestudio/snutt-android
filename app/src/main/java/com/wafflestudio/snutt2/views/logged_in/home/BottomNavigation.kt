@@ -77,12 +77,12 @@ internal fun BottomNavigation(
                 .weight(1f)
                 .fillMaxHeight(),
             onClick = {
-                onUpdatePageState(HomeItem.Share)
+                onUpdatePageState(HomeItem.Share())
             }
         ) {
             ShareTableIcon(
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Share,
+                isSelected = pageState is HomeItem.Share,
                 colorFilter = if (isDarkMode()) SNUTTColorMatrix.BlackWhiteInversionMatrix else null,
             )
         }
