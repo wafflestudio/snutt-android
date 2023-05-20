@@ -123,8 +123,8 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
     if (tableTrimParam.hourFrom >= this.endTimeInFloat || tableTrimParam.hourTo + 1 <= this.startTimeInFloat) return null
 
     return this.copy(
-        start_time = max(tableTrimParam.hourFrom.toFloat(), this.startTimeInFloat).toFormattedTimeString(),
-        end_time = min(this.endTimeInFloat, tableTrimParam.hourTo.toFloat() + 1).toFormattedTimeString()
+        startMinute = max(tableTrimParam.hourFrom * 60, this.startMinute),
+        endMinute = min(this.endMinute, (tableTrimParam.hourTo + 1) * 60),
     )
 }
 
