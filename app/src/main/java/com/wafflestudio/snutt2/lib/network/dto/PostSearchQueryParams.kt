@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.model.LectureTime
 
 @JsonClass(generateAdapter = true)
 data class PostSearchQueryParams(
@@ -16,7 +17,7 @@ data class PostSearchQueryParams(
     @Json(name = "department") val department: List<String>? = null,
     @Json(name = "category") val category: List<String>? = null,
     @Json(name = "etc") val etc: List<String>? = null,
-    @Json(name = "time_mask") val time_mask: List<Int>? = null,
+    @Json(name = "times") val times: List<LectureTime>,
     @Json(name = "offset") val offset: Long? = null,
     @Json(name = "limit") val limit: Long? = null
 )

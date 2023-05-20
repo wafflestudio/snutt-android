@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.model.LectureTime
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -111,7 +112,7 @@ class SearchViewModel @Inject constructor(
                 semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                lecturesMask = currentTable.lectureList.getClassTimeMask()
+                times = currentTable.lectureList.flatMap { it.class_time_json }.map { LectureTime(it.day, it.startMinute, it.endMinute) },
             ).cachedIn(viewModelScope)
         },
         _selectedLecture, currentTable.filterNotNull()

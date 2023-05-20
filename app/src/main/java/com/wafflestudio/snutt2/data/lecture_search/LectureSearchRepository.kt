@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.model.LectureTime
 import com.wafflestudio.snutt2.model.TagDto
 import kotlinx.coroutines.flow.Flow
 
@@ -12,7 +13,7 @@ interface LectureSearchRepository {
         semester: Long,
         title: String,
         tags: List<TagDto>,
-        lecturesMask: List<Int>?
+        times: List<LectureTime>,
     ): Flow<PagingData<LectureDto>>
 
     suspend fun getLectureReviewUrl(

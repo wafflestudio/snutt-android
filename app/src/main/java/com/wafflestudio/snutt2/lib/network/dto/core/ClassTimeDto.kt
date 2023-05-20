@@ -12,6 +12,8 @@ data class ClassTimeDto(
     @Json(name = "day") val day: Int,
     @Json(name = "place") val place: String,
     @Json(name = "_id") val id: String? = null,
+    @Json(name = "startMinute") val startMinute: Int,
+    @Json(name = "endMinute") val endMinute: Int,
     @Json(name = "start_time") val start_time: String = "",
     @Json(name = "end_time") val end_time: String = "",
     @Json(name = "start") val start: Float? = null, // deprecated
@@ -45,6 +47,8 @@ data class ClassTimeDto(
             day = 0,
             place = "",
             id = null,
+            startMinute = 570,
+            endMinute = 645,
             start_time = "09:30",
             end_time = "10:45",
         )

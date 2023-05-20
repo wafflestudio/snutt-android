@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toCreditNumber
+import com.wafflestudio.snutt2.model.LectureTime
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 
@@ -15,7 +16,7 @@ class LectureSearchPagingSource(
     semester: Long,
     title: String,
     tags: List<TagDto>,
-    lecturesMask: List<Int>?
+    times: List<LectureTime>,
 ) : PagingSource<Long, LectureDto>() {
 
     private val queryParam: PostSearchQueryParams = PostSearchQueryParams(
@@ -28,7 +29,7 @@ class LectureSearchPagingSource(
         instructor = tags.extractTagString(TagType.INSTRUCTOR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
-        time_mask = if (tags.contains(TagDto.ETC_EMPTY)) lecturesMask else null,
+        times = if (tags.contains(TagDto.ETC_EMPTY)) times else emptyList(),
         etc = tags.mapNotNull {
             when (it) {
                 TagDto.ETC_ENG -> "E"
