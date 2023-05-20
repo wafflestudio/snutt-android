@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto

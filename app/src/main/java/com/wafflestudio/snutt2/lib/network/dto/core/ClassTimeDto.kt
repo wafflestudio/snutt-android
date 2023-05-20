@@ -4,7 +4,6 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
-import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 @Parcelize

@@ -198,7 +198,7 @@ fun DayTimePickerSheet(
                                         initialCenterIndex = (startMinute % 60) / 5,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartMinute =  (tempStartMinute / 60) * 60 + it * 5
+                                            tempStartMinute = (tempStartMinute / 60) * 60 + it * 5
                                         }
                                     ) {
                                         Text(
