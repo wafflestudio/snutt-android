@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.model.LectureTime
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -126,6 +127,14 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
         startMinute = max(tableTrimParam.hourFrom * 60, this.startMinute),
         endMinute = min(this.endMinute, (tableTrimParam.hourTo + 1) * 60),
     )
+}
+
+fun Int.toFormattedTimeString(): String {
+    val amPm = if (this < LectureTime.MIDDAY) "오전" else "오후"
+    val hour = (this / 60).let {
+        if (it != 12) it % 12 else it
+    }
+    return String.format("%s %d:%02d", amPm, hour, this % 60)
 }
 
 fun roundToCompact(f: Float): Float {
