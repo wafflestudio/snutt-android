@@ -231,6 +231,19 @@ fun MoreIcon(
 }
 
 @Composable
+fun MoreIconBlack(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_more_2),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun WriteIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
