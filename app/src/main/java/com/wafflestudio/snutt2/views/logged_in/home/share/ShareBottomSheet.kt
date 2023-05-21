@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.ShareImageIcon
 import com.wafflestudio.snutt2.components.compose.ShareTableIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
