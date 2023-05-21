@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
 import com.wafflestudio.snutt2.components.compose.BottomSheet
@@ -21,8 +22,8 @@ val LocalApiOnProgress = compositionLocalOf<ApiOnProgress> {
     throw RuntimeException("")
 }
 
-val LocalDrawerState = compositionLocalOf<DrawerState> {
-    throw RuntimeException("")
+val LocalDrawerState = compositionLocalOf {
+    DrawerState(DrawerValue.Closed)
 }
 
 val LocalBottomSheetState = compositionLocalOf<BottomSheet> {
