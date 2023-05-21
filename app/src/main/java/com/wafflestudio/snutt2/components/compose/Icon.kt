@@ -517,7 +517,9 @@ fun IconWithAlertDot(
     Box {
         Icon(modifier = Modifier.align(Alignment.Center))
         if (redDotExist) {
-            Canvas(modifier = Modifier.size(5.dp).align(Alignment.TopEnd)) {
+            Canvas(modifier = Modifier
+                .size(5.dp)
+                .align(Alignment.TopEnd)) {
                 drawCircle(color)
             }
         }
@@ -554,11 +556,24 @@ fun RemarkIcon(
 fun ShareTableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
-    colorFilter: ColorFilter?,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
         painter = if (isSelected) painterResource(R.drawable.ic_share_table_selected) else painterResource(R.drawable.ic_share_table),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun ShareImageIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_image),
         contentDescription = "",
         colorFilter = colorFilter,
     )
