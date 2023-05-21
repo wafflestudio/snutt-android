@@ -37,4 +37,6 @@ interface TableRepository {
     suspend fun deleteSharedTable(tableId: String)
 
     suspend fun copySharedTable(tableId: String)
+
+    suspend fun createShareLink(tableId: String): String
 }

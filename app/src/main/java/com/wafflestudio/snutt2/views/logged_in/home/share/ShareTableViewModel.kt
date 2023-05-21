@@ -52,4 +52,8 @@ class ShareTableViewModel @Inject constructor(
     suspend fun copySharedTable(tableId: String) {
         tableRepository.copySharedTable(tableId)
     }
+
+    suspend fun createShareLink(tableId: String): String {
+        return tableRepository.createShareLink(tableId)
+    }
 }

@@ -109,4 +109,8 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun copySharedTable(tableId: String) {
         return api._copySharedTable(tableId)
     }
+
+    override suspend fun createShareLink(tableId: String): String {
+        return api._createShareLink(tableId).shortLink
+    }
 }

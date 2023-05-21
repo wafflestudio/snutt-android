@@ -450,4 +450,9 @@ interface SNUTTRestApi {
     suspend fun _copySharedTable(
         @Path("shared-timetable-id") id: String,
     )
+
+    @GET("/v1/tables/{id}/links")
+    suspend fun _createShareLink(
+        @Path("id") id: String,
+    ): GetShareTableLinkResults
 }
