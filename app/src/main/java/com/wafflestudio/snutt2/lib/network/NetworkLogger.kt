@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.R
 import okhttp3.Interceptor
 import okio.Buffer
 import okio.IOException
+import timber.log.Timber
 import java.nio.charset.StandardCharsets
 
 data class NetworkLog(
@@ -41,11 +42,7 @@ fun Interceptor.Chain.createNewNetworkLog(
                 writeTo(buffer)
                 jsonPrettyParser.toJson(
                     JsonParser.parseString(
-                        buffer.readString(
-                            contentType()?.charset(
-                                StandardCharsets.UTF_8
-                            ) ?: StandardCharsets.UTF_8
-                        )
+                        buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8)
                     )
                 )
             } ?: ""
@@ -59,7 +56,8 @@ fun Interceptor.Chain.createNewNetworkLog(
                     )
                 )
             } ?: ""
-        } catch (_: IOException) {
+        } catch (e: IOException) {
+            Timber.d(e)
         }
 
         return NetworkLog(requestMethod, requestUrl, requestHeader, requestBody, responseCode, responseBody)
@@ -85,11 +83,7 @@ fun Interceptor.Chain.createHttpFailLog(e: IOException, context: Context): Netwo
             writeTo(buffer)
             jsonPrettyParser.toJson(
                 JsonParser.parseString(
-                    buffer.readString(
-                        contentType()?.charset(
-                            StandardCharsets.UTF_8
-                        ) ?: StandardCharsets.UTF_8
-                    )
+                    buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8)
                 )
             )
         } ?: ""
