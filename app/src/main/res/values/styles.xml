@@ -24,7 +24,7 @@
         <item name="editTextStyle">@style/EditTextStyle</item>
 
         <!--For Background color-->
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
 
         <!--For SearchView home indicator -->
         <item name="homeAsUpIndicator">@drawable/ic_back</item>
