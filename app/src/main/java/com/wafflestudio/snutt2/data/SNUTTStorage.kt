@@ -1,11 +1,17 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
-import com.wafflestudio.snutt2.lib.preferences.context.*
+import com.wafflestudio.snutt2.lib.preferences.context.PrefContext
+import com.wafflestudio.snutt2.lib.preferences.context.PrefListValueMetaData
+import com.wafflestudio.snutt2.lib.preferences.context.PrefMapValueMetaData
+import com.wafflestudio.snutt2.lib.preferences.context.PrefOptionalValueMetaData
+import com.wafflestudio.snutt2.lib.preferences.context.PrefValue
+import com.wafflestudio.snutt2.lib.preferences.context.PrefValueMetaData
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -136,6 +142,16 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tags",
             type = TagDto::class.java,
+            defaultValue = listOf()
+        )
+    )
+
+    val networkLog = PrefValue<List<NetworkLog>> (
+        prefContext,
+        PrefListValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "pref_network_log",
+            type = NetworkLog::class.java,
             defaultValue = listOf()
         )
     )
