@@ -365,6 +365,7 @@ fun LectureDetailPage(
                 }
                 Column(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .background(SNUTTColors.White900)
                         .padding(bottom = 10.dp)
                 ) {
