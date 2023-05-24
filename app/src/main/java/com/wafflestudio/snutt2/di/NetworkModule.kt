@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
