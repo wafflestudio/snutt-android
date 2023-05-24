@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.wafflestudio.snutt2.R
 import okhttp3.Interceptor
+import okhttp3.Response
 import okio.Buffer
 import okio.IOException
 import timber.log.Timber
@@ -20,11 +21,11 @@ data class NetworkLog(
 )
 
 fun Interceptor.Chain.createNewNetworkLog(
-    context: Context
+    context: Context,
+    response: Response,
 ): NetworkLog {
     try {
         val request = request()
-        val response = proceed(request)
         val jsonPrettyParser = GsonBuilder().setPrettyPrinting().create()
 
         val requestMethod = request.method

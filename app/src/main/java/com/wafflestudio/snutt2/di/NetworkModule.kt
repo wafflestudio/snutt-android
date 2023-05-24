@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -77,8 +78,9 @@ object NetworkModule {
                 chain.proceed(newRequest)
             }
             .addInterceptor { chain ->
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context))
-                chain.proceed(chain.request())
+                val response = chain.proceed(chain.request())
+                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response))
+                response
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
