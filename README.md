@@ -9,7 +9,7 @@
 
 ## Branch Conventions
 - default branch: `develop`
-- PR 브랜치 명칭: `${username}/${YYMMDD}-${changes}` (e.g.: `sanggggg/210101-renewal-table-ui`)
+- PR 브랜치 명칭: `${username}/${changes}` (e.g.: `sanggggg/renewal-table-ui`)
 - merge convention: only squash merge
 
 ## Secrets
@@ -18,4 +18,4 @@
 - 필요시 maintainer 에게 요청하기
 
 ## Maintainer
-- **Current** @sanggggg
+- **Current** @JuTaK97
