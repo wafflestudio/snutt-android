@@ -447,7 +447,9 @@ fun LectureDetailPage(
                                         editingLectureDetail.copy(
                                             class_time_json = editingLectureDetail.class_time_json
                                                 .toMutableList()
-                                                .also { it.add(ClassTimeDto.Default) }
+                                                .also {
+                                                    it.add(it.lastOrNull() ?: ClassTimeDto.Default)
+                                                }
                                         )
                                     )
                                 },
