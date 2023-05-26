@@ -365,12 +365,14 @@ fun LectureDetailPage(
                 }
                 Column(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .background(SNUTTColors.White900)
                         .padding(bottom = 10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.lecture_detail_class_time),
-                        modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
+                        modifier = Modifier
+                            .padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
                     )
                     editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
