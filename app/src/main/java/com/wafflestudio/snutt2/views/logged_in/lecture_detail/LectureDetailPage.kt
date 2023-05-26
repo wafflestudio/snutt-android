@@ -85,7 +85,7 @@ fun LectureDetailPage(
      * 이때 다른 정보들은 editingLectureDetail 따라서 바뀌니까 모드가 바뀌어도 따로 할 게 없는데, 얘는 편집모드->일반모드로 바뀔 때 따로 변경해 줘야 한다. 그것이 아래의 코드.
      */
     LaunchedEffect(modeType) {
-        if (modeType is ModeType.Editing) creditText = editingLectureDetail.credit.toString()
+        if (modeType !is ModeType.Editing) creditText = editingLectureDetail.credit.toString()
     }
 
     /* 바텀시트 관련 */
