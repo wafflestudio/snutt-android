@@ -170,7 +170,7 @@ class RootActivity : AppCompatActivity() {
         ) {
             AnimatedNavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = startDestination,
             ) {
 
                 onboardGraph()
