@@ -303,7 +303,7 @@ fun DayTimePickerSheet(
                 color = SNUTTColors.Gray400,
             ) {
                 Text(
-                    text = endTime.toString(),
+                    text = endMinute.toString(),
                     style = SNUTTTypography.button,
                 )
             }
