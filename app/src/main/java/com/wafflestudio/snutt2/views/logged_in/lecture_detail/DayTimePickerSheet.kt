@@ -277,7 +277,7 @@ fun DayTimePickerSheet(
             ) {
                 Text(
                     text = endTime.toString(),
-                    style = SNUTTTypography.button
+                    style = SNUTTTypography.button,
                 )
             }
         }
