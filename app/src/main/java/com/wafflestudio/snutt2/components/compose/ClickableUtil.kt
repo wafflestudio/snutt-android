@@ -34,6 +34,14 @@ fun Modifier.clicks(
     )
 }
 
+fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}
+
 @Composable
 private fun applyEventThrottling(
     event: () -> Unit,
