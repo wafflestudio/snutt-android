@@ -9,6 +9,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -59,9 +60,11 @@ fun DrawerTableItem(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
+                modifier = Modifier.weight(1f, fill=false),
                 text = table.title,
                 style = SNUTTTypography.body1,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(

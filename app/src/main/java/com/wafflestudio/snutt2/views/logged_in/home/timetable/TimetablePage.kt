@@ -54,7 +54,9 @@ fun TimetablePage() {
                     style = SNUTTTypography.h2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.clicks {
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .clicks {
                         showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
                     }
                 )
