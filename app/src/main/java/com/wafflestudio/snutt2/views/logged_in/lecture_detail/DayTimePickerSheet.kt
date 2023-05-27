@@ -252,7 +252,7 @@ fun DayTimePickerSheet(
                                     ) {
                                         Text(
                                             text = hourList[it],
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
                                         )
                                     }
                                 }
