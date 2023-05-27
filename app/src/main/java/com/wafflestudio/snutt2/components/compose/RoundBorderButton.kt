@@ -23,11 +23,12 @@ fun RoundBorderButton(
             .background(color, RoundedCornerShape(30))
             .padding(horizontal = 10.dp)
             .height(35.dp)
-            .conditional(onClick != null) {
-                clicks {
-                    onClick!!()
-                }
-            },
+            .then(
+                if(onClick != null)
+                    Modifier.clicks { onClick() }
+                else
+                    Modifier
+            ),
         contentAlignment = Alignment.Center
     ) {
         content()
