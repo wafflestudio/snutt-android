@@ -268,7 +268,7 @@ fun DayTimePickerSheet(
                                         initialCenterIndex = endMinute / 60,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndMinute = it * 60 + tempEndMinute % 60
+                                            tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < LectureTime.MIDDAY) 0 else LectureTime.MIDDAY
                                         }
                                     ) {
                                         Text(
