@@ -60,7 +60,7 @@ fun DrawerTableItem(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                modifier = Modifier.weight(1f, fill=false),
+                modifier = Modifier.weight(1f, fill = false),
                 text = table.title,
                 style = SNUTTTypography.body1,
                 maxLines = 1,
