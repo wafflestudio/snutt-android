@@ -50,19 +50,18 @@ fun LectureDetailItem(
     }
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 20.dp),
         verticalAlignment = labelVerticalAlignment,
     ) {
-        Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
+            modifier = Modifier.width(88.dp),
+            maxLines = 1,
         )
         Box(modifier = Modifier.weight(1f)) {
             content()
         }
-        Spacer(modifier = Modifier.width(20.dp))
     }
 }
 

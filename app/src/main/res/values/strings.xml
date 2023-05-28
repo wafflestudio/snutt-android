@@ -225,7 +225,8 @@
     <string name="lecture_detail_category">구분</string>
     <string name="lecture_detail_course_number">강좌번호</string>
     <string name="lecture_detail_lecture_number">분반번호</string>
-    <string name="lecture_detail_quota">인원</string>
+    <string name="lecture_detail_quota">정원</string>
+    <string name="lecture_detail_freshman">신입생</string>
     <string name="lecture_detail_remark">비고</string>
     <string name="lecture_detail_class_time">시간 및 장소</string>
     <string name="lecture_detail_time">시간</string>
