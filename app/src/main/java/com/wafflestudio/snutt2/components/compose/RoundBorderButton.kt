@@ -24,7 +24,7 @@ fun RoundBorderButton(
             .padding(horizontal = 10.dp)
             .height(35.dp)
             .then(
-                if(onClick != null)
+                if (onClick != null)
                     Modifier.clicks { onClick() }
                 else
                     Modifier
