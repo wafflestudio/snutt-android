@@ -34,7 +34,6 @@ class HomeViewModel @Inject constructor(
                         } ?: tableRepository.fetchDefaultTable()
                     },
                     async { userRepository.fetchUserInfo() },
-                    async { userRepository.fetchAndSetPopup() },
                 )
             }
         } catch (e: Exception) {
