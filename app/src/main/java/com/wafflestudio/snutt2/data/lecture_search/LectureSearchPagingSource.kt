@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.wafflestudio.snutt2.lib.getComplement
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -29,7 +30,7 @@ class LectureSearchPagingSource(
         instructor = tags.extractTagString(TagType.INSTRUCTOR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
-        times = if (tags.contains(TagDto.ETC_EMPTY)) times else emptyList(),
+        times = if (tags.contains(TagDto.ETC_EMPTY)) times.getComplement() else emptyList(),
         etc = tags.mapNotNull {
             when (it) {
                 TagDto.ETC_ENG -> "E"
