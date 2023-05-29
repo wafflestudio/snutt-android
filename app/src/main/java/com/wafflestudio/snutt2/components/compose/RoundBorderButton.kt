@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 fun RoundBorderButton(
     modifier: Modifier = Modifier,
     color: Color,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Box(
@@ -23,7 +23,12 @@ fun RoundBorderButton(
             .background(color, RoundedCornerShape(30))
             .padding(horizontal = 10.dp)
             .height(35.dp)
-            .clicks { onClick() },
+            .then(
+                if (onClick != null)
+                    Modifier.clicks { onClick() }
+                else
+                    Modifier
+            ),
         contentAlignment = Alignment.Center
     ) {
         content()

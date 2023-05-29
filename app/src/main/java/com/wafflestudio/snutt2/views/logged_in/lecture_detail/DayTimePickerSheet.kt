@@ -89,14 +89,8 @@ fun DayTimePickerSheet(
         Row(
             modifier = Modifier
                 .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
+                .fillMaxWidth()
+                .clicks {
                     var tempDayIndex by mutableStateOf(dayIndex)
                     modalState
                         .set(
@@ -119,6 +113,12 @@ fun DayTimePickerSheet(
                             }
                         }.show()
                 },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
+            Spacer(modifier = Modifier.weight(1f))
+            RoundBorderButton(
+                color = SNUTTColors.Gray400,
             ) {
                 Text(text = dayList[dayIndex], style = SNUTTTypography.button)
             }
@@ -127,14 +127,8 @@ fun DayTimePickerSheet(
         Row(
             modifier = Modifier
                 .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
+                .fillMaxWidth()
+                .clicks {
                     var tempStartTime by mutableStateOf(startTime.copy())
                     editingStartTime = true
                     modalState
@@ -195,6 +189,12 @@ fun DayTimePickerSheet(
                             }
                         }.show()
                 },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
+            Spacer(modifier = Modifier.weight(1f))
+            RoundBorderButton(
+                color = SNUTTColors.Gray400,
             ) {
                 Text(
                     text = startTime.toString(),
@@ -206,14 +206,8 @@ fun DayTimePickerSheet(
         Row(
             modifier = Modifier
                 .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
+                .fillMaxWidth()
+                .clicks {
                     var tempEndTime by mutableStateOf(endTime.copy())
                     editingEndTime = true
                     modalState
@@ -274,6 +268,12 @@ fun DayTimePickerSheet(
                             }
                         }.show()
                 },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
+            Spacer(modifier = Modifier.weight(1f))
+            RoundBorderButton(
+                color = SNUTTColors.Gray400,
             ) {
                 Text(
                     text = endTime.toString(),
