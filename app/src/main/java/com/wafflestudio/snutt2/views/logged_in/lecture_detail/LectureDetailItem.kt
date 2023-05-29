@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -34,6 +35,8 @@ fun LectureDetailItem(
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
     labelVerticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    clickContentEnabled: Boolean = false,
+    onClickContent: () -> Unit = {},
     content: @Composable () -> Unit = {
         EditText(
             value = value,
@@ -59,7 +62,14 @@ fun LectureDetailItem(
             modifier = Modifier.width(88.dp),
             maxLines = 1,
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .then(
+                    if (clickContentEnabled) Modifier.clicks { onClickContent() }
+                    else Modifier
+                )
+        ) {
             content()
         }
     }

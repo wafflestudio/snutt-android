@@ -142,11 +142,14 @@ object SNUTTStringUtils {
 
     fun LectureDto.getQuotaTitle(context: Context): String = StringBuilder().apply {
         append(context.getString(R.string.lecture_detail_quota))
-        if (freshmanQuota != null && freshmanQuota != 0L) append("(${context.getString(R.string.lecture_detail_freshman)})")
+        if (freshmanQuota != null && freshmanQuota != 0L) append("(${context.getString(R.string.lecture_detail_senior)})")
     }.toString()
 
     fun LectureDto.getFullQuota(): String = StringBuilder().apply {
         append(quota)
-        if (freshmanQuota != null && freshmanQuota != 0L) append("($freshmanQuota)")
+        if (freshmanQuota != null && freshmanQuota != 0L) {
+            append("(${quota - freshmanQuota})")
+            append(" ⓘ")
+        }
     }.toString()
 }

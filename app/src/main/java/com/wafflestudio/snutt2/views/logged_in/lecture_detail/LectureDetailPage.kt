@@ -352,6 +352,17 @@ fun LectureDetailPage(
                                 fontSize = 15.sp,
                                 color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900
                             ),
+                            clickContentEnabled = editingLectureDetail.freshmanQuota != null && editingLectureDetail.freshmanQuota != 0L,
+                            onClickContent = {
+                                bottomSheet.setSheetContent {
+                                    QuotaInfoBottomSheet(
+                                        onConfirm = {
+                                            scope.launch { bottomSheet.hide() }
+                                        }
+                                    )
+                                }
+                                scope.launch { bottomSheet.show() }
+                            }
                         )
                     }
                     LectureDetailItem(
@@ -705,6 +716,32 @@ fun ColorBox(
                 .size(20.dp)
         )
     }
+}
+
+@Composable
+private fun QuotaInfoBottomSheet(onConfirm: () -> Unit) {
+    Column(
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = stringResource(R.string.common_ok), style = SNUTTTypography.body1,
+                modifier = Modifier
+                    .padding(5.dp)
+                    .clicks { onConfirm() }
+            )
+        }
+        Text(text = stringResource(R.string.lecture_detail_quota_info_title), style = SNUTTTypography.h3)
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(text = stringResource(R.string.lecture_detail_quota_info_content), style = SNUTTTypography.body1)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun QuotaInfoPreview() {
+    QuotaInfoBottomSheet {}
 }
 
 @Preview(showBackground = true, widthDp = 480, heightDp = 880)
