@@ -61,6 +61,13 @@ class TableListViewModel @Inject constructor(
     }
 
     suspend fun deleteTable(tableId: String) {
+        if(currentTableRepository.currentTable
+            .filterNotNull()
+            .first().id == tableId
+        ) {
+
+//            changeSelectedTable()
+        }
         return tableRepository.deleteTable(tableId)
     }
 
