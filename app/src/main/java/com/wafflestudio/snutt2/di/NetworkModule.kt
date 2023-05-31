@@ -6,9 +6,11 @@ import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
+import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,6 +75,11 @@ object NetworkModule {
                     )
                     .build()
                 chain.proceed(newRequest)
+            }
+            .addInterceptor { chain ->
+                val response = chain.proceed(chain.request())
+                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response))
+                response
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {

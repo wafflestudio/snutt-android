@@ -130,6 +130,15 @@ fun SettingsPage(
         ) {
             logoutDialogState = true
         }
+        if (BuildConfig.DEBUG) {
+            Margin(height = 10.dp)
+            SettingItem(
+                title = "네트워크 로그",
+                modifier = Modifier.background(SNUTTColors.White900)
+            ) {
+                navController.navigate(NavigationDestination.NetworkLog)
+            }
+        }
         Margin(height = 10.dp)
     }
 
