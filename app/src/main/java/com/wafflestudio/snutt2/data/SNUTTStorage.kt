@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -136,6 +137,16 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tags",
             type = TagDto::class.java,
+            defaultValue = listOf()
+        )
+    )
+
+    val networkLog = PrefValue<List<NetworkLog>> (
+        prefContext,
+        PrefListValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "pref_network_log",
+            type = NetworkLog::class.java,
             defaultValue = listOf()
         )
     )

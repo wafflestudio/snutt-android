@@ -201,6 +201,9 @@ dependencies {
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
+
+    // GSON
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 repositories {
