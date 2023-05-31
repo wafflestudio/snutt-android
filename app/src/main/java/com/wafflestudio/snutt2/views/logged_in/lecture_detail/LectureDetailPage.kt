@@ -721,7 +721,9 @@ fun ColorBox(
 @Composable
 private fun QuotaInfoBottomSheet(onConfirm: () -> Unit) {
     Column(
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.weight(1f))
