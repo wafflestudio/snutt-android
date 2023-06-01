@@ -59,7 +59,7 @@ fun HomePage() {
     val trimParam by userViewModel.trimParam.collectAsState()
     val tableState = TableState(table ?: TableDto.Default, trimParam, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    var popupReady by remember { mutableStateOf(popupState.popup != null) }
+    var shouldShowPopup by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
     val reviewPageWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
@@ -90,6 +90,14 @@ fun HomePage() {
 
     LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
         reviewPageWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
+    }
+
+    LaunchedEffect(Unit) {
+        if (popupState.fetched.not()) {
+            userViewModel.fetchPopup()
+            popupState.fetched = true
+            shouldShowPopup = (popupState.popup != null)
+        }
     }
 
     BackHandler(enabled = bottomSheet.isVisible || drawerState.isOpen || pageController.homePageState.value != HomeItem.Timetable) {
@@ -144,19 +152,19 @@ fun HomePage() {
         }
     }
 
-    if (popupReady) {
+    if (shouldShowPopup) {
         Popup(
             url = popupState.popup?.url ?: "",
             onClickFewDays = {
                 scope.launch {
                     userViewModel.closePopupWithHiddenDays()
-                    popupReady = false
+                    shouldShowPopup = false
                 }
             },
             onClickClose = {
                 scope.launch {
                     userViewModel.closePopup()
-                    popupReady = false
+                    shouldShowPopup = false
                 }
             }
         )
