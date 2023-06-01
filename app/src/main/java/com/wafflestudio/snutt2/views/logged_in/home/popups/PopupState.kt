@@ -4,4 +4,5 @@ import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
 
 class PopupState {
     var popup: GetPopupResults.Popup? = null
+    var fetched: Boolean = false
 }

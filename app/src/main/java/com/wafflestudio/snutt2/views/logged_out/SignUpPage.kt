@@ -85,7 +85,6 @@ fun SignUpPage() {
                 val id = loginResult.accessToken.userId
                 val token = loginResult.accessToken.token
                 userViewModel.signUpFacebook(id, token)
-                userViewModel.fetchPopup()
                 navController.navigateAsOrigin(NavigationDestination.Home)
             } catch (e: Exception) {
                 apiOnError(e)

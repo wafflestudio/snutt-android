@@ -52,13 +52,11 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                 Text(
                     text = stringResource(id = R.string.popup_hide_message),
                     modifier = Modifier
-                        .padding(
-                            horizontal = 20.dp,
-                            vertical = 10.dp
-                        )
+                        .padding(vertical = 10.dp)
                         .weight(3f)
                         .clicks { onClickFewDays() },
                     textAlign = TextAlign.Center,
+                    maxLines = 1,
                     color = SNUTTColors.AllWhite
                 )
                 Spacer(
