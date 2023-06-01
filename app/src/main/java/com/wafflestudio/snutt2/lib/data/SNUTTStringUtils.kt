@@ -44,7 +44,7 @@ object SNUTTStringUtils {
         val places = lectureDto.class_time_json.map { it.place }.distinct()
         places.forEachIndexed { index, place ->
             text.append(place)
-            if (index != places.size - 1 && place.isNotEmpty()) text.append("/")
+            if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
         }
         if (text.isEmpty()) text.append("(없음)")
         return text.toString()
