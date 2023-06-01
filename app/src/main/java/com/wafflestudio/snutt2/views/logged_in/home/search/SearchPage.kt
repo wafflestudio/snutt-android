@@ -151,9 +151,6 @@ fun SearchPage(
                                     LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer)
                                 }
                             }
-                            item {
-                                Divider(color = SNUTTColors.White400)
-                            }
                         }
                     }
                 }
