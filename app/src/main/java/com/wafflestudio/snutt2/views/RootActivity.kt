@@ -29,7 +29,6 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -75,7 +74,7 @@ class RootActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
-        handleDeepLink()
+        parseDeeplinkExtra()
 
         lifecycleScope.launch {
             homeViewModel.refreshData()
@@ -238,7 +237,7 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.composable2(
         route: String,
-        deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "$SCHEME$route" }),
+        deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
@@ -297,7 +296,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleDeepLink() {
+    private fun parseDeeplinkExtra() {
         intent.extras?.getString(URL_SCHEME)?.let {
             intent.data = Uri.parse(it)
         }
@@ -305,7 +304,6 @@ class RootActivity : AppCompatActivity() {
 
     companion object {
         const val URL_SCHEME = "url_scheme"
-        val SCHEME = if (BuildConfig.DEBUG) "snutt-dev://" else "snutt://"
     }
 }
 
