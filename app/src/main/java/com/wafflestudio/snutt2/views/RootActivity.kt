@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views
 
 import android.animation.ObjectAnimator
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -21,7 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
@@ -72,6 +75,7 @@ class RootActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
+        parseDeeplinkExtra()
 
         lifecycleScope.launch {
             homeViewModel.refreshData()
@@ -234,10 +238,12 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.composable2(
         route: String,
+        deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
             route,
+            deepLinks = deepLinks,
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> fullWidth },
@@ -289,6 +295,16 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun parseDeeplinkExtra() {
+        intent.extras?.getString(URL_SCHEME)?.let {
+            intent.data = Uri.parse(it)
+        }
+    }
+
+    companion object {
+        const val URL_SCHEME = "url_scheme"
     }
 }
 
