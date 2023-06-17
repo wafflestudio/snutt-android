@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetState
+import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetValue
+import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,9 +24,7 @@ interface BottomSheet {
 
     suspend fun show() = state.show()
 
-    suspend fun hide() = state.hide()
-
-    suspend fun hideAndDisposeContent()
+    suspend fun hide()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -44,8 +42,8 @@ fun bottomSheet(): BottomSheet {
             })
         }
 
-        override suspend fun hideAndDisposeContent() {
-            hide()
+        override suspend fun hide() {
+            state.hide()
             content = { Box(modifier = Modifier.size(1.dp)) }
         }
     }
