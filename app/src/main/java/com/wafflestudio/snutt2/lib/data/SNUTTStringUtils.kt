@@ -41,9 +41,10 @@ object SNUTTStringUtils {
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
         val text = StringBuilder()
-        lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            text.append(classTimeDto.place)
-            if (index != lectureDto.class_time_json.size - 1 && classTimeDto.place.isNotEmpty()) text.append("/")
+        val places = lectureDto.class_time_json.map { it.place }.distinct()
+        places.forEachIndexed { index, place ->
+            text.append(place)
+            if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
         }
         if (text.isEmpty()) text.append("(없음)")
         return text.toString()

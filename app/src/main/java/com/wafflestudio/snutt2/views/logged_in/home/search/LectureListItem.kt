@@ -95,7 +95,6 @@ fun LazyItemScope.LectureListItem(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Divider(color = SNUTTColors.White400)
         Column(
             modifier = Modifier
                 .padding(top = 10.dp, bottom = 10.dp)
@@ -329,5 +328,6 @@ fun LazyItemScope.LectureListItem(
                 )
             }
         }
+        Divider(color = SNUTTColors.White400)
     }
 }

@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -150,9 +149,6 @@ fun SearchPage(
                                 lectureDataWithState?.let {
                                     LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer)
                                 }
-                            }
-                            item {
-                                Divider(color = SNUTTColors.White400)
                             }
                         }
                     }
