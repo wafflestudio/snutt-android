@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
@@ -87,6 +89,7 @@ class RootActivity : AppCompatActivity() {
             else NavigationDestination.Home
         )
         setUpSplashScreen(composeRoot)
+        checkNotificationPermission()
         startUpdatingPushToken()
     }
 
@@ -283,6 +286,14 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
+    }
+
+    // 안드 13 대응
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun startUpdatingPushToken() {
