@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,6 +41,7 @@ fun SettingsPage(
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.Gray100)
+            .verticalScroll(rememberScrollState())
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
