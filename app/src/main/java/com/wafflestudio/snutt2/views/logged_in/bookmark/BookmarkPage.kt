@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
+import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -97,7 +97,10 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     ModalBottomSheetLayout(
         sheetContent = bottomSheet.content,
         sheetState = bottomSheet.state,
-        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
+        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
+        onDismissScrim = {
+            scope.launch { bottomSheet.hide() }
+        }
     ) {
         Column(
             modifier = Modifier

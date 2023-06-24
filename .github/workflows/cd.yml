@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-live:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -68,7 +68,7 @@ jobs:
           SLACK_USERNAME: BuildNoti
 
   build-staging:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
