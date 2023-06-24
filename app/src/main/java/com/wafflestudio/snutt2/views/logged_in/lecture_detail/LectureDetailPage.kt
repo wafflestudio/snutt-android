@@ -139,10 +139,13 @@ fun LectureDetailPage(
             }
         }
 
-    ModalBottomSheetLayout(
+    com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetLayout(
         sheetContent = bottomSheet.content,
         sheetState = bottomSheet.state,
-        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
+        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
+        onDismissScrim = {
+            scope.launch { bottomSheet.hide() }
+        }
         // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
     ) {
         Column(

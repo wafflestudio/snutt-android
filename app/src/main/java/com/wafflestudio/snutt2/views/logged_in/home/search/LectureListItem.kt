@@ -204,7 +204,7 @@ fun LazyItemScope.LectureListItem(
                                 LectureDetailPage(
                                     searchViewModel = searchViewModel,
                                     onCloseViewMode = { scope ->
-                                        scope.launch { bottomSheet.hideAndDisposeContent() }
+                                        scope.launch { bottomSheet.hide() }
                                     }
                                 )
                             }
