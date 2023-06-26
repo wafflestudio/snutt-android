@@ -94,9 +94,11 @@ fun HomePage() {
 
     LaunchedEffect(Unit) {
         if (popupState.fetched.not()) {
-            userViewModel.fetchPopup()
-            popupState.fetched = true
-            shouldShowPopup = (popupState.popup != null)
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                userViewModel.fetchPopup()
+                popupState.fetched = true
+                shouldShowPopup = (popupState.popup != null)
+            }
         }
     }
 
