@@ -76,10 +76,6 @@ android {
         }
     }
 
-    viewBinding {
-        isEnabled = true
-    }
-
     flavorDimensions.add("mode")
 
     productFlavors {
@@ -116,16 +112,17 @@ android {
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
-}
+//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+//    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
+//}
 
 dependencies {
     testImplementation("junit:junit:4.13.1")
@@ -204,6 +201,10 @@ dependencies {
 
     // GSON
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // RN
+    implementation("com.facebook.react:react-android:0.72.0")
+    implementation("com.facebook.react:hermes-android:0.72.0")
 }
 
 repositories {
