@@ -61,32 +61,23 @@ class TableListViewModel @Inject constructor(
     }
 
     suspend fun deleteTable(tableId: String) {
-        if (currentTableRepository.currentTable
-            .filterNotNull()
-            .first().id == tableId
-        ) {
+        return tableRepository.deleteTable(tableId)
+    }
+
+    suspend fun deleteAndSwitchTable(tableId: String) {
+        if (currentTableRepository.currentTable.value?.id == tableId) {
             val newTableId: String
             val courseBook = CourseBookDto(tableMap.value[tableId]!!.semester, tableMap.value[tableId]!!.year)
             val siblingTables = tableListOfEachCourseBook.first()[courseBook]!!
-            if (siblingTables.size > 1) {
-                val index = siblingTables.indexOfFirst { it.id == tableId }
-                newTableId = if (index == siblingTables.size - 1) {
-                    siblingTables[index - 1].id
-                } else {
-                    siblingTables[index + 1].id
-                }
+            val index = siblingTables.indexOfFirst { it.id == tableId }
+            newTableId = if (index == siblingTables.size - 1) {
+                siblingTables[index - 1].id
             } else {
-                val siblingCoursebooks = courseBooksWhichHaveTable.first()
-                val index = siblingCoursebooks.indexOf(courseBook)
-                newTableId = if (index == siblingCoursebooks.size - 1) {
-                    tableListOfEachCourseBook.first()[siblingCoursebooks[index - 1]]!!.last().id
-                } else {
-                    tableListOfEachCourseBook.first()[siblingCoursebooks[index + 1]]!!.first().id
-                }
+                siblingTables[index + 1].id
             }
             changeSelectedTable(newTableId)
         }
-        return tableRepository.deleteTable(tableId)
+        return deleteTable(tableId)
     }
 
     suspend fun createTable(courseBook: CourseBookDto, tableName: String) {
@@ -99,10 +90,12 @@ class TableListViewModel @Inject constructor(
         tableRepository.copyTable(tableId)
     }
 
-    suspend fun checkTableDeletable(): Boolean {
-        return tableRepository.tableMap
-            .filterNotNull()
-            .first().size != 1
+    fun checkTableDeletable(tableId: String): Boolean {
+        val tableToDelete = tableRepository.tableMap.value[tableId]
+        return currentTableRepository.currentTable.value?.id != tableId
+            || tableRepository.tableMap.value.values.filter {
+            it.semester == tableToDelete?.semester && it.year == tableToDelete.year
+        }.size > 1
     }
 
     suspend fun checkTableThemeChangeable(tableId: String): Boolean {
