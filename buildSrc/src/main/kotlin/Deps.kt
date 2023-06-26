@@ -12,7 +12,7 @@ object Deps {
         const val RxAndroid = "3.0.0"
         const val RxBinding = "4.0.0"
         const val Hilt = "2.45"
-        const val Navigation = "2.4.0"
+        const val Navigation = "2.6.0"
         const val Paging = "3.1.0"
         const val Compose = "1.3.3"
         const val ComposeFoundation = "1.3.1"
