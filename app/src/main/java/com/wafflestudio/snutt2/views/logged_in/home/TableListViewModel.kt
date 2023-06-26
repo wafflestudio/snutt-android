@@ -94,8 +94,8 @@ class TableListViewModel @Inject constructor(
         val tableToDelete = tableRepository.tableMap.value[tableId]
         return currentTableRepository.currentTable.value?.id != tableId ||
             tableRepository.tableMap.value.values.filter {
-                it.semester == tableToDelete?.semester && it.year == tableToDelete.year
-            }.size > 1
+            it.semester == tableToDelete?.semester && it.year == tableToDelete.year
+        }.size > 1
     }
 
     suspend fun checkTableThemeChangeable(tableId: String): Boolean {
