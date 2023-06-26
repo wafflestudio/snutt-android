@@ -188,10 +188,9 @@ dependencies {
     // GSON
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Glance
-    implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
-    implementation("androidx.glance:glance-material:1.0.0-rc01")
-    implementation("androidx.glance:glance-material3:1.0.0-rc01")
+    // RN
+    implementation("com.facebook.react:react-android:0.72.0")
+    implementation("com.facebook.react:hermes-android:0.72.0")
 }
 
 repositories {
