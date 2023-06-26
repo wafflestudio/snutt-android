@@ -1,7 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -57,7 +60,12 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
+                            showTitleChangeDialog(
+                                table.title,
+                                table.id,
+                                composableStates,
+                                tableListViewModel::changeTableName
+                            )
                         }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -84,6 +92,15 @@ fun TimetablePage() {
                 LectureListIcon(
                     modifier = Modifier
                         .size(30.dp)
+                        .clicks {
+                            val intent = Intent((context as Activity), RNModuleActivity::class.java)
+                            intent.putExtra("message_from_native", table.title)
+                            context.startActivity(intent)
+                        },
+                )
+                LectureListIcon(
+                    modifier = Modifier
+                        .size(30.dp)
                         .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
                 )
                 ShareIcon(
@@ -97,7 +114,11 @@ fun TimetablePage() {
                     BookmarkPageIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks { navController.navigate(NavigationDestination.Bookmark) { launchSingleTop = true } },
+                            .clicks {
+                                navController.navigate(NavigationDestination.Bookmark) {
+                                    launchSingleTop = true
+                                }
+                            },
                     )
                 }
             }
