@@ -1,7 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -85,6 +88,15 @@ fun TimetablePage() {
                 }
             },
             actions = {
+                LectureListIcon(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks {
+                            val intent = Intent((context as Activity), RNModuleActivity::class.java)
+                            intent.putExtra("message_from_native", table.title)
+                            context.startActivity(intent)
+                        },
+                )
                 LectureListIcon(
                     modifier = Modifier
                         .size(30.dp)
