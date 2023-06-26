@@ -100,12 +100,10 @@ class TableListViewModel @Inject constructor(
         tableRepository.copyTable(tableId)
     }
 
-    suspend fun checkTableDeletable(tableId: String): Boolean {
-        return currentTableRepository.currentTable
+    suspend fun checkTableDeletable(): Boolean {
+        return tableRepository.tableMap
             .filterNotNull()
-            .map {
-                it.id != tableId
-            }.first()
+            .first().size != 1
     }
 
     suspend fun checkTableThemeChangeable(tableId: String): Boolean {

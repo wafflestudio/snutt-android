@@ -127,7 +127,7 @@
     <string name="home_drawer_table_credit">(%d학점)</string>
     <string name="home_drawer_create_success_message">%s \"%s\" 시간표가 생성되었습니다.</string>
     <string name="home_drawer_copy_success_message">\"%s\" 시간표가 복사되었습니다.</string>
-    <string name="home_drawer_delete_table_unable_alert_message">현재 선택된 시간표를 삭제할 수 없습니다.</string>
+    <string name="home_drawer_delete_table_unable_alert_message">최소 1개의 시간표가 있어야 합니다.</string>
     <string name="home_drawer_delete_table_success_alert_message">시간표가 삭제되었습니다.</string>
     <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 강좌의 테마만 변경할 수 있습니다.</string>
     <string name="home_drawer_create_table_bottom_sheet_title">새로운 시간표 만들기</string>
