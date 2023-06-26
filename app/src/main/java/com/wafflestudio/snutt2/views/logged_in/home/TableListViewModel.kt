@@ -61,25 +61,24 @@ class TableListViewModel @Inject constructor(
     }
 
     suspend fun deleteTable(tableId: String) {
-        if(currentTableRepository.currentTable
+        if (currentTableRepository.currentTable
             .filterNotNull()
             .first().id == tableId
         ) {
             val newTableId: String
             val courseBook = CourseBookDto(tableMap.value[tableId]!!.semester, tableMap.value[tableId]!!.year)
             val siblingTables = tableListOfEachCourseBook.first()[courseBook]!!
-            if(siblingTables.size > 1) {
+            if (siblingTables.size > 1) {
                 val index = siblingTables.indexOfFirst { it.id == tableId }
-                newTableId = if(index == siblingTables.size - 1) {
+                newTableId = if (index == siblingTables.size - 1) {
                     siblingTables[index - 1].id
                 } else {
                     siblingTables[index + 1].id
                 }
-            }
-            else {
+            } else {
                 val siblingCoursebooks = courseBooksWhichHaveTable.first()
                 val index = siblingCoursebooks.indexOf(courseBook)
-                newTableId = if(index == siblingCoursebooks.size - 1) {
+                newTableId = if (index == siblingCoursebooks.size - 1) {
                     tableListOfEachCourseBook.first()[siblingCoursebooks[index - 1]]!!.last().id
                 } else {
                     tableListOfEachCourseBook.first()[siblingCoursebooks[index + 1]]!!.first().id
