@@ -1,20 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,13 +12,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BottomSheet
-import com.wafflestudio.snutt2.components.compose.CircularPicker
-import com.wafflestudio.snutt2.components.compose.Picker
-import com.wafflestudio.snutt2.components.compose.RoundBorderButton
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.toFormattedTimeString
 import com.wafflestudio.snutt2.model.LectureTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -130,10 +116,7 @@ fun DayTimePickerSheet(
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = stringResource(R.string.settings_timetable_config_week_day),
-                style = SNUTTTypography.button
-            )
+            Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
             RoundBorderButton(
                 color = SNUTTColors.Gray400,
@@ -145,17 +128,8 @@ fun DayTimePickerSheet(
         Row(
             modifier = Modifier
                 .padding(vertical = 7.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label),
-                style = SNUTTTypography.button
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            RoundBorderButton(
-                color = SNUTTColors.Gray400,
-                onClick = {
+                .fillMaxWidth()
+                .clicks {
                     var tempStartMinute by mutableStateOf(startMinute)
                     editingStartTime = true
                     modalState
@@ -216,113 +190,96 @@ fun DayTimePickerSheet(
                             }
                         }.show()
                 },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
+            Spacer(modifier = Modifier.weight(1f))
+            RoundBorderButton(
+                color = SNUTTColors.Gray400,
             ) {
                 Text(
-                    text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label),
+                    text = startMinute.toFormattedTimeString(),
                     style = SNUTTTypography.button
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                RoundBorderButton(
-                    color = SNUTTColors.Gray400,
-                ) {
-                    Text(
-                        text = startMinute.toFormattedTimeString(),
-                        style = SNUTTTypography.button
-                    )
-                }
             }
-            Divider(color = SNUTTColors.Black250)
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 7.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label),
-                    style = SNUTTTypography.button
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                RoundBorderButton(
-                    color = SNUTTColors.Gray400,
-                    onClick = {
-                        var tempEndMinute by mutableStateOf(endMinute)
-                        editingEndTime = true
-                        modalState
-                            .set(
-                                onDismiss = {
-                                    endMinute = tempEndMinute
-                                    checkBoundary()
-                                    editingEndTime = false
-                                    modalState.hide()
-                                },
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        Picker(
-                                            list = amPmList,
-                                            initialCenterIndex = if (endMinute < LectureTime.MIDDAY) 0 else 1,
-                                            columnHeightDp = 45.dp,
-                                            onValueChanged = {
-                                                tempEndMinute =
-                                                    tempEndMinute % LectureTime.MIDDAY + LectureTime.MIDDAY * it
-                                            }
-                                        ) {
-                                            Text(
-                                                text = amPmList[it],
-                                                style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                            )
+        }
+        Divider(color = SNUTTColors.Black250)
+        Row(
+            modifier = Modifier
+                .padding(vertical = 7.dp)
+                .fillMaxWidth()
+                .clicks {
+                    var tempEndMinute by mutableStateOf(endMinute)
+                    editingEndTime = true
+                    modalState
+                        .set(
+                            onDismiss = {
+                                endMinute = tempEndMinute
+                                checkBoundary()
+                                editingEndTime = false
+                                modalState.hide()
+                            },
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(modifier = Modifier.weight(1f)) {
+                                    Picker(
+                                        list = amPmList,
+                                        initialCenterIndex = if (endMinute < LectureTime.MIDDAY) 0 else 1,
+                                        columnHeightDp = 45.dp,
+                                        onValueChanged = {
+                                            tempEndMinute = tempEndMinute % LectureTime.MIDDAY + LectureTime.MIDDAY * it
                                         }
-                                    }
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        CircularPicker(
-                                            list = hourList,
-                                            initialCenterIndex = endMinute / 60,
-                                            columnHeightDp = 45.dp,
-                                            onValueChanged = {
-                                                tempEndMinute =
-                                                    it * 60 + tempEndMinute % 60 + if (tempEndMinute < LectureTime.MIDDAY) 0 else LectureTime.MIDDAY
-                                            }
-                                        ) {
-                                            Text(
-                                                text = hourList[it],
-                                                style = SNUTTTypography.button.copy(fontSize = 24.sp)
-                                            )
-                                        }
-                                    }
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        CircularPicker(
-                                            list = minuteList,
-                                            initialCenterIndex = (endMinute % 60) / 5,
-                                            columnHeightDp = 45.dp,
-                                            onValueChanged = {
-                                                tempEndMinute = (tempEndMinute / 60) * 60 + it * 5
-                                            }
-                                        ) {
-                                            Text(
-                                                text = minuteList[it],
-                                                style = SNUTTTypography.button.copy(fontSize = 24.sp),
-                                            )
-                                        }
+                                    ) {
+                                        Text(
+                                            text = amPmList[it],
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
+                                        )
                                     }
                                 }
-                            }.show()
-                    },
-                ) {
-                    Text(
-                        text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label),
-                        style = SNUTTTypography.button
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    RoundBorderButton(
-                        color = SNUTTColors.Gray400,
-                    ) {
-                        Text(
-                            text = endMinute.toFormattedTimeString(),
-                            style = SNUTTTypography.button,
-                        )
-                    }
-                }
+                                Box(modifier = Modifier.weight(1f)) {
+                                    CircularPicker(
+                                        list = hourList,
+                                        initialCenterIndex = endMinute / 60,
+                                        columnHeightDp = 45.dp,
+                                        onValueChanged = {
+                                            tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < LectureTime.MIDDAY) 0 else LectureTime.MIDDAY
+                                        }
+                                    ) {
+                                        Text(
+                                            text = hourList[it],
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
+                                        )
+                                    }
+                                }
+                                Box(modifier = Modifier.weight(1f)) {
+                                    CircularPicker(
+                                        list = minuteList,
+                                        initialCenterIndex = (endMinute % 60) / 5,
+                                        columnHeightDp = 45.dp,
+                                        onValueChanged = {
+                                            tempEndMinute = (tempEndMinute / 60) * 60 + it * 5
+                                        }
+                                    ) {
+                                        Text(
+                                            text = minuteList[it],
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                        )
+                                    }
+                                }
+                            }
+                        }.show()
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
+            Spacer(modifier = Modifier.weight(1f))
+            RoundBorderButton(
+                color = SNUTTColors.Gray400,
+            ) {
+                Text(
+                    text = endMinute.toFormattedTimeString(),
+                    style = SNUTTTypography.button,
+                )
             }
         }
     }
