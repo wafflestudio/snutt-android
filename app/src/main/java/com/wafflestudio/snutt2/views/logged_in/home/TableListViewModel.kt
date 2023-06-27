@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.lib.courseBookEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -33,14 +34,14 @@ class TableListViewModel @Inject constructor(
     val tableListOfEachCourseBook = courseBooksWhichHaveTable.map {
         it.associateWith { courseBook ->
             tableMap.value.values.filter { table ->
-                table.year == courseBook.year && table.semester == courseBook.semester
+                table.courseBookEquals(courseBook)
             }
         }
     }
 
     val newSemesterNotify = tableRepository.tableMap.map { tableMap ->
         tableMap.values.none { table ->
-            table.year == mostRecentCourseBook.first().year && table.semester == mostRecentCourseBook.first().semester
+            table.courseBookEquals(mostRecentCourseBook.first())
         }
     }
 
@@ -64,22 +65,6 @@ class TableListViewModel @Inject constructor(
         return tableRepository.deleteTable(tableId)
     }
 
-    suspend fun deleteAndSwitchTable(tableId: String) {
-        if (currentTableRepository.currentTable.value?.id == tableId) {
-            val newTableId: String
-            val courseBook = CourseBookDto(tableMap.value[tableId]!!.semester, tableMap.value[tableId]!!.year)
-            val siblingTables = tableListOfEachCourseBook.first()[courseBook]!!
-            val index = siblingTables.indexOfFirst { it.id == tableId }
-            newTableId = if (index == siblingTables.size - 1) {
-                siblingTables[index - 1].id
-            } else {
-                siblingTables[index + 1].id
-            }
-            changeSelectedTable(newTableId)
-        }
-        return deleteTable(tableId)
-    }
-
     suspend fun createTable(courseBook: CourseBookDto, tableName: String) {
         tableRepository.createTable(
             year = courseBook.year, semester = courseBook.semester, title = tableName
@@ -91,11 +76,30 @@ class TableListViewModel @Inject constructor(
     }
 
     fun checkTableDeletable(tableId: String): Boolean {
-        val tableToDelete = tableRepository.tableMap.value[tableId]
-        return currentTableRepository.currentTable.value?.id != tableId ||
-            tableRepository.tableMap.value.values.filter {
-            it.semester == tableToDelete?.semester && it.year == tableToDelete.year
+        val tableToDelete = tableRepository.tableMap.value[tableId] ?: return false
+        if (currentTableRepository.currentTable.value?.id != tableId) return true
+        return tableRepository.tableMap.value.values.filter {
+            it.courseBookEquals(tableToDelete)
         }.size > 1
+    }
+
+    fun getNextSelectedTable(tableId: String): String? {
+        return if (currentTableRepository.currentTable.value?.id == tableId) {
+            val tableToDelete = tableMap.value[tableId] ?: return null
+            val siblingTables = tableMap.value.values.filter { it.courseBookEquals(tableToDelete) }
+            if (siblingTables.size > 1) {
+                val index = siblingTables.indexOfFirst { it.id == tableId }
+                if (index == siblingTables.size - 1) {
+                    siblingTables[index - 1].id
+                } else {
+                    siblingTables[index + 1].id
+                }
+            } else {
+                null
+            }
+        } else {
+            null
+        }
     }
 
     suspend fun checkTableThemeChangeable(tableId: String): Boolean {
