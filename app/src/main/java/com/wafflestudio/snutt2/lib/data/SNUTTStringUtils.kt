@@ -7,12 +7,12 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.LectureTime
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 object SNUTTStringUtils {
     fun getFullSemester(tableDto: TableDto): String {
@@ -113,9 +113,13 @@ object SNUTTStringUtils {
             .toString()
     }
 
-    // 9.5f -> "09:30"
-    fun Float.toFormattedTimeString(): String {
-        return "%02d:%02d".format(this.toInt(), (60 * (this - this.toInt())).roundToInt())
+    // 570 -> 오전 09:30
+    fun Int.toFormattedTimeString(): String {
+        val amPm = if (this < LectureTime.MIDDAY) "오전" else "오후"
+        val hour = (this / 60).let {
+            if (it != 12) it % 12 else it
+        }
+        return String.format("%s %d:%02d", amPm, hour, this % 60)
     }
 
     fun String.isEmailInvalid(): Boolean {

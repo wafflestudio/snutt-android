@@ -128,14 +128,6 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
     )
 }
 
-fun Int.toFormattedTimeString(): String {
-    val amPm = if (this < LectureTime.MIDDAY) "오전" else "오후"
-    val hour = (this / 60).let {
-        if (it != 12) it % 12 else it
-    }
-    return String.format("%s %d:%02d", amPm, hour, this % 60)
-}
-
 fun roundToCompact(f: Float): Float {
     return if (f - f.toInt() == 0f) f
     else if (f - f.toInt() <= 0.5) f.toInt() + 0.5f
