@@ -77,13 +77,13 @@ class TableListViewModel @Inject constructor(
 
     fun checkTableDeletable(tableId: String): Boolean {
         val tableToDelete = tableRepository.tableMap.value[tableId] ?: return false
-        if (currentTableRepository.currentTable.value?.id != tableId) return true
+        if (currentTableRepository.currentTable.value?.id != tableId) return true // 현재 선택된 시간표가 아니라면 무조건 삭제 가능
         return tableRepository.tableMap.value.values.filter {
             it.courseBookEquals(tableToDelete)
-        }.size > 1
+        }.size > 1 // 현재 선택된 시간표일 때, 해당 coursebook의 유일한 시간표가 아니어야 삭제 가능
     }
 
-    fun getNextSelectedTable(tableId: String): String? {
+    fun getNextSelectedTable(tableId: String): String? { // 현재 시간표를 삭제할 경우 대신 선택할 시간표의 id를 반환
         return if (currentTableRepository.currentTable.value?.id == tableId) {
             val tableToDelete = tableMap.value[tableId] ?: return null
             val siblingTables = tableMap.value.values.filter { it.courseBookEquals(tableToDelete) }
