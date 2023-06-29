@@ -49,6 +49,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -289,6 +290,7 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
+        composable2(NavigationDestination.VacancyNotification) { VacancyPage() }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
 
