@@ -288,4 +288,5 @@
     <string name="time_hours_ago">%d시간 전</string>
     <string name="time_minutes_ago">%d분 전</string>
     <string name="time_now">방금</string>
+    <string name="vacancy_app_bar_title">빈자리 알림</string>
 </resources>
