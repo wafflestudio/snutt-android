@@ -1,26 +1,19 @@
 package com.wafflestudio.snutt2.views
 
 import android.app.Activity
-import android.app.DownloadManager
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
-import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import kotlin.coroutines.suspendCoroutine
 
 class RNModuleActivity: Activity() {
 
