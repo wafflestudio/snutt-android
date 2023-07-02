@@ -1,51 +1,34 @@
 package com.wafflestudio.snutt2.views
 
-import android.app.Activity
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.io.FileOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
-class RNModuleActivity: Activity() {
+@AndroidEntryPoint
+class RNModuleActivity : AppCompatActivity() {
+
+    private val rnViewModel: RNViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val urlConnection = URL("https://snutt-rn-assets.s3.ap-northeast-2.amazonaws.com/android.jsbundle").openConnection() as HttpURLConnection
-            urlConnection.connect()
-            val inputStream = urlConnection.inputStream
-            val outputFile = File(applicationContext.cacheDir, "android.jsbundle")
-
-            val outputStream = FileOutputStream(outputFile)
-            val buffer = ByteArray(1024000)
-            var bytesRead: Int
-
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
-            }
-            outputStream.close()
-            inputStream.close()
-            urlConnection.disconnect()
-
-            val jsBundleFile = File(applicationContext.cacheDir, "android.jsbundle")
-
-            withContext(Dispatchers.Main) {
+        rnViewModel.done.observe(this) { done ->
+            if (done) {
+                val jsBundleFile = File(applicationContext.cacheDir, "android.jsbundle")
                 val reactInstanceManager = ReactInstanceManager.builder()
                     .setApplication(application)
                     .setCurrentActivity(this@RNModuleActivity)
                     .setJSBundleFile(jsBundleFile.absolutePath)
                     .addPackage(MainReactPackage())
                     .setInitialLifecycleState(LifecycleState.RESUMED)
+                    .setJavaScriptExecutorFactory(HermesExecutorFactory())
                     .build()
 
                 val rootView = ReactRootView(this@RNModuleActivity)
@@ -53,12 +36,9 @@ class RNModuleActivity: Activity() {
                 setContentView(rootView)
             }
         }
+    }
 
-//        val request = DownloadManager.Request(Uri.parse("https://snutt-rn-assets.s3.ap-northeast-2.amazonaws.com/android.jsbundle"))
-//            .setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "android.jsbundle")
-//            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-//
-//        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//        downloadManager.enqueue(request)
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
