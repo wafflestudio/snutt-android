@@ -69,12 +69,7 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(
-                                table.title,
-                                table.id,
-                                composableStates,
-                                tableListViewModel::changeTableName
-                            )
+                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
                         }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -129,11 +124,7 @@ fun TimetablePage() {
                     BookmarkPageIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks {
-                                navController.navigate(NavigationDestination.Bookmark) {
-                                    launchSingleTop = true
-                                }
-                            },
+                            .clicks { navController.navigate(NavigationDestination.Bookmark) { launchSingleTop = true } },
                     )
                 }
             }
