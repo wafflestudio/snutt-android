@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.di
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -28,6 +30,7 @@ import java.io.File
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    @SuppressLint("HardwareIds")
     @Provides
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
@@ -72,6 +75,14 @@ object NetworkModule {
                     .addHeader(
                         "x-app-type",
                         if (BuildConfig.DEBUG) "debug" else "release"
+                    )
+                    .addHeader(
+                        "x-device-id",
+                        Secure.getString(context.contentResolver, Secure.ANDROID_ID)
+                    )
+                    .addHeader(
+                        "x-device-model",
+                        listOf(Build.MANUFACTURER.uppercase(), Build.MODEL).joinToString(" ")
                     )
                     .build()
                 chain.proceed(newRequest)
