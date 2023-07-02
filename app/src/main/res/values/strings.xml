@@ -289,4 +289,9 @@
     <string name="time_minutes_ago">%d분 전</string>
     <string name="time_now">방금</string>
     <string name="vacancy_app_bar_title">빈자리 알림</string>
+    <string name="vacancy_item_quota_text">%d명/%d명</string>
+    <string name="vacancy_item_detail_button">자세히</string>
+    <string name="vacancy_item_delete_button">목록에서 삭제</string>
+    <string name="vacancy_item_goto_button">수강신청으로 이동</string>
+    <string name="vacancy_app_bar_edit">편집</string>
 </resources>
