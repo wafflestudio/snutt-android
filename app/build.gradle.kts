@@ -120,9 +120,9 @@ android {
     }
 }
 
-//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-//    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
-//}
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
+}
 
 dependencies {
     testImplementation("junit:junit:4.13.1")
