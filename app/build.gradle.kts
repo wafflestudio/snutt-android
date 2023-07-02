@@ -10,7 +10,6 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
     id("kotlin-parcelize")
-    id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.appdistribution")
     id("com.google.firebase.crashlytics")
 }
@@ -116,7 +115,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
 }
 
