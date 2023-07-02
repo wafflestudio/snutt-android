@@ -54,6 +54,7 @@ fun LazyItemScope.VacancyListItem(
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithSelected.item)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithSelected.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
+    val fontColor = if (selected) SNUTTColors.AllWhite else SNUTTColors.Black900
 
     Column(
         modifier = Modifier
@@ -80,14 +81,14 @@ fun LazyItemScope.VacancyListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = lectureTitle,
-                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.h4.copy(color = fontColor),
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = instructorCreditText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.body2.copy(color = fontColor),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -95,13 +96,13 @@ fun LazyItemScope.VacancyListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TagIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                    colorFilter = ColorFilter.tint(fontColor),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = tagText,
                     style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.AllWhite,
+                        fontColor,
                         fontWeight = FontWeight.Light
                     ),
                     modifier = Modifier.weight(1f),
@@ -117,13 +118,13 @@ fun LazyItemScope.VacancyListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                    colorFilter = ColorFilter.tint(fontColor),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = classTimeText,
                     style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.AllWhite,
+                        color = fontColor,
                         fontWeight = FontWeight.Light
                     ),
                     maxLines = 1,
@@ -132,13 +133,13 @@ fun LazyItemScope.VacancyListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LocationIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                    colorFilter = ColorFilter.tint(fontColor),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithSelected.item),
                     style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.AllWhite,
+                        color = fontColor,
                         fontWeight = FontWeight.Light
                     ),
                     maxLines = 1,
@@ -147,13 +148,13 @@ fun LazyItemScope.VacancyListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RemarkIcon(
                     modifier = Modifier.size(15.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                    colorFilter = ColorFilter.tint(fontColor),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = remarkText.ifEmpty { "없음" },
                     style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.AllWhite,
+                        color = fontColor,
                         fontWeight = FontWeight.Light
                     ),
                     maxLines = 1,
@@ -198,5 +199,5 @@ fun LazyItemScope.VacancyListItem(
             }
         }
     }
-    Divider(color = SNUTTColors.White400)
+    Divider(color = SNUTTColors.Black250)
 }
