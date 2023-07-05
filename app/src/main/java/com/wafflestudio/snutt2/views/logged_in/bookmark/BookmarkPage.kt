@@ -75,7 +75,9 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
             override fun handleOnBackPressed() {
                 if (bottomSheet.isVisible) {
                     scope.launch { bottomSheet.hide() }
-                } else if (navController.backQueue.size >= 3) navController.popBackStack()
+                } else if (navController.currentDestination?.route == NavigationDestination.Bookmark) {
+                    navController.popBackStack()
+                }
             }
         }
     }
