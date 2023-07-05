@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
@@ -52,11 +51,11 @@ fun LazyItemScope.LectureListItem(
     lectureDataWithState: DataWithState<LectureDto, LectureState>,
     reviewWebViewContainer: WebViewContainer,
     isBookmarkPage: Boolean = false,
-    searchViewModel: SearchViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(),
-    lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel,
+    timetableViewModel: TimetableViewModel,
+    tableListViewModel: TableListViewModel,
+    lectureDetailViewModel: LectureDetailViewModel,
+    userViewModel: UserViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current

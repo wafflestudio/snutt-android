@@ -28,8 +28,11 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlinx.coroutines.*
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -44,6 +47,9 @@ fun SearchPage(
     val bottomSheet = LocalBottomSheetState.current
     val keyBoardController = LocalSoftwareKeyboardController.current
 
+    val timetableViewModel: TimetableViewModel = hiltViewModel()
+    val tableListViewModel: TableListViewModel = hiltViewModel()
+    val lectureDetailViewModel: LectureDetailViewModel = hiltViewModel()
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
@@ -147,7 +153,16 @@ fun SearchPage(
                         ) {
                             items(searchResultPagingItems) { lectureDataWithState ->
                                 lectureDataWithState?.let {
-                                    LectureListItem(lectureDataWithState, reviewBottomSheetWebViewContainer)
+                                    LectureListItem(
+                                        lectureDataWithState,
+                                        reviewBottomSheetWebViewContainer,
+                                        false,
+                                        searchViewModel,
+                                        timetableViewModel,
+                                        tableListViewModel,
+                                        lectureDetailViewModel,
+                                        userViewModel
+                                    )
                                 }
                             }
                         }

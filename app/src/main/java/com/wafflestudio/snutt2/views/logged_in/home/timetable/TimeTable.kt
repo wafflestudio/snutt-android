@@ -46,7 +46,7 @@ fun TimeTable(
             )
         } else trimParam
 
-    DrawClickEventCanvas(touchEnabled, lectures, fittedTrimParam)
+    if (touchEnabled) DrawClickEventCanvas(touchEnabled, lectures, fittedTrimParam)
     DrawTableGrid(fittedTrimParam)
     DrawLectures(lectures, fittedTrimParam)
     DrawSelectedLecture(selectedLecture, fittedTrimParam)
