@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -26,7 +25,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TimetablePage() {
     val scope = rememberCoroutineScope()
@@ -35,7 +33,6 @@ fun TimetablePage() {
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
     val table = LocalTableState.current.table
-    val bottomSheetState = LocalBottomSheetState.current.state
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
