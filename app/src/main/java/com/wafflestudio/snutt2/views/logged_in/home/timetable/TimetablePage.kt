@@ -100,6 +100,9 @@ fun TimetablePage() {
                     BookmarkPageIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
+                            // TODO
+                            // bottomSheet가 hide 되고 content를 비우는데, 이론상으로는 이 두 라인 사이에 navigation이 일어날 수도 있다.
+                            // 일단 시험삼아 이렇게 해 보고 이래도 같은 에러가 터지는지 확인하기
                             .clicks(enabled = bottomSheetState.isVisible.not()) {
                                 navController.navigate(NavigationDestination.Bookmark) { launchSingleTop = true }
                             },
