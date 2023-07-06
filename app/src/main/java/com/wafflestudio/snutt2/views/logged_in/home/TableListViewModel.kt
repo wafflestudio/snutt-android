@@ -83,22 +83,18 @@ class TableListViewModel @Inject constructor(
         }.size > 1 // 현재 선택된 시간표일 때, 해당 coursebook의 유일한 시간표가 아니어야 삭제 가능
     }
 
-    fun getNextSelectedTable(tableId: String): String? { // 현재 시간표를 삭제할 경우 대신 선택할 시간표의 id를 반환
-        return if (currentTableRepository.currentTable.value?.id == tableId) {
-            val tableToDelete = tableMap.value[tableId] ?: return null
-            val siblingTables = tableMap.value.values.filter { it.courseBookEquals(tableToDelete) }
-            if (siblingTables.size > 1) {
-                val index = siblingTables.indexOfFirst { it.id == tableId }
-                if (index == siblingTables.size - 1) {
-                    siblingTables[index - 1].id
-                } else {
-                    siblingTables[index + 1].id
-                }
+    suspend fun deleteTableAndSwitchIfNeeded(tableId: String) { // 시간표를 삭제하고, 현재 시간표라면 index를 유지하며 다른 시간표를 선택한다
+        val tableToDelete = tableMap.value[tableId] ?: return
+        val siblingTables = tableMap.map { it.values.filter { table -> table.courseBookEquals(tableToDelete) } }
+        val index = siblingTables.first().indexOfFirst { it.id == tableId }
+
+        deleteTable(tableId)
+        if (currentTableRepository.currentTable.value?.id == tableId) {
+            if (index == siblingTables.first().size) {
+                changeSelectedTable(siblingTables.first().last().id)
             } else {
-                null
+                changeSelectedTable(siblingTables.first()[index].id)
             }
-        } else {
-            null
         }
     }
 
