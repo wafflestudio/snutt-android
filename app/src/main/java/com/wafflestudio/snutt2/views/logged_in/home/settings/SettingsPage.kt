@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -65,81 +67,85 @@ fun SettingsPage(
                 }
             }
         )
-        Margin(height = 10.dp)
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            SettingItem(title = stringResource(R.string.user_settings_app_bar_title)) {
-                navController.navigate(
-                    NavigationDestination.UserConfig
-                )
-            }
-            SettingItem(title = stringResource(R.string.timetable_settings_app_bar_title)) {
-                navController.navigate(
-                    NavigationDestination.TimeTableConfig
-                )
-            }
-            SettingItem(title = stringResource(R.string.settings_select_color_mode_title)) {
-                navController.navigate(
-                    NavigationDestination.ThemeModeSelect
-                )
-            }
-        }
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_version_info),
-            modifier = Modifier.background(SNUTTColors.White900),
-            content = {
-                Text(
-                    text = BuildConfig.VERSION_NAME,
-                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
-                )
-            }
-        )
-        Margin(height = 10.dp)
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            SettingItem(title = stringResource(R.string.settings_team_info)) {
-                navController.navigate(
-                    NavigationDestination.TeamInfo
-                )
-            }
-            SettingItem(title = stringResource(R.string.settings_app_report_title)) {
-                navController.navigate(
-                    NavigationDestination.AppReport
-                )
-            }
-        }
-        Margin(height = 10.dp)
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            SettingItem(title = stringResource(R.string.settings_licenses_title)) {
-                showLicenseDialog(context)
-            }
-            SettingItem(title = stringResource(R.string.settings_service_info)) {
-                navController.navigate(
-                    NavigationDestination.ServiceInfo
-                )
-            }
-            SettingItem(title = stringResource(R.string.settings_personal_information_policy)) {
-                navController.navigate(
-                    NavigationDestination.PersonalInformationPolicy
-                )
-            }
-        }
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_logout_title),
-            modifier = Modifier.background(SNUTTColors.White900)
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            logoutDialogState = true
-        }
-        if (BuildConfig.DEBUG) {
+            Margin(height = 10.dp)
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
+                SettingItem(title = stringResource(R.string.user_settings_app_bar_title)) {
+                    navController.navigate(
+                        NavigationDestination.UserConfig
+                    )
+                }
+                SettingItem(title = stringResource(R.string.timetable_settings_app_bar_title)) {
+                    navController.navigate(
+                        NavigationDestination.TimeTableConfig
+                    )
+                }
+                SettingItem(title = stringResource(R.string.settings_select_color_mode_title)) {
+                    navController.navigate(
+                        NavigationDestination.ThemeModeSelect
+                    )
+                }
+            }
             Margin(height = 10.dp)
             SettingItem(
-                title = "네트워크 로그",
+                title = stringResource(R.string.settings_version_info),
+                modifier = Modifier.background(SNUTTColors.White900),
+                content = {
+                    Text(
+                        text = BuildConfig.VERSION_NAME,
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
+                    )
+                }
+            )
+            Margin(height = 10.dp)
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
+                SettingItem(title = stringResource(R.string.settings_team_info)) {
+                    navController.navigate(
+                        NavigationDestination.TeamInfo
+                    )
+                }
+                SettingItem(title = stringResource(R.string.settings_app_report_title)) {
+                    navController.navigate(
+                        NavigationDestination.AppReport
+                    )
+                }
+            }
+            Margin(height = 10.dp)
+            Column(modifier = Modifier.background(SNUTTColors.White900)) {
+                SettingItem(title = stringResource(R.string.settings_licenses_title)) {
+                    showLicenseDialog(context)
+                }
+                SettingItem(title = stringResource(R.string.settings_service_info)) {
+                    navController.navigate(
+                        NavigationDestination.ServiceInfo
+                    )
+                }
+                SettingItem(title = stringResource(R.string.settings_personal_information_policy)) {
+                    navController.navigate(
+                        NavigationDestination.PersonalInformationPolicy
+                    )
+                }
+            }
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_logout_title),
                 modifier = Modifier.background(SNUTTColors.White900)
             ) {
-                navController.navigate(NavigationDestination.NetworkLog)
+                logoutDialogState = true
             }
+            if (BuildConfig.DEBUG) {
+                Margin(height = 10.dp)
+                SettingItem(
+                    title = "네트워크 로그",
+                    modifier = Modifier.background(SNUTTColors.White900)
+                ) {
+                    navController.navigate(NavigationDestination.NetworkLog)
+                }
+            }
+            Margin(height = 10.dp)
         }
-        Margin(height = 10.dp)
     }
 
     if (logoutDialogState) {
