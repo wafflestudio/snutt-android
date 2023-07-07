@@ -187,6 +187,7 @@ fun SignUpPage() {
 
                 WebViewStyleButton(
                     color = if (buttonEnabled) SNUTTColors.SNUTTTheme else SNUTTColors.Gray400,
+                    cornerRadius = 10.dp,
                     onClick = { handleLocalSignUp() },
                     modifier = Modifier
                         .height(45.dp)

@@ -93,6 +93,7 @@ fun TutorialPage() {
                 modifier = Modifier
                     .fillMaxWidth(),
                 color = SNUTTColors.Gray200,
+                cornerRadius = 10.dp,
                 onClick = { navController.navigate(NavigationDestination.SignIn) }
             ) {
                 Text(
@@ -105,6 +106,7 @@ fun TutorialPage() {
                 modifier = Modifier
                     .fillMaxWidth(),
                 color = SNUTTColors.Gray200,
+                cornerRadius = 10.dp,
                 onClick = { navController.navigate(NavigationDestination.SignUp) }
             ) {
                 Text(
@@ -116,6 +118,7 @@ fun TutorialPage() {
             BorderButton(
                 modifier = Modifier.fillMaxWidth(),
                 color = SNUTTColors.FacebookBlue,
+                cornerRadius = 10.dp,
                 onClick = { handleFacebookSignIn() }
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
