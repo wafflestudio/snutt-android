@@ -60,11 +60,15 @@
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">계정 만들기</string>
-    <string name="sign_up_id_hint">아이디</string>
-    <string name="sign_up_password_hint">비밀번호</string>
-    <string name="sign_up_password_confirm_hint">비밀번호 확인</string>
-    <string name="sign_up_email_input_hint">이메일 입력</string>
-    <string name="sign_up_sign_up_button">회원가입</string>
+    <string name="sign_up_id_title">아이디</string>
+    <string name="sign_up_id_hint">영문, 숫자 포함 4~32자 이내</string>
+    <string name="sign_up_password_title">비밀번호</string>
+    <string name="sign_up_password_hint">영문, 숫자 모두 포함 6~20자 이내</string>
+    <string name="sign_up_password_confirm_title">비밀번호 확인</string>
+    <string name="sign_up_password_confirm_hint">비밀번호를 한 번 더 입력하세요</string>
+    <string name="sign_up_email_input_title">이메일</string>
+    <string name="sign_up_email_input_hint">이메일 주소를 입력하세요</string>
+    <string name="sign_up_sign_up_button">계정 만들기</string>
     <string name="sign_up_sign_up_facebook_button">페이스북으로 시작하기</string>
     <string name="sign_in_app_bar_title">로그인</string>
     <string name="sign_in_logo_title">SNUTT</string>
