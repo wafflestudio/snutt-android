@@ -104,6 +104,7 @@ fun SignInPage() {
                     hint = stringResource(R.string.sign_in_password_hint),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
+                    visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
