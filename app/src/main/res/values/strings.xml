@@ -59,12 +59,14 @@
     <string name="error_invalid_email">올바른 이메일을 입력해주세요.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="sign_up_app_bar_title">계정 만들기</string>
     <string name="sign_up_id_hint">아이디</string>
     <string name="sign_up_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_hint">비밀번호 확인</string>
     <string name="sign_up_email_input_hint">이메일 입력</string>
     <string name="sign_up_sign_up_button">회원가입</string>
     <string name="sign_up_sign_up_facebook_button">페이스북으로 시작하기</string>
+    <string name="sign_in_app_bar_title">로그인</string>
     <string name="sign_in_logo_title">SNUTT</string>
     <string name="sign_in_sign_in_button">로그인</string>
     <string name="sign_in_sign_in_facebook_button">페이스북으로 시작하기</string>
@@ -173,7 +175,7 @@
     <string name="home_timetable_drawer">서랍 메뉴</string>
     <string name="search_hint">검색어를 입력하세요.</string>
     <string name="tutorial_sign_in_button">로그인</string>
-    <string name="tutorial_sign_up_button">가입</string>
+    <string name="tutorial_sign_up_button">가입하기</string>
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>

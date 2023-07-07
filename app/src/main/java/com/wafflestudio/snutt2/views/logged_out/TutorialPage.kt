@@ -5,109 +5,132 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialPage() {
     val navController = LocalNavController.current
-    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val context = LocalContext.current
+
+    val userViewModel = hiltViewModel<UserViewModel>()
+    val homeViewModel = hiltViewModel<HomeViewModel>()
+
+    val handleFacebookSignIn = {
+        coroutineScope.launch {
+            try {
+                apiOnProgress.showProgress(context.getString(R.string.sign_in_sign_in_button))
+                val loginResult = facebookLogin(context)
+                userViewModel.loginFacebook(
+                    loginResult.accessToken.userId,
+                    loginResult.accessToken.token
+                )
+                homeViewModel.refreshData()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            } catch (e: Exception) {
+                apiOnError(e)
+            } finally {
+                apiOnProgress.hideProgress()
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.White900)
+            .padding(20.dp)
+            .background(SNUTTColors.White900),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HorizontalPager(modifier = Modifier.weight(1f), count = 3, state = pagerState) { page ->
-            TutorialPage(
-                modifier = Modifier.fillMaxWidth(),
-                titleImg = painterResource(
-                    id = when (page) {
-                        0 -> R.drawable.imgintrotitle1
-                        1 -> R.drawable.imgintrotitle2
-                        else -> R.drawable.imgintrotitle3
-                    }
-                ),
-                contentImg = painterResource(
-                    id = when (page) {
-                        0 -> R.drawable.imgintro1
-                        1 -> R.drawable.imgintro2
-                        else -> R.drawable.imgintro3
-                    }
-                )
+        Column(
+            modifier = Modifier
+                .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(R.string.sign_in_logo_title),
+                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
+            )
+
+            Text(
+                text = stringResource(R.string.sign_in_logo_title),
+                style = SNUTTTypography.h1,
             )
         }
 
-        HorizontalPagerIndicator(
-            modifier = Modifier
-                .padding(30.dp)
-                .align(Alignment.CenterHorizontally),
-            pagerState = pagerState,
-            indicatorHeight = 12.dp,
-            indicatorWidth = 12.dp,
-            activeColor = SNUTTColors.Black900,
-        )
-
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
-            Box(
+            BorderButton(
                 modifier = Modifier
-                    .background(SNUTTColors.Gray100)
-                    .fillMaxWidth()
-                    .height(1.dp)
-            )
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                BorderButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    color = SNUTTColors.White900,
-                    onClick = { navController.navigate(NavigationDestination.SignIn) }
-                ) {
-                    Text(
-                        text = stringResource(R.string.tutorial_sign_in_button),
-                        style = SNUTTTypography.button,
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .fillMaxHeight()
-                        .width(1.dp)
+                    .fillMaxWidth(),
+                color = SNUTTColors.Gray200,
+                onClick = { navController.navigate(NavigationDestination.SignIn) }
+            ) {
+                Text(
+                    text = stringResource(R.string.tutorial_sign_in_button),
+                    style = SNUTTTypography.button,
                 )
+            }
 
-                BorderButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    color = SNUTTColors.White900,
-                    onClick = { navController.navigate(NavigationDestination.SignUp) }
-                ) {
+            BorderButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = SNUTTColors.Gray200,
+                onClick = { navController.navigate(NavigationDestination.SignUp) }
+            ) {
+                Text(
+                    text = stringResource(R.string.tutorial_sign_up_button),
+                    style = SNUTTTypography.button,
+                )
+            }
+
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.FacebookBlue,
+                onClick = { handleFacebookSignIn() }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.iconfacebook),
+                        contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 12.dp),
+                    )
+
                     Text(
-                        text = stringResource(R.string.tutorial_sign_up_button),
-                        style = SNUTTTypography.button,
+                        text = stringResource(R.string.sign_in_sign_in_facebook_button),
+                        color = SNUTTColors.FacebookBlue,
+                        style = SNUTTTypography.button
                     )
                 }
             }
