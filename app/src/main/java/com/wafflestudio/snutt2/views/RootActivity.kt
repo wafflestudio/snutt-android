@@ -236,6 +236,10 @@ class RootActivity : AppCompatActivity() {
             composable2(NavigationDestination.FindPassword) {
                 FindPasswordPage()
             }
+
+            composable2(NavigationDestination.EmailVerification) {
+                VerifyEmailPage()
+            }
         }
     }
 

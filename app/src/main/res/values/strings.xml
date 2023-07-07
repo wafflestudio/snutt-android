@@ -104,6 +104,14 @@
     <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
     <string name="find_password_enter_password_confirm_fail_alert">비밀번호 확인이 일치하지 않습니다.</string>
     <string name="find_password_enter_password_success_alert">비밀번호 재설정이 완료되었습니다.</string>
+    <string name="verify_email_app_bar_title">이메일 인증</string>
+    <string name="verify_email_question_text">강의평 서비스를 이용하기 위해\n이메일 인증이 필요합니다.\n%s에 대한 이메일 인증을\n진행하시겠습니까?</string>
+    <string name="verify_email_detail_text">"나중에 하기"를 선택하더라도 강의평 서비스를 제외한 SNUTT의 모든 기능을 이용할 수 있습니다.</string>
+    <string name="verify_email_ok_button">확인</string>
+    <string name="verify_email_later_button">나중에 하기</string>
+    <string name="verify_email_input_code">%s으로 전송된 인증번호를\n입력해주세요.</string>
+    <string name="verify_email_code_title">인증번호</string>
+    <string name="verify_email_code_hint">인증번호 6자리를 입력하세요</string>
     <string name="common_day_mon">월</string>
     <string name="common_day_tue">화</string>
     <string name="common_day_wed">수</string>
