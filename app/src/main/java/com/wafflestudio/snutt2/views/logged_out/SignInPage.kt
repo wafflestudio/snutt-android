@@ -49,6 +49,7 @@ fun SignInPage() {
 
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
+    val buttonEnabled by remember { derivedStateOf { idField.isNotEmpty() && passwordField.isNotEmpty() } }
 
     val handleLocalSignIn = {
         coroutineScope.launch {
@@ -133,7 +134,7 @@ fun SignInPage() {
             }
 
             WebViewStyleButton(
-                color = if (idField.isEmpty() || passwordField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme,
+                color = if (buttonEnabled) SNUTTColors.SNUTTTheme else SNUTTColors.Gray400,
                 onClick = { handleLocalSignIn() },
                 modifier = Modifier
                     .height(45.dp)
