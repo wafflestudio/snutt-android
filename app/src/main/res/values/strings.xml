@@ -71,8 +71,10 @@
     <string name="sign_in_sign_in_button">로그인</string>
     <string name="sign_in_sign_in_facebook_button">페이스북으로 시작하기</string>
     <string name="sign_in_find_id_button">아이디 찾기</string>
-    <string name="sign_in_find_password_button">비밀번호 찾기</string>
+    <string name="sign_in_find_password_button">비밀번호 재설정</string>
+    <string name="sign_in_id_title">아이디</string>
     <string name="sign_in_id_hint">아이디</string>
+    <string name="sign_in_password_title">비밀번호</string>
     <string name="sign_in_password_hint">비밀번호</string>
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
