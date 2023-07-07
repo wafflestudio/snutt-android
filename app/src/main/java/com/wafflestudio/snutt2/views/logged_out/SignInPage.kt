@@ -142,7 +142,9 @@ fun SignInPage() {
             ) {
                 Text(
                     text = stringResource(R.string.sign_in_sign_in_button),
-                    style = SNUTTTypography.button.copy(color = SNUTTColors.AllWhite)
+                    style = SNUTTTypography.button.copy(
+                        color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                    )
                 )
             }
         }
