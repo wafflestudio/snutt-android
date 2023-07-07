@@ -7,16 +7,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.EditTextWithTitle
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
@@ -24,7 +20,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.navigateAsOrigin
 
 @Composable
@@ -50,7 +45,7 @@ fun VerifyEmailPage() {
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            when(onInputPage) {
+            when (onInputPage) {
                 false -> {
                     Text(
                         text = stringResource(R.string.verify_email_question_text, userEmail),
@@ -108,10 +103,9 @@ fun VerifyEmailPage() {
                         onValueChange = { codeField = it },
                         hint = stringResource(R.string.verify_email_code_hint),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {  }),
+                        keyboardActions = KeyboardActions(onDone = { }),
                         singleLine = true,
                         trailingIcon = {
-
                         },
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -122,7 +116,7 @@ fun VerifyEmailPage() {
                     WebViewStyleButton(
                         modifier = Modifier.fillMaxWidth(),
                         color = SNUTTColors.SNUTTTheme,
-                        onClick = {  }
+                        onClick = { }
                     ) {
                         Text(
                             text = stringResource(R.string.verify_email_ok_button),
