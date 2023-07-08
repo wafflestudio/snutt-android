@@ -30,7 +30,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private enum class VerifyEmailState {

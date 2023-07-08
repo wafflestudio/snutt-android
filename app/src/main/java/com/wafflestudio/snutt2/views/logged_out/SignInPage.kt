@@ -7,7 +7,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
@@ -21,7 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -29,7 +31,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInPage() {
     val navController = LocalNavController.current
