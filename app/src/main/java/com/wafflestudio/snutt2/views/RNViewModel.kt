@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,11 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RNViewModel @Inject constructor(
-    application: Application
+    application: Application,
+    private val userRepository: UserRepository,
 ) : AndroidViewModel(application) {
 
     private val _done = MutableLiveData(false)
     val done: LiveData<Boolean> get() = _done
+
+    val token get() = userRepository.accessToken.value
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
