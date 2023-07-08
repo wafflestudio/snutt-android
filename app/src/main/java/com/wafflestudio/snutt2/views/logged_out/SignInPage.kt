@@ -82,28 +82,42 @@ fun SignInPage() {
                 modifier = Modifier
                     .weight(1f)
             ) {
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_in_id_title),
-                    value = idField,
-                    onValueChange = { idField = it },
-                    hint = stringResource(R.string.sign_in_id_hint),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_in_id_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = idField,
+                        onValueChange = { idField = it },
+                        hint = stringResource(R.string.sign_in_id_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        singleLine = true,
+                    )
+                }
 
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_in_password_title),
-                    value = passwordField,
-                    onValueChange = { passwordField = it },
-                    hint = stringResource(R.string.sign_in_password_hint),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_in_password_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = passwordField,
+                        onValueChange = { passwordField = it },
+                        hint = stringResource(R.string.sign_in_password_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                    )
+                }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(

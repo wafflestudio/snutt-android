@@ -99,57 +99,97 @@ fun SignUpPage() {
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
             ) {
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_up_id_title),
-                    value = idField,
-                    onValueChange = { idField = it },
-                    hint = stringResource(R.string.sign_up_id_hint),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_id_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = idField,
+                        onValueChange = { idField = it },
+                        hint = stringResource(R.string.sign_up_id_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        singleLine = true,
+                    )
+                }
 
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_up_password_title),
-                    value = passwordField,
-                    onValueChange = { passwordField = it },
-                    hint = stringResource(R.string.sign_up_password_hint),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_password_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
+                    )
+                    EditText(
+                        value = passwordField,
+                        onValueChange = { passwordField = it },
+                        hint = stringResource(R.string.sign_up_password_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                    )
+                }
 
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_up_password_confirm_title),
-                    value = passwordConfirmField,
-                    onValueChange = { passwordConfirmField = it },
-                    hint = stringResource(R.string.sign_up_password_confirm_hint),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_password_confirm_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = passwordConfirmField,
+                        onValueChange = { passwordConfirmField = it },
+                        hint = stringResource(R.string.sign_up_password_confirm_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                    )
+                }
 
-                EditTextWithTitle(
-                    title = stringResource(R.string.sign_up_email_input_title),
-                    value = emailField,
-                    onValueChange = { emailField = it },
-                    hint = stringResource(R.string.sign_up_email_input_hint),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_email_input_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
+                    )
+                    EditText(
+                        value = emailField,
+                        onValueChange = { emailField = it },
+                        hint = stringResource(R.string.sign_up_email_input_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
+                        singleLine = true,
+                    )
+                }
             }
 
             Column(
