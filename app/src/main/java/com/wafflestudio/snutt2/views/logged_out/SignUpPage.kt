@@ -67,7 +67,7 @@ fun SignUpPage() {
                     apiOnProgress.showProgress("회원가입")
                     userViewModel.signUpLocal(idField, emailField, passwordField)
                     homeViewModel.refreshData()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+                    navController.navigate(NavigationDestination.EmailVerification)
                 } catch (e: Exception) {
                     apiOnError(e)
                 } finally {
