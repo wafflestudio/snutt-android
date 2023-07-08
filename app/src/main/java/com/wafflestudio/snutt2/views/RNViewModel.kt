@@ -24,21 +24,23 @@ class RNViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val urlConnection = URL("https://snutt-rn-assets.s3.ap-northeast-2.amazonaws.com/android.jsbundle").openConnection() as HttpURLConnection
-            urlConnection.connect()
-            val inputStream = urlConnection.inputStream
-            val outputFile = File(application.applicationContext.cacheDir, "android.jsbundle")
+            val bundleFile = File(application.applicationContext.cacheDir, "android.jsbundle")
+            if (bundleFile.canRead().not()) {
+                val urlConnection = URL("https://snutt-rn-assets.s3.ap-northeast-2.amazonaws.com/android.jsbundle").openConnection() as HttpURLConnection
+                urlConnection.connect()
+                val inputStream = urlConnection.inputStream
 
-            val outputStream = FileOutputStream(outputFile)
-            val buffer = ByteArray(1024000)
-            var bytesRead: Int
+                val outputStream = FileOutputStream(bundleFile)
+                val buffer = ByteArray(1024000)
+                var bytesRead: Int
 
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+                outputStream.close()
+                inputStream.close()
+                urlConnection.disconnect()
             }
-            outputStream.close()
-            inputStream.close()
-            urlConnection.disconnect()
             _done.postValue(true)
         }
     }
