@@ -23,6 +23,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
 fun NotificationPage() {
@@ -36,7 +37,11 @@ fun NotificationPage() {
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = { if (navController.backQueue.size >= 3) navController.popBackStack() }
+            onClickNavigateBack = {
+                if (navController.currentDestination?.route == NavigationDestination.Notification) {
+                    navController.popBackStack()
+                }
+            }
         )
 
         when {

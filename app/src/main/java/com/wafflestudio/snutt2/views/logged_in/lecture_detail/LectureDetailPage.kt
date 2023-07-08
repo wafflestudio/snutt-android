@@ -100,7 +100,9 @@ fun LectureDetailPage(
                     scope.launch { bottomSheet.hide() }
                 } else when (modeType) {
                     ModeType.Normal -> {
-                        if (navController.backQueue.size >= 3) navController.popBackStack()
+                        if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
+                            navController.popBackStack()
+                        }
                     }
                     is ModeType.Editing -> {
                         if ((modeType as ModeType.Editing).adding) {

@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -30,12 +30,14 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -49,6 +51,8 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
+    val tableListViewModel: TableListViewModel = hiltViewModel()
+    val lectureDetailViewModel: LectureDetailViewModel = hiltViewModel()
 
     val isDarkMode = isDarkMode()
     val reviewWebViewContainer =
@@ -71,7 +75,9 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
             override fun handleOnBackPressed() {
                 if (bottomSheet.isVisible) {
                     scope.launch { bottomSheet.hide() }
-                } else if (navController.backQueue.size >= 3) navController.popBackStack()
+                } else if (navController.currentDestination?.route == NavigationDestination.Bookmark) {
+                    navController.popBackStack()
+                }
             }
         }
     }
@@ -131,6 +137,10 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
                                 searchViewModel = searchViewModel, // 다른 viewModel은 데이터를 갖지 않고 api만 사용하므로 route가 Bookmark인 hiltViewModel 그냥 사용
                                 reviewWebViewContainer = reviewWebViewContainer,
                                 isBookmarkPage = true,
+                                timetableViewModel = timetableViewModel,
+                                tableListViewModel = tableListViewModel,
+                                lectureDetailViewModel = lectureDetailViewModel,
+                                userViewModel = userViewModel,
                             )
                         }
                         item { Divider(color = SNUTTColors.White400) }

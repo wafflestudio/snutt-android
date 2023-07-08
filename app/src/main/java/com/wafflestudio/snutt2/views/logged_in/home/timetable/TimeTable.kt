@@ -46,7 +46,7 @@ fun TimeTable(
             )
         } else trimParam
 
-    DrawClickEventCanvas(touchEnabled, lectures, fittedTrimParam)
+    if (touchEnabled) DrawClickEventCanvas(lectures, fittedTrimParam)
     DrawTableGrid(fittedTrimParam)
     DrawLectures(lectures, fittedTrimParam)
     DrawSelectedLecture(selectedLecture, fittedTrimParam)
@@ -54,7 +54,7 @@ fun TimeTable(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun DrawClickEventCanvas(touchEnabled: Boolean, lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     val navigator = LocalNavController.current
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
     var canvasSize by remember { mutableStateOf(Size.Zero) }
@@ -65,7 +65,7 @@ private fun DrawClickEventCanvas(touchEnabled: Boolean, lectures: List<LectureDt
         modifier = Modifier
             .fillMaxSize()
             .pointerInteropFilter { event ->
-                if (event.action == MotionEvent.ACTION_UP && touchEnabled) {
+                if (event.action == MotionEvent.ACTION_UP) {
                     val unitWidth =
                         (canvasSize.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
                     val unitHeight =
