@@ -108,7 +108,7 @@ fun VerifyEmailPage() {
         )
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
-                when(targetState) {
+                when (targetState) {
                     VerifyEmailState.AskContinue -> {
                         Text(
                             text = stringResource(R.string.verify_email_question_text, userEmail),
