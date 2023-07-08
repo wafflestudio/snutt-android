@@ -2,19 +2,20 @@ package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
+import com.facebook.react.ReactActivity
+import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
-import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
-@AndroidEntryPoint
-class RNModuleActivity : AppCompatActivity() {
+class RNModuleActivity : ReactActivity() {
 
     private val rnViewModel: RNViewModel by viewModels()
+    private var reactInstanceManager: ReactInstanceManager? = null
+    private var rootView: ReactRootView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,7 @@ class RNModuleActivity : AppCompatActivity() {
         rnViewModel.done.observe(this) { done ->
             if (done) {
                 val jsBundleFile = File(applicationContext.cacheDir, "android.jsbundle")
-                val reactInstanceManager = ReactInstanceManager.builder()
+                reactInstanceManager = ReactInstanceManager.builder()
                     .setApplication(application)
                     .setCurrentActivity(this@RNModuleActivity)
                     .setJSBundleFile(jsBundleFile.absolutePath)
@@ -31,14 +32,27 @@ class RNModuleActivity : AppCompatActivity() {
                     .setJavaScriptExecutorFactory(HermesExecutorFactory())
                     .build()
 
-                val rootView = ReactRootView(this@RNModuleActivity)
-                rootView.startReactApplication(reactInstanceManager, "friends", null)
+                rootView = ReactRootView(this@RNModuleActivity)
+                rootView?.startReactApplication(reactInstanceManager, "friends", null)
                 setContentView(rootView)
             }
         }
     }
 
+    override fun createReactActivityDelegate(): ReactActivityDelegate {
+        return object : ReactActivityDelegate(this, mainComponentName) {
+            override fun getLaunchOptions(): Bundle {
+                return Bundle()
+                    .apply {
+                        putString("token", "wow wow")
+                    }
+            }
+        }
+    }
+
     override fun onDestroy() {
+        reactInstanceManager = null
+        rootView = null
         super.onDestroy()
     }
 }
