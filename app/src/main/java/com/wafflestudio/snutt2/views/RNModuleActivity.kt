@@ -9,8 +9,10 @@ import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
+@AndroidEntryPoint
 class RNModuleActivity : ReactActivity() {
 
     private val rnViewModel: RNViewModel by viewModels()
@@ -44,7 +46,7 @@ class RNModuleActivity : ReactActivity() {
             override fun getLaunchOptions(): Bundle {
                 return Bundle()
                     .apply {
-                        putString("token", "wow wow")
+                        putString("token", rnViewModel.token)
                     }
             }
         }
