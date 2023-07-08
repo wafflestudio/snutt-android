@@ -230,21 +230,33 @@ class UserRepositoryImpl @Inject constructor(
         ).email
     }
 
-    override suspend fun sendCodeToEmail(email: String) {
-        api._postSendCodeToEmailById(
-            PostSendCodeParams(email)
+    override suspend fun sendPwResetCodeToEmail(email: String) {
+        api._postSendPwResetCodeToEmailById(
+            PostSendPwResetCodeParams(email)
         )
     }
 
-    override suspend fun verifyCode(id: String, code: String) {
+    override suspend fun verifyPwResetCode(id: String, code: String) {
         api._postVerifyCodeToResetPassword(
-            PostVerifyCodeParams(id, code)
+            PostVerifyPwResetCodeParams(id, code)
         )
     }
 
     override suspend fun resetPassword(id: String, password: String) {
         api._postResetPassword(
             PostResetPasswordParams(id, password)
+        )
+    }
+
+    override suspend fun sendCodeToEmail(email: String) {
+        api._postSendCodeToEmail(
+            PostSendCodeToEmailParams(email)
+        )
+    }
+
+    override suspend fun verifyEmailCode(code: String) {
+        api._postVerifyEmailCode(
+            PostVerifyEmailCodeParams(code)
         )
     }
 

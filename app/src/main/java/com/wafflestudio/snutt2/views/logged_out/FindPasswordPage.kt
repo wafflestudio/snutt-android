@@ -87,7 +87,7 @@ fun FindPasswordPage() {
                 context.toast(context.getString(R.string.find_password_enter_verification_code_expire_message))
             } else {
                 launchSuspendApi(apiOnProgress, apiOnError) {
-                    userViewModel.verifyCode(idField, codeField)
+                    userViewModel.verifyPwResetCode(idField, codeField)
                     keyboardManager?.hide()
                     context.toast(context.getString(R.string.find_password_enter_verification_code_success_alert))
                     timerState.pause()
@@ -215,7 +215,7 @@ fun FindPasswordPage() {
                                                 if (timerState.isEnded) {
                                                     coroutineScope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            userViewModel.sendCodeToEmail(emailResponse)
+                                                            userViewModel.sendPwResetCodeToEmail(emailResponse)
                                                             timerState.reset()
                                                             timerState.start()
                                                         }
@@ -313,7 +313,7 @@ fun FindPasswordPage() {
                 checkEmailDialogState = false
                 coroutineScope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        userViewModel.sendCodeToEmail(emailResponse)
+                        userViewModel.sendPwResetCodeToEmail(emailResponse)
                         flowState = FlowState.SendCode
                         timerState.start()
                     }
