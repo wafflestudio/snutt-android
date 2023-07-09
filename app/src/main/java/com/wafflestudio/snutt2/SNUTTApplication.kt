@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
+import com.facebook.react.shell.MainReactPackage
 import com.wafflestudio.snutt2.lib.rx.DirectFirstHandleScheduler
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import dagger.hilt.android.HiltAndroidApp
@@ -38,7 +39,9 @@ class SNUTTApplication : Application(), ReactApplication {
         return object : ReactNativeHost(this) {
             override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
-            override fun getPackages(): MutableList<ReactPackage> = this.packages.toMutableList()
+            override fun getPackages(): List<ReactPackage> = listOf<ReactPackage>(MainReactPackage())
+
+            override fun getJSMainModuleName(): String = "friends"
         }
     }
 
