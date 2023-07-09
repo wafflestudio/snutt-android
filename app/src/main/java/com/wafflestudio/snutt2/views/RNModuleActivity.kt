@@ -52,6 +52,10 @@ class RNModuleActivity : ReactActivity() {
         }
     }
 
+    override fun getMainComponentName(): String {
+        return "App"
+    }
+
     override fun onDestroy() {
         reactInstanceManager = null
         rootView = null
