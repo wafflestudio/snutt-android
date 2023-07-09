@@ -35,26 +35,11 @@ class RNModuleActivity : ReactActivity() {
                     .build()
 
                 rootView = ReactRootView(this@RNModuleActivity)
-                rootView?.startReactApplication(reactInstanceManager, "friends", null)
+                rootView?.startReactApplication(reactInstanceManager, "friends", Bundle().apply { putString("token", rnViewModel.token)} )
                 setContentView(rootView)
             }
         }
     }
-
-    override fun createReactActivityDelegate(): ReactActivityDelegate {
-        return object : ReactActivityDelegate(this, mainComponentName) {
-            override fun getLaunchOptions(): Bundle {
-                return Bundle()
-                    .apply {
-                        putString("token", rnViewModel.token)
-                    }
-            }
-        }
-    }
-
-//    override fun getMainComponentName(): String {
-//        return "App"
-//    }
 
     override fun onDestroy() {
         reactInstanceManager = null
