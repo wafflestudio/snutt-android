@@ -52,7 +52,7 @@ object SNUTTStringUtils {
 
     fun getNotificationTime(info: NotificationDto): String {
         try {
-            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
             format.timeZone = TimeZone.getTimeZone("UTC")
             val date1 = format.parse(info.createdAt) ?: Date()
             val date2 = Date()
