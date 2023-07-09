@@ -146,7 +146,7 @@ fun EmailVerificationPage() {
                         )
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
-                            color = SNUTTColors.Gray200,
+                            enabledColor = SNUTTColors.Gray200,
                             onClick = { navController.navigateAsOrigin(NavigationDestination.Home) }
                         ) {
                             Text(
@@ -223,7 +223,7 @@ fun EmailVerificationPage() {
                         Spacer(modifier = Modifier.height(30.dp))
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
-                            color = if (buttonEnabled) SNUTTColors.SNUTTTheme else SNUTTColors.Gray400,
+                            enabled = buttonEnabled,
                             onClick = {
                                 handleEnterCode()
                             }

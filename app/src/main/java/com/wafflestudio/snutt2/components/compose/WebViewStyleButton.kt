@@ -15,15 +15,16 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 @Composable
 fun WebViewStyleButton(
     modifier: Modifier = Modifier,
-    color: Color = SNUTTColors.SNUTTTheme,
-    cornerRadius: Dp = 0.dp,
+    enabled: Boolean = true,
+    enabledColor: Color = SNUTTColors.SNUTTTheme,
+    disabledColor: Color = SNUTTColors.Gray400,
     onClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .clicks { onClick() }
-            .background(color, RoundedCornerShape(cornerRadius))
+            .clicks { if (enabled) onClick() }
+            .background(if (enabled) enabledColor else disabledColor)
             .height(60.dp),
         contentAlignment = Alignment.Center,
     ) {

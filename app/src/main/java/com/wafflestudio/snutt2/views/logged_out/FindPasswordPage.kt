@@ -59,6 +59,16 @@ fun FindPasswordPage() {
     var passwordConfirmField by remember { mutableStateOf("") }
     var checkEmailDialogState by remember { mutableStateOf(false) }
 
+    val buttonEnabled by remember {
+        derivedStateOf {
+            when (flowState) {
+                FlowState.CheckEmail -> idField.isNotEmpty()
+                FlowState.SendCode -> codeField.isNotEmpty()
+                FlowState.ResetPassword -> passwordField.isNotEmpty() && passwordConfirmField.isNotEmpty()
+            }
+        }
+    }
+
     var emailResponse by remember { mutableStateOf("") }
 
     val timerState = rememberTimerState(
@@ -284,11 +294,7 @@ fun FindPasswordPage() {
                 Spacer(modifier = Modifier.height(30.dp))
                 WebViewStyleButton(
                     modifier = Modifier.fillMaxWidth(),
-                    color = when (flowState) {
-                        FlowState.CheckEmail -> if (idField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                        FlowState.SendCode -> if (codeField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                        FlowState.ResetPassword -> if (passwordField.isEmpty() || passwordConfirmField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                    },
+                    enabled = buttonEnabled,
                     onClick = {
                         when (flowState) {
                             FlowState.CheckEmail -> handleCheckEmailById()

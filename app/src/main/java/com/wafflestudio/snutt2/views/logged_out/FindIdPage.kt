@@ -42,6 +42,7 @@ fun FindIdPage() {
     val userViewModel = hiltViewModel<UserViewModel>()
 
     var emailField by remember { mutableStateOf("") }
+    val buttonEnabled by remember { derivedStateOf { emailField.isNotEmpty() } }
 
     val handleSendIdToEmail = {
         coroutineScope.launch {
@@ -100,7 +101,7 @@ fun FindIdPage() {
             Spacer(modifier = Modifier.height(30.dp))
             WebViewStyleButton(
                 modifier = Modifier.fillMaxWidth(),
-                color = if (emailField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme,
+                enabled = buttonEnabled,
                 onClick = { handleSendIdToEmail() }
             ) {
                 Text(
