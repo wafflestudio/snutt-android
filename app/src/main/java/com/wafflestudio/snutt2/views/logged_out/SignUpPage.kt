@@ -69,7 +69,7 @@ fun SignUpPage() {
                     apiOnError = apiOnError,
                     loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button)
                 ) {
-                    userViewModel.signUpLocal(idField, emailField, passwordField)
+                    userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
                     navController.navigate(NavigationDestination.EmailVerification)
                 }
@@ -188,6 +188,14 @@ fun SignUpPage() {
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
                         singleLine = true,
+                        trailingIcon = {
+                            Text(
+                                text = stringResource(R.string.sign_up_email_form),
+                                style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                                textAlign = TextAlign.Right,
+                                maxLines = 1,
+                            )
+                        }
                     )
                 }
             }

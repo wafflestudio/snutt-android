@@ -182,8 +182,9 @@ fun EmailVerificationPage() {
                             ),
                             singleLine = true,
                             trailingIcon = {
-                                Row {
-                                    Box(modifier = Modifier.weight(1f))
+                                Row(
+                                    modifier = Modifier.padding(start = 10.dp)
+                                ) {
                                     Timer(
                                         state = timerState,
                                         endMessage = stringResource(R.string.find_password_send_code_resend),
