@@ -38,7 +38,7 @@ private enum class VerifyEmailState {
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun VerifyEmailPage() {
+fun EmailVerificationPage() {
     val navController = LocalNavController.current
     val focusManager = LocalFocusManager.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -237,10 +237,4 @@ fun VerifyEmailPage() {
             }
         }
     }
-}
-
-@Preview(device = Devices.PIXEL_XL)
-@Composable
-fun VerifyEmailPagePreview() {
-    VerifyEmailPage()
 }

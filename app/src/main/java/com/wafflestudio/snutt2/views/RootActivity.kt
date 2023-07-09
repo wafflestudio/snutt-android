@@ -238,7 +238,7 @@ class RootActivity : AppCompatActivity() {
             }
 
             composable2(NavigationDestination.EmailVerification) {
-                VerifyEmailPage()
+                EmailVerificationPage()
             }
         }
     }

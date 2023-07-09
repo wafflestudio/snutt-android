@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,15 +64,14 @@ fun SignUpPage() {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {
             coroutineScope.launch {
-                try {
-                    apiOnProgress.showProgress("회원가입")
+                launchSuspendApi(
+                    apiOnProgress = apiOnProgress,
+                    apiOnError = apiOnError,
+                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button)
+                ) {
                     userViewModel.signUpLocal(idField, emailField, passwordField)
                     homeViewModel.refreshData()
                     navController.navigate(NavigationDestination.EmailVerification)
-                } catch (e: Exception) {
-                    apiOnError(e)
-                } finally {
-                    apiOnProgress.hideProgress()
                 }
             }
         }
@@ -94,13 +94,13 @@ fun SignUpPage() {
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_id_title),

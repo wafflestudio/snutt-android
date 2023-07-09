@@ -37,8 +37,11 @@ fun TutorialPage() {
 
     val handleFacebookSignIn = {
         coroutineScope.launch {
-            try {
-                apiOnProgress.showProgress(context.getString(R.string.sign_in_sign_in_button))
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button)
+            ) {
                 val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
                     loginResult.accessToken.userId,
@@ -46,10 +49,6 @@ fun TutorialPage() {
                 )
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
-            } catch (e: Exception) {
-                apiOnError(e)
-            } finally {
-                apiOnProgress.hideProgress()
             }
         }
     }

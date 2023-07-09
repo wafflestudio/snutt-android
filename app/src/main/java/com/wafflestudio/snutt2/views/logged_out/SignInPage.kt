@@ -49,15 +49,14 @@ fun SignInPage() {
 
     val handleLocalSignIn = {
         coroutineScope.launch {
-            try {
-                apiOnProgress.showProgress(context.getString(R.string.sign_in_sign_in_button))
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button)
+            ) {
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
-            } catch (e: Exception) {
-                apiOnError(e)
-            } finally {
-                apiOnProgress.hideProgress()
             }
         }
     }
@@ -123,20 +122,20 @@ fun SignInPage() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(R.string.sign_in_find_id_button),
-                        style = SNUTTTypography.subtitle2,
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindId) }
                     )
 
                     Text(
                         text = "|",
-                        style = SNUTTTypography.subtitle2,
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         modifier = Modifier.padding(horizontal = 15.dp)
                     )
 
                     Text(
                         text = stringResource(R.string.sign_in_find_password_button),
-                        style = SNUTTTypography.subtitle2,
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindPassword) }
                     )
