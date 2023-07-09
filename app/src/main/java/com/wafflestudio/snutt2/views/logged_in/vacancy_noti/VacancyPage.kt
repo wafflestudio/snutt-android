@@ -4,6 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -26,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -45,6 +51,10 @@ fun VacancyPage() {
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.refreshVacancyLectures() })
     val selectedLectures = vacancyViewModel.selectedLectures
+    val deleteEnabled by remember {
+        derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
+    }
+    val density = LocalDensity.current
 
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val onBackPressedCallback = remember {
@@ -95,16 +105,12 @@ fun VacancyPage() {
                 },
                 actions = {
                     Text(
-                        text = if (!vacancyViewModel.isEditMode) stringResource(R.string.vacancy_app_bar_edit) else "삭제",
+                        text = if (!vacancyViewModel.isEditMode) stringResource(R.string.vacancy_app_bar_edit) else stringResource(R.string.vacancy_app_bar_cancel),
                         style = SNUTTTypography.body1,
                         modifier = Modifier
                             .clicks {
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
-                                        if (vacancyViewModel.isEditMode) {
-                                            vacancyViewModel.deleteSelectedLectures()
-                                            vacancyViewModel.getVacancyLectures()
-                                        }
                                         vacancyViewModel.toggleEditMode()
                                     }
                                 }
@@ -113,7 +119,9 @@ fun VacancyPage() {
                 }
             )
             Box(
-                modifier = Modifier.pullRefresh(pullRefreshState)
+                modifier = Modifier
+                    .weight(1f)
+                    .pullRefresh(pullRefreshState)
             ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
@@ -134,24 +142,58 @@ fun VacancyPage() {
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
-        }
-        ExtendedFloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 30.dp, bottom = 30.dp),
-            text = {
-                Text(
-                    text = stringResource(R.string.vacancy_floating_button),
-                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite)
-                )
-            },
-            contentColor = SNUTTColors.SNUTTTheme,
-            onClick = {
-                val sugangSnuUrl = "https://sugang.snu.ac.kr/sugang/ca/ca102.action?workType=F"
-                val intent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse(sugangSnuUrl))
-                context.startActivity(intent)
+            AnimatedVisibility (
+                visible = vacancyViewModel.isEditMode,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                enter = slideInVertically {
+                    with(density) { 60.dp.roundToPx() }
+                },
+                exit = slideOutVertically {
+                    with(density) { 60.dp.roundToPx() }
+                }
+            ) {
+                WebViewStyleButton(
+                    onClick = {
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                vacancyViewModel.deleteSelectedLectures()
+                                vacancyViewModel.getVacancyLectures()
+                                vacancyViewModel.toggleEditMode()
+                            }
+                        }
+                    },
+                    enabled = deleteEnabled,
+                ) {
+                    Text(
+                        text = stringResource(R.string.vacancy_delete_selected),
+                        style = SNUTTTypography.button.copy(
+                            color = if (deleteEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                        )
+                    )
+                }
             }
-        )
+        }
+        if (!vacancyViewModel.isEditMode) {
+            ExtendedFloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 30.dp, bottom = 30.dp),
+                text = {
+                    Text(
+                        text = stringResource(R.string.vacancy_floating_button),
+                        style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite)
+                    )
+                },
+                contentColor = SNUTTColors.SNUTTTheme,
+                onClick = {
+                    val sugangSnuUrl = "https://sugang.snu.ac.kr/sugang/ca/ca102.action?workType=F"
+                    val intent =
+                        Intent(Intent.ACTION_VIEW, Uri.parse(sugangSnuUrl))
+                    context.startActivity(intent)
+                }
+            )
+        }
+
     }
 }
