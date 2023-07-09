@@ -59,6 +59,7 @@ object SNUTTStringUtils {
 
             val diff = date2.time - date1.time
             val hours = diff / (1000 * 60 * 60)
+            val minutes = diff / (1000 * 60)
             val days = hours / 24
             return when {
                 days > 0 -> {
@@ -66,6 +67,9 @@ object SNUTTStringUtils {
                 }
                 hours > 0 -> {
                     "$hours 시간 전" // TODO: resource로 빼기
+                }
+                minutes > 0 -> {
+                    "$minutes 분 전"
                 }
                 else -> {
                     "방금"
