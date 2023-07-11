@@ -295,4 +295,5 @@
     <string name="vacancy_item_goto_button">수강신청으로 이동</string>
     <string name="vacancy_item_vacancy_sticker">취소여석</string>
     <string name="vacancy_app_bar_edit">편집</string>
+    <string name="vacancy_floating_button">수강신청 바로가기</string>
 </resources>

@@ -14,7 +14,7 @@ class VacancyRepositoryImpl @Inject constructor(
 ) : VacancyRepository {
 
     override fun getVacancyLectures(): List<LectureDto> {
-        return List(5) {
+        return List(10) {
             LectureDto(
                 id = "",
                 academic_year = "1학년",
