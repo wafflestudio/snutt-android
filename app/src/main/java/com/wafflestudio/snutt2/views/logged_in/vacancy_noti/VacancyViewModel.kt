@@ -1,8 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,35 +18,21 @@ import javax.inject.Inject
 class VacancyViewModel @Inject constructor(
     private val vacancyRepository: VacancyRepository
 ) : ViewModel() {
-    private val _selectedLecture = MutableStateFlow<LectureDto?>(null)
-    val selectedLecture = _selectedLecture.asStateFlow()
-    private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
-
-    val queryResults = combine(
-        _querySignal.flatMapLatest {
-            vacancyRepository.getVacancyLectureStream()
-//                .cachedIn(viewModelScope)
-        },
-        _selectedLecture
-    ) { pagingData, selectedLecture ->
-        pagingData.map { lecture ->
-            lecture.toDataWithState(lecture == selectedLecture)
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-//        PagingData.empty()
-        listOf()
-    )
+    private val _vacancyLectures = MutableStateFlow<List<DataWithState<LectureDto, Boolean>>>(listOf())
+    val vacancyLectures: StateFlow<List<DataWithState<LectureDto, Boolean>>> = _vacancyLectures
 
     init {
         viewModelScope.launch {
-            _querySignal.emit(Unit)
+            getVacancyLectures()
         }
     }
 
-    suspend fun toggleLectureSelection(lecture: LectureDto) {
-        if (lecture == _selectedLecture.value) _selectedLecture.emit(null)
-        else _selectedLecture.emit(lecture)
+    suspend fun getVacancyLectures() {
+        _vacancyLectures.emit(
+            vacancyRepository.getVacancyLectures()
+                .map { lecture ->
+                    lecture.toDataWithState(lecture.registrationCount < lecture.quota)
+                }
+        )
     }
 }

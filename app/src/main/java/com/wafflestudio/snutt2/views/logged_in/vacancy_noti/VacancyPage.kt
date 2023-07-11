@@ -28,8 +28,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 fun VacancyPage() {
     val navController = LocalNavController.current
     val vacancyViewModel: VacancyViewModel = hiltViewModel()
-//    val vacancyPagingItems = vacancyViewModel.queryResults.collectAsLazyPagingItems()
-    val vacancyPagingItems by vacancyViewModel.queryResults.collectAsState()
+    val vacancyPagingItems by vacancyViewModel.vacancyLectures.collectAsState()
 
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         TopBar(
@@ -62,9 +61,7 @@ fun VacancyPage() {
             modifier = Modifier.fillMaxSize()
         ) {
             items(vacancyPagingItems) {
-                it?.let {
-                    VacancyListItem(it)
-                }
+                VacancyListItem(it)
             }
         }
     }

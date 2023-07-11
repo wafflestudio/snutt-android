@@ -120,7 +120,7 @@ fun ExitIcon(
 @Composable
 fun TagIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier,
