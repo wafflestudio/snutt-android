@@ -77,10 +77,10 @@ fun VacancyPage() {
                 .align(Alignment.BottomEnd)
                 .padding(end = 30.dp, bottom = 30.dp),
             text = {
-               Text(
-                   text = stringResource(R.string.vacancy_floating_button),
-                   style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite)
-               )
+                Text(
+                    text = stringResource(R.string.vacancy_floating_button),
+                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite)
+                )
             },
             contentColor = SNUTTColors.SNUTTTheme,
             onClick = {

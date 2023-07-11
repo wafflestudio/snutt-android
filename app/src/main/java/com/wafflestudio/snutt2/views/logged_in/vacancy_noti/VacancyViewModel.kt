@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
