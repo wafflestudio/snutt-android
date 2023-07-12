@@ -54,7 +54,7 @@ fun EmailVerificationPage() {
     val buttonEnabled by remember { derivedStateOf { codeField.isNotEmpty() } }
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
-        endTime = 180,
+        durationInSecond = 180,
     )
 
     val handleEnterCode = {

@@ -73,7 +73,7 @@ fun FindPasswordPage() {
 
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
-        endTime = 180,
+        durationInSecond = 180,
     )
     val handleCheckEmailById = {
         coroutineScope.launch {
@@ -246,6 +246,18 @@ fun FindPasswordPage() {
                                 text = stringResource(R.string.find_password_enter_verification_code_expire_message),
                                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Red)
                             )
+                        }
+                        BorderButton(
+                            color = SNUTTColors.Red,
+                            onClick = { timerState.pause() }
+                        ) {
+                            Text(text = "pause")
+                        }
+                        BorderButton(
+                            color = SNUTTColors.Blue,
+                            onClick = { timerState.resume() }
+                        ) {
+                            Text(text = "resume")
                         }
                     }
                     FlowState.ResetPassword -> {

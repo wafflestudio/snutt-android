@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 enum class TimerValue {
     Initial, Running, End, Paused,
@@ -12,7 +11,8 @@ enum class TimerValue {
 
 class TimerState(
     initialValue: TimerValue,
-    val endTimeInSecond: Int,
+    private var startTime: Long,
+    private val duration: Long,
 ) {
     val isInitial: Boolean
         get() = currentValue == TimerValue.Initial
@@ -20,24 +20,37 @@ class TimerState(
     val isRunning: Boolean
         get() = currentValue == TimerValue.Running
 
+    val isPaused: Boolean
+        get() = currentValue == TimerValue.Paused
+
     val isEnded: Boolean
         get() = currentValue == TimerValue.End
 
-    var time by mutableStateOf(endTimeInSecond)
+    val timeLeftInSecond: Int
+        get() = if (isPaused) ((startTime + pausedTime + duration - pauseStartTime) / 1000).toInt()
+        else ((startTime + pausedTime + duration - System.currentTimeMillis()) / 1000).toInt()
+
+    var pausedTime: Long = 0
+    var pauseStartTime: Long = 0
 
     var currentValue: TimerValue by mutableStateOf(initialValue)
         private set
 
     fun start() {
         currentValue = TimerValue.Running
+        startTime = System.currentTimeMillis()
     }
 
     fun pause() {
+        if (!isRunning) return
         currentValue = TimerValue.Paused
+        pauseStartTime = System.currentTimeMillis()
     }
 
     fun resume() {
+        if (!isPaused) return
         currentValue = TimerValue.Running
+        pausedTime += System.currentTimeMillis() - pauseStartTime
     }
 
     fun end() {
@@ -46,7 +59,8 @@ class TimerState(
 
     fun reset() {
         currentValue = TimerValue.Initial
-        time = endTimeInSecond
+        pausedTime = 0
+        pauseStartTime = 0
     }
 
     companion object {
@@ -60,23 +74,18 @@ fun Timer(
     endMessage: String,
     content: @Composable (String) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
+    var timeText by remember { mutableStateOf("${state.timeLeftInSecond / 60}:${"%02d".format(state.timeLeftInSecond % 60)}") }
 
-    var timeText = if (state.isEnded) endMessage
-    else "${state.time / 60}:${"%02d".format(state.time % 60)}"
-
-    LaunchedEffect(state.currentValue) {
-        if (state.isInitial) state.time = state.endTimeInSecond
-        else if (state.isRunning) {
-            scope.launch {
-                while (state.time > 0 && state.isRunning) {
-                    delay(1000L)
-                    state.time--
-                }
-                if (state.time == 0) state.end()
+    LaunchedEffect(Unit) {
+        while (true) {
+            if (state.timeLeftInSecond <= 0) {
+                state.end()
+                timeText = endMessage
+                break
+            } else {
+                timeText = "${state.timeLeftInSecond / 60}:${"%02d".format(state.timeLeftInSecond % 60)}"
             }
-        } else if (state.isEnded) {
-            timeText = endMessage
+            delay(1000L)
         }
     }
     content(timeText)
@@ -85,9 +94,9 @@ fun Timer(
 @Composable
 fun rememberTimerState(
     initialValue: TimerValue,
-    endTime: Int,
+    durationInSecond: Int,
 ): TimerState {
     return rememberSaveable(saver = TimerState.Saver()) {
-        TimerState(initialValue, endTime)
+        TimerState(initialValue, System.currentTimeMillis(), durationInSecond * 1000L)
     }
 }
