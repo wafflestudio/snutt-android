@@ -247,18 +247,6 @@ fun FindPasswordPage() {
                                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Red)
                             )
                         }
-                        BorderButton(
-                            color = SNUTTColors.Red,
-                            onClick = { timerState.pause() }
-                        ) {
-                            Text(text = "pause")
-                        }
-                        BorderButton(
-                            color = SNUTTColors.Blue,
-                            onClick = { timerState.resume() }
-                        ) {
-                            Text(text = "resume")
-                        }
                     }
                     FlowState.ResetPassword -> {
                         Spacer(modifier = Modifier.height(25.dp))
