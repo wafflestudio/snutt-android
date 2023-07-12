@@ -93,7 +93,7 @@ fun HomeDrawer() {
         }
         LazyColumn {
             items(courseBooksWhichHaveTable) { courseBook ->
-                var expanded by remember(table) { mutableStateOf(courseBook.year == table.year && courseBook.semester == table.semester) }
+                var expanded by remember(table, courseBook) { mutableStateOf(courseBook.year == table.year && courseBook.semester == table.semester) }
                 val rotation by animateFloatAsState(if (expanded) -180f else 0f)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

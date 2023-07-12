@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -145,4 +146,12 @@ fun roundToCompact(f: Float): Float {
     return if (f - f.toInt() == 0f) f
     else if (f - f.toInt() <= 0.5) f.toInt() + 0.5f
     else f.toInt() + 1f
+}
+
+fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
+    return this.semester == other.semester && this.year == other.year
+}
+
+fun SimpleTableDto.courseBookEquals(other: CourseBookDto): Boolean {
+    return this.semester == other.semester && this.year == other.year
 }
