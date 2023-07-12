@@ -349,12 +349,12 @@ interface SNUTTRestApi {
         @Body body: PostResetPasswordParams
     )
 
-    @POST("/user/email/verification")
+    @POST("/v1/user/email/verification")
     suspend fun _postSendCodeToEmail(
         @Body body: PostSendCodeToEmailParams
     )
 
-    @POST("/user/email/verification/code")
+    @POST("/v1/user/email/verification/code")
     suspend fun _postVerifyEmailCode(
         @Body body: PostVerifyEmailCodeParams
     )
