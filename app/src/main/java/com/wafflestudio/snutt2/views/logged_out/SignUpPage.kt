@@ -124,7 +124,7 @@ fun SignUpPage() {
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_password_title),
@@ -150,7 +150,7 @@ fun SignUpPage() {
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_password_confirm_title),
@@ -176,7 +176,7 @@ fun SignUpPage() {
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_email_input_title),
