@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.view.TextRect
 import com.wafflestudio.snutt2.lib.rx.dp
@@ -27,7 +28,7 @@ object TimetableCanvasObjects {
                     else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.CENTER
-                typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_light)
+                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
             }
     val dayLabelTextHeight: Float
         @Composable get() {
@@ -45,7 +46,7 @@ object TimetableCanvasObjects {
                     else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.RIGHT
-                typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_light)
+                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
             }
 
     val lectureCellTextRect
@@ -53,7 +54,7 @@ object TimetableCanvasObjects {
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 10f.sp(LocalContext.current)
-                    typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_regular)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 }
             )
 
@@ -62,7 +63,7 @@ object TimetableCanvasObjects {
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
-                    typeface = LocalContext.current.resources.getFont(R.font.spoqa_han_sans_bold)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
                 }
             )
 
