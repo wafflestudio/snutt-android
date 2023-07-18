@@ -13,10 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.model.LectureTime
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalModalState
@@ -47,15 +46,15 @@ fun DayTimePickerSheet(
         if (startMinute >= endMinute) {
             // 시작 시간을 끝나는 시간보다 나중으로 수정했으면, 끝나는 시간을 5분 뒤로 설정
             if (editingStartTime) {
-                if (startMinute == LectureTime.LAST) {
-                    startMinute = LectureTime.LAST - 5
-                    endMinute = LectureTime.LAST
+                if (startMinute == SearchTimeDto.LAST) {
+                    startMinute = SearchTimeDto.LAST - 5
+                    endMinute = SearchTimeDto.LAST
                 } else endMinute = startMinute + 5
                 // 끝나는 시간을 시작 시간보다 앞서게 수정했으면, 시작 시간을 5분 앞으로 설정
             } else if (editingEndTime) {
-                if (endMinute == LectureTime.FIRST) {
-                    startMinute = LectureTime.FIRST
-                    endMinute = LectureTime.FIRST + 5
+                if (endMinute == SearchTimeDto.FIRST) {
+                    startMinute = SearchTimeDto.FIRST
+                    endMinute = SearchTimeDto.FIRST + 5
                 } else startMinute = endMinute - 5
             }
         }
@@ -146,10 +145,10 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     Picker(
                                         list = amPmList,
-                                        initialCenterIndex = if (startMinute < LectureTime.MIDDAY) 0 else 1,
+                                        initialCenterIndex = if (startMinute < SearchTimeDto.MIDDAY) 0 else 1,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartMinute = (tempStartMinute % LectureTime.MIDDAY) + LectureTime.MIDDAY * it
+                                            tempStartMinute = (tempStartMinute % SearchTimeDto.MIDDAY) + SearchTimeDto.MIDDAY * it
                                         }
                                     ) {
                                         Text(
@@ -164,7 +163,7 @@ fun DayTimePickerSheet(
                                         initialCenterIndex = startMinute / 60,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartMinute = it * 60 + tempStartMinute % 60 + if (tempStartMinute < LectureTime.MIDDAY) 0 else LectureTime.MIDDAY
+                                            tempStartMinute = it * 60 + tempStartMinute % 60 + if (tempStartMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
                                         }
                                     ) {
                                         Text(
@@ -225,10 +224,10 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     Picker(
                                         list = amPmList,
-                                        initialCenterIndex = if (endMinute < LectureTime.MIDDAY) 0 else 1,
+                                        initialCenterIndex = if (endMinute < SearchTimeDto.MIDDAY) 0 else 1,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndMinute = tempEndMinute % LectureTime.MIDDAY + LectureTime.MIDDAY * it
+                                            tempEndMinute = tempEndMinute % SearchTimeDto.MIDDAY + SearchTimeDto.MIDDAY * it
                                         }
                                     ) {
                                         Text(
@@ -243,7 +242,7 @@ fun DayTimePickerSheet(
                                         initialCenterIndex = endMinute / 60,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < LectureTime.MIDDAY) 0 else LectureTime.MIDDAY
+                                            tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
                                         }
                                     ) {
                                         Text(

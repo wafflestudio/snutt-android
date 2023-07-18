@@ -2,12 +2,11 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.lib.getComplement
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toCreditNumber
-import com.wafflestudio.snutt2.model.LectureTime
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 
@@ -17,7 +16,8 @@ class LectureSearchPagingSource(
     semester: Long,
     title: String,
     tags: List<TagDto>,
-    times: List<LectureTime>,
+    times: List<SearchTimeDto>?,
+    timesToExclude: List<SearchTimeDto>?,
 ) : PagingSource<Long, LectureDto>() {
 
     private val queryParam: PostSearchQueryParams = PostSearchQueryParams(
@@ -30,7 +30,8 @@ class LectureSearchPagingSource(
         instructor = tags.extractTagString(TagType.INSTRUCTOR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
-        times = if (tags.contains(TagDto.ETC_EMPTY)) times.getComplement() else emptyList(),
+        times = times,
+        timesToExclude = timesToExclude,
         etc = tags.mapNotNull {
             when (it) {
                 TagDto.ETC_ENG -> "E"

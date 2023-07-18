@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.model.LectureTime
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -140,4 +140,30 @@ fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
 
 fun SimpleTableDto.courseBookEquals(other: CourseBookDto): Boolean {
     return this.semester == other.semester && this.year == other.year
+}
+fun List<LectureDto>.flatMapToSearchTimeDto(): List<SearchTimeDto> = flatMap { it.class_time_json }.map { SearchTimeDto(it.day, it.startMinute, it.endMinute) }
+
+fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
+    val groupedByDay = groupBy { it.day }
+    return buildList {
+        for (day in 0..6) {
+            var start = 0
+            addAll(
+                (groupedByDay[day] ?: emptyList())
+                    .sortedByDescending { it.startMinute }
+                    .foldRight(emptyList<SearchTimeDto>()) { a, b ->
+                        b.toMutableList().apply {
+                            if (start < a.startMinute) {
+                                add(SearchTimeDto(day, start, a.startMinute))
+                            }
+                            start = a.endMinute
+                        }
+                    }
+                    .toMutableList()
+                    .apply {
+                        if (start < SearchTimeDto.LAST) add(SearchTimeDto(day, start, SearchTimeDto.LAST))
+                    }
+            )
+        }
+    }
 }

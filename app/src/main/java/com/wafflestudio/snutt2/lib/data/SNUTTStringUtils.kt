@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.LectureTime
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
@@ -115,7 +115,7 @@ object SNUTTStringUtils {
 
     // 570 -> 오전 09:30
     fun Int.toFormattedTimeString(): String {
-        val amPm = if (this < LectureTime.MIDDAY) "오전" else "오후"
+        val amPm = if (this < SearchTimeDto.MIDDAY) "오전" else "오후"
         val hour = (this / 60).let {
             if (it != 12) it % 12 else it
         }
