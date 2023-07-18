@@ -128,7 +128,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFirebaseToken() {
         val firebaseToken = getFirebaseToken()
-        api.deleteFirebaseToken(firebaseToken)
+        api._deleteFirebaseToken(firebaseToken)
     }
 
     override suspend fun postForceLogout() {

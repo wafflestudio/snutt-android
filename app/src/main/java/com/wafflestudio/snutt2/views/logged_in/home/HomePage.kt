@@ -81,7 +81,7 @@ fun HomePage() {
     }
 
     LaunchedEffect(pageController.homePageState.value) {
-        if (pageController.homePageState.value == HomeItem.Timetable) {
+        if (pageController.homePageState.value == HomeItem.Timetable || pageController.homePageState.value == HomeItem.Settings) {
             launchSuspendApi(apiOnProgress, apiOnError) {
                 homeViewModel.checkUncheckedNotificationsExist()
             }
