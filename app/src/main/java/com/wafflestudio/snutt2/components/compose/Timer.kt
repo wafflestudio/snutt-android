@@ -76,16 +76,19 @@ fun Timer(
 ) {
     var timeText by remember { mutableStateOf("${state.timeLeftInSecond / 60}:${"%02d".format(state.timeLeftInSecond % 60)}") }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (state.timeLeftInSecond <= 0) {
-                state.end()
-                timeText = endMessage
-                break
-            } else {
-                timeText = "${state.timeLeftInSecond / 60}:${"%02d".format(state.timeLeftInSecond % 60)}"
+    LaunchedEffect(state.currentValue) {
+        if (state.isEnded) {
+            timeText = endMessage
+        } else {
+            while (true) {
+                if (state.timeLeftInSecond <= 0) {
+                    state.end()
+                    break
+                } else {
+                    timeText = "${state.timeLeftInSecond / 60}:${"%02d".format(state.timeLeftInSecond % 60)}"
+                }
+                delay(1000L)
             }
-            delay(1000L)
         }
     }
     content(timeText)
