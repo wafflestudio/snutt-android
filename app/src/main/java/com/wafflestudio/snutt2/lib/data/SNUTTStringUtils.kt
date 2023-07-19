@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.lib.data
 
+import android.content.Context
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -50,7 +52,7 @@ object SNUTTStringUtils {
         return text.toString()
     }
 
-    fun getNotificationTime(info: NotificationDto): String {
+    fun getNotificationTime(context: Context, info: NotificationDto): String {
         try {
             val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             format.timeZone = TimeZone.getTimeZone("UTC")
@@ -66,13 +68,13 @@ object SNUTTStringUtils {
                     DateFormat.getDateInstance().format(date1)
                 }
                 hours > 0 -> {
-                    "$hours 시간 전" // TODO: resource로 빼기
+                    context.getString(R.string.time_hours_ago, hours)
                 }
                 minutes > 0 -> {
-                    "$minutes 분 전"
+                    context.getString(R.string.time_minutes_ago, minutes)
                 }
                 else -> {
-                    "방금"
+                    context.getString(R.string.time_now)
                 }
             }
         } catch (e: ParseException) {

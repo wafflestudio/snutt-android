@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,6 +59,7 @@ fun NotificationPage() {
 
 @Composable
 fun NotificationItem(info: NotificationDto?) {
+    val context = LocalContext.current
     Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
         when (info?.type) {
             0 -> WarningIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
@@ -79,7 +81,7 @@ fun NotificationItem(info: NotificationDto?) {
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = if (info != null) getNotificationTime(info) else "-",
+                    text = if (info != null) getNotificationTime(context, info) else "-",
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray600),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
