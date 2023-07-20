@@ -36,6 +36,7 @@ class VacancyViewModel @Inject constructor(
                     .map { lecture ->
                         lecture.toDataWithState(lecture.registrationCount < lecture.quota)
                     }
+                    .sortedByDescending { it.state }
             )
             _isRefreshing.emit(false)
         }
