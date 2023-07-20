@@ -57,6 +57,8 @@
     <string name="error_expired_verification_code">만료된 인증코드입니다.</string>
     <string name="error_wrong_verification_code">잘못된 인증코드입니다.</string>
     <string name="error_invalid_email">올바른 이메일을 입력해주세요.</string>
+    <string name="error_vacancy_previous_semester">이전 학기에는 빈자리 알림을 등록할 수 없습니다.</string>
+    <string name="error_vacancy_duplicate">이미 빈자리 알림에 등록한 강의입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">계정 만들기</string>

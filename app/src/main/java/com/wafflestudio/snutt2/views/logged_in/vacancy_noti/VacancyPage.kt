@@ -29,28 +29,31 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VacancyPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val apiOnError = LocalApiOnError.current
+    val scope = rememberCoroutineScope()
     val vacancyViewModel: VacancyViewModel = hiltViewModel()
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
-    val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.getVacancyLectures() })
+    val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.refreshVacancyLectures() })
     val selectedLectures = vacancyViewModel.selectedLectures
 
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val onBackPressedCallback = remember {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(vacancyViewModel.isEditMode) {
+                if (vacancyViewModel.isEditMode) {
                     vacancyViewModel.toggleEditMode()
                 } else {
-                    if(navController.currentDestination?.route == NavigationDestination.VacancyNotification) {
+                    if (navController.currentDestination?.route == NavigationDestination.VacancyNotification) {
                         navController.popBackStack()
                     }
                 }
@@ -90,10 +93,15 @@ fun VacancyPage() {
                         style = SNUTTTypography.body1,
                         modifier = Modifier
                             .clicks {
-                                if (vacancyViewModel.isEditMode) {
-                                    vacancyViewModel.deleteSelectedLectures()
+                                scope.launch {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        if (vacancyViewModel.isEditMode) {
+                                            vacancyViewModel.deleteSelectedLectures()
+                                            vacancyViewModel.getVacancyLectures()
+                                        }
+                                        vacancyViewModel.toggleEditMode()
+                                    }
                                 }
-                                vacancyViewModel.toggleEditMode()
                             }
                     )
                 }
@@ -120,7 +128,6 @@ fun VacancyPage() {
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
-
         }
         ExtendedFloatingActionButton(
             modifier = Modifier

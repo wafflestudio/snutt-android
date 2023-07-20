@@ -111,6 +111,8 @@ fun LazyItemScope.VacancyListItem(
                     Text(
                         text = tagText,
                         style = SNUTTTypography.body2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .alpha(0.8f)
                             .weight(1f)
@@ -130,6 +132,8 @@ fun LazyItemScope.VacancyListItem(
                     Text(
                         text = classTimeText,
                         style = SNUTTTypography.body2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f)
                     )
                 }
@@ -141,6 +145,8 @@ fun LazyItemScope.VacancyListItem(
                     Text(
                         text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithVacancy.item),
                         style = SNUTTTypography.body2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f)
                     )
                 }

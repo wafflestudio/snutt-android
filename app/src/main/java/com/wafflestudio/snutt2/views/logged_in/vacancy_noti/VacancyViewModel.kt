@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,12 +8,10 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class VacancyViewModel @Inject constructor(
     private val vacancyRepository: VacancyRepository
@@ -31,20 +28,27 @@ class VacancyViewModel @Inject constructor(
     val selectedLectures = mutableStateListOf<String>()
 
     init {
-        getVacancyLectures()
+        viewModelScope.launch {
+            getVacancyLectures()
+        }
     }
 
-    fun getVacancyLectures() {
+    fun refreshVacancyLectures() {
         viewModelScope.launch {
-            _vacancyLectures.emit(
-                vacancyRepository.getVacancyLectures()
-                    .map { lecture ->
-                        lecture.toDataWithState(lecture.registrationCount < lecture.quota)
-                    }
-                    .sortedByDescending { it.state }
-            )
+            _isRefreshing.emit(true)
+            getVacancyLectures()
             _isRefreshing.emit(false)
         }
+    }
+
+    suspend fun getVacancyLectures() {
+        _vacancyLectures.emit(
+            vacancyRepository.getVacancyLectures()
+                .map { lecture ->
+                    lecture.toDataWithState(lecture.registrationCount < lecture.quota)
+                }
+                .sortedByDescending { it.state }
+        )
     }
 
     fun toggleEditMode() {
@@ -59,7 +63,9 @@ class VacancyViewModel @Inject constructor(
             selectedLectures.remove(lectureId)
     }
 
-    fun deleteSelectedLectures() {
-        Log.d("VACANCY", "deleted")
+    suspend fun deleteSelectedLectures() {
+        selectedLectures.forEach { lectureId ->
+            vacancyRepository.deleteVacancyLecture(lectureId)
+        }
     }
 }
