@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
@@ -9,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +36,9 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun LazyItemScope.VacancyListItem(
     lectureDataWithVacancy: DataWithState<LectureDto, Boolean>,
+    editing: Boolean = false,
+    checked: Boolean = false,
+    onCheckedChange: ((Boolean) -> Unit)?
 ) {
     val hasVacancy = lectureDataWithVacancy.state
     val lectureTitle = lectureDataWithVacancy.item.course_title
@@ -51,7 +56,7 @@ fun LazyItemScope.VacancyListItem(
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithVacancy.item)
     val backgroundColor = if (hasVacancy) SNUTTColors.Red.copy(alpha = 0.1f) else SNUTTColors.Transparent
 
-    Column(
+    Row(
         modifier = Modifier
             .animateItemPlacement(
                 animationSpec = spring(
@@ -61,77 +66,87 @@ fun LazyItemScope.VacancyListItem(
             )
             .background(backgroundColor)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 7.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = lectureTitle,
-                    style = SNUTTTypography.h4,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (hasVacancy) VacancySticker(
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                )
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = instructorCreditText,
-                    style = SNUTTTypography.body2,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Right
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TagIcon(
-                    modifier = Modifier.size(15.dp),
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = tagText,
-                    style = SNUTTTypography.body2,
-                    modifier = Modifier
-                        .alpha(0.8f)
-                        .weight(1f)
-                )
-                Text(
-                    text = quotaText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.Blue),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ClockIcon(
-                    modifier = Modifier.size(15.dp),
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = classTimeText,
-                    style = SNUTTTypography.body2,
-                    modifier = Modifier.alpha(0.8f)
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                LocationIcon(
-                    modifier = Modifier.size(15.dp),
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithVacancy.item),
-                    style = SNUTTTypography.body2,
-                    modifier = Modifier.alpha(0.8f)
-                )
-            }
+        AnimatedVisibility(editing) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                modifier = Modifier.padding(end = 20.dp)
+            )
         }
-        Divider(color = SNUTTColors.Black250)
+        Column {
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 7.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = lectureTitle,
+                        style = SNUTTTypography.h4,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    if (hasVacancy) VacancySticker(
+                        modifier = Modifier
+                            .padding(start = 5.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = instructorCreditText,
+                        style = SNUTTTypography.body2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Right
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TagIcon(
+                        modifier = Modifier.size(15.dp),
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = tagText,
+                        style = SNUTTTypography.body2,
+                        modifier = Modifier
+                            .alpha(0.8f)
+                            .weight(1f)
+                    )
+                    Text(
+                        text = quotaText,
+                        style = SNUTTTypography.body2.copy(color = SNUTTColors.Blue),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ClockIcon(
+                        modifier = Modifier.size(15.dp),
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = classTimeText,
+                        style = SNUTTTypography.body2,
+                        modifier = Modifier.alpha(0.8f)
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LocationIcon(
+                        modifier = Modifier.size(15.dp),
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithVacancy.item),
+                        style = SNUTTTypography.body2,
+                        modifier = Modifier.alpha(0.8f)
+                    )
+                }
+            }
+            Divider(color = SNUTTColors.Black250)
+        }
     }
 }
 

@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,9 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -30,6 +30,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -40,6 +41,27 @@ fun VacancyPage() {
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.getVacancyLectures() })
+    val selectedLectures = vacancyViewModel.selectedLectures
+
+    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
+    val onBackPressedCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(vacancyViewModel.isEditMode) {
+                    vacancyViewModel.toggleEditMode()
+                } else {
+                    if(navController.currentDestination?.route == NavigationDestination.VacancyNotification) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
+        onDispose { onBackPressedCallback.remove() }
+    }
 
     Box(
         modifier = Modifier.background(SNUTTColors.White900)
@@ -64,10 +86,15 @@ fun VacancyPage() {
                 },
                 actions = {
                     Text(
-                        text = stringResource(R.string.vacancy_app_bar_edit),
+                        text = if (!vacancyViewModel.isEditMode) stringResource(R.string.vacancy_app_bar_edit) else "삭제",
                         style = SNUTTTypography.body1,
                         modifier = Modifier
-                            .clicks { }
+                            .clicks {
+                                if (vacancyViewModel.isEditMode) {
+                                    vacancyViewModel.deleteSelectedLectures()
+                                }
+                                vacancyViewModel.toggleEditMode()
+                            }
                     )
                 }
             )
@@ -78,7 +105,13 @@ fun VacancyPage() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(vacancyLectures) {
-                        VacancyListItem(it)
+                        val lectureId = it.item.id
+                        VacancyListItem(
+                            lectureDataWithVacancy = it,
+                            editing = vacancyViewModel.isEditMode,
+                            checked = selectedLectures.contains(lectureId),
+                            onCheckedChange = { vacancyViewModel.toggleLectureSelected(lectureId) }
+                        )
                     }
                 }
                 PullRefreshIndicator(
