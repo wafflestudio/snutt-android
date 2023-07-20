@@ -6,8 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,12 +31,15 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VacancyPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
     val vacancyViewModel: VacancyViewModel = hiltViewModel()
-    val vacancyPagingItems by vacancyViewModel.vacancyLectures.collectAsState()
+    val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
+    val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
+    val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.getVacancyLectures() })
 
     Box(
         modifier = Modifier.background(SNUTTColors.White900)
@@ -64,13 +71,23 @@ fun VacancyPage() {
                     )
                 }
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
+            Box(
+                modifier = Modifier.pullRefresh(pullRefreshState)
             ) {
-                items(vacancyPagingItems) {
-                    VacancyListItem(it)
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(vacancyLectures) {
+                        VacancyListItem(it)
+                    }
                 }
+                PullRefreshIndicator(
+                    refreshing = isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             }
+
         }
         ExtendedFloatingActionButton(
             modifier = Modifier
