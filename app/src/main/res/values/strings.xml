@@ -265,4 +265,7 @@
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>
     <string name="bookmark_page_placeholder_3">관리해보세요.</string>
     <string name="loading_indicator_message">잠시만 기다려 주세요…</string>
+    <string name="time_hours_ago">%d시간 전</string>
+    <string name="time_minutes_ago">%d분 전</string>
+    <string name="time_now">방금</string>
 </resources>
