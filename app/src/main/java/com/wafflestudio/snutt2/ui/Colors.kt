@@ -39,6 +39,10 @@ object SNUTTColors {
     val Colors.SNUTTTheme @Composable get() = if (isLight) Color(0xFF1BD0C8) else Color(0xff58c1b7)
     val SNUTTTheme @Composable get() = MaterialTheme.colors.SNUTTTheme
 
+    val VacancyBlue = Color(0xff446cc2)
+    val VacancyRed = Color(0xffed6c58)
+    val VacancyRedBg = Color(0xfffdf8f8)
+
     val Transparent = Color(0x00000000)
 
     val Colors.Black050 @Composable get() = if (isLight) Color(0x0d000000) else Color(0x0dffffff)
