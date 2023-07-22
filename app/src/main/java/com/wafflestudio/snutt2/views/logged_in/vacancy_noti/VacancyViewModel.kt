@@ -27,12 +27,6 @@ class VacancyViewModel @Inject constructor(
 
     val selectedLectures = mutableStateListOf<String>()
 
-    init {
-        viewModelScope.launch {
-            getVacancyLectures()
-        }
-    }
-
     fun refreshVacancyLectures() {
         viewModelScope.launch {
             _isRefreshing.emit(true)

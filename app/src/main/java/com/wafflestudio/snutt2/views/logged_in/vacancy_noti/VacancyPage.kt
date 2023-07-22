@@ -66,6 +66,12 @@ fun VacancyPage() {
         onDispose { onBackPressedCallback.remove() }
     }
 
+    LaunchedEffect(Unit) {
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            vacancyViewModel.getVacancyLectures()
+        }
+    }
+
     Box(
         modifier = Modifier.background(SNUTTColors.White900)
     ) {
