@@ -225,7 +225,8 @@
     <string name="lecture_detail_category">구분</string>
     <string name="lecture_detail_course_number">강좌번호</string>
     <string name="lecture_detail_lecture_number">분반번호</string>
-    <string name="lecture_detail_quota">인원</string>
+    <string name="lecture_detail_quota">정원</string>
+    <string name="lecture_detail_senior">재학생</string>
     <string name="lecture_detail_remark">비고</string>
     <string name="lecture_detail_class_time">시간 및 장소</string>
     <string name="lecture_detail_time">시간</string>
@@ -244,6 +245,8 @@
     <string name="lecture_detail_reset_dialog_title">강좌 초기화</string>
     <string name="lecture_detail_reset_dialog_message">강좌를 원래 상태로 초기화하시겠습니까?</string>
     <string name="lecture_detail_delete_class_time_message">시간을 삭제하시겠습니까?</string>
+    <string name="lecture_detail_quota_info_title">정원(재학생)이란?</string>
+    <string name="lecture_detail_quota_info_content">정원은 재학생 정원과 신입생 정원으로 구분되어 있습니다.\n정원(재학생)이 25(5)인 경우 강의의 총 정원 25석 중 재학생은 5석만 신청할 수 있고, 나머지 20석은 신입생만 신청할 수 있습니다. </string>
     <string name="feedback_empty_detail_warning">내용을 입력해 주세요.</string>
     <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>
     <string name="feedback_send_success_message">전송하였습니다.</string>
