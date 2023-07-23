@@ -60,7 +60,7 @@ fun LazyItemScope.VacancyListItem(
         modifier = Modifier
             .animateItemPlacement(
                 animationSpec = spring(
-                    stiffness = Spring.StiffnessHigh,
+                    stiffness = Spring.StiffnessMediumLow,
                     visibilityThreshold = IntOffset.VisibilityThreshold
                 )
             )

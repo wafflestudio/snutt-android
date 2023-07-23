@@ -126,7 +126,10 @@ fun VacancyPage() {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(vacancyLectures) {
+                    items(
+                        items = vacancyLectures,
+                        key = { it.item.id }
+                    ) {
                         val lectureId = it.item.id
                         VacancyListItem(
                             lectureDataWithVacancy = it,
