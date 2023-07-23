@@ -8,6 +8,7 @@ object NavigationDestination {
     const val SignUp = "signUp"
     const val FindId = "find_id"
     const val FindPassword = "find_password"
+    const val EmailVerification = "email_verification"
     const val LecturesOfTable = "lectures_of_table"
     const val LectureDetail = "lecture_detail"
     const val LectureColorSelector = "lecture_color_selector"

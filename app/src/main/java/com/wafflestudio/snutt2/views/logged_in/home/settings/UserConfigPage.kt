@@ -52,7 +52,6 @@ fun UserConfigPage() {
 
     var addIdPasswordDialogState by remember { mutableStateOf(false) }
     var passwordChangeDialogState by remember { mutableStateOf(false) }
-    var emailChangeDialogState by remember { mutableStateOf(false) }
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
     var leaveDialogState by remember { mutableStateOf(false) }
 
@@ -177,15 +176,6 @@ fun UserConfigPage() {
             SettingItem(title = stringResource(R.string.settings_app_report_email), content = {
                 Text(text = user?.email ?: "", style = SNUTTTypography.body2)
             })
-            SettingItem(
-                title = stringResource(R.string.settings_user_config_change_email),
-                content = {
-                    ArrowRight(
-                        modifier = Modifier.size(16.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
-                    )
-                }
-            ) { emailChangeDialogState = true }
         }
         Margin(height = 10.dp)
         SettingItem(
@@ -246,38 +236,6 @@ fun UserConfigPage() {
                     hint = stringResource(R.string.sign_up_password_confirm_hint),
                 )
             }
-        }
-    }
-
-    if (emailChangeDialogState) {
-        var email by remember { mutableStateOf("") }
-
-        CustomDialog(
-            onDismiss = { emailChangeDialogState = false },
-            onConfirm = {
-                if (email.isEmpty()) {
-                    context.toast(context.getString(R.string.settings_user_config_enter_email))
-                } else {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.changeEmail(email)
-                            context.toast(context.getString(R.string.settings_user_config_change_email_success))
-                            emailChangeDialogState = false
-                        }
-                    }
-                }
-            },
-            title = stringResource(R.string.settings_user_config_change_email),
-            positiveButtonText = stringResource(
-                R.string.notifications_noti_change
-            )
-        ) {
-            EditText(
-                value = email,
-                onValueChange = { email = it },
-                textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                hint = stringResource(R.string.example_email),
-            )
         }
     }
 

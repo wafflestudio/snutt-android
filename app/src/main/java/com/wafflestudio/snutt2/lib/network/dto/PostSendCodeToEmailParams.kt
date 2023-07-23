@@ -4,6 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class PostSendCodeParams(
-    @Json(name = "user_email") val email: String,
+data class PostSendCodeToEmailParams(
+    @Json(name = "email") val email: String,
 )

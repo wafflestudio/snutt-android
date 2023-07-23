@@ -80,11 +80,15 @@ interface UserRepository {
 
     suspend fun checkEmailById(id: String): String
 
-    suspend fun sendCodeToEmail(email: String)
+    suspend fun sendPwResetCodeToEmail(email: String)
 
-    suspend fun verifyCode(id: String, code: String)
+    suspend fun verifyPwResetCode(id: String, code: String)
 
     suspend fun resetPassword(id: String, password: String)
+
+    suspend fun sendCodeToEmail(email: String)
+
+    suspend fun verifyEmailCode(code: String)
 
     suspend fun setCompactMode(compact: Boolean)
 

@@ -2,10 +2,10 @@ package com.wafflestudio.snutt2.views.logged_out
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -13,26 +13,23 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BorderButton
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -57,6 +54,11 @@ fun SignUpPage() {
     var passwordField by remember { mutableStateOf("") }
     var passwordConfirmField by remember { mutableStateOf("") }
     var emailField by remember { mutableStateOf("") }
+    val buttonEnabled by remember {
+        derivedStateOf {
+            idField.isNotEmpty() && passwordField.isNotEmpty() && passwordConfirmField.isNotEmpty() && emailField.isNotEmpty()
+        }
+    }
 
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
@@ -64,201 +66,184 @@ fun SignUpPage() {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {
             coroutineScope.launch {
-                try {
-                    apiOnProgress.showProgress("회원가입")
-                    userViewModel.signUpLocal(idField, emailField, passwordField)
+                launchSuspendApi(
+                    apiOnProgress = apiOnProgress,
+                    apiOnError = apiOnError,
+                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button)
+                ) {
+                    userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
-                } catch (e: Exception) {
-                    apiOnError(e)
-                } finally {
-                    apiOnProgress.hideProgress()
+                    navController.navigate(NavigationDestination.EmailVerification)
                 }
-            }
-        }
-    }
-    val handleFacebookSignUp = {
-        coroutineScope.launch {
-            try {
-                apiOnProgress.showProgress("페이스북 회원가입")
-                val loginResult = facebookLogin(context)
-                val id = loginResult.accessToken.userId
-                val token = loginResult.accessToken.token
-                userViewModel.signUpFacebook(id, token)
-                navController.navigateAsOrigin(NavigationDestination.Home)
-            } catch (e: Exception) {
-                apiOnError(e)
-            } finally {
-                apiOnProgress.hideProgress()
             }
         }
     }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .padding(30.dp)
             .clicks { focusManager.clearFocus() }
     ) {
+        SimpleTopBar(
+            title = stringResource(R.string.sign_up_app_bar_title),
+            onClickNavigateBack = { navController.popBackStack() }
+        )
+
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
-                .weight(1f)
-                .padding(top = 60.dp, bottom = 20.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(bottom = 20.dp)
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = stringResource(R.string.sign_in_logo_title),
-                    modifier = Modifier.padding(bottom = 15.dp),
-                )
-                Text(
-                    text = stringResource(R.string.sign_in_logo_title),
-                    style = SNUTTTypography.h1,
-                )
-            }
-
-            EditText(
-                value = idField,
-                onValueChange = { idField = it },
-                hint = stringResource(R.string.sign_up_id_hint),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clearFocusOnKeyboardDismiss(),
-            )
-
-            EditText(
-                value = emailField,
-                onValueChange = { emailField = it },
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                hint = stringResource(R.string.sign_up_email_input_hint),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clearFocusOnKeyboardDismiss(),
-            )
-
-            EditText(
-                value = passwordField,
-                onValueChange = { passwordField = it },
-                hint = stringResource(R.string.sign_up_password_hint),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clearFocusOnKeyboardDismiss(),
-            )
-
-            EditText(
-                value = passwordConfirmField,
-                onValueChange = { passwordConfirmField = it },
-                keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-                hint = stringResource(R.string.sign_up_password_confirm_hint),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clearFocusOnKeyboardDismiss(),
-            )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.wrapContentHeight()
-        ) {
-            BorderButton(
-                modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.Gray200,
-                onClick = { handleLocalSignUp() }
-            ) {
-                Text(
-                    text = stringResource(R.string.sign_up_sign_up_button),
-                    style = SNUTTTypography.button
-                )
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
-
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = "or", style = SNUTTTypography.body2, color = SNUTTColors.Gray200
-                )
-
-                Box(
-                    modifier = Modifier
-                        .background(SNUTTColors.Gray100)
-                        .height(1.dp)
-                        .weight(1f)
-                )
-            }
-
-            BorderButton(
-                modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.FacebookBlue,
-                onClick = { handleFacebookSignUp() }
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.iconfacebook),
-                        contentDescription = stringResource(id = R.string.sign_up_sign_up_facebook_button),
-                        modifier = Modifier
-                            .height(18.dp)
-                            .padding(end = 12.dp),
-                    )
-
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Text(
-                        text = stringResource(R.string.sign_up_sign_up_facebook_button),
-                        color = SNUTTColors.FacebookBlue,
-                        style = SNUTTTypography.button
+                        text = stringResource(R.string.sign_up_id_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = idField,
+                        onValueChange = { idField = it },
+                        hint = stringResource(R.string.sign_up_id_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        singleLine = true,
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_password_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
+                    )
+                    EditText(
+                        value = passwordField,
+                        onValueChange = { passwordField = it },
+                        hint = stringResource(R.string.sign_up_password_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_password_confirm_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                    )
+                    EditText(
+                        value = passwordConfirmField,
+                        onValueChange = { passwordConfirmField = it },
+                        hint = stringResource(R.string.sign_up_password_confirm_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_email_input_title),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
+                    )
+                    EditText(
+                        value = emailField,
+                        onValueChange = { emailField = it },
+                        hint = stringResource(R.string.sign_up_email_input_hint),
+                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
+                        singleLine = true,
+                        trailingIcon = {
+                            Text(
+                                text = stringResource(R.string.sign_up_email_form),
+                                style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                                textAlign = TextAlign.Right,
+                                maxLines = 1,
+                            )
+                        }
                     )
                 }
             }
 
-            Row(modifier = Modifier.padding(top = 20.dp)) {
-                Text(
-                    text = stringResource(id = R.string.sign_up_terms_1) + " ",
-                    style = SNUTTTypography.body2,
-                )
-                Text(
-                    text = stringResource(id = R.string.sign_up_terms_2),
-                    style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clicks {
-                        val termsPageUrl =
-                            context.getString(R.string.api_server) + context.getString(R.string.terms)
-                        val intent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl))
-                        context.startActivity(intent)
-                    }
-                )
-                Text(
-                    text = stringResource(id = R.string.sign_up_terms_3),
-                    style = SNUTTTypography.body2,
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(modifier = Modifier.padding(top = 20.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.sign_up_terms_1) + " ",
+                        style = SNUTTTypography.body2,
+                    )
+                    Text(
+                        text = stringResource(id = R.string.sign_up_terms_2),
+                        style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.clicks {
+                            val termsPageUrl =
+                                context.getString(R.string.api_server) + context.getString(R.string.terms)
+                            val intent =
+                                Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl))
+                            context.startActivity(intent)
+                        }
+                    )
+                    Text(
+                        text = stringResource(id = R.string.sign_up_terms_3),
+                        style = SNUTTTypography.body2,
+                    )
+                }
+
+                WebViewStyleButton(
+                    enabled = buttonEnabled,
+                    onClick = { handleLocalSignUp() },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .height(45.dp)
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_sign_up_button),
+                        style = SNUTTTypography.button.copy(
+                            color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                        )
+                    )
+                }
             }
         }
     }
