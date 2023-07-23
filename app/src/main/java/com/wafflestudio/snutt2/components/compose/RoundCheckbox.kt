@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CheckboxColors
@@ -54,6 +55,7 @@ fun RoundCheckbox(
             exit = fadeOut()
         ) {
             Icon(
+                modifier = Modifier.padding(4.dp),
                 imageVector = Icons.Default.Check,
                 tint = checkMarkColor,
                 contentDescription = null
