@@ -100,7 +100,10 @@ fun VacancyPage() {
                 },
                 actions = {
                     Text(
-                        text = if (!vacancyViewModel.isEditMode) stringResource(R.string.vacancy_app_bar_edit) else stringResource(R.string.vacancy_app_bar_cancel),
+                        text = if (!vacancyViewModel.isEditMode)
+                            stringResource(R.string.vacancy_app_bar_edit)
+                        else
+                            stringResource(R.string.vacancy_app_bar_cancel),
                         style = SNUTTTypography.body1,
                         modifier = Modifier
                             .clicks {
@@ -145,7 +148,7 @@ fun VacancyPage() {
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
-            AnimatedVisibility (
+            AnimatedVisibility(
                 visible = vacancyViewModel.isEditMode,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -174,15 +177,15 @@ fun VacancyPage() {
                                 modalState.hide()
                             },
                             content = {
-                                  Text(
-                                      text = context.getString(R.string.vacancy_delete_selected_message),
-                                      style = SNUTTTypography.body1
-                                  )
+                                Text(
+                                    text = context.getString(R.string.vacancy_delete_selected_message),
+                                    style = SNUTTTypography.body1
+                                )
                             },
                         ).show()
                     },
                     enabled = deleteEnabled,
-                    disabledColor = Color(0xFFC4C4C4)       //TODO: 다크모드 색상?
+                    disabledColor = Color(0xFFC4C4C4) // TODO: 다크모드 색상?
                 ) {
                     Text(
                         text = stringResource(R.string.vacancy_delete_selected),
@@ -193,7 +196,7 @@ fun VacancyPage() {
                 }
             }
         }
-        AnimatedVisibility (
+        AnimatedVisibility(
             visible = !vacancyViewModel.isEditMode,
             modifier = Modifier
                 .align(Alignment.BottomEnd),
