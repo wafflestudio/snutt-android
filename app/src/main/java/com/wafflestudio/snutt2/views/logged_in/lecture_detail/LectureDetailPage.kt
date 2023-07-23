@@ -43,6 +43,8 @@ import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -100,7 +102,9 @@ fun LectureDetailPage(
                     scope.launch { bottomSheet.hide() }
                 } else when (modeType) {
                     ModeType.Normal -> {
-                        if (navController.backQueue.size >= 3) navController.popBackStack()
+                        if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
+                            navController.popBackStack()
+                        }
                     }
                     is ModeType.Editing -> {
                         if ((modeType as ModeType.Editing).adding) {
@@ -342,8 +346,8 @@ fun LectureDetailPage(
                             ),
                         )
                         LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_quota),
-                            value = editingLectureDetail.quota.toString(),
+                            title = editingLectureDetail.getQuotaTitle(context),
+                            value = editingLectureDetail.getFullQuota(),
                             textStyle = SNUTTTypography.body1.copy(
                                 fontSize = 15.sp,
                                 color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900

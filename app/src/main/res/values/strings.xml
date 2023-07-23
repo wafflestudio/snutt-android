@@ -144,7 +144,7 @@
     <string name="home_drawer_table_credit">(%d학점)</string>
     <string name="home_drawer_create_success_message">%s \"%s\" 시간표가 생성되었습니다.</string>
     <string name="home_drawer_copy_success_message">\"%s\" 시간표가 복사되었습니다.</string>
-    <string name="home_drawer_delete_table_unable_alert_message">현재 선택된 시간표를 삭제할 수 없습니다.</string>
+    <string name="home_drawer_delete_table_unable_alert_message">해당 학기에 최소 1개의 시간표가 있어야 합니다.</string>
     <string name="home_drawer_delete_table_success_alert_message">시간표가 삭제되었습니다.</string>
     <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 강좌의 테마만 변경할 수 있습니다.</string>
     <string name="home_drawer_create_table_bottom_sheet_title">새로운 시간표 만들기</string>
@@ -242,7 +242,8 @@
     <string name="lecture_detail_category">구분</string>
     <string name="lecture_detail_course_number">강좌번호</string>
     <string name="lecture_detail_lecture_number">분반번호</string>
-    <string name="lecture_detail_quota">인원</string>
+    <string name="lecture_detail_quota">정원</string>
+    <string name="lecture_detail_senior">재학생</string>
     <string name="lecture_detail_remark">비고</string>
     <string name="lecture_detail_class_time">시간 및 장소</string>
     <string name="lecture_detail_time">시간</string>
@@ -261,6 +262,8 @@
     <string name="lecture_detail_reset_dialog_title">강좌 초기화</string>
     <string name="lecture_detail_reset_dialog_message">강좌를 원래 상태로 초기화하시겠습니까?</string>
     <string name="lecture_detail_delete_class_time_message">시간을 삭제하시겠습니까?</string>
+    <string name="lecture_detail_quota_info_title">정원(재학생)이란?</string>
+    <string name="lecture_detail_quota_info_content">정원은 재학생 정원과 신입생 정원으로 구분되어 있습니다.\n정원(재학생)이 25(5)인 경우 강의의 총 정원 25석 중 재학생은 5석만 신청할 수 있고, 나머지 20석은 신입생만 신청할 수 있습니다. </string>
     <string name="feedback_empty_detail_warning">내용을 입력해 주세요.</string>
     <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>
     <string name="feedback_send_success_message">전송하였습니다.</string>
@@ -282,4 +285,7 @@
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>
     <string name="bookmark_page_placeholder_3">관리해보세요.</string>
     <string name="loading_indicator_message">잠시만 기다려 주세요…</string>
+    <string name="time_hours_ago">%d시간 전</string>
+    <string name="time_minutes_ago">%d분 전</string>
+    <string name="time_now">방금</string>
 </resources>

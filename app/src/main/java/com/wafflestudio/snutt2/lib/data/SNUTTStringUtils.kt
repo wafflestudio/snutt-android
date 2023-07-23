@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.lib.data
 
+import android.content.Context
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -50,7 +52,7 @@ object SNUTTStringUtils {
         return text.toString()
     }
 
-    fun getNotificationTime(info: NotificationDto): String {
+    fun getNotificationTime(context: Context, info: NotificationDto): String {
         try {
             val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             format.timeZone = TimeZone.getTimeZone("UTC")
@@ -59,16 +61,20 @@ object SNUTTStringUtils {
 
             val diff = date2.time - date1.time
             val hours = diff / (1000 * 60 * 60)
+            val minutes = diff / (1000 * 60)
             val days = hours / 24
             return when {
                 days > 0 -> {
                     DateFormat.getDateInstance().format(date1)
                 }
                 hours > 0 -> {
-                    "$hours 시간 전" // TODO: resource로 빼기
+                    context.getString(R.string.time_hours_ago, hours)
+                }
+                minutes > 0 -> {
+                    context.getString(R.string.time_minutes_ago, minutes)
                 }
                 else -> {
-                    "방금"
+                    context.getString(R.string.time_now)
                 }
             }
         } catch (e: ParseException) {
@@ -133,4 +139,16 @@ object SNUTTStringUtils {
             0
         }
     }
+
+    fun LectureDto.getQuotaTitle(context: Context): String = StringBuilder().apply {
+        append(context.getString(R.string.lecture_detail_quota))
+        if (freshmanQuota != null && freshmanQuota != 0L) append("(${context.getString(R.string.lecture_detail_senior)})")
+    }.toString()
+
+    fun LectureDto.getFullQuota(): String = StringBuilder().apply {
+        append(quota)
+        if (freshmanQuota != null && freshmanQuota != 0L) {
+            append("(${quota - freshmanQuota})")
+        }
+    }.toString()
 }

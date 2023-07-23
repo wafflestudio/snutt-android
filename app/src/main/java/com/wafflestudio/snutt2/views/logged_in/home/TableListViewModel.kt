@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.lib.courseBookEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -33,14 +34,14 @@ class TableListViewModel @Inject constructor(
     val tableListOfEachCourseBook = courseBooksWhichHaveTable.map {
         it.associateWith { courseBook ->
             tableMap.value.values.filter { table ->
-                table.year == courseBook.year && table.semester == courseBook.semester
+                table.courseBookEquals(courseBook)
             }
         }
     }
 
     val newSemesterNotify = tableRepository.tableMap.map { tableMap ->
         tableMap.values.none { table ->
-            table.year == mostRecentCourseBook.first().year && table.semester == mostRecentCourseBook.first().semester
+            table.courseBookEquals(mostRecentCourseBook.first())
         }
     }
 
@@ -74,12 +75,27 @@ class TableListViewModel @Inject constructor(
         tableRepository.copyTable(tableId)
     }
 
-    suspend fun checkTableDeletable(tableId: String): Boolean {
-        return currentTableRepository.currentTable
-            .filterNotNull()
-            .map {
-                it.id != tableId
-            }.first()
+    fun checkTableDeletable(tableId: String): Boolean {
+        val tableToDelete = tableRepository.tableMap.value[tableId] ?: return false
+        if (currentTableRepository.currentTable.value?.id != tableId) return true // 현재 선택된 시간표가 아니라면 무조건 삭제 가능
+        return tableRepository.tableMap.value.values.filter {
+            it.courseBookEquals(tableToDelete)
+        }.size > 1 // 현재 선택된 시간표일 때, 해당 coursebook의 유일한 시간표가 아니어야 삭제 가능
+    }
+
+    suspend fun deleteTableAndSwitchIfNeeded(tableId: String) { // 시간표를 삭제하고, 현재 시간표라면 index를 유지하며 다른 시간표를 선택한다
+        val tableToDelete = tableMap.value[tableId] ?: return
+        val siblingTables = tableMap.map { it.values.filter { table -> table.courseBookEquals(tableToDelete) } }
+        val index = siblingTables.first().indexOfFirst { it.id == tableId }
+
+        deleteTable(tableId)
+        if (currentTableRepository.currentTable.value?.id == tableId) {
+            if (index == siblingTables.first().size) {
+                changeSelectedTable(siblingTables.first().last().id)
+            } else {
+                changeSelectedTable(siblingTables.first()[index].id)
+            }
+        }
     }
 
     suspend fun checkTableThemeChangeable(tableId: String): Boolean {
