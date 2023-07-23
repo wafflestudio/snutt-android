@@ -231,7 +231,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = amPmList[it],
+                                            text = amPmList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -246,7 +246,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = hourList[it],
+                                            text = hourList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -261,7 +261,7 @@ fun DayTimePickerSheet(
                                         }
                                     ) {
                                         Text(
-                                            text = minuteList[it],
+                                            text = minuteList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp),
                                         )
                                     }
