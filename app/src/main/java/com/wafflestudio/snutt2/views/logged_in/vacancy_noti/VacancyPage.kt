@@ -25,10 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTColors.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -42,6 +39,7 @@ fun VacancyPage() {
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val modalState = LocalModalState.current
     val scope = rememberCoroutineScope()
     val vacancyViewModel: VacancyViewModel = hiltViewModel()
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
@@ -160,13 +158,28 @@ fun VacancyPage() {
             ) {
                 WebViewStyleButton(
                     onClick = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                vacancyViewModel.deleteSelectedLectures()
-                                vacancyViewModel.getVacancyLectures()
-                                vacancyViewModel.toggleEditMode()
-                            }
-                        }
+                        modalState.set(
+                            title = context.getString(R.string.vacancy_delete_selected_title),
+                            positiveButton = context.getString(R.string.common_ok),
+                            negativeButton = context.getString(R.string.common_cancel),
+                            onDismiss = { modalState.hide() },
+                            onConfirm = {
+                                scope.launch {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        vacancyViewModel.deleteSelectedLectures()
+                                        vacancyViewModel.getVacancyLectures()
+                                        vacancyViewModel.toggleEditMode()
+                                    }
+                                }
+                                modalState.hide()
+                            },
+                            content = {
+                                  Text(
+                                      text = context.getString(R.string.vacancy_delete_selected_message),
+                                      style = SNUTTTypography.body1
+                                  )
+                            },
+                        ).show()
                     },
                     enabled = deleteEnabled,
                     disabledColor = Color(0xFFC4C4C4)       //TODO: 다크모드 색상?
