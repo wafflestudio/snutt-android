@@ -70,7 +70,7 @@ fun LazyItemScope.VacancyListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedVisibility(editing) {
-            Checkbox(
+            RoundCheckbox(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 modifier = Modifier.padding(end = 20.dp)
