@@ -57,7 +57,8 @@ fun LectureDetailItem(
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
+            modifier = Modifier.width(88.dp),
+            maxLines = 1,
         )
         Box(modifier = Modifier.weight(1f)) {
             content()
