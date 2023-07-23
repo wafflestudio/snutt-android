@@ -4,23 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -34,6 +30,7 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTColors.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.launch
@@ -167,21 +164,30 @@ fun VacancyPage() {
                         }
                     },
                     enabled = deleteEnabled,
+                    disabledColor = Color(0xFFC4C4C4)
                 ) {
                     Text(
                         text = stringResource(R.string.vacancy_delete_selected),
-                        style = SNUTTTypography.button.copy(
-                            color = if (deleteEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                        style = SNUTTTypography.h3.copy(
+                            color = SNUTTColors.AllWhite,
                         )
                     )
                 }
             }
         }
-        if (!vacancyViewModel.isEditMode) {
+        AnimatedVisibility (
+            visible = !vacancyViewModel.isEditMode,
+            modifier = Modifier
+                .align(Alignment.BottomEnd),
+            enter = slideInVertically {
+                with(density) { 10.dp.roundToPx() }
+            } + fadeIn(),
+            exit = slideOutVertically {
+                with(density) { 10.dp.roundToPx() }
+            } + fadeOut()
+        ) {
             ExtendedFloatingActionButton(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 30.dp, bottom = 30.dp),
+                modifier = Modifier.padding(30.dp),
                 text = {
                     Text(
                         text = stringResource(R.string.vacancy_floating_button),
@@ -194,7 +200,8 @@ fun VacancyPage() {
                     val intent =
                         Intent(Intent.ACTION_VIEW, Uri.parse(sugangSnuUrl))
                     context.startActivity(intent)
-                }
+                },
+                elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
         }
 
