@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -35,8 +34,6 @@ fun LectureDetailItem(
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
     labelVerticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
-    clickContentEnabled: Boolean = false,
-    onClickContent: () -> Unit = {},
     content: @Composable () -> Unit = {
         EditText(
             value = value,
@@ -53,25 +50,20 @@ fun LectureDetailItem(
     }
 ) {
     Row(
-        modifier = modifier.padding(horizontal = 20.dp),
+        modifier = modifier,
         verticalAlignment = labelVerticalAlignment,
     ) {
+        Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
             modifier = Modifier.width(88.dp),
             maxLines = 1,
         )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .then(
-                    if (clickContentEnabled) Modifier.clicks { onClickContent() }
-                    else Modifier
-                )
-        ) {
+        Box(modifier = Modifier.weight(1f)) {
             content()
         }
+        Spacer(modifier = Modifier.width(20.dp))
     }
 }
 

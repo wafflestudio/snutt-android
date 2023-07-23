@@ -149,7 +149,6 @@ object SNUTTStringUtils {
         append(quota)
         if (freshmanQuota != null && freshmanQuota != 0L) {
             append("(${quota - freshmanQuota})")
-            append(" ⓘ")
         }
     }.toString()
 }
