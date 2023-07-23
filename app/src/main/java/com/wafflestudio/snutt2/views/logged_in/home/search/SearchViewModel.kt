@@ -111,7 +111,8 @@ class SearchViewModel @Inject constructor(
                 semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                lecturesMask = currentTable.lectureList.getClassTimeMask()
+                times = null, // TODO: 시간대 검색
+                timesToExclude = if (_selectedTags.value.contains(TagDto.ETC_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
         _selectedLecture, currentTable.filterNotNull()

@@ -4,11 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -26,20 +26,6 @@ fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
         if (queryTime in start..end) return true
     }
     return false
-}
-
-fun List<LectureDto>.getClassTimeMask(): List<Int> {
-    val masks = IntArray(7)
-    for (lecture in this) {
-        for (i in lecture.class_time_mask.indices) {
-            val mask: Int = lecture.class_time_mask[i].toInt()
-            masks[i] = masks[i] or mask
-        }
-    }
-    for (i in 0..6) {
-        masks[i] = masks[i] xor 0x3FFFFFFF
-    }
-    return masks.toList()
 }
 
 fun CourseBookDto.toFormattedString(context: Context): String {
@@ -137,8 +123,8 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
     if (tableTrimParam.hourFrom >= this.endTimeInFloat || tableTrimParam.hourTo + 1 <= this.startTimeInFloat) return null
 
     return this.copy(
-        start_time = max(tableTrimParam.hourFrom.toFloat(), this.startTimeInFloat).toFormattedTimeString(),
-        end_time = min(this.endTimeInFloat, tableTrimParam.hourTo.toFloat() + 1).toFormattedTimeString()
+        startMinute = max(tableTrimParam.hourFrom * 60, this.startMinute),
+        endMinute = min(this.endMinute, (tableTrimParam.hourTo + 1) * 60),
     )
 }
 
@@ -154,4 +140,30 @@ fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
 
 fun SimpleTableDto.courseBookEquals(other: CourseBookDto): Boolean {
     return this.semester == other.semester && this.year == other.year
+}
+fun List<LectureDto>.flatMapToSearchTimeDto(): List<SearchTimeDto> = flatMap { it.class_time_json }.map { SearchTimeDto(it.day, it.startMinute, it.endMinute) }
+
+fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
+    val groupedByDay = groupBy { it.day }
+    return buildList {
+        for (day in 0..6) {
+            var start = 0
+            addAll(
+                (groupedByDay[day] ?: emptyList())
+                    .sortedByDescending { it.startMinute }
+                    .foldRight(emptyList<SearchTimeDto>()) { a, b ->
+                        b.toMutableList().apply {
+                            if (start < a.startMinute) {
+                                add(SearchTimeDto(day, start, a.startMinute))
+                            }
+                            start = a.endMinute
+                        }
+                    }
+                    .toMutableList()
+                    .apply {
+                        if (start < SearchTimeDto.LAST) add(SearchTimeDto(day, start, SearchTimeDto.LAST))
+                    }
+            )
+        }
+    }
 }

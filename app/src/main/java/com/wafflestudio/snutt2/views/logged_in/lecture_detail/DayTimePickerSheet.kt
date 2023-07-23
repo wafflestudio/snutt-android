@@ -13,8 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalModalState
@@ -34,27 +35,27 @@ fun DayTimePickerSheet(
     val minuteList = remember { List(12) { "%02d".format(it * 5) } }
 
     var dayIndex by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.day) }
-    var startTime: Time12 by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.startTime12()) }
-    var endTime: Time12 by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.endTime12()) }
+    var startMinute by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.startMinute) }
+    var endMinute by remember(classTime, bottomSheet.isVisible) { mutableStateOf(classTime.endMinute) }
 
     var editingStartTime by remember { mutableStateOf(false) }
     var editingEndTime by remember { mutableStateOf(false) }
 
     /* 시작 시간이 끝나는 시간보다 같거나 더 나중일 때, 경계값 신경써서 조정하는 함수 */
     val checkBoundary = {
-        if (startTime >= endTime) {
+        if (startMinute >= endMinute) {
             // 시작 시간을 끝나는 시간보다 나중으로 수정했으면, 끝나는 시간을 5분 뒤로 설정
             if (editingStartTime) {
-                if (startTime.isLast()) {
-                    startTime = startTime.prev()
-                    endTime = startTime.next()
-                } else endTime = startTime.next()
+                if (startMinute == SearchTimeDto.LAST) {
+                    startMinute = SearchTimeDto.LAST - 5
+                    endMinute = SearchTimeDto.LAST
+                } else endMinute = startMinute + 5
                 // 끝나는 시간을 시작 시간보다 앞서게 수정했으면, 시작 시간을 5분 앞으로 설정
             } else if (editingEndTime) {
-                if (endTime.isFirst()) {
-                    endTime = endTime.next()
-                    startTime = endTime.prev()
-                } else startTime = endTime.prev()
+                if (endMinute == SearchTimeDto.FIRST) {
+                    startMinute = SearchTimeDto.FIRST
+                    endMinute = SearchTimeDto.FIRST + 5
+                } else startMinute = endMinute - 5
             }
         }
     }
@@ -78,8 +79,8 @@ fun DayTimePickerSheet(
                     onConfirm(
                         classTime.copy(
                             day = dayIndex,
-                            start_time = startTime.toString24(),
-                            end_time = endTime.toString24(),
+                            startMinute = startMinute,
+                            endMinute = endMinute,
                         )
                     )
                 }
@@ -129,12 +130,12 @@ fun DayTimePickerSheet(
                 .padding(vertical = 7.dp)
                 .fillMaxWidth()
                 .clicks {
-                    var tempStartTime by mutableStateOf(startTime.copy())
+                    var tempStartMinute by mutableStateOf(startMinute)
                     editingStartTime = true
                     modalState
                         .set(
                             onDismiss = {
-                                startTime = tempStartTime
+                                startMinute = tempStartMinute
                                 checkBoundary()
                                 editingStartTime = false
                                 modalState.hide()
@@ -144,10 +145,10 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     Picker(
                                         list = amPmList,
-                                        initialCenterIndex = startTime.amPm,
+                                        initialCenterIndex = if (startMinute < SearchTimeDto.MIDDAY) 0 else 1,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(amPm = it)
+                                            tempStartMinute = (tempStartMinute % SearchTimeDto.MIDDAY) + SearchTimeDto.MIDDAY * it
                                         }
                                     ) {
                                         Text(
@@ -159,10 +160,10 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     CircularPicker(
                                         list = hourList,
-                                        initialCenterIndex = startTime.hour,
+                                        initialCenterIndex = startMinute / 60,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(hour = it)
+                                            tempStartMinute = it * 60 + tempStartMinute % 60 + if (tempStartMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
                                         }
                                     ) {
                                         Text(
@@ -174,10 +175,10 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     CircularPicker(
                                         list = minuteList,
-                                        initialCenterIndex = startTime.minute / 5,
+                                        initialCenterIndex = (startMinute % 60) / 5,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempStartTime = tempStartTime.copy(minute = it * 5)
+                                            tempStartMinute = (tempStartMinute / 60) * 60 + it * 5
                                         }
                                     ) {
                                         Text(
@@ -197,7 +198,7 @@ fun DayTimePickerSheet(
                 color = SNUTTColors.Gray400,
             ) {
                 Text(
-                    text = startTime.toString(),
+                    text = startMinute.toFormattedTimeString(),
                     style = SNUTTTypography.button
                 )
             }
@@ -208,12 +209,12 @@ fun DayTimePickerSheet(
                 .padding(vertical = 7.dp)
                 .fillMaxWidth()
                 .clicks {
-                    var tempEndTime by mutableStateOf(endTime.copy())
+                    var tempEndMinute by mutableStateOf(endMinute)
                     editingEndTime = true
                     modalState
                         .set(
                             onDismiss = {
-                                endTime = tempEndTime
+                                endMinute = tempEndMinute
                                 checkBoundary()
                                 editingEndTime = false
                                 modalState.hide()
@@ -223,14 +224,14 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     Picker(
                                         list = amPmList,
-                                        initialCenterIndex = endTime.amPm,
+                                        initialCenterIndex = if (endMinute < SearchTimeDto.MIDDAY) 0 else 1,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(amPm = it)
+                                            tempEndMinute = tempEndMinute % SearchTimeDto.MIDDAY + SearchTimeDto.MIDDAY * it
                                         }
                                     ) {
                                         Text(
-                                            text = amPmList[it],
+                                            text = amPmList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -238,14 +239,14 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     CircularPicker(
                                         list = hourList,
-                                        initialCenterIndex = endTime.hour,
+                                        initialCenterIndex = endMinute / 60,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(hour = it)
+                                            tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
                                         }
                                     ) {
                                         Text(
-                                            text = hourList[it],
+                                            text = hourList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
@@ -253,14 +254,14 @@ fun DayTimePickerSheet(
                                 Box(modifier = Modifier.weight(1f)) {
                                     CircularPicker(
                                         list = minuteList,
-                                        initialCenterIndex = endTime.minute / 5,
+                                        initialCenterIndex = (endMinute % 60) / 5,
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
-                                            tempEndTime = tempEndTime.copy(minute = it * 5)
+                                            tempEndMinute = (tempEndMinute / 60) * 60 + it * 5
                                         }
                                     ) {
                                         Text(
-                                            text = minuteList[it],
+                                            text = minuteList[it].tempBlank(it),
                                             style = SNUTTTypography.button.copy(fontSize = 24.sp),
                                         )
                                     }
@@ -276,7 +277,7 @@ fun DayTimePickerSheet(
                 color = SNUTTColors.Gray400,
             ) {
                 Text(
-                    text = endTime.toString(),
+                    text = endMinute.toFormattedTimeString(),
                     style = SNUTTTypography.button,
                 )
             }

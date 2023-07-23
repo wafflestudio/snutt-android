@@ -16,7 +16,6 @@ data class PostCustomLectureParams(
     @Json(name = "course_title") var course_title: String? = null,
     @Json(name = "credit") var credit: Long? = null,
     @Json(name = "class_time") var class_time: String? = null, // lecture 검색시 띄어주는 class time
-    @Json(name = "class_time_mask") var class_time_mask: List<Long>? = null,
     @Json(name = "class_time_json") var class_time_json: List<ClassTimeDto>? = null,
     @Json(name = "location") var location: String? = null,
     @Json(name = "instructor") var instructor: String? = null,

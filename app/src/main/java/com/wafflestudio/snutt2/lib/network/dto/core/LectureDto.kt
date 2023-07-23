@@ -17,7 +17,6 @@ data class LectureDto(
     @Json(name = "lecture_number") val lecture_number: String?,
     @Json(name = "course_title") val course_title: String,
     @Json(name = "credit") val credit: Long,
-    @Json(name = "class_time_mask") val class_time_mask: List<Long>,
     @Json(name = "class_time_json") val class_time_json: List<ClassTimeDto>,
     @Json(name = "instructor") val instructor: String,
     @Json(name = "quota") val quota: Long = 0,
@@ -49,7 +48,6 @@ data class LectureDto(
             freshmanQuota = null,
             remark = "",
             class_time_json = emptyList(),
-            class_time_mask = emptyList()
         )
     }
 }
