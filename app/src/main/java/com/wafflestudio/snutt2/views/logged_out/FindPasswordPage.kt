@@ -59,11 +59,21 @@ fun FindPasswordPage() {
     var passwordConfirmField by remember { mutableStateOf("") }
     var checkEmailDialogState by remember { mutableStateOf(false) }
 
+    val buttonEnabled by remember {
+        derivedStateOf {
+            when (flowState) {
+                FlowState.CheckEmail -> idField.isNotEmpty()
+                FlowState.SendCode -> codeField.isNotEmpty()
+                FlowState.ResetPassword -> passwordField.isNotEmpty() && passwordConfirmField.isNotEmpty()
+            }
+        }
+    }
+
     var emailResponse by remember { mutableStateOf("") }
 
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
-        endTime = 180,
+        durationInSecond = 180,
     )
     val handleCheckEmailById = {
         coroutineScope.launch {
@@ -87,7 +97,7 @@ fun FindPasswordPage() {
                 context.toast(context.getString(R.string.find_password_enter_verification_code_expire_message))
             } else {
                 launchSuspendApi(apiOnProgress, apiOnError) {
-                    userViewModel.verifyCode(idField, codeField)
+                    userViewModel.verifyPwResetCode(idField, codeField)
                     keyboardManager?.hide()
                     context.toast(context.getString(R.string.find_password_enter_verification_code_success_alert))
                     timerState.pause()
@@ -199,8 +209,9 @@ fun FindPasswordPage() {
                             ),
                             singleLine = true,
                             trailingIcon = {
-                                Row {
-                                    Box(modifier = Modifier.weight(1f))
+                                Row(
+                                    modifier = Modifier.padding(start = 10.dp)
+                                ) {
                                     Timer(
                                         state = timerState,
                                         endMessage = stringResource(R.string.find_password_send_code_resend),
@@ -215,7 +226,7 @@ fun FindPasswordPage() {
                                                 if (timerState.isEnded) {
                                                     coroutineScope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            userViewModel.sendCodeToEmail(emailResponse)
+                                                            userViewModel.sendPwResetCodeToEmail(emailResponse)
                                                             timerState.reset()
                                                             timerState.start()
                                                         }
@@ -283,11 +294,7 @@ fun FindPasswordPage() {
                 Spacer(modifier = Modifier.height(30.dp))
                 WebViewStyleButton(
                     modifier = Modifier.fillMaxWidth(),
-                    color = when (flowState) {
-                        FlowState.CheckEmail -> if (idField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                        FlowState.SendCode -> if (codeField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                        FlowState.ResetPassword -> if (passwordField.isEmpty() || passwordConfirmField.isEmpty()) SNUTTColors.Gray400 else SNUTTColors.SNUTTTheme
-                    },
+                    enabled = buttonEnabled,
                     onClick = {
                         when (flowState) {
                             FlowState.CheckEmail -> handleCheckEmailById()
@@ -313,7 +320,7 @@ fun FindPasswordPage() {
                 checkEmailDialogState = false
                 coroutineScope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        userViewModel.sendCodeToEmail(emailResponse)
+                        userViewModel.sendPwResetCodeToEmail(emailResponse)
                         flowState = FlowState.SendCode
                         timerState.start()
                     }

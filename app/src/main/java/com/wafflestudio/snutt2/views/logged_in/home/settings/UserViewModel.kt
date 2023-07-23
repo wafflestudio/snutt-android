@@ -132,16 +132,24 @@ class UserViewModel @Inject constructor(
         return userRepository.checkEmailById(id)
     }
 
-    suspend fun sendCodeToEmail(email: String) {
-        userRepository.sendCodeToEmail(email)
+    suspend fun sendPwResetCodeToEmail(email: String) {
+        userRepository.sendPwResetCodeToEmail(email)
     }
 
-    suspend fun verifyCode(id: String, code: String) {
-        userRepository.verifyCode(id, code)
+    suspend fun verifyPwResetCode(id: String, code: String) {
+        userRepository.verifyPwResetCode(id, code)
     }
 
     suspend fun resetPassword(id: String, password: String) {
         userRepository.resetPassword(id, password)
+    }
+
+    suspend fun sendCodeToEmail(email: String) {
+        userRepository.sendCodeToEmail(email)
+    }
+
+    suspend fun verifyEmailCode(code: String) {
+        userRepository.verifyEmailCode(code)
     }
 
     suspend fun setCompactMode(compact: Boolean) {

@@ -72,14 +72,18 @@ fun EditText(
                 Column {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         leadingIcon()
-                        if (value.isNotEmpty() || isFocused) { // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
-                            it()
-                        } else {
-                            hint?.let {
-                                Text(
-                                    text = it,
-                                    style = textStyle.copy(color = SNUTTColors.Gray200),
-                                )
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            if (value.isNotEmpty() || isFocused) { // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
+                                it()
+                            } else {
+                                hint?.let {
+                                    Text(
+                                        text = it,
+                                        style = textStyle.copy(color = SNUTTColors.Gray200),
+                                    )
+                                }
                             }
                         }
                         trailingIcon()
