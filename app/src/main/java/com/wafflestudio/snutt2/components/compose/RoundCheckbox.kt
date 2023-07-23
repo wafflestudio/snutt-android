@@ -30,9 +30,9 @@ fun RoundCheckbox(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     checkedBgColor: Color = SNUTTColors.Black900,
-    uncheckedBgColor: Color = SNUTTColors.AllWhite,
-    checkMarkColor: Color = SNUTTColors.AllWhite,
-    borderColor: Color = Color(0xFFC7C7C7)
+    uncheckedBgColor: Color = SNUTTColors.Transparent,
+    checkMarkColor: Color = SNUTTColors.White900,
+    borderColor: Color = SNUTTColors.CheckboxBorder
 ) {
     val animatedBgColor: Color by animateColorAsState(if (checked) checkedBgColor else uncheckedBgColor)
     val animatedBorderColor: Color by animateColorAsState(if (checked) checkedBgColor else borderColor)
