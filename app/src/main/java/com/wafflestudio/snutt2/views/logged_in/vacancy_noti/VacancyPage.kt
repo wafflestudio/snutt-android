@@ -118,7 +118,12 @@ fun VacancyPage() {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .pullRefresh(pullRefreshState)
+                    .then(
+                        if (!vacancyViewModel.isEditMode)
+                            Modifier.pullRefresh(pullRefreshState)
+                        else
+                            Modifier
+                    )
             ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
@@ -204,6 +209,5 @@ fun VacancyPage() {
                 elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
         }
-
     }
 }
