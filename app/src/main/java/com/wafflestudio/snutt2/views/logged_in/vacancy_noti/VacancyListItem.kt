@@ -66,7 +66,12 @@ fun LazyItemScope.VacancyListItem(
             )
             .background(backgroundColor)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .clicks {
+                if (editing && onCheckedChange != null) {
+                    onCheckedChange(!checked)
+                }
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedVisibility(editing) {
