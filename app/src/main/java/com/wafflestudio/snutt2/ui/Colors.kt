@@ -47,6 +47,9 @@ object SNUTTColors {
     val Colors.VacancyRedBg @Composable get() = if (isLight) Color(0xfffdf8f8) else Color(0xff382828)
     val VacancyRedBg @Composable get() = MaterialTheme.colors.VacancyRedBg
 
+    val Colors.VacancyGray @Composable get() = if (isLight) Color(0xffc4c4c4) else Color(0xff777777)
+    val VacancyGray @Composable get() = MaterialTheme.colors.VacancyGray
+
     val Colors.CheckboxBorder @Composable get() = if (isLight) Color(0xffc7c7c7) else Color(0xff777777)
     val CheckboxBorder @Composable get() = MaterialTheme.colors.CheckboxBorder
 

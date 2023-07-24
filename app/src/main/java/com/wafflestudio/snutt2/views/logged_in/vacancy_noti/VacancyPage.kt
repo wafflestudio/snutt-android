@@ -185,7 +185,7 @@ fun VacancyPage() {
                         ).show()
                     },
                     enabled = deleteEnabled,
-                    disabledColor = Color(0xFFC4C4C4) // TODO: 다크모드 색상?
+                    disabledColor = SNUTTColors.VacancyGray
                 ) {
                     Text(
                         text = stringResource(R.string.vacancy_delete_selected),
