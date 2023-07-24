@@ -42,6 +42,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -56,6 +57,7 @@ fun LazyItemScope.LectureListItem(
     tableListViewModel: TableListViewModel,
     lectureDetailViewModel: LectureDetailViewModel,
     userViewModel: UserViewModel,
+    vacancyViewModel: VacancyViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
@@ -70,6 +72,8 @@ fun LazyItemScope.LectureListItem(
     val contained = lectureDataWithState.state.contained
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val bookmarked = bookmarkList.map { it.item.id }.contains(lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id)
+    val vacancyList by vacancyViewModel.vacancyLectures.collectAsState()
+    val vacancy = vacancyList.map { it.item.id }.contains(lectureDataWithState.item.id)
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText = stringResource(
@@ -185,7 +189,7 @@ fun LazyItemScope.LectureListItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 15.dp),
+                    .padding(bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -206,11 +210,11 @@ fun LazyItemScope.LectureListItem(
                             }
                             scope.launch { bottomSheet.show() }
                         },
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LocationIcon(
-                        modifier = Modifier.size(25.dp),
+                    DetailIcon(
+                        modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                     Text(
@@ -241,11 +245,11 @@ fun LazyItemScope.LectureListItem(
                                 }
                             )
                         },
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LocationIcon(
-                        modifier = Modifier.size(25.dp),
+                    ReviewIcon(
+                        modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                     Text(
@@ -284,17 +288,48 @@ fun LazyItemScope.LectureListItem(
                                 }
                             }
                         },
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BookmarkIcon(
                         modifier = Modifier
-                            .size(15.dp),
+                            .size(23.dp),
                         marked = bookmarked,
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                     Text(
                         text = stringResource(R.string.search_result_item_bookmark_button),
+                        style = SNUTTTypography.body2.copy(
+                            color = SNUTTColors.AllWhite,
+                            fontSize = 10.sp
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.weight(0.3f))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clicks {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    if (vacancy) {
+                                        vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
+                                    } else {
+                                        vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
+                                    }
+                                }
+                            }
+                        },
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    RingingAlarmIcon(
+                        modifier = Modifier.size(23.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
+                        marked = vacancy
+                    )
+                    Text(
+                        text = stringResource(R.string.search_result_item_vacancy_button),
                         style = SNUTTTypography.body2.copy(
                             color = SNUTTColors.AllWhite,
                             fontSize = 10.sp
@@ -343,13 +378,20 @@ fun LazyItemScope.LectureListItem(
                                 )
                             }
                         },
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LocationIcon(
-                        modifier = Modifier.size(25.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
-                    )
+                    if (contained) {
+                        RemoveCircleIcon(
+                            modifier = Modifier.size(23.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.AllWhite)
+                        )
+                    } else {
+                        AddCircleIcon(
+                            modifier = Modifier.size(23.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.AllWhite)
+                        )
+                    }
                     Text(
                         text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
                             R.string.search_result_item_add_button
@@ -363,5 +405,32 @@ fun LazyItemScope.LectureListItem(
             }
         }
         Divider(color = SNUTTColors.White400)
+    }
+}
+
+@Composable
+fun LectureListItemButton(
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .height(40.dp)
+            .clicks {
+                onClick()
+            }
+    ) {
+        icon()
+        Text(
+            text = title,
+            style = SNUTTTypography.body2.copy(
+                color = SNUTTColors.AllWhite,
+                fontSize = 10.sp
+            )
+        )
     }
 }

@@ -50,6 +50,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -207,10 +208,11 @@ class RootActivity : AppCompatActivity() {
                         navController.getBackStackEntry(NavigationDestination.Home)
                     }
                     val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    BookmarkPage(searchViewModel)
+                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+                    BookmarkPage(searchViewModel, vacancyViewModel)
                 }
 
-                settingcomposable2()
+                settingcomposable2(navController)
             }
         }
     }
@@ -282,7 +284,7 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingcomposable2() {
+    private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
         composable2(NavigationDestination.AppReport) { AppReportPage() }
         composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
         composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
@@ -290,7 +292,13 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
-        composable2(NavigationDestination.VacancyNotification) { VacancyPage() }
+        composable2(NavigationDestination.VacancyNotification) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationDestination.Home)
+            }
+            val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+            VacancyPage(vacancyViewModel)
+        }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
 

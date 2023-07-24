@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,19 @@ class VacancyViewModel @Inject constructor(
 
     val selectedLectures = mutableStateListOf<String>()
 
+    @Inject
+    lateinit var apiOnError: ApiOnError
+
+    init {
+        viewModelScope.launch {
+            try {
+                getVacancyLectures()
+            } catch (e: Exception) {
+                apiOnError(e)
+            }
+        }
+    }
+
     fun refreshVacancyLectures() {
         viewModelScope.launch {
             _isRefreshing.emit(true)
@@ -45,6 +59,16 @@ class VacancyViewModel @Inject constructor(
         )
     }
 
+    suspend fun addVacancyLecture(lectureId: String) {
+        vacancyRepository.addVacancyLecture(lectureId)
+        getVacancyLectures()
+    }
+
+    suspend fun removeVacancyLecture(lectureId: String) {
+        vacancyRepository.removeVacancyLecture(lectureId)
+        getVacancyLectures()
+    }
+
     fun toggleEditMode() {
         isEditMode = !isEditMode
         selectedLectures.clear()
@@ -59,7 +83,8 @@ class VacancyViewModel @Inject constructor(
 
     suspend fun deleteSelectedLectures() {
         selectedLectures.forEach { lectureId ->
-            vacancyRepository.deleteVacancyLecture(lectureId)
+            vacancyRepository.removeVacancyLecture(lectureId)
         }
+        getVacancyLectures()
     }
 }

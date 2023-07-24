@@ -33,7 +33,9 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -52,6 +54,7 @@ fun SearchPage(
     val lectureDetailViewModel: LectureDetailViewModel = hiltViewModel()
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
+    val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val placeHolderState by searchViewModel.placeHolderState.collectAsState()
@@ -161,7 +164,8 @@ fun SearchPage(
                                         timetableViewModel,
                                         tableListViewModel,
                                         lectureDetailViewModel,
-                                        userViewModel
+                                        userViewModel,
+                                        vacancyViewModel,
                                     )
                                 }
                             }

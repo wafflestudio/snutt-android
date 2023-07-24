@@ -12,49 +12,13 @@ class VacancyRepositoryImpl @Inject constructor(
 
     override suspend fun getVacancyLectures(): List<LectureDto> {
         return api._getVacancyLectures().lectures
-//        return List(10) {
-//            LectureDto(
-//                id = "",
-//                academic_year = "1학년",
-//                category = "사고와 표현",
-//                class_time_json = listOf(
-//                    ClassTimeDto(
-//                        day = 1,
-//                        place = "43-1-403",
-//                        start_time = "11:00",
-//                        end_time = "12:15",
-//                        len = 1.5f,
-//                        start = 3.0f
-//                    ),
-//                    ClassTimeDto(
-//                        day = 3,
-//                        place = "43-1-403",
-//                        start_time = "11:00",
-//                        end_time = "12:15",
-//                        len = 1.5f,
-//                        start = 3.0f
-//                    )
-//                ),
-//                classification = "교양",
-//                credit = 3,
-//                department = "기초교육원",
-//                instructor = "현영종",
-//                lecture_number = "005",
-//                quota = 25,
-//                freshmanQuota = 13,
-//                remark = "",
-//                course_number = "031.031",
-//                course_title = "말하기와 토론",
-//                class_time_mask = emptyList(),
-//                registrationCount = 10,
-//            ).copy(
-//                id = it.toString(),
-//                registrationCount = (24L..25L).random()
-//            )
-//        }
     }
 
-    override suspend fun deleteVacancyLecture(lectureId: String) {
+    override suspend fun addVacancyLecture(lectureId: String) {
+        api._postVacancyLecture(lectureId)
+    }
+
+    override suspend fun removeVacancyLecture(lectureId: String) {
         api._deleteVacancyLecture(lectureId)
     }
 }

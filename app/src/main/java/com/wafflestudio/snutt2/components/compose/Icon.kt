@@ -594,3 +594,56 @@ fun PersonIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun DetailIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_detail),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}
+
+@Composable
+fun RingingAlarmIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+    marked: Boolean = false
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = if (marked) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}
+
+@Composable
+fun AddCircleIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_add_circle),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}
+
+@Composable
+fun RemoveCircleIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_remove_circle),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}

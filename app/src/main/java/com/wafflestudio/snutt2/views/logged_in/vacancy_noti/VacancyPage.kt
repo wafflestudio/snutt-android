@@ -36,14 +36,15 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun VacancyPage() {
+fun VacancyPage(
+    vacancyViewModel: VacancyViewModel
+) {
     val navController = LocalNavController.current
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val modalState = LocalModalState.current
     val scope = rememberCoroutineScope()
-    val vacancyViewModel: VacancyViewModel = hiltViewModel()
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { vacancyViewModel.refreshVacancyLectures() })
@@ -165,7 +166,6 @@ fun VacancyPage() {
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         vacancyViewModel.deleteSelectedLectures()
-                                        vacancyViewModel.getVacancyLectures()
                                         vacancyViewModel.toggleEditMode()
                                     }
                                 }
