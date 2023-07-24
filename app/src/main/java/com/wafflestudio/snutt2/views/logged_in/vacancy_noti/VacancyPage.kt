@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -51,24 +53,17 @@ fun VacancyPage() {
     }
     val density = LocalDensity.current
 
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (vacancyViewModel.isEditMode) {
-                    vacancyViewModel.toggleEditMode()
-                } else {
-                    if (navController.currentDestination?.route == NavigationDestination.VacancyNotification) {
-                        navController.popBackStack()
-                    }
-                }
+    val onBackPressed = {
+        if (vacancyViewModel.isEditMode) {
+            vacancyViewModel.toggleEditMode()
+        } else {
+            if (navController.currentDestination?.route == NavigationDestination.VacancyNotification) {
+                navController.popBackStack()
             }
         }
     }
-
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+    BackHandler {
+        onBackPressed()
     }
 
     LaunchedEffect(Unit) {
@@ -94,7 +89,7 @@ fun VacancyPage() {
                     ArrowBackIcon(
                         modifier = Modifier
                             .size(30.dp)
-                            .clicks { navController.popBackStack() },
+                            .clicks { onBackPressed() },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900)
                     )
                 },
