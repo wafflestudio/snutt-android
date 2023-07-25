@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.components.compose
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,17 +19,20 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.clicks(
     throttleMs: Long = 200L,
     enabled: Boolean = true,
     role: Role? = null,
-    onClick: () -> Unit
+    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
 ) = composed {
     val clickFn = applyEventThrottling(onClick, throttleMs = throttleMs)
-    clickable(
+    combinedClickable(
         enabled = enabled,
         role = role,
         onClick = clickFn,
+        onLongClick = { onLongClick() },
         indication = null,
         interactionSource = remember { MutableInteractionSource() }
     )

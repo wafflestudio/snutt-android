@@ -73,7 +73,7 @@ fun LazyItemScope.LectureListItem(
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val bookmarked = bookmarkList.map { it.item.id }.contains(lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id)
     val vacancyList by vacancyViewModel.vacancyLectures.collectAsState()
-    val vacancy = vacancyList.map { it.item.id }.contains(lectureDataWithState.item.id)
+    val vacancyRegistered = vacancyList.map { it.item.id }.contains(lectureDataWithState.item.id)
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText = stringResource(
@@ -312,7 +312,7 @@ fun LazyItemScope.LectureListItem(
                         .clicks {
                             scope.launch {
                                 launchSuspendApi(apiOnProgress, apiOnError) {
-                                    if (vacancy) {
+                                    if (vacancyRegistered) {
                                         vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
                                     } else {
                                         vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
@@ -326,7 +326,7 @@ fun LazyItemScope.LectureListItem(
                     RingingAlarmIcon(
                         modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
-                        marked = vacancy
+                        marked = vacancyRegistered
                     )
                     Text(
                         text = stringResource(R.string.search_result_item_vacancy_button),
@@ -405,32 +405,5 @@ fun LazyItemScope.LectureListItem(
             }
         }
         Divider(color = SNUTTColors.White400)
-    }
-}
-
-@Composable
-fun LectureListItemButton(
-    title: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .height(40.dp)
-            .clicks {
-                onClick()
-            }
-    ) {
-        icon()
-        Text(
-            text = title,
-            style = SNUTTTypography.body2.copy(
-                color = SNUTTColors.AllWhite,
-                fontSize = 10.sp
-            )
-        )
     }
 }

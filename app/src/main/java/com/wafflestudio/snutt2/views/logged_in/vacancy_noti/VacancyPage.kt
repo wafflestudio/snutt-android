@@ -129,7 +129,17 @@ fun VacancyPage(
                             lectureDataWithVacancy = it,
                             editing = vacancyViewModel.isEditMode,
                             checked = selectedLectures.contains(lectureId),
-                            onCheckedChange = { vacancyViewModel.toggleLectureSelected(lectureId) }
+                            onClick = {
+                                if (vacancyViewModel.isEditMode) {
+                                    vacancyViewModel.toggleLectureSelected(lectureId)
+                                }
+                            },
+                            onLongClick = {
+                                if (!vacancyViewModel.isEditMode) {
+                                    vacancyViewModel.toggleEditMode()
+                                    vacancyViewModel.toggleLectureSelected(lectureId)
+                                }
+                            }
                         )
                     }
                 }

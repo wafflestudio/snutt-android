@@ -37,7 +37,8 @@ fun LazyItemScope.VacancyListItem(
     lectureDataWithVacancy: DataWithState<LectureDto, Boolean>,
     editing: Boolean = false,
     checked: Boolean = false,
-    onCheckedChange: ((Boolean) -> Unit)?
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     val hasVacancy = lectureDataWithVacancy.state
     val lectureTitle = lectureDataWithVacancy.item.course_title
@@ -66,17 +67,20 @@ fun LazyItemScope.VacancyListItem(
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .clicks {
-                if (editing && onCheckedChange != null) {
-                    onCheckedChange(!checked)
+            .clicks(
+                onClick = {
+                    onClick()
+                },
+                onLongClick = {
+                    onLongClick()
                 }
-            },
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedVisibility(editing) {
             RoundCheckbox(
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = { onClick() },
                 modifier = Modifier.padding(end = 20.dp)
             )
         }
