@@ -79,7 +79,7 @@ internal fun BottomNavigation(
             },
         ) {
             IconWithAlertDot(uncheckedNotification && pageState != HomeItem.Settings) { centerAlignedModifier ->
-                SettingIcon(
+                HorizontalMoreIcon(
                     modifier = centerAlignedModifier.size(30.dp),
                     isSelected = pageState == HomeItem.Settings,
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),

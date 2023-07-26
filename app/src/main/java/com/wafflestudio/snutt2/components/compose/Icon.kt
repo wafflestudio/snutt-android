@@ -336,6 +336,23 @@ fun SettingIcon(
 }
 
 @Composable
+fun HorizontalMoreIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_horizontal_more_selected
+            else R.drawable.ic_horizontal_more_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun TipCloseIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
