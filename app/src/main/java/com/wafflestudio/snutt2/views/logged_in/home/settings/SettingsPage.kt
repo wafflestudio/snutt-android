@@ -51,7 +51,7 @@ fun SettingsPage(
                 )
             },
             navigationIcon = {
-                SettingIcon(
+                HorizontalMoreIcon(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
