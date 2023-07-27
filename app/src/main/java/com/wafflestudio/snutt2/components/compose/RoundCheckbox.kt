@@ -30,7 +30,7 @@ fun RoundCheckbox(
     checkedBgColor: Color = SNUTTColors.Black900,
     uncheckedBgColor: Color = SNUTTColors.Transparent,
     checkMarkColor: Color = SNUTTColors.White900,
-    borderColor: Color = SNUTTColors.CheckboxBorder
+    borderColor: Color = SNUTTColors.VacancyGray
 ) {
     val animatedBgColor: Color by animateColorAsState(if (checked) checkedBgColor else uncheckedBgColor)
     val animatedBorderColor: Color by animateColorAsState(if (checked) checkedBgColor else borderColor)
