@@ -180,7 +180,7 @@
     <string name="home_select_theme_grass">잔디</string>
     <string name="timetable_app_bar_setting">더보기</string>
     <string name="reviews_app_bar_title">강의평</string>
-    <string name="user_settings_app_bar_title">계정 관리</string>
+    <string name="user_settings_app_bar_title">내 계정</string>
     <string name="timetable_settings_app_bar_title">시간표 설정</string>
     <string name="timetable_credit">(%d 학점)</string>
     <string name="home_drawer_table_title_change">이름 변경</string>

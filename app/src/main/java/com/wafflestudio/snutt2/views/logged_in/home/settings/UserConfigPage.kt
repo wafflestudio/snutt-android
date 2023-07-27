@@ -5,11 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -26,7 +26,6 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
@@ -107,87 +106,63 @@ fun UserConfigPage() {
             title = stringResource(R.string.user_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
         )
-        Margin(height = 10.dp)
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            if (user?.localId.isNullOrEmpty().not()) {
-                SettingItem(title = stringResource(R.string.sign_in_id_hint), content = {
-                    Text(text = user?.localId.toString(), style = SNUTTTypography.body2)
-                })
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_change_password),
-                    content = {
-                        ArrowRight(
-                            modifier = Modifier.size(16.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black900)
-                        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Margin(height = 10.dp)
+            SettingColumn {
+                if (user?.localId.isNullOrEmpty().not()) {
+                    SettingItem(title = stringResource(R.string.sign_in_id_title)) {
+                        Text(text = user?.localId.toString(), style = SNUTTTypography.body2)
                     }
-                ) { passwordChangeDialogState = true }
+                    Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_change_password),
+                        onClick = { passwordChangeDialogState = true }
+                    )
+                } else {
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_add_local_id),
+                        onClick = { addIdPasswordDialogState = true }
+                    )
+                }
+            }
+            Margin(height = 10.dp)
+            if (facebookConnected) {
+                SettingColumn {
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_facebook_name),
+                    ) {
+                        Text(text = user?.fbName ?: "")
+                    }
+                    Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_facebook_disconnect),
+                        onClick = { disconnectFacebookDialogState = true }
+                    )
+                }
             } else {
                 SettingItem(
-                    title = stringResource(R.string.settings_user_config_add_local_id),
-                    modifier = Modifier.background(SNUTTColors.White900),
-                    content = {
-                        ArrowRight(
-                            modifier = Modifier.size(16.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    title = stringResource(R.string.settings_user_config_connect_facebook),
+                    onClick = {
+                        // FIXME: 실패했을 때.
+                        LoginManager.getInstance().logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner, callbackManager, emptyList()
                         )
                     }
-                ) { addIdPasswordDialogState = true }
-            }
-        }
-        Margin(height = 10.dp)
-        if (facebookConnected) {
-            SettingItem(
-                title = stringResource(R.string.settings_user_config_facebook_name),
-                modifier = Modifier.background(SNUTTColors.White900),
-                content = {
-                    Text(text = user?.fbName ?: "")
-                }
-            ) {}
-            SettingItem(
-                title = stringResource(R.string.settings_user_config_facebook_disconnect),
-                modifier = Modifier.background(SNUTTColors.White900),
-                content = {
-                    ArrowRight(
-                        modifier = Modifier.size(16.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
-                    )
-                }
-            ) { disconnectFacebookDialogState = true }
-        } else {
-            SettingItem(
-                title = stringResource(R.string.settings_user_config_connect_facebook),
-                modifier = Modifier.background(SNUTTColors.White900),
-                content = {
-                    ArrowRight(
-                        modifier = Modifier.size(16.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
-                    )
-                }
-            ) {
-                // FIXME: 실패했을 때.
-                LoginManager.getInstance().logInWithReadPermissions(
-                    context as ActivityResultRegistryOwner, callbackManager, emptyList()
                 )
             }
-        }
-        Margin(height = 10.dp)
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            SettingItem(title = stringResource(R.string.settings_app_report_email), content = {
+            Margin(height = 10.dp)
+            SettingItem(title = stringResource(R.string.settings_app_report_email)) {
                 Text(text = user?.email ?: "", style = SNUTTTypography.body2)
-            })
-        }
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_user_config_leave),
-            modifier = Modifier.background(SNUTTColors.White900),
-            content = {
-                ArrowRight(
-                    modifier = Modifier.size(16.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900)
-                )
             }
-        ) { leaveDialogState = true }
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_user_config_leave),
+                isCritical = true,
+                onClick = { leaveDialogState = true }
+            )
+        }
     }
 
     if (addIdPasswordDialogState) {

@@ -71,89 +71,90 @@ fun TimetableConfigPage() {
             title = stringResource(R.string.timetable_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
         )
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_timetable_config_force_fit),
-            modifier = Modifier.background(SNUTTColors.White900),
-            onClick = {
-                scope.launch {
-                    viewModel.setAutoTrim(trimParam.forceFitLectures.not())
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_timetable_config_force_fit),
+                onClick = {
+                    scope.launch {
+                        viewModel.setAutoTrim(trimParam.forceFitLectures.not())
+                    }
                 }
-            },
-            content = {
+            ) {
                 PoorSwitch(state = trimParam.forceFitLectures)
             }
-        )
-        Margin(height = 10.dp)
-        AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
-            Column {
-                RangeBarCell(title = stringResource(R.string.settings_timetable_config_week_day)) {
-                    RangeBar(
-                        initStart = trimParam.dayOfWeekFrom,
-                        initEnd = trimParam.dayOfWeekTo,
-                        labelArray = stringArrayResource(R.array.week_days)
-                    ) { start, end ->
-                        scope.launch {
-                            viewModel.setDayOfWeekRange(start, end)
+            Margin(height = 10.dp)
+            AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
+                Column {
+                    RangeBarCell(title = stringResource(R.string.settings_timetable_config_week_day)) {
+                        RangeBar(
+                            initStart = trimParam.dayOfWeekFrom,
+                            initEnd = trimParam.dayOfWeekTo,
+                            labelArray = stringArrayResource(R.array.week_days)
+                        ) { start, end ->
+                            scope.launch {
+                                viewModel.setDayOfWeekRange(start, end)
+                            }
                         }
                     }
-                }
-                Margin(height = 10.dp)
-                RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
-                    RangeBar(
-                        initStart = trimParam.hourFrom - 8, // TODO: 24시간 개선 시 변경
-                        initEnd = trimParam.hourTo - 8, // TODO: 24시간 개선 시 변경
-                        labelArray = Array(16) { (it + 8).toString() }
-                    ) { start, end ->
-                        scope.launch {
-                            viewModel.setHourRange(start + 8, end + 8) // TODO: 24시간 개선 시 변경
+                    Margin(height = 10.dp)
+                    RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
+                        RangeBar(
+                            initStart = trimParam.hourFrom - 8, // TODO: 24시간 개선 시 변경
+                            initEnd = trimParam.hourTo - 8, // TODO: 24시간 개선 시 변경
+                            labelArray = Array(16) { (it + 8).toString() }
+                        ) { start, end ->
+                            scope.launch {
+                                viewModel.setHourRange(start + 8, end + 8) // TODO: 24시간 개선 시 변경
+                            }
                         }
                     }
+                    Margin(height = 10.dp)
                 }
-                Margin(height = 10.dp)
             }
-        }
-        SettingItem(
-            title = stringResource(R.string.settings_compact_mode),
-            modifier = Modifier.background(SNUTTColors.White900),
-            content = {
+            SettingItem(
+                title = stringResource(R.string.settings_compact_mode),
+                onClick = {
+                    scope.launch {
+                        viewModel.setCompactMode(compactMode.not())
+                    }
+                }
+            ) {
                 PoorSwitch(state = compactMode)
             }
-        ) {
-            scope.launch {
-                viewModel.setCompactMode(compactMode.not())
+            Row(
+                modifier = Modifier
+                    .height(40.dp)
+                    .padding(horizontal = 20.dp, vertical = 3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (compactMode) {
+                    Text(
+                        text = stringResource(R.string.settings_compact_mode_message),
+                        style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                    )
+                }
             }
-        }
-        Row(
-            modifier = Modifier
-                .height(40.dp)
-                .padding(horizontal = 20.dp, vertical = 3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (compactMode) {
-                Text(
-                    text = stringResource(R.string.settings_compact_mode_message),
-                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                )
+            Margin(height = 10.dp)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(5))
+                    .background(SNUTTColors.White900)
+                    .padding(5.dp)
+                    .size(
+                        (LocalConfiguration.current.screenWidthDp * 0.8).dp,
+                        (LocalConfiguration.current.screenHeightDp * 0.6).dp
+                    )
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                CompositionLocalProvider(LocalTableState provides tableState) {
+                    TimeTable(selectedLecture = null, touchEnabled = false)
+                }
             }
+            Margin(height = 25.dp)
         }
-        Margin(height = 10.dp)
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(5))
-                .background(SNUTTColors.White900)
-                .padding(5.dp)
-                .size(
-                    (LocalConfiguration.current.screenWidthDp * 0.8).dp,
-                    (LocalConfiguration.current.screenHeightDp * 0.6).dp
-                )
-                .align(Alignment.CenterHorizontally)
-        ) {
-            CompositionLocalProvider(LocalTableState provides tableState) {
-                TimeTable(selectedLecture = null, touchEnabled = false)
-            }
-        }
-        Margin(height = 25.dp)
     }
 }
 

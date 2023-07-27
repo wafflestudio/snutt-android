@@ -564,3 +564,16 @@ fun RemarkIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun PersonIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_person),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}

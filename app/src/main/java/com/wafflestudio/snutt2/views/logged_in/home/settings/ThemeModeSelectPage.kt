@@ -1,10 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,49 +37,50 @@ fun ColorModeSelectPage() {
         ) {
             navController.popBackStack()
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        Column(modifier = Modifier.background(SNUTTColors.White900)) {
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_auto),
-                content = {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_auto),
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.AUTO)
+                        }
+                    }
+                ) {
                     if (themeMode == ThemeMode.AUTO) {
                         CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                     }
-                },
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.AUTO)
-                    }
                 }
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_dark),
-                content = {
+                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_dark),
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.DARK)
+                        }
+                    }
+                ) {
                     if (themeMode == ThemeMode.DARK) {
                         CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                     }
-                },
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.DARK)
-                    }
                 }
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_light),
-                content = {
+                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_light),
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.LIGHT)
+                        }
+                    }
+                ) {
                     if (themeMode == ThemeMode.LIGHT) {
                         CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                     }
-                },
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.LIGHT)
-                    }
                 }
-            )
+            }
         }
     }
 }
