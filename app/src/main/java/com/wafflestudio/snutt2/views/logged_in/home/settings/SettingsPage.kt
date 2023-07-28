@@ -2,18 +2,23 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -84,6 +89,7 @@ fun SettingsPage(
                             .padding(end = 5.dp)
                     )
                 },
+                isNew = true,
                 onClick = {
                     navController.navigate(
                         NavigationDestination.UserConfig
@@ -257,6 +263,7 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable () -> Unit = {},
     isCritical: Boolean = false,
+    isNew: Boolean = false,
     hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
@@ -277,6 +284,9 @@ fun SettingItem(
                 color = if (isCritical) SNUTTColors.Red else SNUTTColors.Black900 // TODO: Red 색 조정
             )
         )
+        if (isNew) {
+            NewSticker(Modifier.padding(start=5.dp))
+        }
         Spacer(modifier = Modifier.weight(1f))
         content()
         if (hasNextPage) {
@@ -285,6 +295,29 @@ fun SettingItem(
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500)
             )
         }
+    }
+}
+
+@Composable
+fun NewSticker(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(width = 26.dp, height = 14.dp)
+            .clip(RoundedCornerShape(3.dp))
+            .background(SNUTTColors.SNUTTTheme)
+    ) {
+        Text(
+            text = "NEW!",
+            modifier = Modifier.align(Alignment.Center),
+            style = SNUTTTypography.body2
+                .copy(
+                    color = SNUTTColors.AllWhite,
+                    fontSize = 7.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+        )
     }
 }
 
