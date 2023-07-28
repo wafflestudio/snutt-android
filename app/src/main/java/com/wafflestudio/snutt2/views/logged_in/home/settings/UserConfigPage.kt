@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -100,7 +99,7 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.MoreTabBackground)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
@@ -113,9 +112,14 @@ fun UserConfigPage() {
             SettingColumn {
                 if (user?.localId.isNullOrEmpty().not()) {
                     SettingItem(title = stringResource(R.string.sign_in_id_title)) {
-                        Text(text = user?.localId.toString(), style = SNUTTTypography.body2)
+                        Text(
+                            text = user?.localId.toString(),
+                            style = SNUTTTypography.body1.copy(
+                                color = SNUTTColors.Black500
+                            )
+                        )
                     }
-                    Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                    SettingDivider()
                     SettingItem(
                         title = stringResource(R.string.settings_user_config_change_password),
                         onClick = { passwordChangeDialogState = true }
@@ -134,9 +138,14 @@ fun UserConfigPage() {
                         title = stringResource(R.string.settings_user_config_facebook_name),
                         hasNextPage = false,
                     ) {
-                        Text(text = user?.fbName ?: "")
+                        Text(
+                            text = user?.fbName ?: "",
+                            style = SNUTTTypography.body1.copy(
+                                color = SNUTTColors.Black500
+                            )
+                        )
                     }
-                    Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                    SettingDivider()
                     SettingItem(
                         title = stringResource(R.string.settings_user_config_facebook_disconnect),
                         onClick = { disconnectFacebookDialogState = true }
@@ -158,7 +167,12 @@ fun UserConfigPage() {
                 title = stringResource(R.string.settings_app_report_email),
                 hasNextPage = false
             ) {
-                Text(text = user?.email ?: "", style = SNUTTTypography.body2)
+                Text(
+                    text = user?.email ?: "",
+                    style = SNUTTTypography.body1.copy(
+                        color = SNUTTColors.Black500
+                    )
+                )
             }
             Margin(height = 10.dp)
             SettingItem(

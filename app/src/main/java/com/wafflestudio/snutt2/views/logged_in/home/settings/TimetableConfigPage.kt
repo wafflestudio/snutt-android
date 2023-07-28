@@ -64,7 +64,7 @@ fun TimetableConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.MoreTabBackground)
             .verticalScroll(rememberScrollState())
     ) {
         SimpleTopBar(

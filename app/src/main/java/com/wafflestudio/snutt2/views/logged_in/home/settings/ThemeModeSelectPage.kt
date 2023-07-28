@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,7 +29,7 @@ fun ColorModeSelectPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.MoreTabBackground)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),
@@ -52,10 +51,13 @@ fun ColorModeSelectPage() {
                     }
                 ) {
                     if (themeMode == ThemeMode.AUTO) {
-                        CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                        )
                     }
                 }
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_dark),
                     hasNextPage = false,
@@ -66,10 +68,13 @@ fun ColorModeSelectPage() {
                     }
                 ) {
                     if (themeMode == ThemeMode.DARK) {
-                        CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                        )
                     }
                 }
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_light),
                     hasNextPage = false,
@@ -80,7 +85,10 @@ fun ColorModeSelectPage() {
                     }
                 ) {
                     if (themeMode == ThemeMode.LIGHT) {
-                        CheckedIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                        )
                     }
                 }
             }

@@ -45,7 +45,7 @@ fun SettingsPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.MoreTabBackground)
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
@@ -108,14 +108,14 @@ fun SettingsPage(
                 ) {
                     Text(
                         text = when (themeMode) {
-                            ThemeMode.DARK -> stringResource(R.string.settings_select_color_mode_dark)
-                            ThemeMode.LIGHT -> stringResource(R.string.settings_select_color_mode_light)
-                            ThemeMode.AUTO -> stringResource(R.string.settings_select_color_mode_auto)
+                            ThemeMode.DARK -> "다크"
+                            ThemeMode.LIGHT -> "라이트"
+                            ThemeMode.AUTO -> "자동"
                         },
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
                     onClick = {
@@ -138,7 +138,7 @@ fun SettingsPage(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
                     onClick = {
@@ -166,7 +166,7 @@ fun SettingsPage(
                         showLicenseDialog(context)
                     }
                 )
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
                     onClick = {
@@ -175,7 +175,7 @@ fun SettingsPage(
                         )
                     }
                 )
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
                     onClick = {
@@ -240,7 +240,7 @@ fun SettingColumn(
             text = title,
             modifier = Modifier.padding(start = 10.dp),
             style = SNUTTTypography.body2.copy(
-                color = SNUTTColors.Gray200
+                color = SNUTTColors.SettingColumnTitle
             )
         )
         Spacer(modifier = Modifier.size(5.dp))
@@ -291,6 +291,9 @@ fun SettingItem(
         }
     }
 }
+
+@Composable
+fun SettingDivider() = Divider(modifier = Modifier.padding(horizontal = 20.dp), color = SNUTTColors.Gray2, thickness = 0.4.dp)
 
 private fun showLicenseDialog(context: Context) {
     LicensesDialog.Builder(context).setNotices(R.raw.notices).setIncludeOwnLicense(true).build()
