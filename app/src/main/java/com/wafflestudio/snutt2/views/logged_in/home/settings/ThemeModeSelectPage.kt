@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -29,67 +30,61 @@ fun ColorModeSelectPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.MoreTabBackground)
+            .background(SNUTTColors.Gray100)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),
         ) {
             navController.popBackStack()
         }
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(10.dp))
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_select_color_mode_auto),
-                    hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.AUTO)
-                        }
-                    }
-                ) {
-                    if (themeMode == ThemeMode.AUTO) {
-                        CheckedIcon(
-                            modifier = Modifier.size(22.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
-                        )
+        Margin(height = 15.dp)
+        SettingColumn {
+            SettingItem(
+                title = stringResource(R.string.settings_select_color_mode_auto),
+                hasNextPage = false,
+                onClick = {
+                    scope.launch {
+                        userViewModel.setThemeMode(ThemeMode.AUTO)
                     }
                 }
-                SettingDivider()
-                SettingItem(
-                    title = stringResource(R.string.settings_select_color_mode_dark),
-                    hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.DARK)
-                        }
-                    }
-                ) {
-                    if (themeMode == ThemeMode.DARK) {
-                        CheckedIcon(
-                            modifier = Modifier.size(22.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
-                        )
+            ) {
+                if (themeMode == ThemeMode.AUTO) {
+                    CheckedIcon(
+                        modifier = Modifier.size(22.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                    )
+                }
+            }
+            SettingItem(
+                title = stringResource(R.string.settings_select_color_mode_dark),
+                hasNextPage = false,
+                onClick = {
+                    scope.launch {
+                        userViewModel.setThemeMode(ThemeMode.DARK)
                     }
                 }
-                SettingDivider()
-                SettingItem(
-                    title = stringResource(R.string.settings_select_color_mode_light),
-                    hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.LIGHT)
-                        }
+            ) {
+                if (themeMode == ThemeMode.DARK) {
+                    CheckedIcon(
+                        modifier = Modifier.size(22.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                    )
+                }
+            }
+            SettingItem(
+                title = stringResource(R.string.settings_select_color_mode_light),
+                hasNextPage = false,
+                onClick = {
+                    scope.launch {
+                        userViewModel.setThemeMode(ThemeMode.LIGHT)
                     }
-                ) {
-                    if (themeMode == ThemeMode.LIGHT) {
-                        CheckedIcon(
-                            modifier = Modifier.size(22.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black500)
-                        )
-                    }
+                }
+            ) {
+                if (themeMode == ThemeMode.LIGHT) {
+                    CheckedIcon(
+                        modifier = Modifier.size(22.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                    )
                 }
             }
         }

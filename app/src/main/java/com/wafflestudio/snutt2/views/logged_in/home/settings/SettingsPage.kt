@@ -4,14 +4,11 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,7 +42,7 @@ fun SettingsPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.MoreTabBackground)
+            .background(SNUTTColors.Gray100)
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
@@ -75,7 +72,6 @@ fun SettingsPage(
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
         ) {
             Margin(height = 10.dp)
             SettingItem(
@@ -94,7 +90,7 @@ fun SettingsPage(
                     )
                 }
             )
-            Margin(height = 10.dp)
+            Margin(height = 15.dp)
             SettingColumn(
                 title = "디스플레이",
             ) {
@@ -115,7 +111,7 @@ fun SettingsPage(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-                SettingDivider()
+//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
                     onClick = {
@@ -125,7 +121,7 @@ fun SettingsPage(
                     }
                 )
             }
-            Margin(height = 10.dp)
+            Margin(height = 15.dp)
             SettingColumn(
                 title = "정보 및 제안"
             ) {
@@ -138,7 +134,7 @@ fun SettingsPage(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-                SettingDivider()
+//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
                     onClick = {
@@ -158,7 +154,7 @@ fun SettingsPage(
                 }
             )
 
-            Margin(height = 10.dp)
+            Margin(height = 15.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
@@ -166,7 +162,7 @@ fun SettingsPage(
                         showLicenseDialog(context)
                     }
                 )
-                SettingDivider()
+//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
                     onClick = {
@@ -175,7 +171,7 @@ fun SettingsPage(
                         )
                     }
                 )
-                SettingDivider()
+//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
                     onClick = {
@@ -185,7 +181,7 @@ fun SettingsPage(
                     }
                 )
             }
-            Margin(height = 10.dp)
+            Margin(height = 15.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
                 isCritical = true,
@@ -195,7 +191,7 @@ fun SettingsPage(
             )
 
             if (BuildConfig.DEBUG) {
-                Margin(height = 10.dp)
+                Margin(height = 15.dp)
                 SettingItem(
                     title = "네트워크 로그",
                     onClick = {
@@ -236,17 +232,18 @@ fun SettingColumn(
     Column(
         modifier = modifier
     ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(start = 10.dp),
-            style = SNUTTTypography.body2.copy(
-                color = SNUTTColors.SettingColumnTitle
+        if (title.isNotEmpty()) {
+            Text(
+                text = title,
+                modifier = Modifier.padding(start = 35.dp),
+                style = SNUTTTypography.body2.copy(
+                    color = SNUTTColors.SettingColumnTitle
+                )
             )
-        )
-        Spacer(modifier = Modifier.size(5.dp))
+            Spacer(modifier = Modifier.size(5.dp))
+        }
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
                 .background(SNUTTColors.White900)
         ) {
             content()
@@ -268,9 +265,8 @@ fun SettingItem(
         modifier = modifier
             .fillMaxWidth()
             .height(45.dp)
-            .clip(RoundedCornerShape(10.dp))
             .background(SNUTTColors.White900)
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 35.dp)
             .clicks { if (onClick != null) onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -291,9 +287,6 @@ fun SettingItem(
         }
     }
 }
-
-@Composable
-fun SettingDivider() = Divider(modifier = Modifier.padding(horizontal = 20.dp), color = SNUTTColors.Gray2, thickness = 0.4.dp)
 
 private fun showLicenseDialog(context: Context) {
     LicensesDialog.Builder(context).setNotices(R.raw.notices).setIncludeOwnLicense(true).build()

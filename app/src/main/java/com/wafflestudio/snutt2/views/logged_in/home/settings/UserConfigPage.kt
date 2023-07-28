@@ -99,88 +99,82 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.MoreTabBackground)
+            .background(SNUTTColors.Gray100)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
         )
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Margin(height = 10.dp)
-            SettingColumn {
-                if (user?.localId.isNullOrEmpty().not()) {
-                    SettingItem(title = stringResource(R.string.sign_in_id_title)) {
-                        Text(
-                            text = user?.localId.toString(),
-                            style = SNUTTTypography.body1.copy(
-                                color = SNUTTColors.Black500
-                            )
+        Margin(height = 15.dp)
+        SettingColumn {
+            if (user?.localId.isNullOrEmpty().not()) {
+                SettingItem(title = stringResource(R.string.sign_in_id_title)) {
+                    Text(
+                        text = user?.localId.toString(),
+                        style = SNUTTTypography.body1.copy(
+                            color = SNUTTColors.Black500
                         )
-                    }
-                    SettingDivider()
-                    SettingItem(
-                        title = stringResource(R.string.settings_user_config_change_password),
-                        onClick = { passwordChangeDialogState = true }
-                    )
-                } else {
-                    SettingItem(
-                        title = stringResource(R.string.settings_user_config_add_local_id),
-                        onClick = { addIdPasswordDialogState = true }
                     )
                 }
-            }
-            Margin(height = 10.dp)
-            if (facebookConnected) {
-                SettingColumn {
-                    SettingItem(
-                        title = stringResource(R.string.settings_user_config_facebook_name),
-                        hasNextPage = false,
-                    ) {
-                        Text(
-                            text = user?.fbName ?: "",
-                            style = SNUTTTypography.body1.copy(
-                                color = SNUTTColors.Black500
-                            )
-                        )
-                    }
-                    SettingDivider()
-                    SettingItem(
-                        title = stringResource(R.string.settings_user_config_facebook_disconnect),
-                        onClick = { disconnectFacebookDialogState = true }
-                    )
-                }
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_change_password),
+                    onClick = { passwordChangeDialogState = true }
+                )
             } else {
                 SettingItem(
-                    title = stringResource(R.string.settings_user_config_connect_facebook),
-                    onClick = {
-                        // FIXME: 실패했을 때.
-                        LoginManager.getInstance().logInWithReadPermissions(
-                            context as ActivityResultRegistryOwner, callbackManager, emptyList()
+                    title = stringResource(R.string.settings_user_config_add_local_id),
+                    onClick = { addIdPasswordDialogState = true }
+                )
+            }
+        }
+        Margin(height = 15.dp)
+        if (facebookConnected) {
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_facebook_name),
+                    hasNextPage = false,
+                ) {
+                    Text(
+                        text = user?.fbName ?: "",
+                        style = SNUTTTypography.body1.copy(
+                            color = SNUTTColors.Black500
                         )
-                    }
-                )
-            }
-            Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.settings_app_report_email),
-                hasNextPage = false
-            ) {
-                Text(
-                    text = user?.email ?: "",
-                    style = SNUTTTypography.body1.copy(
-                        color = SNUTTColors.Black500
                     )
+                }
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_facebook_disconnect),
+                    onClick = { disconnectFacebookDialogState = true }
                 )
             }
-            Margin(height = 10.dp)
+        } else {
             SettingItem(
-                title = stringResource(R.string.settings_user_config_leave),
-                isCritical = true,
-                onClick = { leaveDialogState = true }
+                title = stringResource(R.string.settings_user_config_connect_facebook),
+                onClick = {
+                    // FIXME: 실패했을 때.
+                    LoginManager.getInstance().logInWithReadPermissions(
+                        context as ActivityResultRegistryOwner, callbackManager, emptyList()
+                    )
+                }
             )
         }
+        Margin(height = 15.dp)
+        SettingItem(
+            title = stringResource(R.string.settings_app_report_email),
+            hasNextPage = false
+        ) {
+            Text(
+                text = user?.email ?: "",
+                style = SNUTTTypography.body1.copy(
+                    color = SNUTTColors.Black500
+                )
+            )
+        }
+        Margin(height = 15.dp)
+        SettingItem(
+            title = stringResource(R.string.settings_user_config_leave),
+            isCritical = true,
+            onClick = { leaveDialogState = true }
+        )
     }
 
     if (addIdPasswordDialogState) {
