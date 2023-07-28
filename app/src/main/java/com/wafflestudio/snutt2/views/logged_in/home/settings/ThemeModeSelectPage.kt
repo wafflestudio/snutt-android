@@ -44,6 +44,7 @@ fun ColorModeSelectPage() {
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_auto),
+                    hasNextPage = false,
                     onClick = {
                         scope.launch {
                             userViewModel.setThemeMode(ThemeMode.AUTO)
@@ -57,6 +58,7 @@ fun ColorModeSelectPage() {
                 Divider(modifier = Modifier.padding(horizontal = 20.dp))
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_dark),
+                    hasNextPage = false,
                     onClick = {
                         scope.launch {
                             userViewModel.setThemeMode(ThemeMode.DARK)
@@ -70,6 +72,7 @@ fun ColorModeSelectPage() {
                 Divider(modifier = Modifier.padding(horizontal = 20.dp))
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_light),
+                    hasNextPage = false,
                     onClick = {
                         scope.launch {
                             userViewModel.setThemeMode(ThemeMode.LIGHT)

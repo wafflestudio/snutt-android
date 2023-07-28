@@ -132,6 +132,7 @@ fun UserConfigPage() {
                 SettingColumn {
                     SettingItem(
                         title = stringResource(R.string.settings_user_config_facebook_name),
+                        hasNextPage = false,
                     ) {
                         Text(text = user?.fbName ?: "")
                     }
@@ -153,7 +154,10 @@ fun UserConfigPage() {
                 )
             }
             Margin(height = 10.dp)
-            SettingItem(title = stringResource(R.string.settings_app_report_email)) {
+            SettingItem(
+                title = stringResource(R.string.settings_app_report_email),
+                hasNextPage = false
+            ) {
                 Text(text = user?.email ?: "", style = SNUTTTypography.body2)
             }
             Margin(height = 10.dp)

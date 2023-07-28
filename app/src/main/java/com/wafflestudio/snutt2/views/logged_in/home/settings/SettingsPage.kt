@@ -131,6 +131,7 @@ fun SettingsPage(
             ) {
                 SettingItem(
                     title = stringResource(R.string.settings_version_info),
+                    hasNextPage = false
                 ) {
                     Text(
                         text = BuildConfig.VERSION_NAME,
@@ -259,6 +260,7 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable () -> Unit = {},
     isCritical: Boolean = false,
+    hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
 ) {
@@ -281,7 +283,7 @@ fun SettingItem(
         )
         Spacer(modifier = Modifier.weight(1f))
         content()
-        if (onClick != null) { // TODO: onClick != null이지만 화살표가 없는 item도 있다...수정필요
+        if (hasNextPage) {
             RightArrowIcon(
                 modifier = Modifier.size(22.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500)

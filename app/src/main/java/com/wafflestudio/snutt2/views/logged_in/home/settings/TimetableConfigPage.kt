@@ -77,6 +77,7 @@ fun TimetableConfigPage() {
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_timetable_config_force_fit),
+                hasNextPage = false,
                 onClick = {
                     scope.launch {
                         viewModel.setAutoTrim(trimParam.forceFitLectures.not())
@@ -116,6 +117,7 @@ fun TimetableConfigPage() {
             }
             SettingItem(
                 title = stringResource(R.string.settings_compact_mode),
+                hasNextPage = false,
                 onClick = {
                     scope.launch {
                         viewModel.setCompactMode(compactMode.not())
