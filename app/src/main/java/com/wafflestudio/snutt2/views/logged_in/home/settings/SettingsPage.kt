@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -285,7 +284,7 @@ fun SettingItem(
             )
         )
         if (isNew) {
-            NewSticker(Modifier.padding(start=5.dp))
+            NewSticker(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
         content()
