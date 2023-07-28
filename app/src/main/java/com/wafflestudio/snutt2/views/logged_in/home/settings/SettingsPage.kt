@@ -128,6 +128,17 @@ fun SettingsPage(
             }
             Margin(height = 15.dp)
             SettingColumn(
+                title = "서비스"
+            ) {
+                SettingItem(
+                    title = "빈자리 알림",
+                    isNew = true,
+                    hasNextPage = true,
+                    onClick = { } // TODO: 빈자리 알림으로 navigate
+                )
+            }
+            Margin(height = 15.dp)
+            SettingColumn(
                 title = "정보 및 제안"
             ) {
                 SettingItem(
