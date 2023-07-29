@@ -647,3 +647,16 @@ fun RemoveCircleIcon(
         colorFilter = colorFilter
     )
 }
+
+@Composable
+fun QuestionCircleIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_question_circle),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}

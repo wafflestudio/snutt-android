@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,18 +15,26 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,6 +56,7 @@ fun VacancyPage(
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
     val density = LocalDensity.current
+    var showIntroDialog by remember { mutableStateOf(true) }
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -78,6 +88,14 @@ fun VacancyPage(
                         style = SNUTTTypography.h2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                    QuestionCircleIcon(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clicks {
+                                showIntroDialog = true
+                            }
                     )
                 },
                 navigationIcon = {
@@ -219,6 +237,110 @@ fun VacancyPage(
                 },
                 elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
+        }
+        if (showIntroDialog) {
+            VacancyIntroDialog(onDismiss = { showIntroDialog = false })
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
+@Composable
+fun VacancyIntroDialog(
+    onDismiss: () -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState()
+    Dialog(
+        onDismissRequest = { onDismiss() },
+    ) {
+        Surface(
+            elevation = 10.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .height(320.dp)
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    TipCloseIcon(
+                        modifier = Modifier
+                            .size(15.dp)
+                            .clicks {
+                                onDismiss()
+                            },
+                        colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
+                    )
+                }
+                Margin(height = 24.dp)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
+                ) {
+                    if (pagerState.currentPage > 0) {
+                        ArrowBackIcon(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .size(40.dp)
+                                .clicks {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                    }
+                                },
+                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
+                        )
+                    }
+                    HorizontalPager(
+                        count = 4,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .width(250.dp),
+                        state = pagerState,
+                    ) { page ->
+                        Image(
+                            painter = painterResource(
+                                when (page) {
+                                    0 -> R.drawable.img_vacancy_intro_0
+                                    1 -> R.drawable.img_vacancy_intro_1
+                                    2 -> R.drawable.img_vacancy_intro_2
+                                    else -> R.drawable.img_vacancy_intro_3
+                                }
+                            ),
+                            modifier = Modifier.fillMaxSize(),
+                            contentDescription = null
+                        )
+                    }
+                    if (pagerState.currentPage < 3) {
+                        RightArrowIcon(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .size(40.dp)
+                                .clicks {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                                    }
+                                },
+                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
+                        )
+                    }
+                }
+                Margin(height = 38.dp)
+                HorizontalPagerIndicator(
+                    pagerState = pagerState,
+                    activeColor = when (pagerState.currentPage) {
+                        0 -> SNUTTColors.Red
+                        1 -> SNUTTColors.Grass
+                        2 -> SNUTTColors.Orange
+                        else -> SNUTTColors.Sky
+                    },
+                    inactiveColor = SNUTTColors.Gray10,
+                    indicatorHeight = 6.dp,
+                    indicatorWidth = 6.dp
+                )
+            }
         }
     }
 }
