@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTColors.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import kotlinx.coroutines.launch
@@ -202,14 +201,16 @@ fun VacancyPage(
             } + fadeOut()
         ) {
             ExtendedFloatingActionButton(
-                modifier = Modifier.padding(30.dp),
+                modifier = Modifier
+                    .padding(end = 20.dp, bottom = 30.dp)
+                    .size(width = 140.dp, height = 45.dp),
                 text = {
                     Text(
                         text = stringResource(R.string.vacancy_floating_button),
                         style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite)
                     )
                 },
-                contentColor = SNUTTColors.SNUTTTheme,
+                contentColor = SNUTTColors.SNUTTVacancy,
                 onClick = {
                     val sugangSnuUrl = "https://sugang.snu.ac.kr/sugang/ca/ca102.action?workType=F"
                     val intent =

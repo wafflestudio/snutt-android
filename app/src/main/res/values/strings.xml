@@ -298,7 +298,7 @@
     <string name="vacancy_item_vacancy_sticker">취소여석</string>
     <string name="vacancy_app_bar_edit">편집</string>
     <string name="vacancy_app_bar_cancel">취소</string>
-    <string name="vacancy_floating_button">수강신청 바로가기</string>
+    <string name="vacancy_floating_button">수강신청 사이트</string>
     <string name="vacancy_delete_selected">선택한 강의 삭제</string>
     <string name="vacancy_delete_selected_title">목록에서 삭제</string>
     <string name="vacancy_delete_selected_message">선택한 강의의 빈자리 알림을 해제하시겠습니까?</string>
