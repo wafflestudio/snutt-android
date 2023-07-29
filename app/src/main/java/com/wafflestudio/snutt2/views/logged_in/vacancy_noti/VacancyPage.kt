@@ -134,12 +134,6 @@ fun VacancyPage(
                                     vacancyViewModel.toggleLectureSelected(lectureId)
                                 }
                             },
-                            onLongClick = {
-                                if (!vacancyViewModel.isEditMode) {
-                                    vacancyViewModel.toggleEditMode()
-                                    vacancyViewModel.toggleLectureSelected(lectureId)
-                                }
-                            }
                         )
                     }
                 }

@@ -38,7 +38,6 @@ fun LazyItemScope.VacancyListItem(
     editing: Boolean = false,
     checked: Boolean = false,
     onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {},
 ) {
     val hasVacancy = lectureDataWithVacancy.state
     val lectureTitle = lectureDataWithVacancy.item.course_title
@@ -67,14 +66,7 @@ fun LazyItemScope.VacancyListItem(
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .clicks(
-                onClick = {
-                    onClick()
-                },
-                onLongClick = {
-                    onLongClick()
-                }
-            ),
+            .clicks { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedVisibility(editing) {
