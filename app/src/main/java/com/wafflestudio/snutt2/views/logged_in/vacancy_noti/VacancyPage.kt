@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
@@ -300,6 +301,7 @@ fun VacancyIntroDialog(
             Column(
                 modifier = Modifier
                     .height(320.dp)
+                    .background(SNUTTColors.White900)
                     .padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -342,11 +344,20 @@ fun VacancyIntroDialog(
                     ) { page ->
                         Image(
                             painter = painterResource(
-                                when (page) {
-                                    0 -> R.drawable.img_vacancy_intro_0
-                                    1 -> R.drawable.img_vacancy_intro_1
-                                    2 -> R.drawable.img_vacancy_intro_2
-                                    else -> R.drawable.img_vacancy_intro_3
+                                if (isDarkMode()) {
+                                    when (page) {
+                                        0 -> R.drawable.img_vacancy_intro_dark_0
+                                        1 -> R.drawable.img_vacancy_intro_dark_1
+                                        2 -> R.drawable.img_vacancy_intro_dark_2
+                                        else -> R.drawable.img_vacancy_intro_dark_3
+                                    }
+                                } else {
+                                    when (page) {
+                                        0 -> R.drawable.img_vacancy_intro_0
+                                        1 -> R.drawable.img_vacancy_intro_1
+                                        2 -> R.drawable.img_vacancy_intro_2
+                                        else -> R.drawable.img_vacancy_intro_3
+                                    }
                                 }
                             ),
                             modifier = Modifier.fillMaxSize(),
