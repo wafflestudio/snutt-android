@@ -320,7 +320,7 @@ fun VacancyIntroDialog(
                             .clicks {
                                 onDismiss()
                             },
-                        colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
+                        colorFilter = ColorFilter.tint(if (pagerState.currentPage != 3) SNUTTColors.VacancyGray else SNUTTColors.Black900)
                     )
                 }
                 Margin(height = 24.dp)
