@@ -134,7 +134,7 @@ fun VacancyPage(
                     .weight(1f)
                     .fillMaxSize()
                     .then(
-                        if (!vacancyViewModel.isEditMode)
+                        if (vacancyViewModel.isEditMode.not())
                             Modifier.pullRefresh(pullRefreshState)
                         else
                             Modifier
