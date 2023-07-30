@@ -151,6 +151,16 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
+    val firstVacancyVisit = PrefValue<Boolean>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "first_vacancy_visit",
+            type = Boolean::class.java,
+            defaultValue = true
+        )
+    )
+
     fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)

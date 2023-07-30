@@ -59,7 +59,7 @@ fun VacancyPage(
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
     val density = LocalDensity.current
-    var introDialogState by remember { mutableStateOf(true) }
+    var introDialogState by remember { mutableStateOf(vacancyViewModel.firstVacancyVisit.value) }
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -280,7 +280,14 @@ fun VacancyPage(
             )
         }
         if (introDialogState) {
-            VacancyIntroDialog(onDismiss = { introDialogState = false })
+            VacancyIntroDialog(
+                onDismiss = {
+                    introDialogState = false
+                    scope.launch {
+                        vacancyViewModel.setVacancyVisited()
+                    }
+                }
+            )
         }
     }
 }

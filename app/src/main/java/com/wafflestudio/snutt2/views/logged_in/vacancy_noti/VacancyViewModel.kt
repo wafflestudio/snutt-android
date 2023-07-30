@@ -28,6 +28,8 @@ class VacancyViewModel @Inject constructor(
 
     val selectedLectures = mutableStateListOf<String>()
 
+    val firstVacancyVisit = vacancyRepository.firstVacancyVisit
+
     @Inject
     lateinit var apiOnError: ApiOnError
 
@@ -86,5 +88,11 @@ class VacancyViewModel @Inject constructor(
             vacancyRepository.removeVacancyLecture(lectureId)
         }
         getVacancyLectures()
+    }
+
+    suspend fun setVacancyVisited() {
+        if (firstVacancyVisit.value) {
+            vacancyRepository.setVacancyVisited()
+        }
     }
 }
