@@ -22,8 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -56,7 +58,7 @@ fun VacancyPage(
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
     val density = LocalDensity.current
-    var showIntroDialog by remember { mutableStateOf(true) }
+    var introDialogState by remember { mutableStateOf(true) }
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -94,7 +96,7 @@ fun VacancyPage(
                         modifier = Modifier
                             .size(18.dp)
                             .clicks {
-                                showIntroDialog = true
+                                introDialogState = true
                             }
                     )
                 },
@@ -107,26 +109,29 @@ fun VacancyPage(
                     )
                 },
                 actions = {
-                    Text(
-                        text = if (!vacancyViewModel.isEditMode)
-                            stringResource(R.string.vacancy_app_bar_edit)
-                        else
-                            stringResource(R.string.vacancy_app_bar_cancel),
-                        style = SNUTTTypography.body1,
-                        modifier = Modifier
-                            .clicks {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        vacancyViewModel.toggleEditMode()
+                    if (vacancyLectures.isNotEmpty()) {
+                        Text(
+                            text = if (!vacancyViewModel.isEditMode)
+                                stringResource(R.string.vacancy_app_bar_edit)
+                            else
+                                stringResource(R.string.vacancy_app_bar_cancel),
+                            style = SNUTTTypography.body1,
+                            modifier = Modifier
+                                .clicks {
+                                    scope.launch {
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            vacancyViewModel.toggleEditMode()
+                                        }
                                     }
                                 }
-                            }
-                    )
+                        )
+                    }
                 }
             )
             Box(
                 modifier = Modifier
                     .weight(1f)
+                    .fillMaxSize()
                     .then(
                         if (!vacancyViewModel.isEditMode)
                             Modifier.pullRefresh(pullRefreshState)
@@ -134,24 +139,59 @@ fun VacancyPage(
                             Modifier
                     )
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(
-                        items = vacancyLectures,
-                        key = { it.item.id }
+                if (vacancyLectures.isEmpty()) {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        val lectureId = it.item.id
-                        VacancyListItem(
-                            lectureDataWithVacancy = it,
-                            editing = vacancyViewModel.isEditMode,
-                            checked = selectedLectures.contains(lectureId),
-                            onClick = {
-                                if (vacancyViewModel.isEditMode) {
-                                    vacancyViewModel.toggleLectureSelected(lectureId)
-                                }
-                            },
+                        Image(
+                            painter = painterResource(R.drawable.img_vacancy_empty),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(180.dp)
+                                .fillMaxSize()
                         )
+                        Margin(height = 14.dp)
+                        Row(
+                            modifier = Modifier
+                                .clicks { introDialogState = true },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            QuestionCircleIcon(
+                                modifier = Modifier.size(12.dp),
+                                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "자세히보기",
+                                textDecoration = TextDecoration.Underline,
+                                style = SNUTTTypography.subtitle2.copy(
+                                    fontSize = 12.sp,
+                                    color = SNUTTColors.DARKER_GRAY
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(
+                            items = vacancyLectures,
+                            key = { it.item.id }
+                        ) {
+                            val lectureId = it.item.id
+                            VacancyListItem(
+                                lectureDataWithVacancy = it,
+                                editing = vacancyViewModel.isEditMode,
+                                checked = selectedLectures.contains(lectureId),
+                                onClick = {
+                                    if (vacancyViewModel.isEditMode) {
+                                        vacancyViewModel.toggleLectureSelected(lectureId)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
                 PullRefreshIndicator(
@@ -238,8 +278,8 @@ fun VacancyPage(
                 elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
         }
-        if (showIntroDialog) {
-            VacancyIntroDialog(onDismiss = { showIntroDialog = false })
+        if (introDialogState) {
+            VacancyIntroDialog(onDismiss = { introDialogState = false })
         }
     }
 }

@@ -30,6 +30,8 @@ object SNUTTColors {
     val Colors.Gray10 @Composable get() = if (isLight) Color(0xffdadada) else Color(0xff505050)
     val Gray10 @Composable get() = MaterialTheme.colors.Gray10
 
+    val DARKER_GRAY @Composable get() = Color(0xff777777)
+
     val Red = Color(0xffe54459)
     val Orange = Color(0xfff58d3d)
     val Grass = Color(0xffa6d930)
