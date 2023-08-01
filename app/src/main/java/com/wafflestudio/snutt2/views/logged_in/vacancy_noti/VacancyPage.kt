@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -292,7 +293,7 @@ fun VacancyPage(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun VacancyIntroDialog(
     onDismiss: () -> Unit
@@ -307,15 +308,15 @@ fun VacancyIntroDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .height(320.dp)
-                    .background(SNUTTColors.White900)
-                    .padding(15.dp),
+                    .height(380.dp)
+                    .background(SNUTTColors.White900),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row {
                     Spacer(modifier = Modifier.weight(1f))
                     TipCloseIcon(
                         modifier = Modifier
+                            .padding(top = 24.dp, end = 24.dp)
                             .size(15.dp)
                             .clicks {
                                 onDismiss()
@@ -323,15 +324,16 @@ fun VacancyIntroDialog(
                         colorFilter = ColorFilter.tint(if (pagerState.currentPage != 3) SNUTTColors.VacancyGray else SNUTTColors.Black900)
                     )
                 }
-                Margin(height = 24.dp)
                 Box(
                     modifier = Modifier
+                        .padding(horizontal = 14.dp)
                         .weight(1f)
                         .fillMaxSize(),
                 ) {
                     if (pagerState.currentPage > 0) {
                         ArrowBackIcon(
                             modifier = Modifier
+                                .zIndex(1f)
                                 .align(Alignment.CenterStart)
                                 .size(40.dp)
                                 .clicks {
@@ -345,8 +347,9 @@ fun VacancyIntroDialog(
                     HorizontalPager(
                         count = 4,
                         modifier = Modifier
+                            .padding(horizontal = 12.dp)
                             .align(Alignment.Center)
-                            .width(250.dp),
+                            .fillMaxSize(),
                         state = pagerState,
                     ) { page ->
                         Image(
@@ -374,6 +377,7 @@ fun VacancyIntroDialog(
                     if (pagerState.currentPage < 3) {
                         RightArrowIcon(
                             modifier = Modifier
+                                .zIndex(1f)
                                 .align(Alignment.CenterEnd)
                                 .size(40.dp)
                                 .clicks {
@@ -388,6 +392,7 @@ fun VacancyIntroDialog(
                 Margin(height = 38.dp)
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
+                    modifier = Modifier.padding(bottom = 36.dp),
                     activeColor = when (pagerState.currentPage) {
                         0 -> SNUTTColors.Red
                         1 -> SNUTTColors.Grass
