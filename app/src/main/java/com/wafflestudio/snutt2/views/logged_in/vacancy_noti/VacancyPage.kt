@@ -147,7 +147,7 @@ fun VacancyPage(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.img_vacancy_empty),
+                            painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
                             contentDescription = null,
                             modifier = Modifier
                                 .height(180.dp)
