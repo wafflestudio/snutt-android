@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,7 +19,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -51,6 +56,7 @@ fun VacancyPage(
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val modalState = LocalModalState.current
+    val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
@@ -59,7 +65,19 @@ fun VacancyPage(
     val deleteEnabled by remember {
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
-    val density = LocalDensity.current
+    val transition = updateTransition(vacancyViewModel.isEditMode, label = "")
+    val contentOffset by transition.animateDp(label = "") { isEditMode ->
+        if (isEditMode) (-60).dp
+        else 0.dp
+    }
+    val contentHeight by transition.animateDp(label = "") { isEditMode ->
+        if (isEditMode) (LocalConfiguration.current.screenHeightDp - 56).dp
+        else (LocalConfiguration.current.screenHeightDp - 56 + 60).dp
+    }
+    val columnPadding by transition.animateDp(label = "") { isEditMode ->
+        if (isEditMode) 60.dp
+        else 0.dp
+    }
     var introDialogState by remember { mutableStateOf(vacancyViewModel.firstVacancyVisit.value) }
 
     val onBackPressed = {
@@ -81,10 +99,10 @@ fun VacancyPage(
         }
     }
 
-    Box(
-        modifier = Modifier.background(SNUTTColors.White900)
-    ) {
-        Column {
+    Box {
+        Column(
+            modifier = Modifier.background(SNUTTColors.White900)
+        ) {
             TopBar(
                 title = {
                     Text(
@@ -130,90 +148,88 @@ fun VacancyPage(
                     }
                 }
             )
-            Box(
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .then(
-                        if (vacancyViewModel.isEditMode.not())
-                            Modifier.pullRefresh(pullRefreshState)
-                        else
-                            Modifier
-                    )
+                    .wrapContentHeight(align = Alignment.Top, unbounded = true)
+                    .height(contentHeight)
             ) {
-                if (vacancyLectures.isEmpty()) {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Image(
-                            painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .height(180.dp)
-                                .fillMaxSize()
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .then(
+                            if (vacancyViewModel.isEditMode.not())
+                                Modifier.pullRefresh(pullRefreshState)
+                            else
+                                Modifier
                         )
-                        Margin(height = 14.dp)
-                        Row(
-                            modifier = Modifier
-                                .clicks { introDialogState = true },
-                            verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (vacancyLectures.isEmpty()) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            QuestionCircleIcon(
-                                modifier = Modifier.size(12.dp),
-                                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
+                            Image(
+                                painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(180.dp)
+                                    .fillMaxSize()
                             )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                text = "자세히보기",
-                                textDecoration = TextDecoration.Underline,
-                                style = SNUTTTypography.subtitle2.copy(
-                                    fontSize = 12.sp,
-                                    color = SNUTTColors.DARKER_GRAY
+                            Margin(height = 14.dp)
+                            Row(
+                                modifier = Modifier
+                                    .clicks { introDialogState = true },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                QuestionCircleIcon(
+                                    modifier = Modifier.size(12.dp),
+                                    colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
                                 )
-                            )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = "자세히보기",
+                                    textDecoration = TextDecoration.Underline,
+                                    style = SNUTTTypography.subtitle2.copy(
+                                        fontSize = 12.sp,
+                                        color = SNUTTColors.DARKER_GRAY
+                                    )
+                                )
+                            }
                         }
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(
-                            items = vacancyLectures,
-                            key = { it.item.id }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.matchParentSize()
                         ) {
-                            val lectureId = it.item.id
-                            VacancyListItem(
-                                lectureDataWithVacancy = it,
-                                editing = vacancyViewModel.isEditMode,
-                                checked = selectedLectures.contains(lectureId),
-                                onClick = {
-                                    if (vacancyViewModel.isEditMode) {
-                                        vacancyViewModel.toggleLectureSelected(lectureId)
-                                    }
-                                },
-                            )
+                            items(
+                                items = vacancyLectures,
+                                key = { it.item.id }
+                            ) {
+                                val lectureId = it.item.id
+                                VacancyListItem(
+                                    lectureDataWithVacancy = it,
+                                    editing = vacancyViewModel.isEditMode,
+                                    checked = selectedLectures.contains(lectureId),
+                                    onClick = {
+                                        if (vacancyViewModel.isEditMode) {
+                                            vacancyViewModel.toggleLectureSelected(lectureId)
+                                        }
+                                    },
+                                )
+                            }
                         }
                     }
+                    PullRefreshIndicator(
+                        refreshing = isRefreshing,
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
                 }
-                PullRefreshIndicator(
-                    refreshing = isRefreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter)
-                )
-            }
-            AnimatedVisibility(
-                visible = vacancyViewModel.isEditMode,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                enter = slideInVertically {
-                    with(density) { 60.dp.roundToPx() }
-                },
-                exit = slideOutVertically {
-                    with(density) { 60.dp.roundToPx() }
-                }
-            ) {
                 WebViewStyleButton(
+                    modifier = Modifier
+//                        .weight(1f)
+//                        .wrapContentHeight(align = Alignment.Top, unbounded = true)
+                        .fillMaxWidth(),
                     onClick = {
                         modalState.set(
                             title = context.getString(R.string.vacancy_delete_selected_title),
@@ -308,15 +324,16 @@ fun VacancyIntroDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .height(380.dp)
+                    .height(360.dp)
                     .background(SNUTTColors.White900),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row {
+                Row(
+                    modifier = Modifier.padding(24.dp)
+                ) {
                     Spacer(modifier = Modifier.weight(1f))
                     TipCloseIcon(
                         modifier = Modifier
-                            .padding(top = 24.dp, end = 24.dp)
                             .size(15.dp)
                             .clicks {
                                 onDismiss()
@@ -328,7 +345,6 @@ fun VacancyIntroDialog(
                     modifier = Modifier
                         .padding(horizontal = 14.dp)
                         .weight(1f)
-                        .fillMaxSize(),
                 ) {
                     if (pagerState.currentPage > 0) {
                         ArrowBackIcon(
@@ -370,7 +386,6 @@ fun VacancyIntroDialog(
                                     }
                                 }
                             ),
-                            modifier = Modifier.fillMaxSize(),
                             contentDescription = null
                         )
                     }
