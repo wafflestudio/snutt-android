@@ -8,9 +8,9 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -21,7 +21,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -66,12 +65,15 @@ fun VacancyPage(
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
     val transition = updateTransition(vacancyViewModel.isEditMode, label = "")
+    val collapsedContentHeight = (LocalConfiguration.current.screenHeightDp - 56).dp
+    val expandedContentHeight = (LocalConfiguration.current.screenHeightDp - 56 + 60).dp
     val contentHeight by transition.animateDp(label = "") { isEditMode -> // 리스트+삭제버튼 길이(topbar 56dp, 삭제버튼 60dp)
-        if (isEditMode) (LocalConfiguration.current.screenHeightDp - 56).dp
-        else (LocalConfiguration.current.screenHeightDp - 56 + 60).dp
+        if (isEditMode) collapsedContentHeight
+        else expandedContentHeight
     }
     val lazyListState = rememberLazyListState()
     var introDialogState by remember { mutableStateOf(vacancyViewModel.firstVacancyVisit.value) }
+    val scrollWithButtonAppearing by remember { derivedStateOf { vacancyViewModel.isEditMode && lazyListState.isScrolledToEnd() } }
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -89,6 +91,14 @@ fun VacancyPage(
     LaunchedEffect(Unit) {
         launchSuspendApi(apiOnProgress, apiOnError) {
             vacancyViewModel.getVacancyLectures()
+        }
+    }
+
+    LaunchedEffect(scrollWithButtonAppearing) {
+        while (lazyListState.layoutInfo.totalItemsCount > 0 && contentHeight > collapsedContentHeight) {
+            lazyListState.animateScrollToItem(
+                lazyListState.layoutInfo.totalItemsCount - 1
+            )
         }
     }
 
@@ -193,17 +203,7 @@ fun VacancyPage(
                     } else {
                         LazyColumn(
                             modifier = Modifier
-                                .matchParentSize()
-                                .onSizeChanged { // 리스트의 끝까지 스크롤한 상태에서 편집모드를 토글할 때 자동 스크롤
-                                    val lastItem = lazyListState.layoutInfo.visibleItemsInfo.last()
-                                    val gap = (lastItem.offset + lastItem.size) - lazyListState.layoutInfo.viewportEndOffset
-                                    if (lastItem.index == lazyListState.layoutInfo.totalItemsCount - 1 &&
-                                        lazyListState.isScrollInProgress.not() &&
-                                        gap > 0 && gap < with(density) { 40.dp.roundToPx() }
-                                    ) { // gap==0으로 하면 scrollBy가 끝난 후 gap>0이 되어 스크롤이 계속되지 않는다. 그렇다고 제한을 두지 않으면 스크롤이 마지막까지 가지 않았을 때도 자동 스크롤이 되어 어색한데, 그 적정선이 40dp인듯(실험적)
-                                        scope.launch { lazyListState.scrollBy(gap.toFloat()) }
-                                    }
-                                },
+                                .matchParentSize(),
                             state = lazyListState
                         ) {
                             items(
@@ -311,6 +311,11 @@ fun VacancyPage(
             )
         }
     }
+}
+
+fun LazyListState.isScrolledToEnd(): Boolean {
+    val lastVisibleItem = this.layoutInfo.visibleItemsInfo.last()
+    return lastVisibleItem.offset + lastVisibleItem.size == this.layoutInfo.viewportEndOffset
 }
 
 @OptIn(ExperimentalPagerApi::class)
