@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -73,7 +72,9 @@ fun VacancyPage(
     }
     val lazyListState = rememberLazyListState()
     var introDialogState by remember { mutableStateOf(vacancyViewModel.firstVacancyVisit.value) }
-    val scrollWithButtonAppearing by remember { derivedStateOf { vacancyViewModel.isEditMode && lazyListState.isScrolledToEnd() } }
+    val scrollWithButtonAppearing by remember {
+        derivedStateOf { vacancyViewModel.isEditMode && lazyListState.isScrolledToEnd() }
+    }
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -355,20 +356,6 @@ fun VacancyIntroDialog(
                         .padding(horizontal = 14.dp)
                         .weight(1f)
                 ) {
-                    if (pagerState.currentPage > 0) {
-                        ArrowBackIcon(
-                            modifier = Modifier
-                                .zIndex(1f)
-                                .align(Alignment.CenterStart)
-                                .size(40.dp)
-                                .clicks {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                    }
-                                },
-                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
-                        )
-                    }
                     HorizontalPager(
                         count = 4,
                         modifier = Modifier
@@ -398,10 +385,22 @@ fun VacancyIntroDialog(
                             contentDescription = null
                         )
                     }
+                    if (pagerState.currentPage > 0) {
+                        ArrowBackIcon(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .size(40.dp)
+                                .clicks {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                    }
+                                },
+                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
+                        )
+                    }
                     if (pagerState.currentPage < 3) {
                         RightArrowIcon(
                             modifier = Modifier
-                                .zIndex(1f)
                                 .align(Alignment.CenterEnd)
                                 .size(40.dp)
                                 .clicks {
