@@ -302,4 +302,6 @@
     <string name="vacancy_delete_selected">선택한 강의 삭제</string>
     <string name="vacancy_delete_selected_title">목록에서 삭제</string>
     <string name="vacancy_delete_selected_message">선택한 강의의 빈자리 알림을 해제하시겠습니까?</string>
+    <string name="vacancy_empty_detail">자세히 보기</string>
+    <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
 </resources>

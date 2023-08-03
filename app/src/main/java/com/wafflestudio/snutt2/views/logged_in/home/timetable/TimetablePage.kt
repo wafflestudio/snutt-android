@@ -164,7 +164,7 @@ fun VacancyBanner(
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                text = "여기를 눌러 빈자리 알림 서비스를 이용해보세요!",
+                text = stringResource(R.string.vacancy_banner_text),
                 style = SNUTTTypography.body2.copy(
                     color = SNUTTColors.AllWhite
                 )

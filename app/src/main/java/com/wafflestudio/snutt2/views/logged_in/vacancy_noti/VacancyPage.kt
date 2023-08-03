@@ -191,7 +191,7 @@ fun VacancyPage(
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    text = "자세히보기",
+                                    text = stringResource(R.string.vacancy_empty_detail),
                                     textDecoration = TextDecoration.Underline,
                                     style = SNUTTTypography.subtitle2.copy(
                                         fontSize = 12.sp,
