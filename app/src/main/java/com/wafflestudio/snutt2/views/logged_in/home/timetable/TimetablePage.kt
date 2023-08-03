@@ -151,13 +151,13 @@ fun VacancyBanner(
         modifier = modifier
             .fillMaxWidth()
             .height(36.dp)
-            .background(SNUTTColors.SNUTTVacancy)
+            .background(SNUTTColors.BannerBlue)
             .clicks { onClick() }
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RingingAlarmIcon(
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(22.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Row(
