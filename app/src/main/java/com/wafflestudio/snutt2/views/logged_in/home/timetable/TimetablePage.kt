@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -12,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
@@ -38,9 +41,11 @@ fun TimetablePage() {
     val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+    val shouldShowVacancyBanner by userViewModel.shouldShowVacancyBanner.collectAsState()
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
+    var bannerHeight by remember { mutableStateOf(0) }
 
     Column(Modifier.background(SNUTTColors.White900)) {
         TopBar(
@@ -57,7 +62,12 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
+                            showTitleChangeDialog(
+                                table.title,
+                                table.id,
+                                composableStates,
+                                tableListViewModel::changeTableName
+                            )
                         }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -90,18 +100,36 @@ fun TimetablePage() {
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {
-                            shareScreenshotFromView(view, context, topBarHeight, timetableHeight)
+                            shareScreenshotFromView(view, context, topBarHeight, if (shouldShowVacancyBanner) bannerHeight else 0, timetableHeight)
                         },
                 )
                 IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
                     BookmarkPageIcon(
                         modifier = centerAlignedModifier
                             .size(30.dp)
-                            .clicks { navController.navigate(NavigationDestination.Bookmark) { launchSingleTop = true } },
+                            .clicks {
+                                navController.navigate(NavigationDestination.Bookmark) {
+                                    launchSingleTop = true
+                                }
+                            },
                     )
                 }
             }
         )
+        if (shouldShowVacancyBanner) {
+            VacancyBanner(
+                onClick = {
+                    navController.navigate(NavigationDestination.VacancyNotification)
+                },
+                onClose = {
+                    scope.launch {
+                        userViewModel.closeVacancyBanner()
+                    }
+                },
+                modifier = Modifier
+                    .onGloballyPositioned { bannerHeight = it.size.height }
+            )
+        }
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -110,6 +138,55 @@ fun TimetablePage() {
         ) {
             TimeTable(selectedLecture = null)
         }
+    }
+}
+
+@Composable
+fun VacancyBanner(
+    onClick: () -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(36.dp)
+            .background(SNUTTColors.SNUTTVacancy)
+            .clicks { onClick() }
+            .padding(horizontal = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RingingAlarmIcon(
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Row(
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = "여기를 눌러 빈자리 알림 서비스를 이용해보세요!",
+                style = SNUTTTypography.body2.copy(
+                    color = SNUTTColors.AllWhite
+                )
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            Text(
+                text = "NEW",
+                style = SNUTTTypography.h5.copy(
+                    fontSize = 8.sp,
+                    color = SNUTTColors.AllWhite
+                )
+            )
+        }
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+        TipCloseIcon(
+            modifier = Modifier
+                .size(11.dp)
+                .clicks { onClose() },
+            colorFilter = ColorFilter.tint(SNUTTColors.AllWhite)
+        )
     }
 }
 

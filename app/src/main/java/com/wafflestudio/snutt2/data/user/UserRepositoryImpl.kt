@@ -13,6 +13,8 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,6 +41,8 @@ class UserRepositoryImpl @Inject constructor(
     override val compactMode = storage.compactMode.asStateFlow()
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
+
+    override val vacancyBannerCloseDate: StateFlow<String> = storage.vacancyBannerCloseDate.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -281,6 +285,10 @@ class UserRepositoryImpl @Inject constructor(
                 }
             )
         }
+    }
+
+    override suspend fun updateVacancyBannerCloseDate() {
+        storage.vacancyBannerCloseDate.update(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis()))
     }
 
     companion object {

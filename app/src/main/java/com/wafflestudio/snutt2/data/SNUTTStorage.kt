@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -158,6 +159,16 @@ class SNUTTStorage @Inject constructor(
             key = "first_vacancy_visit",
             type = Boolean::class.java,
             defaultValue = true
+        )
+    )
+
+    val vacancyBannerCloseDate = PrefValue<String>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "vacancy_banner_close_date",
+            type = String::class.java,
+            defaultValue = ""
         )
     )
 

@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
+import java.util.*
 
 interface UserRepository {
     val user: StateFlow<UserDto?>
@@ -18,6 +19,8 @@ interface UserRepository {
     val compactMode: StateFlow<Boolean>
 
     val firstBookmarkAlert: StateFlow<Boolean>
+
+    val vacancyBannerCloseDate: StateFlow<String>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -93,4 +96,6 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
+
+    suspend fun updateVacancyBannerCloseDate()
 }
