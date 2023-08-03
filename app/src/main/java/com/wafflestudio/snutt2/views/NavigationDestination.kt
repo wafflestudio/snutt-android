@@ -22,5 +22,5 @@ object NavigationDestination {
     const val ThemeModeSelect = "theme_mode_select"
     const val Bookmark = "bookmark"
     const val NetworkLog = "network_log"
-    const val VacancyNotification = "vacancy_notification"
+    const val VacancyNotification = "vacancy"
 }
