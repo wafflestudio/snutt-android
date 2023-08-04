@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -32,25 +31,25 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyItemScope.VacancyListItem(
-    lectureDataWithVacancy: DataWithState<LectureDto, Boolean>,
+    lectureDto: LectureDto,
     editing: Boolean = false,
     checked: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    val hasVacancy = lectureDataWithVacancy.state
-    val lectureTitle = lectureDataWithVacancy.item.course_title
+    val hasVacancy = lectureDto.wasFull
+    val lectureTitle = lectureDto.course_title
     val instructorCreditText = stringResource(
         R.string.search_result_item_instructor_credit_text,
-        lectureDataWithVacancy.item.instructor,
-        lectureDataWithVacancy.item.credit
+        lectureDto.instructor,
+        lectureDto.credit
     )
     val quotaText = stringResource(
         R.string.vacancy_item_quota_text,
-        lectureDataWithVacancy.item.registrationCount,
-        lectureDataWithVacancy.item.quota,
+        lectureDto.registrationCount,
+        lectureDto.quota,
     )
-    val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithVacancy.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithVacancy.item)
+    val tagText = SNUTTStringUtils.getLectureTagText(lectureDto)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDto)
     val backgroundColor = if (hasVacancy) SNUTTColors.VacancyRedBg else SNUTTColors.AllWhite
 
     Row(
@@ -147,7 +146,7 @@ fun LazyItemScope.VacancyListItem(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithVacancy.item),
+                        text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
                         style = SNUTTTypography.body2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

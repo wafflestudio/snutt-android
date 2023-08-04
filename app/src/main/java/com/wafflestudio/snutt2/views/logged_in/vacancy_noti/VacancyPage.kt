@@ -209,11 +209,11 @@ fun VacancyPage(
                         ) {
                             items(
                                 items = vacancyLectures,
-                                key = { it.item.id }
+                                key = { it.id }
                             ) {
-                                val lectureId = it.item.id
+                                val lectureId = it.id
                                 VacancyListItem(
-                                    lectureDataWithVacancy = it,
+                                    lectureDto = it,
                                     editing = vacancyViewModel.isEditMode,
                                     checked = selectedLectures.contains(lectureId),
                                     onClick = {

@@ -18,8 +18,8 @@ class VacancyViewModel @Inject constructor(
     private val vacancyRepository: VacancyRepository
 ) : ViewModel() {
     private val _vacancyLectures =
-        MutableStateFlow<List<DataWithState<LectureDto, Boolean>>>(listOf())
-    val vacancyLectures: StateFlow<List<DataWithState<LectureDto, Boolean>>> = _vacancyLectures
+        MutableStateFlow<List<LectureDto>>(listOf())
+    val vacancyLectures: StateFlow<List<LectureDto>> = _vacancyLectures
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
@@ -54,10 +54,7 @@ class VacancyViewModel @Inject constructor(
     suspend fun getVacancyLectures() {
         _vacancyLectures.emit(
             vacancyRepository.getVacancyLectures()
-                .map { lecture ->
-                    lecture.toDataWithState(lecture.registrationCount < lecture.quota)
-                }
-                .sortedByDescending { it.state }
+                .sortedByDescending { it.wasFull }
         )
     }
 
