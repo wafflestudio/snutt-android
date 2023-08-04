@@ -336,6 +336,19 @@ fun PeopleIcon(
 }
 
 @Composable
+fun ThickReviewIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_review_thick),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun SettingIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,

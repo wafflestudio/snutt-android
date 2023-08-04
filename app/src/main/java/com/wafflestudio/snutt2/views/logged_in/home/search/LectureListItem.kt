@@ -248,7 +248,7 @@ fun LazyItemScope.LectureListItem(
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ReviewIcon(
+                    ThickReviewIcon(
                         modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )

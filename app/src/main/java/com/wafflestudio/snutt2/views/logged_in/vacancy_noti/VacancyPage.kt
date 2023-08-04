@@ -326,6 +326,7 @@ fun VacancyIntroDialog(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
+    val width = (LocalConfiguration.current.screenWidthDp * 0.8).dp
     Dialog(
         onDismissRequest = { onDismiss() },
     ) {
@@ -334,12 +335,14 @@ fun VacancyIntroDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .height(360.dp)
+                    .width(width)
+                    .height(width * (640f / 600))
                     .background(SNUTTColors.White900),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     TipCloseIcon(
@@ -354,14 +357,13 @@ fun VacancyIntroDialog(
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 14.dp)
-                        .weight(1f)
                 ) {
                     HorizontalPager(
                         count = 4,
                         modifier = Modifier
-                            .padding(horizontal = 12.dp)
+                            .padding(horizontal = 13.dp)
                             .align(Alignment.Center)
-                            .fillMaxSize(),
+                            .fillMaxWidth(),
                         state = pagerState,
                     ) { page ->
                         Image(
@@ -382,14 +384,15 @@ fun VacancyIntroDialog(
                                     }
                                 }
                             ),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.offset(y = (-7).dp)
                         )
                     }
                     if (pagerState.currentPage > 0) {
                         ArrowBackIcon(
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
-                                .size(40.dp)
+                                .size(30.dp)
                                 .clicks {
                                     scope.launch {
                                         pagerState.animateScrollToPage(pagerState.currentPage - 1)
@@ -402,7 +405,7 @@ fun VacancyIntroDialog(
                         RightArrowIcon(
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
-                                .size(40.dp)
+                                .size(30.dp)
                                 .clicks {
                                     scope.launch {
                                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
@@ -412,7 +415,7 @@ fun VacancyIntroDialog(
                         )
                     }
                 }
-                Margin(height = 38.dp)
+//                Margin(height = 38.dp)
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
                     modifier = Modifier.padding(bottom = 36.dp),
