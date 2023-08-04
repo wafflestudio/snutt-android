@@ -96,7 +96,7 @@ fun VacancyPage(
     }
 
     LaunchedEffect(scrollWithButtonAppearing) {
-        while (lazyListState.layoutInfo.totalItemsCount > 0 && contentHeight > collapsedContentHeight) {
+        while (scrollWithButtonAppearing && lazyListState.layoutInfo.totalItemsCount > 0 && contentHeight > collapsedContentHeight) {
             lazyListState.animateScrollToItem(
                 lazyListState.layoutInfo.totalItemsCount - 1
             )
