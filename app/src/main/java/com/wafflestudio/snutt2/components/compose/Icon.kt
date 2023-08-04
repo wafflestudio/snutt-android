@@ -319,6 +319,23 @@ fun ReviewIcon(
 }
 
 @Composable
+fun PeopleIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_people_selected
+            else R.drawable.ic_people_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun SettingIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,

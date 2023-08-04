@@ -75,6 +75,22 @@ internal fun BottomNavigation(
                 .weight(1f)
                 .fillMaxHeight(),
             onClick = {
+                onUpdatePageState(HomeItem.Friends)
+            },
+        ) {
+            PeopleIcon(
+                modifier = Modifier.size(30.dp),
+                isSelected = pageState is HomeItem.Friends,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
+        }
+
+        BorderButton(
+            color = SNUTTColors.White900,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            onClick = {
                 onUpdatePageState(HomeItem.Settings)
             },
         ) {
