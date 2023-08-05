@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -40,8 +41,11 @@ fun FriendsPage() {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "comming soon",
-                style = SNUTTTypography.h3,
+                text = "COMMING SOON",
+                letterSpacing = 4.sp,
+                style = SNUTTTypography.body1.copy(
+                    fontSize = 20.sp
+                ),
                 modifier = Modifier.align(Alignment.Center)
             )
         }
