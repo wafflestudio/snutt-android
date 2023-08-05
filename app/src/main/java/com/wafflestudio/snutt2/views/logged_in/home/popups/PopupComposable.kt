@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +22,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
+    val imageWidth = (LocalConfiguration.current.screenWidthDp * 0.8).dp
     Box(
         modifier = Modifier
             .zIndex(2f)
@@ -32,17 +34,13 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.width(230.dp)
+            modifier = Modifier.width(imageWidth)
         ) {
             AsyncImage(
                 model = url,
                 contentDescription = "",
                 error = painterResource(id = R.drawable.img_reviews_coming_soon),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(280.dp)
-                    .background(SNUTTColors.White900)
+                contentScale = ContentScale.FillWidth,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
