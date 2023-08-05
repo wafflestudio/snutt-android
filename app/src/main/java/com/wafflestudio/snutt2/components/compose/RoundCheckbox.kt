@@ -41,9 +41,7 @@ fun RoundCheckbox(
             .border(width = 2.dp, color = animatedBorderColor, shape = CircleShape)
             .background(animatedBgColor)
             .clicks {
-                if (onCheckedChange != null) {
-                    onCheckedChange(!checked)
-                }
+                onCheckedChange?.invoke(checked.not())
             },
         contentAlignment = Alignment.Center
     ) {
