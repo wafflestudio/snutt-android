@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -189,7 +190,7 @@ fun SettingsPage(
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
-                isCritical = true,
+                titleColor = SNUTTColors.Red,
                 onClick = {
                     logoutDialogState = true
                 }
@@ -260,8 +261,8 @@ fun SettingColumn(
 fun SettingItem(
     title: String,
     modifier: Modifier = Modifier,
+    titleColor: Color = SNUTTColors.Black900,
     leadingIcon: @Composable () -> Unit = {},
-    isCritical: Boolean = false,
     isNew: Boolean = false,
     hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -280,7 +281,7 @@ fun SettingItem(
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(
-                color = if (isCritical) SNUTTColors.Red else SNUTTColors.Black900 // TODO: Red 색 조정
+                color = titleColor
             )
         )
         if (isNew) {

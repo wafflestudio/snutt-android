@@ -172,7 +172,7 @@ fun UserConfigPage() {
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_user_config_leave),
-            isCritical = true,
+            titleColor = SNUTTColors.Red,
             onClick = { leaveDialogState = true }
         )
     }
