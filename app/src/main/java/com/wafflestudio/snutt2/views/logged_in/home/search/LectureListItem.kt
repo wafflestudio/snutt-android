@@ -111,14 +111,16 @@ fun LazyItemScope.LectureListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = lectureTitle,
-                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite),
+                    color = SNUTTColors.AllWhite,
+                    style = SNUTTTypography.h4,
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = instructorCreditText,
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.AllWhite),
+                    color = SNUTTColors.AllWhite,
+                    style = SNUTTTypography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -131,10 +133,9 @@ fun LazyItemScope.LectureListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = tagText,
-                    style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.AllWhite,
-                        fontWeight = FontWeight.Light
-                    ),
+                    color = SNUTTColors.AllWhite,
+                    fontWeight = FontWeight.Light,
+                    style = SNUTTTypography.body2,
                     maxLines = 1,
                 )
             }
@@ -193,103 +194,83 @@ fun LazyItemScope.LectureListItem(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clicks {
-                            lectureDetailViewModel.initializeEditingLectureDetail(
-                                lectureDataWithState.item, ModeType.Viewing
+                LectureListItemButton(
+                    title = stringResource(R.string.search_result_item_detail_button),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        lectureDetailViewModel.initializeEditingLectureDetail(
+                            lectureDataWithState.item, ModeType.Viewing
+                        )
+                        bottomSheet.setSheetContent {
+                            LectureDetailPage(
+                                searchViewModel = searchViewModel,
+                                onCloseViewMode = { scope ->
+                                    scope.launch { bottomSheet.hide() }
+                                }
                             )
-                            bottomSheet.setSheetContent {
-                                LectureDetailPage(
-                                    searchViewModel = searchViewModel,
-                                    onCloseViewMode = { scope ->
-                                        scope.launch { bottomSheet.hide() }
-                                    }
-                                )
-                            }
-                            scope.launch { bottomSheet.show() }
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        }
+                        scope.launch { bottomSheet.show() }
+                    }
                 ) {
                     DetailIcon(
                         modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
-                    Text(
-                        text = stringResource(R.string.search_result_item_detail_button),
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.AllWhite,
-                            fontSize = 10.sp
-                        )
-                    )
                 }
                 Spacer(modifier = Modifier.weight(0.3f))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clicks {
-                            verifyEmailBeforeApi(
-                                composableStates,
-                                api = {
-                                    val url =
-                                        searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
-                                    openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
-                                },
-                                onUnverified = {
-                                    if (isBookmarkPage) navController.navigateAsOrigin(
-                                        NavigationDestination.Home
-                                    )
-                                    pageController.update(HomeItem.Review())
-                                }
-                            )
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                LectureListItemButton(
+                    title = stringResource(R.string.search_result_item_review_button),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        verifyEmailBeforeApi(
+                            composableStates,
+                            api = {
+                                val url =
+                                    searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
+                            },
+                            onUnverified = {
+                                if (isBookmarkPage) navController.navigateAsOrigin(
+                                    NavigationDestination.Home
+                                )
+                                pageController.update(HomeItem.Review())
+                            }
+                        )
+                    }
                 ) {
                     ThickReviewIcon(
                         modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
-                    Text(
-                        text = stringResource(R.string.search_result_item_review_button),
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.AllWhite,
-                            fontSize = 10.sp
-                        )
-                    )
                 }
                 Spacer(modifier = Modifier.weight(0.3f))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clicks {
-                            scope.launch {
-                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                    if (isBookmarkPage) {
-                                        showDeleteBookmarkDialog(composableStates, onConfirm = {
-                                            searchViewModel.deleteBookmark(lectureDataWithState.item)
-                                            searchViewModel.toggleLectureSelection(
-                                                lectureDataWithState.item
-                                            )
-                                        })
+                LectureListItemButton(
+                    title = stringResource(R.string.search_result_item_bookmark_button),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                if (isBookmarkPage) {
+                                    showDeleteBookmarkDialog(composableStates, onConfirm = {
+                                        searchViewModel.deleteBookmark(lectureDataWithState.item)
+                                        searchViewModel.toggleLectureSelection(
+                                            lectureDataWithState.item
+                                        )
+                                    })
+                                } else {
+                                    if (bookmarked) {
+                                        searchViewModel.deleteBookmark(lectureDataWithState.item)
                                     } else {
-                                        if (bookmarked) {
-                                            searchViewModel.deleteBookmark(lectureDataWithState.item)
-                                        } else {
-                                            searchViewModel.addBookmark(lectureDataWithState.item)
-                                            if (userViewModel.firstBookmarkAlert.value) {
-                                                userViewModel.setFirstBookmarkAlertShown()
-                                                context.toast(context.getString(R.string.bookmark_first_alert_message))
-                                            }
+                                        searchViewModel.addBookmark(lectureDataWithState.item)
+                                        if (userViewModel.firstBookmarkAlert.value) {
+                                            userViewModel.setFirstBookmarkAlertShown()
+                                            context.toast(context.getString(R.string.bookmark_first_alert_message))
                                         }
                                     }
                                 }
                             }
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        }
+                    }
                 ) {
                     BookmarkIcon(
                         modifier = Modifier
@@ -297,89 +278,71 @@ fun LazyItemScope.LectureListItem(
                         marked = bookmarked,
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
-                    Text(
-                        text = stringResource(R.string.search_result_item_bookmark_button),
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.AllWhite,
-                            fontSize = 10.sp
-                        )
-                    )
                 }
                 Spacer(modifier = Modifier.weight(0.3f))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clicks {
-                            scope.launch {
-                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                    if (vacancyRegistered) {
-                                        vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
-                                    } else {
-                                        vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
-                                    }
+                LectureListItemButton(
+                    title = stringResource(R.string.search_result_item_vacancy_button),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                if (vacancyRegistered) {
+                                    vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
+                                } else {
+                                    vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
                                 }
                             }
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        }
+                    }
                 ) {
                     RingingAlarmIcon(
                         modifier = Modifier.size(23.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                         marked = vacancyRegistered
                     )
-                    Text(
-                        text = stringResource(R.string.search_result_item_vacancy_button),
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.AllWhite,
-                            fontSize = 10.sp
-                        )
-                    )
                 }
                 Spacer(modifier = Modifier.weight(0.3f))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clicks {
-                            if (contained) {
-                                scope.launch(Dispatchers.IO) {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        timetableViewModel.removeLecture(lectureDataWithState.item)
-                                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-                                        tableListViewModel.fetchTableMap()
-                                    }
+                LectureListItemButton(
+                    title = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(R.string.search_result_item_add_button),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        if (contained) {
+                            scope.launch(Dispatchers.IO) {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    timetableViewModel.removeLecture(lectureDataWithState.item)
+                                    searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                    tableListViewModel.fetchTableMap()
                                 }
-                            } else {
-                                checkLectureOverlap(
-                                    composableStates,
-                                    api = {
-                                        timetableViewModel.addLecture(
-                                            lecture = lectureDataWithState.item,
-                                            is_force = false
-                                        )
-                                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-                                        tableListViewModel.fetchTableMap()
-                                    },
-                                    onLectureOverlap = { message ->
-                                        showLectureOverlapDialog(
-                                            composableStates,
-                                            message,
-                                            forceAddApi = {
-                                                timetableViewModel.addLecture(
-                                                    lecture = lectureDataWithState.item,
-                                                    is_force = true
-                                                )
-                                                searchViewModel.toggleLectureSelection(
-                                                    lectureDataWithState.item
-                                                )
-                                            }
-                                        )
-                                    }
-                                )
                             }
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        } else {
+                            checkLectureOverlap(
+                                composableStates,
+                                api = {
+                                    timetableViewModel.addLecture(
+                                        lecture = lectureDataWithState.item,
+                                        is_force = false
+                                    )
+                                    searchViewModel.toggleLectureSelection(lectureDataWithState.item)
+                                    tableListViewModel.fetchTableMap()
+                                },
+                                onLectureOverlap = { message ->
+                                    showLectureOverlapDialog(
+                                        composableStates,
+                                        message,
+                                        forceAddApi = {
+                                            timetableViewModel.addLecture(
+                                                lecture = lectureDataWithState.item,
+                                                is_force = true
+                                            )
+                                            searchViewModel.toggleLectureSelection(
+                                                lectureDataWithState.item
+                                            )
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    }
                 ) {
                     if (contained) {
                         RemoveCircleIcon(
@@ -392,18 +355,35 @@ fun LazyItemScope.LectureListItem(
                             colorFilter = ColorFilter.tint(SNUTTColors.AllWhite)
                         )
                     }
-                    Text(
-                        text = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(
-                            R.string.search_result_item_add_button
-                        ),
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.AllWhite,
-                            fontSize = 10.sp
-                        )
-                    )
                 }
             }
         }
         Divider(color = SNUTTColors.White400)
+    }
+}
+
+@Composable
+fun LectureListItemButton(
+    title: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .clicks {
+                onClick()
+            },
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        content()
+        Text(
+            text = title,
+            style = SNUTTTypography.body2.copy(
+                color = SNUTTColors.AllWhite,
+                fontSize = 10.sp
+            )
+        )
     }
 }
