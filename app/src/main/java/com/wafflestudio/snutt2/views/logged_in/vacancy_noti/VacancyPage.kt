@@ -245,9 +245,9 @@ fun VacancyPage(
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         vacancyViewModel.deleteSelectedLectures()
                                         vacancyViewModel.toggleEditMode()
+                                        modalState.hide()
                                     }
                                 }
-                                modalState.hide()
                             },
                             content = {
                                 Text(
@@ -262,9 +262,8 @@ fun VacancyPage(
                 ) {
                     Text(
                         text = stringResource(R.string.vacancy_delete_selected),
-                        style = SNUTTTypography.h3.copy(
-                            color = SNUTTColors.AllWhite,
-                        )
+                        color = SNUTTColors.AllWhite,
+                        style = SNUTTTypography.h3,
                     )
                 }
             }
