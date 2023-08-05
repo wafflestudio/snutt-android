@@ -71,7 +71,7 @@ fun TimetableConfigPage() {
             title = stringResource(R.string.timetable_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
         )
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_timetable_config_force_fit),
             hasNextPage = false,

@@ -105,7 +105,7 @@ fun UserConfigPage() {
             title = stringResource(R.string.user_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() }
         )
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         SettingColumn {
             if (user?.localId.isNullOrEmpty().not()) {
                 SettingItem(title = stringResource(R.string.sign_in_id_title)) {
@@ -127,7 +127,7 @@ fun UserConfigPage() {
                 )
             }
         }
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         if (facebookConnected) {
             SettingColumn {
                 SettingItem(
@@ -157,7 +157,7 @@ fun UserConfigPage() {
                 }
             )
         }
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_app_report_email),
             hasNextPage = false
@@ -169,7 +169,7 @@ fun UserConfigPage() {
                 )
             )
         }
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_user_config_leave),
             isCritical = true,

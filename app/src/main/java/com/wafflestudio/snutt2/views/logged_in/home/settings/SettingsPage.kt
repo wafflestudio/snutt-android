@@ -95,10 +95,8 @@ fun SettingsPage(
                     )
                 }
             )
-            Margin(height = 15.dp)
-            SettingColumn(
-                title = "디스플레이",
-            ) {
+            Margin(height = 10.dp)
+            SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
                     onClick = {
@@ -116,7 +114,6 @@ fun SettingsPage(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
                     onClick = {
@@ -126,10 +123,8 @@ fun SettingsPage(
                     }
                 )
             }
-            Margin(height = 15.dp)
-            SettingColumn(
-                title = "서비스"
-            ) {
+            Margin(height = 10.dp)
+            SettingColumn {
                 SettingItem(
                     title = "빈자리 알림",
                     isNew = true,
@@ -137,10 +132,8 @@ fun SettingsPage(
                     onClick = { } // TODO: 빈자리 알림으로 navigate
                 )
             }
-            Margin(height = 15.dp)
-            SettingColumn(
-                title = "정보 및 제안"
-            ) {
+            Margin(height = 10.dp)
+            SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_version_info),
                     hasNextPage = false
@@ -150,7 +143,6 @@ fun SettingsPage(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
                     onClick = {
@@ -169,8 +161,7 @@ fun SettingsPage(
                     )
                 }
             )
-
-            Margin(height = 15.dp)
+            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
@@ -178,7 +169,6 @@ fun SettingsPage(
                         showLicenseDialog(context)
                     }
                 )
-//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
                     onClick = {
@@ -187,7 +177,6 @@ fun SettingsPage(
                         )
                     }
                 )
-//                SettingDivider()
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
                     onClick = {
@@ -197,7 +186,7 @@ fun SettingsPage(
                     }
                 )
             }
-            Margin(height = 15.dp)
+            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
                 isCritical = true,
@@ -207,7 +196,7 @@ fun SettingsPage(
             )
 
             if (BuildConfig.DEBUG) {
-                Margin(height = 15.dp)
+                Margin(height = 10.dp)
                 SettingItem(
                     title = "네트워크 로그",
                     onClick = {
@@ -243,7 +232,7 @@ fun SettingsPage(
 fun SettingColumn(
     modifier: Modifier = Modifier,
     title: String = "",
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier

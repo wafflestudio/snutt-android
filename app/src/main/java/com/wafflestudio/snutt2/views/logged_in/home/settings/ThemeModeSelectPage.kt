@@ -37,7 +37,7 @@ fun ColorModeSelectPage() {
         ) {
             navController.popBackStack()
         }
-        Margin(height = 15.dp)
+        Margin(height = 10.dp)
         SettingColumn {
             SettingItem(
                 title = stringResource(R.string.settings_select_color_mode_auto),
