@@ -125,7 +125,11 @@ fun SettingsPage(
                     title = "빈자리 알림",
                     isNew = true,
                     hasNextPage = true,
-                    onClick = { } // TODO: 빈자리 알림으로 navigate
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.VacancyNotification
+                        )
+                    }
                 )
             }
             Margin(height = 10.dp)
