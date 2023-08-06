@@ -38,6 +38,7 @@ import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
+import com.wafflestudio.snutt2.components.compose.RNIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.TrashIcon
@@ -129,7 +130,7 @@ fun TimetablePage() {
                             }
                         },
                 )
-                LectureListIcon(
+                RNIcon(
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {
