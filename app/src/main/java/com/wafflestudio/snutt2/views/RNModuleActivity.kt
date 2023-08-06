@@ -8,6 +8,7 @@ import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
+import com.wafflestudio.snutt2.R
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -34,7 +35,10 @@ class RNModuleActivity : ReactActivity() {
                     .build()
 
                 rootView = ReactRootView(this@RNModuleActivity)
-                rootView?.startReactApplication(reactInstanceManager, "friends", Bundle().apply { putString("token", rnViewModel.token) })
+                rootView?.startReactApplication(reactInstanceManager, "friends", Bundle().apply {
+                    putString("x-access-token", rnViewModel.token)
+                    putString("x-access-apikey", applicationContext.getString(R.string.api_key))
+                })
                 setContentView(rootView)
             }
         }
