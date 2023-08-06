@@ -40,6 +40,6 @@ class VacancyRepositoryImpl @Inject constructor(
     }
 
     override fun isVacancyBannerEnabled(): Boolean {
-        return storage.remoteConfig.get().value?.vacancyBannerOn ?: false
+        return storage.remoteConfig.get().value?.vacancyBannerConfig?.visible ?: false
     }
 }
