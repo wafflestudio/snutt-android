@@ -40,6 +40,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
+    override val rnConfig: StateFlow<Boolean>
+        get() = storage.rnTempConfig.asStateFlow()
+
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
@@ -266,6 +269,14 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun setRNConfig(state: Boolean) {
+        storage.rnTempConfig.update(state)
+    }
+
+    override suspend fun rnUrl(): String {
+        return api._getRemoteConfig().friends?.src?.get("android") ?: ""
     }
 
     private suspend fun getFirebaseToken(): String {

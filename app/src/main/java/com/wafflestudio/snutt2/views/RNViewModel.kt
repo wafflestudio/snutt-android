@@ -28,9 +28,15 @@ class RNViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val bundleFile = File(application.applicationContext.cacheDir, "android.jsbundle")
-            if (bundleFile.canRead().not()) {
-                val urlConnection = URL("https://snutt-rn-assets.s3.ap-northeast-2.amazonaws.com/android.jsbundle").openConnection() as HttpURLConnection
+            try {
+                val bundleFile = File(application.applicationContext.cacheDir, "android.jsbundle")
+
+                val url = if (userRepository.rnConfig.value) {
+                    "http://localhost:8081/index.bundle?platform=android"
+                } else {
+                    userRepository.rnUrl()
+                }
+                val urlConnection = URL(url).openConnection() as HttpURLConnection
                 urlConnection.connect()
                 val inputStream = urlConnection.inputStream
 
@@ -44,8 +50,9 @@ class RNViewModel @Inject constructor(
                 outputStream.close()
                 inputStream.close()
                 urlConnection.disconnect()
+                _done.postValue(true)
+            } catch (e: Exception) {
             }
-            _done.postValue(true)
         }
     }
 }
