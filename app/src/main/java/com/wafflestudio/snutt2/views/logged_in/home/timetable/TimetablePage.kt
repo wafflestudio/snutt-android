@@ -64,12 +64,7 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(
-                                table.title,
-                                table.id,
-                                composableStates,
-                                tableListViewModel::changeTableName
-                            )
+                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
                         }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
