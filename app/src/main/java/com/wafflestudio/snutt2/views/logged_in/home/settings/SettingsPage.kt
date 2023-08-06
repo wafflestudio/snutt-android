@@ -25,7 +25,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import de.psdev.licensesdialog.LicensesDialog

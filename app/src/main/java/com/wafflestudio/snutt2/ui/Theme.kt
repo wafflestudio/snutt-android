@@ -33,10 +33,10 @@ private val DarkThemeColors @Composable get() = darkColors(
 )
 
 enum class ThemeMode {
-    DARK, LIGHT, AUTO,;
+    DARK, LIGHT, AUTO, ;
 
     override fun toString(): String {
-        return when(this) {
+        return when (this) {
             DARK -> "다크"
             LIGHT -> "라이트"
             AUTO -> "자동"
