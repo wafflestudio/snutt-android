@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -13,8 +14,6 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,7 +41,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
-    override val vacancyBannerCloseDate: StateFlow<String> = storage.vacancyBannerCloseDate.asStateFlow()
+    override val remoteConfig: StateFlow<RemoteConfigDto?> = storage.remoteConfig.asStateFlow().unwrap(GlobalScope)
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -287,8 +286,9 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateVacancyBannerCloseDate() {
-        storage.vacancyBannerCloseDate.update(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis()))
+    override suspend fun fetchRemoteConfig() {
+        val response = api._getRemoteConfig()
+        storage.remoteConfig.update(response.toOptional())
     }
 
     companion object {

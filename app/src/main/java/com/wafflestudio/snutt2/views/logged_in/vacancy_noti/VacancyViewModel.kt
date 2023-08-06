@@ -9,6 +9,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +29,27 @@ class VacancyViewModel @Inject constructor(
     val selectedLectures = mutableStateListOf<String>()
 
     val firstVacancyVisit = vacancyRepository.firstVacancyVisit
+
+    val shouldShowVacancyBanner = vacancyRepository.vacancyBannerCloseDate.map { date ->
+        if (vacancyRepository.isVacancyBannerEnabled()) {
+            if (date.isEmpty()) {
+                true
+            } else {
+                val now = Calendar.getInstance()
+                now.time = Date()
+                now.set(Calendar.HOUR_OF_DAY, 0)
+                now.set(Calendar.MINUTE, 0)
+                now.set(Calendar.SECOND, 0)
+                now.set(Calendar.MILLISECOND, 0)
+
+                val last = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+
+                now.time.after(last)
+            }
+        } else {
+            false
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     @Inject
     lateinit var apiOnError: ApiOnError
@@ -89,5 +112,9 @@ class VacancyViewModel @Inject constructor(
         if (firstVacancyVisit.value) {
             vacancyRepository.setVacancyVisited()
         }
+    }
+
+    suspend fun closeVacancyBanner() {
+        vacancyRepository.updateVacancyBannerCloseDate()
     }
 }

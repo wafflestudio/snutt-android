@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
@@ -10,7 +9,6 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -31,23 +29,6 @@ class UserViewModel @Inject constructor(
     val compactMode: StateFlow<Boolean> = userRepository.compactMode
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
-
-    val shouldShowVacancyBanner = userRepository.vacancyBannerCloseDate.map {
-        if (it.isEmpty()) {
-            true
-        } else {
-            val now = Calendar.getInstance()
-            now.time = Date()
-            now.set(Calendar.HOUR_OF_DAY, 0)
-            now.set(Calendar.MINUTE, 0)
-            now.set(Calendar.SECOND, 0)
-            now.set(Calendar.MILLISECOND, 0)
-
-            val last = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it)
-
-            now.time.after(last)
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
@@ -178,9 +159,5 @@ class UserViewModel @Inject constructor(
 
     suspend fun setFirstBookmarkAlertShown() {
         userRepository.setFirstBookmarkAlertShown()
-    }
-
-    suspend fun closeVacancyBanner() {
-        userRepository.updateVacancyBannerCloseDate()
     }
 }

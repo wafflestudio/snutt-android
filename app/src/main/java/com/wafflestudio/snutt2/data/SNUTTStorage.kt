@@ -2,15 +2,11 @@ package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -169,6 +165,16 @@ class SNUTTStorage @Inject constructor(
             key = "vacancy_banner_close_date",
             type = String::class.java,
             defaultValue = ""
+        )
+    )
+
+    val remoteConfig = PrefValue<Optional<RemoteConfigDto>>(
+        prefContext,
+        PrefOptionalValueMetaData(
+            domain = DOMAIN_SCOPE_PERMANENT,
+            key = "remote_config",
+            type = RemoteConfigDto::class.java,
+            defaultValue = Optional.empty()
         )
     )
 

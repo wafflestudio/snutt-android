@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
+import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
-import java.util.*
 
 interface UserRepository {
     val user: StateFlow<UserDto?>
@@ -20,7 +20,7 @@ interface UserRepository {
 
     val firstBookmarkAlert: StateFlow<Boolean>
 
-    val vacancyBannerCloseDate: StateFlow<String>
+    val remoteConfig: StateFlow<RemoteConfigDto?>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -97,5 +97,5 @@ interface UserRepository {
 
     suspend fun setFirstBookmarkAlertShown()
 
-    suspend fun updateVacancyBannerCloseDate()
+    suspend fun fetchRemoteConfig()
 }

@@ -251,4 +251,7 @@ interface SNUTTRestApi {
     suspend fun _deleteVacancyLecture(
         @Path("lectureId") lectureId: String
     )
+
+    @GET("/v1/configs")
+    suspend fun _getRemoteConfig(): GetRemoteConfigResponse
 }

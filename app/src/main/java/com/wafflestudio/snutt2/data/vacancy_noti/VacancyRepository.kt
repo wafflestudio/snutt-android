@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface VacancyRepository {
     val firstVacancyVisit: StateFlow<Boolean>
 
+    val vacancyBannerCloseDate: StateFlow<String>
+
     suspend fun getVacancyLectures(): List<LectureDto>
 
     suspend fun addVacancyLecture(lectureId: String)
@@ -13,4 +15,8 @@ interface VacancyRepository {
     suspend fun removeVacancyLecture(lectureId: String)
 
     suspend fun setVacancyVisited()
+
+    suspend fun updateVacancyBannerCloseDate()
+
+    fun isVacancyBannerEnabled(): Boolean
 }

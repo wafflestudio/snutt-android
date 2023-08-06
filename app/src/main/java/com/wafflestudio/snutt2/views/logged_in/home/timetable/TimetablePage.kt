@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,9 +40,10 @@ fun TimetablePage() {
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
+    val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
-    val shouldShowVacancyBanner by userViewModel.shouldShowVacancyBanner.collectAsState()
+    val shouldShowVacancyBanner by vacancyViewModel.shouldShowVacancyBanner.collectAsState()
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
@@ -100,7 +102,13 @@ fun TimetablePage() {
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {
-                            shareScreenshotFromView(view, context, topBarHeight, if (shouldShowVacancyBanner) bannerHeight else 0, timetableHeight)
+                            shareScreenshotFromView(
+                                view,
+                                context,
+                                topBarHeight,
+                                if (shouldShowVacancyBanner) bannerHeight else 0,
+                                timetableHeight
+                            )
                         },
                 )
                 IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
@@ -123,7 +131,7 @@ fun TimetablePage() {
                 },
                 onClose = {
                     scope.launch {
-                        userViewModel.closeVacancyBanner()
+                        vacancyViewModel.closeVacancyBanner()
                     }
                 },
                 modifier = Modifier
