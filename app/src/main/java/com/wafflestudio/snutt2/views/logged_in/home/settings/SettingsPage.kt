@@ -107,11 +107,7 @@ fun SettingsPage(
                     }
                 ) {
                     Text(
-                        text = when (themeMode) {
-                            ThemeMode.DARK -> "다크"
-                            ThemeMode.LIGHT -> "라이트"
-                            ThemeMode.AUTO -> "자동"
-                        },
+                        text = themeMode.toString(),
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }

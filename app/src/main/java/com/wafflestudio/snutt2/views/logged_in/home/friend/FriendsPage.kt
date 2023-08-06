@@ -43,20 +43,26 @@ fun FriendsPage() {
             Column(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(15.dp)
+                verticalArrangement = Arrangement.spacedBy(30.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.img_reviews_coming_soon),
                     contentDescription = "",
                     modifier = Modifier.size(120.dp)
                 )
-                Text(
-                    text = "COMING SOON",
-                    letterSpacing = 4.sp,
-                    style = SNUTTTypography.body1.copy(
-                        fontSize = 20.sp
-                    ),
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Text(
+                        text = "친구기능",
+                        style = SNUTTTypography.h4,
+                    )
+                    Text(
+                        text = "(Coming Soon...)",
+                        style = SNUTTTypography.body1,
+                    )
+                }
             }
         }
     }
