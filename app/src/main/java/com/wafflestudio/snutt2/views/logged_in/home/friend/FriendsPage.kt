@@ -42,23 +42,25 @@ fun FriendsPage() {
             Column(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(30.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.img_reviews_coming_soon),
                     contentDescription = "",
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier.size(75.dp)
                 )
+                Spacer(modifier = Modifier.height(15.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Text(
-                        text = "친구기능",
-                        style = SNUTTTypography.h4,
+                        text = "친구기능 개발 중...",
+                        color = SNUTTColors.Black500,
+                        style = SNUTTTypography.h3,
                     )
+                    Spacer(modifier = Modifier.height(3.dp))
                     Text(
-                        text = "(Coming Soon...)",
+                        text = "Coming Soon!",
+                        color = SNUTTColors.Black500,
                         style = SNUTTTypography.body1,
                     )
                 }
