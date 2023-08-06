@@ -168,16 +168,6 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
-    val remoteConfig = PrefValue<Optional<RemoteConfigDto>>(
-        prefContext,
-        PrefOptionalValueMetaData(
-            domain = DOMAIN_SCOPE_PERMANENT,
-            key = "remote_config",
-            type = RemoteConfigDto::class.java,
-            defaultValue = Optional.empty()
-        )
-    )
-
     fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)

@@ -20,7 +20,7 @@ interface UserRepository {
 
     val firstBookmarkAlert: StateFlow<Boolean>
 
-    val remoteConfig: StateFlow<RemoteConfigDto?>
+    val remoteConfig: StateFlow<RemoteConfigDto>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)

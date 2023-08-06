@@ -141,6 +141,7 @@ class RootActivity : AppCompatActivity() {
         val navController = rememberAnimatedNavController()
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
+        val remoteConfig by homeViewModel.remoteConfig.collectAsState()
 
         val bottomSheet = bottomSheet()
         val dialogState = rememberModalState()
@@ -177,6 +178,7 @@ class RootActivity : AppCompatActivity() {
             LocalModalState provides dialogState,
             LocalCompactState provides compactMode,
             LocalBottomSheetState provides bottomSheet,
+            LocalRemoteConfig provides remoteConfig
         ) {
             AnimatedNavHost(
                 navController = navController,

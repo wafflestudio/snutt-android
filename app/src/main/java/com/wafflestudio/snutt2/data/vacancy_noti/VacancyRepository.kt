@@ -17,6 +17,4 @@ interface VacancyRepository {
     suspend fun setVacancyVisited()
 
     suspend fun updateVacancyBannerCloseDate()
-
-    fun isVacancyBannerEnabled(): Boolean
 }

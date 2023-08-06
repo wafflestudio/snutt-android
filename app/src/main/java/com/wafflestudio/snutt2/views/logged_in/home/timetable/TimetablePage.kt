@@ -37,13 +37,15 @@ fun TimetablePage() {
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
     val table = LocalTableState.current.table
+    val remoteConfig = LocalRemoteConfig.current
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
     val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
-    val shouldShowVacancyBanner by vacancyViewModel.shouldShowVacancyBanner.collectAsState()
+    val vacancyBannerOpened by vacancyViewModel.vacancyBannerOpened.collectAsState()
+    val shouldShowVacancyBanner = remoteConfig.vacancyBannerConfig.visible && vacancyBannerOpened
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }

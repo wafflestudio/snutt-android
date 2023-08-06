@@ -28,26 +28,23 @@ class VacancyViewModel @Inject constructor(
 
     val selectedLectures = mutableStateListOf<String>()
 
-    val firstVacancyVisit = vacancyRepository.firstVacancyVisit
+    val firstVacancyVisit
+        get() = vacancyRepository.firstVacancyVisit
 
-    val shouldShowVacancyBanner = vacancyRepository.vacancyBannerCloseDate.map { date ->
-        if (vacancyRepository.isVacancyBannerEnabled()) {
-            if (date.isEmpty()) {
-                true
-            } else {
-                val now = Calendar.getInstance()
-                now.time = Date()
-                now.set(Calendar.HOUR_OF_DAY, 0)
-                now.set(Calendar.MINUTE, 0)
-                now.set(Calendar.SECOND, 0)
-                now.set(Calendar.MILLISECOND, 0)
-
-                val last = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
-
-                now.time.after(last)
-            }
+    val vacancyBannerOpened = vacancyRepository.vacancyBannerCloseDate.map { date ->
+        if (date.isEmpty()) {
+            true
         } else {
-            false
+            val now = Calendar.getInstance()
+            now.time = Date()
+            now.set(Calendar.HOUR_OF_DAY, 0)
+            now.set(Calendar.MINUTE, 0)
+            now.set(Calendar.SECOND, 0)
+            now.set(Calendar.MILLISECOND, 0)
+
+            val last = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+
+            now.time.after(last)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 

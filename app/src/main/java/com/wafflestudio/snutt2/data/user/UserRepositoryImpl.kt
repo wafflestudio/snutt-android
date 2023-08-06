@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
-    override val remoteConfig: StateFlow<RemoteConfigDto?> = storage.remoteConfig.asStateFlow().unwrap(GlobalScope)
+    override val remoteConfig = MutableStateFlow<RemoteConfigDto>(RemoteConfigDto())
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -287,8 +288,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchRemoteConfig() {
-        val response = api._getRemoteConfig()
-        storage.remoteConfig.update(response.toOptional())
+        remoteConfig.emit(api._getRemoteConfig())
     }
 
     companion object {

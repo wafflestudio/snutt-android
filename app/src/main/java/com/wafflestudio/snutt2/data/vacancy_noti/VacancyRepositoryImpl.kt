@@ -38,8 +38,4 @@ class VacancyRepositoryImpl @Inject constructor(
     override suspend fun updateVacancyBannerCloseDate() {
         storage.vacancyBannerCloseDate.update(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis()))
     }
-
-    override fun isVacancyBannerEnabled(): Boolean {
-        return storage.remoteConfig.get().value?.vacancyBannerConfig?.visible ?: false
-    }
 }
