@@ -55,6 +55,7 @@ fun VacancyPage(
     val apiOnError = LocalApiOnError.current
     val modalState = LocalModalState.current
     val density = LocalDensity.current
+    val remoteConfig = LocalRemoteConfig.current
     val scope = rememberCoroutineScope()
     val vacancyLectures by vacancyViewModel.vacancyLectures.collectAsState()
     val isRefreshing by vacancyViewModel.isRefreshing.collectAsState()
@@ -292,10 +293,11 @@ fun VacancyPage(
                 },
                 contentColor = SNUTTColors.SNUTTVacancy,
                 onClick = {
-                    val sugangSnuUrl = "https://sugang.snu.ac.kr/sugang/ca/ca102.action?workType=F"
-                    val intent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse(sugangSnuUrl))
-                    context.startActivity(intent)
+                    remoteConfig.vacancyUrlConfig.url?.let {
+                        val intent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                        context.startActivity(intent)
+                    }
                 },
                 elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
