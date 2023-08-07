@@ -269,7 +269,7 @@ fun SettingItem(
             .height(45.dp)
             .background(SNUTTColors.White900)
             .clicks { if (onClick != null) onClick() }
-            .padding(horizontal = 35.dp),
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         leadingIcon()
