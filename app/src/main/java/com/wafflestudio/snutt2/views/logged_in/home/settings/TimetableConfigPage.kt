@@ -74,16 +74,15 @@ fun TimetableConfigPage() {
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_timetable_config_force_fit),
-            modifier = Modifier.background(SNUTTColors.White900),
+            hasNextPage = false,
             onClick = {
                 scope.launch {
                     viewModel.setAutoTrim(trimParam.forceFitLectures.not())
                 }
-            },
-            content = {
-                PoorSwitch(state = trimParam.forceFitLectures)
             }
-        )
+        ) {
+            PoorSwitch(state = trimParam.forceFitLectures)
+        }
         Margin(height = 10.dp)
         AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
             Column {
@@ -115,14 +114,14 @@ fun TimetableConfigPage() {
         }
         SettingItem(
             title = stringResource(R.string.settings_compact_mode),
-            modifier = Modifier.background(SNUTTColors.White900),
-            content = {
-                PoorSwitch(state = compactMode)
+            hasNextPage = false,
+            onClick = {
+                scope.launch {
+                    viewModel.setCompactMode(compactMode.not())
+                }
             }
         ) {
-            scope.launch {
-                viewModel.setCompactMode(compactMode.not())
-            }
+            PoorSwitch(state = compactMode)
         }
         Row(
             modifier = Modifier
@@ -202,31 +201,15 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(SNUTTColors.White900)
+            .padding(horizontal = 35.dp, vertical = 10.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .height(40.dp)
-                .padding(vertical = 10.dp)
-                .fillMaxWidth()
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = title, modifier = Modifier.weight(18f), style = SNUTTTypography.body1)
-            Spacer(modifier = Modifier.weight(1f))
-        }
-        Row(
+        Text(text = title, style = SNUTTTypography.body1)
+        Box(
             modifier = Modifier
                 .height(72.dp)
                 .fillMaxWidth()
         ) {
-            Spacer(modifier = Modifier.width(30.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-            ) {
-                content()
-            }
-            Spacer(modifier = Modifier.width(30.dp))
+            content()
         }
     }
 }
@@ -243,7 +226,7 @@ private fun RangeBar(
 
     val tickNum = labelArray.size - 1
     val widthPx = with(localDensity) {
-        (LocalConfiguration.current.screenWidthDp - 60).dp.toPx()
+        (LocalConfiguration.current.screenWidthDp - 70).dp.toPx()
     }
 
     val tickPx: Float = widthPx / tickNum

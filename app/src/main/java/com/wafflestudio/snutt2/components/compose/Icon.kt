@@ -319,6 +319,23 @@ fun ReviewIcon(
 }
 
 @Composable
+fun PeopleIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_people_selected
+            else R.drawable.ic_people_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun SettingIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -329,6 +346,23 @@ fun SettingIcon(
         painter = painterResource(
             if (isSelected) R.drawable.ic_setting_selected
             else R.drawable.ic_setting_unselected
+        ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun HorizontalMoreIcon(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (isSelected) R.drawable.ic_horizontal_more_selected
+            else R.drawable.ic_horizontal_more_unselected
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -543,6 +577,19 @@ fun RemarkIcon(
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_remark),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PersonIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_person),
         contentDescription = "",
         colorFilter = colorFilter,
     )
