@@ -93,7 +93,7 @@ fun LazyItemScope.VacancyListItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f, fill = false)
                         )
-                        if (hasVacancy) VacancySticker(
+                        if (hasVacancy) VacancyBadge(
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
                         )
@@ -160,7 +160,7 @@ fun LazyItemScope.VacancyListItem(
 }
 
 @Composable
-fun VacancySticker(
+fun VacancyBadge(
     modifier: Modifier = Modifier
 ) {
     Text(
@@ -183,5 +183,5 @@ fun VacancySticker(
 @Preview
 @Composable
 fun VacancyStickerPreview() {
-    VacancySticker()
+    VacancyBadge()
 }

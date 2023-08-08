@@ -264,7 +264,7 @@ fun SettingItem(
             )
         )
         if (LocalRemoteConfig.current.settingsBadgeConfig.new.contains(title)) {
-            NewSticker(Modifier.padding(start = 5.dp))
+            NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
         content()
@@ -278,7 +278,7 @@ fun SettingItem(
 }
 
 @Composable
-fun NewSticker(
+fun NewBadge(
     modifier: Modifier = Modifier
 ) {
     Box(
