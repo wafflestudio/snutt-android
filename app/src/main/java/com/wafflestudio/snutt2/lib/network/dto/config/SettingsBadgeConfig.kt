@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network.dto.core
+package com.wafflestudio.snutt2.lib.network.dto.config
 
 import com.squareup.moshi.Json
 
