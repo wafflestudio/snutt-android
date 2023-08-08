@@ -178,9 +178,9 @@
     <string name="home_select_theme_pink">벚꽃</string>
     <string name="home_select_theme_ice">얼음</string>
     <string name="home_select_theme_grass">잔디</string>
-    <string name="timetable_app_bar_setting">설정</string>
+    <string name="timetable_app_bar_setting">더보기</string>
     <string name="reviews_app_bar_title">강의평</string>
-    <string name="user_settings_app_bar_title">계정 관리</string>
+    <string name="user_settings_app_bar_title">내 계정</string>
     <string name="timetable_settings_app_bar_title">시간표 설정</string>
     <string name="timetable_credit">(%d 학점)</string>
     <string name="home_drawer_table_title_change">이름 변경</string>
@@ -200,7 +200,7 @@
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
-    <string name="settings_licenses_title">라이센스 정보</string>
+    <string name="settings_licenses_title">오픈소스 라이선스</string>
     <string name="settings_logout_title">로그아웃</string>
     <string name="settings_logout_message">로그아웃 하시겠습니까?</string>
     <string name="settings_timetable_config_force_fit">시간표 자동 정렬</string>
@@ -223,7 +223,7 @@
     <string name="settings_user_config_change_password_success">비밀번호를 변경하였습니다.</string>
     <string name="settings_leave_message">SNUTT 회원 탈퇴를 하겠습니까?</string>
     <string name="settings_user_config_disconnect_facebook_message">페이스북 연동을 끊겠습니까?</string>
-    <string name="settings_select_color_mode_title">색상 모드</string>
+    <string name="settings_select_color_mode_title">화면 모드</string>
     <string name="settings_select_color_mode_light">라이트 모드</string>
     <string name="settings_select_color_mode_dark">다크 모드</string>
     <string name="settings_select_color_mode_auto">자동</string>

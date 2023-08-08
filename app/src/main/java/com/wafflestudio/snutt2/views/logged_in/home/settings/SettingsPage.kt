@@ -4,16 +4,21 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -36,6 +41,7 @@ fun SettingsPage(
     val apiOnError = LocalApiOnError.current
     val viewModel = hiltViewModel<UserViewModel>()
     var logoutDialogState by remember { mutableStateOf(false) }
+    val themeMode by viewModel.themeMode.collectAsState()
 
     Column(
         modifier = Modifier
@@ -51,7 +57,7 @@ fun SettingsPage(
                 )
             },
             navigationIcon = {
-                SettingIcon(
+                HorizontalMoreIcon(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
@@ -68,81 +74,131 @@ fun SettingsPage(
             }
         )
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
         ) {
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                SettingItem(title = stringResource(R.string.user_settings_app_bar_title)) {
+            SettingItem(
+                title = stringResource(R.string.user_settings_app_bar_title),
+                modifier = Modifier.height(66.dp),
+                leadingIcon = {
+                    PersonIcon(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(end = 5.dp)
+                    )
+                },
+                isNew = true,
+                onClick = {
                     navController.navigate(
                         NavigationDestination.UserConfig
                     )
                 }
-                SettingItem(title = stringResource(R.string.timetable_settings_app_bar_title)) {
-                    navController.navigate(
-                        NavigationDestination.TimeTableConfig
+            )
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_title),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.ThemeModeSelect
+                        )
+                    }
+                ) {
+                    Text(
+                        text = themeMode.toString(),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-                SettingItem(title = stringResource(R.string.settings_select_color_mode_title)) {
-                    navController.navigate(
-                        NavigationDestination.ThemeModeSelect
-                    )
-                }
+                SettingItem(
+                    title = stringResource(R.string.timetable_settings_app_bar_title),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.TimeTableConfig
+                        )
+                    }
+                )
             }
             Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.settings_version_info),
-                modifier = Modifier.background(SNUTTColors.White900),
-                content = {
+            SettingColumn {
+                SettingItem(
+                    title = "빈자리 알림",
+                    isNew = true,
+                    hasNextPage = true,
+                    onClick = { } // TODO: 빈자리 알림으로 navigate
+                )
+            }
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_version_info),
+                    hasNextPage = false
+                ) {
                     Text(
                         text = BuildConfig.VERSION_NAME,
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
-            )
+                SettingItem(
+                    title = stringResource(R.string.settings_team_info),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.TeamInfo
+                        )
+                    }
+                )
+            }
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                SettingItem(title = stringResource(R.string.settings_team_info)) {
-                    navController.navigate(
-                        NavigationDestination.TeamInfo
-                    )
-                }
-                SettingItem(title = stringResource(R.string.settings_app_report_title)) {
+            SettingItem(
+                title = stringResource(R.string.settings_app_report_title),
+                onClick = {
                     navController.navigate(
                         NavigationDestination.AppReport
                     )
                 }
-            }
+            )
             Margin(height = 10.dp)
-            Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                SettingItem(title = stringResource(R.string.settings_licenses_title)) {
-                    showLicenseDialog(context)
-                }
-                SettingItem(title = stringResource(R.string.settings_service_info)) {
-                    navController.navigate(
-                        NavigationDestination.ServiceInfo
-                    )
-                }
-                SettingItem(title = stringResource(R.string.settings_personal_information_policy)) {
-                    navController.navigate(
-                        NavigationDestination.PersonalInformationPolicy
-                    )
-                }
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_licenses_title),
+                    onClick = {
+                        showLicenseDialog(context)
+                    }
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_service_info),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.ServiceInfo
+                        )
+                    }
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_personal_information_policy),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.PersonalInformationPolicy
+                        )
+                    }
+                )
             }
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
-                modifier = Modifier.background(SNUTTColors.White900)
-            ) {
-                logoutDialogState = true
-            }
+                titleColor = SNUTTColors.Red,
+                onClick = {
+                    logoutDialogState = true
+                }
+            )
+
             if (BuildConfig.DEBUG) {
                 Margin(height = 10.dp)
                 SettingItem(
                     title = "네트워크 로그",
-                    modifier = Modifier.background(SNUTTColors.White900)
-                ) {
-                    navController.navigate(NavigationDestination.NetworkLog)
-                }
+                    onClick = {
+                        navController.navigate(NavigationDestination.NetworkLog)
+                    }
+                )
             }
             Margin(height = 10.dp)
         }
@@ -169,24 +225,94 @@ fun SettingsPage(
 }
 
 @Composable
+fun SettingColumn(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = modifier
+    ) {
+        if (title.isNotEmpty()) {
+            Text(
+                text = title,
+                modifier = Modifier.padding(start = 35.dp),
+                style = SNUTTTypography.body2.copy(
+                    color = SNUTTColors.SettingColumnTitle
+                )
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+        }
+        Column(
+            modifier = Modifier
+                .background(SNUTTColors.White900)
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
 fun SettingItem(
     title: String,
     modifier: Modifier = Modifier,
+    titleColor: Color = SNUTTColors.Black900,
+    leadingIcon: @Composable () -> Unit = {},
+    isNew: Boolean = false,
+    hasNextPage: Boolean = true,
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
-    onClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(50.dp)
-            .clicks { onClick() },
+            .height(45.dp)
+            .background(SNUTTColors.White900)
+            .clicks { if (onClick != null) onClick() }
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(20.dp))
-        Text(text = title, style = SNUTTTypography.body1)
+        leadingIcon()
+        Text(
+            text = title,
+            style = SNUTTTypography.body1.copy(
+                color = titleColor
+            )
+        )
+        if (isNew) {
+            NewSticker(Modifier.padding(start = 5.dp))
+        }
         Spacer(modifier = Modifier.weight(1f))
         content()
-        Spacer(modifier = Modifier.width(20.dp))
+        if (hasNextPage) {
+            RightArrowIcon(
+                modifier = Modifier.size(22.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+            )
+        }
+    }
+}
+
+@Composable
+fun NewSticker(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(width = 26.dp, height = 14.dp)
+            .clip(RoundedCornerShape(3.dp))
+            .background(SNUTTColors.SNUTTTheme)
+    ) {
+        Text(
+            text = "NEW!",
+            modifier = Modifier.align(Alignment.Center),
+            style = SNUTTTypography.body2
+                .copy(
+                    color = SNUTTColors.AllWhite,
+                    fontSize = 7.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+        )
     }
 }
 

@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
@@ -129,6 +130,7 @@ fun HomePage() {
                             ReviewPage()
                         }
                     }
+                    HomeItem.Friends -> FriendsPage()
                     HomeItem.Settings -> SettingsPage(uncheckedNotification)
                 }
 

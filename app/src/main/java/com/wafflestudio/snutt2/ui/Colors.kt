@@ -18,6 +18,15 @@ object SNUTTColors {
     val Colors.Gray600 @Composable get() = if (isLight) Color(0xff777777) else Color(0xffffffff)
     val Gray600 @Composable get() = MaterialTheme.colors.Gray600
 
+    val Colors.Gray2 @Composable get() = if (isLight) Color(0xffb3b3b3) else Color(0xff777777)
+    val Gray2 @Composable get() = MaterialTheme.colors.Gray2
+
+    val Colors.MoreTabBackground @Composable get() = if (isLight) Color(0xfff2f2f7) else Color(0xff505050)
+    val MoreTabBackground @Composable get() = MaterialTheme.colors.MoreTabBackground
+
+    val Colors.SettingColumnTitle @Composable get() = if (isLight) Color(0xff8e8e93) else Color(0xffc4c4c4)
+    val SettingColumnTitle @Composable get() = MaterialTheme.colors.SettingColumnTitle
+
     val Red = Color(0xffe54459)
     val Orange = Color(0xfff58d3d)
     val Grass = Color(0xffa6d930)
@@ -27,7 +36,7 @@ object SNUTTColors {
 
     val FacebookBlue = Color(0x993c5dd4)
 
-    val Colors.SNUTTTheme @Composable get() = if (isLight) Color(0x991BD0C8) else Color(0xff58c1b7)
+    val Colors.SNUTTTheme @Composable get() = if (isLight) Color(0xFF1BD0C8) else Color(0xff58c1b7)
     val SNUTTTheme @Composable get() = MaterialTheme.colors.SNUTTTheme
 
     val Transparent = Color(0x00000000)
