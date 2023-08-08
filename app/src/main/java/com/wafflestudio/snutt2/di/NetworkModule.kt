@@ -70,7 +70,7 @@ object NetworkModule {
                     )
                     .addHeader(
                         "x-app-version",
-                        "3.2.0"
+                        BuildConfig.VERSION_NAME
                     )
                     .addHeader(
                         "x-app-type",
