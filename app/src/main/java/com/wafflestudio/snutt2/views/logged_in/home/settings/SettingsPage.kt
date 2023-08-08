@@ -78,24 +78,6 @@ fun SettingsPage(
                 .verticalScroll(rememberScrollState())
         ) {
             Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.user_settings_app_bar_title),
-                modifier = Modifier.height(66.dp),
-                leadingIcon = {
-                    PersonIcon(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .padding(end = 5.dp)
-                    )
-                },
-                isNew = true,
-                onClick = {
-                    navController.navigate(
-                        NavigationDestination.UserConfig
-                    )
-                }
-            )
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
@@ -122,8 +104,7 @@ fun SettingsPage(
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
-                    title = "빈자리 알림",
-                    isNew = true,
+                    title = stringResource(R.string.settings_item_vacancy),
                     hasNextPage = true,
                     onClick = {
                         navController.navigate(
@@ -262,7 +243,6 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     titleColor: Color = SNUTTColors.Black900,
     leadingIcon: @Composable () -> Unit = {},
-    isNew: Boolean = false,
     hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
@@ -283,7 +263,7 @@ fun SettingItem(
                 color = titleColor
             )
         )
-        if (isNew) {
+        if (LocalRemoteConfig.current.settingsBadgeConfig.new.contains(title)) {
             NewSticker(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
