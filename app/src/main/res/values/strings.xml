@@ -57,6 +57,8 @@
     <string name="error_expired_verification_code">만료된 인증코드입니다.</string>
     <string name="error_wrong_verification_code">잘못된 인증코드입니다.</string>
     <string name="error_invalid_email">올바른 이메일을 입력해주세요.</string>
+    <string name="error_vacancy_previous_semester">해당 학기의 빈자리 알림 신청 기간이 종료되었습니다.</string>
+    <string name="error_vacancy_duplicate">이미 빈자리 알림을 받고 있는 강의입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">계정 만들기</string>
@@ -149,12 +151,13 @@
     <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 강좌의 테마만 변경할 수 있습니다.</string>
     <string name="home_drawer_create_table_bottom_sheet_title">새로운 시간표 만들기</string>
     <string name="home_drawer_create_table_bottom_sheet_hint">시간표 제목을 입력하세요</string>
-    <string name="search_result_item_add_button">+ 추가하기</string>
-    <string name="search_result_item_remove_button">- 삭제하기</string>
+    <string name="search_result_item_add_button">추가하기</string>
+    <string name="search_result_item_remove_button">삭제하기</string>
     <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
     <string name="search_result_item_detail_button">자세히</string>
     <string name="search_result_item_review_button">강의평</string>
     <string name="search_result_item_bookmark_button">관심강좌</string>
+    <string name="search_result_item_vacancy_button">빈자리알림</string>
     <string name="search_result_empty">검색 결과가 없습니다.</string>
     <string name="search_result_placeholder_1">SNUTT 검색 꿀팁 🍯</string>
     <string name="search_result_placeholder_2">다양한 조합으로 검색해보세요.</string>
@@ -197,6 +200,7 @@
     <string name="settings_app_report_loading_indicator_title">피드백 전송</string>
     <string name="settings_app_report_content_hint">불편한 점이나 버그를 적어주세요</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
+    <string name="settings_item_vacancy">빈자리 알림</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
@@ -288,4 +292,17 @@
     <string name="time_hours_ago">%d시간 전</string>
     <string name="time_minutes_ago">%d분 전</string>
     <string name="time_now">방금</string>
+    <string name="vacancy_app_bar_title">빈자리 알림</string>
+    <string name="vacancy_item_quota_text">%d명/%d명</string>
+    <string name="vacancy_item_detail_button">자세히</string>
+    <string name="vacancy_item_goto_button">수강신청으로 이동</string>
+    <string name="vacancy_item_vacancy_sticker">취소여석</string>
+    <string name="vacancy_app_bar_edit">편집</string>
+    <string name="vacancy_app_bar_cancel">취소</string>
+    <string name="vacancy_floating_button">수강신청 사이트</string>
+    <string name="vacancy_delete_selected">선택한 강의 삭제</string>
+    <string name="vacancy_delete_selected_title">목록에서 삭제</string>
+    <string name="vacancy_delete_selected_message">선택한 강의의 빈자리 알림을 해제하시겠습니까?</string>
+    <string name="vacancy_empty_detail">자세히 보기</string>
+    <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
 </resources>

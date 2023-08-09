@@ -289,6 +289,16 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_no_registered_email),
                             Toast.LENGTH_SHORT
                         ).show()
+                        ErrorCode.VACANCY_PREV_SEMESTER -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_vacancy_previous_semester),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        ErrorCode.VACANCY_DUPLICATE -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_vacancy_duplicate),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.message ?: context.getString(R.string.error_unknown),
@@ -314,6 +324,8 @@ object ErrorCode {
 
     /* 400 - Bad request */
     const val INVALID_EMAIL = 0x300F
+    const val VACANCY_PREV_SEMESTER = 0x9C45
+    const val VACANCY_DUPLICATE = 0x9FC4
 
     /* 401 - Request was invalid */
     const val NO_FB_ID_OR_TOKEN = 0x1001

@@ -57,7 +57,7 @@ fun TopBar(
         shape = RectangleShape,
         color = SNUTTColors.White900,
         elevation = 1.dp,
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 2.dp)
             .fillMaxWidth()
             .height(56.dp)
@@ -74,7 +74,7 @@ fun TopBar(
             }
     ) {
         Row(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(

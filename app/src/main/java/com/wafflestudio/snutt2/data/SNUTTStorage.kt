@@ -2,10 +2,7 @@ package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
@@ -148,6 +145,26 @@ class SNUTTStorage @Inject constructor(
             key = "pref_network_log",
             type = NetworkLog::class.java,
             defaultValue = listOf()
+        )
+    )
+
+    val firstVacancyVisit = PrefValue<Boolean>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "first_vacancy_visit",
+            type = Boolean::class.java,
+            defaultValue = true
+        )
+    )
+
+    val vacancyBannerOpenTime = PrefValue<Long>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "vacancy_banner_open_time",
+            type = Long::class.java,
+            defaultValue = 0
         )
     )
 

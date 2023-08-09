@@ -33,6 +33,7 @@ import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
@@ -49,6 +50,8 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -66,6 +69,9 @@ class RootActivity : AppCompatActivity() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var isInitialRefreshFinished = false
 
@@ -175,6 +181,7 @@ class RootActivity : AppCompatActivity() {
             LocalModalState provides dialogState,
             LocalCompactState provides compactMode,
             LocalBottomSheetState provides bottomSheet,
+            LocalRemoteConfig provides remoteConfig
         ) {
             AnimatedNavHost(
                 navController = navController,
@@ -206,10 +213,11 @@ class RootActivity : AppCompatActivity() {
                         navController.getBackStackEntry(NavigationDestination.Home)
                     }
                     val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    BookmarkPage(searchViewModel)
+                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+                    BookmarkPage(searchViewModel, vacancyViewModel)
                 }
 
-                settingcomposable2()
+                settingcomposable2(navController)
             }
         }
     }
@@ -281,7 +289,7 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingcomposable2() {
+    private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
         composable2(NavigationDestination.AppReport) { AppReportPage() }
         composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
         composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
@@ -289,6 +297,13 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
+        composable2(NavigationDestination.VacancyNotification) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationDestination.Home)
+            }
+            val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+            VacancyPage(vacancyViewModel)
+        }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
 

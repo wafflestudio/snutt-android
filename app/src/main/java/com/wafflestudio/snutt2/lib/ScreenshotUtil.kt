@@ -16,6 +16,7 @@ fun shareScreenshotFromView(
     view: View,
     context: Context,
     topBarHeight: Int,
+    bannerHeight: Int,
     timetableHeight: Int
 ) {
     val bitmap =
@@ -28,7 +29,7 @@ fun shareScreenshotFromView(
     view.draw(canvas)
 
     // FIXME: 이 방법의 문제점 -> 위아래를 잘라내야 한다.
-    val bitmapResized = Bitmap.createBitmap(bitmap, 0, topBarHeight, bitmap.width, timetableHeight)
+    val bitmapResized = Bitmap.createBitmap(bitmap, 0, topBarHeight + bannerHeight, bitmap.width, timetableHeight)
     val uri = bitmapToUri(bitmapResized, context)
     val shareIntent: Intent = Intent().apply {
         action = Intent.ACTION_SEND
