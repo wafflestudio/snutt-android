@@ -85,11 +85,11 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
+        val token = userViewModel.accessToken.value
         lifecycleScope.launch {
-            homeViewModel.refreshData()
+            if (token.isNotEmpty()) homeViewModel.refreshData()
             isInitialRefreshFinished = true
         }
-        val token = userViewModel.accessToken.value
         setUpContents(
             if (token.isEmpty()) NavigationDestination.Onboard
             else NavigationDestination.Home
