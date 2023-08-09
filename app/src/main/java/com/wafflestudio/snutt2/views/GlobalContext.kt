@@ -4,12 +4,12 @@ import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
@@ -63,6 +63,6 @@ val LocalTableState = compositionLocalOf<TableState> {
     throw RuntimeException("")
 }
 
-val LocalRemoteConfig = compositionLocalOf<RemoteConfigDto> {
+val LocalRemoteConfig = compositionLocalOf<RemoteConfig> {
     throw RuntimeException("")
 }
