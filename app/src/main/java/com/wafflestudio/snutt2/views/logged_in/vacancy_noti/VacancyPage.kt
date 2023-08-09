@@ -362,7 +362,7 @@ fun VacancyIntroDialog(
                     HorizontalPager(
                         count = 4,
                         modifier = Modifier
-                            .padding(horizontal = 13.dp)
+                            .padding(horizontal = 17.dp)
                             .align(Alignment.Center)
                             .fillMaxWidth(),
                         state = pagerState,
@@ -386,7 +386,6 @@ fun VacancyIntroDialog(
                                 }
                             ),
                             contentDescription = null,
-                            modifier = Modifier.offset(y = (-7).dp)
                         )
                     }
                     if (pagerState.currentPage > 0) {
@@ -416,7 +415,6 @@ fun VacancyIntroDialog(
                         )
                     }
                 }
-//                Margin(height = 38.dp)
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
                     modifier = Modifier.padding(bottom = 36.dp),
