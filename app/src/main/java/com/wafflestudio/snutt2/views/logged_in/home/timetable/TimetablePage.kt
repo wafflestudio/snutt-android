@@ -45,7 +45,7 @@ fun TimetablePage() {
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
     val vacancyBannerOpened by vacancyViewModel.vacancyBannerOpened.collectAsState()
-    val shouldShowVacancyBanner = remoteConfig.vacancyBannerConfig.visible && vacancyBannerOpened
+    val shouldShowVacancyBanner = remoteConfig.vacancyNotificationBannerEnabled && vacancyBannerOpened
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }

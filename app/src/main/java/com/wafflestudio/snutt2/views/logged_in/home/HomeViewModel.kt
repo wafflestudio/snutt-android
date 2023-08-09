@@ -24,9 +24,6 @@ class HomeViewModel @Inject constructor(
     private val _unCheckedNotificationExist = MutableStateFlow(false)
     val unCheckedNotificationExist = _unCheckedNotificationExist.asStateFlow()
 
-    val remoteConfig
-        get() = userRepository.remoteConfig
-
     suspend fun refreshData() {
         try {
             coroutineScope {
@@ -37,7 +34,6 @@ class HomeViewModel @Inject constructor(
                         } ?: tableRepository.fetchDefaultTable()
                     },
                     async { userRepository.fetchUserInfo() },
-                    async { userRepository.fetchRemoteConfig() },
                 )
             }
         } catch (e: Exception) {

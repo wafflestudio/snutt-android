@@ -6,14 +6,12 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -41,8 +39,6 @@ class UserRepositoryImpl @Inject constructor(
     override val compactMode = storage.compactMode.asStateFlow()
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
-
-    override val remoteConfig = MutableStateFlow<RemoteConfigDto>(RemoteConfigDto())
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -285,10 +281,6 @@ class UserRepositoryImpl @Inject constructor(
                 }
             )
         }
-    }
-
-    override suspend fun fetchRemoteConfig() {
-        remoteConfig.emit(api._getRemoteConfig())
     }
 
     companion object {

@@ -33,6 +33,7 @@ import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
@@ -68,6 +69,9 @@ class RootActivity : AppCompatActivity() {
 
     @Inject
     lateinit var apiOnError: ApiOnError
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var isInitialRefreshFinished = false
 
@@ -141,7 +145,6 @@ class RootActivity : AppCompatActivity() {
         val navController = rememberAnimatedNavController()
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
-        val remoteConfig by homeViewModel.remoteConfig.collectAsState()
 
         val bottomSheet = bottomSheet()
         val dialogState = rememberModalState()
