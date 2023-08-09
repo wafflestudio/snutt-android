@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +22,8 @@ class RemoteConfig @Inject constructor(
     apiOnError: ApiOnError,
 ) {
     private val config = callbackFlow {
-        launch(Dispatchers.IO) {
-            userRepository.accessToken.filter { it.isNotEmpty() }.collect {
+        userRepository.accessToken.filter { it.isNotEmpty() }.collect {
+            withContext(Dispatchers.IO) {
                 try {
                     send(api._getRemoteConfig())
                 } catch (e: Exception) {
