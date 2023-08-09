@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
-import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -19,8 +18,6 @@ interface UserRepository {
     val compactMode: StateFlow<Boolean>
 
     val firstBookmarkAlert: StateFlow<Boolean>
-
-    val remoteConfig: StateFlow<RemoteConfigDto>
 
     // login with local id
     suspend fun postSignIn(id: String, password: String)
@@ -96,6 +93,4 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
-
-    suspend fun fetchRemoteConfig()
 }

@@ -263,7 +263,7 @@ fun SettingItem(
                 color = titleColor
             )
         )
-        if (LocalRemoteConfig.current.settingsBadgeConfig.new.contains(title)) {
+        if (LocalRemoteConfig.current.settingPageNewBadgeTitles.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
