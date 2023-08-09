@@ -108,7 +108,10 @@ fun UserConfigPage() {
         Margin(height = 10.dp)
         SettingColumn {
             if (user?.localId.isNullOrEmpty().not()) {
-                SettingItem(title = stringResource(R.string.sign_in_id_title)) {
+                SettingItem(
+                    title = stringResource(R.string.sign_in_id_title),
+                    hasNextPage = false,
+                ) {
                     Text(
                         text = user?.localId.toString(),
                         style = SNUTTTypography.body1.copy(

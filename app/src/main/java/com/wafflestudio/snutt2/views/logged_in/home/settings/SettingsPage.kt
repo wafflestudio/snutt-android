@@ -78,6 +78,23 @@ fun SettingsPage(
                 .verticalScroll(rememberScrollState())
         ) {
             Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.user_settings_app_bar_title),
+                modifier = Modifier.height(66.dp),
+                leadingIcon = {
+                    PersonIcon(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(end = 5.dp)
+                    )
+                },
+                onClick = {
+                    navController.navigate(
+                        NavigationDestination.UserConfig
+                    )
+                }
+            )
+            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
