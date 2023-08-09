@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,14 +36,6 @@ class VacancyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateVacancyBannerOpenTime() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        val nextDayMidnightMillis = calendar.timeInMillis
-        storage.vacancyBannerOpenTime.update(nextDayMidnightMillis)
+        storage.vacancyBannerOpenTime.update(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))
     }
 }
