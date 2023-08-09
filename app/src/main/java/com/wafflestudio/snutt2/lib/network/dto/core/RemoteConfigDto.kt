@@ -2,10 +2,6 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.lib.network.dto.config.ReactNativeBundleSrc
-import com.wafflestudio.snutt2.lib.network.dto.config.SettingsBadgeConfig
-import com.wafflestudio.snutt2.lib.network.dto.config.VacancyBannerConfig
-import com.wafflestudio.snutt2.lib.network.dto.config.VacancyUrlConfig
 
 @JsonClass(generateAdapter = true)
 data class RemoteConfigDto(
@@ -13,4 +9,20 @@ data class RemoteConfigDto(
     @Json(name = "vacancyNotificationBanner") val vacancyBannerConfig: VacancyBannerConfig = VacancyBannerConfig(false),
     @Json(name = "vacancySugangSnuUrl") val vacancyUrlConfig: VacancyUrlConfig = VacancyUrlConfig(),
     @Json(name = "settingsBadge") val settingsBadgeConfig: SettingsBadgeConfig = SettingsBadgeConfig()
-)
+) {
+    data class ReactNativeBundleSrc(
+        @Json(name = "src") val src: Map<String, String>
+    )
+
+    data class SettingsBadgeConfig(
+        @Json(name = "new") val new: List<String> = emptyList()
+    )
+
+    data class VacancyBannerConfig(
+        @Json(name = "visible") val visible: Boolean = false,
+    )
+
+    data class VacancyUrlConfig(
+        @Json(name = "url") val url: String? = null,
+    )
+}
