@@ -88,7 +88,6 @@ fun SettingsPage(
                             .padding(end = 5.dp)
                     )
                 },
-                isNew = true,
                 onClick = {
                     navController.navigate(
                         NavigationDestination.UserConfig
@@ -122,10 +121,13 @@ fun SettingsPage(
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
-                    title = "빈자리 알림",
-                    isNew = true,
+                    title = stringResource(R.string.settings_item_vacancy),
                     hasNextPage = true,
-                    onClick = { } // TODO: 빈자리 알림으로 navigate
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.VacancyNotification
+                        )
+                    }
                 )
             }
             Margin(height = 10.dp)
@@ -258,7 +260,6 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     titleColor: Color = SNUTTColors.Black900,
     leadingIcon: @Composable () -> Unit = {},
-    isNew: Boolean = false,
     hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
@@ -279,8 +280,8 @@ fun SettingItem(
                 color = titleColor
             )
         )
-        if (isNew) {
-            NewSticker(Modifier.padding(start = 5.dp))
+        if (LocalRemoteConfig.current.settingPageNewBadgeTitles.contains(title)) {
+            NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
         content()
@@ -294,7 +295,7 @@ fun SettingItem(
 }
 
 @Composable
-fun NewSticker(
+fun NewBadge(
     modifier: Modifier = Modifier
 ) {
     Box(

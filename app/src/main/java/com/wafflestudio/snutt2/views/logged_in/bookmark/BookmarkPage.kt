@@ -39,11 +39,15 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BookmarkPage(searchViewModel: SearchViewModel) {
+fun BookmarkPage(
+    searchViewModel: SearchViewModel,
+    vacancyViewModel: VacancyViewModel
+) {
     val navController = LocalNavController.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -143,6 +147,7 @@ fun BookmarkPage(searchViewModel: SearchViewModel) {
                                     tableListViewModel = tableListViewModel,
                                     lectureDetailViewModel = lectureDetailViewModel,
                                     userViewModel = userViewModel,
+                                    vacancyViewModel = vacancyViewModel,
                                 )
                             }
                             item { Divider(color = SNUTTColors.White400) }

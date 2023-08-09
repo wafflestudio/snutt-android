@@ -22,7 +22,7 @@ fun Modifier.clicks(
     throttleMs: Long = 200L,
     enabled: Boolean = true,
     role: Role? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) = composed {
     val clickFn = applyEventThrottling(onClick, throttleMs = throttleMs)
     clickable(

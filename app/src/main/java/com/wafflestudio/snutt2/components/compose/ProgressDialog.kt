@@ -68,7 +68,10 @@ fun CustomDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Surface(shape = RoundedCornerShape(10)) {
+        Surface(
+            shape = RoundedCornerShape(10),
+            elevation = 10.dp
+        ) {
             Column(modifier = Modifier.width(width ?: (screenWidthInDp - 50.dp)).background(SNUTTColors.White900)) {
                 title?.let {
                     Row {

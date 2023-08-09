@@ -238,4 +238,20 @@ interface SNUTTRestApi {
     suspend fun _deleteBookmark(
         @Body body: PostBookmarkParams
     )
+
+    @GET("/v1/vacancy-notifications/lectures")
+    suspend fun _getVacancyLectures(): GetVacancyLecturesResults
+
+    @POST("/v1/vacancy-notifications/lectures/{lectureId}")
+    suspend fun _postVacancyLecture(
+        @Path("lectureId") lectureId: String
+    )
+
+    @DELETE("/v1/vacancy-notifications/lectures/{lectureId}")
+    suspend fun _deleteVacancyLecture(
+        @Path("lectureId") lectureId: String
+    )
+
+    @GET("/v1/configs")
+    suspend fun _getRemoteConfig(): GetRemoteConfigResponse
 }

@@ -3,7 +3,9 @@ package com.wafflestudio.snutt2.views
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavController
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
@@ -59,5 +61,9 @@ val LocalCompactState = compositionLocalOf<Boolean> {
 }
 
 val LocalTableState = compositionLocalOf<TableState> {
+    throw RuntimeException("")
+}
+
+val LocalRemoteConfig = staticCompositionLocalOf<RemoteConfig> {
     throw RuntimeException("")
 }
