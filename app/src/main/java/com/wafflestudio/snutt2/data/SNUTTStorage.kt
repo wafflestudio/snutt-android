@@ -158,13 +158,13 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
-    val vacancyBannerCloseDate = PrefValue<String>(
+    val vacancyBannerOpenTime = PrefValue<Long>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
-            key = "vacancy_banner_close_date",
-            type = String::class.java,
-            defaultValue = ""
+            key = "vacancy_banner_open_time",
+            type = Long::class.java,
+            defaultValue = 0
         )
     )
 
