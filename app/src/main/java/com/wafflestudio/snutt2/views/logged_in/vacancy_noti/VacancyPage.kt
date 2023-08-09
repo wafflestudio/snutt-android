@@ -86,6 +86,7 @@ fun VacancyPage(
             }
         }
     }
+
     BackHandler {
         onBackPressed()
     }
@@ -170,38 +171,10 @@ fun VacancyPage(
                         )
                 ) {
                     if (vacancyLectures.isEmpty()) {
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Image(
-                                painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .height(180.dp)
-                                    .fillMaxSize()
-                            )
-                            Margin(height = 14.dp)
-                            Row(
-                                modifier = Modifier
-                                    .clicks { introDialogState = true },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                QuestionCircleIcon(
-                                    modifier = Modifier.size(12.dp),
-                                    colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = stringResource(R.string.vacancy_empty_detail),
-                                    textDecoration = TextDecoration.Underline,
-                                    style = SNUTTTypography.subtitle2.copy(
-                                        fontSize = 12.sp,
-                                        color = SNUTTColors.DARKER_GRAY
-                                    )
-                                )
-                            }
-                        }
+                        VacancyPlaceholder(
+                            onClickDetail = { introDialogState = true },
+                            modifier = Modifier.align(Alignment.Center)
+                        )
                     } else {
                         LazyColumn(
                             modifier = Modifier
@@ -318,6 +291,45 @@ fun VacancyPage(
 fun LazyListState.isScrolledToEnd(): Boolean {
     val lastVisibleItem = this.layoutInfo.visibleItemsInfo.last()
     return lastVisibleItem.offset + lastVisibleItem.size == this.layoutInfo.viewportEndOffset
+}
+
+@Composable
+fun VacancyPlaceholder(
+    onClickDetail: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
+            contentDescription = null,
+            modifier = Modifier
+                .height(180.dp)
+                .fillMaxSize()
+        )
+        Margin(height = 14.dp)
+        Row(
+            modifier = Modifier
+                .clicks { onClickDetail() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            QuestionCircleIcon(
+                modifier = Modifier.size(12.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            Text(
+                text = stringResource(R.string.vacancy_empty_detail),
+                textDecoration = TextDecoration.Underline,
+                style = SNUTTTypography.subtitle2.copy(
+                    fontSize = 12.sp,
+                    color = SNUTTColors.DARKER_GRAY
+                )
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalPagerApi::class)
