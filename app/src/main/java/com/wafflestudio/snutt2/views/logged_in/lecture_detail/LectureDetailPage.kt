@@ -56,7 +56,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
