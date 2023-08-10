@@ -66,7 +66,6 @@ fun LectureDetailPage(
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {}
 ) {
-    Timber.d("searchViewModel: ${searchViewModel.hashCode()}")
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
