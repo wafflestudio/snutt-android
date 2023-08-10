@@ -36,7 +36,7 @@ fun LazyItemScope.VacancyListItem(
     checked: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    val hasVacancy = lectureDto.wasFull
+    val hasVacancy = lectureDto.wasFull && lectureDto.registrationCount < lectureDto.quota
     val lectureTitle = lectureDto.course_title
     val instructorCreditText = stringResource(
         R.string.search_result_item_instructor_credit_text,
