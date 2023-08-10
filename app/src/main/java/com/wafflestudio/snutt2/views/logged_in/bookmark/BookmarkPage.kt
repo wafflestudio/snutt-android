@@ -99,12 +99,6 @@ fun BookmarkPage(
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
 
-    LaunchedEffect(Unit) {
-        launchSuspendApi(apiOnProgress, apiOnError) {
-            searchViewModel.getBookmarkList()
-        }
-    }
-
     CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
         ModalBottomSheetLayout(
             sheetContent = bottomSheet.content,
