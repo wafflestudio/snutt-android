@@ -73,7 +73,7 @@ fun LazyItemScope.LectureListItem(
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val bookmarked = bookmarkList.map { it.item.id }.contains(lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id)
     val vacancyList by vacancyViewModel.vacancyLectures.collectAsState()
-    val vacancyRegistered = vacancyList.map { it.id }.contains(lectureDataWithState.item.id)
+    val vacancyRegistered = vacancyList.map { it.id }.contains(lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id)
 
     val lectureTitle = lectureDataWithState.item.course_title
     val instructorCreditText = stringResource(
@@ -204,6 +204,7 @@ fun LazyItemScope.LectureListItem(
                         bottomSheet.setSheetContent {
                             LectureDetailPage(
                                 searchViewModel = searchViewModel,
+                                vacancyViewModel = vacancyViewModel,
                                 onCloseViewMode = { scope ->
                                     scope.launch { bottomSheet.hide() }
                                 }
