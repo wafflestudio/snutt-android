@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
@@ -31,10 +32,13 @@ class RemoteConfig @Inject constructor(
                     send(api._getRemoteConfig())
                 } catch (e: Exception) {
                     apiOnError(e)
+                    this@callbackFlow.close()
                 }
             }
         }
         awaitClose {}
+    }.onCompletion {
+        fetchDone.emit(Unit)
     }.onEach {
         fetchDone.emit(Unit)
     }.stateIn(
