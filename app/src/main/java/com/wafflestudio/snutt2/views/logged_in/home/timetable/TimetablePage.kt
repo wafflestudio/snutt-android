@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +51,6 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.RNModuleActivity
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
@@ -127,15 +124,6 @@ fun TimetablePage() {
                                 file.delete()
                                 context.toast("지워버리기~")
                             }
-                        },
-                )
-                LectureListIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            val intent = Intent((context as Activity), RNModuleActivity::class.java)
-                            intent.putExtra("message_from_native", table.title)
-                            context.startActivity(intent)
                         },
                 )
                 LectureListIcon(
