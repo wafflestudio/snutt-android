@@ -7,9 +7,11 @@ import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class RemoteConfig @Inject constructor(
     userRepository: UserRepository,
     apiOnError: ApiOnError,
 ) {
+    val fetchDone = MutableSharedFlow<Unit>()
     private val config = callbackFlow {
         userRepository.accessToken.filter { it.isNotEmpty() }.collect {
             withContext(Dispatchers.IO) {
@@ -32,6 +35,8 @@ class RemoteConfig @Inject constructor(
             }
         }
         awaitClose {}
+    }.onEach {
+        fetchDone.emit(Unit)
     }.stateIn(
         CoroutineScope(Dispatchers.Main),
         SharingStarted.Eagerly,
