@@ -157,7 +157,7 @@ fun TimetableConfigPage() {
 }
 
 @Composable
-fun PoorSwitch(state: Boolean) {
+private fun PoorSwitch(state: Boolean) {
     val switchOffset by animateDpAsState(
         targetValue = if (state) 10.dp else 30.dp,
     )
