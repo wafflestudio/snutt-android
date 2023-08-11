@@ -31,11 +31,7 @@ class RNViewModel @Inject constructor(
             try {
                 val bundleFile = File(application.applicationContext.cacheDir, "android.jsbundle")
 
-                val url = if (userRepository.rnConfig.value) {
-                    "http://localhost:8081/index.bundle?platform=android"
-                } else {
-                    userRepository.rnUrl()
-                }
+                val url = "http://localhost:8081/index.bundle?platform=android"
                 val urlConnection = URL(url).openConnection() as HttpURLConnection
                 urlConnection.connect()
                 val inputStream = urlConnection.inputStream

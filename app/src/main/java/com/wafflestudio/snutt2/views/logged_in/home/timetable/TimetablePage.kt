@@ -3,17 +3,16 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,8 +38,9 @@ import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
-import com.wafflestudio.snutt2.components.compose.RNIcon
+import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
+import com.wafflestudio.snutt2.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -51,16 +51,15 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.RNModuleActivity
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.PoorSwitch
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable
@@ -140,7 +139,7 @@ fun TimetablePage() {
                             }
                         },
                 )
-                RNIcon(
+                LectureListIcon(
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {

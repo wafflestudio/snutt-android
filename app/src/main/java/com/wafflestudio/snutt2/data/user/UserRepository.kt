@@ -19,8 +19,6 @@ interface UserRepository {
 
     val firstBookmarkAlert: StateFlow<Boolean>
 
-    val rnConfig: StateFlow<Boolean>
-
     // login with local id
     suspend fun postSignIn(id: String, password: String)
 
@@ -95,8 +93,4 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
-
-    suspend fun setRNConfig(state: Boolean)
-
-    suspend fun rnUrl(): String
 }
