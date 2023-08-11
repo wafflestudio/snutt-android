@@ -40,9 +40,7 @@ import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -57,7 +55,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
 fun TimetablePage() {
@@ -96,12 +93,7 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(
-                                table.title,
-                                table.id,
-                                composableStates,
-                                tableListViewModel::changeTableName
-                            )
+                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
                         }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -125,17 +117,6 @@ fun TimetablePage() {
                 }
             },
             actions = {
-                TrashIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            val file = File(context.applicationContext.cacheDir, "android.jsbundle")
-                            if (file.canRead()) {
-                                file.delete()
-                                context.toast("지워버리기~")
-                            }
-                        },
-                )
                 LectureListIcon(
                     modifier = Modifier
                         .size(30.dp)
