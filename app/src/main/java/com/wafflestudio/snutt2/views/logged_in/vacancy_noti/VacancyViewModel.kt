@@ -58,7 +58,7 @@ class VacancyViewModel @Inject constructor(
     suspend fun getVacancyLectures() {
         _vacancyLectures.emit(
             vacancyRepository.getVacancyLectures()
-                .sortedByDescending { it.wasFull }
+                .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
         )
     }
 
