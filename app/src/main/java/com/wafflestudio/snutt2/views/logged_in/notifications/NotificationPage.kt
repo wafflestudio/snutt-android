@@ -71,7 +71,7 @@ fun NotificationItem(info: NotificationDto?) {
         Column {
             Row(modifier = Modifier.fillMaxWidth()) {
                 when (info?.type) {
-                    0 -> stringResource(id = R.string.notifications_noti_warning)
+                    0 -> stringResource(id = R.string.notifications_noti_announce)
                     1 -> stringResource(id = R.string.notifications_noti_add)
                     2 -> stringResource(id = R.string.notifications_noti_update)
                     3 -> stringResource(id = R.string.notifications_noti_delete)

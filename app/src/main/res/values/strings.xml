@@ -124,7 +124,7 @@
     <string name="common_day_sun">일</string>
     <string name="timetable_app_bar_title">나의 시간표</string>
     <string name="lecture_list_add_button">직접 강좌 추가하기</string>
-    <string name="notifications_noti_warning">경고</string>
+    <string name="notifications_noti_announce">공지</string>
     <string name="notifications_noti_add">추가</string>
     <string name="notifications_noti_update">업데이트</string>
     <string name="notifications_noti_delete">삭제</string>
