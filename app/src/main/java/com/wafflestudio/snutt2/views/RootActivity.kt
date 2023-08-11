@@ -54,6 +54,8 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -87,7 +89,10 @@ class RootActivity : AppCompatActivity() {
 
         val token = userViewModel.accessToken.value
         lifecycleScope.launch {
-            if (token.isNotEmpty()) homeViewModel.refreshData()
+            if (token.isNotEmpty()) {
+                remoteConfig.fetchDone.take(1).collect()
+                homeViewModel.refreshData()
+            }
             isInitialRefreshFinished = true
         }
         setUpContents(
