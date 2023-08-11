@@ -29,8 +29,6 @@ class UserViewModel @Inject constructor(
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
 
-    val rnConfig = userRepository.rnConfig
-
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
@@ -160,9 +158,5 @@ class UserViewModel @Inject constructor(
 
     suspend fun setFirstBookmarkAlertShown() {
         userRepository.setFirstBookmarkAlertShown()
-    }
-
-    suspend fun toggleRNConfig() {
-        userRepository.setRNConfig(rnConfig.value.not())
     }
 }

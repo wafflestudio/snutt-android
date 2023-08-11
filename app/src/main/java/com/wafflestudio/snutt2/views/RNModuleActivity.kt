@@ -35,10 +35,13 @@ class RNModuleActivity : ReactActivity() {
                     .build()
 
                 rootView = ReactRootView(this@RNModuleActivity)
-                rootView?.startReactApplication(reactInstanceManager, "friends", Bundle().apply {
-                    putString("x-access-token", rnViewModel.token)
-                    putString("x-access-apikey", applicationContext.getString(R.string.api_key))
-                })
+                rootView?.startReactApplication(
+                    reactInstanceManager, "friends",
+                    Bundle().apply {
+                        putString("x-access-token", rnViewModel.token)
+                        putString("x-access-apikey", applicationContext.getString(R.string.api_key))
+                    }
+                )
                 setContentView(rootView)
             }
         }
