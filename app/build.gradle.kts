@@ -24,7 +24,7 @@ ktlint {
         include("**/java/**")
     }
     // See https://github.com/pinterest/ktlint/issues/527
-    disabledRules.addAll("import-ordering", "no-wildcard-imports", "package-name")
+    disabledRules.addAll("import-ordering", "no-wildcard-imports", "package-name", "argument-list-wrapping")
 }
 
 val versionProps = Properties().apply {
@@ -70,7 +70,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
