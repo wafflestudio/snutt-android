@@ -10,8 +10,8 @@ buildscript {
         classpath("com.android.tools.build:gradle:8.1.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Deps.Version.Kotlin}")
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Deps.Version.Hilt}")
-        classpath("com.google.firebase:firebase-appdistribution-gradle:3.0.0")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
+        classpath("com.google.firebase:firebase-appdistribution-gradle:4.0.0")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.8")
     }
 }
 
