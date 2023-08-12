@@ -121,12 +121,12 @@ android {
 }
 
 dependencies {
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Deps.Version.Kotlin}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${Deps.Version.Rx3Coroutine}")
@@ -139,7 +139,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:${Deps.Version.Retrofit}")
     implementation("com.squareup.retrofit2:adapter-rxjava3:${Deps.Version.Retrofit}")
     implementation("com.squareup.retrofit2:converter-moshi:${Deps.Version.Retrofit}")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.7.2")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
 
     // RxJava
     implementation("io.reactivex.rxjava3:rxjava:${Deps.Version.RxJava}")
@@ -162,7 +162,6 @@ dependencies {
 
     // Paging
     implementation("androidx.paging:paging-runtime-ktx:${Deps.Version.Paging}")
-    implementation("androidx.paging:paging-rxjava3:${Deps.Version.Paging}")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:${Deps.Version.Compose}")
@@ -173,20 +172,20 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.ComposeFoundation}")
     implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("androidx.compose.runtime:runtime-rxjava3:1.1.1")
+    implementation("androidx.compose.runtime:runtime-rxjava3:1.5.0")
 
     // misc
-    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.google.accompanist:accompanist-pager:0.20.3")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("com.facebook.android:facebook-login:15.0.1")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
     implementation("com.uber.rxdogtag2:rxdogtag:2.0.1")
     implementation("com.github.skydoves:colorpickerview:2.2.3")
-    implementation("com.jakewharton.timber:timber:4.7.1")
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
@@ -195,7 +194,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Glance
-    // For AppWidgets support
     implementation ("androidx.glance:glance-appwidget:1.0.0-rc01")
     implementation ("androidx.glance:glance-material:1.0.0-rc01")
     implementation ("androidx.glance:glance-material3:1.0.0-rc01")
