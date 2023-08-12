@@ -106,7 +106,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
@@ -178,7 +178,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
     implementation("com.facebook.android:facebook-login:15.0.1")
     implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
-    implementation("com.uber.rxdogtag2:rxdogtag:2.0.1")
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
