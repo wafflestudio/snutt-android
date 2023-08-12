@@ -4,13 +4,11 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.gms.google-services")
     id("org.jlleitschuh.gradle.ktlint-idea")
     id("org.jlleitschuh.gradle.ktlint")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
     id("kotlin-parcelize")
-    id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.appdistribution")
     id("com.google.firebase.crashlytics")
 }
@@ -34,7 +32,8 @@ val versionProps = Properties().apply {
 }
 
 android {
-    compileSdk = 33
+    namespace = "com.wafflestudio.snutt2"
+    compileSdk = 34
 
     repositories {
         mavenCentral()
@@ -47,8 +46,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     signingConfigs {
@@ -74,10 +73,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
-
-    viewBinding {
-        isEnabled = true
     }
 
     flavorDimensions.add("mode")
@@ -110,21 +105,19 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
         compose = true
+        viewBinding = true
+        buildConfig = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-    kotlinOptions.freeCompilerArgs += listOf("-Xuse-experimental=androidx.compose.ui.ExperimentalCompose", "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi")
 }
 
 dependencies {
@@ -133,7 +126,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
     implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.android.material:material:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Deps.Version.Kotlin}")
@@ -160,9 +152,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:${Deps.Version.Hilt}")
 
     // AAC Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:${Deps.Version.Navigation}")
-    implementation("androidx.navigation:navigation-ui-ktx:${Deps.Version.Navigation}")
-    implementation("androidx.navigation:navigation-compose:2.5.0")
+    implementation("androidx.navigation:navigation-compose:${Deps.Version.Navigation}")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
@@ -171,17 +161,17 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Paging
-    implementation("androidx.paging:paging-runtime:${Deps.Version.Paging}")
+    implementation("androidx.paging:paging-runtime-ktx:${Deps.Version.Paging}")
     implementation("androidx.paging:paging-rxjava3:${Deps.Version.Paging}")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:${Deps.Version.Compose}")
     implementation("androidx.compose.ui:ui:${Deps.Version.Compose}")
+    implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
+    implementation("androidx.compose.material:material:${Deps.Version.Compose}")
     implementation("androidx.compose.foundation:foundation:${Deps.Version.ComposeFoundation}")
     implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.ComposeFoundation}")
-    implementation("androidx.compose.material:material:1.4.0-alpha04")
     implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
-    implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -197,13 +187,19 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.29.0-alpha")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
 
     // GSON
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Glance
+    // For AppWidgets support
+    implementation ("androidx.glance:glance-appwidget:1.0.0-rc01")
+    implementation ("androidx.glance:glance-material:1.0.0-rc01")
+    implementation ("androidx.glance:glance-material3:1.0.0-rc01")
 }
 
 repositories {
