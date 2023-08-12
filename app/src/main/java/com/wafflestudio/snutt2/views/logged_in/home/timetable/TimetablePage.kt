@@ -62,17 +62,17 @@ fun TimetablePage() {
                         .weight(1f, fill = false)
                         .clicks {
                             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
-                        }
+                        },
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(
                         R.string.timetable_credit,
-                        getCreditSumFromLectureList(table.lectureList)
+                        getCreditSumFromLectureList(table.lectureList),
                     ),
                     style = SNUTTTypography.body2,
                     maxLines = 1,
-                    color = SNUTTColors.Gray200
+                    color = SNUTTColors.Gray200,
                 )
             },
             navigationIcon = {
@@ -114,7 +114,7 @@ fun TimetablePage() {
                             },
                     )
                 }
-            }
+            },
         )
         if (remoteConfig.vacancyNotificationBannerEnabled) {
             VacancyBanner(
@@ -122,14 +122,14 @@ fun TimetablePage() {
                     navController.navigate(NavigationDestination.VacancyNotification)
                 },
                 modifier = Modifier
-                    .onGloballyPositioned { bannerHeight = it.size.height }
+                    .onGloballyPositioned { bannerHeight = it.size.height },
             )
         }
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .onGloballyPositioned { timetableHeight = it.size.height } // timetable 높이 측정
+                .onGloballyPositioned { timetableHeight = it.size.height }, // timetable 높이 측정
         ) {
             TimeTable(selectedLecture = null)
         }
@@ -148,28 +148,28 @@ fun VacancyBanner(
             .background(SNUTTColors.BannerBlue)
             .clicks { onClick() }
             .padding(horizontal = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         RingingAlarmIcon(
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(22.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Row(
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) {
             Text(
                 text = stringResource(R.string.vacancy_banner_text),
                 style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.AllWhite
-                )
+                    color = SNUTTColors.AllWhite,
+                ),
             )
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = "NEW",
                 style = SNUTTTypography.h5.copy(
                     fontSize = 8.sp,
-                    color = SNUTTColors.AllWhite
-                )
+                    color = SNUTTColors.AllWhite,
+                ),
             )
         }
     }

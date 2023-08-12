@@ -29,7 +29,7 @@ fun CreateTableBottomSheet(
     allCourseBook: List<CourseBookDto>,
     currentCourseBook: CourseBookDto,
     specificSemester: Boolean = false,
-    onConfirm: suspend (CourseBookDto, String) -> Unit
+    onConfirm: suspend (CourseBookDto, String) -> Unit,
 ) {
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -42,8 +42,11 @@ fun CreateTableBottomSheet(
     val handleDoneClick: () -> Unit = {
         scope.launch {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                if (specificSemester) onConfirm(pickedCourseBook, newTitle)
-                else onConfirm(pickedCourseBook, newTitle)
+                if (specificSemester) {
+                    onConfirm(pickedCourseBook, newTitle)
+                } else {
+                    onConfirm(pickedCourseBook, newTitle)
+                }
                 drawerState.close()
                 bottomSheet.hide()
             }
@@ -55,7 +58,7 @@ fun CreateTableBottomSheet(
             .fillMaxWidth()
             .background(SNUTTColors.White900)
             .padding(25.dp)
-            .clicks {}
+            .clicks {},
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -64,18 +67,18 @@ fun CreateTableBottomSheet(
                     scope.launch {
                         bottomSheet.hide()
                     }
-                }
+                },
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
-                modifier = Modifier.clicks { handleDoneClick() }
+                modifier = Modifier.clicks { handleDoneClick() },
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = stringResource(R.string.home_drawer_create_table_bottom_sheet_title),
-            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600)
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600),
         )
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
@@ -102,7 +105,7 @@ fun CreateTableBottomSheet(
                     Text(
                         text = allCourseBook[it].toFormattedString(context), style = SNUTTTypography.button,
                     )
-                }
+                },
             )
             Spacer(modifier = Modifier.height(20.dp))
         }

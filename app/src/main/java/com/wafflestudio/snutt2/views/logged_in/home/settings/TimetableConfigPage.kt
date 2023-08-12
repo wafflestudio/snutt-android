@@ -65,11 +65,11 @@ fun TimetableConfigPage() {
         modifier = Modifier
             .fillMaxWidth()
             .background(SNUTTColors.Gray100)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_settings_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() }
+            onClickNavigateBack = { navController.popBackStack() },
         )
         Margin(height = 10.dp)
         SettingItem(
@@ -79,7 +79,7 @@ fun TimetableConfigPage() {
                 scope.launch {
                     viewModel.setAutoTrim(trimParam.forceFitLectures.not())
                 }
-            }
+            },
         ) {
             PoorSwitch(state = trimParam.forceFitLectures)
         }
@@ -90,7 +90,7 @@ fun TimetableConfigPage() {
                     RangeBar(
                         initStart = trimParam.dayOfWeekFrom,
                         initEnd = trimParam.dayOfWeekTo,
-                        labelArray = stringArrayResource(R.array.week_days)
+                        labelArray = stringArrayResource(R.array.week_days),
                     ) { start, end ->
                         scope.launch {
                             viewModel.setDayOfWeekRange(start, end)
@@ -119,7 +119,7 @@ fun TimetableConfigPage() {
                 scope.launch {
                     viewModel.setCompactMode(compactMode.not())
                 }
-            }
+            },
         ) {
             PoorSwitch(state = compactMode)
         }
@@ -144,9 +144,9 @@ fun TimetableConfigPage() {
                 .padding(5.dp)
                 .size(
                     (LocalConfiguration.current.screenWidthDp * 0.8).dp,
-                    (LocalConfiguration.current.screenHeightDp * 0.6).dp
+                    (LocalConfiguration.current.screenHeightDp * 0.6).dp,
                 )
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
         ) {
             CompositionLocalProvider(LocalTableState provides tableState) {
                 TimeTable(selectedLecture = null, touchEnabled = false)
@@ -159,14 +159,14 @@ fun TimetableConfigPage() {
 @Composable
 private fun PoorSwitch(state: Boolean) {
     val switchOffset by animateDpAsState(
-        targetValue = if (state) 10.dp else 30.dp
+        targetValue = if (state) 10.dp else 30.dp,
     )
 
     Box(
         modifier = Modifier
             .width(60.dp)
             .fillMaxHeight(),
-        contentAlignment = Alignment.CenterEnd
+        contentAlignment = Alignment.CenterEnd,
     ) {
         Row {
             Box(
@@ -175,7 +175,7 @@ private fun PoorSwitch(state: Boolean) {
                     .height(15.dp)
                     .clip(RoundedCornerShape(80))
                     .background(Color.Gray)
-                    .zIndex(1f)
+                    .zIndex(1f),
             ) {}
             Spacer(modifier = Modifier.width(20.dp))
         }
@@ -185,10 +185,13 @@ private fun PoorSwitch(state: Boolean) {
                     .size(20.dp)
                     .clip(CircleShape)
                     .background(
-                        if (state) SNUTTColors.Black600
-                        else Color.LightGray
+                        if (state) {
+                            SNUTTColors.Black600
+                        } else {
+                            Color.LightGray
+                        },
                     )
-                    .zIndex(5f)
+                    .zIndex(5f),
             )
             Spacer(modifier = Modifier.width(switchOffset))
         }
@@ -201,13 +204,13 @@ private fun RangeBarCell(title: String, content: @Composable () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(SNUTTColors.White900)
-            .padding(horizontal = 35.dp, vertical = 10.dp)
+            .padding(horizontal = 35.dp, vertical = 10.dp),
     ) {
         Text(text = title, style = SNUTTTypography.body1)
         Box(
             modifier = Modifier
                 .height(72.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             content()
         }
@@ -219,7 +222,7 @@ private fun RangeBar(
     initStart: Int,
     initEnd: Int,
     labelArray: Array<String>,
-    onChange: (Int, Int) -> Unit
+    onChange: (Int, Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
@@ -237,7 +240,7 @@ private fun RangeBar(
     val Black = SNUTTColors.Black600
 
     Canvas(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         val lineOffset = size.height - 30.dp.toPx()
 
@@ -245,7 +248,7 @@ private fun RangeBar(
             color = Color.LightGray,
             start = Offset(x = 0f, y = lineOffset),
             end = Offset(x = size.width, y = lineOffset),
-            strokeWidth = 1.dp.toPx()
+            strokeWidth = 1.dp.toPx(),
         )
         for (tick in 0..tickNum) {
             drawCircle(Black, (1.5).dp.toPx(), Offset(x = tickPx * tick, y = lineOffset))
@@ -254,21 +257,21 @@ private fun RangeBar(
             color = Black,
             start = Offset(x = barStart.value, y = lineOffset),
             end = Offset(x = barEnd.value, y = lineOffset),
-            strokeWidth = 3.dp.toPx()
+            strokeWidth = 3.dp.toPx(),
         )
         drawCircle(
             color = Black,
             radius = 6.dp.toPx(),
-            center = Offset(x = barStart.value, y = lineOffset)
+            center = Offset(x = barStart.value, y = lineOffset),
         )
         drawCircle(
             color = Black,
             radius = 6.dp.toPx(),
-            center = Offset(x = barEnd.value, y = lineOffset)
+            center = Offset(x = barEnd.value, y = lineOffset),
         )
     }
     Label(
-        offset = barStart, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[startTick]
+        offset = barStart, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[startTick],
     ) {
         onChange(min(startTick, endTick), max(startTick, endTick))
     }
@@ -283,7 +286,7 @@ private fun Label(
     widthPx: Float,
     tickPx: Float,
     labelText: String,
-    onChange: () -> Unit
+    onChange: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -294,7 +297,7 @@ private fun Label(
                     (offset.value - 13.dp.toPx()).roundToInt(),
                     5.dp
                         .toPx()
-                        .roundToInt()
+                        .roundToInt(),
                 )
             }
             .draggable(
@@ -302,23 +305,23 @@ private fun Label(
                 state = rememberDraggableState { delta ->
                     scope.launch {
                         offset.snapTo(
-                            (offset.value + delta).coerceIn(0f, widthPx)
+                            (offset.value + delta).coerceIn(0f, widthPx),
                         )
                     }
                 },
                 onDragStopped = {
                     offset.animateTo(
-                        (offset.value / tickPx).roundToInt() * tickPx
+                        (offset.value / tickPx).roundToInt() * tickPx,
                     )
                     onChange()
-                }
+                },
             )
             .clip(CircleShape)
             .width(26.dp)
             .height(26.dp)
             .background(SNUTTColors.Black600)
             .clip(CircleShape),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = labelText, color = SNUTTColors.White900)
     }

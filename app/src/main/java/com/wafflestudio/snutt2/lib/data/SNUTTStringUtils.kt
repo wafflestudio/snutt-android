@@ -87,7 +87,7 @@ object SNUTTStringUtils {
         return listOf(
             lecture.category,
             lecture.department,
-            lecture.academic_year
+            lecture.academic_year,
         )
             .filter { it.isNullOrBlank().not() }
             .let {
@@ -130,10 +130,13 @@ object SNUTTStringUtils {
                 "(" +
                 "\\." +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                ")+"
+                ")+",
         )
-        return if (this.isEmpty()) true
-        else regex.matches(this).not()
+        return if (this.isEmpty()) {
+            true
+        } else {
+            regex.matches(this).not()
+        }
     }
 
     fun String.creditStringToLong(): Long {

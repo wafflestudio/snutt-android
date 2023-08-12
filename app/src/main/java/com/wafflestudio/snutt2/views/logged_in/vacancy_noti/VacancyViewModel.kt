@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VacancyViewModel @Inject constructor(
-    private val vacancyRepository: VacancyRepository
+    private val vacancyRepository: VacancyRepository,
 ) : ViewModel() {
     private val _vacancyLectures =
         MutableStateFlow<List<LectureDto>>(listOf())
@@ -54,7 +54,7 @@ class VacancyViewModel @Inject constructor(
     suspend fun getVacancyLectures() {
         _vacancyLectures.emit(
             vacancyRepository.getVacancyLectures()
-                .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
+                .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
         )
     }
 
@@ -74,10 +74,11 @@ class VacancyViewModel @Inject constructor(
     }
 
     fun toggleLectureSelected(lectureId: String) {
-        if (!selectedLectures.contains(lectureId))
+        if (!selectedLectures.contains(lectureId)) {
             selectedLectures.add(lectureId)
-        else
+        } else {
             selectedLectures.remove(lectureId)
+        }
     }
 
     suspend fun deleteSelectedLectures() {

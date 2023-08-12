@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostLectureParams(
-    @Json(name = "is_forced") var id: Boolean
+    @Json(name = "is_forced") var id: Boolean,
 )

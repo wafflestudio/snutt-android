@@ -50,7 +50,7 @@ fun RowScope.SearchEditText(
                     keyBoardController?.hide()
                 }
             }
-        }),
+        },),
         value = searchKeyword,
         onValueChange = {
             scope.launch {

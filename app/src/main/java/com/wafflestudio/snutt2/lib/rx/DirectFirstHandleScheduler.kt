@@ -36,7 +36,7 @@ class DirectFirstHandleScheduler(private val async: Boolean) : Scheduler() {
     private class HandlerWorker(
         private val handler: Handler,
         private val async: Boolean,
-        private val first: AtomicBoolean
+        private val first: AtomicBoolean,
     ) : Worker() {
 
         @Volatile

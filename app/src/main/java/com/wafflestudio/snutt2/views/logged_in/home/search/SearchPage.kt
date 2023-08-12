@@ -84,7 +84,7 @@ fun SearchPage(
                 searchEditTextFocused = searchEditTextFocused,
                 onFocus = { isFocused ->
                     searchEditTextFocused = isFocused
-                }
+                },
             )
             if (searchEditTextFocused) {
                 ExitIcon(
@@ -96,34 +96,36 @@ fun SearchPage(
                         }
                     },
                 )
-            } else FilterIcon(
-                modifier = Modifier.clicks {
-                    // 강의 검색 필터 sheet 띄우기
-                    bottomSheet.setSheetContent {
-                        SearchOptionSheet(applyOption = {
-                            scope.launch {
-                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                    searchViewModel.query()
+            } else {
+                FilterIcon(
+                    modifier = Modifier.clicks {
+                        // 강의 검색 필터 sheet 띄우기
+                        bottomSheet.setSheetContent {
+                            SearchOptionSheet(applyOption = {
+                                scope.launch {
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        searchViewModel.query()
+                                    }
                                 }
-                            }
-                            scope.launch { bottomSheet.hide() }
-                        })
-                    }
-                    scope.launch { bottomSheet.show() }
-                },
-            )
+                                scope.launch { bottomSheet.hide() }
+                            },)
+                        }
+                        scope.launch { bottomSheet.show() }
+                    },
+                )
+            }
         }
         Box(
             modifier = Modifier
                 .weight(1f)
                 .background(SNUTTColors.White900)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
             Column(
                 modifier = Modifier
                     .background(SNUTTColors.Dim2)
-                    .fillMaxSize()
+                    .fillMaxSize(),
             ) {
                 AnimatedLazyRow(itemList = selectedTags, itemKey = { it.name }) {
                     TagCell(tagDto = it, onClick = {
@@ -133,7 +135,7 @@ fun SearchPage(
                                 searchViewModel.query()
                             }
                         }
-                    })
+                    },)
                 }
                 // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
                 if (placeHolderState) {
@@ -143,29 +145,31 @@ fun SearchPage(
                                 keyBoardController?.hide()
                                 searchViewModel.query()
                             }
-                        }
+                        },
                     )
-                } else when {
-                    loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
-                        SearchEmptyPage()
-                    }
-                    else -> {
-                        LazyColumn(
-                            state = lazyListState, modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(searchResultPagingItems) { lectureDataWithState ->
-                                lectureDataWithState?.let {
-                                    LectureListItem(
-                                        lectureDataWithState,
-                                        reviewBottomSheetWebViewContainer,
-                                        false,
-                                        searchViewModel,
-                                        timetableViewModel,
-                                        tableListViewModel,
-                                        lectureDetailViewModel,
-                                        userViewModel,
-                                        vacancyViewModel,
-                                    )
+                } else {
+                    when {
+                        loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
+                            SearchEmptyPage()
+                        }
+                        else -> {
+                            LazyColumn(
+                                state = lazyListState, modifier = Modifier.fillMaxSize(),
+                            ) {
+                                items(searchResultPagingItems) { lectureDataWithState ->
+                                    lectureDataWithState?.let {
+                                        LectureListItem(
+                                            lectureDataWithState,
+                                            reviewBottomSheetWebViewContainer,
+                                            false,
+                                            searchViewModel,
+                                            timetableViewModel,
+                                            tableListViewModel,
+                                            lectureDetailViewModel,
+                                            userViewModel,
+                                            vacancyViewModel,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -183,7 +187,7 @@ private fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
             .fillMaxSize()
             .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         BigSearchIcon(
             modifier = Modifier
@@ -192,32 +196,32 @@ private fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
                 .padding(10.dp)
                 .clicks {
                     onClickSearchIcon.invoke()
-                }
+                },
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = stringResource(R.string.search_result_placeholder_1),
-            style = SNUTTTypography.h1.copy(fontSize = 25.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.h1.copy(fontSize = 25.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.height(35.dp))
         Text(
             text = stringResource(R.string.search_result_placeholder_2),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = stringResource(R.string.search_result_placeholder_3),
-            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500)
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = stringResource(R.string.search_result_placeholder_4),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = stringResource(R.string.search_result_placeholder_5),
-            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500)
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
         )
     }
 }
@@ -229,17 +233,17 @@ private fun SearchEmptyPage() {
             .fillMaxSize()
             .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         BigSearchIcon(
             modifier = Modifier
                 .width(58.dp)
-                .height(56.dp)
+                .height(56.dp),
         )
         Spacer(modifier = Modifier.height(35.dp))
         Text(
             text = stringResource(R.string.search_result_empty),
-            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp)
+            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp),
         )
     }
 }

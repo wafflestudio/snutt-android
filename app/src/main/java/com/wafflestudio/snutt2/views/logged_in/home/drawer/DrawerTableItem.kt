@@ -38,7 +38,7 @@ fun DrawerTableItem(
     val tableListViewModel: TableListViewModel = hiltViewModel()
 
     Row(
-        modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             modifier = Modifier
@@ -51,12 +51,12 @@ fun DrawerTableItem(
                         }
                     }
                 },
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             VividCheckedIcon(
                 modifier = Modifier
                     .size(15.dp)
-                    .alpha(if (selected) 1f else 0f)
+                    .alpha(if (selected) 1f else 0f),
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
@@ -69,7 +69,7 @@ fun DrawerTableItem(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(
-                    R.string.home_drawer_table_credit, table.totalCredit ?: 0L
+                    R.string.home_drawer_table_credit, table.totalCredit ?: 0L,
                 ),
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,
@@ -85,8 +85,8 @@ fun DrawerTableItem(
                             context.toast(
                                 context.getString(
                                     R.string.home_drawer_copy_success_message,
-                                    table.title
-                                )
+                                    table.title,
+                                ),
                             )
                         }
                     }

@@ -6,7 +6,7 @@ fun <T : Any> T.toSelectable(selected: Boolean = false): SelectableLegacy<T> {
 
 data class SelectableLegacy<T : Any>(
     val item: T,
-    val isSelected: Boolean
+    val isSelected: Boolean,
 ) {
 
     companion object {

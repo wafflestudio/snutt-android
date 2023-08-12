@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BookmarkPage(
     searchViewModel: SearchViewModel,
-    vacancyViewModel: VacancyViewModel
+    vacancyViewModel: VacancyViewModel,
 ) {
     val navController = LocalNavController.current
     val apiOnError = LocalApiOnError.current
@@ -66,9 +66,9 @@ fun BookmarkPage(
     reviewWebViewContainer.apply {
         this.webView.addJavascriptInterface(
             CloseBridge(
-                onClose = { scope.launch { bottomSheet.hide() } }
+                onClose = { scope.launch { bottomSheet.hide() } },
             ),
-            "Snutt"
+            "Snutt",
         )
     }
 
@@ -105,13 +105,13 @@ fun BookmarkPage(
             Column(
                 modifier = Modifier
                     .background(SNUTTColors.White900)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
                 SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { onBackPressed() })
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 ) {
                     CompositionLocalProvider(LocalTableState provides tableState) {
                         TimeTable(selectedLecture = selectedLecture, touchEnabled = false)
@@ -123,7 +123,7 @@ fun BookmarkPage(
                             state = rememberLazyListState(),
                             modifier = Modifier
                                 .background(SNUTTColors.Dim2)
-                                .fillMaxSize()
+                                .fillMaxSize(),
                         ) {
                             items(bookmarks) {
                                 LectureListItem(
@@ -162,16 +162,16 @@ fun BookmarkPlaceHolder() {
             style = SNUTTTypography.subtitle1.copy(
                 fontSize = 18.sp,
                 color = SNUTTColors.White700,
-                fontWeight = FontWeight.Bold
-            )
+                fontWeight = FontWeight.Bold,
+            ),
         )
         Text(
             text = stringResource(R.string.bookmark_page_placeholder_2),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Text(
             text = stringResource(R.string.bookmark_page_placeholder_3),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.weight(1f))
     }

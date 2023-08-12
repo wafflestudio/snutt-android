@@ -35,7 +35,7 @@ fun ListIcon(
     Image(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_lecture_list),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -48,7 +48,7 @@ fun NotificationIcon(
         modifier = modifier.size(30.dp),
         painter = painterResource(R.drawable.ic_alarm_default),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
@@ -87,7 +87,7 @@ fun SearchIcon(
         modifier = modifier.size(30.dp),
         painter = painterResource(id = R.drawable.ic_search_unselected),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
@@ -158,12 +158,12 @@ fun LocationIcon(
 
 @Composable
 fun LogoIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.logo),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -182,23 +182,23 @@ fun ArrowDownIcon(
 
 @Composable
 fun VividCheckedIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_vivid_checked),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
 @Composable
 fun VividUncheckedIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_vivid_unchecked),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -276,8 +276,11 @@ fun TimetableIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_timetable_selected
-            else R.drawable.ic_timetable_unselected
+            if (isSelected) {
+                R.drawable.ic_timetable_selected
+            } else {
+                R.drawable.ic_timetable_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -293,8 +296,11 @@ fun SearchIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_search_selected
-            else R.drawable.ic_search_unselected
+            if (isSelected) {
+                R.drawable.ic_search_selected
+            } else {
+                R.drawable.ic_search_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -310,8 +316,11 @@ fun ReviewIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_review_selected
-            else R.drawable.ic_review_unselected
+            if (isSelected) {
+                R.drawable.ic_review_selected
+            } else {
+                R.drawable.ic_review_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -327,8 +336,11 @@ fun PeopleIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_people_selected
-            else R.drawable.ic_people_unselected
+            if (isSelected) {
+                R.drawable.ic_people_selected
+            } else {
+                R.drawable.ic_people_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -357,8 +369,11 @@ fun SettingIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_setting_selected
-            else R.drawable.ic_setting_unselected
+            if (isSelected) {
+                R.drawable.ic_setting_selected
+            } else {
+                R.drawable.ic_setting_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -374,8 +389,11 @@ fun HorizontalMoreIcon(
     Image(
         modifier = modifier,
         painter = painterResource(
-            if (isSelected) R.drawable.ic_horizontal_more_selected
-            else R.drawable.ic_horizontal_more_unselected
+            if (isSelected) {
+                R.drawable.ic_horizontal_more_selected
+            } else {
+                R.drawable.ic_horizontal_more_unselected
+            },
         ),
         contentDescription = "",
         colorFilter = colorFilter,
@@ -423,12 +441,12 @@ fun CheckedIcon(
 
 @Composable
 fun WhiteCloseIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_close_white),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -454,12 +472,12 @@ fun RedDot() {
 
 @Composable
 fun BigSearchIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.img_search_big),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -478,12 +496,12 @@ fun WarningIcon(
 
 @Composable
 fun AlarmOnIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.tab_alarm_on),
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -611,13 +629,13 @@ fun PersonIcon(
 @Composable
 fun DetailIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_detail),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
@@ -625,51 +643,51 @@ fun DetailIcon(
 fun RingingAlarmIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
-    marked: Boolean = false
+    marked: Boolean = false,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = if (marked) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun AddCircleIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_add_circle),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun RemoveCircleIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_remove_circle),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
 @Composable
 fun QuestionCircleIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_question_circle),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
