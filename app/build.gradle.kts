@@ -187,7 +187,6 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")

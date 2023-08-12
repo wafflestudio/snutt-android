@@ -26,11 +26,11 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.navigation
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.navigation
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
@@ -147,7 +147,7 @@ class RootActivity : AppCompatActivity() {
 
     @Composable
     fun setUpUI(startDestination: String) {
-        val navController = rememberAnimatedNavController()
+        val navController = rememberNavController()
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
 
@@ -188,7 +188,7 @@ class RootActivity : AppCompatActivity() {
             LocalBottomSheetState provides bottomSheet,
             LocalRemoteConfig provides remoteConfig
         ) {
-            AnimatedNavHost(
+            NavHost(
                 navController = navController,
                 startDestination = startDestination,
             ) {
@@ -261,7 +261,6 @@ class RootActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun NavGraphBuilder.composable2(
         route: String,
         deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
