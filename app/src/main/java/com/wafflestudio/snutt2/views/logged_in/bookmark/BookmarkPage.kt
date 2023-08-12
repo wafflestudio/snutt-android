@@ -49,8 +49,6 @@ fun BookmarkPage(
     vacancyViewModel: VacancyViewModel,
 ) {
     val navController = LocalNavController.current
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
     val bottomSheet = bottomSheet()
     val scope = rememberCoroutineScope()

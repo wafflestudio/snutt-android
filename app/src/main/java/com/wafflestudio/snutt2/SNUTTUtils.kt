@@ -87,18 +87,6 @@ object SNUTTUtils {
         return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    // sp to px
-    fun Context.sp2px(sp: Float): Float {
-        val scaledDensity = this.resources.displayMetrics.scaledDensity
-        return sp * scaledDensity
-    }
-
-    // px to sp
-    fun Context.px2sp(px: Float): Float {
-        val scaledDensity = this.resources.displayMetrics.scaledDensity
-        return px / scaledDensity
-    }
-
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
