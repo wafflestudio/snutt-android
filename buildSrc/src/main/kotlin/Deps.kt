@@ -4,10 +4,10 @@ object Deps {
 
     object Version {
         const val Kotlin = "1.9.0"
-        const val Rx3Coroutine= "1.6.0"
+        const val Rx3Coroutine= "1.6.4"
         const val Moshi = "1.14.0"
         const val Retrofit = "2.9.0"
-        const val RxJava = "3.0.12"
+        const val RxJava = "3.1.0"
         const val RxKotlin = "3.0.1"
         const val RxAndroid = "3.0.0"
         const val RxBinding = "4.0.0"
