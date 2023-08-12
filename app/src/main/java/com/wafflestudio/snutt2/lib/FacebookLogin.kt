@@ -10,7 +10,7 @@ import com.facebook.login.LoginResult
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 suspend fun facebookLogin(
-    context: Context,
+    context: Context
 ): LoginResult {
     val callbackManager = CallbackManager.Factory.create()
     val loginManager = LoginManager.getInstance()
