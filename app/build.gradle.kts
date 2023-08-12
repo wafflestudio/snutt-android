@@ -24,7 +24,7 @@ ktlint {
         include("**/java/**")
     }
     // See https://github.com/pinterest/ktlint/issues/527
-    disabledRules.addAll("import-ordering", "no-wildcard-imports")
+    disabledRules.addAll("import-ordering", "no-wildcard-imports", "package-name")
 }
 
 val versionProps = Properties().apply {
@@ -194,9 +194,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Glance
-    implementation ("androidx.glance:glance-appwidget:1.0.0-rc01")
-    implementation ("androidx.glance:glance-material:1.0.0-rc01")
-    implementation ("androidx.glance:glance-material3:1.0.0-rc01")
+    implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
+    implementation("androidx.glance:glance-material:1.0.0-rc01")
+    implementation("androidx.glance:glance-material3:1.0.0-rc01")
 }
 
 repositories {
