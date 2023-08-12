@@ -50,7 +50,7 @@ fun EditText(
     var isFocused by remember { mutableStateOf(false) }
     val customTextSelectionColors = TextSelectionColors(
         handleColor = SNUTTColors.Black900,
-        backgroundColor = SNUTTColors.Black300
+        backgroundColor = SNUTTColors.Black300,
     )
     CompositionLocalProvider(
         LocalTextSelectionColors provides customTextSelectionColors,
@@ -68,12 +68,11 @@ fun EditText(
             visualTransformation = visualTransformation,
             cursorBrush = SolidColor(SNUTTColors.Black900),
             decorationBox = {
-
                 Column {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         leadingIcon()
                         Box(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             if (value.isNotEmpty() || isFocused) { // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
                                 it()
@@ -95,11 +94,11 @@ fun EditText(
                                 .padding(top = 8.dp)
                                 .background(if (isFocused) underlineColorFocused else underlineColor)
                                 .fillMaxWidth()
-                                .height(underlineWidth)
+                                .height(underlineWidth),
                         )
                     }
                 }
-            }
+            },
         )
     }
 }

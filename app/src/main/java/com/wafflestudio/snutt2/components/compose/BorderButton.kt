@@ -25,10 +25,10 @@ fun BorderButton(
             .border(
                 width = 1.dp,
                 color = color,
-                shape = RoundedCornerShape(cornerRadius)
+                shape = RoundedCornerShape(cornerRadius),
             )
             .height(45.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

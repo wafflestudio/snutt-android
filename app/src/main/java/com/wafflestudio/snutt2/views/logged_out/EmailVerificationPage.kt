@@ -98,11 +98,11 @@ fun EmailVerificationPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.White900)
+            .background(SNUTTColors.White900),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.verify_email_app_bar_title),
-            onClickNavigateBack = { onBackPressedCallback.handleOnBackPressed() }
+            onClickNavigateBack = { onBackPressedCallback.handleOnBackPressed() },
         )
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
@@ -115,11 +115,11 @@ fun EmailVerificationPage() {
                         )
                         Text(
                             text = stringResource(R.string.verify_email_detail_text),
-                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900)
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                         )
                         Spacer(
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(100.dp),
                         )
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
@@ -131,25 +131,25 @@ fun EmailVerificationPage() {
                                         timerState.start()
                                     }
                                 }
-                            }
+                            },
                         ) {
                             Text(
                                 text = stringResource(R.string.verify_email_ok_button),
-                                style = SNUTTTypography.button.copy(color = SNUTTColors.AllWhite)
+                                style = SNUTTTypography.button.copy(color = SNUTTColors.AllWhite),
                             )
                         }
                         Spacer(
                             modifier = Modifier
-                                .size(20.dp)
+                                .size(20.dp),
                         )
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
                             enabledColor = SNUTTColors.Gray200,
-                            onClick = { navController.navigateAsOrigin(NavigationDestination.Home) }
+                            onClick = { navController.navigateAsOrigin(NavigationDestination.Home) },
                         ) {
                             Text(
                                 text = stringResource(R.string.verify_email_later_button),
-                                style = SNUTTTypography.button.copy(color = SNUTTColors.AllWhite)
+                                style = SNUTTTypography.button.copy(color = SNUTTColors.AllWhite),
                             )
                         }
                     }
@@ -157,14 +157,14 @@ fun EmailVerificationPage() {
                     VerifyEmailState.SendCode -> {
                         Text(
                             text = stringResource(R.string.find_password_verification_code_content).format(
-                                userEmail
+                                userEmail,
                             ),
                             style = SNUTTTypography.h3,
                             modifier = Modifier.padding(vertical = 25.dp),
                         )
                         Text(
                             text = stringResource(R.string.find_password_send_code_label),
-                            style = SNUTTTypography.h4
+                            style = SNUTTTypography.h4,
                         )
                         EditText(
                             value = codeField,
@@ -172,16 +172,16 @@ fun EmailVerificationPage() {
                             hint = stringResource(R.string.find_password_send_code_hint),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Number
+                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Number,
                             ),
                             singleLine = true,
                             trailingIcon = {
                                 Row(
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = 10.dp),
                                 ) {
                                     Timer(
                                         state = timerState,
@@ -190,8 +190,11 @@ fun EmailVerificationPage() {
                                         Text(
                                             text = timerText,
                                             style = SNUTTTypography.subtitle2.copy(
-                                                color = if (timerState.isRunning) SNUTTColors.Red
-                                                else SNUTTColors.SNUTTTheme
+                                                color = if (timerState.isRunning) {
+                                                    SNUTTColors.Red
+                                                } else {
+                                                    SNUTTColors.SNUTTTheme
+                                                },
                                             ),
                                             modifier = Modifier.clicks {
                                                 if (timerState.isEnded) {
@@ -203,7 +206,7 @@ fun EmailVerificationPage() {
                                                         }
                                                     }
                                                 }
-                                            }
+                                            },
                                         )
                                     }
                                 }
@@ -215,7 +218,7 @@ fun EmailVerificationPage() {
                         if (timerState.isEnded) {
                             Text(
                                 text = stringResource(R.string.find_password_enter_verification_code_expire_message),
-                                style = SNUTTTypography.body2.copy(color = SNUTTColors.Red)
+                                style = SNUTTTypography.body2.copy(color = SNUTTColors.Red),
                             )
                         }
                         Spacer(modifier = Modifier.height(30.dp))
@@ -224,11 +227,11 @@ fun EmailVerificationPage() {
                             enabled = buttonEnabled,
                             onClick = {
                                 handleEnterCode()
-                            }
+                            },
                         ) {
                             Text(
                                 text = stringResource(R.string.common_ok),
-                                style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite)
+                                style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
                             )
                         }
                     }

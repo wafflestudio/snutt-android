@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DebugViewModel @Inject constructor(
-    private val snuttStorage: SNUTTStorage
+    private val snuttStorage: SNUTTStorage,
 ) : ViewModel() {
 
     val networkLog: StateFlow<List<NetworkLog>> = snuttStorage.networkLog.asStateFlow()

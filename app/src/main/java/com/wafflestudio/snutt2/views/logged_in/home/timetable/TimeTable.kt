@@ -42,9 +42,11 @@ fun TimeTable(
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
             (selectedLecture?.let { lectures + it } ?: lectures).getFittingTrimParam(
-                TableTrimParam.Default
+                TableTrimParam.Default,
             )
-        } else trimParam
+        } else {
+            trimParam
+        }
 
     if (touchEnabled) DrawClickEventCanvas(lectures, fittedTrimParam)
     DrawTableGrid(fittedTrimParam)
@@ -87,7 +89,7 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
                     }
                 }
                 true
-            }
+            },
     ) {
         canvasSize = size
     }
@@ -121,14 +123,14 @@ private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
                 start = Offset(x = startWidth, y = 0f),
                 end = Offset(x = startWidth, y = size.height),
                 color = gridColor,
-                strokeWidth = (0.5f).dp(context)
+                strokeWidth = (0.5f).dp(context),
             )
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.drawText(
                     (fittedTrimParam.dayOfWeekFrom + it).toDayString(context),
                     startWidth + unitWidth * 0.5f,
                     (dayLabelHeight + textHeight) / 2f,
-                    dayLabelTextPaint
+                    dayLabelTextPaint,
                 )
             }
             startWidth += unitWidth
@@ -138,26 +140,27 @@ private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
                 start = Offset(x = 0f, y = startHeight),
                 end = Offset(x = size.width, y = startHeight),
                 color = gridColor,
-                strokeWidth = (0.5f).dp(context)
+                strokeWidth = (0.5f).dp(context),
             )
             drawLine(
                 start = Offset(x = hourLabelWidth, y = startHeight + (unitHeight * 0.5f)),
                 end = Offset(x = size.width, y = startHeight + (unitHeight * 0.5f)),
                 color = gridColor2,
-                strokeWidth = (0.5f).dp(context)
+                strokeWidth = (0.5f).dp(context),
             )
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.drawText(
                     (fittedTrimParam.hourFrom + it).toString(),
                     hourLabelWidth - 4.dp(context),
                     startHeight + textHeight + 6.dp(context),
-                    hourLabelTextPaint
+                    hourLabelTextPaint,
                 )
             }
             startHeight += unitHeight
         }
     }
 }
+
 @Composable
 private fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     lectures.forEach { lecture ->
@@ -175,7 +178,7 @@ private fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimP
 private fun DrawLecture(
     lecture: LectureDto,
     classTime: ClassTimeDto,
-    fittedTrimParam: TableTrimParam
+    fittedTrimParam: TableTrimParam,
 ) {
     val context = LocalContext.current
     val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
@@ -185,13 +188,20 @@ private fun DrawLecture(
         classTime = classTime,
         courseTitle = lecture.course_title,
         bgColor =
-        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!!
-        else theme.getColorByIndexComposable(
-            lecture.colorIndex
-        ).toArgb(),
-        fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
-            R.color.white
-        ),
+        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+            lecture.color.bgColor!!
+        } else {
+            theme.getColorByIndexComposable(
+                lecture.colorIndex,
+            ).toArgb()
+        },
+        fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
+            lecture.color.fgColor!!
+        } else {
+            context.getColor(
+                R.color.white,
+            )
+        },
         isCustom = lecture.isCustom,
     )
 }
@@ -219,8 +229,8 @@ private fun DrawClassTime(
             max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
                 classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
-                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
-            )
+                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1,
+            ),
         )
 
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -248,10 +258,10 @@ private fun DrawClassTime(
         val cellWidth = right - left - cellPadding * 2
 
         val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt()
+            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
         )
         val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight
+            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
         )
 
         drawIntoCanvas { canvas ->
@@ -260,14 +270,14 @@ private fun DrawClassTime(
                 (left + cellPadding).toInt(),
                 (top + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
                 cellWidth.toInt(),
-                fgColor
+                fgColor,
             )
             lectureCellSubTextRect.draw(
                 canvas.nativeCanvas,
                 (left + cellPadding).toInt(),
                 (top + courseTitleHeight + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
                 cellWidth.toInt(),
-                fgColor
+                fgColor,
             )
         }
     }
@@ -278,7 +288,7 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd
+                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd,
             )
         }
     }

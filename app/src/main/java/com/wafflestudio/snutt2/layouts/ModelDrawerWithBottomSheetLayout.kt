@@ -15,7 +15,6 @@ import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.HomeDrawer
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -23,7 +22,7 @@ fun ModalDrawerWithBottomSheetLayout(
     sheetShape: RoundedCornerShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
     drawerContent: @Composable ColumnScope.() -> Unit = { HomeDrawer() },
     drawerState: DrawerState,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheet = LocalBottomSheetState.current
@@ -43,7 +42,7 @@ fun ModalDrawerWithBottomSheetLayout(
             gesturesEnabled = (pageController.homePageState.value == HomeItem.Timetable) && bottomSheet.isVisible.not(),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 content()
             }

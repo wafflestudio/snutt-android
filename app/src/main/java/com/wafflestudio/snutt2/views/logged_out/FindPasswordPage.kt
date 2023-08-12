@@ -149,11 +149,11 @@ fun FindPasswordPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() }
+            .clicks { focusManager.clearFocus() },
     ) {
         SimpleTopBar(title = stringResource(R.string.find_password_title), onClickNavigateBack = {
             onBackPressedCallback.handleOnBackPressed()
-        })
+        },)
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
                 when (targetState) {
@@ -165,7 +165,7 @@ fun FindPasswordPage() {
                         )
                         Text(
                             text = stringResource(R.string.sign_in_id_hint),
-                            style = SNUTTTypography.h4
+                            style = SNUTTTypography.h4,
                         )
                         EditText(
                             value = idField,
@@ -173,9 +173,9 @@ fun FindPasswordPage() {
                             hint = stringResource(R.string.find_password_enter_id_hint),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier
@@ -186,14 +186,14 @@ fun FindPasswordPage() {
                     FlowState.SendCode -> {
                         Text(
                             text = stringResource(R.string.find_password_verification_code_content).format(
-                                emailResponse
+                                emailResponse,
                             ),
                             style = SNUTTTypography.h3,
                             modifier = Modifier.padding(vertical = 25.dp),
                         )
                         Text(
                             text = stringResource(R.string.find_password_send_code_label),
-                            style = SNUTTTypography.h4
+                            style = SNUTTTypography.h4,
                         )
                         EditText(
                             value = codeField,
@@ -201,16 +201,16 @@ fun FindPasswordPage() {
                             hint = stringResource(R.string.find_password_send_code_hint),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Ascii
+                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Ascii,
                             ),
                             singleLine = true,
                             trailingIcon = {
                                 Row(
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = 10.dp),
                                 ) {
                                     Timer(
                                         state = timerState,
@@ -219,8 +219,11 @@ fun FindPasswordPage() {
                                         Text(
                                             text = timerText,
                                             style = SNUTTTypography.subtitle2.copy(
-                                                color = if (timerState.isRunning) SNUTTColors.Red
-                                                else SNUTTColors.SNUTTTheme
+                                                color = if (timerState.isRunning) {
+                                                    SNUTTColors.Red
+                                                } else {
+                                                    SNUTTColors.SNUTTTheme
+                                                },
                                             ),
                                             modifier = Modifier.clicks {
                                                 if (timerState.isEnded) {
@@ -232,7 +235,7 @@ fun FindPasswordPage() {
                                                         }
                                                     }
                                                 }
-                                            }
+                                            },
                                         )
                                     }
                                 }
@@ -244,7 +247,7 @@ fun FindPasswordPage() {
                         if (timerState.isEnded) {
                             Text(
                                 text = stringResource(R.string.find_password_enter_verification_code_expire_message),
-                                style = SNUTTTypography.body2.copy(color = SNUTTColors.Red)
+                                style = SNUTTTypography.body2.copy(color = SNUTTColors.Red),
                             )
                         }
                     }
@@ -252,7 +255,7 @@ fun FindPasswordPage() {
                         Spacer(modifier = Modifier.height(25.dp))
                         Text(
                             text = stringResource(R.string.find_password_enter_password_label),
-                            style = SNUTTTypography.h4
+                            style = SNUTTTypography.h4,
                         )
                         EditText(
                             value = passwordField,
@@ -260,9 +263,9 @@ fun FindPasswordPage() {
                             hint = stringResource(R.string.sign_up_password_hint),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier
@@ -272,7 +275,7 @@ fun FindPasswordPage() {
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = stringResource(R.string.find_password_enter_password_confirm_label),
-                            style = SNUTTTypography.h4
+                            style = SNUTTTypography.h4,
                         )
                         EditText(
                             value = passwordConfirmField,
@@ -280,9 +283,9 @@ fun FindPasswordPage() {
                             hint = stringResource(R.string.sign_up_password_confirm_hint),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier
@@ -301,11 +304,11 @@ fun FindPasswordPage() {
                             FlowState.SendCode -> handleEnterCode()
                             FlowState.ResetPassword -> handleResetPassword()
                         }
-                    }
+                    },
                 ) {
                     Text(
                         text = stringResource(R.string.common_ok),
-                        style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite)
+                        style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
                     )
                 }
             }
@@ -327,7 +330,7 @@ fun FindPasswordPage() {
                 }
             },
             positiveButtonText = stringResource(R.string.common_ok),
-            negativeButtonText = stringResource(R.string.find_password_check_email_dialog_negative)
+            negativeButtonText = stringResource(R.string.find_password_check_email_dialog_negative),
         ) {
             Text(text = stringResource(R.string.find_password_check_email_dialog_content).format(emailResponse), style = SNUTTTypography.body1)
         }

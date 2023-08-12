@@ -19,7 +19,7 @@ internal fun BottomNavigation(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
-            .background(SNUTTColors.White900)
+            .background(SNUTTColors.White900),
     ) {
         BorderButton(
             color = SNUTTColors.White900,

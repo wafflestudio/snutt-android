@@ -67,7 +67,7 @@ class TableListViewModel @Inject constructor(
 
     suspend fun createTable(courseBook: CourseBookDto, tableName: String) {
         tableRepository.createTable(
-            year = courseBook.year, semester = courseBook.semester, title = tableName
+            year = courseBook.year, semester = courseBook.semester, title = tableName,
         )
     }
 

@@ -22,43 +22,43 @@ val SNUTTTypography @Composable get() = Typography(
         color = SNUTTColors.Black900,
         fontSize = 22.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     h2 = TextStyle(
         color = SNUTTColors.Black900,
         fontSize = 18.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     h3 = TextStyle(
         color = SNUTTColors.Black900,
         fontSize = 16.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     h4 = TextStyle(
         color = SNUTTColors.Black900,
         fontSize = 14.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     h5 = TextStyle(
         color = SNUTTColors.Black900,
         fontSize = 12.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     subtitle1 = TextStyle(
         color = SNUTTColors.Gray200,
         fontSize = 17.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     ),
     subtitle2 = TextStyle(
         color = SNUTTColors.Gray200,
         fontSize = 14.sp,
         fontFamily = SpoqaHanSans,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     ),
     button = TextStyle(
         color = SNUTTColors.Black900,
@@ -74,7 +74,7 @@ val SNUTTTypography @Composable get() = Typography(
         color = SNUTTColors.Black900,
         fontSize = 12.sp,
         fontFamily = SpoqaHanSans,
-    )
+    ),
 )
 
 // val f = TextStyle(

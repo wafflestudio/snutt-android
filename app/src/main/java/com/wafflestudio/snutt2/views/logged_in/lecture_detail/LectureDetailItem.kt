@@ -47,7 +47,7 @@ fun LectureDetailItem(
             keyboardActions = keyboardActions,
             hint = hint,
         )
-    }
+    },
 ) {
     Row(
         modifier = modifier,
@@ -71,19 +71,19 @@ fun LectureDetailItem(
 fun LectureDetailRemark(
     title: String,
     editMode: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 40.dp)
-            .padding(vertical = 10.dp)
+            .padding(vertical = 10.dp),
     ) {
         Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
+            modifier = Modifier.width(76.dp),
         )
         Box(modifier = Modifier.weight(1f)) {
             content()

@@ -74,20 +74,20 @@ fun ReviewWebView(height: Float = 1.0f, page: Boolean = false) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(height)
-            .background(SNUTTColors.White900)
+            .background(SNUTTColors.White900),
     ) {
         when (val loadState = webViewContainer.loadState.value) {
             LoadState.Error -> WebViewErrorPage(
                 modifier = Modifier.fillMaxSize(),
-                onRetry = { scope.launch { webViewContainer.reload() } }
+                onRetry = { scope.launch { webViewContainer.reload() } },
             )
             is LoadState.InitialLoading -> WebViewLoading(
                 modifier = Modifier.fillMaxSize(),
-                progress = loadState.progress / 100.0f
+                progress = loadState.progress / 100.0f,
             )
             is LoadState.Loading -> WebViewLoading(
                 modifier = Modifier.fillMaxSize(),
-                progress = loadState.progress / 100.0f
+                progress = loadState.progress / 100.0f,
             )
             LoadState.Success -> WebViewSuccess(
                 modifier = Modifier.fillMaxSize(),
@@ -107,7 +107,7 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
                     text = stringResource(id = R.string.reviews_app_bar_title),
                     style = SNUTTTypography.h2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             },
             navigationIcon = {
@@ -116,7 +116,7 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
                     isSelected = true,
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
-            }
+            },
         )
 
         Column(
@@ -129,7 +129,7 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
             Image(
                 modifier = Modifier.size(width = 50.dp, height = 58.dp),
                 painter = painterResource(id = R.drawable.ic_cat_retry),
-                contentDescription = "네트워크 연결을 확인해주세요."
+                contentDescription = "네트워크 연결을 확인해주세요.",
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -137,19 +137,19 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
             Text(
                 text = stringResource(id = R.string.reviews_error_message),
                 style = SNUTTTypography.subtitle1,
-                color = SNUTTColors.Black900
+                color = SNUTTColors.Black900,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = onRetry,
-                colors = ButtonDefaults.buttonColors(backgroundColor = SNUTTColors.Sky)
+                colors = ButtonDefaults.buttonColors(backgroundColor = SNUTTColors.Sky),
             ) {
                 Text(
                     text = stringResource(id = R.string.reviews_error_retry),
                     style = SNUTTTypography.h3,
-                    color = SNUTTColors.White900
+                    color = SNUTTColors.White900,
                 )
             }
         }
@@ -167,24 +167,28 @@ private fun WebViewSuccess(modifier: Modifier, webView: WebView, page: Boolean) 
                 webView.apply {
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                     )
                 }
                 if (!page) {
                     NestedScrollView(context).apply {
-                        if (webView.parent != null) (webView.parent as ViewGroup).removeView(
-                            webView
-                        )
+                        if (webView.parent != null) {
+                            (webView.parent as ViewGroup).removeView(
+                                webView,
+                            )
+                        }
                         addView(webView)
                     }
-                } else webView
+                } else {
+                    webView
+                }
             },
             modifier =
             if (page) {
                 Modifier
             } else {
                 Modifier.verticalScroll(scrollState)
-            }
+            },
 
         )
     }
@@ -194,14 +198,14 @@ private fun WebViewSuccess(modifier: Modifier, webView: WebView, page: Boolean) 
 private fun WebViewLoading(modifier: Modifier, progress: Float) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(2.dp),
             progress = progress,
-            color = SNUTTColors.Gray200
+            color = SNUTTColors.Gray200,
         )
     }
 }
