@@ -224,7 +224,6 @@ private fun RangeBar(
     labelArray: Array<String>,
     onChange: (Int, Int) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
 
     val tickNum = labelArray.size - 1

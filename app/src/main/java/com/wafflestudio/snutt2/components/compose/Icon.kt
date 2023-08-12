@@ -575,10 +575,10 @@ fun BookmarkPageIcon(
 fun IconWithAlertDot(
     redDotExist: Boolean = false,
     color: Color = SNUTTColors.Red,
-    Icon: @Composable (modifier: Modifier) -> Unit,
+    content: @Composable (Modifier) -> Unit,
 ) {
     Box {
-        Icon(modifier = Modifier.align(Alignment.Center))
+        content(Modifier.align(Alignment.Center))
         if (redDotExist) {
             Canvas(modifier = Modifier.size(5.dp).align(Alignment.TopEnd)) {
                 drawCircle(color)

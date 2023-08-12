@@ -72,7 +72,7 @@ fun <T> CircularPicker(
                         animatedOffset.snapTo(animatedOffset.value - delta / 4)
                     }
                 },
-                onDragStopped = { velocity ->
+                onDragStopped = { _ ->
 //                            animatedOffset.animateDecay(-velocity, decay)
                     scope.launch {
                         val offsetLeft = (animatedOffset.value % columnHeightDp.value).let {
