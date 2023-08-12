@@ -129,7 +129,6 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Deps.Version.Kotlin}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${Deps.Version.Rx3Coroutine}")
 
     // Moshi
     implementation("com.squareup.moshi:moshi:${Deps.Version.Moshi}")
@@ -144,8 +143,6 @@ dependencies {
     // RxJava
     implementation("io.reactivex.rxjava3:rxjava:${Deps.Version.RxJava}")
     implementation("io.reactivex.rxjava3:rxkotlin:${Deps.Version.RxKotlin}")
-    implementation("io.reactivex.rxjava3:rxandroid:${Deps.Version.RxAndroid}")
-    implementation("com.jakewharton.rxbinding4:rxbinding:${Deps.Version.RxBinding}")
 
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android:${Deps.Version.Hilt}")
@@ -174,7 +171,6 @@ dependencies {
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("androidx.compose.runtime:runtime-rxjava3:1.5.0")
 
     // misc
     implementation("androidx.core:core-ktx:1.10.1")
