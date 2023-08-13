@@ -266,8 +266,9 @@ fun VacancyPage(
                 },
                 contentColor = SNUTTColors.SNUTTVacancy,
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(remoteConfig.sugangSNUUrl))
-                    context.startActivity(intent)
+                    remoteConfig.sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+                    }
                 },
                 elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
