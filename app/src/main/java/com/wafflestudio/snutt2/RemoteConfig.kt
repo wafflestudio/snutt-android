@@ -48,7 +48,7 @@ class RemoteConfig @Inject constructor(
     )
 
     val friendBundleSrc: String
-        get() = config.value.reactNativeBundleSrc?.src?.get("android") ?: ""
+        get() = "http://localhost:8081/index.bundle?platform=android"// config.value.reactNativeBundleSrc?.src?.get("android") ?: ""
 
     val vacancyNotificationBannerEnabled: Boolean
         get() = config.value.vacancyBannerConfig.visible
