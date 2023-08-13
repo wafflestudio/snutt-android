@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.android.webview
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.webkit.*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -75,6 +76,18 @@ class WebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "x-os-type=android"
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-os-version=${Build.VERSION.SDK_INT}"
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-app-version=${BuildConfig.VERSION_NAME}"
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}"
             )
             setCookie(
                 reviewUrlHost,
