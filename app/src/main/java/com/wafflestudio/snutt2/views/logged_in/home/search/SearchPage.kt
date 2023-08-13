@@ -75,7 +75,6 @@ fun SearchPage(
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             searchViewModel.query()
-                            keyBoardController?.hide()
                         }
                     }
                 },
@@ -92,7 +91,6 @@ fun SearchPage(
                         scope.launch {
                             searchViewModel.clearEditText()
                             searchEditTextFocused = false
-                            keyBoardController?.hide()
                         }
                     },
                 )

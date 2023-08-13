@@ -8,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,14 +21,12 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RowScope.SearchEditText(
     searchEditTextFocused: Boolean,
     onFocus: (Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val keyBoardController = LocalSoftwareKeyboardController.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val searchViewModel: SearchViewModel = hiltViewModel()
@@ -44,10 +40,10 @@ fun RowScope.SearchEditText(
             .clearFocusOnKeyboardDismiss(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
+            onFocus(false)
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     searchViewModel.query()
-                    keyBoardController?.hide()
                 }
             }
         },),
