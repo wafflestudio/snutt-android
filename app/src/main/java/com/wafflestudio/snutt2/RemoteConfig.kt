@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2
 
-import android.util.Log
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -49,7 +48,7 @@ class RemoteConfig @Inject constructor(
     )
 
     val friendBundleSrc: String
-        get() = config.value.reactNativeBundleSrc?.src?.also { Log.d("aaaa", it.toString()) }?.get("android") ?: ""
+        get() = config.value.reactNativeBundleSrc?.src?.get("android") ?: ""//"http://localhost:8081/index.bundle?platform=android"//
 
     val vacancyNotificationBannerEnabled: Boolean
         get() = config.value.vacancyBannerConfig.visible
