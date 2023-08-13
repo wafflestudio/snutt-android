@@ -10,6 +10,7 @@ import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
+import com.swmansion.gesturehandler.react.RNGestureHandlerRootView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +46,12 @@ class ReactNativeBundleManager(
                     .setInitialLifecycleState(LifecycleState.RESUMED)
                     .setJavaScriptExecutorFactory(HermesExecutorFactory())
                     .build()
+
+                Log.d("aaaa", "hi")
                 reactRootView = ReactRootView(context).apply {
+                    addView(RNGestureHandlerRootView(context).apply {
+
+                    })
                     startReactApplication(
                         myReactInstanceManager!!,
                         FRIENDS_MODULE_NAME,
@@ -71,7 +77,7 @@ class ReactNativeBundleManager(
         val friendsBaseDir = File(baseDir, FRIENDS_MODULE_NAME)
         if (friendsBaseDir.exists().not() && friendsBaseDir.mkdir().not()) return null
 
-        val targetFileName = "android.jsbundle" //Regex(BUNDLE_FILE_NAME_REGEX).find(rnBundleFileSrc)?.groupValues?.get(1)?.plus(BUNDLE_FILE_SUFFIX) ?: return null
+        val targetFileName = Regex(BUNDLE_FILE_NAME_REGEX).find(rnBundleFileSrc)?.groupValues?.get(1)?.plus(BUNDLE_FILE_SUFFIX) ?: return null
         val targetFile = File(friendsBaseDir, targetFileName)
 
         // 최신 friends 번들 외에 전부 삭제
