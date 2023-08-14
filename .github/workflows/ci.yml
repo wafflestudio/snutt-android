@@ -36,9 +36,10 @@ jobs:
         run: |
           cd ..
           yarn install
+          yarn add react-native
+          yarn add react@18.1.0
           yarn add @react-native/gradle-plugin
           yarn add @react-native-community/cli-platform-android
-          yarn add react-native
           cd snutt-android
 
       - name: Clean build
