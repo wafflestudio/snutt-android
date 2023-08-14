@@ -34,11 +34,14 @@ jobs:
             node-version: '20.5.0'
       - name: Install dependencies
         run: |
+          pwd
           yarn install
           yarn add @react-native/gradle-plugin
           yarn add @react-native-community/cli-platform-android
       - name: Clean build
-        run: ./gradlew clean
+        run:
+          pwd
+          ./gradlew clean
       - name: Run ktlintDebug
         run: ./gradlew ktlintMainSourceSetCheck
       - name: Upload ktlint report
