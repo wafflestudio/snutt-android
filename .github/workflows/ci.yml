@@ -34,9 +34,9 @@ jobs:
             node-version: '20.5.0'
       - name: Install dependencies
         run: |
-          cd .. 
           yarn install
-          cd snutt-android
+          yarn add @react-native/gradle-plugin
+          yarn add @react-native-community/cli-platform-android
       - name: Clean build
         run: ./gradlew clean
       - name: Run ktlintDebug
