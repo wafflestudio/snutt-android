@@ -88,7 +88,7 @@ class RootActivity : AppCompatActivity() {
 
         installSplashScreen()
 
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
