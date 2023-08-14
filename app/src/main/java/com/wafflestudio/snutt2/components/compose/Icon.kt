@@ -268,6 +268,19 @@ fun PaletteIcon(
 }
 
 @Composable
+fun PinIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin),
+        contentDescription = "",
+        colorFilter = colorFilter
+    )
+}
+
+@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,

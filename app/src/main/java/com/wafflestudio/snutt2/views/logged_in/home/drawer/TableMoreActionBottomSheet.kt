@@ -54,8 +54,8 @@ fun TableMoreActionBottomSheet(
             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
         }
         MoreActionItem(
-            Icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
-            text = stringResource(R.string.home_drawer_table_delete),
+            icon = { PinIcon(modifier = Modifier.size(30.dp)) },
+            text = stringResource(R.string.home_drawer_table_set_primary)
         ) {
             scope.launch {
                 if (tableListViewModel.checkTableDeletable(table.id)) {
@@ -68,7 +68,7 @@ fun TableMoreActionBottomSheet(
             }
         }
         MoreActionItem(
-            Icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
             scope.launch(Dispatchers.Main) {
@@ -126,24 +126,40 @@ fun TableMoreActionBottomSheet(
                 }
             }
         }
+        MoreActionItem(
+            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            text = stringResource(R.string.home_drawer_table_delete),
+        ) {
+            scope.launch {
+                if (tableListViewModel.checkTableDeletable(table.id)) {
+                    showTableDeleteDialog(table.id, composableStates) { tableId ->
+                        tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
+                    }
+                } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+            }
+        }
     }
 }
 
 @Composable
 private fun MoreActionItem(
-    Icon: @Composable () -> Unit,
+    icon: @Composable () -> Unit,
     text: String,
     onClick: () -> Unit,
 ) {
-    Box(modifier = Modifier.clicks { onClick() }) {
+    Box(
+        modifier = Modifier
+            .clicks { onClick() }
+            .padding(vertical = 10.dp, horizontal = 22.dp)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
         ) {
-            Icon()
-            Spacer(modifier = Modifier.width(15.dp))
+            icon()
+            Spacer(modifier = Modifier.width(20.dp))
             Text(
                 text = text,
                 style = SNUTTTypography.body1,
