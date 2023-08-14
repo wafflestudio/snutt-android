@@ -38,9 +38,7 @@ jobs:
           yarn install
           yarn add @react-native/gradle-plugin
           yarn add @react-native-community/cli-platform-android
-          cd node_modules/@react-native-community
-          pwd
-          ls
+          cd snutt-android
 
       - name: Clean build
         run: ./gradlew clean
