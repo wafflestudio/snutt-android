@@ -33,7 +33,10 @@ jobs:
         with:
             node-version: '20.5.0'
       - name: Install dependencies
-        run: cd ..; yarn install
+        run: |
+          cd .. 
+          yarn install
+          cd snutt-android
       - name: Clean build
         run: ./gradlew clean
       - name: Run ktlintDebug
