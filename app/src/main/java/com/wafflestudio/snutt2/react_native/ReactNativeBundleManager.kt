@@ -9,10 +9,16 @@ import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
+import com.reactnativecommunity.picker.RNCPickerPackage
+import com.swmansion.gesturehandler.RNGestureHandlerPackage
+import com.swmansion.reanimated.ReanimatedPackage
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -34,25 +40,32 @@ class ReactNativeBundleManager(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            val jsBundleFile = getExistingFriendsBundleFileNameOrNull() ?: return@launch
-            withContext(Dispatchers.Main) {
-                myReactInstanceManager = ReactInstanceManager.builder()
-                    .setApplication(context.applicationContext as Application)
-                    .setCurrentActivity(context as Activity)
-                    .setJSBundleFile(jsBundleFile.absolutePath)
-                    .addPackage(MainReactPackage())
-                    .setInitialLifecycleState(LifecycleState.RESUMED)
-                    .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                    .build()
-                reactRootView = ReactRootView(context).apply {
-                    startReactApplication(
-                        myReactInstanceManager!!,
-                        FRIENDS_MODULE_NAME,
-                        Bundle().apply {
-                            putString("x-access-token", token)
-                            putString("x-access-apikey", context.getString(R.string.api_key))
-                        }
-                    )
+            remoteConfig.fetchDone.take(1).collectLatest {
+                val jsBundleFile = getExistingFriendsBundleFileNameOrNull() ?: return@collectLatest
+                withContext(Dispatchers.Main) {
+                    myReactInstanceManager = ReactInstanceManager.builder()
+                        .setApplication(context.applicationContext as Application)
+                        .setCurrentActivity(context as Activity)
+                        .setJavaScriptExecutorFactory(HermesExecutorFactory())
+                        .setJSBundleFile(jsBundleFile.absolutePath)
+                        .addPackage(MainReactPackage())
+                        .addPackage(RNGestureHandlerPackage())
+                        .addPackage(ReanimatedPackage())
+                        .addPackage(SafeAreaContextPackage())
+                        .addPackage(RNCPickerPackage())
+                        .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
+                        .build()
+
+                    reactRootView = ReactRootView(context).apply {
+                        startReactApplication(
+                            myReactInstanceManager!!,
+                            FRIENDS_MODULE_NAME,
+                            Bundle().apply {
+                                putString("x-access-token", token)
+                                putString("x-access-apikey", context.getString(R.string.api_key))
+                            }
+                        )
+                    }
                 }
             }
         }
