@@ -38,9 +38,7 @@ jobs:
           yarn install
           yarn add @react-native/gradle-plugin
           yarn add @react-native-community/cli-platform-android
-          pwd
-          ls
-          cd snutt-android
+          cd node_modules
           pwd
           ls
 
