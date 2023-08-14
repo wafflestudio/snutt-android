@@ -114,7 +114,6 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
-        prefab = true
     }
 
     composeOptions {
