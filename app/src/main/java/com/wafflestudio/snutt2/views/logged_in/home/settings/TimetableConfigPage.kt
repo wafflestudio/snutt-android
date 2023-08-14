@@ -100,12 +100,12 @@ fun TimetableConfigPage() {
                 Margin(height = 10.dp)
                 RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
                     RangeBar(
-                        initStart = trimParam.hourFrom - 8, // TODO: 24시간 개선 시 변경
-                        initEnd = trimParam.hourTo - 8, // TODO: 24시간 개선 시 변경
-                        labelArray = Array(16) { (it + 8).toString() }
+                        initStart = trimParam.hourFrom,
+                        initEnd = trimParam.hourTo,
+                        labelArray = Array(24) { it.toString() }
                     ) { start, end ->
                         scope.launch {
-                            viewModel.setHourRange(start + 8, end + 8) // TODO: 24시간 개선 시 변경
+                            viewModel.setHourRange(start, end)
                         }
                     }
                 }
