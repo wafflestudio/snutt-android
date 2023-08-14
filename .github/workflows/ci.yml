@@ -43,7 +43,9 @@ jobs:
           cd snutt-android
 
       - name: Clean build
-        run: ./gradlew clean
+        run: |
+          pwd
+          ./gradlew clean
       - name: Run ktlintDebug
         run: ./gradlew ktlintMainSourceSetCheck
       - name: Upload ktlint report
