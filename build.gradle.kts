@@ -13,6 +13,7 @@ buildscript {
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Deps.Version.Hilt}")
         classpath("com.google.firebase:firebase-appdistribution-gradle:3.0.0")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
+        classpath("com.facebook.react:react-native-gradle-plugin")
     }
 }
 

@@ -10,7 +10,6 @@ import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
 import com.horcrux.svg.SvgPackage
-import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
@@ -55,7 +54,6 @@ class ReactNativeBundleManager(
                         .addPackage(RNGestureHandlerPackage())
                         .addPackage(ReanimatedPackage())
                         .addPackage(SafeAreaContextPackage())
-                        .addPackage(RNCPickerPackage())
                         .addPackage(SvgPackage())
                         .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
                         .build()
