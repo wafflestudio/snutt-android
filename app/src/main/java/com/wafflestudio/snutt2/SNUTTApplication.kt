@@ -9,6 +9,7 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.JavaScriptExecutorFactory
 import com.facebook.react.shell.MainReactPackage
+import com.horcrux.svg.SvgPackage
 import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
@@ -46,6 +47,7 @@ class SNUTTApplication : Application(), ReactApplication {
                 RNCPickerPackage(),
                 SafeAreaContextPackage(),
                 ReanimatedPackage(),
+                SvgPackage()
             )
 
             override fun getJSMainModuleName(): String = "friends"
