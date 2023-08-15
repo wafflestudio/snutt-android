@@ -204,6 +204,15 @@ dependencies {
     // RN
     implementation("com.facebook.react:react-android:0.72.0")
     implementation("com.facebook.react:hermes-android:0.72.0")
+    implementation(
+        files(
+            "../libs/react-native-picker_picker-release.aar",
+            "../libs/react-native-gesture-handler-release.aar",
+            "../libs/react-native-screens-release.aar",
+            "../libs/react-native-safe-area-context-release.aar",
+            "../libs/react-native-reanimated-release.aar"
+        )
+    )
 }
 
 repositories {
