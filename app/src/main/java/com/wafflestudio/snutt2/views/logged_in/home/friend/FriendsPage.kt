@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -29,16 +31,31 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun FriendsPage(reactNativeBundleManager: ReactNativeBundleManager) {
     val context = LocalContext.current
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = {
-            reactNativeBundleManager.reactRootView ?: ComposeView(context).apply {
-                setContent {
-                    FriendsPagePlaceholder()
+    val bundleLoaded by reactNativeBundleManager.bundleLoadCompleteSignal.collectAsState(false)
+
+    if (bundleLoaded || reactNativeBundleManager.reactRootView == null) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                ComposeView(context).apply {
+                    setContent {
+                        FriendsPagePlaceholder()
+                    }
                 }
             }
-        }
-    )
+        )
+    } else {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                reactNativeBundleManager.reactRootView ?: ComposeView(context).apply {
+                    setContent {
+                        FriendsPagePlaceholder()
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Composable

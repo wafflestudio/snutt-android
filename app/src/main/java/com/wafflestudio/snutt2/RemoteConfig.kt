@@ -24,7 +24,7 @@ class RemoteConfig @Inject constructor(
     userRepository: UserRepository,
     apiOnError: ApiOnError,
 ) {
-    val fetchDone = MutableSharedFlow<Unit>()
+    val fetchDone = MutableSharedFlow<Unit>(replay = 1)
     private val config = callbackFlow {
         userRepository.accessToken.filter { it.isNotEmpty() }.collect {
             withContext(Dispatchers.IO) {
