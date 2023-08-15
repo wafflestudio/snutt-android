@@ -9,6 +9,7 @@ import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
+import com.horcrux.svg.SvgPackage
 import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
@@ -17,6 +18,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -32,11 +34,12 @@ class ReactNativeBundleManager(
     private val token: String,
 ) {
     private val rnBundleFileSrc: String
-        get() = remoteConfig.friendBundleSrc
+        get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
 
     private var myReactInstanceManager: ReactInstanceManager? = null
 
     var reactRootView: ReactRootView? = null
+    val bundleLoadCompleteSignal = MutableSharedFlow<Boolean>()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -53,6 +56,7 @@ class ReactNativeBundleManager(
                         .addPackage(ReanimatedPackage())
                         .addPackage(SafeAreaContextPackage())
                         .addPackage(RNCPickerPackage())
+                        .addPackage(SvgPackage())
                         .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
                         .build()
 
@@ -66,6 +70,7 @@ class ReactNativeBundleManager(
                             }
                         )
                     }
+                    bundleLoadCompleteSignal.emit(true)
                 }
             }
         }
@@ -91,7 +96,7 @@ class ReactNativeBundleManager(
             ?.filter { it.name != targetFileName }
             ?.forEach { it.delete() }
 
-        if (targetFile.exists().not() || targetFile.canRead().not()) { // TODO: 올바르지 않은 bundle 파일인지 더 정확히 판단하기
+        if (targetFile.exists().not() || targetFile.canRead().not() || USE_LOCAL_BUNDLE) { // TODO: 올바르지 않은 bundle 파일인지 더 정확히 판단하기
             try {
                 val urlConnection = URL(rnBundleFileSrc).openConnection() as HttpURLConnection
                 urlConnection.connect()
@@ -119,5 +124,8 @@ class ReactNativeBundleManager(
         const val BUNDLE_FILE_SUFFIX = "-android.jsbundle"
 
         const val FRIENDS_MODULE_NAME = "friends"
+
+        const val USE_LOCAL_BUNDLE = false
+        const val LOCAL_BUNDLE_URL = "http://localhost:8081/index.bundle?platform=android"
     }
 }
