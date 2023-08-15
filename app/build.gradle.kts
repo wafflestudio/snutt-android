@@ -1,3 +1,4 @@
+import groovy.lang.Closure
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -11,6 +12,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.firebase.appdistribution")
     id("com.google.firebase.crashlytics")
+    id("com.facebook.react")
 }
 
 ktlint {
@@ -193,19 +195,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // RN
-    implementation("com.facebook.react:react-android:0.72.0")
-    implementation("com.facebook.react:hermes-android:0.72.0")
-    implementation(
-        files(
-            "../libs/react-native-picker_picker-release.aar",
-            "../libs/react-native-gesture-handler-release.aar",
-            "../libs/react-native-screens-release.aar",
-            "../libs/react-native-safe-area-context-release.aar",
-            "../libs/react-native-reanimated-release.aar",
-            "../libs/react-native-svg-release.aar",
-        )
-    )
-
+    implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:hermes-android")
     debugImplementation("com.facebook.flipper:flipper:0.213.0")
     debugImplementation("com.facebook.soloader:soloader:0.10.5")
 }
@@ -213,3 +204,9 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply {
+    from(File("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"))
+}
+val applyNativeModules: Closure<Any> = extra.get("applyNativeModulesAppBuildGradle") as Closure<Any>
+applyNativeModules(project)

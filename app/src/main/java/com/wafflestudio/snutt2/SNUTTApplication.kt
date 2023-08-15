@@ -15,7 +15,6 @@ import com.facebook.react.bridge.JavaScriptExecutorFactory
 import com.facebook.react.shell.MainReactPackage
 import com.facebook.soloader.SoLoader
 import com.horcrux.svg.SvgPackage
-import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
 import com.swmansion.rnscreens.RNScreensPackage
@@ -56,7 +55,6 @@ class SNUTTApplication : Application(), ReactApplication {
                 MainReactPackage(),
                 RNScreensPackage(),
                 RNGestureHandlerPackage(),
-                RNCPickerPackage(),
                 SafeAreaContextPackage(),
                 ReanimatedPackage(),
                 SvgPackage()
