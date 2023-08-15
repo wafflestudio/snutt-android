@@ -88,7 +88,9 @@ class ReactNativeBundleManager(
         val friendsBaseDir = File(baseDir, FRIENDS_MODULE_NAME)
         if (friendsBaseDir.exists().not() && friendsBaseDir.mkdir().not()) return null
 
-        val targetFileName = Regex(BUNDLE_FILE_NAME_REGEX).find(rnBundleFileSrc)?.groupValues?.get(1)?.plus(BUNDLE_FILE_SUFFIX) ?: return null
+        val targetFileName =
+            if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_FILE_NAME
+            else Regex(BUNDLE_FILE_NAME_REGEX).find(rnBundleFileSrc)?.groupValues?.get(1)?.plus(BUNDLE_FILE_SUFFIX) ?: return null
         val targetFile = File(friendsBaseDir, targetFileName)
 
         // 최신 friends 번들 외에 전부 삭제
@@ -125,7 +127,8 @@ class ReactNativeBundleManager(
 
         const val FRIENDS_MODULE_NAME = "friends"
 
-        const val USE_LOCAL_BUNDLE = false
+        const val USE_LOCAL_BUNDLE = true
+        const val LOCAL_BUNDLE_FILE_NAME = "android.jsbundle"
         const val LOCAL_BUNDLE_URL = "http://localhost:8081/index.bundle?platform=android"
     }
 }
