@@ -201,7 +201,8 @@ dependencies {
             "../libs/react-native-gesture-handler-release.aar",
             "../libs/react-native-screens-release.aar",
             "../libs/react-native-safe-area-context-release.aar",
-            "../libs/react-native-reanimated-release.aar"
+            "../libs/react-native-reanimated-release.aar",
+            "../libs/react-native-svg-release.aar",
         )
     )
 }
