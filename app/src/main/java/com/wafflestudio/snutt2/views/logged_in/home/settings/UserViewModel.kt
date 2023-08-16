@@ -9,7 +9,6 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,8 +61,8 @@ class UserViewModel @Inject constructor(
         userRepository.putUserPassword(oldPassword, newPassword)
     }
 
-    suspend fun changeEmail(email: String) {
-        userRepository.putUserInfo(email)
+    suspend fun changeNickname(nickname: String) {
+        userRepository.patchUserInfo(nickname)
     }
 
     suspend fun fetchUserFacebook(): GetUserFacebookResults {

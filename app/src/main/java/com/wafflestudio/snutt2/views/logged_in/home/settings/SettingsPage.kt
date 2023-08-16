@@ -238,7 +238,7 @@ fun SettingColumn(
         if (title.isNotEmpty()) {
             Text(
                 text = title,
-                modifier = Modifier.padding(start = 35.dp),
+                modifier = Modifier.padding(start = 30.dp),
                 style = SNUTTTypography.body2.copy(
                     color = SNUTTColors.SettingColumnTitle,
                 ),

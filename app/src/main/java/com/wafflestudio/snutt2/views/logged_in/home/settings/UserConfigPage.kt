@@ -9,9 +9,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,9 +27,7 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -44,6 +44,7 @@ fun UserConfigPage() {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val clipboardManager = LocalClipboardManager.current
 
     val viewModel = hiltViewModel<UserViewModel>()
     val user: UserDto? by viewModel.userInfo.collectAsState()
@@ -107,9 +108,36 @@ fun UserConfigPage() {
         )
         Margin(height = 10.dp)
         SettingColumn {
+            SettingItem(
+                title = stringResource(R.string.settings_user_config_change_nickname),
+                onClick = {
+                    navController.navigate(NavigationDestination.ChangeNickname)
+                }
+            ) {
+                Text(
+                    text = user?.nickname.toString(),
+                    style = SNUTTTypography.body1.copy(
+                        color = SNUTTColors.Black500
+                    )
+                )
+            }
+            SettingItem(
+                title = stringResource(R.string.settings_user_config_copy_nickname),
+                hasNextPage = false,
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
+                }
+            ) {
+                DuplicateIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+        Margin(height = 10.dp)
+        SettingColumn {
             if (user?.localId.isNullOrEmpty().not()) {
                 SettingItem(
-                    title = stringResource(R.string.sign_in_id_title),
+                    title = stringResource(R.string.settings_user_config_id),
                     hasNextPage = false,
                 ) {
                     Text(
