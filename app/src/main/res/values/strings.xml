@@ -235,8 +235,8 @@
     <string name="settings_user_config_disconnect_facebook_message">페이스북 연동을 끊겠습니까?</string>
     <string name="settings_change_nickname_app_bar_title">닉네임 변경</string>
     <string name="settings_change_nickname_app_bar_save">저장</string>
-    <string name="settings_change_nickname_title">닉네임(공백 포함 한/영 2~10자)</string>
-    <string name="settings_change_nickname_hint">공백 포함 한/영 2~10자</string>
+    <string name="settings_change_nickname_title">닉네임(공백 포함 한/영 10자 이내)</string>
+    <string name="settings_change_nickname_hint">공백 포함 한/영 10자 이내</string>
     <string name="settings_change_nickname_guide">최초 닉네임은 가입 시 임의 부여된 닉네임으로, 앞의 이름을 변경할 시 4자리 숫자 태그는 자동 변경됩니다.</string>
     <string name="settings_change_nickname_requirement_title">닉네임 조건</string>
     <string name="settings_change_nickname_requirement_0">불완전한 한글(예: ㄱ, ㅏ)은 포함될 수 없습니다.</string>
