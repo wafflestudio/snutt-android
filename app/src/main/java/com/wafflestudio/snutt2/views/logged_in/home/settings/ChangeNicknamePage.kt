@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.toDp
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -118,27 +119,24 @@ fun ChangeNicknamePage() {
                 ),
             )
             Margin(30.dp)
-            Text(
-                text = stringResource(R.string.settings_change_nickname_requirement_title),
-                style = SNUTTTypography.h5.copy(
-                    color = SNUTTColors.Black500,
-                ),
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(ParagraphStyle(textIndent = TextIndent(restLine = 12.sp), lineHeight = 19.2.sp)) {
-                        nicknameRequirementTexts.forEach {
-                            append("\u2022")
-                            append("\t\t")
-                            append(it)
-                            append("\n")
-                        }
-                    }
-                },
-                style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.Black500,
-                ),
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.sp.toDp())
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_change_nickname_requirement_title),
+                    style = SNUTTTypography.h5.copy(
+                        color = SNUTTColors.Black500,
+                    ),
+                )
+                nicknameRequirementTexts.forEach {
+                    BulletedParagraph(
+                        text = it,
+                        style = SNUTTTypography.body2.copy(
+                            color = SNUTTColors.Black500,
+                        )
+                    )
+                }
+            }
         }
     }
 }
@@ -175,7 +173,7 @@ fun NicknameEditText(
             underlineEnabled = false,
             textStyle = SNUTTTypography.body1.copy(
                 fontSize = 16.sp,
-            )
+            ),
         )
         if (isFocused) {
             CloseCircleIcon(
@@ -195,4 +193,21 @@ fun NicknameEditText(
             )
         )
     }
+}
+
+@Composable
+fun BulletedParagraph(
+    text: String,
+    style: TextStyle,
+) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(ParagraphStyle(textIndent = TextIndent(restLine = style.fontSize))) {
+                append("\u2022")
+                append("\t\t")
+                append(text)
+            }
+        },
+        style = style,
+    )
 }
