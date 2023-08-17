@@ -254,4 +254,9 @@ interface SNUTTRestApi {
 
     @GET("/v1/configs")
     suspend fun _getRemoteConfig(): GetRemoteConfigResponse
+
+    @POST("/v1/tables/{id}/primary")
+    suspend fun _postPrimaryTable(
+        @Path("id") tableId: String
+    )
 }

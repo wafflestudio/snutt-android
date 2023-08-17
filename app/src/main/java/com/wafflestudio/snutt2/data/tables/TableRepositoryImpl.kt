@@ -81,4 +81,8 @@ class TableRepositoryImpl @Inject constructor(
         val response = api._copyTable(id)
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
+
+    override suspend fun setTablePrimary(id: String) {
+        api._postPrimaryTable(id)
+    }
 }

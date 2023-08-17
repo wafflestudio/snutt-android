@@ -58,12 +58,10 @@ fun TableMoreActionBottomSheet(
             text = stringResource(R.string.home_drawer_table_set_primary)
         ) {
             scope.launch {
-                if (tableListViewModel.checkTableDeletable(table.id)) {
-                    showTableDeleteDialog(table.id, composableStates) { tableId ->
-                        tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
-                    }
-                } else {
-                    context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    tableListViewModel.setTablePrimary(table.id)
+                    tableListViewModel.fetchTableMap()
+                    bottomSheet.hide()
                 }
             }
         }

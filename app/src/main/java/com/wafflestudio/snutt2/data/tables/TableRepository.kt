@@ -23,4 +23,6 @@ interface TableRepository {
     suspend fun updateTableTheme(id: String, theme: TimetableColorTheme)
 
     suspend fun copyTable(id: String)
+
+    suspend fun setTablePrimary(id: String)
 }

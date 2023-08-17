@@ -105,4 +105,8 @@ class TableListViewModel @Inject constructor(
                 it.id == tableId
             }.first()
     }
+
+    suspend fun setTablePrimary(tableId: String) {
+        tableRepository.setTablePrimary(tableId)
+    }
 }
