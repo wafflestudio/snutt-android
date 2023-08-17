@@ -40,6 +40,7 @@ fun ChangeNicknamePage() {
     val userViewModel = hiltViewModel<UserViewModel>()
 
     val user by userViewModel.userInfo.collectAsState()
+    val initialNickname = user?.nickname?.nickname ?: ""
     var nicknameField by remember { mutableStateOf(user?.nickname?.nickname ?: "") }
     val nicknameRequirementTexts = listOf(
         stringResource(R.string.settings_change_nickname_requirement_0),
@@ -87,10 +88,10 @@ fun ChangeNicknamePage() {
                 Text(
                     text = stringResource(R.string.settings_change_nickname_app_bar_save),
                     style = SNUTTTypography.body1,
-                    color = if (nicknameField.isEmpty()) SNUTTColors.Black500 else SNUTTColors.Black900,
+                    color = if (nicknameField.isEmpty() || nicknameField == initialNickname) SNUTTColors.Black500 else SNUTTColors.Black900,
                     modifier = Modifier
                         .clicks {
-                            if (nicknameField.isNotEmpty())
+                            if (nicknameField.isNotEmpty() && nicknameField != initialNickname)
                                 handleChangeNickname()
                         }
                 )
@@ -104,6 +105,7 @@ fun ChangeNicknamePage() {
                 value = nicknameField,
                 onValueChange = { nicknameField = it },
                 onDone = { handleChangeNickname() },
+                hint = initialNickname,
             )
         }
         Margin(12.dp)
@@ -150,6 +152,7 @@ fun NicknameEditText(
     value: String,
     onValueChange: (String) -> Unit,
     onDone: (KeyboardActionScope.() -> Unit),
+    hint: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -171,7 +174,7 @@ fun NicknameEditText(
             keyboardActions = KeyboardActions(onDone = onDone),
             value = value,
             onValueChange = onValueChange,
-            hint = stringResource(R.string.settings_change_nickname_hint),
+            hint = hint,
             underlineEnabled = false,
             textStyle = SNUTTTypography.body1.copy(
                 fontSize = 16.sp,
