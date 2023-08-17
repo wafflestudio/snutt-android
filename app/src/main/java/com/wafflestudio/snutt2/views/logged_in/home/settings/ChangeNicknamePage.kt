@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextIndent
@@ -103,7 +104,6 @@ fun ChangeNicknamePage() {
                 value = nicknameField,
                 onValueChange = { nicknameField = it },
                 onDone = { handleChangeNickname() },
-                tag = user?.nickname?.tag ?: ""
             )
         }
         Margin(12.dp)
@@ -127,11 +127,12 @@ fun ChangeNicknamePage() {
             )
             Text(
                 text = buildAnnotatedString {
-                    nicknameRequirementTexts.forEach {
-                        withStyle(ParagraphStyle(textIndent = TextIndent(restLine = 12.sp))) {
+                    withStyle(ParagraphStyle(textIndent = TextIndent(restLine = 12.sp), lineHeight = 19.2.sp)) {
+                        nicknameRequirementTexts.forEach {
                             append("\u2022")
                             append("\t\t")
                             append(it)
+                            append("\n")
                         }
                     }
                 },
@@ -149,7 +150,6 @@ fun NicknameEditText(
     value: String,
     onValueChange: (String) -> Unit,
     onDone: (KeyboardActionScope.() -> Unit),
-    tag: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -188,7 +188,7 @@ fun NicknameEditText(
             )
         }
         Text(
-            text = "#$tag",
+            text = "#NNNN",
             style = SNUTTTypography.body1.copy(
                 color = SNUTTColors.Black500,
                 fontSize = 16.sp,
