@@ -129,7 +129,7 @@ fun TableMoreActionBottomSheet(
             text = stringResource(R.string.home_drawer_table_delete),
         ) {
             scope.launch {
-                if (tableListViewModel.checkTableDeletable(table.id)) {
+                if (tableListViewModel.checkTableDeletable()) {
                     showTableDeleteDialog(table.id, composableStates) { tableId ->
                         tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
                     }
