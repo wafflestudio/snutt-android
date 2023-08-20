@@ -281,6 +281,19 @@ fun PinIcon(
 }
 
 @Composable
+fun PinOffIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin_off),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -593,7 +606,9 @@ fun IconWithAlertDot(
     Box {
         content(Modifier.align(Alignment.Center))
         if (redDotExist) {
-            Canvas(modifier = Modifier.size(5.dp).align(Alignment.TopEnd)) {
+            Canvas(modifier = Modifier
+                .size(5.dp)
+                .align(Alignment.TopEnd)) {
                 drawCircle(color)
             }
         }

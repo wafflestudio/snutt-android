@@ -53,15 +53,27 @@ fun TableMoreActionBottomSheet(
         ) {
             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
         }
-        MoreActionItem(
-            icon = { PinIcon(modifier = Modifier.size(30.dp)) },
-            text = stringResource(R.string.home_drawer_table_set_primary)
-        ) {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    tableListViewModel.setTablePrimary(table.id)
-                    tableListViewModel.fetchTableMap()
+        if (table.isPrimary) {
+            MoreActionItem(
+                icon = { PinOffIcon(modifier = Modifier.size(30.dp)) },
+                text = stringResource(R.string.home_drawer_table_unset_primary)
+            ) {
+                scope.launch {
+                    //TODO: API 호출
                     bottomSheet.hide()
+                }
+            }
+        } else {
+            MoreActionItem(
+                icon = { PinIcon(modifier = Modifier.size(30.dp)) },
+                text = stringResource(R.string.home_drawer_table_set_primary)
+            ) {
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        tableListViewModel.setTablePrimary(table.id)
+                        tableListViewModel.fetchTableMap()
+                        bottomSheet.hide()
+                    }
                 }
             }
         }
