@@ -11,7 +11,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,13 +58,13 @@ fun DrawerTableItem(
                     }
                 },
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             VividCheckedIcon(
                 modifier = Modifier
                     .size(15.dp)
                     .alpha(if (selected) 1f else 0f),
             )
-            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 modifier = Modifier.weight(1f, fill = false),
                 text = table.title,
@@ -69,7 +72,6 @@ fun DrawerTableItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(
                     R.string.home_drawer_table_credit, table.totalCredit ?: 0L,
@@ -123,14 +125,21 @@ fun PrimaryTableBadge(
             .border(
                 width = 1.dp,
                 color = SNUTTColors.SNUTTTheme,
-                shape = RoundedCornerShape(2.dp)
+                shape = RoundedCornerShape(10.dp)
             )
-            .padding(horizontal = 3.dp, vertical = 1.dp),
+            .padding(horizontal = 5.dp, vertical = 2.dp),
         text = "대표",
+        textAlign = TextAlign.Center,
         style = SNUTTTypography.body2
             .copy(
                 color = SNUTTColors.SNUTTTheme,
-                fontSize = 9.sp
+                fontSize = 8.sp,
             )
     )
+}
+
+@Preview
+@Composable
+fun PrimaryBadgePreview() {
+    PrimaryTableBadge()
 }
