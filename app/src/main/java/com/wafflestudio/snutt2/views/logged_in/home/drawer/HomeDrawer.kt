@@ -92,7 +92,7 @@ fun HomeDrawer() {
             Spacer(modifier = Modifier.width(10.dp))
         }
         LazyColumn {
-            items(items = courseBooksWhichHaveTable, key = {it.year*10 + it.semester}) { courseBook ->
+            items(items = courseBooksWhichHaveTable, key = { it.year * 10 + it.semester }) { courseBook ->
                 var expanded by remember(table) { mutableStateOf(courseBook.year == table.year && courseBook.semester == table.semester) }
                 val rotation by animateFloatAsState(if (expanded) -180f else 0f)
                 Row(

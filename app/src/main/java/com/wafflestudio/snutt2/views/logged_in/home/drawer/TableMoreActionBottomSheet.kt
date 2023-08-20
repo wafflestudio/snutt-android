@@ -59,7 +59,7 @@ fun TableMoreActionBottomSheet(
                 text = stringResource(R.string.home_drawer_table_unset_primary)
             ) {
                 scope.launch {
-                    //TODO: API 호출
+                    // TODO: API 호출
                     bottomSheet.hide()
                 }
             }

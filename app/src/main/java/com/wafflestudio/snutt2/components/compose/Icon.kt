@@ -606,9 +606,11 @@ fun IconWithAlertDot(
     Box {
         content(Modifier.align(Alignment.Center))
         if (redDotExist) {
-            Canvas(modifier = Modifier
-                .size(5.dp)
-                .align(Alignment.TopEnd)) {
+            Canvas(
+                modifier = Modifier
+                    .size(5.dp)
+                    .align(Alignment.TopEnd)
+            ) {
                 drawCircle(color)
             }
         }
