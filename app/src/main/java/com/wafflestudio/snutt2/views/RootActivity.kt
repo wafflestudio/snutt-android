@@ -229,7 +229,23 @@ class RootActivity : AppCompatActivity() {
                     BookmarkPage(searchViewModel, vacancyViewModel)
                 }
 
-                settingcomposable2(navController)
+//                settingcomposable2(navController)
+
+                composable2(NavigationDestination.AppReport) { AppReportPage() }
+                composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
+                composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
+                composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
+                composable2(NavigationDestination.UserConfig) { UserConfigPage() }
+                composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
+                composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
+                composable2(NavigationDestination.VacancyNotification) {
+                    val parentEntry = remember(it) {
+                        navController.getBackStackEntry(NavigationDestination.Home)
+                    }
+                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+                    VacancyPage(vacancyViewModel)
+                }
+                if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
             }
         }
     }
@@ -301,21 +317,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
-        composable2(NavigationDestination.AppReport) { AppReportPage() }
-        composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
-        composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
-        composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
-        composable2(NavigationDestination.UserConfig) { UserConfigPage() }
-        composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
-        composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
-        composable2(NavigationDestination.VacancyNotification) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-            VacancyPage(vacancyViewModel)
-        }
-        if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
+
     }
 
     // 안드 13 대응
