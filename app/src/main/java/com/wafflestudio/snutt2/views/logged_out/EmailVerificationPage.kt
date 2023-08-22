@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -43,7 +42,6 @@ fun EmailVerificationPage() {
     val apiOnError = LocalApiOnError.current
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
     val coroutineScope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
 
@@ -75,24 +73,19 @@ fun EmailVerificationPage() {
         }
     }
 
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                when (flowState) {
-                    VerifyEmailState.AskContinue -> navController.navigateAsOrigin(NavigationDestination.Home)
-                    VerifyEmailState.SendCode -> {
-                        flowState = VerifyEmailState.AskContinue
-                        codeField = ""
-                        timerState.reset()
-                    }
-                }
+    val onBackPressed: () -> Unit = {
+        when (flowState) {
+            VerifyEmailState.AskContinue -> navController.navigateAsOrigin(NavigationDestination.Home)
+            VerifyEmailState.SendCode -> {
+                flowState = VerifyEmailState.AskContinue
+                codeField = ""
+                timerState.reset()
             }
         }
     }
 
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+    BackHandler {
+        onBackPressed()
     }
 
     Column(
@@ -102,7 +95,7 @@ fun EmailVerificationPage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.verify_email_app_bar_title),
-            onClickNavigateBack = { onBackPressedCallback.handleOnBackPressed() }
+            onClickNavigateBack = { onBackPressed() }
         )
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
