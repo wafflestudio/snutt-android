@@ -44,7 +44,6 @@ fun ChangeNicknamePage() {
         stringResource(R.string.settings_change_nickname_requirement_0),
         stringResource(R.string.settings_change_nickname_requirement_1),
         stringResource(R.string.settings_change_nickname_requirement_2),
-        stringResource(R.string.settings_change_nickname_requirement_3),
     )
 
     val onBackPressed = {
