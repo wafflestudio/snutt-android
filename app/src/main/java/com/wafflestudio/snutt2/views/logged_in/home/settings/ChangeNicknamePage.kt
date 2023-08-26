@@ -187,7 +187,7 @@ fun NicknameEditText(
         Text(
             text = "#NNNN",
             style = SNUTTTypography.body1.copy(
-                color = SNUTTColors.Black500,
+                color = SNUTTColors.Black300,
                 fontSize = 16.sp,
             )
         )
