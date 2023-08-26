@@ -354,7 +354,7 @@ fun ReviewIcon(
 }
 
 @Composable
-fun PeopleIcon(
+fun BigPeopleIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
@@ -368,6 +368,32 @@ fun PeopleIcon(
                 R.drawable.ic_people_unselected
             },
         ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PeopleIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_people_on),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PeopleOffIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_people_off),
         contentDescription = "",
         colorFilter = colorFilter,
     )

@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,12 @@ fun TableMoreActionBottomSheet(
         }
         if (table.isPrimary) {
             MoreActionItem(
-                icon = { PinOffIcon(modifier = Modifier.size(30.dp)) },
+                icon = {
+                    PeopleOffIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
                 text = stringResource(R.string.home_drawer_table_unset_primary)
             ) {
                 scope.launch {
@@ -65,7 +71,12 @@ fun TableMoreActionBottomSheet(
             }
         } else {
             MoreActionItem(
-                icon = { PinIcon(modifier = Modifier.size(30.dp)) },
+                icon = {
+                    PeopleIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
                 text = stringResource(R.string.home_drawer_table_set_primary)
             ) {
                 scope.launch {
