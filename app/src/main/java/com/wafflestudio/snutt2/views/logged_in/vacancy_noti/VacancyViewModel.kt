@@ -30,10 +30,6 @@ class VacancyViewModel @Inject constructor(
     val firstVacancyVisit
         get() = vacancyRepository.firstVacancyVisit
 
-    val vacancyBannerOpened = vacancyRepository.vacancyBannerOpenTime.map { nextOpenTime ->
-        System.currentTimeMillis() >= nextOpenTime
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
     @Inject
     lateinit var apiOnError: ApiOnError
 
@@ -95,9 +91,5 @@ class VacancyViewModel @Inject constructor(
         if (firstVacancyVisit.value) {
             vacancyRepository.setVacancyVisited()
         }
-    }
-
-    suspend fun closeVacancyBanner() {
-        vacancyRepository.updateVacancyBannerOpenTime()
     }
 }

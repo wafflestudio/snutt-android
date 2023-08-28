@@ -6,7 +6,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -26,7 +25,6 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,11 +39,8 @@ fun TimetablePage() {
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val userViewModel = hiltViewModel<UserViewModel>()
-    val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
-    val vacancyBannerOpened by vacancyViewModel.vacancyBannerOpened.collectAsState()
-    val shouldShowVacancyBanner = remoteConfig.vacancyNotificationBannerEnabled && vacancyBannerOpened
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
@@ -103,7 +98,7 @@ fun TimetablePage() {
                                 view,
                                 context,
                                 topBarHeight,
-                                if (shouldShowVacancyBanner) bannerHeight else 0,
+                                if (remoteConfig.vacancyNotificationBannerEnabled) bannerHeight else 0,
                                 timetableHeight
                             )
                         },
@@ -121,15 +116,10 @@ fun TimetablePage() {
                 }
             }
         )
-        if (shouldShowVacancyBanner) {
+        if (remoteConfig.vacancyNotificationBannerEnabled) {
             VacancyBanner(
                 onClick = {
                     navController.navigate(NavigationDestination.VacancyNotification)
-                },
-                onClose = {
-                    scope.launch {
-                        vacancyViewModel.closeVacancyBanner()
-                    }
                 },
                 modifier = Modifier
                     .onGloballyPositioned { bannerHeight = it.size.height }
@@ -149,7 +139,6 @@ fun TimetablePage() {
 @Composable
 fun VacancyBanner(
     onClick: () -> Unit,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -183,15 +172,6 @@ fun VacancyBanner(
                 )
             )
         }
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
-        TipCloseIcon(
-            modifier = Modifier
-                .size(11.dp)
-                .clicks { onClose() },
-            colorFilter = ColorFilter.tint(SNUTTColors.AllWhite)
-        )
     }
 }
 
