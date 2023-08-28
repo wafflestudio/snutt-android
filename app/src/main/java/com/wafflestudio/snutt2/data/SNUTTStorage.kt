@@ -158,16 +158,6 @@ class SNUTTStorage @Inject constructor(
         )
     )
 
-    val vacancyBannerOpenTime = PrefValue<Long>(
-        prefContext,
-        PrefValueMetaData(
-            domain = DOMAIN_SCOPE_LOGIN,
-            key = "vacancy_banner_open_time",
-            type = Long::class.java,
-            defaultValue = 0
-        )
-    )
-
     fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)
