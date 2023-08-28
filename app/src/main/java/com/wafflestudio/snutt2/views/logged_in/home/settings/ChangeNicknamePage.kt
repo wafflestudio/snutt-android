@@ -104,7 +104,7 @@ fun ChangeNicknamePage() {
                 onDone = {
                     if (nicknameField.isNotEmpty() && nicknameField != initialNickname)
                         handleChangeNickname()
-                 },
+                },
                 hint = initialNickname,
             )
         }
