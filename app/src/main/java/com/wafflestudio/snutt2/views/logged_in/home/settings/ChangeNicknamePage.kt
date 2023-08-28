@@ -101,7 +101,10 @@ fun ChangeNicknamePage() {
             NicknameEditText(
                 value = nicknameField,
                 onValueChange = { nicknameField = it },
-                onDone = { handleChangeNickname() },
+                onDone = {
+                    if (nicknameField.isNotEmpty() && nicknameField != initialNickname)
+                        handleChangeNickname()
+                 },
                 hint = initialNickname,
             )
         }
