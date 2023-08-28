@@ -2,8 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.reviews
 
 import android.view.ViewGroup
 import android.webkit.WebView
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,8 +13,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,23 +40,17 @@ import kotlinx.coroutines.launch
 fun ReviewPage() {
     val webViewContainer = LocalReviewWebView.current
     val homePageController = LocalHomePageController.current
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
 
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (webViewContainer.webView.canGoBack()) {
-                    webViewContainer.webView.goBack()
-                } else {
-                    homePageController.update(HomeItem.Timetable)
-                }
-            }
+    val onBackPressed: () -> Unit = {
+        if (webViewContainer.webView.canGoBack()) {
+            webViewContainer.webView.goBack()
+        } else {
+            homePageController.update(HomeItem.Timetable)
         }
     }
 
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+    BackHandler {
+        onBackPressed()
     }
 
     ReviewWebView(page = true)

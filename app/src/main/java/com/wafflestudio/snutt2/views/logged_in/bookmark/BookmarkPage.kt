@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.bookmark
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -74,21 +73,16 @@ fun BookmarkPage(
     }
 
     /* 뒤로가기 핸들링 */
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (bottomSheet.isVisible) {
-                    scope.launch { bottomSheet.hide() }
-                } else if (navController.currentDestination?.route == NavigationDestination.Bookmark) {
-                    navController.popBackStack()
-                }
-            }
+    val onBackPressed: () -> Unit = {
+        if (bottomSheet.isVisible) {
+            scope.launch { bottomSheet.hide() }
+        } else if (navController.currentDestination?.route == NavigationDestination.Bookmark) {
+            navController.popBackStack()
         }
     }
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+
+    BackHandler {
+        onBackPressed()
     }
 
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
@@ -113,7 +107,7 @@ fun BookmarkPage(
                     .background(SNUTTColors.White900)
                     .fillMaxWidth()
             ) {
-                SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { onBackPressedCallback.handleOnBackPressed() })
+                SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { onBackPressed() })
                 Box(
                     modifier = Modifier
                         .weight(1f)

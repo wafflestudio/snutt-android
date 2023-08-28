@@ -2,8 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
@@ -98,38 +97,34 @@ fun LectureDetailPage(
     val bottomSheet = bottomSheet()
 
     /* 뒤로가기 핸들링 */
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (bottomSheet.isVisible) {
-                    scope.launch { bottomSheet.hide() }
-                } else when (modeType) {
-                    ModeType.Normal -> {
-                        if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
-                            navController.popBackStack()
-                        }
-                    }
-                    is ModeType.Editing -> {
-                        if ((modeType as ModeType.Editing).adding) {
-                            navController.popBackStack()
-                        } else {
-                            showExitEditModeDialog(composableStates, onConfirm = {
-                                vm.abandonEditingLectureDetail()
-                            })
-                        }
-                    }
-                    ModeType.Viewing -> {
-                        onCloseViewMode(scope)
-                    }
+    val onBackPressed: () -> Unit = {
+        if (bottomSheet.isVisible) {
+            scope.launch { bottomSheet.hide() }
+        } else when (modeType) {
+            ModeType.Normal -> {
+                if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
+                    navController.popBackStack()
                 }
+            }
+            is ModeType.Editing -> {
+                if ((modeType as ModeType.Editing).adding) {
+                    navController.popBackStack()
+                } else {
+                    showExitEditModeDialog(composableStates, onConfirm = {
+                        vm.abandonEditingLectureDetail()
+                    })
+                }
+            }
+            ModeType.Viewing -> {
+                onCloseViewMode(scope)
             }
         }
     }
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+
+    BackHandler {
+        onBackPressed()
     }
+
     /* TODO (진행중)
      * 시간 및 장소 item 추가했을 때 애니메이션 적용하기 (LazyColumn 의 기능 모방)
      * 추가시 애니메이션은 되는데 삭제시는 방법을 고민중
@@ -176,7 +171,7 @@ fun LectureDetailPage(
                         modifier = Modifier
                             .size(30.dp)
                             .clicks {
-                                onBackPressedCallback.handleOnBackPressed()
+                                onBackPressed()
                             },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
