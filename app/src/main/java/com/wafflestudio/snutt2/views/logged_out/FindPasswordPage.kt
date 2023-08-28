@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -124,25 +124,20 @@ fun FindPasswordPage() {
         }
     }
 
-    val onBackPressedCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                when (flowState) {
-                    FlowState.CheckEmail -> navController.popBackStack()
-                    FlowState.SendCode -> {
-                        flowState = FlowState.CheckEmail
-                        codeField = ""
-                        timerState.reset()
-                    }
-                    FlowState.ResetPassword -> flowState = FlowState.SendCode
-                }
+    val onBackPressed: () -> Unit = {
+        when (flowState) {
+            FlowState.CheckEmail -> navController.popBackStack()
+            FlowState.SendCode -> {
+                flowState = FlowState.CheckEmail
+                codeField = ""
+                timerState.reset()
             }
+            FlowState.ResetPassword -> flowState = FlowState.SendCode
         }
     }
 
-    DisposableEffect(Unit) {
-        onBackPressedDispatcherOwner?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
-        onDispose { onBackPressedCallback.remove() }
+    BackHandler {
+        onBackPressed()
     }
 
     Column(
@@ -151,9 +146,7 @@ fun FindPasswordPage() {
             .background(SNUTTColors.White900)
             .clicks { focusManager.clearFocus() }
     ) {
-        SimpleTopBar(title = stringResource(R.string.find_password_title), onClickNavigateBack = {
-            onBackPressedCallback.handleOnBackPressed()
-        })
+        SimpleTopBar(title = stringResource(R.string.find_password_title), onClickNavigateBack = { onBackPressed() })
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
                 when (targetState) {
