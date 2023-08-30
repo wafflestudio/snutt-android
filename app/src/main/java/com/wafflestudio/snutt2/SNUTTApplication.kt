@@ -3,12 +3,17 @@ package com.wafflestudio.snutt2
 import android.app.Application
 import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalAnimationApi
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.flipper.plugins.inspector.DescriptorMapping
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.JavaScriptExecutorFactory
 import com.facebook.react.shell.MainReactPackage
+import com.facebook.soloader.SoLoader
 import com.horcrux.svg.SvgPackage
 import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
@@ -28,6 +33,13 @@ class SNUTTApplication : Application(), ReactApplication {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
+        SoLoader.init(this, false)
+
+        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+            val client = AndroidFlipperClient.getInstance(this)
+            client.addPlugin(InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()))
+            client.start()
+        }
     }
 
     @OptIn(ExperimentalAnimationApi::class)

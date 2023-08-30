@@ -37,7 +37,6 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
@@ -80,9 +79,9 @@ class RootActivity : AppCompatActivity() {
 
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
-    private val friendBundleManager by lazy {
-        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken.value)
-    }
+//    private val friendBundleManager by lazy {
+//        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken.value)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -201,7 +200,7 @@ class RootActivity : AppCompatActivity() {
             ) {
                 onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage(friendBundleManager) }
+                composableRoot(NavigationDestination.Home) { HomePage() }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 
