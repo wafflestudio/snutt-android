@@ -205,6 +205,9 @@ dependencies {
             "../libs/react-native-svg-release.aar",
         )
     )
+
+    debugImplementation("com.facebook.flipper:flipper:0.213.0")
+    debugImplementation("com.facebook.soloader:soloader:0.10.5")
 }
 
 repositories {
