@@ -116,4 +116,8 @@ class TableListViewModel @Inject constructor(
     suspend fun setTablePrimary(tableId: String) {
         tableRepository.setTablePrimary(tableId)
     }
+
+    suspend fun setTableNotPrimary(tableId: String) {
+        tableRepository.setTableNotPrimary(tableId)
+    }
 }

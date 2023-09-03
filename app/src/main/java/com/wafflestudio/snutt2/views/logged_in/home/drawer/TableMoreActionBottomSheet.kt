@@ -62,11 +62,14 @@ fun TableMoreActionBottomSheet(
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
-                text = stringResource(R.string.home_drawer_table_unset_primary)
+                text = stringResource(R.string.home_drawer_table_set_not_primary)
             ) {
                 scope.launch {
-                    // TODO: API 호출
-                    bottomSheet.hide()
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        tableListViewModel.setTableNotPrimary(table.id)
+                        tableListViewModel.fetchTableMap()
+                        bottomSheet.hide()
+                    }
                 }
             }
         } else {

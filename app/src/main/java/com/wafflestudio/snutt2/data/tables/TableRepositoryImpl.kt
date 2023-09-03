@@ -85,4 +85,8 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun setTablePrimary(id: String) {
         api._postPrimaryTable(id)
     }
+
+    override suspend fun setTableNotPrimary(id: String) {
+        api._deletePrimaryTable(id)
+    }
 }
