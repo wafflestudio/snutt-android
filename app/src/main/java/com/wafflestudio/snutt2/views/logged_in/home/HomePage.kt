@@ -18,6 +18,7 @@ import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
@@ -38,7 +39,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HomePage() {
+fun HomePage(reactNativeBundleManager: ReactNativeBundleManager) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val pageController = LocalHomePageController.current
@@ -129,7 +130,7 @@ fun HomePage() {
                             ReviewPage()
                         }
                     }
-                    HomeItem.Friends -> FriendsPage()
+                    HomeItem.Friends -> FriendsPage(reactNativeBundleManager)
                     HomeItem.Settings -> SettingsPage(uncheckedNotification)
                 }
 

@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.friend
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,58 +10,52 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BigPeopleIcon
+import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
-fun FriendsPage() {
+fun FriendsPage(reactNativeBundleManager: ReactNativeBundleManager) {
     val context = LocalContext.current
-//    val bundleLoaded by reactNativeBundleManager.bundleLoadCompleteSignal.collectAsState(false)
+    val bundleLoaded by reactNativeBundleManager.bundleLoadCompleteSignal.collectAsState(false)
 
-    LaunchedEffect(Unit) {
-        launch(Dispatchers.Main) {
-            val intent = Intent((context as Activity), RNModuleActivity::class.java)
-            context.startActivity(intent)
-        }
+    if (bundleLoaded || reactNativeBundleManager.reactRootView == null) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                ComposeView(context).apply {
+                    setContent {
+                        FriendsPagePlaceholder()
+                    }
+                }
+            }
+        )
+    } else {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                reactNativeBundleManager.reactRootView ?: ComposeView(context).apply {
+                    setContent {
+                        FriendsPagePlaceholder()
+                    }
+                }
+            }
+        )
     }
-
-//    if (bundleLoaded || reactNativeBundleManager.reactRootView == null) {
-//        AndroidView(
-//            modifier = Modifier.fillMaxSize(),
-//            factory = {
-//                ComposeView(context).apply {
-//                    setContent {
-//                        FriendsPagePlaceholder()
-//                    }
-//                }
-//            }
-//        )
-//    } else {
-//        AndroidView(
-//            modifier = Modifier.fillMaxSize(),
-//            factory = {
-//                reactNativeBundleManager.reactRootView ?: ComposeView(context).apply {
-//                    setContent {
-//                        FriendsPagePlaceholder()
-//                    }
-//                }
-//            }
-//        )
-//    }
 }
 
 @Composable
