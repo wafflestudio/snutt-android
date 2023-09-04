@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
@@ -17,7 +16,6 @@ import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.lib.android.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -118,9 +116,6 @@ class ReactNativeBundleManager(
             } catch (e: Exception) {
                 return null
             }
-        }
-        CoroutineScope(Dispatchers.Main).launch {
-            context.toast("번들 버전: $targetFileName")
         }
         return targetFile
     }
