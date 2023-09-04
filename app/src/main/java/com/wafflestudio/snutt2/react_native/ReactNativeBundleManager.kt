@@ -52,14 +52,14 @@ class ReactNativeBundleManager(
                         .setApplication(context.applicationContext as Application)
                         .setCurrentActivity(context as Activity)
                         .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                        .setJSBundleFile(jsBundleFile.absolutePath.also { Log.d("aaaa", it) })
+                        .setJSBundleFile(jsBundleFile.absolutePath)
                         .addPackage(MainReactPackage())
                         .addPackage(RNGestureHandlerPackage())
                         .addPackage(ReanimatedPackage())
                         .addPackage(SafeAreaContextPackage())
                         .addPackage(RNCPickerPackage())
                         .addPackage(SvgPackage())
-                        .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
+                        .setInitialLifecycleState(LifecycleState.RESUMED)
                         .build()
 
                     reactRootView = ReactRootView(context).apply {
@@ -132,7 +132,7 @@ class ReactNativeBundleManager(
 
         const val FRIENDS_MODULE_NAME = "friends"
 
-        const val USE_LOCAL_BUNDLE = true
+        const val USE_LOCAL_BUNDLE = false
         const val LOCAL_BUNDLE_FILE_NAME = "android.jsbundle"
         const val LOCAL_BUNDLE_URL = "http://localhost:8081/index.bundle?platform=android"
     }
