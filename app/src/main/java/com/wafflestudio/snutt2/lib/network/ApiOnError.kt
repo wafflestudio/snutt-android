@@ -11,8 +11,10 @@ import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okio.IOException
 import timber.log.Timber
 import javax.inject.Inject
@@ -145,12 +147,14 @@ class ApiOnError @Inject constructor(
                                     userRepository.postForceLogout()
                                     userRepository.performLogout()
                                 } catch (e: Exception) {
-                                    Toast.makeText(
-                                        context,
-                                        "로그아웃에 실패하였습니다.",
-                                        Toast.LENGTH_SHORT,
-                                    )
-                                        .show()
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(
+                                            context,
+                                            "로그아웃에 실패하였습니다.",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    }
                                 }
                             }
                         }
