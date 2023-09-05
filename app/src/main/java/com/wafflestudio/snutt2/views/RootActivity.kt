@@ -15,6 +15,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
@@ -39,6 +40,8 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
@@ -81,7 +84,13 @@ class RootActivity : AppCompatActivity() {
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
     private val friendBundleManager by lazy {
-        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken.value)
+
+        val isDarkMode = if (userViewModel.themeMode.value == ThemeMode.AUTO) {
+            isSystemDarkMode(applicationContext)
+        } else {
+            userViewModel.themeMode.value == ThemeMode.DARK
+        }
+        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken.value, isDarkMode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
