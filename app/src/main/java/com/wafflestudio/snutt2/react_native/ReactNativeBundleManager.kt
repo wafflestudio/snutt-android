@@ -32,6 +32,7 @@ class ReactNativeBundleManager(
     private val context: Context,
     private val remoteConfig: RemoteConfig,
     private val token: String,
+    private val isDarkMode: Boolean,
 ) {
     private val rnBundleFileSrc: String
         get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
@@ -67,6 +68,8 @@ class ReactNativeBundleManager(
                             Bundle().apply {
                                 putString("x-access-token", token)
                                 putString("x-access-apikey", context.getString(R.string.api_key))
+                                putString("theme", if (isDarkMode) "dark" else "light")
+                                putBoolean("allowFontScaling", true)
                             }
                         )
                     }
