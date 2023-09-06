@@ -64,7 +64,7 @@ fun ChangeNicknamePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.Gray100),
     ) {
         TopBar(
             title = {
@@ -78,7 +78,7 @@ fun ChangeNicknamePage() {
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { onBackPressed() },
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
             actions = {
@@ -88,22 +88,24 @@ fun ChangeNicknamePage() {
                     color = if (nicknameField.isEmpty() || nicknameField == initialNickname) SNUTTColors.Black500 else SNUTTColors.Black900,
                     modifier = Modifier
                         .clicks {
-                            if (nicknameField.isNotEmpty() && nicknameField != initialNickname)
+                            if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
                                 handleChangeNickname()
-                        }
+                            }
+                        },
                 )
-            }
+            },
         )
         Margin(10.dp)
         SettingColumn(
-            title = stringResource(R.string.settings_change_nickname_title)
+            title = stringResource(R.string.settings_change_nickname_title),
         ) {
             NicknameEditText(
                 value = nicknameField,
                 onValueChange = { nicknameField = it },
                 onDone = {
-                    if (nicknameField.isNotEmpty() && nicknameField != initialNickname)
+                    if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
                         handleChangeNickname()
+                    }
                 },
                 hint = initialNickname,
             )
@@ -112,7 +114,7 @@ fun ChangeNicknamePage() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 30.dp),
         ) {
             Text(
                 text = stringResource(R.string.settings_change_nickname_guide),
@@ -122,7 +124,7 @@ fun ChangeNicknamePage() {
             )
             Margin(30.dp)
             Column(
-                verticalArrangement = Arrangement.spacedBy(2.sp.toDp())
+                verticalArrangement = Arrangement.spacedBy(2.sp.toDp()),
             ) {
                 Text(
                     text = stringResource(R.string.settings_change_nickname_requirement_title),
@@ -135,7 +137,7 @@ fun ChangeNicknamePage() {
                         text = it,
                         style = SNUTTTypography.body2.copy(
                             color = SNUTTColors.Black500,
-                        )
+                        ),
                     )
                 }
             }
@@ -158,7 +160,7 @@ fun NicknameEditText(
             .height(45.dp)
             .background(SNUTTColors.White900)
             .padding(horizontal = 35.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
         var isFocused by remember { mutableStateOf(false) }
@@ -184,7 +186,7 @@ fun NicknameEditText(
                     .clicks {
                         onValueChange("")
                         keyboardController?.hide()
-                    }
+                    },
             )
         }
         Text(
@@ -192,7 +194,7 @@ fun NicknameEditText(
             style = SNUTTTypography.body1.copy(
                 color = SNUTTColors.Black300,
                 fontSize = 16.sp,
-            )
+            ),
         )
     }
 }

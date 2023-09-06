@@ -112,13 +112,13 @@ fun UserConfigPage() {
                 title = stringResource(R.string.settings_user_config_change_nickname),
                 onClick = {
                     navController.navigate(NavigationDestination.ChangeNickname)
-                }
+                },
             ) {
                 Text(
                     text = user?.nickname.toString(),
                     style = SNUTTTypography.body1.copy(
-                        color = SNUTTColors.Black500
-                    )
+                        color = SNUTTColors.Black500,
+                    ),
                 )
             }
             SettingItem(
@@ -126,10 +126,10 @@ fun UserConfigPage() {
                 hasNextPage = false,
                 onClick = {
                     clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
-                }
+                },
             ) {
                 DuplicateIcon(
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(30.dp),
                 )
             }
         }

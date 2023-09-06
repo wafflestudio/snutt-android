@@ -302,7 +302,7 @@ class ApiOnError @Inject constructor(
                         ErrorCode.INVALID_NICKNAME -> Toast.makeText(
                             context,
                             context.getString(R.string.error_invalid_nickname),
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                         else -> Toast.makeText(
                             context,

@@ -751,12 +751,12 @@ fun QuestionCircleIcon(
 @Composable
 fun CloseCircleIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_close_circle),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }

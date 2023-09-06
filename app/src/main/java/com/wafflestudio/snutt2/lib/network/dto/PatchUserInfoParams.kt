@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PatchUserInfoParams(
-    @Json(name = "nickname") val nickname: String
+    @Json(name = "nickname") val nickname: String,
 )
