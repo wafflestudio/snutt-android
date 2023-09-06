@@ -14,6 +14,7 @@ data class TableDto(
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
     @Json(name = "theme") val theme: TimetableColorTheme,
+    @Json(name = "isPrimary") val isPrimary: Boolean = false,
 ) : Comparable<TableDto> {
 
     override fun compareTo(other: TableDto): Int {

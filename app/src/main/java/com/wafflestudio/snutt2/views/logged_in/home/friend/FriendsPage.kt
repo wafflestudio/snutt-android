@@ -12,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.PeopleIcon
+import com.wafflestudio.snutt2.components.compose.BigPeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -30,7 +30,7 @@ fun FriendsPage() {
                 )
             },
             navigationIcon = {
-                PeopleIcon(
+                BigPeopleIcon(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )

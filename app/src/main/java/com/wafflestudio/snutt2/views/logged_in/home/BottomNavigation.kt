@@ -78,7 +78,7 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Friends)
             },
         ) {
-            PeopleIcon(
+            BigPeopleIcon(
                 modifier = Modifier.size(30.dp),
                 isSelected = pageState is HomeItem.Friends,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
