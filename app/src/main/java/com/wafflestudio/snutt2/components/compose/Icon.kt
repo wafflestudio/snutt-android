@@ -276,7 +276,7 @@ fun PinIcon(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_pin),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 
@@ -635,7 +635,7 @@ fun IconWithAlertDot(
             Canvas(
                 modifier = Modifier
                     .size(5.dp)
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.TopEnd),
             ) {
                 drawCircle(color)
             }

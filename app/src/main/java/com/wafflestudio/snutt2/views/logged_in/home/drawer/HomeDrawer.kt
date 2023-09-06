@@ -94,7 +94,7 @@ fun HomeDrawer() {
         LazyColumn {
             items(
                 items = courseBooksWhichHaveTable,
-                key = { it.year * 10 + it.semester }
+                key = { it.year * 10 + it.semester },
             ) { courseBook ->
                 var expanded by remember { mutableStateOf(false) }
                 LaunchedEffect(table) {

@@ -257,11 +257,11 @@ interface SNUTTRestApi {
 
     @POST("/v1/tables/{id}/primary")
     suspend fun _postPrimaryTable(
-        @Path("id") tableId: String
+        @Path("id") tableId: String,
     )
 
     @DELETE("/v1/tables/{id}/primary")
     suspend fun _deletePrimaryTable(
-        @Path("id") tableId: String
+        @Path("id") tableId: String,
     )
 }

@@ -49,7 +49,7 @@ fun TableMoreActionBottomSheet(
             .fillMaxWidth(),
     ) {
         MoreActionItem(
-            Icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change),
         ) {
             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
@@ -62,7 +62,7 @@ fun TableMoreActionBottomSheet(
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
-                text = stringResource(R.string.home_drawer_table_set_not_primary)
+                text = stringResource(R.string.home_drawer_table_set_not_primary),
             ) {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
@@ -80,7 +80,7 @@ fun TableMoreActionBottomSheet(
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
-                text = stringResource(R.string.home_drawer_table_set_primary)
+                text = stringResource(R.string.home_drawer_table_set_primary),
             ) {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
@@ -159,7 +159,9 @@ fun TableMoreActionBottomSheet(
                     showTableDeleteDialog(table.id, composableStates) { tableId ->
                         tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
                     }
-                } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                } else {
+                    context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                }
             }
         }
     }
@@ -174,7 +176,7 @@ private fun MoreActionItem(
     Box(
         modifier = Modifier
             .clicks { onClick() }
-            .padding(vertical = 10.dp, horizontal = 22.dp)
+            .padding(vertical = 10.dp, horizontal = 22.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
