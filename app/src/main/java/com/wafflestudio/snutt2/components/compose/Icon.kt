@@ -268,6 +268,32 @@ fun PaletteIcon(
 }
 
 @Composable
+fun PinIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PinOffIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin_off),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -328,7 +354,7 @@ fun ReviewIcon(
 }
 
 @Composable
-fun PeopleIcon(
+fun BigPeopleIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
@@ -342,6 +368,32 @@ fun PeopleIcon(
                 R.drawable.ic_people_unselected
             },
         ),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PeopleIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_people_on),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PeopleOffIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_people_off),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -580,7 +632,11 @@ fun IconWithAlertDot(
     Box {
         content(Modifier.align(Alignment.Center))
         if (redDotExist) {
-            Canvas(modifier = Modifier.size(5.dp).align(Alignment.TopEnd)) {
+            Canvas(
+                modifier = Modifier
+                    .size(5.dp)
+                    .align(Alignment.TopEnd),
+            ) {
                 drawCircle(color)
             }
         }

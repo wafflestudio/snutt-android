@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -48,27 +49,50 @@ fun TableMoreActionBottomSheet(
             .fillMaxWidth(),
     ) {
         MoreActionItem(
-            Icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change),
         ) {
             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
         }
-        MoreActionItem(
-            Icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
-            text = stringResource(R.string.home_drawer_table_delete),
-        ) {
-            scope.launch {
-                if (tableListViewModel.checkTableDeletable(table.id)) {
-                    showTableDeleteDialog(table.id, composableStates) { tableId ->
-                        tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
+        if (table.isPrimary) {
+            MoreActionItem(
+                icon = {
+                    PeopleOffIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
+                text = stringResource(R.string.home_drawer_table_set_not_primary),
+            ) {
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        tableListViewModel.setTableNotPrimary(table.id)
+                        tableListViewModel.fetchTableMap()
+                        bottomSheet.hide()
                     }
-                } else {
-                    context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                }
+            }
+        } else {
+            MoreActionItem(
+                icon = {
+                    PeopleIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
+                text = stringResource(R.string.home_drawer_table_set_primary),
+            ) {
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        tableListViewModel.setTablePrimary(table.id)
+                        tableListViewModel.fetchTableMap()
+                        bottomSheet.hide()
+                    }
                 }
             }
         }
         MoreActionItem(
-            Icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
             scope.launch(Dispatchers.Main) {
@@ -126,24 +150,42 @@ fun TableMoreActionBottomSheet(
                 }
             }
         }
+        MoreActionItem(
+            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            text = stringResource(R.string.home_drawer_table_delete),
+        ) {
+            scope.launch {
+                if (tableListViewModel.checkTableDeletable()) {
+                    showTableDeleteDialog(table.id, composableStates) { tableId ->
+                        tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
+                    }
+                } else {
+                    context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun MoreActionItem(
-    Icon: @Composable () -> Unit,
+    icon: @Composable () -> Unit,
     text: String,
     onClick: () -> Unit,
 ) {
-    Box(modifier = Modifier.clicks { onClick() }) {
+    Box(
+        modifier = Modifier
+            .clicks { onClick() }
+            .padding(vertical = 10.dp, horizontal = 22.dp),
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
         ) {
-            Icon()
-            Spacer(modifier = Modifier.width(15.dp))
+            icon()
+            Spacer(modifier = Modifier.width(20.dp))
             Text(
                 text = text,
                 style = SNUTTTypography.body1,

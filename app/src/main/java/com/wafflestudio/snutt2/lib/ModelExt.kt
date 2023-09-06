@@ -36,7 +36,7 @@ fun CourseBookDto.toFormattedString(context: Context): String {
         4L -> context.getString(R.string.course_book_winter)
         else -> "-"
     }
-    return "${this.year} $semesterStr"
+    return "${this.year}년 $semesterStr"
 }
 
 fun TagType.color(): Int {

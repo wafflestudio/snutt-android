@@ -52,13 +52,13 @@ fun DrawerTableItem(
                     }
                 },
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             VividCheckedIcon(
                 modifier = Modifier
                     .size(15.dp)
                     .alpha(if (selected) 1f else 0f),
             )
-            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 modifier = Modifier.weight(1f, fill = false),
                 text = table.title,
@@ -66,7 +66,6 @@ fun DrawerTableItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(
                     R.string.home_drawer_table_credit, table.totalCredit ?: 0L,
@@ -74,6 +73,13 @@ fun DrawerTableItem(
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,
             )
+            if (table.isPrimary) {
+                BigPeopleIcon(
+                    modifier = Modifier.size(15.dp),
+                    isSelected = true,
+                    colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
+                )
+            }
         }
         DuplicateIcon(
             modifier = Modifier
