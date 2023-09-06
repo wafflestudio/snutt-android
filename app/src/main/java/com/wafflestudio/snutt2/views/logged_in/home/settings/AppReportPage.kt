@@ -62,7 +62,7 @@ fun AppReportPage() {
                         sentEnabled = true
                         apiOnProgress.hideProgress()
                     },
-                    context.getString(R.string.settings_app_report_loading_indicator_title)
+                    context.getString(R.string.settings_app_report_loading_indicator_title),
                 ) {
                     userViewModel.sendFeedback(email, detail)
                     keyboardManager?.hide()
@@ -76,7 +76,7 @@ fun AppReportPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.White900)
+            .background(SNUTTColors.White900),
     ) {
         TopBar(title = {
             Text(
@@ -84,22 +84,22 @@ fun AppReportPage() {
                 style = SNUTTTypography.h2,
             )
         }, navigationIcon = {
-            ArrowBackIcon(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clicks {
-                        navController.popBackStack()
-                    },
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
-        }, actions = {
-            SendIcon(
-                modifier = Modifier
-                    .size(20.dp)
-                    .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
-        })
+                ArrowBackIcon(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clicks {
+                            navController.popBackStack()
+                        },
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            }, actions = {
+                SendIcon(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            },)
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             Spacer(modifier = Modifier.height(18.dp))
             Text(
@@ -114,13 +114,13 @@ fun AppReportPage() {
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Email,
                 ),
                 keyboardActions = KeyboardActions(onNext = {
                     focusManager.moveFocus(
-                        FocusDirection.Down
+                        FocusDirection.Down,
                     )
-                }),
+                },),
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(

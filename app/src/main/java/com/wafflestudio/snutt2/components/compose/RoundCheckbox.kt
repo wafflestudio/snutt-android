@@ -30,7 +30,7 @@ fun RoundCheckbox(
     checkedBgColor: Color = SNUTTColors.Black900,
     uncheckedBgColor: Color = SNUTTColors.Transparent,
     checkMarkColor: Color = SNUTTColors.White900,
-    borderColor: Color = SNUTTColors.VacancyGray
+    borderColor: Color = SNUTTColors.VacancyGray,
 ) {
     val animatedBgColor: Color by animateColorAsState(if (checked) checkedBgColor else uncheckedBgColor)
     val animatedBorderColor: Color by animateColorAsState(if (checked) checkedBgColor else borderColor)
@@ -43,18 +43,18 @@ fun RoundCheckbox(
             .clicks {
                 onCheckedChange?.invoke(checked.not())
             },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         AnimatedVisibility(
             visible = checked,
             enter = fadeIn(),
-            exit = fadeOut()
+            exit = fadeOut(),
         ) {
             Icon(
                 modifier = Modifier.padding(4.dp),
                 imageVector = Icons.Default.Check,
                 tint = checkMarkColor,
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

@@ -6,5 +6,5 @@ import com.wafflestudio.snutt2.data.TimetableColorTheme
 
 @JsonClass(generateAdapter = true)
 data class PutTableThemeParams(
-    @Json(name = "theme") val theme: TimetableColorTheme
+    @Json(name = "theme") val theme: TimetableColorTheme,
 )

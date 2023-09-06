@@ -41,7 +41,7 @@ class WebViewContainer(
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest?,
-                error: WebResourceError?
+                error: WebResourceError?,
             ) {
                 loadState.value = LoadState.Error
             }
@@ -67,34 +67,37 @@ class WebViewContainer(
         CookieManager.getInstance().apply {
             setCookie(
                 reviewUrlHost,
-                "x-access-apikey=${context.getString(R.string.api_key)}"
+                "x-access-apikey=${context.getString(R.string.api_key)}",
             )
             setCookie(
                 reviewUrlHost,
-                "x-access-token=$accessToken"
+                "x-access-token=$accessToken",
             )
             setCookie(
                 reviewUrlHost,
-                "x-os-type=android"
+                "x-os-type=android",
             )
             setCookie(
                 reviewUrlHost,
-                "x-os-version=${Build.VERSION.SDK_INT}"
+                "x-os-version=${Build.VERSION.SDK_INT}",
             )
             setCookie(
                 reviewUrlHost,
-                "x-app-version=${BuildConfig.VERSION_NAME}"
+                "x-app-version=${BuildConfig.VERSION_NAME}",
             )
             setCookie(
                 reviewUrlHost,
-                "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}"
+                "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}",
             )
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                if (isDarkMode) "dark"
-                else "light"
-                }"
+                if (isDarkMode) {
+                    "dark"
+                } else {
+                    "light"
+                }
+                }",
             )
         }.flush()
         webView.loadUrl(url ?: context.getString(R.string.review_base_url))
@@ -106,22 +109,25 @@ class WebViewContainer(
         CookieManager.getInstance().apply {
             setCookie(
                 reviewUrlHost,
-                "x-access-apikey=${context.getString(R.string.api_key)}"
+                "x-access-apikey=${context.getString(R.string.api_key)}",
             )
             setCookie(
                 reviewUrlHost,
-                "x-access-token=$accessToken"
+                "x-access-token=$accessToken",
             )
             setCookie(
                 reviewUrlHost,
-                "x-os-type=android"
+                "x-os-type=android",
             )
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                if (isDarkMode) "dark"
-                else "light"
-                }"
+                if (isDarkMode) {
+                    "dark"
+                } else {
+                    "light"
+                }
+                }",
             )
         }.flush()
         webView.reload()
