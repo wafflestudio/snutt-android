@@ -18,6 +18,7 @@ object NavigationDestination {
     const val TeamInfo = "team_info"
     const val TimeTableConfig = "timetable_config"
     const val UserConfig = "user_config"
+    const val ChangeNickname = "change_nickname"
     const val PersonalInformationPolicy = "personal_information_policy"
     const val ThemeModeSelect = "theme_mode_select"
     const val Bookmark = "bookmark"

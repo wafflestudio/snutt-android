@@ -299,6 +299,11 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_vacancy_duplicate),
                             Toast.LENGTH_SHORT,
                         ).show()
+                        ErrorCode.INVALID_NICKNAME -> Toast.makeText(
+                            context,
+                            context.getString(R.string.error_invalid_nickname),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.message ?: context.getString(R.string.error_unknown),
@@ -326,6 +331,7 @@ object ErrorCode {
     const val INVALID_EMAIL = 0x300F
     const val VACANCY_PREV_SEMESTER = 0x9C45
     const val VACANCY_DUPLICATE = 0x9FC4
+    const val INVALID_NICKNAME = 0x9C48
 
     /* 401 - Request was invalid */
     const val NO_FB_ID_OR_TOKEN = 0x1001

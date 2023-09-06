@@ -306,6 +306,7 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
         composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
+        composable2(NavigationDestination.ChangeNickname) { ChangeNicknamePage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
         composable2(NavigationDestination.VacancyNotification) {

@@ -63,13 +63,9 @@ class UserRepositoryImpl @Inject constructor(
         storage.user.update(response.toOptional())
     }
 
-    override suspend fun putUserInfo(email: String) {
-        api._putUserInfo(PutUserInfoParams(email))
-        storage.user.update(
-            storage.user.get().value?.copy(
-                email = email,
-            ).toOptional(),
-        )
+    override suspend fun patchUserInfo(nickname: String) {
+        val response = api._patchUserInfo(PatchUserInfoParams(nickname))
+        storage.user.update(response.toOptional())
     }
 
     override suspend fun deleteUserAccount() {
