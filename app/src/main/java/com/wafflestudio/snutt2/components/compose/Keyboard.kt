@@ -3,7 +3,14 @@ package com.wafflestudio.snutt2.components.compose
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusEvent
@@ -31,9 +38,7 @@ fun rememberIsKeyboardOpen(): State<Boolean> {
     }
 }
 
-@Composable
 fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
-
     var isFocused by remember { mutableStateOf(false) }
     var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
 

@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
-    private val snuttUrls: SnuttUrls
+    private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 
     override fun getLectureSearchResultStream(
@@ -30,7 +30,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = LECTURES_LOAD_PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = false,
             ),
             pagingSourceFactory = {
                 LectureSearchPagingSource(
@@ -42,7 +42,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
                     times = times,
                     timesToExclude = timesToExclude,
                 )
-            }
+            },
         ).flow
     }
 

@@ -35,8 +35,11 @@ fun TeamInfoPage() {
         ThemeMode.DARK -> "dark"
         ThemeMode.LIGHT -> "light"
         ThemeMode.AUTO -> {
-            if (isSystemInDarkTheme()) "dark"
-            else "light"
+            if (isSystemInDarkTheme()) {
+                "dark"
+            } else {
+                "light"
+            }
         }
     }
 
@@ -45,7 +48,7 @@ fun TeamInfoPage() {
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_team_info),
-            onClickNavigateBack = { navController.popBackStack() }
+            onClickNavigateBack = { navController.popBackStack() },
         )
         if (webViewUrlReady) {
             AndroidView(factory = {
@@ -53,7 +56,7 @@ fun TeamInfoPage() {
                     this.webViewClient = webViewClient
                     this.loadUrl(url, headers)
                 }
-            })
+            },)
         }
         scope.launch {
             accessToken = userViewModel.getAccessToken()

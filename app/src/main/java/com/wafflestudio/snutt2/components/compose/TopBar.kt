@@ -25,7 +25,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 fun SimpleTopBar(
     modifier: Modifier = Modifier,
     title: String,
-    onClickNavigateBack: () -> Unit
+    onClickNavigateBack: () -> Unit,
 ) {
     TopBar(
         modifier = modifier,
@@ -34,7 +34,7 @@ fun SimpleTopBar(
                 text = title,
                 style = SNUTTTypography.h2,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         navigationIcon = {
@@ -42,7 +42,7 @@ fun SimpleTopBar(
                 modifier = Modifier.clicks(1000L) { onClickNavigateBack() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
-        }
+        },
     )
 }
 
@@ -51,7 +51,7 @@ fun TopBar(
     modifier: Modifier = Modifier,
     title: @Composable RowScope.() -> Unit = {},
     navigationIcon: @Composable RowScope.() -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     Surface(
         shape = RectangleShape,
@@ -67,32 +67,32 @@ fun TopBar(
                     left = 0f,
                     top = 0f,
                     right = size.width,
-                    bottom = size.height + paddingPx
+                    bottom = size.height + paddingPx,
                 ) {
                     this@drawWithContent.drawContent()
                 }
-            }
+            },
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(
                 modifier = Modifier.width(54.dp),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
             ) { navigationIcon() }
 
             Row(
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) { title() }
 
             Row(
                 modifier = Modifier.wrapContentWidth().padding(end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) { actions() }
         }
     }
@@ -110,7 +110,7 @@ fun SearchTopBar(
             .height(56.dp)
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             modifier = Modifier
@@ -136,12 +136,12 @@ fun TopBarPreview() {
                     modifier = Modifier.padding(end = 2.dp),
                     style = SNUTTTypography.h2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = "(22 학점)",
                     style = SNUTTTypography.subtitle1,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             },
             navigationIcon = {
@@ -151,7 +151,7 @@ fun TopBarPreview() {
                 ListIcon(Modifier.padding(end = 8.dp))
                 ShareIcon(Modifier.padding(end = 8.dp))
                 NotificationIcon(Modifier.padding(end = 12.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            }
+            },
         )
         Box(modifier = Modifier.weight(1f))
     }
@@ -165,7 +165,7 @@ fun SimpleTopBarPreview() {
             SimpleTopBar(title = "강의 상세보기", onClickNavigateBack = {})
 
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
     }

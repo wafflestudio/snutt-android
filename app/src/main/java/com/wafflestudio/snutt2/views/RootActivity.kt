@@ -26,11 +26,11 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.navigation
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.navigation
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
@@ -80,7 +80,6 @@ class RootActivity : AppCompatActivity() {
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
@@ -96,8 +95,11 @@ class RootActivity : AppCompatActivity() {
             isInitialRefreshFinished = true
         }
         setUpContents(
-            if (token.isEmpty()) NavigationDestination.Onboard
-            else NavigationDestination.Home
+            if (token.isEmpty()) {
+                NavigationDestination.Onboard
+            } else {
+                NavigationDestination.Home
+            },
         )
         setUpSplashScreen(composeRoot)
         checkNotificationPermission()
@@ -137,7 +139,7 @@ class RootActivity : AppCompatActivity() {
                         false
                     }
                 }
-            }
+            },
         )
     }
 
@@ -147,7 +149,7 @@ class RootActivity : AppCompatActivity() {
 
     @Composable
     fun setUpUI(startDestination: String) {
-        val navController = rememberAnimatedNavController()
+        val navController = rememberNavController()
         val homePageController = remember { HomePageController() }
         val compactMode by userViewModel.compactMode.collectAsState()
 
@@ -163,8 +165,8 @@ class RootActivity : AppCompatActivity() {
                     if (title != null) {
                         progressShowing = true
                         dialogState.set(onDismiss = {}, title = title) {
-                        LoadingIndicator()
-                    }.show()
+                            LoadingIndicator()
+                        }.show()
                     }
                 }
 
@@ -186,13 +188,12 @@ class RootActivity : AppCompatActivity() {
             LocalModalState provides dialogState,
             LocalCompactState provides compactMode,
             LocalBottomSheetState provides bottomSheet,
-            LocalRemoteConfig provides remoteConfig
+            LocalRemoteConfig provides remoteConfig,
         ) {
-            AnimatedNavHost(
+            NavHost(
                 navController = navController,
                 startDestination = startDestination,
             ) {
-
                 onboardGraph()
 
                 composableRoot(NavigationDestination.Home) { HomePage() }
@@ -211,7 +212,7 @@ class RootActivity : AppCompatActivity() {
                     LectureDetailPage(
                         vm = lectureDetailViewModel,
                         searchViewModel = searchViewModel,
-                        vacancyViewModel = vacancyViewModel
+                        vacancyViewModel = vacancyViewModel,
                     )
                 }
 
@@ -236,7 +237,7 @@ class RootActivity : AppCompatActivity() {
     private fun NavGraphBuilder.onboardGraph() {
         navigation(
             startDestination = NavigationDestination.Tutorial,
-            route = NavigationDestination.Onboard
+            route = NavigationDestination.Onboard,
         ) {
             composableRoot(NavigationDestination.Tutorial) {
                 TutorialPage()
@@ -261,11 +262,10 @@ class RootActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun NavGraphBuilder.composable2(
         route: String,
         deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
-        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
             route,
@@ -275,20 +275,20 @@ class RootActivity : AppCompatActivity() {
                     initialOffsetX = { fullWidth -> fullWidth },
                     animationSpec = spring(
                         stiffness = Spring.StiffnessMedium,
-                        visibilityThreshold = IntOffset.VisibilityThreshold
-                    )
+                        visibilityThreshold = IntOffset.VisibilityThreshold,
+                    ),
                 )
             },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) },
             popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
-            content = content
+            content = content,
         )
     }
 
     private fun NavGraphBuilder.composableRoot(
         route: String,
-        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
             route,
@@ -296,7 +296,7 @@ class RootActivity : AppCompatActivity() {
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { fadeOut() },
             popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
-            content = content
+            content = content,
         )
     }
 
@@ -364,7 +364,7 @@ suspend fun launchSuspendApi(
     apiOnError: ApiOnError,
     onError: () -> Unit = {},
     loadingIndicatorTitle: String? = null,
-    api: suspend () -> Unit
+    api: suspend () -> Unit,
 ) {
     try {
         loadingIndicatorTitle?.let { apiOnProgress.showProgress(it) }

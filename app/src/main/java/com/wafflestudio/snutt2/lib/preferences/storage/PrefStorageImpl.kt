@@ -8,7 +8,7 @@ import java.lang.reflect.Type
 
 class PrefStorageImpl(
     private val context: Context,
-    private val serializer: Serializer
+    private val serializer: Serializer,
 ) : PrefStorage() {
 
     override fun <T : Any> getValue(domainName: String, key: String, type: Type): T? {

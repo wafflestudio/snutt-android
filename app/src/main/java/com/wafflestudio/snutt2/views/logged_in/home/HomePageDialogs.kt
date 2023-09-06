@@ -16,7 +16,7 @@ fun showTitleChangeDialog(
     oldTitle: String,
     tableId: String,
     composableStates: ComposableStates,
-    onConfirm: suspend (String, String) -> Unit
+    onConfirm: suspend (String, String) -> Unit,
 ) {
     val modalState = composableStates.modalState
     val scope = composableStates.scope
@@ -48,7 +48,7 @@ fun showTitleChangeDialog(
 fun showTableDeleteDialog(
     tableId: String,
     composableStates: ComposableStates,
-    onConfirm: suspend (String) -> Unit
+    onConfirm: suspend (String) -> Unit,
 ) {
     val modalState = composableStates.modalState
     val scope = composableStates.scope

@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
-import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetState
-import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetValue
-import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.rememberModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -39,7 +39,7 @@ fun bottomSheet(): BottomSheet {
         override var content by remember {
             mutableStateOf<@Composable ColumnScope.() -> Unit>({
                 Box(modifier = Modifier.size(1.dp))
-            })
+            },)
         }
 
         override suspend fun hide() {

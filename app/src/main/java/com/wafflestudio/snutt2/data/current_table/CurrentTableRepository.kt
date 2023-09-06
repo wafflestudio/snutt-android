@@ -29,7 +29,7 @@ interface CurrentTableRepository {
 
     suspend fun getLectureSyllabusUrl(
         courseNumber: String,
-        lectureNumber: String
+        lectureNumber: String,
     ): String
 
     suspend fun getBookmarks(): List<LectureDto>

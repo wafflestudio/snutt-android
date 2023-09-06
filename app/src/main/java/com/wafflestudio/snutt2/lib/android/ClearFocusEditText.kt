@@ -11,7 +11,7 @@ class ClearFocusEditText : AppCompatEditText {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
         context,
         attrs,
-        defStyle
+        defStyle,
     )
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {

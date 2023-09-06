@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostUserPasswordResults(
-    @Json(name = "token") val token: String
+    @Json(name = "token") val token: String,
 )
