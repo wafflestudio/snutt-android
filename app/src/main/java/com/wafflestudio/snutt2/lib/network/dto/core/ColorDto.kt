@@ -10,11 +10,11 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ColorDto(
     @Json(name = "fg") val fgRaw: String? = null,
-    @Json(name = "bg") val bgRaw: String? = null,
+    @Json(name = "bg") val bgRaw: String? = null
 ) : Parcelable {
     constructor(fgColor: Int, bgColor: Int) : this(
         "#%06X".format(0xFFFFFF and fgColor),
-        "#%06X".format(0xFFFFFF and bgColor),
+        "#%06X".format(0xFFFFFF and bgColor)
     )
 
     /* TODO: Native Canvas 에서 그릴 땐 Int 가 필요하지만, Compose Color 은 ULong 이다.

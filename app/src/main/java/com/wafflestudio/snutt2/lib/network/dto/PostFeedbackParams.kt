@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class PostFeedbackParams(
     @Json(name = "email") val email: String,
-    @Json(name = "message") val message: String,
+    @Json(name = "message") val message: String
 )

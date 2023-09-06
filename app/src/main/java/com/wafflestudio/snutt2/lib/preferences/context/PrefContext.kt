@@ -12,7 +12,7 @@ class PrefContext(
 
     data class ChangeListenerMapKey(
         val domainName: String,
-        val key: String,
+        val key: String
     )
 
     private val listenerMap = mutableMultiMapOf<ChangeListenerMapKey, (Any?) -> Unit>()
@@ -32,7 +32,7 @@ class PrefContext(
         domainName: String,
         key: String,
         value: T?,
-        type: Type,
+        type: Type
     ) {
         cache.put(domainName, key, value)
         storage.putValue(domainName, key, value, type)

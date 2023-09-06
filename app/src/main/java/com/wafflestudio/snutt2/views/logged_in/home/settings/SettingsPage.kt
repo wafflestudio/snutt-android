@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsPage(
-    uncheckedNotification: Boolean,
+    uncheckedNotification: Boolean
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -46,7 +46,7 @@ fun SettingsPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.Gray100)
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
@@ -71,11 +71,11 @@ fun SettingsPage(
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 }
-            },
+            }
         )
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
         ) {
             Margin(height = 10.dp)
             SettingItem(
@@ -85,14 +85,14 @@ fun SettingsPage(
                     PersonIcon(
                         modifier = Modifier
                             .size(22.dp)
-                            .padding(end = 5.dp),
+                            .padding(end = 5.dp)
                     )
                 },
                 onClick = {
                     navController.navigate(
-                        NavigationDestination.UserConfig,
+                        NavigationDestination.UserConfig
                     )
-                },
+                }
             )
             Margin(height = 10.dp)
             SettingColumn {
@@ -100,22 +100,22 @@ fun SettingsPage(
                     title = stringResource(R.string.settings_select_color_mode_title),
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.ThemeModeSelect,
+                            NavigationDestination.ThemeModeSelect
                         )
-                    },
+                    }
                 ) {
                     Text(
                         text = themeMode.toString(),
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.TimeTableConfig,
+                            NavigationDestination.TimeTableConfig
                         )
-                    },
+                    }
                 )
             }
             Margin(height = 10.dp)
@@ -125,29 +125,29 @@ fun SettingsPage(
                     hasNextPage = true,
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.VacancyNotification,
+                            NavigationDestination.VacancyNotification
                         )
-                    },
+                    }
                 )
             }
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_version_info),
-                    hasNextPage = false,
+                    hasNextPage = false
                 ) {
                     Text(
                         text = BuildConfig.VERSION_NAME,
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500)
                     )
                 }
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.TeamInfo,
+                            NavigationDestination.TeamInfo
                         )
-                    },
+                    }
                 )
             }
             Margin(height = 10.dp)
@@ -155,9 +155,9 @@ fun SettingsPage(
                 title = stringResource(R.string.settings_app_report_title),
                 onClick = {
                     navController.navigate(
-                        NavigationDestination.AppReport,
+                        NavigationDestination.AppReport
                     )
-                },
+                }
             )
             Margin(height = 10.dp)
             SettingColumn {
@@ -165,23 +165,23 @@ fun SettingsPage(
                     title = stringResource(R.string.settings_licenses_title),
                     onClick = {
                         showLicenseDialog(context)
-                    },
+                    }
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.ServiceInfo,
+                            NavigationDestination.ServiceInfo
                         )
-                    },
+                    }
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
                     onClick = {
                         navController.navigate(
-                            NavigationDestination.PersonalInformationPolicy,
+                            NavigationDestination.PersonalInformationPolicy
                         )
-                    },
+                    }
                 )
             }
             Margin(height = 10.dp)
@@ -190,7 +190,7 @@ fun SettingsPage(
                 titleColor = SNUTTColors.Red,
                 onClick = {
                     logoutDialogState = true
-                },
+                }
             )
 
             if (BuildConfig.DEBUG) {
@@ -199,7 +199,7 @@ fun SettingsPage(
                     title = "네트워크 로그",
                     onClick = {
                         navController.navigate(NavigationDestination.NetworkLog)
-                    },
+                    }
                 )
             }
             Margin(height = 10.dp)
@@ -219,7 +219,7 @@ fun SettingsPage(
                 }
             },
             title = stringResource(R.string.settings_logout_title),
-            positiveButtonText = stringResource(R.string.settings_logout_title),
+            positiveButtonText = stringResource(R.string.settings_logout_title)
         ) {
             Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
         }
@@ -230,24 +230,24 @@ fun SettingsPage(
 fun SettingColumn(
     modifier: Modifier = Modifier,
     title: String = "",
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
     ) {
         if (title.isNotEmpty()) {
             Text(
                 text = title,
                 modifier = Modifier.padding(start = 35.dp),
                 style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.SettingColumnTitle,
-                ),
+                    color = SNUTTColors.SettingColumnTitle
+                )
             )
             Spacer(modifier = Modifier.size(5.dp))
         }
         Column(
             modifier = Modifier
-                .background(SNUTTColors.White900),
+                .background(SNUTTColors.White900)
         ) {
             content()
         }
@@ -271,14 +271,14 @@ fun SettingItem(
             .background(SNUTTColors.White900)
             .clicks { if (onClick != null) onClick() }
             .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         leadingIcon()
         Text(
             text = title,
             style = SNUTTTypography.body1.copy(
-                color = titleColor,
-            ),
+                color = titleColor
+            )
         )
         if (LocalRemoteConfig.current.settingPageNewBadgeTitles.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
@@ -288,7 +288,7 @@ fun SettingItem(
         if (hasNextPage) {
             RightArrowIcon(
                 modifier = Modifier.size(22.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black500)
             )
         }
     }
@@ -296,13 +296,13 @@ fun SettingItem(
 
 @Composable
 fun NewBadge(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .size(width = 26.dp, height = 14.dp)
             .clip(RoundedCornerShape(3.dp))
-            .background(SNUTTColors.SNUTTTheme),
+            .background(SNUTTColors.SNUTTTheme)
     ) {
         Text(
             text = "NEW!",
@@ -311,7 +311,7 @@ fun NewBadge(
                 .copy(
                     color = SNUTTColors.AllWhite,
                     fontSize = 7.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
                 ),
         )
     }

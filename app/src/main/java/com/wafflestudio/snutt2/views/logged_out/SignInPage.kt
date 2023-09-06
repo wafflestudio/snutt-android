@@ -54,7 +54,7 @@ fun SignInPage() {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button)
             ) {
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
@@ -67,25 +67,25 @@ fun SignInPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() },
+            .clicks { focusManager.clearFocus() }
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = { navController.popBackStack() }
         )
 
         Column(
             modifier = Modifier
-                .padding(20.dp),
+                .padding(20.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f)
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_in_id_title),
@@ -103,7 +103,7 @@ fun SignInPage() {
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_in_password_title),
@@ -126,20 +126,20 @@ fun SignInPage() {
                         text = stringResource(R.string.sign_in_find_id_button),
                         style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindId) },
+                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindId) }
                     )
 
                     Text(
                         text = "|",
                         style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                        modifier = Modifier.padding(horizontal = 15.dp),
+                        modifier = Modifier.padding(horizontal = 15.dp)
                     )
 
                     Text(
                         text = stringResource(R.string.sign_in_find_password_button),
                         style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindPassword) },
+                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindPassword) }
                     )
                 }
             }
@@ -155,8 +155,8 @@ fun SignInPage() {
                 Text(
                     text = stringResource(R.string.sign_in_sign_in_button),
                     style = SNUTTTypography.button.copy(
-                        color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
-                    ),
+                        color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                    )
                 )
             }
         }

@@ -8,7 +8,7 @@ data class TableTrimParam(
     val dayOfWeekTo: Int,
     val hourFrom: Int,
     val hourTo: Int,
-    val forceFitLectures: Boolean,
+    val forceFitLectures: Boolean
 ) {
     companion object {
         val Default = TableTrimParam(0, 4, 9, 18, true)

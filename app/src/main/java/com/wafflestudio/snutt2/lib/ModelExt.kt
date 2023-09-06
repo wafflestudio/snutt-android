@@ -96,7 +96,7 @@ fun Long.getDefaultBgColorHex(): Int {
         -0xe26617,
         -0xb0b73c,
         -0x50a94d,
-        -0x1f1f20,
+        -0x1f1f20
     )
     return DEFAULT_BG[this.toInt()]
 }
@@ -115,7 +115,7 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
         dayOfWeekTo = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekTo).maxOf { it },
         hourFrom = (flatMap { it.class_time_json.map { floor(it.startTimeInFloat).toInt() } } + tableTrimParam.hourFrom).minOf { it },
         hourTo = (flatMap { it.class_time_json.map { ceil(it.endTimeInFloat).toInt() - 1 } } + tableTrimParam.hourTo).maxOf { it },
-        forceFitLectures = true,
+        forceFitLectures = true
     )
 
 fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? {
@@ -129,13 +129,9 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
 }
 
 fun roundToCompact(f: Float): Float {
-    return if (f - f.toInt() == 0f) {
-        f
-    } else if (f - f.toInt() <= 0.5) {
-        f.toInt() + 0.5f
-    } else {
-        f.toInt() + 1f
-    }
+    return if (f - f.toInt() == 0f) f
+    else if (f - f.toInt() <= 0.5) f.toInt() + 0.5f
+    else f.toInt() + 1f
 }
 
 fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
@@ -166,7 +162,7 @@ fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
                     .toMutableList()
                     .apply {
                         if (start < SearchTimeDto.LAST) add(SearchTimeDto(day, start, SearchTimeDto.LAST))
-                    },
+                    }
             )
         }
     }

@@ -69,7 +69,7 @@ fun SignUpPage() {
                 launchSuspendApi(
                     apiOnProgress = apiOnProgress,
                     apiOnError = apiOnError,
-                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button),
+                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button)
                 ) {
                     userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
@@ -83,26 +83,26 @@ fun SignUpPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() },
+            .clicks { focusManager.clearFocus() }
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_up_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = { navController.popBackStack() }
         )
 
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_id_title),
@@ -116,19 +116,19 @@ fun SignUpPage() {
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(
-                                FocusDirection.Down,
+                                FocusDirection.Down
                             )
-                        },),
+                        }),
                         singleLine = true,
                     )
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_password_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
                     )
                     EditText(
                         value = passwordField,
@@ -137,20 +137,20 @@ fun SignUpPage() {
                         textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(
-                                FocusDirection.Down,
+                                FocusDirection.Down
                             )
-                        },),
+                        }),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_password_confirm_title),
@@ -163,24 +163,24 @@ fun SignUpPage() {
                         textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(
-                                FocusDirection.Down,
+                                FocusDirection.Down
                             )
-                        },),
+                        }),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.sign_up_email_input_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600)
                     )
                     EditText(
                         value = emailField,
@@ -197,14 +197,14 @@ fun SignUpPage() {
                                 textAlign = TextAlign.Right,
                                 maxLines = 1,
                             )
-                        },
+                        }
                     )
                 }
             }
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Row(modifier = Modifier.padding(top = 20.dp)) {
                     Text(
@@ -221,7 +221,7 @@ fun SignUpPage() {
                             val intent =
                                 Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl))
                             context.startActivity(intent)
-                        },
+                        }
                     )
                     Text(
                         text = stringResource(id = R.string.sign_up_terms_3),
@@ -240,8 +240,8 @@ fun SignUpPage() {
                     Text(
                         text = stringResource(R.string.sign_up_sign_up_button),
                         style = SNUTTTypography.button.copy(
-                            color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
-                        ),
+                            color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600
+                        )
                     )
                 }
             }

@@ -39,7 +39,7 @@ fun bottomSheet(): BottomSheet {
         override var content by remember {
             mutableStateOf<@Composable ColumnScope.() -> Unit>({
                 Box(modifier = Modifier.size(1.dp))
-            },)
+            })
         }
 
         override suspend fun hide() {

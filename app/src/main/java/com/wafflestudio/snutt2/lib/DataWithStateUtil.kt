@@ -6,13 +6,13 @@ fun <TData : Any, TState : Any> TData.toDataWithState(state: TState): DataWithSt
 
 data class DataWithState<TData : Any, TState : Any>(
     val item: TData,
-    val state: TState,
+    val state: TState
 ) {
 
     companion object {
         fun <TData : Any, TState : Any> ofState(
             item: TData,
-            state: TState,
+            state: TState
         ): DataWithState<TData, TState> =
             DataWithState(item, state)
     }

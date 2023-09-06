@@ -10,21 +10,20 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 class LectureItem {
     enum class Type(val value: Int) {
         Title(0), Instructor(1), Color(2), Department(3), AcademicYear(4), Credit(5), Classification(
-            6,
+            6
         ),
         Category(7), CourseNumber(8), LectureNumber(9), Remark(10), ClassTime(11), Syllabus(12), RemoveLecture(
-            13,
+            13
         ),
         AddClassTime(14), ResetLecture(15), ShortHeader(16), LongHeader(17), ClassTimeHeader(18), Margin(
-            19,
+            19
         ),
-        LectureReview(20),
-        ;
+        LectureReview(20);
     }
 
     enum class ViewType(val value: Int) {
         ItemShortHeader(0), ItemLongHeader(1), ItemTitle(2), ItemButton(3), ItemColor(4), ItemClass(
-            5,
+            5
         ),
         ItemRemark(6), ItemClassTimeHeader(7), ItemMargin(8);
     }
@@ -61,7 +60,7 @@ class LectureItem {
         index: Int,
         color: ColorDto?,
         theme: TimetableColorTheme?,
-        type: Type,
+        type: Type
     ) {
         this.title1 = title1
         colorIndex = index

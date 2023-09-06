@@ -27,11 +27,8 @@ class TimerState(
         get() = currentValue == TimerValue.End
 
     val timeLeftInSecond: Int
-        get() = if (isPaused) {
-            ((startTime + pausedTime + duration - pauseStartTime) / 1000).toInt()
-        } else {
-            ((startTime + pausedTime + duration - System.currentTimeMillis()) / 1000).toInt()
-        }
+        get() = if (isPaused) ((startTime + pausedTime + duration - pauseStartTime) / 1000).toInt()
+        else ((startTime + pausedTime + duration - System.currentTimeMillis()) / 1000).toInt()
 
     var pausedTime: Long = 0
     var pauseStartTime: Long = 0

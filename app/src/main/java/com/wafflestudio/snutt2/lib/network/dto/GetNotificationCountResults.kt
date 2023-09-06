@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class GetNotificationCountResults(
-    @Json(name = "count") val count: Long,
+    @Json(name = "count") val count: Long
 )

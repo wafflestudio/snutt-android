@@ -29,12 +29,12 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
             .fillMaxSize()
             .background(SNUTTColors.Dim2)
             .clicks {},
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.width(imageWidth),
+            modifier = Modifier.width(imageWidth)
         ) {
             AsyncImage(
                 model = url,
@@ -45,7 +45,7 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(id = R.string.popup_hide_message),
@@ -55,13 +55,13 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                         .clicks { onClickFewDays() },
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    color = SNUTTColors.AllWhite,
+                    color = SNUTTColors.AllWhite
                 )
                 Spacer(
                     modifier = Modifier
                         .width(1.dp)
                         .height(17.dp)
-                        .background(Color.White),
+                        .background(Color.White)
                 )
                 Text(
                     text = stringResource(id = R.string.popup_close_message),
@@ -69,12 +69,12 @@ fun Popup(url: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
                     Modifier
                         .padding(
                             horizontal = 20.dp,
-                            vertical = 10.dp,
+                            vertical = 10.dp
                         )
                         .weight(2f)
                         .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
-                    color = SNUTTColors.AllWhite,
+                    color = SNUTTColors.AllWhite
                 )
             }
         }

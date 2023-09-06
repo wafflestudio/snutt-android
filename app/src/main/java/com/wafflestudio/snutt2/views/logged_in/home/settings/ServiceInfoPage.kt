@@ -35,11 +35,8 @@ fun ServiceInfoPage() {
         ThemeMode.DARK -> "dark"
         ThemeMode.LIGHT -> "light"
         ThemeMode.AUTO -> {
-            if (isSystemInDarkTheme()) {
-                "dark"
-            } else {
-                "light"
-            }
+            if (isSystemInDarkTheme()) "dark"
+            else "light"
         }
     }
 
@@ -48,7 +45,7 @@ fun ServiceInfoPage() {
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_service_info),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = { navController.popBackStack() }
         )
         if (webViewUrlReady) {
             AndroidView(factory = {
@@ -56,7 +53,7 @@ fun ServiceInfoPage() {
                     this.webViewClient = webViewClient
                     this.loadUrl(url, headers)
                 }
-            },)
+            })
         }
         scope.launch {
             accessToken = userViewModel.getAccessToken()

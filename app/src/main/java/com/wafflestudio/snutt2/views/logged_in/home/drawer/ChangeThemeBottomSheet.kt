@@ -27,7 +27,7 @@ fun ChangeThemeBottomSheet(
     onLaunch: () -> Unit,
     onPreview: (Int) -> Unit,
     onApply: () -> Unit,
-    onDispose: () -> Unit,
+    onDispose: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onLaunch()
@@ -49,7 +49,7 @@ fun ChangeThemeBottomSheet(
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Text(
@@ -69,14 +69,14 @@ fun ChangeThemeBottomSheet(
         Row(
             Modifier
                 .horizontalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(16.dp)
         ) {
             Spacer(modifier = Modifier.width(10.dp))
             themeList.forEachIndexed { themeIdx, nameAndIdPair ->
                 ThemeItem(
                     name = nameAndIdPair.first,
                     painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) },
+                    modifier = Modifier.clicks { onPreview(themeIdx) }
                 )
                 Spacer(modifier = Modifier.width(20.dp))
             }
@@ -88,16 +88,16 @@ fun ChangeThemeBottomSheet(
 private fun ThemeItem(
     name: String,
     painter: Painter,
-    modifier: Modifier,
+    modifier: Modifier
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
         Image(
-            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp),
+            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
         }

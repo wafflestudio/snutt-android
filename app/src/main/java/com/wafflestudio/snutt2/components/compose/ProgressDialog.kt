@@ -27,17 +27,17 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 fun ProgressDialog(
     title: String,
     message: String,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         Box(
             modifier = Modifier
                 .background(Color.White)
                 .fillMaxWidth(0.98f)
-                .padding(20.dp),
+                .padding(20.dp)
         ) {
             Column {
                 Text(title)
@@ -61,16 +61,16 @@ fun CustomDialog(
     positiveButtonText: String? = stringResource(R.string.common_ok),
     negativeButtonText: String? = stringResource(R.string.common_cancel),
     width: Dp? = null,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val screenWidthInDp = with(LocalDensity.current) { LocalView.current.width.toDp() }
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
             shape = RoundedCornerShape(10),
-            elevation = 10.dp,
+            elevation = 10.dp
         ) {
             Column(modifier = Modifier.width(width ?: (screenWidthInDp - 50.dp)).background(SNUTTColors.White900)) {
                 title?.let {
@@ -78,7 +78,7 @@ fun CustomDialog(
                         Box(modifier = Modifier.padding(20.dp)) {
                             Text(
                                 text = it,
-                                style = SNUTTTypography.h2.copy(fontWeight = FontWeight.Normal),
+                                style = SNUTTTypography.h2.copy(fontWeight = FontWeight.Normal)
                             )
                         }
                         Box(modifier = Modifier.weight(1f))

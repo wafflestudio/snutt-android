@@ -74,7 +74,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override suspend fun getLectureSyllabusUrl(
         courseNumber: String,
-        lectureNumber: String,
+        lectureNumber: String
     ): String {
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
@@ -82,7 +82,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
             prevTable.year,
             prevTable.semester,
             courseNumber,
-            lectureNumber,
+            lectureNumber
         ).url
     }
 

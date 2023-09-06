@@ -42,7 +42,7 @@ fun showDeleteLectureDialog(
         content = {
             Text(
                 text = stringResource(R.string.lecture_detail_delete_dialog_message),
-                style = SNUTTTypography.body1,
+                style = SNUTTTypography.body1
             )
         },
         positiveButton = context.getString(R.string.common_ok),
@@ -55,7 +55,7 @@ fun showDeleteLectureDialog(
                     modalState.hide()
                 }
             }
-        },
+        }
     ).show()
 }
 
@@ -74,7 +74,7 @@ fun showResetLectureDialog(
         content = {
             Text(
                 text = stringResource(R.string.lecture_detail_reset_dialog_message),
-                style = SNUTTTypography.body2,
+                style = SNUTTTypography.body2
             )
         },
         positiveButton = context.getString(R.string.common_ok),
@@ -87,7 +87,7 @@ fun showResetLectureDialog(
                     modalState.hide()
                 }
             }
-        },
+        }
     ).show()
 }
 

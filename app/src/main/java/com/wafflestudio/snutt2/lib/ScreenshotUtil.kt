@@ -17,13 +17,13 @@ fun shareScreenshotFromView(
     context: Context,
     topBarHeight: Int,
     bannerHeight: Int,
-    timetableHeight: Int,
+    timetableHeight: Int
 ) {
     val bitmap =
         Bitmap.createBitmap(
             view.measuredWidth,
             view.measuredHeight,
-            Bitmap.Config.ARGB_8888,
+            Bitmap.Config.ARGB_8888
         )
     val canvas = Canvas(bitmap)
     view.draw(canvas)
@@ -50,6 +50,6 @@ private fun bitmapToUri(image: Bitmap, context: Context): Uri {
     return FileProvider.getUriForFile(
         context,
         context.getString(R.string.file_provider_authorities),
-        file,
+        file
     )
 }

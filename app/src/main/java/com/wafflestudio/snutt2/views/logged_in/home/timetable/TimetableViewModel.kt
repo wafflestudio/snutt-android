@@ -17,12 +17,12 @@ import javax.inject.Inject
 @HiltViewModel
 class TimetableViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
-    private val tableRepository: TableRepository,
+    private val tableRepository: TableRepository
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
     val previewTheme = currentTableRepository.previewTheme.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), initialValue = null,
+        viewModelScope, SharingStarted.WhileSubscribed(), initialValue = null
     )
 
     suspend fun addLecture(lecture: LectureDto, is_force: Boolean) {

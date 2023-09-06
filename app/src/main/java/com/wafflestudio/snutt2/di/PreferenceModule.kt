@@ -27,7 +27,7 @@ object PreferenceModule {
     @Singleton
     fun providePrefStorage(
         @ApplicationContext context: Context,
-        serializer: Serializer,
+        serializer: Serializer
     ): PrefStorage {
         return PrefStorageImpl(context, serializer)
     }

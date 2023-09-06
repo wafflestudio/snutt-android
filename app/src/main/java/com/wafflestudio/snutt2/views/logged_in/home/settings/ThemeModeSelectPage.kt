@@ -30,7 +30,7 @@ fun ColorModeSelectPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.Gray100)
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),
@@ -46,12 +46,12 @@ fun ColorModeSelectPage() {
                     scope.launch {
                         userViewModel.setThemeMode(ThemeMode.AUTO)
                     }
-                },
+                }
             ) {
                 if (themeMode == ThemeMode.AUTO) {
                     CheckedIcon(
                         modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
                     )
                 }
             }
@@ -62,12 +62,12 @@ fun ColorModeSelectPage() {
                     scope.launch {
                         userViewModel.setThemeMode(ThemeMode.DARK)
                     }
-                },
+                }
             ) {
                 if (themeMode == ThemeMode.DARK) {
                     CheckedIcon(
                         modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
                     )
                 }
             }
@@ -78,12 +78,12 @@ fun ColorModeSelectPage() {
                     scope.launch {
                         userViewModel.setThemeMode(ThemeMode.LIGHT)
                     }
-                },
+                }
             ) {
                 if (themeMode == ThemeMode.LIGHT) {
                     CheckedIcon(
                         modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500)
                     )
                 }
             }

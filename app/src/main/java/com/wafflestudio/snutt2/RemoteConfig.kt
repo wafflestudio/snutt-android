@@ -44,7 +44,7 @@ class RemoteConfig @Inject constructor(
     }.stateIn(
         CoroutineScope(Dispatchers.Main),
         SharingStarted.Eagerly,
-        RemoteConfigDto(),
+        RemoteConfigDto()
     )
 
     val friendBundleSrc: String

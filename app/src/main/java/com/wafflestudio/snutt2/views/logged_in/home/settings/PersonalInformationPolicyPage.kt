@@ -34,11 +34,8 @@ fun PersonalInformationPolicyPage() {
         ThemeMode.DARK -> "dark"
         ThemeMode.LIGHT -> "light"
         ThemeMode.AUTO -> {
-            if (isSystemInDarkTheme()) {
-                "dark"
-            } else {
-                "light"
-            }
+            if (isSystemInDarkTheme()) "dark"
+            else "light"
         }
     }
 
@@ -47,7 +44,7 @@ fun PersonalInformationPolicyPage() {
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_personal_information_policy),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = { navController.popBackStack() }
         )
         if (webViewUrlReady) {
             AndroidView(factory = {
@@ -55,7 +52,7 @@ fun PersonalInformationPolicyPage() {
                     this.webViewClient = webViewClient
                     this.loadUrl(url, headers)
                 }
-            },)
+            })
         }
         scope.launch {
             accessToken = userViewModel.getAccessToken()

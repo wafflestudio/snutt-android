@@ -15,7 +15,7 @@ enum class TimetableColorTheme(val code: Int) {
     AUTUMN(2),
     CHERRY(3),
     ICE(4),
-    GRASS(5), ;
+    GRASS(5);
 
     fun getColorByIndex(context: Context, colorIndex: Long): Int {
         return when (this) {

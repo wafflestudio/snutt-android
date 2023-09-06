@@ -8,14 +8,14 @@ import java.lang.reflect.Type
 
 class ErrorParsingCallAdapterFactory(
     private val delegation: CallAdapter.Factory,
-    private val serializer: Serializer,
+    private val serializer: Serializer
 ) : CallAdapter.Factory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun get(
         returnType: Type,
         annotations: Array<out Annotation>,
-        retrofit: Retrofit,
+        retrofit: Retrofit
     ): CallAdapter<*, *> {
         val delegationGeneratedCallAdapter =
             delegation.get(returnType, annotations, retrofit) as? CallAdapter<Any, Any>
@@ -24,7 +24,7 @@ class ErrorParsingCallAdapterFactory(
             delegation = delegationGeneratedCallAdapter,
             bodyType = (returnType as? ParameterizedType)?.let {
                 it.actualTypeArguments[0]
-            } ?: Unit::class.java,
+            } ?: Unit::class.java
         )
     }
 }

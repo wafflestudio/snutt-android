@@ -39,6 +39,7 @@ fun rememberIsKeyboardOpen(): State<Boolean> {
 }
 
 fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
+
     var isFocused by remember { mutableStateOf(false) }
     var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
 

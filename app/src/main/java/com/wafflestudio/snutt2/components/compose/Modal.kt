@@ -42,7 +42,7 @@ class ModalState {
         positiveButton: String? = null,
         negativeButton: String? = null,
         width: Dp? = null,
-        content: @Composable () -> Unit,
+        content: @Composable () -> Unit
     ): ModalState {
         return this.apply {
             this.onDismiss = onDismiss

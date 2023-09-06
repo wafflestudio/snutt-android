@@ -24,11 +24,8 @@ object TimetableCanvasObjects {
         @Composable get() =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color =
-                    if (isDarkMode()) {
-                        Color.argb(180, 119, 119, 119)
-                    } else {
-                        Color.argb(180, 0, 0, 0)
-                    }
+                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
+                    else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.CENTER
                 typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
@@ -45,11 +42,8 @@ object TimetableCanvasObjects {
         @Composable get() =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color =
-                    if (isDarkMode()) {
-                        Color.argb(180, 119, 119, 119)
-                    } else {
-                        Color.argb(180, 0, 0, 0)
-                    }
+                    if (isDarkMode()) Color.argb(180, 119, 119, 119)
+                    else Color.argb(180, 0, 0, 0)
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.RIGHT
                 typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
@@ -61,7 +55,7 @@ object TimetableCanvasObjects {
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 10f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
-                },
+                }
             )
 
     val lectureCellSubTextRect
@@ -70,7 +64,7 @@ object TimetableCanvasObjects {
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
-                },
+                }
             )
 
     val lectureCellBorderPaint: Paint =

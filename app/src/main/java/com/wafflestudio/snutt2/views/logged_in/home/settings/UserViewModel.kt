@@ -105,7 +105,7 @@ class UserViewModel @Inject constructor(
     suspend fun signUpFacebook(id: String, token: String) {
         userRepository.postLoginFacebook(
             facebookId = id,
-            facebookToken = token,
+            facebookToken = token
         )
     }
 

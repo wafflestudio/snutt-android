@@ -48,7 +48,7 @@ fun LecturesOfTablePage() {
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = { navController.popBackStack() }
         )
         LecturesOfTable(
             lectures = lectureList,
@@ -61,22 +61,21 @@ fun LecturesOfTablePage() {
                 navController.navigate(NavigationDestination.LectureDetail) {
                     launchSingleTop = true
                 }
-            },
+            }
         )
     }
 }
-
 @Composable
 fun LecturesOfTable(
     lectures: List<LectureDto>,
     onClickAdd: () -> Unit,
-    onClickLecture: (lecture: LectureDto) -> Unit,
+    onClickLecture: (lecture: LectureDto) -> Unit
 ) {
     LazyColumn {
         items(lectures) { lectureDto ->
             TableLectureItem(
                 lecture = lectureDto,
-                onClickLecture = onClickLecture,
+                onClickLecture = onClickLecture
             )
             Row(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
                 Divider(thickness = 1.dp, color = SNUTTColors.Black050)
@@ -91,7 +90,7 @@ fun LecturesOfTable(
 @Composable
 private fun TableLectureItem(
     lecture: LectureDto,
-    onClickLecture: (lecture: LectureDto) -> Unit,
+    onClickLecture: (lecture: LectureDto) -> Unit
 ) {
     val tagText = SNUTTStringUtils.getLectureTagText(lecture)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
@@ -124,7 +123,7 @@ private fun TableLectureItem(
             Text(
                 text = tagText,
                 style = SNUTTTypography.body2,
-                modifier = Modifier.alpha(0.8f),
+                modifier = Modifier.alpha(0.8f)
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -153,7 +152,7 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
     Column(
         modifier = Modifier
             .clicks { onClickAdd.invoke() }
-            .padding(horizontal = 20.dp, vertical = 10.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp)
     ) {
         Row {
             Text(
@@ -161,7 +160,7 @@ private fun TableLectureAdd(onClickAdd: () -> Unit) {
                 style = SNUTTTypography.body1,
             )
             Spacer(modifier = Modifier.weight(1f))
-            RightArrowIcon(modifier = Modifier.size(22.dp, 22.dp))
+            RightArrowIcon(modifier = Modifier.size(22.dp, 22.dp),)
         }
     }
     Spacer(Modifier.height(20.dp))

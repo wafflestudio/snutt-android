@@ -67,8 +67,8 @@ class UserRepositoryImpl @Inject constructor(
         api._putUserInfo(PutUserInfoParams(email))
         storage.user.update(
             storage.user.get().value?.copy(
-                email = email,
-            ).toOptional(),
+                email = email
+            ).toOptional()
         )
     }
 
@@ -79,13 +79,13 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun putUserPassword(
         oldPassword: String,
-        newPassword: String,
+        newPassword: String
     ) {
         val response = api._putUserPassword(
             PutUserPasswordParams(
                 newPassword = newPassword,
-                oldPassword = oldPassword,
-            ),
+                oldPassword = oldPassword
+            )
         )
         storage.accessToken.update(response.token)
     }
@@ -98,8 +98,8 @@ class UserRepositoryImpl @Inject constructor(
         val response = api._postUserPassword(
             PostUserPasswordParams(
                 id = id,
-                password = password,
-            ),
+                password = password
+            )
         )
         storage.accessToken.update(response.token)
     }
@@ -111,13 +111,13 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postUserFacebook(
         facebookId: String,
-        facebookToken: String,
+        facebookToken: String
     ) {
         val response = api._postUserFacebook(
             PostUserFacebookParams(
                 facebookId = facebookId,
-                facebookToken = facebookToken,
-            ),
+                facebookToken = facebookToken
+            )
         )
         storage.accessToken.update(response.token)
     }
@@ -137,8 +137,8 @@ class UserRepositoryImpl @Inject constructor(
         api._postForceLogout(
             PostForceLogoutParams(
                 userId = userId,
-                registrationId = firebaseToken,
-            ),
+                registrationId = firebaseToken
+            )
         )
         performLogout()
     }
@@ -152,7 +152,7 @@ class UserRepositoryImpl @Inject constructor(
         dayOfWeekTo: Int?,
         hourFrom: Int?,
         hourTo: Int?,
-        isAuto: Boolean?,
+        isAuto: Boolean?
     ) {
         val prevTrimParam = storage.tableTrimParam.get()
         storage.tableTrimParam.update(
@@ -162,7 +162,7 @@ class UserRepositoryImpl @Inject constructor(
                 hourFrom = hourFrom ?: prevTrimParam.hourFrom,
                 hourTo = hourTo ?: prevTrimParam.hourTo,
                 forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ),
+            )
         )
     }
 
@@ -195,7 +195,7 @@ class UserRepositoryImpl @Inject constructor(
                     .toMutableMap()
                     .also {
                         it[popup.key] = expiredDay
-                    },
+                    }
             )
 
             popupState.popup = null
@@ -210,7 +210,7 @@ class UserRepositoryImpl @Inject constructor(
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
-            RegisterFirebaseTokenParams(),
+            RegisterFirebaseTokenParams()
         )
     }
 
@@ -220,43 +220,43 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun findIdByEmail(email: String) {
         api._postFindId(
-            PostFindIdParams(email),
+            PostFindIdParams(email)
         )
     }
 
     override suspend fun checkEmailById(id: String): String {
         return api._postCheckEmailById(
-            PostCheckEmailByIdParams(id),
+            PostCheckEmailByIdParams(id)
         ).email
     }
 
     override suspend fun sendPwResetCodeToEmail(email: String) {
         api._postSendPwResetCodeToEmailById(
-            PostSendPwResetCodeParams(email),
+            PostSendPwResetCodeParams(email)
         )
     }
 
     override suspend fun verifyPwResetCode(id: String, code: String) {
         api._postVerifyCodeToResetPassword(
-            PostVerifyPwResetCodeParams(id, code),
+            PostVerifyPwResetCodeParams(id, code)
         )
     }
 
     override suspend fun resetPassword(id: String, password: String) {
         api._postResetPassword(
-            PostResetPasswordParams(id, password),
+            PostResetPasswordParams(id, password)
         )
     }
 
     override suspend fun sendCodeToEmail(email: String) {
         api._postSendCodeToEmail(
-            PostSendCodeToEmailParams(email),
+            PostSendCodeToEmailParams(email)
         )
     }
 
     override suspend fun verifyEmailCode(code: String) {
         api._postVerifyEmailCode(
-            PostVerifyEmailCodeParams(code),
+            PostVerifyEmailCodeParams(code)
         )
     }
 
@@ -278,7 +278,7 @@ class UserRepositoryImpl @Inject constructor(
                     }
                     val token = task.result
                     cont.resume(token!!)
-                },
+                }
             )
         }
     }

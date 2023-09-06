@@ -49,17 +49,13 @@ fun DayTimePickerSheet(
                 if (startMinute == SearchTimeDto.LAST) {
                     startMinute = SearchTimeDto.LAST - 5
                     endMinute = SearchTimeDto.LAST
-                } else {
-                    endMinute = startMinute + 5
-                }
+                } else endMinute = startMinute + 5
                 // 끝나는 시간을 시작 시간보다 앞서게 수정했으면, 시작 시간을 5분 앞으로 설정
             } else if (editingEndTime) {
                 if (endMinute == SearchTimeDto.FIRST) {
                     startMinute = SearchTimeDto.FIRST
                     endMinute = SearchTimeDto.FIRST + 5
-                } else {
-                    startMinute = endMinute - 5
-                }
+                } else startMinute = endMinute - 5
             }
         }
     }
@@ -67,7 +63,7 @@ fun DayTimePickerSheet(
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .padding(15.dp),
+            .padding(15.dp)
     ) {
         Row(modifier = Modifier.padding(5.dp)) {
             Text(
@@ -85,9 +81,9 @@ fun DayTimePickerSheet(
                             day = dayIndex,
                             startMinute = startMinute,
                             endMinute = endMinute,
-                        ),
+                        )
                     )
-                },
+                }
             )
         }
         Spacer(modifier = Modifier.height(30.dp))
@@ -109,16 +105,16 @@ fun DayTimePickerSheet(
                                 list = dayList,
                                 initialCenterIndex = dayIndex,
                                 columnHeightDp = 45.dp,
-                                onValueChanged = { tempDayIndex = it },
+                                onValueChanged = { tempDayIndex = it }
                             ) {
                                 Text(
                                     text = dayList[it].tempBlank(it),
-                                    style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                    style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                 )
                             }
                         }.show()
                 },
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(R.string.settings_timetable_config_week_day), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
@@ -153,11 +149,11 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempStartMinute = (tempStartMinute % SearchTimeDto.MIDDAY) + SearchTimeDto.MIDDAY * it
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = amPmList[it].tempBlank(it),
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
                                 }
@@ -168,11 +164,11 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempStartMinute = it * 60 + tempStartMinute % 60 + if (tempStartMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = hourList[it].tempBlank(it),
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
                                 }
@@ -183,18 +179,18 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempStartMinute = (tempStartMinute / 60) * 60 + it * 5
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = minuteList[it].tempBlank(it),
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
                                 }
                             }
                         }.show()
                 },
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_start_time_label), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
@@ -203,7 +199,7 @@ fun DayTimePickerSheet(
             ) {
                 Text(
                     text = startMinute.toFormattedTimeString(),
-                    style = SNUTTTypography.button,
+                    style = SNUTTTypography.button
                 )
             }
         }
@@ -232,11 +228,11 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempEndMinute = tempEndMinute % SearchTimeDto.MIDDAY + SearchTimeDto.MIDDAY * it
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = amPmList[it].tempBlank(it),
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
                                 }
@@ -247,11 +243,11 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempEndMinute = it * 60 + tempEndMinute % 60 + if (tempEndMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = hourList[it].tempBlank(it),
-                                            style = SNUTTTypography.button.copy(fontSize = 24.sp),
+                                            style = SNUTTTypography.button.copy(fontSize = 24.sp)
                                         )
                                     }
                                 }
@@ -262,7 +258,7 @@ fun DayTimePickerSheet(
                                         columnHeightDp = 45.dp,
                                         onValueChanged = {
                                             tempEndMinute = (tempEndMinute / 60) * 60 + it * 5
-                                        },
+                                        }
                                     ) {
                                         Text(
                                             text = minuteList[it].tempBlank(it),
@@ -273,7 +269,7 @@ fun DayTimePickerSheet(
                             }
                         }.show()
                 },
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(R.string.lecture_detail_edit_class_time_sheet_end_time_label), style = SNUTTTypography.button)
             Spacer(modifier = Modifier.weight(1f))
@@ -294,9 +290,6 @@ fun DayTimePickerSheet(
  * 길이가 다르면 문제가 없다. 임시 대처용 함수
  */
 private fun String.tempBlank(a: Int): String {
-    return if (a % 2 == 0) {
-        this
-    } else {
-        " $this "
-    }
+    return if (a % 2 == 0) this
+    else " $this "
 }

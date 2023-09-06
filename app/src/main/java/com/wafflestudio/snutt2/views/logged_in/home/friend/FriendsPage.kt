@@ -26,7 +26,7 @@ fun FriendsPage() {
                     text = "친구 시간표",
                     style = SNUTTTypography.h2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
             },
             navigationIcon = {
@@ -37,7 +37,7 @@ fun FriendsPage() {
             },
         )
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         ) {
             Column(
                 modifier = Modifier.align(Alignment.Center),
@@ -46,7 +46,7 @@ fun FriendsPage() {
                 Image(
                     painter = painterResource(R.drawable.img_reviews_coming_soon),
                     contentDescription = "",
-                    modifier = Modifier.size(75.dp),
+                    modifier = Modifier.size(75.dp)
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Column(

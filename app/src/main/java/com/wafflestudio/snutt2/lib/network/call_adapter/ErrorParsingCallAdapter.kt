@@ -42,8 +42,7 @@ class ErrorParsingCallAdapter<R>(
                                 override fun onFailure(call: Call<R>, t: Throwable) {
                                     callback.onFailure(call, t)
                                 }
-                            },
-                            )
+                            })
                         }
                     }
                 }
@@ -70,13 +69,13 @@ class ErrorParsingCallAdapter<R>(
         val errorDTO = kotlin.runCatching {
             serializer.deserialize<ErrorDTO>(
                 errorBodyStr,
-                ErrorDTO::class.java,
+                ErrorDTO::class.java
             )
         }.getOrNull()
             ?: return IllegalStateException("ErrorBody parsing failed")
         return ErrorParsedHttpException(
             response,
-            errorDTO,
+            errorDTO
         )
     }
 

@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class GetAppVersionResults(
-    @Json(name = "version") val version: String,
+    @Json(name = "version") val version: String
 )

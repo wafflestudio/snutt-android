@@ -26,7 +26,7 @@ fun showDeleteBookmarkDialog(
                 scope.launch {
                     launchSuspendApi(
                         apiOnProgress,
-                        apiOnError,
+                        apiOnError
                     ) {
                         onConfirm()
                         modalState.hide()
@@ -38,7 +38,7 @@ fun showDeleteBookmarkDialog(
             content = {
                 Text(
                     text = stringResource(R.string.bookmark_remove_check_message),
-                    style = SNUTTTypography.body1,
+                    style = SNUTTTypography.body1
                 )
             },
             positiveButton = context.getString(R.string.common_ok),

@@ -8,5 +8,5 @@ data class GetLecturesIdParams(
     @Json(name = "course_number")
     val courseNumber: String,
     @Json(name = "instructor")
-    val instructor: String,
+    val instructor: String
 )

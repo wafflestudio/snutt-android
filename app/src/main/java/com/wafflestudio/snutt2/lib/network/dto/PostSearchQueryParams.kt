@@ -20,5 +20,5 @@ data class PostSearchQueryParams(
     @Json(name = "times") val times: List<SearchTimeDto>?,
     @Json(name = "timesToExclude") val timesToExclude: List<SearchTimeDto>?,
     @Json(name = "offset") val offset: Long? = null,
-    @Json(name = "limit") val limit: Long? = null,
+    @Json(name = "limit") val limit: Long? = null
 )

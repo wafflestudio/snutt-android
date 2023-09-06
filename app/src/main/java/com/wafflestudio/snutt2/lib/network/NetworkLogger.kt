@@ -43,8 +43,8 @@ fun Interceptor.Chain.createNewNetworkLog(
                 writeTo(buffer)
                 jsonPrettyParser.toJson(
                     JsonParser.parseString(
-                        buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8),
-                    ),
+                        buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8)
+                    )
                 )
             } ?: ""
 
@@ -52,9 +52,9 @@ fun Interceptor.Chain.createNewNetworkLog(
                 GsonBuilder().setPrettyPrinting().create().toJson(
                     JsonParser.parseString(
                         source().buffer.clone().readString(
-                            contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8,
-                        ),
-                    ),
+                            contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
+                        )
+                    )
                 )
             } ?: ""
         } catch (e: IOException) {
@@ -84,8 +84,8 @@ fun Interceptor.Chain.createHttpFailLog(e: IOException, context: Context): Netwo
             writeTo(buffer)
             jsonPrettyParser.toJson(
                 JsonParser.parseString(
-                    buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8),
-                ),
+                    buffer.readString(contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8)
+                )
             )
         } ?: ""
     } catch (_: IOException) {

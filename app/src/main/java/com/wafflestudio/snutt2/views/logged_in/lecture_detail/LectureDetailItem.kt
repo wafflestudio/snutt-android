@@ -52,7 +52,7 @@ fun LectureDetailItem(
             keyboardActions = keyboardActions,
             hint = hint,
         )
-    },
+    }
 ) {
     Row(
         modifier = modifier,

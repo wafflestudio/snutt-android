@@ -53,7 +53,7 @@ object NetworkModule {
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-access-apikey",
-                        context.getString(R.string.api_key),
+                        context.getString(R.string.api_key)
                     )
                     .build()
                 chain.proceed(newRequest)
@@ -62,27 +62,27 @@ object NetworkModule {
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-os-type",
-                        "android",
+                        "android"
                     )
                     .addHeader(
                         "x-os-version",
-                        Build.VERSION.SDK_INT.toString(),
+                        Build.VERSION.SDK_INT.toString()
                     )
                     .addHeader(
                         "x-app-version",
-                        BuildConfig.VERSION_NAME,
+                        BuildConfig.VERSION_NAME
                     )
                     .addHeader(
                         "x-app-type",
-                        if (BuildConfig.DEBUG) "debug" else "release",
+                        if (BuildConfig.DEBUG) "debug" else "release"
                     )
                     .addHeader(
                         "x-device-id",
-                        Secure.getString(context.contentResolver, Secure.ANDROID_ID),
+                        Secure.getString(context.contentResolver, Secure.ANDROID_ID)
                     )
                     .addHeader(
                         "x-device-model",
-                        listOf(Build.MANUFACTURER.uppercase(), Build.MODEL).joinToString(" "),
+                        listOf(Build.MANUFACTURER.uppercase(), Build.MODEL).joinToString(" ")
                     )
                     .build()
                 chain.proceed(newRequest)
@@ -94,12 +94,9 @@ object NetworkModule {
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = if (BuildConfig.DEBUG) {
-                        HttpLoggingInterceptor.Level.BODY
-                    } else {
-                        HttpLoggingInterceptor.Level.NONE
-                    }
-                },
+                    level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                    else HttpLoggingInterceptor.Level.NONE
+                }
             )
             .build()
     }
@@ -109,7 +106,7 @@ object NetworkModule {
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
         moshi: Moshi,
-        serializer: Serializer,
+        serializer: Serializer
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -118,8 +115,8 @@ object NetworkModule {
             .addCallAdapterFactory(
                 ErrorParsingCallAdapterFactory(
                     RxJava3CallAdapterFactory.create(),
-                    serializer,
-                ),
+                    serializer
+                )
             )
             .build()
     }

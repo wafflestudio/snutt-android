@@ -40,7 +40,7 @@ class LectureSearchPagingSource(
             }
         }.ifEmpty { null },
         offset = null,
-        limit = null,
+        limit = null
     )
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {
@@ -50,13 +50,13 @@ class LectureSearchPagingSource(
             val response = api._postSearchQuery(
                 queryParam.copy(
                     offset = offset,
-                    limit = params.loadSize.toLong(),
-                ),
+                    limit = params.loadSize.toLong()
+                )
             )
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == LECTURE_SEARCH_STARTING_PAGE_INDEX) null else offset - params.loadSize,
-                nextKey = if (response.isEmpty()) null else offset + params.loadSize,
+                nextKey = if (response.isEmpty()) null else offset + params.loadSize
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

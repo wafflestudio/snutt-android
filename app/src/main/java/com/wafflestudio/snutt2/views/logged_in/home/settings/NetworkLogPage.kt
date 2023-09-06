@@ -63,13 +63,13 @@ fun NetworkLogPage() {
                     "지우기", style = SNUTTTypography.button,
                     modifier = Modifier.clicks {
                         vm.clearNetworkLog()
-                    },
+                    }
                 )
-            },
+            }
         )
         LazyColumn(
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             items(logList) {
                 NetworkLogItem(it)
@@ -84,7 +84,7 @@ private fun NetworkLogItem(log: NetworkLog) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = log.requestMethod, style = SNUTTTypography.h3)
         Spacer(modifier = Modifier.weight(1f))
@@ -96,7 +96,7 @@ private fun NetworkLogItem(log: NetworkLog) {
                 '5' -> SNUTTColors.Orange
                 '2' -> SNUTTColors.Grass
                 else -> SNUTTColors.DarkGray
-            },
+            }
         )
     }
     Text(
@@ -104,7 +104,7 @@ private fun NetworkLogItem(log: NetworkLog) {
         style = SNUTTTypography.h4,
         modifier = Modifier.clicks { expanded = expanded.not() },
         overflow = if (expanded.not()) TextOverflow.Ellipsis else TextOverflow.Visible,
-        maxLines = if (expanded.not()) 1 else Int.MAX_VALUE,
+        maxLines = if (expanded.not()) 1 else Int.MAX_VALUE
     )
     SimpleTextToggle(title = "Request Header", content = log.requestHeader)
     SimpleTextToggle(title = "Request Body", content = log.requestBody)
@@ -129,18 +129,18 @@ private fun SimpleTextToggle(
         ArrowDownIcon(
             modifier = Modifier
                 .size(15.dp)
-                .rotate(rotation),
+                .rotate(rotation)
         )
     }
     AnimatedVisibility(
         visible = expanded,
-        enter = fadeIn(),
+        enter = fadeIn()
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(SNUTTColors.Gray100, shape = RoundedCornerShape(10.dp))
-                .padding(10.dp),
+                .padding(10.dp)
         ) {
             Text(text = content, style = SNUTTTypography.body1)
         }

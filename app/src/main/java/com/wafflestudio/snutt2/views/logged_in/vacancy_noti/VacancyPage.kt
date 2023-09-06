@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VacancyPage(
-    vacancyViewModel: VacancyViewModel,
+    vacancyViewModel: VacancyViewModel
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -68,11 +68,8 @@ fun VacancyPage(
     val collapsedContentHeight = (LocalConfiguration.current.screenHeightDp - 56).dp
     val expandedContentHeight = (LocalConfiguration.current.screenHeightDp - 56 + 60).dp
     val contentHeight by transition.animateDp(label = "") { isEditMode -> // 리스트+삭제버튼 길이(topbar 56dp, 삭제버튼 60dp)
-        if (isEditMode) {
-            collapsedContentHeight
-        } else {
-            expandedContentHeight
-        }
+        if (isEditMode) collapsedContentHeight
+        else expandedContentHeight
     }
     val lazyListState = rememberLazyListState()
     var introDialogState by remember { mutableStateOf(vacancyViewModel.firstVacancyVisit.value) }
@@ -103,14 +100,14 @@ fun VacancyPage(
     LaunchedEffect(scrollWithButtonAppearing) {
         while (scrollWithButtonAppearing && lazyListState.layoutInfo.totalItemsCount > 0 && contentHeight > collapsedContentHeight) {
             lazyListState.animateScrollToItem(
-                lazyListState.layoutInfo.totalItemsCount - 1,
+                lazyListState.layoutInfo.totalItemsCount - 1
             )
         }
     }
 
     Box {
         Column(
-            modifier = Modifier.background(SNUTTColors.White900),
+            modifier = Modifier.background(SNUTTColors.White900)
         ) {
             TopBar(
                 title = {
@@ -118,7 +115,7 @@ fun VacancyPage(
                         text = stringResource(R.string.vacancy_app_bar_title),
                         style = SNUTTTypography.h2,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.size(5.dp))
                     QuestionCircleIcon(
@@ -126,7 +123,7 @@ fun VacancyPage(
                             .size(18.dp)
                             .clicks {
                                 introDialogState = true
-                            },
+                            }
                     )
                 },
                 navigationIcon = {
@@ -134,17 +131,16 @@ fun VacancyPage(
                         modifier = Modifier
                             .size(30.dp)
                             .clicks { onBackPressed() },
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
                     )
                 },
                 actions = {
                     if (vacancyLectures.isNotEmpty()) {
                         Text(
-                            text = if (!vacancyViewModel.isEditMode) {
+                            text = if (!vacancyViewModel.isEditMode)
                                 stringResource(R.string.vacancy_app_bar_edit)
-                            } else {
-                                stringResource(R.string.vacancy_app_bar_cancel)
-                            },
+                            else
+                                stringResource(R.string.vacancy_app_bar_cancel),
                             style = SNUTTTypography.body1,
                             modifier = Modifier
                                 .clicks {
@@ -153,42 +149,41 @@ fun VacancyPage(
                                             vacancyViewModel.toggleEditMode()
                                         }
                                     }
-                                },
+                                }
                         )
                     }
-                },
+                }
             )
             Column(
                 modifier = Modifier
                     .wrapContentHeight(align = Alignment.Top, unbounded = true)
-                    .height(contentHeight),
+                    .height(contentHeight)
             ) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize()
                         .then(
-                            if (vacancyViewModel.isEditMode.not()) {
+                            if (vacancyViewModel.isEditMode.not())
                                 Modifier.pullRefresh(pullRefreshState)
-                            } else {
+                            else
                                 Modifier
-                            },
-                        ),
+                        )
                 ) {
                     if (vacancyLectures.isEmpty()) {
                         VacancyPlaceholder(
                             onClickDetail = { introDialogState = true },
-                            modifier = Modifier.align(Alignment.Center),
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     } else {
                         LazyColumn(
                             modifier = Modifier
                                 .matchParentSize(),
-                            state = lazyListState,
+                            state = lazyListState
                         ) {
                             items(
                                 items = vacancyLectures,
-                                key = { it.id },
+                                key = { it.id }
                             ) {
                                 val lectureId = it.id
                                 VacancyListItem(
@@ -207,7 +202,7 @@ fun VacancyPage(
                     PullRefreshIndicator(
                         refreshing = isRefreshing,
                         state = pullRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter),
+                        modifier = Modifier.align(Alignment.TopCenter)
                     )
                 }
                 WebViewStyleButton(
@@ -231,13 +226,13 @@ fun VacancyPage(
                             content = {
                                 Text(
                                     text = context.getString(R.string.vacancy_delete_selected_message),
-                                    style = SNUTTTypography.body1,
+                                    style = SNUTTTypography.body1
                                 )
                             },
                         ).show()
                     },
                     enabled = deleteEnabled,
-                    disabledColor = SNUTTColors.VacancyGray,
+                    disabledColor = SNUTTColors.VacancyGray
                 ) {
                     Text(
                         text = stringResource(R.string.vacancy_delete_selected),
@@ -256,7 +251,7 @@ fun VacancyPage(
             } + fadeIn(),
             exit = slideOutVertically {
                 with(density) { 10.dp.roundToPx() }
-            } + fadeOut(),
+            } + fadeOut()
         ) {
             ExtendedFloatingActionButton(
                 modifier = Modifier
@@ -266,7 +261,7 @@ fun VacancyPage(
                     Text(
                         text = stringResource(R.string.vacancy_floating_button),
                         style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite),
-                        maxLines = 1,
+                        maxLines = 1
                     )
                 },
                 contentColor = SNUTTColors.SNUTTVacancy,
@@ -275,7 +270,7 @@ fun VacancyPage(
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
                     }
                 },
-                elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp),
+                elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp)
             )
         }
         if (introDialogState) {
@@ -285,7 +280,7 @@ fun VacancyPage(
                     scope.launch {
                         vacancyViewModel.setVacancyVisited()
                     }
-                },
+                }
             )
         }
     }
@@ -310,17 +305,17 @@ fun VacancyPlaceholder(
             contentDescription = null,
             modifier = Modifier
                 .height(180.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
         )
         Margin(height = 14.dp)
         Row(
             modifier = Modifier
                 .clicks { onClickDetail() },
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             QuestionCircleIcon(
                 modifier = Modifier.size(12.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY),
+                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY)
             )
             Spacer(modifier = Modifier.width(2.dp))
             Text(
@@ -328,8 +323,8 @@ fun VacancyPlaceholder(
                 textDecoration = TextDecoration.Underline,
                 style = SNUTTTypography.subtitle2.copy(
                     fontSize = 12.sp,
-                    color = SNUTTColors.DARKER_GRAY,
-                ),
+                    color = SNUTTColors.DARKER_GRAY
+                )
             )
         }
     }
@@ -338,7 +333,7 @@ fun VacancyPlaceholder(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun VacancyIntroDialog(
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -347,7 +342,7 @@ fun VacancyIntroDialog(
         onDismissRequest = { onDismiss() },
     ) {
         Surface(
-            elevation = 10.dp,
+            elevation = 10.dp
         ) {
             Column(
                 modifier = Modifier
@@ -355,10 +350,10 @@ fun VacancyIntroDialog(
                     .height(width * (640f / 600))
                     .background(SNUTTColors.White900),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     TipCloseIcon(
@@ -367,12 +362,12 @@ fun VacancyIntroDialog(
                             .clicks {
                                 onDismiss()
                             },
-                        colorFilter = ColorFilter.tint(if (pagerState.currentPage != 3) SNUTTColors.VacancyGray else SNUTTColors.Black900),
+                        colorFilter = ColorFilter.tint(if (pagerState.currentPage != 3) SNUTTColors.VacancyGray else SNUTTColors.Black900)
                     )
                 }
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 14.dp),
+                        .padding(horizontal = 14.dp)
                 ) {
                     HorizontalPager(
                         count = 4,
@@ -398,7 +393,7 @@ fun VacancyIntroDialog(
                                         2 -> R.drawable.img_vacancy_intro_2
                                         else -> R.drawable.img_vacancy_intro_3
                                     }
-                                },
+                                }
                             ),
                             contentDescription = null,
                         )
@@ -413,7 +408,7 @@ fun VacancyIntroDialog(
                                         pagerState.animateScrollToPage(pagerState.currentPage - 1)
                                     }
                                 },
-                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
                         )
                     }
                     if (pagerState.currentPage < 3) {
@@ -426,7 +421,7 @@ fun VacancyIntroDialog(
                                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                     }
                                 },
-                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                            colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray)
                         )
                     }
                 }
@@ -441,7 +436,7 @@ fun VacancyIntroDialog(
                     },
                     inactiveColor = SNUTTColors.Gray10,
                     indicatorHeight = 6.dp,
-                    indicatorWidth = 6.dp,
+                    indicatorWidth = 6.dp
                 )
             }
         }

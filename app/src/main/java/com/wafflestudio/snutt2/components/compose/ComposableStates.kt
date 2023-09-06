@@ -18,7 +18,7 @@ data class ComposableStates(
     val modalState: ModalState,
     val bottomSheet: BottomSheet,
     val apiOnProgress: ApiOnProgress,
-    val apiOnError: ApiOnError,
+    val apiOnError: ApiOnError
 )
 
 @Composable
@@ -28,5 +28,5 @@ fun ComposableStatesWithScope(scope: CoroutineScope) = ComposableStates(
     LocalModalState.current,
     LocalBottomSheetState.current,
     LocalApiOnProgress.current,
-    LocalApiOnError.current,
+    LocalApiOnError.current
 )
