@@ -66,7 +66,7 @@ class SNUTTApplication : Application(), ReactApplication {
                 RNCPickerPackage(),
                 SafeAreaContextPackage(),
                 ReanimatedPackage(),
-                SvgPackage()
+                SvgPackage(),
             )
 
             override fun getJSMainModuleName(): String = "friends"

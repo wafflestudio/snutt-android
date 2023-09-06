@@ -203,7 +203,7 @@ dependencies {
             "../libs/react-native-safe-area-context-release.aar",
             "../libs/react-native-reanimated-release.aar",
             "../libs/react-native-svg-release.aar",
-        )
+        ),
     )
 
     // flipper

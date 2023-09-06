@@ -42,7 +42,7 @@ fun FriendsPage(reactNativeBundleManager: ReactNativeBundleManager) {
                         FriendsPagePlaceholder()
                     }
                 }
-            }
+            },
         )
     } else {
         AndroidView(
@@ -53,7 +53,7 @@ fun FriendsPage(reactNativeBundleManager: ReactNativeBundleManager) {
                         FriendsPagePlaceholder()
                     }
                 }
-            }
+            },
         )
     }
 }
@@ -71,7 +71,7 @@ fun FriendsPagePlaceholder() {
                 )
             },
             navigationIcon = {
-                BigPeopleIcon(
+                PeopleIcon(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
