@@ -17,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
         if (remoteMessage.notification != null) {
             sendNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
         }
@@ -30,7 +29,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             this,
             0,
             intent,
-            PendingIntent.FLAG_ONE_SHOT
+            PendingIntent.FLAG_ONE_SHOT,
         )
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, SNUTT_FIREBASE_CHANNEL)

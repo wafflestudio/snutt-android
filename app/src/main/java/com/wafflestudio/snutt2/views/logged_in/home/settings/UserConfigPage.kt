@@ -55,7 +55,7 @@ fun UserConfigPage() {
 
     var facebookConnected by remember(user?.fbName) {
         mutableStateOf(
-            user?.fbName.isNullOrEmpty().not()
+            user?.fbName.isNullOrEmpty().not(),
         )
     }
 
@@ -93,17 +93,17 @@ fun UserConfigPage() {
                     Timber.e(error)
                     context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
                 }
-            }
+            },
         )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100)
+            .background(SNUTTColors.Gray100),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() }
+            onClickNavigateBack = { navController.popBackStack() },
         )
         Margin(height = 10.dp)
         SettingColumn {
@@ -115,18 +115,18 @@ fun UserConfigPage() {
                     Text(
                         text = user?.localId.toString(),
                         style = SNUTTTypography.body1.copy(
-                            color = SNUTTColors.Black500
-                        )
+                            color = SNUTTColors.Black500,
+                        ),
                     )
                 }
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_change_password),
-                    onClick = { passwordChangeDialogState = true }
+                    onClick = { passwordChangeDialogState = true },
                 )
             } else {
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_add_local_id),
-                    onClick = { addIdPasswordDialogState = true }
+                    onClick = { addIdPasswordDialogState = true },
                 )
             }
         }
@@ -140,13 +140,13 @@ fun UserConfigPage() {
                     Text(
                         text = user?.fbName ?: "",
                         style = SNUTTTypography.body1.copy(
-                            color = SNUTTColors.Black500
-                        )
+                            color = SNUTTColors.Black500,
+                        ),
                     )
                 }
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_facebook_disconnect),
-                    onClick = { disconnectFacebookDialogState = true }
+                    onClick = { disconnectFacebookDialogState = true },
                 )
             }
         } else {
@@ -155,28 +155,28 @@ fun UserConfigPage() {
                 onClick = {
                     // FIXME: 실패했을 때.
                     LoginManager.getInstance().logInWithReadPermissions(
-                        context as ActivityResultRegistryOwner, callbackManager, emptyList()
+                        context as ActivityResultRegistryOwner, callbackManager, emptyList(),
                     )
-                }
+                },
             )
         }
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_app_report_email),
-            hasNextPage = false
+            hasNextPage = false,
         ) {
             Text(
                 text = user?.email ?: "",
                 style = SNUTTTypography.body1.copy(
-                    color = SNUTTColors.Black500
-                )
+                    color = SNUTTColors.Black500,
+                ),
             )
         }
         Margin(height = 10.dp)
         SettingItem(
             title = stringResource(R.string.settings_user_config_leave),
             titleColor = SNUTTColors.Red,
-            onClick = { leaveDialogState = true }
+            onClick = { leaveDialogState = true },
         )
     }
 
@@ -201,8 +201,8 @@ fun UserConfigPage() {
             },
             title = stringResource(R.string.settings_user_config_add_local_id),
             positiveButtonText = stringResource(
-                R.string.notifications_noti_add
-            )
+                R.string.notifications_noti_add,
+            ),
         ) {
             Column {
                 EditText(
@@ -236,7 +236,7 @@ fun UserConfigPage() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     viewModel.changePassword(
-                        currentPassword, newPassword
+                        currentPassword, newPassword,
                     )
                     context.toast(context.getString(R.string.settings_user_config_change_password_success))
                     passwordChangeDialogState = false
@@ -255,8 +255,8 @@ fun UserConfigPage() {
             onConfirm = { checkAndPostPasswordChange(currentPassword, newPassword, newPasswordConfirm) },
             title = stringResource(R.string.settings_user_config_change_password),
             positiveButtonText = stringResource(
-                R.string.notifications_noti_change
-            )
+                R.string.notifications_noti_change,
+            ),
         ) {
             val focusManager = LocalFocusManager.current
             Column {
@@ -267,7 +267,7 @@ fun UserConfigPage() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                     visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_current_password_hint)
+                    hint = stringResource(R.string.settings_user_config_current_password_hint),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 EditText(
@@ -277,7 +277,7 @@ fun UserConfigPage() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                     visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_new_password_hint)
+                    hint = stringResource(R.string.settings_user_config_new_password_hint),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 EditText(
@@ -287,7 +287,7 @@ fun UserConfigPage() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { checkAndPostPasswordChange(currentPassword, newPassword, newPasswordConfirm) }),
                     visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_new_password_confirm_hint)
+                    hint = stringResource(R.string.settings_user_config_new_password_confirm_hint),
                 )
             }
         }
@@ -306,7 +306,7 @@ fun UserConfigPage() {
                 }
             },
             title = stringResource(R.string.settings_user_config_leave),
-            positiveButtonText = stringResource(R.string.settings_user_config_leave)
+            positiveButtonText = stringResource(R.string.settings_user_config_leave),
         ) {
             Text(text = stringResource(R.string.settings_leave_message), style = SNUTTTypography.body2)
         }
@@ -327,8 +327,8 @@ fun UserConfigPage() {
             },
             title = stringResource(R.string.settings_user_config_facebook_disconnect),
             positiveButtonText = stringResource(
-                R.string.notifications_noti_disconnect
-            )
+                R.string.notifications_noti_disconnect,
+            ),
         ) {
             Text(text = stringResource(R.string.settings_user_config_disconnect_facebook_message))
         }

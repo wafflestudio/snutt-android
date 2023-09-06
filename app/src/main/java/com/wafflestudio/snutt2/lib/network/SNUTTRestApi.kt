@@ -26,7 +26,7 @@ interface SNUTTRestApi {
 
     @POST("/v1/search_query")
     suspend fun _postSearchQuery(
-        @Body body: PostSearchQueryParams
+        @Body body: PostSearchQueryParams,
     ): PostSearchQueryResults
 
     @GET("/v1/course_books")
@@ -57,13 +57,13 @@ interface SNUTTRestApi {
     @PUT("/v1/tables/{id}")
     suspend fun _putTable(
         @Path("id") id: String,
-        @Body body: PutTableParams
+        @Body body: PutTableParams,
     ): PutTableResults
 
     @PUT("/v1/tables/{id}/theme")
     suspend fun _putTableTheme(
         @Path("id") id: String,
-        @Body body: PutTableThemeParams
+        @Body body: PutTableThemeParams,
     ): PutTableThemeResult
 
     @POST("/v1/tables/{id}/copy")
@@ -94,7 +94,7 @@ interface SNUTTRestApi {
     suspend fun _putLecture(
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
-        @Body body: PutLectureParams
+        @Body body: PutLectureParams,
     ): PutLectureResults
 
     @PUT("/v1/tables/{id}/lecture/{lecture_id}/reset")
@@ -113,57 +113,57 @@ interface SNUTTRestApi {
 
     @POST("/v1/auth/register_local")
     suspend fun _postSignUp(
-        @Body body: PostSignUpParams
+        @Body body: PostSignUpParams,
     ): PostSignUpResults
 
     @POST("/v1/auth/login_local")
     suspend fun _postSignIn(
-        @Body body: PostSignInParams
+        @Body body: PostSignInParams,
     ): PostSignInResults
 
     @POST("/v1/auth/login_fb")
     suspend fun _postLoginFacebook(
-        @Body body: PostLoginFacebookParams
+        @Body body: PostLoginFacebookParams,
     ): PostLoginFacebookResults
 
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(
-        @Body body: PostForceLogoutParams
+        @Body body: PostForceLogoutParams,
     ): PostForceLogoutResults
 
     @POST("/v1/auth/id/find")
     suspend fun _postFindId(
-        @Body body: PostFindIdParams
+        @Body body: PostFindIdParams,
     ): PostFindIdResults
 
     @POST("/v1/auth/password/reset/email/check")
     suspend fun _postCheckEmailById(
-        @Body body: PostCheckEmailByIdParams
+        @Body body: PostCheckEmailByIdParams,
     ): PostCheckEmailByIdResults
 
     @POST("/v1/auth/password/reset/email/send")
     suspend fun _postSendPwResetCodeToEmailById(
-        @Body body: PostSendPwResetCodeParams
+        @Body body: PostSendPwResetCodeParams,
     )
 
     @POST("/v1/auth/password/reset/verification/code")
     suspend fun _postVerifyCodeToResetPassword(
-        @Body body: PostVerifyPwResetCodeParams
+        @Body body: PostVerifyPwResetCodeParams,
     )
 
     @POST("/v1/auth/password/reset")
     suspend fun _postResetPassword(
-        @Body body: PostResetPasswordParams
+        @Body body: PostResetPasswordParams,
     )
 
     @POST("/v1/user/email/verification")
     suspend fun _postSendCodeToEmail(
-        @Body body: PostSendCodeToEmailParams
+        @Body body: PostSendCodeToEmailParams,
     )
 
     @POST("/v1/user/email/verification/code")
     suspend fun _postVerifyEmailCode(
-        @Body body: PostVerifyEmailCodeParams
+        @Body body: PostVerifyEmailCodeParams,
     )
 
     @GET("/v1/user/info")
@@ -198,7 +198,7 @@ interface SNUTTRestApi {
     @POST("/v1/user/device/{registration_id}")
     suspend fun _registerFirebaseToken(
         @Path("registration_id") id: String,
-        @Body body: RegisterFirebaseTokenParams
+        @Body body: RegisterFirebaseTokenParams,
     ): RegisterFirebaseTokenResults
 
     @DELETE("/v1/user/device/{registration_id}")
@@ -211,13 +211,13 @@ interface SNUTTRestApi {
 
     @POST("/v1/feedback")
     suspend fun _postFeedback(
-        @Body body: PostFeedbackParams
+        @Body body: PostFeedbackParams,
     ): PostFeedbackResults
 
     @GET("/ev-service/v1/lectures/id")
     suspend fun _getLecturesId(
         @Query(value = "course_number") courseNumber: String,
-        @Query(value = "instructor") instructor: String
+        @Query(value = "instructor") instructor: String,
     ): GetLecturesIdResults
 
     @GET("/v1/popups")
@@ -231,12 +231,12 @@ interface SNUTTRestApi {
 
     @POST("/v1/bookmarks/lecture")
     suspend fun _addBookmark(
-        @Body body: PostBookmarkParams
+        @Body body: PostBookmarkParams,
     )
 
     @HTTP(method = "DELETE", path = "/v1/bookmarks/lecture", hasBody = true)
     suspend fun _deleteBookmark(
-        @Body body: PostBookmarkParams
+        @Body body: PostBookmarkParams,
     )
 
     @GET("/v1/vacancy-notifications/lectures")
@@ -244,12 +244,12 @@ interface SNUTTRestApi {
 
     @POST("/v1/vacancy-notifications/lectures/{lectureId}")
     suspend fun _postVacancyLecture(
-        @Path("lectureId") lectureId: String
+        @Path("lectureId") lectureId: String,
     )
 
     @DELETE("/v1/vacancy-notifications/lectures/{lectureId}")
     suspend fun _deleteVacancyLecture(
-        @Path("lectureId") lectureId: String
+        @Path("lectureId") lectureId: String,
     )
 
     @GET("/v1/configs")

@@ -30,20 +30,20 @@ fun Modifier.clicks(
         role = role,
         onClick = clickFn,
         indication = null,
-        interactionSource = remember { MutableInteractionSource() }
+        interactionSource = remember { MutableInteractionSource() },
     )
 }
 
 @Composable
 private fun applyEventThrottling(
     event: () -> Unit,
-    throttleMs: Long
+    throttleMs: Long,
 ): () -> Unit {
     val throttledState = remember {
         MutableSharedFlow<() -> Unit>(
             replay = 0,
             extraBufferCapacity = 1,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
         )
     }
     LaunchedEffect(true) {

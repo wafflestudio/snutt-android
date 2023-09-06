@@ -35,7 +35,7 @@ TimetableWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
         for (appWidgetId in appWidgetIds) {
             val intent = Intent(context, RootActivity::class.java)
@@ -83,8 +83,8 @@ TimetableWidgetProvider : AppWidgetProvider() {
                     .getAppWidgetIds(
                         ComponentName(
                             context,
-                            TimetableWidgetProvider::class.java
-                        )
+                            TimetableWidgetProvider::class.java,
+                        ),
                     )
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
             context.sendBroadcast(intent)

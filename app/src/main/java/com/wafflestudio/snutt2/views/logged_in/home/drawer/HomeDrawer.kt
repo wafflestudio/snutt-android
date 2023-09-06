@@ -39,17 +39,17 @@ fun HomeDrawer() {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val allCourseBook by tableListViewModel.allCourseBook.collectAsState()
     val courseBooksWhichHaveTable by tableListViewModel.courseBooksWhichHaveTable.collectAsState(
-        initial = listOf()
+        initial = listOf(),
     )
     val tableListOfEachCourseBook by tableListViewModel.tableListOfEachCourseBook.collectAsState(
-        initial = mapOf()
+        initial = mapOf(),
     )
 
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             LogoIcon(modifier = Modifier.size(20.dp))
@@ -59,10 +59,10 @@ fun HomeDrawer() {
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } },)
+            ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } })
         }
         Divider(
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100,
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -79,7 +79,7 @@ fun HomeDrawer() {
                             scope,
                             allCourseBook,
                             CourseBookDto(table.semester, table.year),
-                            onConfirm = tableListViewModel::createTable
+                            onConfirm = tableListViewModel::createTable,
                         )
                     }
                     scope.launch {
@@ -99,7 +99,7 @@ fun HomeDrawer() {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(vertical = 10.dp)
-                        .clicks { expanded = expanded.not() }
+                        .clicks { expanded = expanded.not() },
                 ) {
                     Text(
                         text = courseBook.toFormattedString(context),
@@ -130,7 +130,7 @@ fun HomeDrawer() {
                                         allCourseBook,
                                         courseBook,
                                         true,
-                                        tableListViewModel::createTable
+                                        tableListViewModel::createTable,
                                     )
                                 }
                                 scope.launch {
@@ -147,18 +147,18 @@ fun HomeDrawer() {
 
 @Composable
 private fun CreateTableItem(
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .padding(vertical = 10.dp)
             .clicks { onClick() },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(25.dp))
         Text(
             text = stringResource(R.string.home_drawer_timetable_add_button),
-            style = SNUTTTypography.body1
+            style = SNUTTTypography.body1,
         )
     }
 }

@@ -64,13 +64,13 @@ fun FindIdPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() }
+            .clicks { focusManager.clearFocus() },
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_find_id_button),
             onClickNavigateBack = {
                 navController.popBackStack()
-            }
+            },
         )
 
         Column(modifier = Modifier.padding(horizontal = 25.dp)) {
@@ -81,7 +81,7 @@ fun FindIdPage() {
             )
             Text(
                 text = stringResource(R.string.settings_app_report_email),
-                style = SNUTTTypography.h4
+                style = SNUTTTypography.h4,
             )
             EditText(
                 value = emailField,
@@ -89,9 +89,9 @@ fun FindIdPage() {
                 hint = stringResource(R.string.settings_user_config_enter_email),
                 keyboardActions = KeyboardActions(onNext = {
                     focusManager.moveFocus(
-                        FocusDirection.Down
+                        FocusDirection.Down,
                     )
-                }),
+                },),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true,
                 modifier = Modifier
@@ -102,11 +102,11 @@ fun FindIdPage() {
             WebViewStyleButton(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = buttonEnabled,
-                onClick = { handleSendIdToEmail() }
+                onClick = { handleSendIdToEmail() },
             ) {
                 Text(
                     text = stringResource(R.string.common_ok),
-                    style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite)
+                    style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
                 )
             }
         }

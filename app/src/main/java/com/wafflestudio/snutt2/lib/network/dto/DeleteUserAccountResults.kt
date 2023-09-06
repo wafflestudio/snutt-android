@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DeleteUserAccountResults(
-    @Json(name = "message") val message: String
+    @Json(name = "message") val message: String,
 )

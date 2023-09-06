@@ -6,5 +6,5 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 
 @JsonClass(generateAdapter = true)
 data class GetVacancyLecturesResults(
-    @Json(name = "lectures") val lectures: List<LectureDto>
+    @Json(name = "lectures") val lectures: List<LectureDto>,
 )

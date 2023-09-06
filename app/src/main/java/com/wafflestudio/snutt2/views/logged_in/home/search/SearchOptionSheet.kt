@@ -45,13 +45,13 @@ fun SearchOptionSheet(
         stringResource(R.string.search_option_tag_type_credit) to TagType.CREDIT,
         stringResource(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
         stringResource(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
-        stringResource(R.string.search_option_tag_type_etc) to TagType.ETC
+        stringResource(R.string.search_option_tag_type_etc) to TagType.ETC,
     )
 
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         // tag column의 높이를 tagType column의 높이로 설정
@@ -67,15 +67,18 @@ fun SearchOptionSheet(
                             text = name,
                             style = SNUTTTypography.h2.copy(
                                 fontSize = 17.sp,
-                                color = if (type == selectedTagType) SNUTTColors.Black900
-                                else SNUTTColors.Gray200
+                                color = if (type == selectedTagType) {
+                                    SNUTTColors.Black900
+                                } else {
+                                    SNUTTColors.Gray200
+                                },
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 10.dp)
                                 .clicks {
                                     scope.launch { viewModel.setTagType(type) }
-                                }
+                                },
                         )
                     }
                 }
@@ -86,7 +89,7 @@ fun SearchOptionSheet(
             val maxSize = tagTypePlaceables.fold(IntSize.Zero) { currentMax, placeable ->
                 IntSize(
                     width = maxOf(currentMax.width, placeable.width),
-                    height = maxOf(currentMax.height, placeable.height)
+                    height = maxOf(currentMax.height, placeable.height),
                 )
             }
 
@@ -108,8 +111,11 @@ fun SearchOptionSheet(
                                     },
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                if (it.state) VividCheckedIcon(modifier = Modifier.size(15.dp))
-                                else VividUncheckedIcon(modifier = Modifier.size(15.dp))
+                                if (it.state) {
+                                    VividCheckedIcon(modifier = Modifier.size(15.dp))
+                                } else {
+                                    VividUncheckedIcon(modifier = Modifier.size(15.dp))
+                                }
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
                                     text = it.item.name,
@@ -119,7 +125,7 @@ fun SearchOptionSheet(
                             }
                         }
                     }
-                })
+                },)
                 val tagListPlaceables: List<Placeable> = tagListColumn.map {
                     it.measure(constraints)
                 }
@@ -133,13 +139,13 @@ fun SearchOptionSheet(
                 .fillMaxWidth()
                 .clicks { applyOption() },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             Text(
                 text = stringResource(R.string.search_option_apply_button),
                 textAlign = TextAlign.Center,
                 style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.AllWhite),
-                modifier = Modifier.padding(vertical = 20.dp)
+                modifier = Modifier.padding(vertical = 20.dp),
             )
         }
     }

@@ -42,7 +42,7 @@ fun NotificationPage() {
                 if (navController.currentDestination?.route == NavigationDestination.Notification) {
                     navController.popBackStack()
                 }
-            }
+            },
         )
 
         when {
@@ -101,15 +101,15 @@ fun NotificationError() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200)
+            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.common_network_failure),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200)
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
         )
     }
 }
@@ -121,10 +121,10 @@ fun NotificationPlaceholder() {
             .fillMaxSize()
             .padding(start = 30.dp, end = 30.dp, bottom = 40.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AlarmOnIcon(
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(40.dp),
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(

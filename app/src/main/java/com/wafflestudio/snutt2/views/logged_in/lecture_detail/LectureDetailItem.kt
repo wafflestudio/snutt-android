@@ -1,6 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
@@ -47,7 +52,7 @@ fun LectureDetailItem(
             keyboardActions = keyboardActions,
             hint = hint,
         )
-    }
+    },
 ) {
     Row(
         modifier = modifier,
@@ -59,31 +64,6 @@ fun LectureDetailItem(
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
             modifier = Modifier.width(88.dp),
             maxLines = 1,
-        )
-        Box(modifier = Modifier.weight(1f)) {
-            content()
-        }
-        Spacer(modifier = Modifier.width(20.dp))
-    }
-}
-
-@Composable
-fun LectureDetailRemark(
-    title: String,
-    editMode: Boolean,
-    content: @Composable () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 40.dp)
-            .padding(vertical = 10.dp)
-    ) {
-        Spacer(modifier = Modifier.width(20.dp))
-        Text(
-            text = title,
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(76.dp)
         )
         Box(modifier = Modifier.weight(1f)) {
             content()

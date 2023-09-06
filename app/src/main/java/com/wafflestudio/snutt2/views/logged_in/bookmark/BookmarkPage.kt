@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.layouts.modalBottomSheetLayout.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.components.compose.bottomSheet
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
@@ -45,11 +45,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun BookmarkPage(
     searchViewModel: SearchViewModel,
-    vacancyViewModel: VacancyViewModel
+    vacancyViewModel: VacancyViewModel,
 ) {
     val navController = LocalNavController.current
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
     val bottomSheet = bottomSheet()
     val scope = rememberCoroutineScope()
@@ -66,9 +64,9 @@ fun BookmarkPage(
     reviewWebViewContainer.apply {
         this.webView.addJavascriptInterface(
             CloseBridge(
-                onClose = { scope.launch { bottomSheet.hide() } }
+                onClose = { scope.launch { bottomSheet.hide() } },
             ),
-            "Snutt"
+            "Snutt",
         )
     }
 
@@ -98,20 +96,20 @@ fun BookmarkPage(
             sheetContent = bottomSheet.content,
             sheetState = bottomSheet.state,
             sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
-            onDismissScrim = {
-                scope.launch { bottomSheet.hide() }
-            }
+//            onDismissScrim = {
+//                scope.launch { bottomSheet.hide() }
+//            }
         ) {
             Column(
                 modifier = Modifier
                     .background(SNUTTColors.White900)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
                 SimpleTopBar(title = stringResource(R.string.bookmark_page_title), onClickNavigateBack = { onBackPressed() })
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 ) {
                     CompositionLocalProvider(LocalTableState provides tableState) {
                         TimeTable(selectedLecture = selectedLecture, touchEnabled = false)
@@ -123,7 +121,7 @@ fun BookmarkPage(
                             state = rememberLazyListState(),
                             modifier = Modifier
                                 .background(SNUTTColors.Dim2)
-                                .fillMaxSize()
+                                .fillMaxSize(),
                         ) {
                             items(bookmarks) {
                                 LectureListItem(
@@ -162,16 +160,16 @@ fun BookmarkPlaceHolder() {
             style = SNUTTTypography.subtitle1.copy(
                 fontSize = 18.sp,
                 color = SNUTTColors.White700,
-                fontWeight = FontWeight.Bold
-            )
+                fontWeight = FontWeight.Bold,
+            ),
         )
         Text(
             text = stringResource(R.string.bookmark_page_placeholder_2),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Text(
             text = stringResource(R.string.bookmark_page_placeholder_3),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700)
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.weight(1f))
     }

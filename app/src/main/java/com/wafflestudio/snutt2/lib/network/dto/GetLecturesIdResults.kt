@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GetLecturesIdResults(
     @Json(name = "id")
-    val id: String
+    val id: String,
 )

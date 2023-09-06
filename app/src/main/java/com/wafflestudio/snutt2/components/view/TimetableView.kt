@@ -62,7 +62,7 @@ class TimetableView : View {
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 10f.sp(context)
                 typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
-            }
+            },
         )
 
     private val lectureCellSubTextRect =
@@ -70,7 +70,7 @@ class TimetableView : View {
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 11f.sp(context)
                 typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
-            }
+            },
         )
 
     var trimParam: TableTrimParam = TableTrimParam.Default
@@ -126,7 +126,7 @@ class TimetableView : View {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
         context,
         attrs,
-        defStyle
+        defStyle,
     ) {
         init()
     }
@@ -189,7 +189,7 @@ class TimetableView : View {
                 (fittedTrimParam.dayOfWeekFrom + it).toDayString(context),
                 startWidth + unitWidth * 0.5f,
                 (dayLabelHeight + textHeight) / 2f,
-                dayLabelTextPaint
+                dayLabelTextPaint,
             )
             startWidth += unitWidth
         }
@@ -202,14 +202,14 @@ class TimetableView : View {
                 (fittedTrimParam.hourFrom + it).toString(),
                 hourLabelWidth - 4.dp(context),
                 startHeight + textHeight + 6.dp(context),
-                hourLabelTextPaint
+                hourLabelTextPaint,
             )
             canvas.drawLine(
                 hourLabelWidth,
                 startHeight + (unitHeight * 0.5f),
                 width.toFloat(),
                 startHeight + (unitHeight * 0.5f),
-                subLinePaint
+                subLinePaint,
             )
             startHeight += unitHeight
         }
@@ -217,7 +217,7 @@ class TimetableView : View {
 
     private fun drawLecture(
         canvas: Canvas,
-        lecture: LectureDto
+        lecture: LectureDto,
     ) {
         for (classTime in lecture.class_time_json) {
             drawClassTime(
@@ -225,13 +225,21 @@ class TimetableView : View {
                 classTime,
                 classTime.place,
                 lecture.course_title,
-                if (lecture.colorIndex == 0L && lecture.color.bgColor != null) lecture.color.bgColor!! else theme.getColorByIndex(
-                    context,
-                    lecture.colorIndex
-                ),
-                if (lecture.colorIndex == 0L && lecture.color.fgColor != null) lecture.color.fgColor!! else context.getColor(
-                    R.color.white
-                ),
+                if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                    lecture.color.bgColor!!
+                } else {
+                    theme.getColorByIndex(
+                        context,
+                        lecture.colorIndex,
+                    )
+                },
+                if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
+                    lecture.color.fgColor!!
+                } else {
+                    context.getColor(
+                        R.color.white,
+                    )
+                },
                 isCustom = lecture.isCustom,
             )
         }
@@ -239,7 +247,7 @@ class TimetableView : View {
 
     private fun drawSelectedLecture(
         canvas: Canvas,
-        selectedLecture: LectureDto
+        selectedLecture: LectureDto,
     ) {
         for (classTime in selectedLecture.class_time_json) {
             selectedLecture.color.bgRaw
@@ -249,7 +257,7 @@ class TimetableView : View {
                 classTime.place,
                 selectedLecture.course_title,
                 -0x1f1f20,
-                -0xcccccd
+                -0xcccccd,
             )
         }
     }
@@ -268,8 +276,8 @@ class TimetableView : View {
             max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
             min(
                 classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
-                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1
-            )
+                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1,
+            ),
         )
 
         val left = hourLabelWidth + (dayOffset) * unitWidth
@@ -288,7 +296,7 @@ class TimetableView : View {
                 style = Paint.Style.STROKE
                 color = 0x0d000000
                 strokeWidth = 1.dp(context)
-            }
+            },
         )
 
         val cellHeight = bottom - top - cellPadding * 2
@@ -297,12 +305,12 @@ class TimetableView : View {
         val courseTitleHeight = lectureCellTextRect.prepare(
             courseTitle,
             cellWidth.toInt(),
-            cellHeight.toInt()
+            cellHeight.toInt(),
         )
         val locationHeight = lectureCellSubTextRect.prepare(
             location,
             cellWidth.toInt(),
-            cellHeight.toInt() - courseTitleHeight
+            cellHeight.toInt() - courseTitleHeight,
         )
 
         lectureCellTextRect.draw(
@@ -310,7 +318,7 @@ class TimetableView : View {
             (left + cellPadding).toInt(),
             (top + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
             cellWidth.toInt(),
-            fgColor
+            fgColor,
         )
 
         lectureCellSubTextRect.draw(
@@ -318,7 +326,7 @@ class TimetableView : View {
             (left + cellPadding).toInt(),
             (top + courseTitleHeight + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
             cellWidth.toInt(),
-            fgColor
+            fgColor,
         )
     }
 

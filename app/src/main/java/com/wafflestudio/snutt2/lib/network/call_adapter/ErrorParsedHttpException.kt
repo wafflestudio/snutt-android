@@ -6,5 +6,5 @@ import retrofit2.Response
 
 class ErrorParsedHttpException(
     response: Response<*>,
-    val errorDTO: ErrorDTO? = null
+    val errorDTO: ErrorDTO? = null,
 ) : HttpException(response)

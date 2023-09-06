@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
-    private val lectureSearchRepository: LectureSearchRepository
+    private val lectureSearchRepository: LectureSearchRepository,
 ) : ViewModel() {
 
     var lazyListState = LazyListState(0, 0)
@@ -70,7 +70,7 @@ class SearchViewModel @Inject constructor(
     private val etcTags = listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
-        _searchTagList, _selectedTagType, _selectedTags
+        _searchTagList, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
         (tags + etcTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
@@ -85,7 +85,7 @@ class SearchViewModel @Inject constructor(
             }
         },
         _selectedLecture,
-        currentTable.filterNotNull()
+        currentTable.filterNotNull(),
     ) { bookmarks, selectedLecture, currentTable ->
         bookmarks.map { bookmarkedLecture ->
             bookmarkedLecture.toDataWithState(
@@ -93,8 +93,8 @@ class SearchViewModel @Inject constructor(
                     selected = selectedLecture == bookmarkedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(bookmarkedLecture)
-                    }
-                )
+                    },
+                ),
             )
         }
     }.stateIn(
@@ -115,7 +115,7 @@ class SearchViewModel @Inject constructor(
                 timesToExclude = if (_selectedTags.value.contains(TagDto.ETC_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable.filterNotNull()
+        _selectedLecture, currentTable.filterNotNull(),
     ) { pagingData, selectedLecture, currentTable ->
         pagingData.map { searchedLecture ->
             searchedLecture.toDataWithState(
@@ -123,8 +123,8 @@ class SearchViewModel @Inject constructor(
                     selected = selectedLecture == searchedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(searchedLecture)
-                    }
-                )
+                    },
+                ),
             )
         }
     }.stateIn(
@@ -142,14 +142,20 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun toggleLectureSelection(lecture: LectureDto) {
-        if (lecture == _selectedLecture.value) _selectedLecture.emit(null)
-        else _selectedLecture.emit(lecture)
+        if (lecture == _selectedLecture.value) {
+            _selectedLecture.emit(null)
+        } else {
+            _selectedLecture.emit(lecture)
+        }
     }
 
     suspend fun toggleTag(tag: TagDto) {
         _selectedTags.emit(
-            if (_selectedTags.value.contains(tag)) _selectedTags.value.filter { it != tag }
-            else concatenate(_selectedTags.value, listOf(tag))
+            if (_selectedTags.value.contains(tag)) {
+                _selectedTags.value.filter { it != tag }
+            } else {
+                concatenate(_selectedTags.value, listOf(tag))
+            },
         )
     }
 
@@ -170,7 +176,7 @@ class SearchViewModel @Inject constructor(
     suspend fun getLectureReviewUrl(lecture: LectureDto): String? {
         return lectureSearchRepository.getLectureReviewUrl(
             courseNumber = lecture.course_number ?: return null,
-            instructor = lecture.instructor
+            instructor = lecture.instructor,
         )
     }
 
@@ -200,8 +206,8 @@ class SearchViewModel @Inject constructor(
         val currentTable = currentTable.filterNotNull().first()
         _searchTagList.emit(
             lectureSearchRepository.getSearchTags(
-                currentTable.year, currentTable.semester
-            )
+                currentTable.year, currentTable.semester,
+            ),
         )
     }
 }

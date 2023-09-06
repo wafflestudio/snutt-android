@@ -40,12 +40,12 @@ fun TutorialPage() {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button)
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
                 val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
                     loginResult.accessToken.userId,
-                    loginResult.accessToken.token
+                    loginResult.accessToken.token,
                 )
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
@@ -58,13 +58,13 @@ fun TutorialPage() {
             .fillMaxSize()
             .padding(20.dp)
             .background(SNUTTColors.White900),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
@@ -79,14 +79,14 @@ fun TutorialPage() {
         }
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             BorderButton(
                 modifier = Modifier
                     .fillMaxWidth(),
                 color = SNUTTColors.Gray200,
                 cornerRadius = 10.dp,
-                onClick = { navController.navigate(NavigationDestination.SignIn) }
+                onClick = { navController.navigate(NavigationDestination.SignIn) },
             ) {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
@@ -99,7 +99,7 @@ fun TutorialPage() {
                     .fillMaxWidth(),
                 color = SNUTTColors.Gray200,
                 cornerRadius = 10.dp,
-                onClick = { navController.navigate(NavigationDestination.SignUp) }
+                onClick = { navController.navigate(NavigationDestination.SignUp) },
             ) {
                 Text(
                     text = stringResource(R.string.tutorial_sign_up_button),
@@ -111,7 +111,7 @@ fun TutorialPage() {
                 modifier = Modifier.fillMaxWidth(),
                 color = SNUTTColors.FacebookBlue,
                 cornerRadius = 10.dp,
-                onClick = { handleFacebookSignIn() }
+                onClick = { handleFacebookSignIn() },
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
@@ -125,7 +125,7 @@ fun TutorialPage() {
                     Text(
                         text = stringResource(R.string.sign_in_sign_in_facebook_button),
                         color = SNUTTColors.FacebookBlue,
-                        style = SNUTTTypography.button
+                        style = SNUTTTypography.button,
                     )
                 }
             }

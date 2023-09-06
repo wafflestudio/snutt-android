@@ -120,7 +120,7 @@ fun HomePage() {
         ModalDrawerWithBottomSheetLayout(drawerState = drawerState) {
             Box(
                 modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.BottomCenter
+                contentAlignment = Alignment.BottomCenter,
             ) {
                 when (pageController.homePageState.value) {
                     HomeItem.Timetable -> TimetablePage()
@@ -142,10 +142,10 @@ fun HomePage() {
                             brush = Brush.verticalGradient(
                                 listOf(
                                     Color.Transparent,
-                                    SNUTTColors.Gray100
-                                )
+                                    SNUTTColors.Gray100,
+                                ),
                             ),
-                        )
+                        ),
                 )
             }
             BottomNavigation(
@@ -170,7 +170,7 @@ fun HomePage() {
                     userViewModel.closePopup()
                     shouldShowPopup = false
                 }
-            }
+            },
         )
     }
 }

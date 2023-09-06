@@ -41,7 +41,7 @@ fun LazyItemScope.VacancyListItem(
     val instructorCreditText = stringResource(
         R.string.search_result_item_instructor_credit_text,
         lectureDto.instructor,
-        lectureDto.credit
+        lectureDto.credit,
     )
     val quotaText = stringResource(
         R.string.vacancy_item_quota_text,
@@ -57,46 +57,48 @@ fun LazyItemScope.VacancyListItem(
             .animateItemPlacement(
                 animationSpec = spring(
                     stiffness = Spring.StiffnessMediumLow,
-                    visibilityThreshold = IntOffset.VisibilityThreshold
-                )
+                    visibilityThreshold = IntOffset.VisibilityThreshold,
+                ),
             )
             .background(backgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .clicks { onClick() },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         AnimatedVisibility(editing) {
             RoundCheckbox(
                 checked = checked,
                 onCheckedChange = { onClick() },
-                modifier = Modifier.padding(end = 20.dp)
+                modifier = Modifier.padding(end = 20.dp),
             )
         }
         Column {
             Column(
                 modifier = Modifier
                     .padding(vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     ) {
                         Text(
                             text = lectureTitle,
                             style = SNUTTTypography.h4,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f, fill = false)
+                            modifier = Modifier.weight(1f, fill = false),
                         )
-                        if (hasVacancy) VacancyBadge(
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                        )
+                        if (hasVacancy) {
+                            VacancyBadge(
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp),
+                            )
+                        }
                     }
                     Text(
                         text = instructorCreditText,
@@ -118,13 +120,13 @@ fun LazyItemScope.VacancyListItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .alpha(0.8f)
-                            .weight(1f)
+                            .weight(1f),
                     )
                     Text(
                         text = quotaText,
                         style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -137,7 +139,7 @@ fun LazyItemScope.VacancyListItem(
                         style = SNUTTTypography.body2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f)
+                        modifier = Modifier.alpha(0.8f),
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -150,7 +152,7 @@ fun LazyItemScope.VacancyListItem(
                         style = SNUTTTypography.body2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f)
+                        modifier = Modifier.alpha(0.8f),
                     )
                 }
             }
@@ -161,22 +163,22 @@ fun LazyItemScope.VacancyListItem(
 
 @Composable
 fun VacancyBadge(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier
             .border(
                 width = 1.dp,
                 color = SNUTTColors.VacancyRed,
-                shape = RoundedCornerShape(2.dp)
+                shape = RoundedCornerShape(2.dp),
             )
             .padding(horizontal = 3.dp, vertical = 1.dp),
         text = stringResource(R.string.vacancy_item_vacancy_sticker),
         style = SNUTTTypography.body2
             .copy(
                 color = SNUTTColors.VacancyRed,
-                fontSize = 9.sp
-            )
+                fontSize = 9.sp,
+            ),
     )
 }
 

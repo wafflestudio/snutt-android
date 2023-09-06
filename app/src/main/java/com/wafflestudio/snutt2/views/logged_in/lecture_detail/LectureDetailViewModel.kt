@@ -88,7 +88,7 @@ class LectureDetailViewModel @Inject constructor(
     suspend fun getReviewContentsUrl(): String? {
         return lectureSearchRepository.getLectureReviewUrl(
             courseNumber = editingLectureDetail.value.course_number ?: return null,
-            instructor = editingLectureDetail.value.instructor
+            instructor = editingLectureDetail.value.instructor,
         )
     }
 
@@ -105,7 +105,7 @@ class LectureDetailViewModel @Inject constructor(
             classification = _editingLectureDetail.value.classification,
             category = _editingLectureDetail.value.category,
             remark = _editingLectureDetail.value.remark,
-            class_time_json = _editingLectureDetail.value.class_time_json
+            class_time_json = _editingLectureDetail.value.class_time_json,
         )
     }
 
@@ -117,7 +117,7 @@ class LectureDetailViewModel @Inject constructor(
             color = _editingLectureDetail.value.color,
             credit = _editingLectureDetail.value.credit,
             remark = _editingLectureDetail.value.remark,
-            class_time_json = _editingLectureDetail.value.class_time_json
+            class_time_json = _editingLectureDetail.value.class_time_json,
         )
     }
 }

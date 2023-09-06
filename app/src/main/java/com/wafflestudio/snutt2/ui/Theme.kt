@@ -55,7 +55,7 @@ fun isDarkMode(): Boolean {
 
 @Composable
 fun SNUTTTheme(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     /* <다크모드에서 내비게이션 시 흰색 깜빡이는 이슈 해결>
      * 내비게이션 시 액티비티 배경색인 흰색(styles.xml에서 android:windowBackground 로 지정된 색)이 잠깐 노출된다.
@@ -63,12 +63,15 @@ fun SNUTTTheme(
      * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
      */
     (LocalContext.current as Activity).window.setBackgroundDrawableResource(
-        if (isDarkMode()) R.color.black_dark
-        else R.color.white
+        if (isDarkMode()) {
+            R.color.black_dark
+        } else {
+            R.color.white
+        },
     )
     MaterialTheme(
         colors = if (isDarkMode()) DarkThemeColors else LightThemeColors,
         typography = SNUTTTypography,
-        content = content
+        content = content,
     )
 }

@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CourseBookRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi
+    private val api: SNUTTRestApi,
 ) : CourseBookRepository {
     override suspend fun getCourseBook(): List<CourseBookDto> {
         return api._getCoursebook()

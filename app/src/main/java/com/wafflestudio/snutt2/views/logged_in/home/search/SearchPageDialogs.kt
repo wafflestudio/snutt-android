@@ -42,7 +42,7 @@ fun verifyEmailBeforeApi(
                                 onConfirm = {
                                     modalState.hide()
                                     onUnverified()
-                                }
+                                },
                             ) {
                                 Text(
                                     text = stringResource(R.string.email_unverified_cta_message),
@@ -50,7 +50,9 @@ fun verifyEmailBeforeApi(
                                 )
                             }
                             .show()
-                    } else apiOnError(e)
+                    } else {
+                        apiOnError(e)
+                    }
                 }
                 else -> apiOnError(e)
             }
@@ -75,7 +77,7 @@ suspend fun openReviewBottomSheet(
 fun checkLectureOverlap(
     composableStates: ComposableStates,
     onLectureOverlap: (String) -> Unit,
-    api: suspend () -> Unit
+    api: suspend () -> Unit,
 ) {
     val apiOnProgress = composableStates.apiOnProgress
     val apiOnError = composableStates.apiOnError
@@ -90,7 +92,9 @@ fun checkLectureOverlap(
                 is ErrorParsedHttpException -> {
                     if (e.errorDTO?.code == ErrorCode.LECTURE_TIME_OVERLAP) {
                         onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
-                    } else apiOnError(e)
+                    } else {
+                        apiOnError(e)
+                    }
                 }
                 else -> apiOnError(e)
             }
@@ -118,7 +122,7 @@ fun showLectureOverlapDialog(
                 scope.launch {
                     launchSuspendApi(
                         apiOnProgress,
-                        apiOnError
+                        apiOnError,
                     ) {
                         forceAddApi()
                         modalState.hide()
@@ -131,9 +135,9 @@ fun showLectureOverlapDialog(
             content = {
                 Text(
                     text = message,
-                    style = SNUTTTypography.body1
+                    style = SNUTTTypography.body1,
                 )
-            }
+            },
         )
         .show()
 }

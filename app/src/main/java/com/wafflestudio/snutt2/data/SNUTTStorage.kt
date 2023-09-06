@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SNUTTStorage @Inject constructor(
-    private val prefContext: PrefContext
+    private val prefContext: PrefContext,
 ) {
 
     val prefKeyUserId = PrefValue<Optional<String>>(
@@ -21,8 +21,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "pref_key_user_id",
             type = String::class.java,
-            defaultValue = Optional.empty()
-        )
+            defaultValue = Optional.empty(),
+        ),
     )
 
     val accessToken = PrefValue<String>(
@@ -31,8 +31,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "pref_key_x_access_token",
             type = String::class.java,
-            defaultValue = ""
-        )
+            defaultValue = "",
+        ),
     )
 
     val user = PrefValue<Optional<UserDto>>(
@@ -41,8 +41,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "pref_user",
             type = UserDto::class.java,
-            defaultValue = Optional.empty()
-        )
+            defaultValue = Optional.empty(),
+        ),
     )
 
     val tableMap = PrefValue<Map<String, SimpleTableDto>>(
@@ -52,8 +52,8 @@ class SNUTTStorage @Inject constructor(
             key = "pref_tables",
             String::class.java,
             SimpleTableDto::class.java,
-            mapOf()
-        )
+            mapOf(),
+        ),
     )
 
     val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
@@ -64,8 +64,8 @@ class SNUTTStorage @Inject constructor(
             String::class.java,
             // Primitive Type 을 사용하지 못해 wrapping 된 타입을 넘겨준다.
             Long::class.javaObjectType,
-            mapOf()
-        )
+            mapOf(),
+        ),
     )
 
     val lastViewedTable = PrefValue<Optional<TableDto>>(
@@ -74,8 +74,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "last_tables",
             type = TableDto::class.java,
-            defaultValue = Optional.empty()
-        )
+            defaultValue = Optional.empty(),
+        ),
     )
 
     val tableTrimParam = PrefValue<TableTrimParam>(
@@ -84,8 +84,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "table_trim_param",
             type = TableTrimParam::class.java,
-            defaultValue = TableTrimParam.Default
-        )
+            defaultValue = TableTrimParam.Default,
+        ),
     )
 
     val themeMode = PrefValue<ThemeMode>(
@@ -94,8 +94,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "theme_mode",
             type = ThemeMode::class.java,
-            defaultValue = ThemeMode.AUTO
-        )
+            defaultValue = ThemeMode.AUTO,
+        ),
     )
 
     val compactMode = PrefValue<Boolean>(
@@ -104,8 +104,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "compact_mode",
             type = Boolean::class.java,
-            defaultValue = false
-        )
+            defaultValue = false,
+        ),
     )
 
     val firstBookmarkAlert = PrefValue<Boolean>(
@@ -114,8 +114,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "first_bookmark_alert",
             type = Boolean::class.java,
-            defaultValue = true
-        )
+            defaultValue = true,
+        ),
     )
 
     val courseBooks = PrefValue<List<CourseBookDto>>(
@@ -124,8 +124,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_course_books",
             type = CourseBookDto::class.java,
-            defaultValue = listOf()
-        )
+            defaultValue = listOf(),
+        ),
     )
 
     val tags = PrefValue<List<TagDto>>(
@@ -134,8 +134,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tags",
             type = TagDto::class.java,
-            defaultValue = listOf()
-        )
+            defaultValue = listOf(),
+        ),
     )
 
     val networkLog = PrefValue<List<NetworkLog>> (
@@ -144,8 +144,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_network_log",
             type = NetworkLog::class.java,
-            defaultValue = listOf()
-        )
+            defaultValue = listOf(),
+        ),
     )
 
     val firstVacancyVisit = PrefValue<Boolean>(
@@ -154,8 +154,8 @@ class SNUTTStorage @Inject constructor(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "first_vacancy_visit",
             type = Boolean::class.java,
-            defaultValue = true
-        )
+            defaultValue = true,
+        ),
     )
 
     fun clearLoginScope() {

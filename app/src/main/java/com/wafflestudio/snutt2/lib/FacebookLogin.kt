@@ -19,7 +19,7 @@ suspend fun facebookLogin(
             override fun onSuccess(result: LoginResult) {
                 continuation.resume(
                     result,
-                    onCancellation = { loginManager.unregisterCallback(callbackManager) }
+                    onCancellation = { loginManager.unregisterCallback(callbackManager) },
                 )
             }
 
@@ -37,7 +37,7 @@ suspend fun facebookLogin(
         loginManager.logInWithReadPermissions(
             context as ActivityResultRegistryOwner,
             callbackManager,
-            emptyList()
+            emptyList(),
         )
         continuation.invokeOnCancellation {
             loginManager.unregisterCallback(callbackManager)

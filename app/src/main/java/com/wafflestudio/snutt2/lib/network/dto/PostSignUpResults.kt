@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 data class PostSignUpResults(
     @Json(name = "message") val message: String,
     @Json(name = "token") val token: String,
-    @Json(name = "user_id") val userId: String
+    @Json(name = "user_id") val userId: String,
 )

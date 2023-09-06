@@ -50,7 +50,7 @@ fun LectureColorSelectorPage() {
 
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
-            title = "강의 색상 선택하기"
+            title = "강의 색상 선택하기",
         ) {
             navController.popBackStack()
         }
@@ -60,7 +60,7 @@ fun LectureColorSelectorPage() {
             color = null,
             index = idx,
             theme = tableColorTheme,
-            isSelected = (idx == lectureState.colorIndex)
+            isSelected = (idx == lectureState.colorIndex),
         ) {
             vm.editLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
             navController.popBackStack()
@@ -69,7 +69,7 @@ fun LectureColorSelectorPage() {
             color = lectureState.color,
             index = 0,
             theme = tableColorTheme,
-            isSelected = (lectureState.colorIndex == 0L)
+            isSelected = (lectureState.colorIndex == 0L),
         ) {
             colorSelectorDialog(context, "글자 색")
                 .flatMap { fgColor ->
@@ -79,8 +79,8 @@ fun LectureColorSelectorPage() {
                     vm.editLectureDetail(
                         lectureState.copy(
                             colorIndex = 0L,
-                            color = ColorDto(fgColor, bgColor)
-                        )
+                            color = ColorDto(fgColor, bgColor),
+                        ),
                     )
                     navController.popBackStack()
                 }
@@ -94,19 +94,22 @@ fun ColorItem(
     index: Long,
     theme: TimetableColorTheme,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .height(40.dp)
             .clicks { onClick() },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(20.dp))
         ColorBox(lectureColor = color, lectureColorIndex = index, theme = theme)
         Spacer(modifier = Modifier.width(20.dp))
-        if (index != 0L) Text(text = "SNUTT$index", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
-        else Text(text = "커스텀", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
+        if (index != 0L) {
+            Text(text = "SNUTT$index", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
+        } else {
+            Text(text = "커스텀", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
+        }
         Spacer(modifier = Modifier.weight(1f))
         if (isSelected) CheckedIcon(modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(20.dp))
@@ -123,13 +126,13 @@ private fun colorSelectorDialog(context: Context, title: String): Maybe<Int> {
                 object : ColorEnvelopeListener {
                     override fun onColorSelected(
                         envelope: ColorEnvelope?,
-                        fromUser: Boolean
+                        fromUser: Boolean,
                     ) {
                         envelope?.color?.let {
                             emitter.onSuccess(it)
                         }
                     }
-                }
+                },
             )
             .attachAlphaSlideBar(false)
             .setOnDismissListener {

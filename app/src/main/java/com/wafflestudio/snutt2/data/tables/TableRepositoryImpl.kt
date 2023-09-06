@@ -61,7 +61,7 @@ class TableRepositoryImpl @Inject constructor(
                 prev.copy(title = title).toOptional()
             } else {
                 prev.toOptional()
-            }
+            },
         )
     }
 
@@ -73,7 +73,7 @@ class TableRepositoryImpl @Inject constructor(
                 response.toOptional()
             } else {
                 prev.toOptional()
-            }
+            },
         )
     }
 

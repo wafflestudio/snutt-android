@@ -23,7 +23,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun LazyItemScope.TagCell(
     tagDto: TagDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -31,7 +31,7 @@ fun LazyItemScope.TagCell(
             .padding(horizontal = 5.dp)
             .height(30.dp)
             .background(color = tagDto.type.getColor(), shape = RoundedCornerShape(15.dp)),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(10.dp))
         Text(
@@ -43,7 +43,7 @@ fun LazyItemScope.TagCell(
             modifier = Modifier
                 .size(20.dp)
                 .padding(2.5.dp)
-                .clicks { onClick() }
+                .clicks { onClick() },
         )
         Spacer(modifier = Modifier.width(10.dp))
     }

@@ -10,5 +10,5 @@ data class UserDto(
     @Json(name = "notificationCheckedAt") val notificationCheckedAt: String? = null,
     @Json(name = "email") val email: String? = null,
     @Json(name = "local_id") val localId: String? = null,
-    @Json(name = "fb_name") val fbName: String? = null
+    @Json(name = "fb_name") val fbName: String? = null,
 )

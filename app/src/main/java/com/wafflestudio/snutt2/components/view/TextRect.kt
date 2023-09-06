@@ -46,7 +46,6 @@ class TextRect(paint: Paint) {
             var stop = if (maximumInLine > length) length else maximumInLine
             // stop = min(length,maximuminline);
             while (true) {
-
                 // skip LF and spaces
                 while (start < length) {
                     val ch = text[start]
@@ -83,7 +82,9 @@ class TextRect(paint: Paint) {
                     val ch = text[stop - 1]
                     if (ch == '\n' ||
                         ch == ' '
-                    ) minus = 1
+                    ) {
+                        minus = 1
+                    }
                 }
                 if (textHeight + lineHeight > maxHeight) {
                     wasCut = true
@@ -121,10 +122,14 @@ class TextRect(paint: Paint) {
         for (n in 0..lines) {
             var t: String
             y += before
-            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) text!!.substring(
-                starts[n],
-                stops[n] - 3
-            ) + "..." else text!!.substring(starts[n], stops[n])
+            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) {
+                text!!.substring(
+                    starts[n],
+                    stops[n] - 3,
+                ) + "..."
+            } else {
+                text!!.substring(starts[n], stops[n])
+            }
 
             // 텍스트 가운데 정렬
             var leftResult = left

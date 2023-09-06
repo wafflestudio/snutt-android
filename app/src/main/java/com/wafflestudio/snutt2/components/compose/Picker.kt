@@ -30,7 +30,7 @@ fun <T> Picker(
 
     val animatedOffset = remember { Animatable(initialCenterIndex * columnHeightDp.value) }
         .apply {
-            updateBounds(columnHeightDp.value * (- 0.5f), columnHeightDp.value * (list.size - 0.5f))
+            updateBounds(columnHeightDp.value * (-0.5f), columnHeightDp.value * (list.size - 0.5f))
         }
     val centerItemIndex = (animatedOffset.value / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1)
 
@@ -40,8 +40,11 @@ fun <T> Picker(
      * 위로 스크롤 : item 높이 절반만큼 스크롤하면 {columnHeightDp.value/2}, 경계에서 -{columnHeightDp.value/2}으로 하강 후 item 높이만큼 스크롤 하면 다시 0
      */
     val localOffset =
-        if (animatedOffset.value % columnHeightDp.value > columnHeightDp.value / 2) (columnHeightDp.value - (animatedOffset.value % columnHeightDp.value))
-        else -(animatedOffset.value % columnHeightDp.value)
+        if (animatedOffset.value % columnHeightDp.value > columnHeightDp.value / 2) {
+            (columnHeightDp.value - (animatedOffset.value % columnHeightDp.value))
+        } else {
+            -(animatedOffset.value % columnHeightDp.value)
+        }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -61,7 +64,7 @@ fun <T> Picker(
                         animatedOffset.animateTo(columnHeightDp.value * centerItemIndex)
                     }
                     onValueChanged(centerItemIndex)
-                }
+                },
             ),
     ) {
         if (list.isNotEmpty()) {
@@ -72,7 +75,7 @@ fun <T> Picker(
                         .alpha((columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
                     content = {
                         PickerItemContent(centerItemIndex - 2)
-                    }
+                    },
                 )
             }
             if (centerItemIndex > 0) {
@@ -80,20 +83,20 @@ fun <T> Picker(
                     modifier = Modifier
                         .offset(y = -columnHeightDp + localOffset.dp)
                         .alpha((columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
-                    content = { PickerItemContent(centerItemIndex - 1) }
+                    content = { PickerItemContent(centerItemIndex - 1) },
                 )
             }
             Box(modifier = Modifier.height(columnHeightDp).fillMaxWidth().background(SNUTTColors.Gray100, RoundedCornerShape(30f)).offset(y = -columnHeightDp / 2).zIndex(-5f))
             PickerItem(
                 modifier = Modifier.offset(y = localOffset.dp),
-                content = { PickerItemContent(centerItemIndex) }
+                content = { PickerItemContent(centerItemIndex) },
             )
             if (centerItemIndex < list.size - 1) {
                 PickerItem(
                     modifier = Modifier
                         .offset(y = columnHeightDp + localOffset.dp)
                         .alpha(-(-columnHeightDp * 3 / 4 + localOffset.dp / 2) / columnHeightDp),
-                    content = { PickerItemContent(centerItemIndex + 1) }
+                    content = { PickerItemContent(centerItemIndex + 1) },
                 )
             }
             if (centerItemIndex < list.size - 2) {
@@ -101,7 +104,7 @@ fun <T> Picker(
                     modifier = Modifier
                         .offset(y = columnHeightDp * 2 + localOffset.dp)
                         .alpha(-(-columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
-                    content = { PickerItemContent(centerItemIndex + 2) }
+                    content = { PickerItemContent(centerItemIndex + 2) },
                 )
             }
         }
@@ -112,7 +115,7 @@ fun <T> Picker(
 fun PickerItem(modifier: Modifier, content: @Composable () -> Unit) {
     Box(
         modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

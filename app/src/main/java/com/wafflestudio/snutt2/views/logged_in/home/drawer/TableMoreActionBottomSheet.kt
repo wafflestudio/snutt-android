@@ -45,11 +45,11 @@ fun TableMoreActionBottomSheet(
         modifier = Modifier
             .background(SNUTTColors.White900)
             .padding(5.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         MoreActionItem(
             Icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
-            text = stringResource(R.string.home_drawer_table_title_change)
+            text = stringResource(R.string.home_drawer_table_title_change),
         ) {
             showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
         }
@@ -62,7 +62,9 @@ fun TableMoreActionBottomSheet(
                     showTableDeleteDialog(table.id, composableStates) { tableId ->
                         tableListViewModel.deleteTableAndSwitchIfNeeded(tableId)
                     }
-                } else context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                } else {
+                    context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
+                }
             }
         }
         MoreActionItem(
@@ -79,47 +81,49 @@ fun TableMoreActionBottomSheet(
                             scope.launch {
                                 launchSuspendApi(
                                     apiOnProgress,
-                                    apiOnError
+                                    apiOnError,
                                 ) {
                                     timetableViewModel.setPreviewTheme(theme)
                                 }
                             }
                         }, onPreview = { idx ->
-                            scope.launch {
-                                launchSuspendApi(
-                                    apiOnProgress,
-                                    apiOnError
-                                ) {
-                                    timetableViewModel.setPreviewTheme(
-                                        TimetableColorTheme.fromInt(
-                                            idx
+                                scope.launch {
+                                    launchSuspendApi(
+                                        apiOnProgress,
+                                        apiOnError,
+                                    ) {
+                                        timetableViewModel.setPreviewTheme(
+                                            TimetableColorTheme.fromInt(
+                                                idx,
+                                            ),
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                        }, onApply = {
-                            scope.launch {
-                                launchSuspendApi(
-                                    apiOnProgress,
-                                    apiOnError
-                                ) {
-                                    timetableViewModel.updateTheme()
-                                    scope.launch { bottomSheet.hide() }
+                            }, onApply = {
+                                scope.launch {
+                                    launchSuspendApi(
+                                        apiOnProgress,
+                                        apiOnError,
+                                    ) {
+                                        timetableViewModel.updateTheme()
+                                        scope.launch { bottomSheet.hide() }
+                                    }
                                 }
-                            }
-                        }, onDispose = {
-                            scope.launch {
-                                launchSuspendApi(
-                                    apiOnProgress,
-                                    apiOnError
-                                ) {
-                                    timetableViewModel.setPreviewTheme(null)
+                            }, onDispose = {
+                                scope.launch {
+                                    launchSuspendApi(
+                                        apiOnProgress,
+                                        apiOnError,
+                                    ) {
+                                        timetableViewModel.setPreviewTheme(null)
+                                    }
                                 }
-                            }
-                        })
+                            },)
                     }
                     bottomSheet.show()
-                } else context.toast(context.getString(R.string.home_drawer_change_theme_unable_alert_message))
+                } else {
+                    context.toast(context.getString(R.string.home_drawer_change_theme_unable_alert_message))
+                }
             }
         }
     }
@@ -136,7 +140,7 @@ private fun MoreActionItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(12.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             Icon()
             Spacer(modifier = Modifier.width(15.dp))

@@ -8,14 +8,14 @@ data class RemoteConfigDto(
     @Json(name = "reactNativeBundleFriends") val reactNativeBundleSrc: ReactNativeBundleSrc? = null,
     @Json(name = "vacancyNotificationBanner") val vacancyBannerConfig: VacancyBannerConfig = VacancyBannerConfig(false),
     @Json(name = "vacancySugangSnuUrl") val vacancyUrlConfig: VacancyUrlConfig = VacancyUrlConfig(),
-    @Json(name = "settingsBadge") val settingsBadgeConfig: SettingsBadgeConfig = SettingsBadgeConfig()
+    @Json(name = "settingsBadge") val settingsBadgeConfig: SettingsBadgeConfig = SettingsBadgeConfig(),
 ) {
     data class ReactNativeBundleSrc(
-        @Json(name = "src") val src: Map<String, String>
+        @Json(name = "src") val src: Map<String, String>,
     )
 
     data class SettingsBadgeConfig(
-        @Json(name = "new") val new: List<String> = emptyList()
+        @Json(name = "new") val new: List<String> = emptyList(),
     )
 
     data class VacancyBannerConfig(
