@@ -166,13 +166,13 @@ interface SNUTTRestApi {
         @Body body: PostVerifyEmailCodeParams,
     )
 
-    @GET("/v1/user/info")
+    @GET("/v1/users/me")
     suspend fun _getUserInfo(): GetUserInfoResults
 
-    @PUT("/v1/user/info")
-    suspend fun _putUserInfo(
-        @Body body: PutUserInfoParams,
-    ): PutUserInfoResults
+    @PATCH("/v1/users/me")
+    suspend fun _patchUserInfo(
+        @Body body: PatchUserInfoParams,
+    ): PatchUserInfoResults
 
     @PUT("/v1/user/password")
     suspend fun _putUserPassword(

@@ -59,6 +59,7 @@
     <string name="error_invalid_email">올바른 이메일을 입력해주세요.</string>
     <string name="error_vacancy_previous_semester">해당 학기의 빈자리 알림 신청 기간이 종료되었습니다.</string>
     <string name="error_vacancy_duplicate">이미 빈자리 알림을 받고 있는 강의입니다.</string>
+    <string name="error_invalid_nickname">사용할 수 없는 닉네임입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">계정 만들기</string>
@@ -212,6 +213,9 @@
     <string name="settings_timetable_config_force_fit">시간표 자동 정렬</string>
     <string name="settings_timetable_config_week_day">요일</string>
     <string name="settings_timetable_config_time">시간</string>
+    <string name="settings_user_config_change_nickname">닉네임 변경</string>
+    <string name="settings_user_config_copy_nickname">닉네임 복사하기</string>
+    <string name="settings_user_config_id">아이디</string>
     <string name="settings_user_config_change_password">비밀번호 변경</string>
     <string name="settings_user_config_add_local_id">아이디 비밀번호 추가</string>
     <string name="settings_user_config_connect_facebook">페이스북 연동</string>
@@ -229,6 +233,14 @@
     <string name="settings_user_config_change_password_success">비밀번호를 변경하였습니다.</string>
     <string name="settings_leave_message">SNUTT 회원 탈퇴를 하겠습니까?</string>
     <string name="settings_user_config_disconnect_facebook_message">페이스북 연동을 끊겠습니까?</string>
+    <string name="settings_change_nickname_app_bar_title">닉네임 변경</string>
+    <string name="settings_change_nickname_app_bar_save">저장</string>
+    <string name="settings_change_nickname_title">닉네임 (공백 포함 한/영/숫자 10자 이내)</string>
+    <string name="settings_change_nickname_guide">최초 닉네임은 가입 시 임의 부여된 닉네임으로,\n앞의 이름을 변경할 시 4자리 숫자 태그는 자동 변경됩니다.\n\n변경된 닉네임은 나의 모든 친구에게 반영됩니다.</string>
+    <string name="settings_change_nickname_requirement_title">닉네임 안내</string>
+    <string name="settings_change_nickname_requirement_0">불완전한 한글(예: ㄱ, ㅏ)은 포함될 수 없습니다.</string>
+    <string name="settings_change_nickname_requirement_1">영문 대/소문자는 구분됩니다.</string>
+    <string name="settings_change_nickname_requirement_2">상대에게 불쾌감을 주는 등 부적절한 닉네임은 관리자에 의해 안내 없이 수정될 수 있습니다.</string>
     <string name="settings_select_color_mode_title">화면 모드</string>
     <string name="settings_select_color_mode_light">라이트 모드</string>
     <string name="settings_select_color_mode_dark">다크 모드</string>

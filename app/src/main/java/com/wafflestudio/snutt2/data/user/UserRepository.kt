@@ -29,7 +29,7 @@ interface UserRepository {
 
     suspend fun fetchUserInfo()
 
-    suspend fun putUserInfo(email: String)
+    suspend fun patchUserInfo(nickname: String)
 
     suspend fun deleteUserAccount()
 
