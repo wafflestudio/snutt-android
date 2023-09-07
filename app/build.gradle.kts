@@ -62,20 +62,12 @@ android {
         }
 
         getByName("release") {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-        }
-    }
-    splits {
-        abi {
-            reset()
-            isEnable = true
-            isUniversalApk = false
-            include("armeabi-v7a", "x86", "arm64-v8a", "x86_64")
         }
     }
 

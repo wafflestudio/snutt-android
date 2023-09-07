@@ -107,8 +107,6 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-      - name: Upload artifact to Firebase App Distribution
-        run: ./gradlew appDistributionUploadStagingRelease
       - name: Slack Upload APK
         uses: MeilCli/slack-upload-file@v1
         with:
