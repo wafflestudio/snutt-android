@@ -112,7 +112,7 @@ jobs:
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channels: ${{ secrets.SLACK_DEPLOY_CHANNEL }}
-          file_path: './app/build/outputs/apk/live/release/app-live-release.aab'
+          file_path: './app/build/outputs/bundle/liveRelease/app-live-release.aab'
           file_name: 'app-live-release.aab'
           file_type: 'aab'
           initial_comment: 'live-release AAB'
