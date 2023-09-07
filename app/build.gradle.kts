@@ -70,14 +70,6 @@ android {
             )
         }
     }
-    splits {
-        abi {
-            reset()
-            isEnable = false
-            isUniversalApk = false
-            include("armeabi-v7a", "x86", "arm64-v8a", "x86_64")
-        }
-    }
 
     flavorDimensions.add("mode")
 
