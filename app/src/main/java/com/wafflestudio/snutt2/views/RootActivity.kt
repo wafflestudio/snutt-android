@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
@@ -96,6 +97,7 @@ class RootActivity : AppCompatActivity() {
         installSplashScreen()
 
         super.onCreate(null)
+        FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
