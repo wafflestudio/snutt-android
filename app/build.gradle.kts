@@ -35,10 +35,6 @@ android {
     namespace = "com.wafflestudio.snutt2"
     compileSdk = 34
 
-    repositories {
-        mavenCentral()
-    }
-
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
@@ -193,24 +189,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // RN
-    implementation("com.facebook.react:react-android:0.72.0")
-    implementation("com.facebook.react:hermes-android:0.72.0")
-    implementation(
-        files(
-            "../libs/react-native-picker_picker-release.aar",
-            "../libs/react-native-gesture-handler-release.aar",
-            "../libs/react-native-screens-release.aar",
-            "../libs/react-native-safe-area-context-release.aar",
-            "../libs/react-native-reanimated-release.aar",
-            "../libs/react-native-svg-release.aar",
-        ),
-    )
+    implementation("com.facebook.react:react-android:0.72.3")
+    implementation("com.facebook.react:hermes-android:0.72.3")
+    implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
 
     // flipper
-    debugImplementation("com.facebook.flipper:flipper:0.213.0")
-    debugImplementation("com.facebook.soloader:soloader:0.10.5")
-}
-
-repositories {
-    mavenCentral()
+    implementation("com.facebook.flipper:flipper:0.213.0")
+    implementation("com.facebook.soloader:soloader:0.10.5")
 }
