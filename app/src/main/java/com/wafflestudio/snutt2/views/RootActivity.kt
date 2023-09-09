@@ -58,7 +58,6 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -88,7 +87,7 @@ class RootActivity : AppCompatActivity() {
         } else {
             userViewModel.themeMode.value == ThemeMode.DARK
         }
-        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken.value, isDarkMode)
+        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken, isDarkMode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
