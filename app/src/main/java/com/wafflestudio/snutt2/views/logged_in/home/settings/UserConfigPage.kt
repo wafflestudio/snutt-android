@@ -103,7 +103,7 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.SettingBackground),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),

@@ -27,6 +27,9 @@ object SNUTTColors {
     val Colors.SettingColumnTitle @Composable get() = if (isLight) Color(0xff8e8e93) else Color(0xffc4c4c4)
     val SettingColumnTitle @Composable get() = MaterialTheme.colors.SettingColumnTitle
 
+    val Colors.SettingBackground @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff1e1e1e)
+    val SettingBackground @Composable get() = MaterialTheme.colors.SettingBackground
+
     val Colors.Gray10 @Composable get() = if (isLight) Color(0xffdadada) else Color(0xff505050)
     val Gray10 @Composable get() = MaterialTheme.colors.Gray10
 
