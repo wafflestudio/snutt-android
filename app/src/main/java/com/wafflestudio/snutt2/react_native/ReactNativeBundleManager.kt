@@ -19,8 +19,6 @@ import com.wafflestudio.snutt2.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -36,45 +34,43 @@ class ReactNativeBundleManager(
 ) {
     private val rnBundleFileSrc: String
         get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
-
     private var myReactInstanceManager: ReactInstanceManager? = null
-
     var reactRootView: ReactRootView? = null
     val bundleLoadCompleteSignal = MutableSharedFlow<Boolean>()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            remoteConfig.fetchDone.take(1).collectLatest {
-                val jsBundleFile = getExistingFriendsBundleFileNameOrNull() ?: return@collectLatest
-                withContext(Dispatchers.Main) {
-                    myReactInstanceManager = ReactInstanceManager.builder()
-                        .setApplication(context.applicationContext as Application)
-                        .setCurrentActivity(context as Activity)
-                        .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                        .setJSBundleFile(jsBundleFile.absolutePath)
-                        .addPackage(MainReactPackage())
-                        .addPackage(RNGestureHandlerPackage())
-                        .addPackage(ReanimatedPackage())
-                        .addPackage(SafeAreaContextPackage())
-                        .addPackage(RNCPickerPackage())
-                        .addPackage(SvgPackage())
-                        .setInitialLifecycleState(LifecycleState.RESUMED)
-                        .build()
+            remoteConfig.waitForFetchConfig()
 
-                    reactRootView = ReactRootView(context).apply {
-                        startReactApplication(
-                            myReactInstanceManager!!,
-                            FRIENDS_MODULE_NAME,
-                            Bundle().apply {
-                                putString("x-access-token", token)
-                                putString("x-access-apikey", context.getString(R.string.api_key))
-                                putString("theme", if (isDarkMode) "dark" else "light")
-                                putBoolean("allowFontScaling", true)
-                            },
-                        )
-                    }
-                    bundleLoadCompleteSignal.emit(true)
+            val jsBundleFile = getExistingFriendsBundleFileNameOrNull() ?: return@launch
+            withContext(Dispatchers.Main) {
+                myReactInstanceManager = ReactInstanceManager.builder()
+                    .setApplication(context.applicationContext as Application)
+                    .setCurrentActivity(context as Activity)
+                    .setJavaScriptExecutorFactory(HermesExecutorFactory())
+                    .setJSBundleFile(jsBundleFile.absolutePath)
+                    .addPackage(MainReactPackage())
+                    .addPackage(RNGestureHandlerPackage())
+                    .addPackage(ReanimatedPackage())
+                    .addPackage(SafeAreaContextPackage())
+                    .addPackage(RNCPickerPackage())
+                    .addPackage(SvgPackage())
+                    .setInitialLifecycleState(LifecycleState.RESUMED)
+                    .build()
+
+                reactRootView = ReactRootView(context).apply {
+                    startReactApplication(
+                        myReactInstanceManager!!,
+                        FRIENDS_MODULE_NAME,
+                        Bundle().apply {
+                            putString("x-access-token", token)
+                            putString("x-access-apikey", context.getString(R.string.api_key))
+                            putString("theme", if (isDarkMode) "dark" else "light")
+                            putBoolean("allowFontScaling", true)
+                        },
+                    )
                 }
+                bundleLoadCompleteSignal.emit(true)
             }
         }
     }

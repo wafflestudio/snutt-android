@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2
 
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import kotlinx.coroutines.CoroutineScope
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -22,24 +22,22 @@ import javax.inject.Singleton
 class RemoteConfig @Inject constructor(
     api: SNUTTRestApi,
     userRepository: UserRepository,
-    apiOnError: ApiOnError,
 ) {
-    val fetchDone = MutableSharedFlow<Unit>(replay = 1)
+    private val fetchDone = MutableSharedFlow<Unit>(replay = 1)
     private val config = callbackFlow {
         userRepository.accessToken.filter { it.isNotEmpty() }.collect {
             withContext(Dispatchers.IO) {
                 try {
                     send(api._getRemoteConfig())
                 } catch (e: Exception) {
-                    apiOnError(e)
                     this@callbackFlow.close()
                 }
             }
         }
         awaitClose {}
-    }.onCompletion {
-        fetchDone.emit(Unit)
     }.onEach {
+        fetchDone.emit(Unit)
+    }.onCompletion {
         fetchDone.emit(Unit)
     }.stateIn(
         CoroutineScope(Dispatchers.Main),
@@ -58,4 +56,8 @@ class RemoteConfig @Inject constructor(
 
     val settingPageNewBadgeTitles: List<String>
         get() = config.value.settingsBadgeConfig.new
+
+    suspend fun waitForFetchConfig() {
+        fetchDone.first()
+    }
 }

@@ -84,7 +84,6 @@ class RootActivity : AppCompatActivity() {
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
     private val friendBundleManager by lazy {
-
         val isDarkMode = if (userViewModel.themeMode.value == ThemeMode.AUTO) {
             isSystemDarkMode(applicationContext)
         } else {
@@ -104,7 +103,6 @@ class RootActivity : AppCompatActivity() {
         val token = userViewModel.accessToken.value
         lifecycleScope.launch {
             if (token.isNotEmpty()) {
-                remoteConfig.fetchDone.take(1).collect()
                 homeViewModel.refreshData()
             }
             isInitialRefreshFinished = true
