@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.content.ClipData
+import android.content.Context.CLIPBOARD_SERVICE
+import android.widget.Toast
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -44,7 +48,7 @@ fun UserConfigPage() {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
 
     val viewModel = hiltViewModel<UserViewModel>()
     val user: UserDto? by viewModel.userInfo.collectAsState()
@@ -125,7 +129,7 @@ fun UserConfigPage() {
                 title = stringResource(R.string.settings_user_config_copy_nickname),
                 hasNextPage = false,
                 onClick = {
-                    clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText(null, user?.nickname.toString()))
                 },
             ) {
                 DuplicateIcon(
