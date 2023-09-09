@@ -18,7 +18,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
@@ -39,7 +38,6 @@ class ReactNativeBundleManager(
         get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
     private var myReactInstanceManager: ReactInstanceManager? = null
     var reactRootView: ReactRootView? = null
-    val bundleLoadCompleteSignal = MutableSharedFlow<Boolean>()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -52,12 +50,9 @@ class ReactNativeBundleManager(
                         .setCurrentActivity(context as Activity)
                         .setJavaScriptExecutorFactory(HermesExecutorFactory())
                         .setJSBundleFile(jsBundleFile.absolutePath)
-                        .addPackage(MainReactPackage())
-                        .addPackage(RNGestureHandlerPackage())
-                        .addPackage(ReanimatedPackage())
-                        .addPackage(SafeAreaContextPackage())
-                        .addPackage(RNCPickerPackage())
-                        .addPackage(SvgPackage())
+                        .addPackages(
+                            listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
+                        )
                         .setInitialLifecycleState(LifecycleState.RESUMED)
                         .build()
 
@@ -73,7 +68,6 @@ class ReactNativeBundleManager(
                             },
                         )
                     }
-                    bundleLoadCompleteSignal.emit(true)
                 }
             }
         }

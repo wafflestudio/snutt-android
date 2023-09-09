@@ -35,9 +35,9 @@ class RemoteConfig @Inject constructor(
             }
         }
         awaitClose {}
-    }.onEach {
-        fetchDone.emit(Unit)
     }.onCompletion {
+        fetchDone.emit(Unit)
+    }.onEach {
         fetchDone.emit(Unit)
     }.stateIn(
         CoroutineScope(Dispatchers.Main),
