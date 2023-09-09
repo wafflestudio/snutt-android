@@ -60,11 +60,11 @@ class ReactNativeBundleManager(
                     themeMode.collectLatest {
                         val isDarkMode = when (it) {
                             ThemeMode.AUTO -> isSystemDarkMode(context)
-                            else -> it == ThemeMode.DARK
+                            else -> (it == ThemeMode.DARK)
                         }
                         reactRootView = ReactRootView(context).apply {
                             startReactApplication(
-                                myReactInstanceManager!!,
+                                myReactInstanceManager ?: return@apply,
                                 FRIENDS_MODULE_NAME,
                                 Bundle().apply {
                                     putString("x-access-token", token.value)
