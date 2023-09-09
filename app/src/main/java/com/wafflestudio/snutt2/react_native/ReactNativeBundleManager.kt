@@ -43,7 +43,7 @@ class ReactNativeBundleManager(
         CoroutineScope(Dispatchers.IO).launch {
             remoteConfig.waitForFetchConfig()
             token.filter { it.isNotEmpty() }.collectLatest {
-                val jsBundleFile = getExistingFriendsBundleFileNameOrNull() ?: return@collectLatest
+                val jsBundleFile = getExistingFriendsBundleFileOrNull() ?: return@collectLatest
                 withContext(Dispatchers.Main) {
                     myReactInstanceManager = ReactInstanceManager.builder()
                         .setApplication(context.applicationContext as Application)
@@ -73,6 +73,7 @@ class ReactNativeBundleManager(
         }
     }
 
+    // 번들 파일을 저장할 폴더 (없으면 만들기, 실패하면 null)
     private fun bundlesBaseFolder(): File? {
         val baseDir = File(context.applicationContext.dataDir.absolutePath, BUNDLE_BASE_FOLDER)
         return if (baseDir.isDirectory && baseDir.exists()) {
@@ -84,11 +85,12 @@ class ReactNativeBundleManager(
         }
     }
 
-    private fun getExistingFriendsBundleFileNameOrNull(): File? {
+    private fun getExistingFriendsBundleFileOrNull(): File? {
         val baseDir = bundlesBaseFolder() ?: return null
         val friendsBaseDir = File(baseDir, FRIENDS_MODULE_NAME)
         if (friendsBaseDir.exists().not() && friendsBaseDir.mkdir().not()) return null
 
+        // Config에서 가져온 bundle name대로 fileName을 만든다.
         val targetFileName =
             if (USE_LOCAL_BUNDLE) {
                 LOCAL_BUNDLE_FILE_NAME
@@ -102,6 +104,7 @@ class ReactNativeBundleManager(
             ?.filter { it.name != targetFileName }
             ?.forEach { it.delete() }
 
+        // 파일이 없거나 파일에 문제가 있으면 새로 다운로드한다.
         if (targetFile.exists().not() || targetFile.canRead().not() || USE_LOCAL_BUNDLE) { // TODO: 올바르지 않은 bundle 파일인지 더 정확히 판단하기
             try {
                 val urlConnection = URL(rnBundleFileSrc).openConnection() as HttpURLConnection
@@ -124,6 +127,9 @@ class ReactNativeBundleManager(
         return targetFile
     }
 
+    // 번들 파일들은 $rootDir/data/ReactNativeBundles 폴더에 각 모듈별로 저장된다.
+    // friends 모듈의 번들 파일은 $rootDir/data/ReactNativeBundles/friends 폴더에 저장된다.
+    // 번들 파일의 이름은 src가 https://~~~.com/{version}/android.jsbundle 일 때 version-android.jsbundle 이다.
     companion object {
         const val BUNDLE_BASE_FOLDER = "/ReactNativeBundles"
         const val BUNDLE_FILE_NAME_REGEX = "com/(.*?)/android.jsbundle"
