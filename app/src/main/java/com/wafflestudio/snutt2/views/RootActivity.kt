@@ -59,7 +59,6 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
