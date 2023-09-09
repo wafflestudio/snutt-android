@@ -16,6 +16,8 @@ import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +34,7 @@ class ReactNativeBundleManager(
     private val context: Context,
     private val remoteConfig: RemoteConfig,
     private val token: StateFlow<String>,
-    private val isDarkMode: Boolean,
+    private val themeMode: StateFlow<ThemeMode>,
 ) {
     private val rnBundleFileSrc: String
         get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
@@ -55,18 +57,23 @@ class ReactNativeBundleManager(
                         )
                         .setInitialLifecycleState(LifecycleState.RESUMED)
                         .build()
-
-                    reactRootView = ReactRootView(context).apply {
-                        startReactApplication(
-                            myReactInstanceManager!!,
-                            FRIENDS_MODULE_NAME,
-                            Bundle().apply {
-                                putString("x-access-token", token.value)
-                                putString("x-access-apikey", context.getString(R.string.api_key))
-                                putString("theme", if (isDarkMode) "dark" else "light")
-                                putBoolean("allowFontScaling", true)
-                            },
-                        )
+                    themeMode.collectLatest {
+                        val isDarkMode = when (it) {
+                            ThemeMode.AUTO -> isSystemDarkMode(context)
+                            else -> it == ThemeMode.DARK
+                        }
+                        reactRootView = ReactRootView(context).apply {
+                            startReactApplication(
+                                myReactInstanceManager!!,
+                                FRIENDS_MODULE_NAME,
+                                Bundle().apply {
+                                    putString("x-access-token", token.value)
+                                    putString("x-access-apikey", context.getString(R.string.api_key))
+                                    putString("theme", if (isDarkMode) "dark" else "light")
+                                    putBoolean("allowFontScaling", true)
+                                },
+                            )
+                        }
                     }
                 }
             }

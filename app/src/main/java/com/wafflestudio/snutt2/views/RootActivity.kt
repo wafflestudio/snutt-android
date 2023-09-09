@@ -40,8 +40,6 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
-import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
@@ -82,12 +80,7 @@ class RootActivity : AppCompatActivity() {
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
     private val friendBundleManager by lazy {
-        val isDarkMode = if (userViewModel.themeMode.value == ThemeMode.AUTO) {
-            isSystemDarkMode(applicationContext)
-        } else {
-            userViewModel.themeMode.value == ThemeMode.DARK
-        }
-        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken, isDarkMode)
+        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken, userViewModel.themeMode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
