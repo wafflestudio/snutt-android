@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -102,7 +103,7 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.SettingBackground),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
@@ -135,6 +136,7 @@ fun UserConfigPage() {
             ) {
                 DuplicateIcon(
                     modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                 )
             }
         }
