@@ -29,7 +29,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             this,
             0,
             intent,
-            PendingIntent.FLAG_ONE_SHOT,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
         )
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, SNUTT_FIREBASE_CHANNEL)
