@@ -136,7 +136,7 @@ fun UserConfigPage() {
             ) {
                 DuplicateIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                 )
             }
         }
