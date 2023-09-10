@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -126,6 +128,9 @@ fun UserConfigPage() {
                 hasNextPage = false,
                 onClick = {
                     clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
+                    if (Build.VERSION.SDK_INT <= VERSION_CODES.S_V2) {
+                        context.toast(context.getString(R.string.settings_user_nickname_copied_toast))
+                    }
                 },
             ) {
                 DuplicateIcon(
