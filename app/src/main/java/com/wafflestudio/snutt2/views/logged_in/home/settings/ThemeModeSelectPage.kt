@@ -30,7 +30,7 @@ fun ColorModeSelectPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.SettingBackground),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),

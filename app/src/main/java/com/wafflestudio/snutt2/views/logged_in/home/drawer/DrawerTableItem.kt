@@ -97,7 +97,7 @@ fun DrawerTableItem(
                         }
                     }
                 },
-            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )
         Spacer(modifier = Modifier.width(10.dp))
         MoreIcon(
@@ -109,7 +109,7 @@ fun DrawerTableItem(
                     }
                     scope.launch { bottomSheet.show() }
                 },
-            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )
     }
 }

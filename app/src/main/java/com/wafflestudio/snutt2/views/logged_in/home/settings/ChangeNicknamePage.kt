@@ -64,7 +64,7 @@ fun ChangeNicknamePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.SettingBackground),
     ) {
         TopBar(
             title = {

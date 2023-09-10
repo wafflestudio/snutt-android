@@ -45,7 +45,7 @@ fun TableMoreActionBottomSheet(
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .padding(5.dp)
+            .padding(vertical = 12.dp)
             .fillMaxWidth(),
     ) {
         MoreActionItem(
@@ -173,7 +173,7 @@ private fun MoreActionItem(
     text: String,
     onClick: () -> Unit,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .clicks { onClick() }
             .padding(vertical = 10.dp, horizontal = 22.dp),
@@ -181,7 +181,6 @@ private fun MoreActionItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(12.dp)
                 .fillMaxWidth(),
         ) {
             icon()

@@ -46,7 +46,7 @@ fun SettingsPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.Gray100),
+            .background(SNUTTColors.SettingBackground),
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
