@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.ui
 
 import android.app.Activity
+import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -50,6 +52,14 @@ fun isDarkMode(): Boolean {
         ThemeMode.DARK -> true
         ThemeMode.LIGHT -> false
         ThemeMode.AUTO -> isSystemInDarkTheme()
+    }
+}
+
+fun isSystemDarkMode(context: Context): Boolean {
+    return when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        Configuration.UI_MODE_NIGHT_NO -> false
+        else -> false
     }
 }
 

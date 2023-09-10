@@ -31,17 +31,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -54,8 +56,6 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -79,17 +79,21 @@ class RootActivity : AppCompatActivity() {
 
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
 
+    private val friendBundleManager by lazy {
+        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken, userViewModel.themeMode)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
+        FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
         val token = userViewModel.accessToken.value
         lifecycleScope.launch {
             if (token.isNotEmpty()) {
-                remoteConfig.fetchDone.take(1).collect()
                 homeViewModel.refreshData()
             }
             isInitialRefreshFinished = true
@@ -196,7 +200,7 @@ class RootActivity : AppCompatActivity() {
             ) {
                 onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage() }
+                composableRoot(NavigationDestination.Home) { HomePage(friendBundleManager) }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 

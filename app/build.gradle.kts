@@ -35,10 +35,6 @@ android {
     namespace = "com.wafflestudio.snutt2"
     compileSdk = 34
 
-    repositories {
-        mavenCentral()
-    }
-
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
@@ -188,12 +184,12 @@ dependencies {
     // GSON
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Glance
-    implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
-    implementation("androidx.glance:glance-material:1.0.0-rc01")
-    implementation("androidx.glance:glance-material3:1.0.0-rc01")
-}
+    // RN
+    implementation("com.facebook.react:react-android:0.72.3")
+    implementation("com.facebook.react:hermes-android:0.72.3")
+    implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
 
-repositories {
-    mavenCentral()
+    // flipper
+    implementation("com.facebook.flipper:flipper:0.213.0")
+    implementation("com.facebook.soloader:soloader:0.10.5")
 }
