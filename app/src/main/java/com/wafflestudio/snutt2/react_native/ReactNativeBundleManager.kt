@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import androidx.compose.runtime.mutableStateOf
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactRootView
@@ -39,7 +40,7 @@ class ReactNativeBundleManager(
     private val rnBundleFileSrc: String
         get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
     private var myReactInstanceManager: ReactInstanceManager? = null
-    var reactRootView: ReactRootView? = null
+    var reactRootView = mutableStateOf<ReactRootView?>(null)
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -62,7 +63,7 @@ class ReactNativeBundleManager(
                             ThemeMode.AUTO -> isSystemDarkMode(context)
                             else -> (it == ThemeMode.DARK)
                         }
-                        reactRootView = ReactRootView(context).apply {
+                        reactRootView.value = ReactRootView(context).apply {
                             startReactApplication(
                                 myReactInstanceManager ?: return@apply,
                                 FRIENDS_MODULE_NAME,

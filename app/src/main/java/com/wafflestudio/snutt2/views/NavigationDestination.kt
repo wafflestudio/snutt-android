@@ -24,4 +24,5 @@ object NavigationDestination {
     const val Bookmark = "bookmark"
     const val NetworkLog = "network_log"
     const val VacancyNotification = "vacancy"
+    const val Friends = "friends"
 }
