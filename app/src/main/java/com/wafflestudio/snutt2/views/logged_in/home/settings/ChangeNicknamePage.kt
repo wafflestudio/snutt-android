@@ -171,6 +171,7 @@ fun NicknameEditText(
                 .clearFocusOnKeyboardDismiss(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = onDone),
+            singleLine = true,
             value = value,
             onValueChange = onValueChange,
             hint = hint,
@@ -179,7 +180,7 @@ fun NicknameEditText(
                 fontSize = 16.sp,
             ),
         )
-        if (isFocused) {
+        if (isFocused && value.isNotEmpty()) {
             CloseCircleIcon(
                 modifier = Modifier
                     .size(30.dp)
