@@ -41,6 +41,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
@@ -154,7 +155,12 @@ class RootActivity : AppCompatActivity() {
     @Composable
     fun setUpUI(startDestination: String) {
         val navController = rememberNavController()
-        val homePageController = remember { HomePageController() }
+        val initialHomeTab = remember {
+            parseHomePageDeeplink() ?: HomeItem.Timetable
+        }
+        val homePageController = remember {
+            HomePageController(initialHomeTab)
+        }
         val compactMode by userViewModel.compactMode.collectAsState()
 
         val bottomSheet = bottomSheet()
@@ -346,6 +352,14 @@ class RootActivity : AppCompatActivity() {
     private fun parseDeeplinkExtra() {
         intent.extras?.getString(URL_SCHEME)?.let {
             intent.data = Uri.parse(it)
+        }
+    }
+
+    private fun parseHomePageDeeplink(): HomeItem? {
+        val regex = Regex("^${applicationContext.getString(R.string.scheme)}(.+)$")
+        return when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
+            NavigationDestination.Friends -> HomeItem.Friends
+            else -> null
         }
     }
 

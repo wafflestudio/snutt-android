@@ -4,8 +4,10 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 
-class HomePageController {
-    private val _homePageState = mutableStateOf<HomeItem>(HomeItem.Timetable)
+class HomePageController(
+    initialPage: HomeItem = HomeItem.Timetable,
+) {
+    private val _homePageState = mutableStateOf(initialPage)
 
     @Stable
     val homePageState: State<HomeItem> = _homePageState
