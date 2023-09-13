@@ -11,8 +11,8 @@ import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.IOException
@@ -142,7 +142,7 @@ class ApiOnError @Inject constructor(
                                 context.getString(R.string.error_wrong_user_token),
                                 Toast.LENGTH_SHORT,
                             ).show()
-                            GlobalScope.launch {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 try {
                                     userRepository.postForceLogout()
                                     userRepository.performLogout()
