@@ -189,8 +189,4 @@ dependencies {
     implementation("com.facebook.react:react-android:0.72.3")
     implementation("com.facebook.react:hermes-android:0.72.3")
     implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
-
-    // flipper
-    implementation("com.facebook.flipper:flipper:0.213.0")
-    implementation("com.facebook.soloader:soloader:0.10.5")
 }
