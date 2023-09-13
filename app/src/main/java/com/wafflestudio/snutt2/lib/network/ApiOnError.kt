@@ -151,7 +151,7 @@ class ApiOnError @Inject constructor(
                                         Toast.makeText(
                                             context,
                                             "로그아웃에 실패하였습니다.",
-                                            Toast.LENGTH_SHORT
+                                            Toast.LENGTH_SHORT,
                                         )
                                             .show()
                                     }
