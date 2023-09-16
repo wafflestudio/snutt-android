@@ -1,11 +1,8 @@
 # Proguard for firebase crashlytics (https://firebase.google.com/docs/crashlytics/get-deobfuscated-reports?platform=android)
 -keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
 -keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
--keep public enum com.wafflestudio.snutt2.**{
-    *;
-}
--keep class com.wafflestudio.snutt2.** { *; }
--keepattributes InnerClasses
+-keep public enum com.wafflestudio.snutt2.** { *; }
+-keep class com.wafflestudio.snutt2.model.** { *; }
 
  # Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items).
  -keep,allowobfuscation,allowshrinking interface retrofit2.Call
