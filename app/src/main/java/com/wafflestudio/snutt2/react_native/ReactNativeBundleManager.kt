@@ -44,8 +44,8 @@ import javax.inject.Inject
 @Module
 @InstallIn(ActivityComponent::class)
 class ReactNativeBundleManager @Inject constructor(
-    @ApplicationContext private val applicationContext: Context,
-    @ActivityContext private val activityContext: Context,
+    @ApplicationContext applicationContext: Context,
+    @ActivityContext activityContext: Context,
     remoteConfig: RemoteConfig,
     userRepository: UserRepository,
     networkConnectivityManager: NetworkConnectivityManager,
