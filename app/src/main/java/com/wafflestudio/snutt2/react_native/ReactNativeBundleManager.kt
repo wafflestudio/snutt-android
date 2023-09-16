@@ -65,16 +65,18 @@ class ReactNativeBundleManager @Inject constructor(
             ) { bundleSrc, token, theme, _, _ ->
                 getExistingBundleFileOrNull(applicationContext, bundleSrc)?.let { bundleFile ->
                     withContext(Dispatchers.Main) {
-                        myReactInstanceManager = ReactInstanceManager.builder()
-                            .setApplication(applicationContext as Application)
-                            .setCurrentActivity(activityContext as Activity)
-                            .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                            .setJSBundleFile(bundleFile.absolutePath)
-                            .addPackages(
-                                listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
-                            )
-                            .setInitialLifecycleState(LifecycleState.RESUMED)
-                            .build()
+                        if (myReactInstanceManager == null) {
+                            myReactInstanceManager = ReactInstanceManager.builder()
+                                .setApplication(applicationContext as Application)
+                                .setCurrentActivity(activityContext as Activity)
+                                .setJavaScriptExecutorFactory(HermesExecutorFactory())
+                                .setJSBundleFile(bundleFile.absolutePath)
+                                .addPackages(
+                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
+                                )
+                                .setInitialLifecycleState(LifecycleState.RESUMED)
+                                .build()
+                        }
 
                         reactRootView.value = ReactRootView(activityContext).apply {
                             startReactApplication(
