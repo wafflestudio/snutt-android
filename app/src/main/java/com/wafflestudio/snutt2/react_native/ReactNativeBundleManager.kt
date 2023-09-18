@@ -20,11 +20,9 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.ui.isDarkMode
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,8 +39,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 
-@Module
-@InstallIn(ActivityComponent::class)
+@ActivityScoped
 class ReactNativeBundleManager @Inject constructor(
     @ApplicationContext applicationContext: Context,
     @ActivityContext activityContext: Context,
