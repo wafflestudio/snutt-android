@@ -15,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class VacancyViewModel @Inject constructor(
     private val vacancyRepository: VacancyRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
     private val _vacancyLectures =
         MutableStateFlow<List<LectureDto>>(listOf())
@@ -29,9 +30,6 @@ class VacancyViewModel @Inject constructor(
 
     val firstVacancyVisit
         get() = vacancyRepository.firstVacancyVisit
-
-    @Inject
-    lateinit var apiOnError: ApiOnError
 
     init {
         viewModelScope.launch {
