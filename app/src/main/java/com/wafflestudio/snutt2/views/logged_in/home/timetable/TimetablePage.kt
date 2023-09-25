@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -28,7 +29,9 @@ import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun TimetablePage() {
+fun TimetablePage(
+    uncheckedNotification: Boolean,
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val view = LocalView.current
@@ -114,6 +117,14 @@ fun TimetablePage() {
                             },
                     )
                 }
+                IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
+                    NotificationIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Notification) },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                }
             },
         )
         if (remoteConfig.vacancyNotificationBannerEnabled) {
@@ -178,5 +189,5 @@ fun VacancyBanner(
 @Preview(showBackground = true)
 @Composable
 fun TimetablePagePreview() {
-    TimetablePage()
+    TimetablePage(false)
 }
