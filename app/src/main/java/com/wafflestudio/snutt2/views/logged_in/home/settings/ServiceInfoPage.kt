@@ -25,7 +25,6 @@ fun ServiceInfoPage() {
     val webViewClient = WebViewClient()
     val themeMode by userViewModel.themeMode.collectAsState()
 
-    var accessToken: String
     val url = stringResource(R.string.api_server) + stringResource(R.string.terms)
     val headers = HashMap<String, String>()
     headers["x-access-apikey"] = stringResource(R.string.api_key)
@@ -41,27 +40,17 @@ fun ServiceInfoPage() {
         }
     }
 
-    var webViewUrlReady by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        accessToken = userViewModel.getAccessToken()
-        headers["x-access-token"] = accessToken
-        webViewUrlReady = true
-    }
-
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_service_info),
             onClickNavigateBack = { navController.popBackStack() },
         )
-        if (webViewUrlReady) {
-            AndroidView(factory = {
-                WebView(context).apply {
-                    this.webViewClient = webViewClient
-                    this.loadUrl(url, headers)
-                }
-            },)
-        }
+        AndroidView(factory = {
+            WebView(context).apply {
+                this.webViewClient = webViewClient
+                loadUrl(url, headers)
+            }
+        },)
     }
 }
 
