@@ -16,13 +16,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalNavController
-import kotlinx.coroutines.launch
 
 @Composable
 fun TeamInfoPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
     val themeMode by userViewModel.themeMode.collectAsState()
@@ -45,6 +43,12 @@ fun TeamInfoPage() {
 
     var webViewUrlReady by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        accessToken = userViewModel.getAccessToken()
+        headers["x-access-token"] = accessToken
+        webViewUrlReady = true
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_team_info),
@@ -57,11 +61,6 @@ fun TeamInfoPage() {
                     this.loadUrl(url, headers)
                 }
             },)
-        }
-        scope.launch {
-            accessToken = userViewModel.getAccessToken()
-            headers["x-access-token"] = accessToken
-            webViewUrlReady = true
         }
     }
 }
