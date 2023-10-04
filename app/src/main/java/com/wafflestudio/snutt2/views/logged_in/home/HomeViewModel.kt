@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.ErrorCode
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
