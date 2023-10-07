@@ -36,7 +36,6 @@ class HomeViewModel @Inject constructor(
                         } ?: tableRepository.fetchDefaultTable()
                     },
                     async { userRepository.fetchUserInfo() },
-                    async { remoteConfig.waitForFetchConfig() },
                 )
             }
         } catch (e: Exception) {

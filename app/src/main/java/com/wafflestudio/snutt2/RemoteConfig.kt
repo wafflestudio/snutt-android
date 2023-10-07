@@ -1,19 +1,19 @@
 package com.wafflestudio.snutt2
 
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,42 +22,32 @@ import javax.inject.Singleton
 class RemoteConfig @Inject constructor(
     api: SNUTTRestApi,
     userRepository: UserRepository,
+    networkConnectivityManager: NetworkConnectivityManager,
 ) {
-    private val fetchDone = MutableSharedFlow<Unit>(replay = 1)
-    private val config = callbackFlow {
-        userRepository.accessToken.filter { it.isNotEmpty() }.collect {
-            withContext(Dispatchers.IO) {
-                try {
-                    send(api._getRemoteConfig())
-                } catch (e: Exception) {
-                    this@callbackFlow.close()
+    private val config = MutableStateFlow(RemoteConfigDto())
+    init {
+        CoroutineScope(Dispatchers.Main).launch {
+            combine(
+                userRepository.accessToken.filter { it.isNotEmpty() },
+                networkConnectivityManager.networkConnectivity.filter { it },
+            ) { _, _ ->
+                withContext(Dispatchers.IO) {
+                    runCatching {
+                        api._getRemoteConfig()
+                    }.onSuccess {
+                        config.emit(it)
+                    }
                 }
-            }
+            }.collect()
         }
-        awaitClose {}
-    }.onCompletion {
-        fetchDone.emit(Unit)
-    }.onEach {
-        fetchDone.emit(Unit)
-    }.stateIn(
-        CoroutineScope(Dispatchers.Main),
-        SharingStarted.Eagerly,
-        RemoteConfigDto(),
-    )
-
-    val friendBundleSrc: String
-        get() = config.value.reactNativeBundleSrc?.src?.get("android") ?: ""
-
-    val vacancyNotificationBannerEnabled: Boolean
-        get() = config.value.vacancyBannerConfig.visible
-
-    val sugangSNUUrl: String
-        get() = config.value.vacancyUrlConfig.url ?: ""
-
-    val settingPageNewBadgeTitles: List<String>
-        get() = config.value.settingsBadgeConfig.new
-
-    suspend fun waitForFetchConfig() {
-        fetchDone.first()
     }
+
+    val friendsBundleSrc: Flow<String>
+        get() = config.map { it.reactNativeBundleSrc?.src?.get("android") }.filterNotNull()
+    val vacancyNotificationBannerEnabled: Flow<Boolean>
+        get() = config.map { it.vacancyBannerConfig.visible }
+    val sugangSNUUrl: Flow<String>
+        get() = config.map { it.vacancyUrlConfig.url }.filterNotNull()
+    val settingPageNewBadgeTitles: Flow<List<String>>
+        get() = config.map { it.settingsBadgeConfig.new }
 }

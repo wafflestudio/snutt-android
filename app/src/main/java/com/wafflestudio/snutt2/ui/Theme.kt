@@ -55,6 +55,16 @@ fun isDarkMode(): Boolean {
     }
 }
 
+fun isDarkMode(
+    context: Context,
+    theme: ThemeMode,
+): Boolean {
+    return when (theme) {
+        ThemeMode.AUTO -> isSystemDarkMode(context)
+        else -> (theme == ThemeMode.DARK)
+    }
+}
+
 fun isSystemDarkMode(context: Context): Boolean {
     return when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
         Configuration.UI_MODE_NIGHT_YES -> true

@@ -17,73 +17,85 @@ import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.ui.isSystemDarkMode
+import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
+import com.wafflestudio.snutt2.ui.isDarkMode
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
 
-class ReactNativeBundleManager(
-    private val context: Context,
-    private val remoteConfig: RemoteConfig,
-    private val token: StateFlow<String>,
-    private val themeMode: StateFlow<ThemeMode>,
+@ActivityScoped
+class ReactNativeBundleManager @Inject constructor(
+    @ApplicationContext applicationContext: Context,
+    @ActivityContext activityContext: Context,
+    remoteConfig: RemoteConfig,
+    userRepository: UserRepository,
+    networkConnectivityManager: NetworkConnectivityManager,
 ) {
-    private val rnBundleFileSrc: String
-        get() = if (USE_LOCAL_BUNDLE) LOCAL_BUNDLE_URL else remoteConfig.friendBundleSrc
     private var myReactInstanceManager: ReactInstanceManager? = null
     var reactRootView = mutableStateOf<ReactRootView?>(null)
+    private val reloadSignal = MutableSharedFlow<Unit>()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            remoteConfig.waitForFetchConfig()
-            token.filter { it.isNotEmpty() }.collectLatest {
-                val jsBundleFile = getExistingFriendsBundleFileOrNull() ?: return@collectLatest
-                withContext(Dispatchers.Main) {
-                    myReactInstanceManager = ReactInstanceManager.builder()
-                        .setApplication(context.applicationContext as Application)
-                        .setCurrentActivity(context as Activity)
-                        .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                        .setJSBundleFile(jsBundleFile.absolutePath)
-                        .addPackages(
-                            listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
-                        )
-                        .setInitialLifecycleState(LifecycleState.RESUMED)
-                        .build()
-                    themeMode.collectLatest {
-                        val isDarkMode = when (it) {
-                            ThemeMode.AUTO -> isSystemDarkMode(context)
-                            else -> (it == ThemeMode.DARK)
+            combine(
+                if (USE_LOCAL_BUNDLE) MutableStateFlow(LOCAL_BUNDLE_URL) else remoteConfig.friendsBundleSrc,
+                userRepository.accessToken.filter { it.isNotEmpty() },
+                userRepository.themeMode,
+                networkConnectivityManager.networkConnectivity.filter { it },
+                reloadSignal.onStart { emit(Unit) },
+            ) { bundleSrc, token, theme, _, _ ->
+                getExistingBundleFileOrNull(applicationContext, bundleSrc)?.let { bundleFile ->
+                    withContext(Dispatchers.Main) {
+                        if (myReactInstanceManager == null) {
+                            myReactInstanceManager = ReactInstanceManager.builder()
+                                .setApplication(applicationContext as Application)
+                                .setCurrentActivity(activityContext as Activity)
+                                .setJavaScriptExecutorFactory(HermesExecutorFactory())
+                                .setJSBundleFile(bundleFile.absolutePath)
+                                .addPackages(
+                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
+                                )
+                                .setInitialLifecycleState(LifecycleState.RESUMED)
+                                .build()
                         }
-                        reactRootView.value = ReactRootView(context).apply {
+
+                        reactRootView.value = ReactRootView(activityContext).apply {
                             startReactApplication(
                                 myReactInstanceManager ?: return@apply,
                                 FRIENDS_MODULE_NAME,
                                 Bundle().apply {
-                                    putString("x-access-token", token.value)
+                                    putString("x-access-token", token)
                                     putString("x-access-apikey", context.getString(R.string.api_key))
-                                    putString("theme", if (isDarkMode) "dark" else "light")
+                                    putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
                                     putBoolean("allowFontScaling", true)
                                 },
                             )
                         }
                     }
                 }
-            }
+            }.collect()
         }
     }
 
     // 번들 파일을 저장할 폴더 (없으면 만들기, 실패하면 null)
-    private fun bundlesBaseFolder(): File? {
-        val baseDir = File(context.applicationContext.dataDir.absolutePath, BUNDLE_BASE_FOLDER)
+    private fun bundlesBaseFolder(context: Context): File? {
+        val baseDir = File(context.dataDir.absolutePath, BUNDLE_BASE_FOLDER)
         return if (baseDir.isDirectory && baseDir.exists()) {
             baseDir
         } else if (baseDir.mkdir()) {
@@ -93,9 +105,13 @@ class ReactNativeBundleManager(
         }
     }
 
-    private fun getExistingFriendsBundleFileOrNull(): File? {
-        val baseDir = bundlesBaseFolder() ?: return null
-        val friendsBaseDir = File(baseDir, FRIENDS_MODULE_NAME)
+    private fun getExistingBundleFileOrNull(
+        context: Context,
+        rnBundleFileSrc: String,
+        moduleName: String = FRIENDS_MODULE_NAME, // 나중에 다른 모듈 추가되면 이 파라미터 사용
+    ): File? {
+        val baseDir = bundlesBaseFolder(context) ?: return null
+        val friendsBaseDir = File(baseDir, moduleName)
         if (friendsBaseDir.exists().not() && friendsBaseDir.mkdir().not()) return null
 
         // Config에서 가져온 bundle name대로 fileName을 만든다.
@@ -133,6 +149,11 @@ class ReactNativeBundleManager(
             }
         }
         return targetFile
+    }
+
+    // 수동으로 번들 reload하고 싶을 때 사용
+    suspend fun reloadBundle() {
+        reloadSignal.emit(Unit)
     }
 
     // 번들 파일들은 $rootDir/data/ReactNativeBundles 폴더에 각 모듈별로 저장된다.

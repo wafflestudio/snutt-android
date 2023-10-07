@@ -41,6 +41,7 @@ fun TimetablePage() {
     val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+    val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
@@ -61,7 +62,12 @@ fun TimetablePage() {
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .clicks {
-                            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
+                            showTitleChangeDialog(
+                                table.title,
+                                table.id,
+                                composableStates,
+                                tableListViewModel::changeTableName,
+                            )
                         },
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -98,7 +104,7 @@ fun TimetablePage() {
                                 view,
                                 context,
                                 topBarHeight,
-                                if (remoteConfig.vacancyNotificationBannerEnabled) bannerHeight else 0,
+                                if (vacancyNotificationBannerEnabled) bannerHeight else 0,
                                 timetableHeight,
                             )
                         },
@@ -116,7 +122,7 @@ fun TimetablePage() {
                 }
             },
         )
-        if (remoteConfig.vacancyNotificationBannerEnabled) {
+        if (vacancyNotificationBannerEnabled) {
             VacancyBanner(
                 onClick = {
                     navController.navigate(NavigationDestination.VacancyNotification)
