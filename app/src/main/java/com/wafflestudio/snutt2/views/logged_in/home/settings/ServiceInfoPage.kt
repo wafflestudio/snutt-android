@@ -16,18 +16,15 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalNavController
-import kotlinx.coroutines.launch
 
 @Composable
 fun ServiceInfoPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
     val themeMode by userViewModel.themeMode.collectAsState()
 
-    var accessToken: String
     val url = stringResource(R.string.api_server) + stringResource(R.string.terms)
     val headers = HashMap<String, String>()
     headers["x-access-apikey"] = stringResource(R.string.api_key)
@@ -43,26 +40,17 @@ fun ServiceInfoPage() {
         }
     }
 
-    var webViewUrlReady by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_service_info),
             onClickNavigateBack = { navController.popBackStack() },
         )
-        if (webViewUrlReady) {
-            AndroidView(factory = {
-                WebView(context).apply {
-                    this.webViewClient = webViewClient
-                    this.loadUrl(url, headers)
-                }
-            },)
-        }
-        scope.launch {
-            accessToken = userViewModel.getAccessToken()
-            headers["x-access-token"] = accessToken
-            webViewUrlReady = true
-        }
+        AndroidView(factory = {
+            WebView(context).apply {
+                this.webViewClient = webViewClient
+                loadUrl(url, headers)
+            }
+        },)
     }
 }
 
