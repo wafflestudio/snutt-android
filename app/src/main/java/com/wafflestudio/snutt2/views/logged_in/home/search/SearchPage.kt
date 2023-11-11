@@ -1,8 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +35,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPlaceHolder
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -36,7 +44,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
@@ -46,7 +54,6 @@ fun SearchPage(
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
-    val keyBoardController = LocalSoftwareKeyboardController.current
 
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val tableListViewModel: TableListViewModel = hiltViewModel()
@@ -55,21 +62,37 @@ fun SearchPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
-    val selectedTags by searchViewModel.selectedTags.collectAsState()
-    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
-    val lazyListState = searchViewModel.lazyListState
-    val loadState = searchResultPagingItems.loadState
+    val pageMode by searchViewModel.pageMode.collectAsState()
+    val pagerState = rememberPagerState { 2 }
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
     val reviewBottomSheetWebViewContainer = remember {
         WebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
-            this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
+            this.webView.addJavascriptInterface(
+                CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }),
+                "Snutt",
+            )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        searchViewModel.pageMode.collect {
+            pagerState.animateScrollToPage(page = it.page)
         }
     }
 
     Column {
-        SearchTopBar {
+        SearchTopBar(
+            actions = {
+                BookmarkIcon(
+                    modifier = Modifier.size(30.dp).clicks {
+                        searchViewModel.togglePageMode()
+                    },
+                    marked = pageMode is SearchPageMode.Bookmark,
+                )
+            },
+        ) {
             SearchIcon(
                 modifier = Modifier.clicks {
                     scope.launch {
@@ -99,14 +122,16 @@ fun SearchPage(
                     modifier = Modifier.clicks {
                         // 강의 검색 필터 sheet 띄우기
                         bottomSheet.setSheetContent {
-                            SearchOptionSheet(applyOption = {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        searchViewModel.query()
+                            SearchOptionSheet(
+                                applyOption = {
+                                    scope.launch {
+                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                            searchViewModel.query()
+                                        }
                                     }
-                                }
-                                scope.launch { bottomSheet.hide() }
-                            },)
+                                    scope.launch { bottomSheet.hide() }
+                                },
+                            )
                         }
                         scope.launch { bottomSheet.show() }
                     },
@@ -120,60 +145,151 @@ fun SearchPage(
                 .fillMaxWidth(),
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
-            Column(
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
                     .background(SNUTTColors.Dim2)
                     .fillMaxSize(),
-            ) {
-                AnimatedLazyRow(itemList = selectedTags, itemKey = { it.name }) {
-                    TagCell(tagDto = it, onClick = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                searchViewModel.toggleTag(it)
-                                searchViewModel.query()
-                            }
-                        }
-                    },)
-                }
-                // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-                if (placeHolderState) {
-                    SearchPlaceHolder(
-                        onClickSearchIcon = {
-                            scope.launch {
-                                keyBoardController?.hide()
-                                searchViewModel.query()
-                            }
-                        },
+                userScrollEnabled = false,
+            ) { page ->
+                when (page) {
+                    SearchPageMode.Search.page -> SearchResultList(
+                        scope,
+                        searchResultPagingItems,
+                        searchViewModel,
+                        timetableViewModel,
+                        tableListViewModel,
+                        lectureDetailViewModel,
+                        userViewModel,
+                        vacancyViewModel,
+                        reviewBottomSheetWebViewContainer,
                     )
-                } else {
-                    when {
-                        loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
-                            SearchEmptyPage()
+
+                    SearchPageMode.Bookmark.page -> BookmarkList(
+                        searchViewModel,
+                        timetableViewModel,
+                        tableListViewModel,
+                        lectureDetailViewModel,
+                        userViewModel,
+                        vacancyViewModel,
+                        reviewBottomSheetWebViewContainer,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SearchResultList(
+    scope: CoroutineScope,
+    searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
+    searchViewModel: SearchViewModel,
+    timetableViewModel: TimetableViewModel,
+    tableListViewModel: TableListViewModel,
+    lectureDetailViewModel: LectureDetailViewModel,
+    userViewModel: UserViewModel,
+    vacancyViewModel: VacancyViewModel,
+    reviewBottomSheetWebViewContainer: WebViewContainer,
+) {
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val selectedTags by searchViewModel.selectedTags.collectAsState()
+    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
+    val lazyListState = searchViewModel.lazyListState
+    val loadState = searchResultPagingItems.loadState
+    val keyBoardController = LocalSoftwareKeyboardController.current
+
+    Column {
+        AnimatedLazyRow(itemList = selectedTags, itemKey = { it.name }) {
+            TagCell(
+                tagDto = it,
+                onClick = {
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            searchViewModel.toggleTag(it)
+                            searchViewModel.query()
                         }
-                        else -> {
-                            LazyColumn(
-                                state = lazyListState, modifier = Modifier.fillMaxSize(),
-                            ) {
-                                items(searchResultPagingItems) { lectureDataWithState ->
-                                    lectureDataWithState?.let {
-                                        LectureListItem(
-                                            lectureDataWithState,
-                                            reviewBottomSheetWebViewContainer,
-                                            false,
-                                            searchViewModel,
-                                            timetableViewModel,
-                                            tableListViewModel,
-                                            lectureDetailViewModel,
-                                            userViewModel,
-                                            vacancyViewModel,
-                                        )
-                                    }
-                                }
+                    }
+                },
+            )
+        }
+        // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
+        if (placeHolderState) {
+            SearchPlaceHolder(
+                onClickSearchIcon = {
+                    scope.launch {
+                        keyBoardController?.hide()
+                        searchViewModel.query()
+                    }
+                },
+            )
+        } else {
+            when {
+                loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
+                    SearchEmptyPage()
+                }
+
+                else -> {
+                    LazyColumn(
+                        state = lazyListState, modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(searchResultPagingItems) { lectureDataWithState ->
+                            lectureDataWithState?.let {
+                                LectureListItem(
+                                    lectureDataWithState,
+                                    reviewBottomSheetWebViewContainer,
+                                    false,
+                                    searchViewModel,
+                                    timetableViewModel,
+                                    tableListViewModel,
+                                    lectureDetailViewModel,
+                                    userViewModel,
+                                    vacancyViewModel,
+                                )
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun BookmarkList(
+    searchViewModel: SearchViewModel,
+    timetableViewModel: TimetableViewModel,
+    tableListViewModel: TableListViewModel,
+    lectureDetailViewModel: LectureDetailViewModel,
+    userViewModel: UserViewModel,
+    vacancyViewModel: VacancyViewModel,
+    reviewWebViewContainer: WebViewContainer,
+) {
+    val bookmarks by searchViewModel.bookmarkList.collectAsState()
+    if (bookmarks.isEmpty()) {
+        BookmarkPlaceHolder()
+    } else {
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
+            items(bookmarks) {
+                LectureListItem(
+                    lectureDataWithState = it,
+                    searchViewModel = searchViewModel,
+                    reviewWebViewContainer = reviewWebViewContainer,
+                    isBookmarkPage = true,
+                    timetableViewModel = timetableViewModel,
+                    tableListViewModel = tableListViewModel,
+                    lectureDetailViewModel = lectureDetailViewModel,
+                    userViewModel = userViewModel,
+                    vacancyViewModel = vacancyViewModel,
+                )
+            }
+            item { Divider(color = SNUTTColors.White400) }
         }
     }
 }
@@ -243,6 +359,35 @@ private fun SearchEmptyPage() {
             text = stringResource(R.string.search_result_empty),
             style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp),
         )
+    }
+}
+
+@Composable
+fun BookmarkPlaceHolder() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(R.string.bookmark_page_placeholder_1),
+            style = SNUTTTypography.subtitle1.copy(
+                fontSize = 18.sp,
+                color = SNUTTColors.White700,
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+        Text(
+            text = stringResource(R.string.bookmark_page_placeholder_2),
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
+        )
+        Text(
+            text = stringResource(R.string.bookmark_page_placeholder_3),
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 

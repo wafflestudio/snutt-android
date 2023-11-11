@@ -18,6 +18,18 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class SearchPageMode(val page: Int) {
+    data object Search : SearchPageMode(0)
+    data object Bookmark : SearchPageMode(1)
+
+    fun toggled(): SearchPageMode {
+        return when (this) {
+            is Search -> Bookmark
+            is Bookmark -> Search
+        }
+    }
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -54,6 +66,9 @@ class SearchViewModel @Inject constructor(
     private val _placeHolderState = MutableStateFlow(true)
     val placeHolderState = _placeHolderState.asStateFlow()
 
+    private val _pageMode = MutableStateFlow<SearchPageMode>(SearchPageMode.Search)
+    val pageMode: StateFlow<SearchPageMode> get() = _pageMode
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -62,7 +77,8 @@ class SearchViewModel @Inject constructor(
                 try {
                     fetchSearchTagList() // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
                     getBookmarkList()
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -209,5 +225,9 @@ class SearchViewModel @Inject constructor(
                 currentTable.year, currentTable.semester,
             ),
         )
+    }
+
+    fun togglePageMode() {
+        _pageMode.value = _pageMode.value.toggled()
     }
 }
