@@ -63,7 +63,7 @@ fun SearchPage(
     val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
-    val pagerState = rememberPagerState { 2 }
+    val pagerState = rememberPagerState(initialPage = pageMode.page) { 2 }
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
@@ -83,61 +83,88 @@ fun SearchPage(
     }
 
     Column {
-        SearchTopBar(
-            actions = {
-                BookmarkIcon(
-                    modifier = Modifier.size(30.dp).clicks {
-                        searchViewModel.togglePageMode()
-                    },
-                    marked = pageMode is SearchPageMode.Bookmark,
-                )
-            },
-        ) {
-            SearchIcon(
-                modifier = Modifier.clicks {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            searchViewModel.query()
-                        }
-                    }
-                },
-            )
-            SearchEditText(
-                searchEditTextFocused = searchEditTextFocused,
-                onFocus = { isFocused ->
-                    searchEditTextFocused = isFocused
-                },
-            )
-            if (searchEditTextFocused) {
-                ExitIcon(
-                    modifier = Modifier.clicks {
-                        scope.launch {
-                            searchViewModel.clearEditText()
-                            searchEditTextFocused = false
-                        }
-                    },
-                )
-            } else {
-                FilterIcon(
-                    modifier = Modifier.clicks {
-                        // 강의 검색 필터 sheet 띄우기
-                        bottomSheet.setSheetContent {
-                            SearchOptionSheet(
-                                applyOption = {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            searchViewModel.query()
-                                        }
-                                    }
-                                    scope.launch { bottomSheet.hide() }
+        when (pageMode) {
+            is SearchPageMode.Search -> {
+                SearchTopBar(
+                    actions = {
+                        BookmarkIcon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clicks {
+                                    searchViewModel.togglePageMode()
                                 },
-                            )
-                        }
-                        scope.launch { bottomSheet.show() }
+                            marked = pageMode is SearchPageMode.Bookmark,
+                        )
                     },
+                ) {
+                    SearchIcon(
+                        modifier = Modifier.clicks {
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    searchViewModel.query()
+                                }
+                            }
+                        },
+                    )
+                    SearchEditText(
+                        searchEditTextFocused = searchEditTextFocused,
+                        onFocus = { isFocused ->
+                            searchEditTextFocused = isFocused
+                        },
+                    )
+                    if (searchEditTextFocused) {
+                        ExitIcon(
+                            modifier = Modifier.clicks {
+                                scope.launch {
+                                    searchViewModel.clearEditText()
+                                    searchEditTextFocused = false
+                                }
+                            },
+                        )
+                    } else {
+                        FilterIcon(
+                            modifier = Modifier.clicks {
+                                // 강의 검색 필터 sheet 띄우기
+                                bottomSheet.setSheetContent {
+                                    SearchOptionSheet(
+                                        applyOption = {
+                                            scope.launch {
+                                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                                    searchViewModel.query()
+                                                }
+                                            }
+                                            scope.launch { bottomSheet.hide() }
+                                        },
+                                    )
+                                }
+                                scope.launch { bottomSheet.show() }
+                            },
+                        )
+                    }
+                }
+            }
+            is SearchPageMode.Bookmark -> {
+                TopBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.bookmark_page_title),
+                            style = SNUTTTypography.h2,
+                        )
+                    },
+                    actions = {
+                        BookmarkIcon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clicks {
+                                    searchViewModel.togglePageMode()
+                                },
+                            marked = pageMode is SearchPageMode.Bookmark,
+                        )
+                    }
                 )
             }
         }
+
         Box(
             modifier = Modifier
                 .weight(1f)
