@@ -3,23 +3,17 @@ package com.wafflestudio.snutt2.views.logged_in.home.search
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -114,7 +108,6 @@ fun SearchPage(
                                     slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
                             }
                         }
-
                     },
                     label = "top bar animation"
                 ) {
@@ -207,15 +200,25 @@ fun SearchPage(
                 .fillMaxWidth(),
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .background(SNUTTColors.Dim2)
-                    .fillMaxSize(),
-                userScrollEnabled = false,
-            ) { page ->
-                when (page) {
-                    SearchPageMode.Search.page -> SearchResultList(
+            AnimatedContent(
+                targetState = pageMode,
+                modifier = Modifier.background(SNUTTColors.Dim2),
+                transitionSpec = {
+                    when (targetState) {
+                        is SearchPageMode.Search -> {
+                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
+                        }
+                        is SearchPageMode.Bookmark -> {
+                            slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
+                        }
+                    }
+                },
+                label = "body animation"
+            ) { pageMode ->
+                when (pageMode) {
+                    SearchPageMode.Search-> SearchResultList(
                         scope,
                         searchResultPagingItems,
                         searchViewModel,
@@ -226,7 +229,7 @@ fun SearchPage(
                         vacancyViewModel,
                         reviewBottomSheetWebViewContainer,
                     )
-                    SearchPageMode.Bookmark.page -> BookmarkList(
+                    SearchPageMode.Bookmark -> BookmarkList(
                         searchViewModel,
                         timetableViewModel,
                         tableListViewModel,
@@ -239,11 +242,6 @@ fun SearchPage(
             }
         }
     }
-}
-
-@Composable
-fun SearchEditText() {
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
