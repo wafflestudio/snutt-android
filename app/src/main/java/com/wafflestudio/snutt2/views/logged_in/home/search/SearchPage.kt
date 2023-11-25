@@ -1,5 +1,18 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -35,7 +49,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPlaceHolder
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -44,7 +57,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
@@ -79,97 +92,113 @@ fun SearchPage(
 
     LaunchedEffect(Unit) {
         searchViewModel.pageMode.collect {
-            pagerState.animateScrollToPage(page = it.page)
+            pagerState.animateScrollToPage(
+                page = it.page,
+            )
         }
     }
 
     Column {
-        when (pageMode) {
-            is SearchPageMode.Search -> {
-                SearchTopBar(
-                    actions = {
-                        IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
-                            BookmarkIcon(
-                                modifier = centerAlignedModifier
-                                    .size(30.dp)
-                                    .clicks {
-                                        searchViewModel.togglePageMode()
-                                    },
-                                marked = false,
-                            )
-                        }
-                    },
-                ) {
-                    SearchIcon(
-                        modifier = Modifier.clicks {
-                            scope.launch {
-                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                    searchViewModel.query()
-                                }
+        TopBar(
+            title = {
+                AnimatedContent(
+                    targetState = pageMode,
+                    transitionSpec = {
+                        when (targetState) {
+                            is SearchPageMode.Search -> {
+                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
                             }
-                        },
-                    )
-                    SearchEditText(
-                        searchEditTextFocused = searchEditTextFocused,
-                        onFocus = { isFocused ->
-                            searchEditTextFocused = isFocused
-                        },
-                    )
-                    if (searchEditTextFocused) {
-                        ExitIcon(
-                            modifier = Modifier.clicks {
-                                scope.launch {
-                                    searchViewModel.clearEditText()
-                                    searchEditTextFocused = false
-                                }
-                            },
-                        )
-                    } else {
-                        FilterIcon(
-                            modifier = Modifier.clicks {
-                                // 강의 검색 필터 sheet 띄우기
-                                bottomSheet.setSheetContent {
-                                    SearchOptionSheet(
-                                        applyOption = {
-                                            scope.launch {
-                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                    searchViewModel.query()
-                                                }
+                            is SearchPageMode.Bookmark -> {
+                                slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
+                            }
+                        }
+
+                    },
+                    label = "top bar animation"
+                ) {
+                    when (it) {
+                        is SearchPageMode.Search -> {
+                            Row(
+                                modifier = Modifier
+                                    .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
+                                    .weight(1f)
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                SearchIcon(
+                                    modifier = Modifier.clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                searchViewModel.query()
                                             }
-                                            scope.launch { bottomSheet.hide() }
+                                        }
+                                    },
+                                )
+                                SearchEditText(
+                                    searchEditTextFocused = searchEditTextFocused,
+                                    onFocus = { isFocused ->
+                                        searchEditTextFocused = isFocused
+                                    },
+                                )
+                                if (searchEditTextFocused) {
+                                    ExitIcon(
+                                        modifier = Modifier.clicks {
+                                            scope.launch {
+                                                searchViewModel.clearEditText()
+                                                searchEditTextFocused = false
+                                            }
+                                        },
+                                    )
+                                } else {
+                                    FilterIcon(
+                                        modifier = Modifier.clicks {
+                                            // 강의 검색 필터 sheet 띄우기
+                                            bottomSheet.setSheetContent {
+                                                SearchOptionSheet(
+                                                    applyOption = {
+                                                        scope.launch {
+                                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                                searchViewModel.query()
+                                                            }
+                                                        }
+                                                        scope.launch { bottomSheet.hide() }
+                                                    },
+                                                )
+                                            }
+                                            scope.launch { bottomSheet.show() }
                                         },
                                     )
                                 }
-                                scope.launch { bottomSheet.show() }
-                            },
-                        )
-                    }
-                }
-            }
-            is SearchPageMode.Bookmark -> {
-                TopBar(
-                    title = {
-                        Text(
-                            modifier = Modifier.padding(start = 12.dp),
-                            text = stringResource(R.string.bookmark_page_title),
-                            style = SNUTTTypography.h2,
-                        )
-                    },
-                    actions = {
-                        IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
-                            BookmarkIcon(
-                                modifier = centerAlignedModifier
-                                    .size(30.dp)
-                                    .clicks {
-                                        searchViewModel.togglePageMode()
-                                    },
-                                marked = true,
+                            }
+                        }
+                        is SearchPageMode.Bookmark -> {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 12.dp),
+                                text = stringResource(R.string.bookmark_page_title),
+                                style = SNUTTTypography.h2,
                             )
                         }
                     }
-                )
+                }
+            },
+            actions = {
+                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
+                    BookmarkIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks {
+                                searchViewModel.togglePageMode()
+                            },
+                        marked = pageMode is SearchPageMode.Bookmark
+                    )
+                }
             }
-        }
+        )
 
         Box(
             modifier = Modifier
@@ -197,7 +226,6 @@ fun SearchPage(
                         vacancyViewModel,
                         reviewBottomSheetWebViewContainer,
                     )
-
                     SearchPageMode.Bookmark.page -> BookmarkList(
                         searchViewModel,
                         timetableViewModel,
@@ -211,6 +239,11 @@ fun SearchPage(
             }
         }
     }
+}
+
+@Composable
+fun SearchEditText() {
+
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

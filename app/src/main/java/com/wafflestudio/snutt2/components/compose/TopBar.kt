@@ -84,35 +84,6 @@ fun TopBar(
     }
 }
 
-@Composable
-fun SearchTopBar(
-    modifier: Modifier = Modifier,
-    actions: @Composable RowScope.() -> Unit = {},
-    content: @Composable RowScope.() -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .background(SNUTTColors.White900)
-            .height(56.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
-                .weight(1f)
-                .padding(horizontal = 8.dp, vertical = 3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            content()
-        }
-        actions()
-    }
-}
-
 @Preview
 @Composable
 fun TopBarPreview() {
