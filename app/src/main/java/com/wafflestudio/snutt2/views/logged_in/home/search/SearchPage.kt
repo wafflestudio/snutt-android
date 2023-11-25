@@ -150,6 +150,7 @@ fun SearchPage(
                 TopBar(
                     title = {
                         Text(
+                            modifier = Modifier.padding(start = 12.dp),
                             text = stringResource(R.string.bookmark_page_title),
                             style = SNUTTTypography.h2,
                         )

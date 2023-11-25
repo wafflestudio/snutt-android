@@ -93,11 +93,11 @@ fun SearchTopBar(
     Row(
         modifier = modifier
             .background(SNUTTColors.White900)
-            .shadow(elevation = 1.dp, clip = false)
             .height(56.dp)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(
             modifier = Modifier
