@@ -53,48 +53,24 @@ fun TopBar(
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    Surface(
-        shape = RectangleShape,
-        color = SNUTTColors.White900,
-        elevation = 1.dp,
+    Row(
         modifier = modifier
-            .padding(bottom = 2.dp)
+            .background(SNUTTColors.White900)
             .fillMaxWidth()
             .height(56.dp)
-            .drawWithContent {
-                val paddingPx = 2.dp.toPx()
-                clipRect(
-                    left = 0f,
-                    top = 0f,
-                    right = size.width,
-                    bottom = size.height + paddingPx,
-                ) {
-                    this@drawWithContent.drawContent()
-                }
-            },
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        navigationIcon()
         Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.width(54.dp),
-                horizontalArrangement = Arrangement.Center,
-            ) { navigationIcon() }
-
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) { title() }
-
-            Row(
-                modifier = Modifier.wrapContentWidth().padding(end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) { actions() }
+            title()
         }
+        actions()
     }
 }
 
