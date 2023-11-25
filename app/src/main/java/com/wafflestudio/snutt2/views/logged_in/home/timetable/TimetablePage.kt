@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -38,9 +39,8 @@ fun TimetablePage() {
     val remoteConfig = LocalRemoteConfig.current
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
-    val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
-    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
@@ -103,17 +103,6 @@ fun TimetablePage() {
                             )
                         },
                 )
-                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
-                    BookmarkPageIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks {
-                                navController.navigate(NavigationDestination.Bookmark) {
-                                    launchSingleTop = true
-                                }
-                            },
-                    )
-                }
             },
         )
         if (remoteConfig.vacancyNotificationBannerEnabled) {
