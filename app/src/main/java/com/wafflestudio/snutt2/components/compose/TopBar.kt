@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -53,24 +54,33 @@ fun TopBar(
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    Row(
+    Column(
         modifier = modifier
-            .background(SNUTTColors.White900)
             .fillMaxWidth()
             .height(56.dp)
-            .padding(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        navigationIcon()
         Row(
             modifier = Modifier
-                .weight(1f),
-            verticalAlignment = Alignment.CenterVertically
+                .background(SNUTTColors.White900)
+                .weight(1f)
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            title()
+            navigationIcon()
+            Row(
+                modifier = Modifier
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                title()
+            }
+            actions()
         }
-        actions()
+        Divider(
+            thickness = 0.5.dp,
+            color = SNUTTColors.TableGrid,
+        )
     }
 }
 
