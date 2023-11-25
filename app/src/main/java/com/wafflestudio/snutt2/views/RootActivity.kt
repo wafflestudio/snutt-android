@@ -40,7 +40,6 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTTheme
-import com.wafflestudio.snutt2.views.logged_in.bookmark.BookmarkPage
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
@@ -228,15 +227,6 @@ class RootActivity : AppCompatActivity() {
 
                 composable2(NavigationDestination.LectureColorSelector) {
                     LectureColorSelectorPage()
-                }
-
-                composable2(NavigationDestination.Bookmark) {
-                    val parentEntry = remember(it) {
-                        navController.getBackStackEntry(NavigationDestination.Home)
-                    }
-                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-                    BookmarkPage(searchViewModel, vacancyViewModel)
                 }
 
                 settingcomposable2(navController)
