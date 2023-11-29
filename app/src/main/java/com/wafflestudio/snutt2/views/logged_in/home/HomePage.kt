@@ -123,7 +123,7 @@ fun HomePage(reactNativeBundleManager: ReactNativeBundleManager) {
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 when (pageController.homePageState.value) {
-                    HomeItem.Timetable -> TimetablePage()
+                    HomeItem.Timetable -> TimetablePage(uncheckedNotification)
                     HomeItem.Search -> SearchPage(searchResultPagingItems)
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageWebViewContainer) {
@@ -131,7 +131,7 @@ fun HomePage(reactNativeBundleManager: ReactNativeBundleManager) {
                         }
                     }
                     HomeItem.Friends -> FriendsPage(reactNativeBundleManager)
-                    HomeItem.Settings -> SettingsPage(uncheckedNotification)
+                    HomeItem.Settings -> SettingsPage()
                 }
 
                 Box(
