@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -72,6 +74,8 @@ fun ChangeThemeBottomSheet(
                 .padding(16.dp),
         ) {
             Spacer(modifier = Modifier.width(10.dp))
+            AddThemeItem()
+            Spacer(modifier = Modifier.width(20.dp))
             themeList.forEachIndexed { themeIdx, nameAndIdPair ->
                 ThemeItem(
                     name = nameAndIdPair.first,
@@ -85,10 +89,37 @@ fun ChangeThemeBottomSheet(
 }
 
 @Composable
+private fun AddThemeItem(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .background(color = SNUTTColors.VacancyGray, shape = RoundedCornerShape(6.dp)),
+        ) {
+            AddIcon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .align(Alignment.Center),
+            )
+        }
+        Spacer(modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.theme_new),
+            style = SNUTTTypography.body1,
+        )
+    }
+}
+
+@Composable
 private fun ThemeItem(
     name: String,
     painter: Painter,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
         Image(

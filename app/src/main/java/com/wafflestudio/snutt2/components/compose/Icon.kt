@@ -770,6 +770,19 @@ fun MegaphoneIcon(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_megaphone),
         contentDescription = "",
+        colorFilter = colorFilter
+    )
+}
+
+@Composable
+fun AddIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_add),
+        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
