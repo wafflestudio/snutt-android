@@ -11,6 +11,7 @@ import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.shell.MainReactPackage
 import com.horcrux.svg.SvgPackage
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage
 import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
@@ -69,7 +70,7 @@ class ReactNativeBundleManager @Inject constructor(
                                 .setJavaScriptExecutorFactory(HermesExecutorFactory())
                                 .setJSBundleFile(bundleFile.absolutePath)
                                 .addPackages(
-                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage()),
+                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage(), AsyncStoragePackage()),
                                 )
                                 .setInitialLifecycleState(LifecycleState.RESUMED)
                                 .build()
