@@ -85,6 +85,7 @@ class ReactNativeBundleManager @Inject constructor(
                                     putString("x-access-apikey", context.getString(R.string.api_key))
                                     putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
                                     putBoolean("allowFontScaling", true)
+                                    putStringArrayList("feature", arrayListOf("ASYNC_STORAGE"))
                                 },
                             )
                         }
