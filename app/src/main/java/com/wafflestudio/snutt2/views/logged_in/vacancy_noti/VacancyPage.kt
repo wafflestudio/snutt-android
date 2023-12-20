@@ -440,7 +440,7 @@ fun VacancyIntroDialog(
                         2 -> SNUTTColors.Orange
                         else -> SNUTTColors.Sky
                     },
-                    inactiveColor = SNUTTColors.Gray10,
+                    inactiveColor = SNUTTColors.LightGray,
                     indicatorHeight = 6.dp,
                     indicatorWidth = 6.dp,
                 )
