@@ -760,3 +760,16 @@ fun CloseCircleIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun MegaphoneIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_megaphone),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}

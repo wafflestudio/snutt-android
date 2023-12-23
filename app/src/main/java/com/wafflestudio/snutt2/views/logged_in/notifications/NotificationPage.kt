@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
@@ -48,9 +49,11 @@ fun NotificationPage() {
         when {
             refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()
             refreshState is LoadState.Error -> NotificationError()
-            else -> LazyColumn {
-                items(notificationList.itemCount) { index ->
-                    NotificationItem(notificationList[index])
+            else -> LazyColumn(
+                modifier = Modifier.padding(horizontal = 9.dp),
+            ) {
+                items(notificationList) {
+                    it?.let { NotificationItem(it) }
                 }
             }
         }
@@ -58,30 +61,25 @@ fun NotificationPage() {
 }
 
 @Composable
-fun NotificationItem(info: NotificationDto?) {
+fun NotificationItem(info: NotificationDto) {
     val context = LocalContext.current
-    Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
-        when (info?.type) {
+    Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 15.dp)) {
+        when (info.type) {
             0 -> WarningIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             1 -> CalendarIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             2 -> RefreshIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             3 -> TrashIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            4 -> NotificationIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            5 -> PeopleIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            else -> MegaphoneIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
         Spacer(modifier = Modifier.width(10.dp))
         Column {
             Row(modifier = Modifier.fillMaxWidth()) {
-                when (info?.type) {
-                    0 -> stringResource(id = R.string.notifications_noti_announce)
-                    1 -> stringResource(id = R.string.notifications_noti_add)
-                    2 -> stringResource(id = R.string.notifications_noti_update)
-                    3 -> stringResource(id = R.string.notifications_noti_delete)
-                    else -> null
-                }?.let {
-                    Text(text = it, style = SNUTTTypography.h4)
-                }
+                Text(text = info.title, style = SNUTTTypography.h4)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = if (info != null) getNotificationTime(context, info) else "-",
+                    text = getNotificationTime(context, info),
                     style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray600),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -89,7 +87,7 @@ fun NotificationItem(info: NotificationDto?) {
             }
             Spacer(modifier = Modifier.height(7.dp))
             Text(
-                text = info?.message ?: "",
+                text = info.message,
                 style = SNUTTTypography.body2,
             )
         }
