@@ -94,7 +94,7 @@ fun LectureDetailPage(
     }
 
     /* 바텀시트 관련 */
-    val bottomSheet = bottomSheet()
+    val bottomSheet = BottomSheet()
 
     /* 뒤로가기 핸들링 */
     val onBackPressed: () -> Unit = {

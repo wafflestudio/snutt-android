@@ -17,8 +17,8 @@ private val LightThemeColors @Composable get() = lightColors(
     primaryVariant = SNUTTColors.Gray400,
     onPrimary = SNUTTColors.Black900,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
+    background = SNUTTColors.Gray,
+    onBackground = SNUTTColors.DarkGray,
     surface = SNUTTColors.White900,
     onSurface = SNUTTColors.Black900,
 )
@@ -28,8 +28,8 @@ private val DarkThemeColors @Composable get() = darkColors(
     primaryVariant = SNUTTColors.Gray400,
     onPrimary = SNUTTColors.Black900,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
+    background = SNUTTColors.Gray900,
+    onBackground = SNUTTColors.DarkerGray,
     surface = SNUTTColors.White900,
     onSurface = SNUTTColors.Black900,
 )
