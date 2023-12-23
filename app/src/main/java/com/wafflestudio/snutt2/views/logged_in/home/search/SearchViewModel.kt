@@ -18,18 +18,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class SearchPageMode(val page: Int) {
-    data object Search : SearchPageMode(0)
-    data object Bookmark : SearchPageMode(1)
-
-    fun toggled(): SearchPageMode {
-        return when (this) {
-            is Search -> Bookmark
-            is Bookmark -> Search
-        }
-    }
-}
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -66,7 +54,7 @@ class SearchViewModel @Inject constructor(
     private val _placeHolderState = MutableStateFlow(true)
     val placeHolderState = _placeHolderState.asStateFlow()
 
-    private val _pageMode = MutableStateFlow<SearchPageMode>(SearchPageMode.Search)
+    private val _pageMode = MutableStateFlow(SearchPageMode.Search)
     val pageMode: StateFlow<SearchPageMode> get() = _pageMode
 
     init {
