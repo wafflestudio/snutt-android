@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.friend
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,10 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -21,16 +22,19 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.RootActivity
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FriendsPage(reactNativeBundleManager: ReactNativeBundleManager) {
-    reactNativeBundleManager.reactRootView.value?.let { reactRootView ->
+fun FriendsPage() {
+    val reactRootView = (LocalContext.current as RootActivity).friendBundleManager.reactRootView
+
+    reactRootView.value?.let { view ->
         AndroidView(
             modifier = Modifier.fillMaxSize(),
-            factory = { reactRootView },
+            factory = { view },
         )
     } ?: FriendsPagePlaceholder()
 }
