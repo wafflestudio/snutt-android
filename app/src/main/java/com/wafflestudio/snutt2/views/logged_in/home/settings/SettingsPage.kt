@@ -122,7 +122,7 @@ fun SettingsPage(
                         navController.navigate(
                             NavigationDestination.ThemeConfig,
                         )
-                    }
+                    },
                 )
             }
             Margin(height = 10.dp)
