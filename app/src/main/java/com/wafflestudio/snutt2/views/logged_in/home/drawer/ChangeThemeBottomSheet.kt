@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,7 +35,9 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
-import com.wafflestudio.snutt2.views.logged_in.home.settings.ThemeDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -56,6 +57,7 @@ fun ChangeThemeBottomSheet(
         stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
     )
     val bottomSheet = LocalBottomSheetState.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         onLaunch()
@@ -91,7 +93,11 @@ fun ChangeThemeBottomSheet(
                 .padding(16.dp),
         ) {
             Spacer(modifier = Modifier.width(10.dp))
-            AddThemeItem(bottomSheet = bottomSheet)
+            AddThemeItem(
+                onClick = {
+                    bottomSheet.setSheetContent { ThemeDetailPage() }
+                },
+            )
             Spacer(modifier = Modifier.width(20.dp))
             themeList.forEachIndexed { themeIdx, nameAndIdPair ->
                 ThemeItem(
@@ -105,60 +111,4 @@ fun ChangeThemeBottomSheet(
     }
 }
 
-@Composable
-private fun AddThemeItem(
-    bottomSheet: BottomSheet,
-    modifier: Modifier = Modifier,
-) {
-    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = modifier
-            .clicks {
-                bottomSheet.setSheetContent {
-                    ThemeDetailPage()
-                }
-                scope.launch {
-                    bottomSheet.show()
-                }
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .background(color = SNUTTColors.VacancyGray, shape = RoundedCornerShape(6.dp)),
-        ) {
-            AddIcon(
-                modifier = Modifier
-                    .size(30.dp)
-                    .align(Alignment.Center),
-            )
-        }
-        Spacer(modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.theme_new),
-            style = SNUTTTypography.body1,
-        )
-    }
-}
-
-@Composable
-private fun ThemeItem(
-    name: String,
-    painter: Painter,
-    modifier: Modifier = Modifier,
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        Image(
-            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
-        }
-    }
-}

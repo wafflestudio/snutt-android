@@ -1,7 +1,6 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings
+package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,15 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -44,11 +39,13 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalTableState
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.settings.PoorSwitch
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun ThemeDetailPage(

@@ -116,6 +116,14 @@ fun SettingsPage(
                         )
                     },
                 )
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_theme_config_title),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.ThemeConfig,
+                        )
+                    }
+                )
             }
             Margin(height = 10.dp)
             SettingColumn {
