@@ -52,7 +52,12 @@ fun TableMoreActionBottomSheet(
             icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change),
         ) {
-            showTitleChangeDialog(table.title, table.id, composableStates, tableListViewModel::changeTableName)
+            showTitleChangeDialog(
+                table.title,
+                table.id,
+                composableStates,
+                tableListViewModel::changeTableName,
+            )
         }
         if (table.isPrimary) {
             MoreActionItem(
@@ -101,16 +106,18 @@ fun TableMoreActionBottomSheet(
                     drawerState.close()
 
                     bottomSheet.setSheetContent {
-                        ChangeThemeBottomSheet(onLaunch = {
-                            scope.launch {
-                                launchSuspendApi(
-                                    apiOnProgress,
-                                    apiOnError,
-                                ) {
-                                    timetableViewModel.setPreviewTheme(theme)
+                        ChangeThemeBottomSheet(
+                            onLaunch = {
+                                scope.launch {
+                                    launchSuspendApi(
+                                        apiOnProgress,
+                                        apiOnError,
+                                    ) {
+                                        timetableViewModel.setPreviewTheme(theme)
+                                    }
                                 }
-                            }
-                        }, onPreview = { idx ->
+                            },
+                            onPreview = { idx ->
                                 scope.launch {
                                     launchSuspendApi(
                                         apiOnProgress,
@@ -123,7 +130,8 @@ fun TableMoreActionBottomSheet(
                                         )
                                     }
                                 }
-                            }, onApply = {
+                            },
+                            onApply = {
                                 scope.launch {
                                     launchSuspendApi(
                                         apiOnProgress,
@@ -133,7 +141,8 @@ fun TableMoreActionBottomSheet(
                                         scope.launch { bottomSheet.hide() }
                                     }
                                 }
-                            }, onDispose = {
+                            },
+                            onDispose = {
                                 scope.launch {
                                     launchSuspendApi(
                                         apiOnProgress,
@@ -142,7 +151,8 @@ fun TableMoreActionBottomSheet(
                                         timetableViewModel.setPreviewTheme(null)
                                     }
                                 }
-                            },)
+                            },
+                        )
                     }
                     bottomSheet.show()
                 } else {

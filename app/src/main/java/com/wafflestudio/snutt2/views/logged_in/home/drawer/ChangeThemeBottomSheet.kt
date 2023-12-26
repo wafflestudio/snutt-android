@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ThemeDetailPage
 import kotlinx.coroutines.launch
 
@@ -54,7 +55,7 @@ fun ChangeThemeBottomSheet(
         stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
         stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
     )
-    val bottomSheet = BottomSheet()
+    val bottomSheet = LocalBottomSheetState.current
 
     LaunchedEffect(Unit) {
         onLaunch()
@@ -64,47 +65,41 @@ fun ChangeThemeBottomSheet(
         onDispose { onDispose() }
     }
 
-    ModalBottomSheetLayout(
-        sheetContent = bottomSheet.content,
-        sheetState = bottomSheet.state,
-        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxWidth(),
     ) {
-        Column(
-            modifier = Modifier
-                .background(SNUTTColors.White900)
-                .fillMaxWidth(),
-        ) {
-            Row(modifier = Modifier.padding(10.dp)) {
+        Row(modifier = Modifier.padding(10.dp)) {
+            Text(
+                text = stringResource(R.string.home_drawer_table_theme_change),
+                modifier = Modifier.padding(10.dp),
+                style = SNUTTTypography.body1,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Box(modifier = Modifier.clicks { onApply() }) {
                 Text(
-                    text = stringResource(R.string.home_drawer_table_theme_change),
+                    text = stringResource(R.string.home_select_theme_confirm),
                     modifier = Modifier.padding(10.dp),
                     style = SNUTTTypography.body1,
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Box(modifier = Modifier.clicks { onApply() }) {
-                    Text(
-                        text = stringResource(R.string.home_select_theme_confirm),
-                        modifier = Modifier.padding(10.dp),
-                        style = SNUTTTypography.body1,
-                    )
-                }
             }
-            Row(
-                Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(16.dp),
-            ) {
-                Spacer(modifier = Modifier.width(10.dp))
-                AddThemeItem(bottomSheet = bottomSheet)
+        }
+        Row(
+            Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(16.dp),
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            AddThemeItem(bottomSheet = bottomSheet)
+            Spacer(modifier = Modifier.width(20.dp))
+            themeList.forEachIndexed { themeIdx, nameAndIdPair ->
+                ThemeItem(
+                    name = nameAndIdPair.first,
+                    painter = nameAndIdPair.second,
+                    modifier = Modifier.clicks { onPreview(themeIdx) },
+                )
                 Spacer(modifier = Modifier.width(20.dp))
-                themeList.forEachIndexed { themeIdx, nameAndIdPair ->
-                    ThemeItem(
-                        name = nameAndIdPair.first,
-                        painter = nameAndIdPair.second,
-                        modifier = Modifier.clicks { onPreview(themeIdx) },
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                }
             }
         }
     }

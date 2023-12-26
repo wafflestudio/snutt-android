@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
@@ -33,6 +35,9 @@ private val DarkThemeColors @Composable get() = darkColors(
     surface = SNUTTColors.White900,
     onSurface = SNUTTColors.Black900,
 )
+
+val Colors.onSurfaceVariant: Color
+    get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.DarkGray
 
 enum class ThemeMode {
     DARK, LIGHT, AUTO, ;
