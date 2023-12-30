@@ -37,7 +37,6 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import kotlinx.coroutines.launch
@@ -72,7 +71,7 @@ fun ThemeConfigPage() {
     ModalBottomSheetLayout(
         sheetState = bottomSheet.state,
         sheetContent = bottomSheet.content,
-        sheetShape = RoundedCornerShape(5.dp)
+        sheetShape = RoundedCornerShape(5.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -96,7 +95,7 @@ fun ThemeConfigPage() {
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(top = 20.dp, bottom = 12.dp, start = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.Start
+                        horizontalArrangement = Arrangement.Start,
                     ) {
                         AddThemeItem(
                             onClick = {

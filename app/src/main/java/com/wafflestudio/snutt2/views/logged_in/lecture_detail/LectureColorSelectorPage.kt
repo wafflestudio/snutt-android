@@ -21,6 +21,7 @@ import com.skydoves.colorpickerview.flag.BubbleFlag
 import com.skydoves.colorpickerview.flag.FlagMode
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.wafflestudio.snutt2.components.compose.CheckedIcon
+import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.data.TimetableColorTheme
@@ -117,7 +118,7 @@ fun ColorItem(
 }
 
 // TODO: 언젠가는 compose로 직접...
-private fun colorSelectorDialog(context: Context, title: String): Maybe<Int> {
+fun colorSelectorDialog(context: Context, title: String): Maybe<Int> {
     return Maybe.create { emitter ->
         ColorPickerDialog.Builder(context)
             .setTitle(title)

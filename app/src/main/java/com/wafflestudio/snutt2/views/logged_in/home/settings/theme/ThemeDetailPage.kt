@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,10 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.components.compose.CloseIcon
+import com.wafflestudio.snutt2.components.compose.ColorBox
+import com.wafflestudio.snutt2.components.compose.ColorCircle
+import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -46,19 +54,23 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialog
+import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun ThemeDetailPage(
+    themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
-    var themeName by remember { mutableStateOf("") }
+    val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -103,8 +115,8 @@ fun ThemeDetailPage(
                 title = "테마명",
             ) {
                 EditText(
-                    value = themeName,
-                    onValueChange = { themeName = it },
+                    value = editingTheme.name,
+                    onValueChange = { },
                     enabled = true,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -115,9 +127,118 @@ fun ThemeDetailPage(
             SettingColumn(
                 title = "색 조합",
             ) {
-                ThemeDetailItem(
-                    title = "색상1",
+                editingTheme.colors.forEachIndexed { idx, color ->
+                    var expanded by remember { mutableStateOf(false) }
+                    Column {
+                        ThemeDetailItem(
+                            title = "색상${idx + 1}",
+                            modifier = Modifier.clicks {
+                                expanded = !expanded
+                            },
+                            actions = {
+                                DuplicateIcon(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clicks {
+                                            themeDetailViewModel.duplicateColor(idx)
+                                        },
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                CloseIcon(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clicks {
+                                            themeDetailViewModel.removeColor(idx)
+                                        },
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
+                                )
+                            },
+                        ) {
+                            ColorBox(0, color, previewTheme)
+                        }
+                        AnimatedVisibility(visible = expanded) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(color = MaterialTheme.colors.surface),
+                            ) {
+                                Spacer(modifier = Modifier.width(92.dp))
+                                Column(
+                                    modifier = Modifier.padding(top = 5.dp, bottom = 12.dp),
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(
+                                            text = "글꼴색",
+                                            color = MaterialTheme.colors.onSurfaceVariant,
+                                            style = SNUTTTypography.body2,
+                                        )
+                                        Spacer(modifier = Modifier.width(11.dp))
+                                        ColorCircle(
+                                            color = color.fgColor ?: 0xffffff,
+                                            modifier = Modifier
+                                                .size(25.dp)
+                                                .clicks {
+                                                    colorSelectorDialog(
+                                                        context,
+                                                        "글꼴색",
+                                                    ).subscribeBy {
+                                                        themeDetailViewModel.updateColor(
+                                                            idx,
+                                                            it,
+                                                            color.bgColor ?: 0xffffff,
+                                                        )
+                                                    }
+                                                },
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Row {
+                                        Text(
+                                            text = "배경색",
+                                            color = MaterialTheme.colors.onSurfaceVariant,
+                                            style = SNUTTTypography.body2,
+                                        )
+                                        Spacer(modifier = Modifier.width(11.dp))
+                                        ColorCircle(
+                                            color = color.bgColor ?: 0xffffff,
+                                            modifier = Modifier
+                                                .size(25.dp)
+                                                .clicks {
+                                                    colorSelectorDialog(
+                                                        context,
+                                                        "배경색",
+                                                    ).subscribeBy {
+                                                        themeDetailViewModel.updateColor(
+                                                            idx,
+                                                            color.fgColor ?: 0xffffff,
+                                                            it,
+                                                        )
+                                                    }
+                                                },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Divider(thickness = 0.5.dp, color = MaterialTheme.colors.background)
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clicks {
+                            themeDetailViewModel.addColor()
+                        },
                 ) {
+                    Text(
+                        text = "+ 색상 추가",
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colors.onBackground,
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -157,7 +278,7 @@ fun ThemeDetailItem(
     titleColor: Color = MaterialTheme.colors.onSurfaceVariant,
     modifier: Modifier = Modifier,
     actions: @Composable () -> Unit = {},
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
 ) {
     Row(
         modifier = modifier

@@ -492,13 +492,15 @@ fun CheckedIcon(
 }
 
 @Composable
-fun WhiteCloseIcon(
+fun CloseIcon(
     modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_close_white),
+        painter = painterResource(R.drawable.ic_close),
         contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
