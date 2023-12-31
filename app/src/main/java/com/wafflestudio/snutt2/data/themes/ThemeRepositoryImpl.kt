@@ -21,11 +21,11 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
     }
 
     override suspend fun getThemes(): List<ThemeDto> {
-        return dummy
+        return dummy.reversed()
     }
 
     override suspend fun createTheme(themeDto: ThemeDto) {
-        dummy.add(themeDto)
+        dummy.add(themeDto.copy(id = Random.nextLong()))
     }
 
     override suspend fun updateTheme(themeDto: ThemeDto) {

@@ -23,6 +23,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +42,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import kotlinx.coroutines.launch
@@ -57,11 +59,7 @@ fun ThemeConfigPage(
     val customThemes by themeConfigViewModel.themes.collectAsState()
 
     val onBackPressed: () -> Unit = {
-        if (bottomSheet.isVisible) {
-            scope.launch { bottomSheet.hide() }
-        } else {
-            navController.popBackStack()
-        }
+        navController.popBackStack()
     }
 
     BackHandler {
@@ -72,6 +70,7 @@ fun ThemeConfigPage(
         sheetState = bottomSheet.state,
         sheetContent = bottomSheet.content,
         sheetShape = RoundedCornerShape(5.dp),
+        sheetGesturesEnabled = false,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -102,15 +101,12 @@ fun ThemeConfigPage(
                             AddThemeItem(
                                 modifier = Modifier.clicks {
                                     bottomSheet.setSheetContent {
-                                        ThemeDetailPage(
-                                            theme = ThemeDto.Default,
-                                            onClickCancel = {
-                                                scope.launch { bottomSheet.hide() }
-                                            },
-                                            onClickSave = {
-                                                scope.launch { bottomSheet.hide() }
-                                            },
-                                        )
+                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
+                                            ThemeDetailPage(
+                                                theme = ThemeDto.Default,
+                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                                            )
+                                        }
                                     }
                                     scope.launch { bottomSheet.show() }
                                 },
@@ -124,15 +120,12 @@ fun ThemeConfigPage(
                                 theme = theme,
                                 modifier = Modifier.clicks {
                                     bottomSheet.setSheetContent {
-                                        ThemeDetailPage(
-                                            theme = theme,
-                                            onClickCancel = {
-                                                scope.launch { bottomSheet.hide() }
-                                            },
-                                            onClickSave = {
-                                                scope.launch { bottomSheet.hide() }
-                                            },
-                                        )
+                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
+                                            ThemeDetailPage(
+                                                theme = theme,
+                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                                            )
+                                        }
                                     }
                                     scope.launch { bottomSheet.show() }
                                 },
@@ -157,19 +150,12 @@ fun ThemeConfigPage(
                                 theme = theme,
                                 modifier = Modifier.clicks {
                                     bottomSheet.setSheetContent {
-                                        ThemeDetailPage(
-                                            theme = theme,
-                                            onClickCancel = {
-                                                scope.launch {
-                                                    bottomSheet.hide()
-                                                }
-                                            },
-                                            onClickSave = {
-                                                scope.launch {
-                                                    bottomSheet.hide()
-                                                }
-                                            },
-                                        )
+                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
+                                            ThemeDetailPage(
+                                                theme = theme,
+                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                                            )
+                                        }
                                     }
                                     scope.launch { bottomSheet.show() }
                                 },

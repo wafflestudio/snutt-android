@@ -28,16 +28,6 @@ class ThemeConfigViewModel @Inject constructor(
         _themes.value = themeRepository.getThemes()
     }
 
-    suspend fun createCustomTheme(theme: ThemeDto) {
-        themeRepository.createTheme(theme)
-        fetchCustomThemes()
-    }
-
-    suspend fun updateCustomTheme(theme: ThemeDto) {
-        themeRepository.updateTheme(theme)
-        fetchCustomThemes()
-    }
-
     suspend fun deleteCustomTheme(theme: ThemeDto) {
         themeRepository.deleteTheme(theme)
         fetchCustomThemes()

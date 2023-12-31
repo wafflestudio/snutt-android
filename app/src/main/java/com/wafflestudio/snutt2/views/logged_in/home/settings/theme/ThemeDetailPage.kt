@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +49,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.PoorSwitch
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -57,28 +60,41 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialog
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.launch
 
 @Composable
 fun ThemeDetailPage(
     theme: ThemeDto,
+    onClickCancel: () -> Unit = {},
+    onClickSave: suspend () -> Unit = {},
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    onClickCancel: () -> Unit = {},
-    onClickSave: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val bottomSheet = LocalBottomSheetState.current
+
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
     val editingColors by themeDetailViewModel.editingColors.collectAsState()
-
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         themeDetailViewModel.initializeEditingTheme(theme)
+    }
+
+    val onBackPressed: () -> Unit = {
+        scope.launch {
+            bottomSheet.hide()
+        }
+    }
+
+    BackHandler {
+        onBackPressed()
     }
 
     Column(
@@ -101,7 +117,7 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            onClickCancel()
+                            onBackPressed()
                         },
                 )
             },
@@ -111,7 +127,15 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            onClickSave()
+                            scope.launch {
+                                if (editingTheme.id == 0L) {
+                                    themeDetailViewModel.createCustomTheme()
+                                } else {
+                                    themeDetailViewModel.updateCustomTheme()
+                                }
+                                onClickSave()
+                                bottomSheet.hide()
+                            }
                         },
                 )
             },
@@ -228,7 +252,7 @@ fun ThemeDetailPage(
                                                         ).subscribeBy {
                                                             themeDetailViewModel.updateColor(
                                                                 idx,
-                                                                colorWithExpanded.item.bgColor
+                                                                colorWithExpanded.item.fgColor
                                                                     ?: 0xffffff,
                                                                 it,
                                                             )
