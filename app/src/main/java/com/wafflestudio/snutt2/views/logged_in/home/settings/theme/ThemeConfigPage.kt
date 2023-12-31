@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -210,6 +211,13 @@ fun ThemeItem(
             modifier = Modifier.size(80.dp),
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = theme.name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
+        Text(
+            text = theme.name,
+            modifier = Modifier.width(80.dp),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = SNUTTTypography.body1,
+        )
     }
 }

@@ -60,6 +60,10 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateThemeName(themeName: String) {
+        _editingTheme.value = _editingTheme.value.copy(name = themeName)
+    }
+
     suspend fun createCustomTheme() {
         _editingTheme.value = _editingTheme.value.copy(colors = _editingColors.value.map { it.item })
         themeRepository.createTheme(_editingTheme.value)

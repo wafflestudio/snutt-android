@@ -25,8 +25,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,7 +67,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ThemeDetailPage(
     theme: ThemeDto,
-    onClickCancel: () -> Unit = {},
     onClickSave: suspend () -> Unit = {},
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
@@ -82,6 +83,7 @@ fun ThemeDetailPage(
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
+    var themeName by remember { mutableStateOf(theme.name) }
 
     LaunchedEffect(Unit) {
         themeDetailViewModel.initializeEditingTheme(theme)
@@ -128,6 +130,7 @@ fun ThemeDetailPage(
                     modifier = Modifier
                         .clicks {
                             scope.launch {
+                                themeDetailViewModel.updateThemeName(themeName)
                                 if (editingTheme.id == 0L) {
                                     themeDetailViewModel.createCustomTheme()
                                 } else {
@@ -150,8 +153,8 @@ fun ThemeDetailPage(
                 title = "테마명",
             ) {
                 EditText(
-                    value = editingTheme.name,
-                    onValueChange = { },
+                    value = themeName,
+                    onValueChange = { themeName = it },
                     enabled = true,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
