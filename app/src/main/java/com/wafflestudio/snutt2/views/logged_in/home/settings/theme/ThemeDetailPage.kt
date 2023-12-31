@@ -21,6 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
@@ -58,6 +60,7 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun ThemeDetailPage(
+    theme: ThemeDto,
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
@@ -73,6 +76,10 @@ fun ThemeDetailPage(
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        themeDetailViewModel.initializeEditingTheme(theme)
+    }
 
     Column(
         modifier = Modifier

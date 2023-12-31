@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,19 +23,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -43,18 +47,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ThemeConfigPage() {
+fun ThemeConfigPage(
+    themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
+) {
     val navController = LocalNavController.current
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
-    val themeList = listOf(
-        stringResource(R.string.home_select_theme_snutt) to painterResource(R.drawable.theme_preview_snutt),
-        stringResource(R.string.home_select_theme_modern) to painterResource(R.drawable.theme_preview_modern),
-        stringResource(R.string.home_select_theme_autumn) to painterResource(R.drawable.theme_preview_autumn),
-        stringResource(R.string.home_select_theme_pink) to painterResource(R.drawable.theme_preview_pink),
-        stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
-        stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
-    )
+
+    val customThemes by themeConfigViewModel.themes.collectAsState()
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
@@ -90,28 +90,55 @@ fun ThemeConfigPage() {
                 SettingColumn(
                     title = "커스텀 테마",
                 ) {
-                    Row(
+                    LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
-                            .padding(top = 20.dp, bottom = 12.dp, start = 20.dp, end = 20.dp),
+                            .padding(top = 20.dp, bottom = 12.dp),
                         horizontalArrangement = Arrangement.Start,
                     ) {
-                        AddThemeItem(
-                            onClick = {
-                                bottomSheet.setSheetContent {
-                                    ThemeDetailPage(
-                                        onClickCancel = {
-                                            scope.launch { bottomSheet.hide() }
-                                        },
-                                        onClickSave = {
-                                            scope.launch { bottomSheet.hide() }
-                                        },
-                                    )
-                                }
-                                scope.launch { bottomSheet.show() }
-                            },
-                        )
+                        item {
+                            Spacer(modifier = Modifier.width(20.dp))
+                            AddThemeItem(
+                                modifier = Modifier.clicks {
+                                    bottomSheet.setSheetContent {
+                                        ThemeDetailPage(
+                                            theme = ThemeDto.Default,
+                                            onClickCancel = {
+                                                scope.launch { bottomSheet.hide() }
+                                            },
+                                            onClickSave = {
+                                                scope.launch { bottomSheet.hide() }
+                                            },
+                                        )
+                                    }
+                                    scope.launch { bottomSheet.show() }
+                                },
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                        }
+                        items(
+                            items = customThemes,
+                        ) { theme ->
+                            ThemeItem(
+                                theme = theme,
+                                modifier = Modifier.clicks {
+                                    bottomSheet.setSheetContent {
+                                        ThemeDetailPage(
+                                            theme = theme,
+                                            onClickCancel = {
+                                                scope.launch { bottomSheet.hide() }
+                                            },
+                                            onClickSave = {
+                                                scope.launch { bottomSheet.hide() }
+                                            },
+                                        )
+                                    }
+                                    scope.launch { bottomSheet.show() }
+                                },
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                        }
                     }
                 }
                 SettingColumn(
@@ -125,11 +152,27 @@ fun ThemeConfigPage() {
                             .horizontalScroll(rememberScrollState()),
                     ) {
                         Spacer(modifier = Modifier.width(20.dp))
-                        themeList.forEachIndexed { themeIdx, nameAndIdPair ->
+                        ThemeDto.builtInThemes.forEachIndexed { idx, theme ->
                             ThemeItem(
-                                name = nameAndIdPair.first,
-                                painter = nameAndIdPair.second,
-                                modifier = Modifier.clicks { },
+                                theme = theme,
+                                modifier = Modifier.clicks {
+                                    bottomSheet.setSheetContent {
+                                        ThemeDetailPage(
+                                            theme = theme,
+                                            onClickCancel = {
+                                                scope.launch {
+                                                    bottomSheet.hide()
+                                                }
+                                            },
+                                            onClickSave = {
+                                                scope.launch {
+                                                    bottomSheet.hide()
+                                                }
+                                            },
+                                        )
+                                    }
+                                    scope.launch { bottomSheet.show() }
+                                },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
                         }
@@ -142,12 +185,10 @@ fun ThemeConfigPage() {
 
 @Composable
 fun AddThemeItem(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .clicks { onClick() },
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -161,7 +202,7 @@ fun AddThemeItem(
                     .align(Alignment.Center),
             )
         }
-        Spacer(modifier.height(10.dp))
+        Spacer(modifier.height(8.dp))
         Text(
             text = stringResource(R.string.theme_new),
             style = SNUTTTypography.body1,
@@ -171,20 +212,18 @@ fun AddThemeItem(
 
 @Composable
 fun ThemeItem(
-    name: String,
-    painter: Painter,
+    theme: ThemeDto,
     modifier: Modifier = Modifier,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        Image(
-            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp),
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ThemeIcon(
+            theme = theme,
+            modifier = Modifier.size(80.dp),
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
-        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = theme.name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
     }
 }

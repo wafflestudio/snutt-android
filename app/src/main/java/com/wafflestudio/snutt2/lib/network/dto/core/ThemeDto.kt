@@ -308,6 +308,13 @@ data class ThemeDto(
             code = 5,
             name = "잔디",
         )
+        val Default = ThemeDto(
+            name = "새 커스텀 테마",
+            isCustom = true,
+            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
+        )
+
+        val builtInThemes = listOf(SNUTT, MODERN, AUTUMN, CHERRY, ICE, GRASS)
 
         fun builtInThemeFromInt(index: Int): ThemeDto {
             return when (index) {

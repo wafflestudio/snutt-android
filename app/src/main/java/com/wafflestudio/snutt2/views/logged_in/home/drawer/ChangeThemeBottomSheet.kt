@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -18,11 +17,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
@@ -30,7 +29,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeItem
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChangeThemeBottomSheet(
     onLaunch: () -> Unit,
@@ -38,14 +36,6 @@ fun ChangeThemeBottomSheet(
     onApply: () -> Unit,
     onDispose: () -> Unit,
 ) {
-    val themeList = listOf(
-        stringResource(R.string.home_select_theme_snutt) to painterResource(R.drawable.theme_preview_snutt),
-        stringResource(R.string.home_select_theme_modern) to painterResource(R.drawable.theme_preview_modern),
-        stringResource(R.string.home_select_theme_autumn) to painterResource(R.drawable.theme_preview_autumn),
-        stringResource(R.string.home_select_theme_pink) to painterResource(R.drawable.theme_preview_pink),
-        stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
-        stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
-    )
     val bottomSheet = LocalBottomSheetState.current
     val scope = rememberCoroutineScope()
 
@@ -84,21 +74,19 @@ fun ChangeThemeBottomSheet(
         ) {
             Spacer(modifier = Modifier.width(10.dp))
             AddThemeItem(
-                onClick = {
+                modifier = Modifier.clicks {
                     bottomSheet.setSheetContent {
                         ThemeDetailPage(
-                            onClickCancel = {
-                            },
+                            theme = ThemeDto.Default,
                         )
                     }
                 },
             )
             Spacer(modifier = Modifier.width(20.dp))
-            themeList.forEachIndexed { themeIdx, nameAndIdPair ->
+            ThemeDto.builtInThemes.forEachIndexed { idx, theme ->
                 ThemeItem(
-                    name = nameAndIdPair.first,
-                    painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) },
+                    theme = theme,
+                    modifier = Modifier.clicks { onPreview(idx) },
                 )
                 Spacer(modifier = Modifier.width(20.dp))
             }
