@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.model
 
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 
@@ -34,7 +34,7 @@ class LectureItem {
     var title2: String? = null
     var value2: String? = null
     var colorIndex = 0
-    var theme: TimetableColorTheme = TimetableColorTheme.SNUTT
+    var theme: ThemeDto = ThemeDto.SNUTT
     private var color: ColorDto? = null
     var classTime: ClassTimeDto? = null
     var type: Type
@@ -60,14 +60,14 @@ class LectureItem {
         title1: String?,
         index: Int,
         color: ColorDto?,
-        theme: TimetableColorTheme?,
+        theme: ThemeDto?,
         type: Type,
     ) {
         this.title1 = title1
         colorIndex = index
         this.color = color
         this.type = type
-        this.theme = theme ?: TimetableColorTheme.SNUTT
+        this.theme = theme ?: ThemeDto.SNUTT
         isEditable = false
     }
 

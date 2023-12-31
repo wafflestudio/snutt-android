@@ -1,9 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
-import android.graphics.Insets.add
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.core.CustomThemeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,8 +11,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ThemeDetailViewModel @Inject constructor() : ViewModel() {
 
-    private val _editingTheme = MutableStateFlow(CustomThemeDto())
-    val editingTheme: StateFlow<CustomThemeDto> get() = _editingTheme
+    private val _editingTheme = MutableStateFlow(ThemeDto())
+    val editingTheme: StateFlow<ThemeDto> get() = _editingTheme
 
     /*val editingThemeColors: StateFlow<List<Selectable<ColorDto>>> get() = _editingTheme.map {
         it.colors.map { color ->
@@ -21,7 +20,7 @@ class ThemeDetailViewModel @Inject constructor() : ViewModel() {
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())*/
 
-    fun initializeEditingTheme(theme: CustomThemeDto) {
+    fun initializeEditingTheme(theme: ThemeDto) {
         _editingTheme.value = theme
     }
 

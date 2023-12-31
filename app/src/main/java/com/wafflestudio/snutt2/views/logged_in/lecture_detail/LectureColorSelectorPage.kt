@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -47,7 +47,7 @@ fun LectureColorSelectorPage() {
     val lectureState by vm.editingLectureDetail.collectAsState()
 
     val currentTable by vm.currentTable.collectAsState()
-    val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
+    val tableColorTheme = currentTable?.theme ?: ThemeDto.SNUTT
 
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
@@ -93,7 +93,7 @@ fun LectureColorSelectorPage() {
 fun ColorItem(
     color: ColorDto?,
     index: Long,
-    theme: TimetableColorTheme,
+    theme: ThemeDto,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
@@ -65,7 +65,7 @@ class TableRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateTableTheme(id: String, theme: TimetableColorTheme) {
+    override suspend fun updateTableTheme(id: String, theme: ThemeDto) {
         val response = api._putTableTheme(id, PutTableThemeParams(theme))
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(

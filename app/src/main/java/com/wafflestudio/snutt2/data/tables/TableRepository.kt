@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.tables
 
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import kotlinx.coroutines.flow.StateFlow
 
@@ -20,7 +20,7 @@ interface TableRepository {
 
     suspend fun updateTableName(id: String, title: String)
 
-    suspend fun updateTableTheme(id: String, theme: TimetableColorTheme)
+    suspend fun updateTableTheme(id: String, theme: ThemeDto)
 
     suspend fun copyTable(id: String)
 

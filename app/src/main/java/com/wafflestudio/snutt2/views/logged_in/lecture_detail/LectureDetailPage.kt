@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
@@ -75,7 +75,7 @@ fun LectureDetailPage(
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val currentTable by vm.currentTable.collectAsState()
-    val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
+    val tableColorTheme = currentTable?.theme ?: ThemeDto.SNUTT
     val isCustom = editingLectureDetail.isCustom
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }

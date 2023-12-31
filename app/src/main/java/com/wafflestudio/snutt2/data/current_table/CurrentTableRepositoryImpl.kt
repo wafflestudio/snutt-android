@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -27,9 +27,9 @@ class CurrentTableRepositoryImpl @Inject constructor(
     override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
         .unwrap(GlobalScope)
 
-    private val _previewTheme = MutableStateFlow<TimetableColorTheme?>(null)
+    private val _previewTheme = MutableStateFlow<ThemeDto?>(null)
 
-    override val previewTheme: Flow<TimetableColorTheme?>
+    override val previewTheme: Flow<ThemeDto?>
         get() = _previewTheme
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
@@ -68,7 +68,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         storage.lastViewedTable.update(response.toOptional())
     }
 
-    override suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?) {
+    override suspend fun setPreviewTheme(previewTheme: ThemeDto?) {
         _previewTheme.value = previewTheme
     }
 

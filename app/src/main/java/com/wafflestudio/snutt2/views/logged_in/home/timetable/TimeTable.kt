@@ -191,7 +191,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            theme.getColorByIndexComposable(
+            theme.getBuiltInColorByIndex(
                 lecture.colorIndex,
             ).toArgb()
         },

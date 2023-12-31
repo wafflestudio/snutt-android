@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -96,7 +96,7 @@ class TimetableView : View {
             invalidate()
         }
 
-    var theme: TimetableColorTheme = TimetableColorTheme.SNUTT
+    var theme: ThemeDto = ThemeDto.SNUTT
         set(value) {
             field = value
             invalidate()

@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.TimetableColorTheme
+import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
@@ -46,7 +46,7 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
-    suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?) {
+    suspend fun setPreviewTheme(previewTheme: ThemeDto?) {
         currentTableRepository.setPreviewTheme(previewTheme)
     }
 }
