@@ -154,6 +154,7 @@ fun ThemeConfigPage(
                                         CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
                                             ThemeDetailPage(
                                                 theme = theme,
+                                                canEdit = false,
                                                 onClickSave = { themeConfigViewModel.fetchCustomThemes() },
                                             )
                                         }
