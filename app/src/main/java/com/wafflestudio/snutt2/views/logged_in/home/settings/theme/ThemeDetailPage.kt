@@ -24,7 +24,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +61,8 @@ fun ThemeDetailPage(
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
+    onClickCancel: () -> Unit = {},
+    onClickSave: () -> Unit = {},
 ) {
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
     val editingColors by themeDetailViewModel.editingColors.collectAsState()
@@ -93,6 +94,7 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
+                            onClickCancel()
                         },
                 )
             },
@@ -102,6 +104,7 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
+                            onClickSave()
                         },
                 )
             },

@@ -99,7 +99,16 @@ fun ThemeConfigPage() {
                     ) {
                         AddThemeItem(
                             onClick = {
-                                bottomSheet.setSheetContent { ThemeDetailPage() }
+                                bottomSheet.setSheetContent {
+                                    ThemeDetailPage(
+                                        onClickCancel = {
+                                            scope.launch { bottomSheet.hide() }
+                                        },
+                                        onClickSave = {
+                                            scope.launch { bottomSheet.hide() }
+                                        },
+                                    )
+                                }
                                 scope.launch { bottomSheet.show() }
                             },
                         )

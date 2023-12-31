@@ -85,7 +85,12 @@ fun ChangeThemeBottomSheet(
             Spacer(modifier = Modifier.width(10.dp))
             AddThemeItem(
                 onClick = {
-                    bottomSheet.setSheetContent { ThemeDetailPage() }
+                    bottomSheet.setSheetContent {
+                        ThemeDetailPage(
+                            onClickCancel = {
+                            },
+                        )
+                    }
                 },
             )
             Spacer(modifier = Modifier.width(20.dp))
