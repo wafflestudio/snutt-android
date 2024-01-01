@@ -64,6 +64,7 @@ fun SearchPage(
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
     val pagerState = rememberPagerState(initialPage = pageMode.page) { 2 }
+    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
@@ -87,14 +88,16 @@ fun SearchPage(
             is SearchPageMode.Search -> {
                 SearchTopBar(
                     actions = {
-                        BookmarkIcon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clicks {
-                                    searchViewModel.togglePageMode()
-                                },
-                            marked = pageMode is SearchPageMode.Bookmark,
-                        )
+                        IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
+                            BookmarkIcon(
+                                modifier = centerAlignedModifier
+                                    .size(30.dp)
+                                    .clicks {
+                                        searchViewModel.togglePageMode()
+                                    },
+                                marked = false,
+                            )
+                        }
                     },
                 ) {
                     SearchIcon(
@@ -152,14 +155,16 @@ fun SearchPage(
                         )
                     },
                     actions = {
-                        BookmarkIcon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clicks {
-                                    searchViewModel.togglePageMode()
-                                },
-                            marked = pageMode is SearchPageMode.Bookmark,
-                        )
+                        IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
+                            BookmarkIcon(
+                                modifier = centerAlignedModifier
+                                    .size(30.dp)
+                                    .clicks {
+                                        searchViewModel.togglePageMode()
+                                    },
+                                marked = true,
+                            )
+                        }
                     }
                 )
             }

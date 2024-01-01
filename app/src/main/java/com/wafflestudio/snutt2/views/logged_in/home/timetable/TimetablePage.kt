@@ -1,9 +1,23 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -16,14 +30,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
+import com.wafflestudio.snutt2.components.compose.DrawerIcon
+import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.components.compose.LectureListIcon
+import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
+import com.wafflestudio.snutt2.components.compose.ShareIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
+import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.LocalRemoteConfig
+import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
 
@@ -38,9 +62,7 @@ fun TimetablePage() {
     val remoteConfig = LocalRemoteConfig.current
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
-    val userViewModel = hiltViewModel<UserViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
-    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
 
     var timetableHeight by remember { mutableStateOf(0) }
@@ -109,17 +131,6 @@ fun TimetablePage() {
                             )
                         },
                 )
-                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
-                    BookmarkPageIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks {
-                                navController.navigate(NavigationDestination.Bookmark) {
-                                    launchSingleTop = true
-                                }
-                            },
-                    )
-                }
             },
         )
         if (vacancyNotificationBannerEnabled) {
