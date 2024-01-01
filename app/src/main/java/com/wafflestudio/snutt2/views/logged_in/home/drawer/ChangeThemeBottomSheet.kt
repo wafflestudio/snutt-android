@@ -25,8 +25,9 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeItem
 
 @Composable
@@ -36,6 +37,7 @@ fun ChangeThemeBottomSheet(
     onApply: () -> Unit,
     onDispose: () -> Unit,
 ) {
+    val navController = LocalNavController.current
     val bottomSheet = LocalBottomSheetState.current
     val scope = rememberCoroutineScope()
 
@@ -75,11 +77,7 @@ fun ChangeThemeBottomSheet(
             Spacer(modifier = Modifier.width(10.dp))
             AddThemeItem(
                 modifier = Modifier.clicks {
-                    bottomSheet.setSheetContent {
-                        ThemeDetailPage(
-                            theme = ThemeDto.Default,
-                        )
-                    }
+                    navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
                 },
             )
             Spacer(modifier = Modifier.width(20.dp))

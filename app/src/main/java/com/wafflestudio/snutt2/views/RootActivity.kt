@@ -15,6 +15,9 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
@@ -26,11 +29,17 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.google.accompanist.navigation.material.BottomSheetNavigator
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.bottomSheet
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -48,6 +57,9 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -151,9 +163,15 @@ class RootActivity : AppCompatActivity() {
         return isInitialRefreshFinished
     }
 
+    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
     @Composable
     fun setUpUI(startDestination: String) {
-        val navController = rememberNavController()
+        val sheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true,
+        )
+        val bottomSheetNavigator = remember { BottomSheetNavigator(sheetState) }
+        val navController = rememberNavController(bottomSheetNavigator)
         val initialHomeTab = remember {
             parseHomePageDeeplink() ?: HomeItem.Timetable
         }
@@ -199,37 +217,80 @@ class RootActivity : AppCompatActivity() {
             LocalBottomSheetState provides bottomSheet,
             LocalRemoteConfig provides remoteConfig,
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = startDestination,
-            ) {
-                onboardGraph()
+            ModalBottomSheetLayout(bottomSheetNavigator) {
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                ) {
+                    onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage() }
+                    composableRoot(NavigationDestination.Home) { HomePage() }
 
-                composable2(NavigationDestination.Notification) { NotificationPage() }
+                    composable2(NavigationDestination.Notification) { NotificationPage() }
 
-                composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
+                    composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable2(NavigationDestination.LectureDetail) {
-                    val parentEntry = remember(it) {
-                        navController.getBackStackEntry(NavigationDestination.Home)
+                    composable2(NavigationDestination.LectureDetail) {
+                        val parentEntry = remember(it) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(parentEntry)
+                        val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
+                        val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+                        LectureDetailPage(
+                            vm = lectureDetailViewModel,
+                            searchViewModel = searchViewModel,
+                            vacancyViewModel = vacancyViewModel,
+                        )
                     }
-                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
-                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-                    LectureDetailPage(
-                        vm = lectureDetailViewModel,
-                        searchViewModel = searchViewModel,
-                        vacancyViewModel = vacancyViewModel,
-                    )
-                }
+                    
+                    composable2(NavigationDestination.LectureColorSelector) {
+                        LectureColorSelectorPage()
+                    }
 
-                composable2(NavigationDestination.LectureColorSelector) {
-                    LectureColorSelectorPage()
-                }
+                    bottomSheet(
+                        "${NavigationDestination.CustomThemeDetail}/{themeId}",
+                        arguments = listOf(navArgument("themeId") { type = NavType.LongType }),
+                    ) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
+                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(parentEntry)
+                        themeDetailViewModel.initializeCustomTheme(
+                            backStackEntry.arguments?.getLong(
+                                "themeId",
+                            ) ?: 0L,
+                        )
+                        ThemeDetailPage(
+                            themeDetailViewModel = themeDetailViewModel,
+                            onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                        )
+                    }
 
-                settingcomposable2(navController)
+                    bottomSheet(
+                        "${NavigationDestination.BuiltInThemeDetail}/{theme}",
+                        arguments = listOf(navArgument("theme") { type = NavType.IntType }),
+                    ) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
+                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(parentEntry)
+                        themeDetailViewModel.initializeBuiltInTheme(
+                            backStackEntry.arguments?.getInt(
+                                "theme",
+                            ) ?: 0,
+                        )
+                        ThemeDetailPage(
+                            themeDetailViewModel = themeDetailViewModel,
+                            onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                        )
+                    }
+
+                    settingcomposable2(navController)
+                }
             }
         }
     }
@@ -262,9 +323,14 @@ class RootActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun NavGraphBuilder.composable2(
         route: String,
-        deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
+        deepLinks: List<NavDeepLink> = listOf(
+            navDeepLink {
+                uriPattern = "${applicationContext.getString(R.string.scheme)}$route"
+            },
+        ),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
@@ -323,7 +389,8 @@ class RootActivity : AppCompatActivity() {
     // 안드 13 대응
     private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+            val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }

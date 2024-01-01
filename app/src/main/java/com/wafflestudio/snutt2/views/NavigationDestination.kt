@@ -26,4 +26,6 @@ object NavigationDestination {
     const val VacancyNotification = "vacancy"
     const val Friends = "friends"
     const val ThemeConfig = "theme_config"
+    const val CustomThemeDetail = "custom_theme_detail"
+    const val BuiltInThemeDetail = "builtin_theme_detail"
 }

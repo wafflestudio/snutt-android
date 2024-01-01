@@ -24,6 +24,10 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
         return dummy.reversed()
     }
 
+    override suspend fun getTheme(themeId: Long): ThemeDto {
+        return dummy.find { it.id == themeId } ?: ThemeDto.Default
+    }
+
     override suspend fun createTheme(themeDto: ThemeDto) {
         dummy.add(themeDto.copy(id = Random.nextLong()))
     }

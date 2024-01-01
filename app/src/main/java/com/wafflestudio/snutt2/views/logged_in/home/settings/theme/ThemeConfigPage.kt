@@ -23,7 +23,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,10 +42,9 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -101,15 +99,7 @@ fun ThemeConfigPage(
                             Spacer(modifier = Modifier.width(20.dp))
                             AddThemeItem(
                                 modifier = Modifier.clicks {
-                                    bottomSheet.setSheetContent {
-                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
-                                            ThemeDetailPage(
-                                                theme = ThemeDto.Default,
-                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
-                                            )
-                                        }
-                                    }
-                                    scope.launch { bottomSheet.show() }
+                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -120,15 +110,7 @@ fun ThemeConfigPage(
                             ThemeItem(
                                 theme = theme,
                                 modifier = Modifier.clicks {
-                                    bottomSheet.setSheetContent {
-                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
-                                            ThemeDetailPage(
-                                                theme = theme,
-                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
-                                            )
-                                        }
-                                    }
-                                    scope.launch { bottomSheet.show() }
+                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/${theme.id}")
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -146,20 +128,11 @@ fun ThemeConfigPage(
                             .horizontalScroll(rememberScrollState()),
                     ) {
                         Spacer(modifier = Modifier.width(20.dp))
-                        ThemeDto.builtInThemes.forEachIndexed { idx, theme ->
+                        ThemeDto.builtInThemes.forEach { theme ->
                             ThemeItem(
                                 theme = theme,
                                 modifier = Modifier.clicks {
-                                    bottomSheet.setSheetContent {
-                                        CompositionLocalProvider(LocalBottomSheetState provides bottomSheet) {
-                                            ThemeDetailPage(
-                                                theme = theme,
-                                                canEdit = false,
-                                                onClickSave = { themeConfigViewModel.fetchCustomThemes() },
-                                            )
-                                        }
-                                    }
-                                    scope.launch { bottomSheet.show() }
+                                    navController.navigate("${NavigationDestination.BuiltInThemeDetail}/${theme.code}")
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))

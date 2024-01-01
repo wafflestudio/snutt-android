@@ -22,7 +22,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,11 +46,10 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.PoorSwitch
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -66,8 +64,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ThemeDetailPage(
-    theme: ThemeDto,
-    canEdit: Boolean = true,
     onClickSave: suspend () -> Unit = {},
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
@@ -75,25 +71,19 @@ fun ThemeDetailPage(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val bottomSheet = LocalBottomSheetState.current
+    val navController = LocalNavController.current
 
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
-    val editingColors by themeDetailViewModel.editingColors.collectAsState()
+    val themeColors by themeDetailViewModel.themeColors.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
-    var themeName by remember { mutableStateOf(theme.name) }
-
-    LaunchedEffect(Unit) {
-        themeDetailViewModel.initializeEditingTheme(theme)
-    }
+    var themeName by remember { mutableStateOf(editingTheme.name) }
 
     val onBackPressed: () -> Unit = {
-        scope.launch {
-            bottomSheet.hide()
-        }
+        navController.popBackStack()
     }
 
     BackHandler {
@@ -138,7 +128,7 @@ fun ThemeDetailPage(
                                     themeDetailViewModel.updateCustomTheme()
                                 }
                                 onClickSave()
-                                bottomSheet.hide()
+                                navController.popBackStack()
                             }
                         },
                 )
@@ -152,25 +142,25 @@ fun ThemeDetailPage(
             Spacer(modifier = Modifier.height(20.dp))
             ThemeDetailItem(
                 title = "테마명",
-                titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = if (canEdit) 1f else 0.5f),
+                titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = if (editingTheme.isCustom) 1f else 0.5f),
             ) {
                 EditText(
                     value = themeName,
                     onValueChange = { themeName = it },
-                    enabled = canEdit,
+                    enabled = editingTheme.isCustom,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     underlineEnabled = false,
                     textStyle = SNUTTTypography.body1.copy(
-                        color = if (canEdit) MaterialTheme.colors.onSurface else MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
+                        color = if (editingTheme.isCustom) MaterialTheme.colors.onSurface else MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                     ),
                 )
             }
             SettingColumn(
                 title = "색 조합",
             ) {
-                if (theme.isCustom) {
-                    editingColors.forEachIndexed { idx, colorWithExpanded ->
+                if (editingTheme.isCustom) {
+                    themeColors.forEachIndexed { idx, colorWithExpanded ->
                         val state = remember {
                             MutableTransitionState(false).apply { targetState = true }
                         }
@@ -297,7 +287,7 @@ fun ThemeDetailPage(
                             title = "색상${idx + 1}",
                             titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                         ) {
-                            ColorBox(lectureColorIndex = idx.toLong(), lectureColor = null, theme = theme)
+                            ColorBox(lectureColorIndex = idx.toLong(), lectureColor = null, theme = editingTheme)
                         }
                     }
                 }
