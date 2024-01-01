@@ -51,7 +51,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
@@ -109,7 +109,7 @@ fun SearchPage(
                             }
                         }
                     },
-                    label = "top bar animation"
+                    label = "top bar animation",
                 ) {
                     when (it) {
                         is SearchPageMode.Search -> {
@@ -187,10 +187,10 @@ fun SearchPage(
                             .clicks {
                                 searchViewModel.togglePageMode()
                             },
-                        marked = pageMode is SearchPageMode.Bookmark
+                        marked = pageMode is SearchPageMode.Bookmark,
                     )
                 }
-            }
+            },
         )
 
         Box(
@@ -215,10 +215,10 @@ fun SearchPage(
                         }
                     }
                 },
-                label = "body animation"
+                label = "body animation",
             ) { pageMode ->
                 when (pageMode) {
-                    SearchPageMode.Search-> SearchResultList(
+                    SearchPageMode.Search -> SearchResultList(
                         scope,
                         searchResultPagingItems,
                         searchViewModel,
