@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,10 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -45,6 +48,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -58,7 +62,11 @@ fun ThemeConfigPage(
     val customThemes by themeConfigViewModel.themes.collectAsState()
 
     val onBackPressed: () -> Unit = {
-        navController.popBackStack()
+        if (bottomSheet.isVisible) {
+            scope.launch { bottomSheet.hide() }
+        } else {
+            navController.popBackStack()
+        }
     }
 
     BackHandler {
@@ -98,7 +106,7 @@ fun ThemeConfigPage(
                         item {
                             Spacer(modifier = Modifier.width(20.dp))
                             AddThemeItem(
-                                modifier = Modifier.clicks {
+                                onClick = {
                                     navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
                                 },
                             )
@@ -109,8 +117,34 @@ fun ThemeConfigPage(
                         ) { theme ->
                             ThemeItem(
                                 theme = theme,
-                                modifier = Modifier.clicks {
+                                onClick = {
                                     navController.navigate("${NavigationDestination.CustomThemeDetail}/${theme.id}")
+                                },
+                                onClickMore = {
+                                    scope.launch {
+                                        bottomSheet.setSheetContent {
+                                            CustomThemeMoreActionBottomSheet(
+                                                onClickDetail = {
+                                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/${theme.id}")
+                                                },
+                                                onClickRename = {
+                                                },
+                                                onClickDuplicate = {
+                                                    scope.launch {
+                                                        themeConfigViewModel.duplicateCustomTheme(theme)
+                                                        bottomSheet.hide()
+                                                    }
+                                                },
+                                                onClickDelete = {
+                                                    scope.launch {
+                                                        themeConfigViewModel.deleteCustomTheme(theme)
+                                                        bottomSheet.hide()
+                                                    }
+                                                },
+                                            )
+                                        }
+                                        bottomSheet.show()
+                                    }
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -131,7 +165,7 @@ fun ThemeConfigPage(
                         ThemeDto.builtInThemes.forEach { theme ->
                             ThemeItem(
                                 theme = theme,
-                                modifier = Modifier.clicks {
+                                onClick = {
                                     navController.navigate("${NavigationDestination.BuiltInThemeDetail}/${theme.code}")
                                 },
                             )
@@ -146,10 +180,12 @@ fun ThemeConfigPage(
 
 @Composable
 fun AddThemeItem(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -174,16 +210,29 @@ fun AddThemeItem(
 @Composable
 fun ThemeItem(
     theme: ThemeDto,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClickMore: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ThemeIcon(
-            theme = theme,
-            modifier = Modifier.size(80.dp),
-        )
+        Box {
+            if (onClickMore != null) {
+                CustomThemeMoreIcon(
+                    modifier = Modifier
+                        .zIndex(1f)
+                        .align(Alignment.TopEnd)
+                        .offset(8.dp, (-8).dp)
+                        .clicks { onClickMore() },
+                )
+            }
+            ThemeIcon(
+                theme = theme,
+                modifier = Modifier.size(80.dp),
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = theme.name,

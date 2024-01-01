@@ -32,4 +32,9 @@ class ThemeConfigViewModel @Inject constructor(
         themeRepository.deleteTheme(theme)
         fetchCustomThemes()
     }
+
+    suspend fun duplicateCustomTheme(theme: ThemeDto) {
+        themeRepository.createTheme(theme)
+        fetchCustomThemes()
+    }
 }

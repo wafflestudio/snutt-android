@@ -76,7 +76,7 @@ fun ChangeThemeBottomSheet(
         ) {
             Spacer(modifier = Modifier.width(10.dp))
             AddThemeItem(
-                modifier = Modifier.clicks {
+                onClick = {
                     navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
                 },
             )
@@ -84,7 +84,7 @@ fun ChangeThemeBottomSheet(
             ThemeDto.builtInThemes.forEachIndexed { idx, theme ->
                 ThemeItem(
                     theme = theme,
-                    modifier = Modifier.clicks { onPreview(idx) },
+                    onClick = { onPreview(idx) },
                 )
                 Spacer(modifier = Modifier.width(20.dp))
             }

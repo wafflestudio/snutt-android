@@ -324,4 +324,8 @@
     <string name="vacancy_empty_detail">자세히 보기</string>
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
     <string name="theme_new">새 테마</string>
+    <string name="custom_theme_action_detail">상세 수정</string>
+    <string name="custom_theme_action_rename">테마명 변경</string>
+    <string name="custom_theme_action_duplicate">테마 복제</string>
+    <string name="custom_theme_action_delete">테마 삭제</string>
 </resources>

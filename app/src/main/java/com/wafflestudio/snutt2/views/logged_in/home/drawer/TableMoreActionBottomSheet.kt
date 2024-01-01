@@ -2,9 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +15,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTableDeleteDialog
@@ -171,32 +168,6 @@ fun TableMoreActionBottomSheet(
                     context.toast(context.getString(R.string.home_drawer_delete_table_unable_alert_message))
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun MoreActionItem(
-    icon: @Composable () -> Unit,
-    text: String,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .clicks { onClick() }
-            .padding(vertical = 10.dp, horizontal = 22.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth(),
-        ) {
-            icon()
-            Spacer(modifier = Modifier.width(20.dp))
-            Text(
-                text = text,
-                style = SNUTTTypography.body1,
-            )
         }
     }
 }

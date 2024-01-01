@@ -788,3 +788,14 @@ fun AddIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun CustomThemeMoreIcon(
+    modifier: Modifier = Modifier,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_custom_theme_more),
+        contentDescription = "",
+    )
+}
