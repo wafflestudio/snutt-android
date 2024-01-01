@@ -102,18 +102,15 @@ fun TableMoreActionBottomSheet(
                     bottomSheet.hide()
                     drawerState.close()
 
+                    launchSuspendApi(
+                        apiOnProgress,
+                        apiOnError,
+                    ) {
+                        timetableViewModel.setPreviewTheme(theme)
+                    }
+
                     bottomSheet.setSheetContent {
                         ChangeThemeBottomSheet(
-                            onLaunch = {
-                                scope.launch {
-                                    launchSuspendApi(
-                                        apiOnProgress,
-                                        apiOnError,
-                                    ) {
-                                        timetableViewModel.setPreviewTheme(theme)
-                                    }
-                                }
-                            },
                             onPreview = { theme ->
                                 scope.launch {
                                     launchSuspendApi(

@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
@@ -35,22 +36,23 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeItem
 
 @Composable
 fun ChangeThemeBottomSheet(
-    onLaunch: () -> Unit,
     onPreview: (ThemeDto) -> Unit,
     onApply: () -> Unit,
     onDispose: () -> Unit,
     themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
+    val bottomSheet = LocalBottomSheetState.current
     val customThemes by themeConfigViewModel.themes.collectAsState()
 
     LaunchedEffect(Unit) {
         themeConfigViewModel.fetchCustomThemes()
-        onLaunch()
     }
 
-    DisposableEffect(LocalLifecycleOwner.current) {
-        onDispose { onDispose() }
+    if (bottomSheet.isVisible) {
+        DisposableEffect(LocalLifecycleOwner.current) {
+            onDispose { onDispose() }
+        }
     }
 
     Column(
