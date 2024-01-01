@@ -382,7 +382,13 @@ class RootActivity : AppCompatActivity() {
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
         }
-        composable2(NavigationDestination.ThemeConfig) { ThemeConfigPage() }
+        composable2(NavigationDestination.ThemeConfig) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationDestination.Home)
+            }
+            val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
+            ThemeConfigPage(themeConfigViewModel)
+        }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
 
