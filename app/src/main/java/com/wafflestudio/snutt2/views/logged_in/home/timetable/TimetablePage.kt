@@ -20,12 +20,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +34,7 @@ import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
+import com.wafflestudio.snutt2.components.compose.NotificationIcon
 import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
@@ -52,7 +53,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun TimetablePage() {
+fun TimetablePage(uncheckedNotification: Boolean) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val view = LocalView.current
@@ -131,6 +132,14 @@ fun TimetablePage() {
                             )
                         },
                 )
+                IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
+                    NotificationIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Notification) },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                }
             },
         )
         if (vacancyNotificationBannerEnabled) {
@@ -190,10 +199,4 @@ fun VacancyBanner(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TimetablePagePreview() {
-    TimetablePage()
 }

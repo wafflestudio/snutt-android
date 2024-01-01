@@ -122,7 +122,7 @@ fun HomePage() {
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 when (pageController.homePageState.value) {
-                    HomeItem.Timetable -> TimetablePage()
+                    HomeItem.Timetable -> TimetablePage(uncheckedNotification)
                     HomeItem.Search -> SearchPage(searchResultPagingItems)
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageWebViewContainer) {
@@ -130,7 +130,7 @@ fun HomePage() {
                         }
                     }
                     HomeItem.Friends -> FriendsPage()
-                    HomeItem.Settings -> SettingsPage(uncheckedNotification)
+                    HomeItem.Settings -> SettingsPage()
                 }
 
                 Box(
