@@ -34,7 +34,7 @@ class ThemeConfigViewModel @Inject constructor(
     }
 
     suspend fun duplicateCustomTheme(theme: ThemeDto) {
-        themeRepository.createTheme(theme)
+        themeRepository.createTheme(theme.copy(isDefault = false))
         fetchCustomThemes()
     }
 }

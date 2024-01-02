@@ -27,7 +27,7 @@ class ThemeDetailViewModel @Inject constructor(
 
     fun initializeCustomTheme(themeId: Long) {
         viewModelScope.launch {
-            _editingTheme.value = if (themeId == 0L) ThemeDto.Default else themeRepository.getTheme(themeId)
+            _editingTheme.value = if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
             _themeColors.value = _editingTheme.value.colors.map { color ->
                 color.toDataWithState(false)
             }

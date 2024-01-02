@@ -13,6 +13,7 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
         ThemeDto(
             id = Random.nextLong(),
             isCustom = true,
+            isDefault = it == 14,
             name = "커스텀테마 $it",
             colors = List(Random.nextInt(1, 9)) {
                 ColorDto(fgColor = 0xffffff, bgColor = Random.nextInt(0, 0xffffff))
@@ -25,7 +26,7 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
     }
 
     override suspend fun getTheme(themeId: Long): ThemeDto {
-        return dummy.find { it.id == themeId } ?: ThemeDto.Default
+        return dummy.find { it.id == themeId } ?: ThemeDto.NewCustomTheme
     }
 
     override suspend fun createTheme(themeDto: ThemeDto) {

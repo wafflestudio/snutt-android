@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
+import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -222,10 +223,20 @@ fun ThemeItem(
             if (onClickMore != null) {
                 CustomThemeMoreIcon(
                     modifier = Modifier
+                        .size(30.dp)
                         .zIndex(1f)
                         .align(Alignment.TopEnd)
                         .offset(8.dp, (-8).dp)
                         .clicks { onClickMore() },
+                )
+            }
+            if (theme.isDefault) {
+                CustomThemePinIcon(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .zIndex(1f)
+                        .align(Alignment.TopStart)
+                        .offset((-8).dp, (-8).dp),
                 )
             }
             ThemeIcon(

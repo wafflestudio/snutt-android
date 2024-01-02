@@ -12,9 +12,55 @@ data class ThemeDto(
     val id: Long? = 0,
     val name: String = "",
     val isCustom: Boolean = false,
+    val isDefault: Boolean = false,
     val code: Int = 0,
     val colors: List<ColorDto> = emptyList(),
 ) {
+    companion object {
+        val SNUTT = ThemeDto(
+            code = 0,
+            name = "SNUTT",
+        )
+        val MODERN = ThemeDto(
+            code = 1,
+            name = "모던",
+        )
+        val AUTUMN = ThemeDto(
+            code = 2,
+            name = "가을",
+        )
+        val CHERRY = ThemeDto(
+            code = 3,
+            name = "벚꽃",
+        )
+        val ICE = ThemeDto(
+            code = 4,
+            name = "얼음",
+        )
+        val GRASS = ThemeDto(
+            code = 5,
+            name = "잔디",
+        )
+        val NewCustomTheme = ThemeDto(
+            name = "새 커스텀 테마",
+            isCustom = true,
+            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
+        )
+
+        val builtInThemes = listOf(SNUTT, MODERN, AUTUMN, CHERRY, ICE, GRASS)
+
+        fun builtInThemeFromInt(index: Int): ThemeDto {
+            return when (index) {
+                0 -> SNUTT
+                1 -> MODERN
+                2 -> AUTUMN
+                3 -> CHERRY
+                4 -> ICE
+                5 -> GRASS
+                else -> SNUTT
+            }
+        }
+    }
 
     fun getColorByIndex(context: Context, colorIndex: Long): Int {
         return when (code) {
@@ -280,52 +326,6 @@ data class ThemeDto(
                     colorResource(R.color.theme_snutt_8),
                 )
             }[colorIndex.toInt() - 1]
-        }
-    }
-
-    companion object {
-        val SNUTT = ThemeDto(
-            code = 0,
-            name = "SNUTT",
-        )
-        val MODERN = ThemeDto(
-            code = 1,
-            name = "모던",
-        )
-        val AUTUMN = ThemeDto(
-            code = 2,
-            name = "가을",
-        )
-        val CHERRY = ThemeDto(
-            code = 3,
-            name = "벚꽃",
-        )
-        val ICE = ThemeDto(
-            code = 4,
-            name = "얼음",
-        )
-        val GRASS = ThemeDto(
-            code = 5,
-            name = "잔디",
-        )
-        val Default = ThemeDto(
-            name = "새 커스텀 테마",
-            isCustom = true,
-            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
-        )
-
-        val builtInThemes = listOf(SNUTT, MODERN, AUTUMN, CHERRY, ICE, GRASS)
-
-        fun builtInThemeFromInt(index: Int): ThemeDto {
-            return when (index) {
-                0 -> SNUTT
-                1 -> MODERN
-                2 -> AUTUMN
-                3 -> CHERRY
-                4 -> ICE
-                5 -> GRASS
-                else -> SNUTT
-            }
         }
     }
 }

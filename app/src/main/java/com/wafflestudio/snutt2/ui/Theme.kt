@@ -15,20 +15,24 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.White,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.Black,
+    secondary = SNUTTColors.MainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
     background = SNUTTColors.Gray,
     onBackground = SNUTTColors.DarkGray,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    surface = SNUTTColors.White,
+    onSurface = SNUTTColors.Black,
 )
 
 private val DarkThemeColors @Composable get() = darkColors(
     primary = SNUTTColors.White900,
     primaryVariant = SNUTTColors.Gray400,
     onPrimary = SNUTTColors.Black900,
+    secondary = SNUTTColors.DarkMainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
     background = SNUTTColors.Gray900,
     onBackground = SNUTTColors.DarkerGray,
