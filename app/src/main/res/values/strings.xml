@@ -164,7 +164,9 @@
     <string name="search_result_placeholder_2">다양한 조합으로 검색해보세요.</string>
     <string name="search_result_placeholder_3">ex) 2학년 컴공 전필 / 경영 영강</string>
     <string name="search_result_placeholder_4">줄임말로 검색해보세요.</string>
-    <string name="search_result_placeholder_5">ex) 죽음의 과학적 이해 유성호 죽과이 → 유성호</string>
+    <string name="search_result_placeholder_5">ex) 죽음의 과학적 이해 유성호 → 유성호 죽과이</string>
+    <string name="search_result_placeholder_6">강의실 위치로 검색해보세요.</string>
+    <string name="search_result_placeholder_7">ex) 26동 / 302-208 / 대글2 43-1동</string>
     <string name="search_option_tag_type_academic_year">학년</string>
     <string name="search_option_tag_type_classification">구분</string>
     <string name="search_option_tag_type_credit">학점</string>

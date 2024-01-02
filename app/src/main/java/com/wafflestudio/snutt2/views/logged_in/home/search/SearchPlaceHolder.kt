@@ -63,6 +63,16 @@ fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
             text = stringResource(R.string.search_result_placeholder_5),
             style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
         )
+        Spacer(modifier = Modifier.height(25.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_6),
+            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            text = stringResource(R.string.search_result_placeholder_7),
+            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
+        )
     }
 }
 
