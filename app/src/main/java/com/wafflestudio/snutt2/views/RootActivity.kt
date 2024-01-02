@@ -75,13 +75,12 @@ class RootActivity : AppCompatActivity() {
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var friendBundleManager: ReactNativeBundleManager
+
     private var isInitialRefreshFinished = false
 
     private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
-
-    private val friendBundleManager by lazy {
-        ReactNativeBundleManager(this, remoteConfig, userViewModel.accessToken, userViewModel.themeMode)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -205,7 +204,7 @@ class RootActivity : AppCompatActivity() {
             ) {
                 onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage(friendBundleManager) }
+                composableRoot(NavigationDestination.Home) { HomePage() }
 
                 composable2(NavigationDestination.Notification) { NotificationPage() }
 

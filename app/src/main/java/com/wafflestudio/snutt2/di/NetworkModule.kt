@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.di
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Build
 import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
@@ -132,4 +133,11 @@ object NetworkModule {
     private const val SIZE_OF_CACHE = (
         10 * 1024 * 1024 // 10 MB
         ).toLong()
+
+    @Provides
+    fun provideConnectivityManager(
+        @ApplicationContext context: Context,
+    ): ConnectivityManager {
+        return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+    }
 }

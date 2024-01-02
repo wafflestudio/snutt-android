@@ -251,6 +251,7 @@ fun SettingItem(
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
 ) {
+    val newSettingItems by LocalRemoteConfig.current.settingPageNewBadgeTitles.collectAsState(emptyList())
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -267,7 +268,7 @@ fun SettingItem(
                 color = titleColor,
             ),
         )
-        if (LocalRemoteConfig.current.settingPageNewBadgeTitles.contains(title)) {
+        if (newSettingItems.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))

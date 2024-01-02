@@ -79,6 +79,7 @@ fun VacancyPage(
     val scrollWithButtonAppearing by remember {
         derivedStateOf { vacancyViewModel.isEditMode && lazyListState.isScrolledToEnd() }
     }
+    val sugangSNUUrl by remoteConfig.sugangSNUUrl.collectAsState("")
 
     val onBackPressed = {
         if (vacancyViewModel.isEditMode) {
@@ -271,7 +272,7 @@ fun VacancyPage(
                 },
                 contentColor = SNUTTColors.SNUTTVacancy,
                 onClick = {
-                    remoteConfig.sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
+                    sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
                     }
                 },
