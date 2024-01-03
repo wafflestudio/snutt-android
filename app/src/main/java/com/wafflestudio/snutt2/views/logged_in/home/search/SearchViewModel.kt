@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
     var lazyListState = LazyListState(0, 0)
@@ -54,15 +56,20 @@ class SearchViewModel @Inject constructor(
     private val _placeHolderState = MutableStateFlow(true)
     val placeHolderState = _placeHolderState.asStateFlow()
 
+    private val _pageMode = MutableStateFlow(SearchPageMode.Search)
+    val pageMode: StateFlow<SearchPageMode> get() = _pageMode
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
                 _placeHolderState.emit(true)
                 try {
-                    fetchSearchTagList() // FIXME: 학기가 바뀔 때마다 불러주는 것으로 되어 있는데, 여기서 apiOnError 붙이기?
+                    fetchSearchTagList()
                     getBookmarkList()
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    apiOnError(e)
+                }
             }
         }
     }
@@ -209,5 +216,9 @@ class SearchViewModel @Inject constructor(
                 currentTable.year, currentTable.semester,
             ),
         )
+    }
+
+    fun togglePageMode() {
+        _pageMode.value = _pageMode.value.toggled()
     }
 }
