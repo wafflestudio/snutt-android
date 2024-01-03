@@ -2,18 +2,12 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,75 +47,33 @@ fun TopBar(
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    Surface(
-        shape = RectangleShape,
-        color = SNUTTColors.White900,
-        elevation = 1.dp,
+    Column(
         modifier = modifier
-            .padding(bottom = 2.dp)
             .fillMaxWidth()
-            .height(56.dp)
-            .drawWithContent {
-                val paddingPx = 2.dp.toPx()
-                clipRect(
-                    left = 0f,
-                    top = 0f,
-                    right = size.width,
-                    bottom = size.height + paddingPx,
-                ) {
-                    this@drawWithContent.drawContent()
-                }
-            },
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Row(
-                modifier = Modifier.width(54.dp),
-                horizontalArrangement = Arrangement.Center,
-            ) { navigationIcon() }
-
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) { title() }
-
-            Row(
-                modifier = Modifier.wrapContentWidth().padding(end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) { actions() }
-        }
-    }
-}
-
-@Composable
-fun SearchTopBar(
-    modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .background(SNUTTColors.White900)
-            .shadow(elevation = 1.dp, clip = false)
-            .height(56.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .height(56.dp),
     ) {
         Row(
             modifier = Modifier
-                .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
-                .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 3.dp),
+                .background(SNUTTColors.White900)
+                .weight(1f)
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            content()
+            navigationIcon()
+            Row(
+                modifier = Modifier
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                title()
+            }
+            actions()
         }
+        Divider(
+            thickness = 0.5.dp,
+            color = SNUTTColors.TableGrid,
+        )
     }
 }
 
