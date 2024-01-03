@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsPage(
     uncheckedNotification: Boolean,
+    userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -42,6 +43,7 @@ fun SettingsPage(
     val viewModel = hiltViewModel<UserViewModel>()
     var logoutDialogState by remember { mutableStateOf(false) }
     val themeMode by viewModel.themeMode.collectAsState()
+    val user by userViewModel.userInfo.collectAsState()
 
     Column(
         modifier = Modifier
@@ -93,7 +95,14 @@ fun SettingsPage(
                         NavigationDestination.UserConfig,
                     )
                 },
-            )
+            ) {
+                Text(
+                    text = user?.nickname.toString(),
+                    style = SNUTTTypography.body1.copy(
+                        color = SNUTTColors.Black500,
+                    ),
+                )
+            }
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
