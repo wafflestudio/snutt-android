@@ -38,7 +38,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-// 왜안됨
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
