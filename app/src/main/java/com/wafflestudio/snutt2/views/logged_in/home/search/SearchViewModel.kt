@@ -74,12 +74,13 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private val etcTags = listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY)
+    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
+    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
         _searchTagList, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
-        (tags + etcTags).filter { it.type == selectedTagType }
+        (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -119,7 +120,7 @@ class SearchViewModel @Inject constructor(
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
                 times = null, // TODO: 시간대 검색
-                timesToExclude = if (_selectedTags.value.contains(TagDto.ETC_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
+                timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
         _selectedLecture, currentTable.filterNotNull(),

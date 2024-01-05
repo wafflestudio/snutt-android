@@ -37,9 +37,12 @@ object SNUTTColors {
 
     val Red = Color(0xffe54459)
     val Orange = Color(0xfff58d3d)
+    val Yellow = Color(0xffFAC42D)
     val Grass = Color(0xffa6d930)
+    val Green = Color(0xff2BC267)
     val Sky = Color(0xff1bd0c8)
     val Blue = Color(0xff1d99e8)
+    val NavyBlue = Color(0xff4F48C4)
     val Violet = Color(0xffaf56b3)
 
     val FacebookBlue = Color(0x993c5dd4)

@@ -170,6 +170,7 @@
     <string name="search_option_tag_type_academic_year">학년</string>
     <string name="search_option_tag_type_classification">구분</string>
     <string name="search_option_tag_type_credit">학점</string>
+    <string name="search_option_tag_type_time">시간</string>
     <string name="search_option_tag_type_department">학과</string>
     <string name="search_option_tag_type_general_category">교양분류</string>
     <string name="search_option_tag_type_etc">기타</string>

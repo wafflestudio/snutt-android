@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import android.graphics.Color
-import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -39,27 +38,15 @@ fun CourseBookDto.toFormattedString(context: Context): String {
     return "${this.year}년 $semesterStr"
 }
 
-fun TagType.color(): Int {
-    return when (this) {
-        TagType.ACADEMIC_YEAR -> Color.rgb(229, 68, 89)
-        TagType.CLASSIFICATION -> Color.rgb(245, 141, 61)
-        TagType.CREDIT -> Color.rgb(166, 217, 48)
-        TagType.DEPARTMENT -> Color.rgb(27, 208, 200)
-        TagType.INSTRUCTOR -> Color.rgb(29, 153, 232)
-        TagType.CATEGORY -> Color.rgb(175, 86, 179)
-        TagType.ETC -> Color.rgb(0xaf, 0x56, 0xb3)
-    }
-}
-
-@Composable
-fun TagType.getColor(): androidx.compose.ui.graphics.Color {
+fun TagType.color(): androidx.compose.ui.graphics.Color {
     return when (this) {
         TagType.ACADEMIC_YEAR -> SNUTTColors.Red
         TagType.CLASSIFICATION -> SNUTTColors.Orange
+        TagType.INSTRUCTOR -> SNUTTColors.Yellow
         TagType.CREDIT -> SNUTTColors.Grass
         TagType.DEPARTMENT -> SNUTTColors.Sky
-        TagType.INSTRUCTOR -> SNUTTColors.Blue
-        TagType.CATEGORY -> SNUTTColors.Violet
+        TagType.TIME -> SNUTTColors.Blue
+        TagType.CATEGORY -> SNUTTColors.NavyBlue
         TagType.ETC -> SNUTTColors.Violet
     }
 }

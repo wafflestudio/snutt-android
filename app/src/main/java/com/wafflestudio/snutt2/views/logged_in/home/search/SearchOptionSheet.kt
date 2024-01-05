@@ -1,18 +1,28 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,16 +47,19 @@ fun SearchOptionSheet(
     val tagsByTagType by viewModel.tagsByTagType.collectAsState()
     val selectedTagType by viewModel.selectedTagType.collectAsState()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
-    // TODO: 다른 곳에 const하게 박아 놓으면 좋을 것 같다.
-    val tagTypeList = listOf(
-        stringResource(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
-        stringResource(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
-        stringResource(R.string.search_option_tag_type_credit) to TagType.CREDIT,
-        stringResource(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
-        stringResource(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
-        stringResource(R.string.search_option_tag_type_etc) to TagType.ETC,
-    )
+    val tagTypeList = remember {
+        listOf(
+            context.getString(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
+            context.getString(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
+            context.getString(R.string.search_option_tag_type_credit) to TagType.CREDIT,
+            context.getString(R.string.search_option_tag_type_time) to TagType.TIME,
+            context.getString(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
+            context.getString(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
+            context.getString(R.string.search_option_tag_type_etc) to TagType.ETC,
+        )
+    }
 
     Column(
         modifier = Modifier
