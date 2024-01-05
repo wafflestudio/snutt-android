@@ -55,6 +55,20 @@ class ModalState {
         }
     }
 
+    fun setOkCancel(
+        onDismiss: () -> Unit,
+        onConfirm: () -> Unit,
+        title: String,
+    ): ModalState {
+        return this.apply {
+            this.onDismiss = onDismiss
+            this.onConfirm = onConfirm
+            this.title = title
+            this.width = null
+            this.content = {}
+        }
+    }
+
     companion object {
         fun Saver() = Saver<ModalState, Boolean>(save = { it.isVisible }, restore = { null })
     }

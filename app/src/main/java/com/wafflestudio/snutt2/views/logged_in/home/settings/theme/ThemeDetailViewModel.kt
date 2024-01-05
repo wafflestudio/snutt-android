@@ -75,6 +75,10 @@ class ThemeDetailViewModel @Inject constructor(
         _editingTheme.value = _editingTheme.value.copy(name = themeName)
     }
 
+    fun updateIsDefault(isDefault: Boolean) {
+        _editingTheme.value = _editingTheme.value.copy(isDefault = isDefault)
+    }
+
     suspend fun createCustomTheme() {
         _editingTheme.value = _editingTheme.value.copy(colors = _themeColors.value.map { it.item })
         themeRepository.createTheme(_editingTheme.value)

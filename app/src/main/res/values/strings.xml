@@ -328,4 +328,6 @@
     <string name="custom_theme_action_rename">테마명 변경</string>
     <string name="custom_theme_action_duplicate">테마 복제</string>
     <string name="custom_theme_action_delete">테마 삭제</string>
+    <string name="custom_theme_dialog_set_as_default">기본 테마로 지정하시겠습니까?\n새로 만드는 시간표에 적용됩니다.</string>
+    <string name="custom_theme_dialog_unset_default">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
 </resources>

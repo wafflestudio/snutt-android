@@ -38,20 +38,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.Switch
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
-import com.wafflestudio.snutt2.views.logged_in.home.settings.PoorSwitch
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -72,18 +75,36 @@ fun ThemeDetailPage(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val navController = LocalNavController.current
+    val modalState = LocalModalState.current
+    val composableStates = ComposableStatesWithScope(scope)
 
-    val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
-    val themeColors by themeDetailViewModel.themeColors.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
+
+    val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
+    val themeColors by themeDetailViewModel.themeColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
+    var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
 
     val onBackPressed: () -> Unit = {
         navController.popBackStack()
+    }
+
+    val handleSaveTheme: () -> Unit = {
+        scope.launch {
+            themeDetailViewModel.updateThemeName(themeName)
+            themeDetailViewModel.updateIsDefault(isDefault)
+            if (editingTheme.id == 0L) {
+                themeDetailViewModel.createCustomTheme()
+            } else {
+                themeDetailViewModel.updateCustomTheme()
+            }
+            onClickSave()
+            navController.popBackStack()
+        }
     }
 
     BackHandler {
@@ -120,15 +141,23 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            scope.launch {
-                                themeDetailViewModel.updateThemeName(themeName)
-                                if (editingTheme.id == 0L) {
-                                    themeDetailViewModel.createCustomTheme()
-                                } else {
-                                    themeDetailViewModel.updateCustomTheme()
-                                }
-                                onClickSave()
-                                navController.popBackStack()
+                            if (isDefault != editingTheme.isDefault) {
+                                modalState.setOkCancel(
+                                    title = if (isDefault) {
+                                        context.getString(R.string.custom_theme_dialog_set_as_default)
+                                    } else {
+                                        context.getString(R.string.custom_theme_dialog_unset_default)
+                                    },
+                                    onConfirm = {
+                                        handleSaveTheme()
+                                        modalState.hide()
+                                    },
+                                    onDismiss = {
+                                        modalState.hide()
+                                    },
+                                ).show()
+                            } else {
+                                handleSaveTheme()
                             }
                         },
                 )
@@ -152,7 +181,13 @@ fun ThemeDetailPage(
                     singleLine = true,
                     underlineEnabled = false,
                     textStyle = SNUTTTypography.body1.copy(
-                        color = if (editingTheme.isCustom) MaterialTheme.colors.onSurface else MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
+                        color = if (editingTheme.isCustom) {
+                            MaterialTheme.colors.onSurface
+                        } else {
+                            MaterialTheme.colors.onSurfaceVariant.copy(
+                                alpha = 0.5f,
+                            )
+                        },
                     ),
                 )
             }
@@ -287,7 +322,11 @@ fun ThemeDetailPage(
                             title = "색상${idx + 1}",
                             titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                         ) {
-                            ColorBox(lectureColorIndex = idx.toLong(), lectureColor = null, theme = editingTheme)
+                            ColorBox(
+                                lectureColorIndex = idx.toLong(),
+                                lectureColor = null,
+                                theme = editingTheme,
+                            )
                         }
                     }
                 }
@@ -297,7 +336,10 @@ fun ThemeDetailPage(
                 title = "기본 테마로 지정",
                 hasNextPage = false,
             ) {
-                PoorSwitch(false)
+                Switch(
+                    checked = isDefault,
+                    onCheckChanged = { isDefault = it },
+                )
             }
             SettingColumn(
                 title = "미리보기",

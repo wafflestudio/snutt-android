@@ -21,6 +21,8 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
         )
     }
 
+    var defaultThemeId: Long = 0L
+
     override suspend fun getThemes(): List<ThemeDto> {
         return dummy.reversed()
     }
@@ -31,15 +33,27 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
 
     override suspend fun createTheme(themeDto: ThemeDto) {
         dummy.add(themeDto.copy(id = Random.nextLong()))
+        if (themeDto.isDefault) {
+            setDefaultTheme(themeDto.id!!)
+        }
     }
 
     override suspend fun updateTheme(themeDto: ThemeDto) {
         dummy.indexOfFirst { it.id == themeDto.id }.let {
             dummy.set(it, themeDto)
         }
+        if (themeDto.isDefault) {
+            setDefaultTheme(themeDto.id!!)
+        }
     }
 
     override suspend fun deleteTheme(themeDto: ThemeDto) {
         dummy.removeIf { it.id == themeDto.id }
+    }
+
+    private fun setDefaultTheme(themeId: Long) {
+        dummy.forEachIndexed { idx, theme ->
+            dummy[idx] = theme.copy(isDefault = (theme.id == themeId))
+        }
     }
 }
