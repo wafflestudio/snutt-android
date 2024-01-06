@@ -88,17 +88,25 @@ fun ThemeDetailPage(
     var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
 
     val onBackPressed: () -> Unit = {
-        navController.popBackStack()
-    }
-
-    val handleSaveTheme: () -> Unit = {
-        scope.launch {
-            if (editingTheme.id == 0L) {
-                themeDetailViewModel.createCustomTheme(themeName, isDefault)
-            } else {
-                themeDetailViewModel.updateCustomTheme(themeName, isDefault)
-            }
-            onClickSave()
+        if (themeDetailViewModel.hasChange(themeName, isDefault)) {
+            modalState.setOkCancel(
+                context = context,
+                title = "테마 편집 취소",
+                onConfirm = {
+                    modalState.hide()
+                    navController.popBackStack()
+                },
+                onDismiss = {
+                    modalState.hide()
+                },
+                content = {
+                    Text(
+                        text = context.getString(R.string.custom_theme_dialog_cancel_edit),
+                        style = SNUTTTypography.body1,
+                    )
+                },
+            ).show()
+        } else {
             navController.popBackStack()
         }
     }
@@ -127,27 +135,7 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            if (themeDetailViewModel.hasChange(themeName, isDefault)) {
-                                modalState.setOkCancel(
-                                    context = context,
-                                    title = "테마 편집 취소",
-                                    onConfirm = {
-                                        modalState.hide()
-                                        navController.popBackStack()
-                                    },
-                                    onDismiss = {
-                                        modalState.hide()
-                                    },
-                                    content = {
-                                        Text(
-                                            text = context.getString(R.string.custom_theme_dialog_cancel_edit),
-                                            style = SNUTTTypography.body1,
-                                        )
-                                    },
-                                ).show()
-                            } else {
-                                navController.popBackStack()
-                            }
+                            onBackPressed()
                         },
                 )
             },
@@ -161,13 +149,22 @@ fun ThemeDetailPage(
                                 modalState.setOkCancel(
                                     context = context,
                                     title = if (isDefault) {
-                                        "디폴트 테마 지정"
+                                        "기본 테마 지정"
                                     } else {
-                                        "디폴트 테마 해제"
+                                        "기본 테마 해제"
                                     },
                                     onConfirm = {
-                                        handleSaveTheme()
-                                        modalState.hide()
+                                        scope.launch {
+                                            themeDetailViewModel.saveTheme(themeName, isDefault)
+                                            if (isDefault) {
+                                                themeDetailViewModel.setAsDefaultTheme()
+                                            } else {
+                                                themeDetailViewModel.unsetDefaultTheme()
+                                            }
+                                            onClickSave()
+                                            modalState.hide()
+                                            navController.popBackStack()
+                                        }
                                     },
                                     onDismiss = {
                                         modalState.hide()
@@ -184,7 +181,11 @@ fun ThemeDetailPage(
                                     },
                                 ).show()
                             } else {
-                                handleSaveTheme()
+                                scope.launch {
+                                    themeDetailViewModel.saveTheme(themeName, isDefault)
+                                    onClickSave()
+                                    navController.popBackStack()
+                                }
                             }
                         },
                 )

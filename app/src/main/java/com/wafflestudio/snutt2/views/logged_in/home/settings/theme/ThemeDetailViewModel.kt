@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
-import androidx.compose.material.MaterialTheme.colors
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -77,21 +76,30 @@ class ThemeDetailViewModel @Inject constructor(
         return name != _editingTheme.value.name || isDefault != _editingTheme.value.isDefault || _themeColors.value.map { it.item } != _editingTheme.value.colors
     }
 
-    suspend fun createCustomTheme(name: String, isDefault: Boolean) {
-        _editingTheme.value = _editingTheme.value.copy(
+    suspend fun saveTheme(name: String, isDefault: Boolean) {
+        val newTheme = _editingTheme.value.copy(
             name = name,
             isDefault = isDefault,
             colors = _themeColors.value.map { it.item },
-        )
-        themeRepository.createTheme(_editingTheme.value)
+        ).let {
+            if (_editingTheme.value.id == 0L) {
+                themeRepository.createTheme(it)
+            } else {
+                themeRepository.updateTheme(it)
+            }
+        }
+        _editingTheme.value = newTheme
     }
 
-    suspend fun updateCustomTheme(name: String, isDefault: Boolean) {
-        _editingTheme.value = _editingTheme.value.copy(
-            name = name,
-            isDefault = isDefault,
-            colors = _themeColors.value.map { it.item },
-        )
-        themeRepository.updateTheme(_editingTheme.value)
+    suspend fun setAsDefaultTheme() {
+        if (_editingTheme.value.isCustom) {
+            themeRepository.setDefaultTheme(_editingTheme.value.id ?: 0L)
+        } else {
+            themeRepository.setDefaultTheme(_editingTheme.value.code)
+        }
+    }
+
+    suspend fun unsetDefaultTheme() {
+        themeRepository.setDefaultTheme(0)
     }
 }

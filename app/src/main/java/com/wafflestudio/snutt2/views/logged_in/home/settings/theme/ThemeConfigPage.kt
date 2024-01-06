@@ -60,7 +60,8 @@ fun ThemeConfigPage(
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
 
-    val customThemes by themeConfigViewModel.themes.collectAsState()
+    val customThemes by themeConfigViewModel.customThemes.collectAsState()
+    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
@@ -163,7 +164,7 @@ fun ThemeConfigPage(
                             .horizontalScroll(rememberScrollState()),
                     ) {
                         Spacer(modifier = Modifier.width(20.dp))
-                        ThemeDto.builtInThemes.forEach { theme ->
+                        builtInThemes.forEach { theme ->
                             ThemeItem(
                                 theme = theme,
                                 onClick = {

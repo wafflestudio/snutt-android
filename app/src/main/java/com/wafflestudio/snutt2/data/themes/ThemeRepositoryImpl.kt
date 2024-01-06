@@ -13,47 +13,48 @@ class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
         ThemeDto(
             id = Random.nextLong(),
             isCustom = true,
-            isDefault = it == 14,
+            isDefault = false,
             name = "커스텀테마 $it",
             colors = List(Random.nextInt(1, 9)) {
                 ColorDto(fgColor = 0xffffff, bgColor = Random.nextInt(0, 0xffffff))
             },
         )
-    }
-
-    var defaultThemeId: Long = 0L
+    }.apply { addAll(ThemeDto.builtInThemes.toMutableList().apply { set(0, first().copy(isDefault = true)) }) }
 
     override suspend fun getThemes(): List<ThemeDto> {
-        return dummy.reversed()
+        return dummy.toList()
     }
 
     override suspend fun getTheme(themeId: Long): ThemeDto {
         return dummy.find { it.id == themeId } ?: ThemeDto.NewCustomTheme
     }
 
-    override suspend fun createTheme(themeDto: ThemeDto) {
-        dummy.add(themeDto.copy(id = Random.nextLong()))
-        if (themeDto.isDefault) {
-            setDefaultTheme(themeDto.id!!)
-        }
+    override suspend fun createTheme(themeDto: ThemeDto): ThemeDto {
+        val newTheme = themeDto.copy(id = Random.nextLong())
+        dummy.add(newTheme)
+        return newTheme
     }
 
-    override suspend fun updateTheme(themeDto: ThemeDto) {
+    override suspend fun updateTheme(themeDto: ThemeDto): ThemeDto {
         dummy.indexOfFirst { it.id == themeDto.id }.let {
             dummy.set(it, themeDto)
         }
-        if (themeDto.isDefault) {
-            setDefaultTheme(themeDto.id!!)
-        }
+        return themeDto
     }
 
     override suspend fun deleteTheme(themeDto: ThemeDto) {
         dummy.removeIf { it.id == themeDto.id }
     }
 
-    private fun setDefaultTheme(themeId: Long) {
+    override suspend fun setDefaultTheme(themeId: Long) {
         dummy.forEachIndexed { idx, theme ->
-            dummy[idx] = theme.copy(isDefault = (theme.id == themeId))
+            dummy[idx] = theme.copy(isDefault = (theme.isCustom && theme.id == themeId))
+        }
+    }
+
+    override suspend fun setDefaultTheme(code: Int) {
+        dummy.forEachIndexed { idx, theme ->
+            dummy[idx] = theme.copy(isDefault = (theme.isCustom.not() && theme.code == code))
         }
     }
 }

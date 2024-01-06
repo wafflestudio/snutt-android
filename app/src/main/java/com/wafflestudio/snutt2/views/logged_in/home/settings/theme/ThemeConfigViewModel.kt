@@ -6,7 +6,10 @@ import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,7 +19,12 @@ class ThemeConfigViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _themes = MutableStateFlow<List<ThemeDto>>(emptyList())
-    val themes: StateFlow<List<ThemeDto>> get() = _themes
+    val customThemes: StateFlow<List<ThemeDto>> get() = _themes.map { themes ->
+        themes.filter { it.isCustom }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val builtInThemes: StateFlow<List<ThemeDto>> get() = _themes.map { themes ->
+        themes.filter { !it.isCustom }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
         viewModelScope.launch {
