@@ -93,12 +93,10 @@ fun ThemeDetailPage(
 
     val handleSaveTheme: () -> Unit = {
         scope.launch {
-            themeDetailViewModel.updateThemeName(themeName)
-            themeDetailViewModel.updateIsDefault(isDefault)
             if (editingTheme.id == 0L) {
-                themeDetailViewModel.createCustomTheme()
+                themeDetailViewModel.createCustomTheme(themeName, isDefault)
             } else {
-                themeDetailViewModel.updateCustomTheme()
+                themeDetailViewModel.updateCustomTheme(themeName, isDefault)
             }
             onClickSave()
             navController.popBackStack()
@@ -129,7 +127,27 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            onBackPressed()
+                            if (themeDetailViewModel.hasChange(themeName, isDefault)) {
+                                modalState.setOkCancel(
+                                    context = context,
+                                    title = "테마 편집 취소",
+                                    onConfirm = {
+                                        modalState.hide()
+                                        navController.popBackStack()
+                                    },
+                                    onDismiss = {
+                                        modalState.hide()
+                                    },
+                                    content = {
+                                        Text(
+                                            text = context.getString(R.string.custom_theme_dialog_cancel_edit),
+                                            style = SNUTTTypography.body1,
+                                        )
+                                    },
+                                ).show()
+                            } else {
+                                navController.popBackStack()
+                            }
                         },
                 )
             },

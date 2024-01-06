@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
+import androidx.compose.material.MaterialTheme.colors
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -27,7 +28,8 @@ class ThemeDetailViewModel @Inject constructor(
 
     fun initializeCustomTheme(themeId: Long) {
         viewModelScope.launch {
-            _editingTheme.value = if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
+            _editingTheme.value =
+                if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
             _themeColors.value = _editingTheme.value.colors.map { color ->
                 color.toDataWithState(false)
             }
@@ -71,21 +73,25 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateThemeName(themeName: String) {
-        _editingTheme.value = _editingTheme.value.copy(name = themeName)
+    fun hasChange(name: String, isDefault: Boolean): Boolean {
+        return name != _editingTheme.value.name || isDefault != _editingTheme.value.isDefault || _themeColors.value.map { it.item } != _editingTheme.value.colors
     }
 
-    fun updateIsDefault(isDefault: Boolean) {
-        _editingTheme.value = _editingTheme.value.copy(isDefault = isDefault)
-    }
-
-    suspend fun createCustomTheme() {
-        _editingTheme.value = _editingTheme.value.copy(colors = _themeColors.value.map { it.item })
+    suspend fun createCustomTheme(name: String, isDefault: Boolean) {
+        _editingTheme.value = _editingTheme.value.copy(
+            name = name,
+            isDefault = isDefault,
+            colors = _themeColors.value.map { it.item },
+        )
         themeRepository.createTheme(_editingTheme.value)
     }
 
-    suspend fun updateCustomTheme() {
-        _editingTheme.value = _editingTheme.value.copy(colors = _themeColors.value.map { it.item })
+    suspend fun updateCustomTheme(name: String, isDefault: Boolean) {
+        _editingTheme.value = _editingTheme.value.copy(
+            name = name,
+            isDefault = isDefault,
+            colors = _themeColors.value.map { it.item },
+        )
         themeRepository.updateTheme(_editingTheme.value)
     }
 }
