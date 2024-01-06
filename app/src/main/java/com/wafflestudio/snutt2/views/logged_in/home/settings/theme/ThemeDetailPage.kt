@@ -42,7 +42,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
-import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Switch
@@ -76,7 +75,6 @@ fun ThemeDetailPage(
     val scope = rememberCoroutineScope()
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
-    val composableStates = ComposableStatesWithScope(scope)
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -143,10 +141,11 @@ fun ThemeDetailPage(
                         .clicks {
                             if (isDefault != editingTheme.isDefault) {
                                 modalState.setOkCancel(
+                                    context = context,
                                     title = if (isDefault) {
-                                        context.getString(R.string.custom_theme_dialog_set_as_default)
+                                        "디폴트 테마 지정"
                                     } else {
-                                        context.getString(R.string.custom_theme_dialog_unset_default)
+                                        "디폴트 테마 해제"
                                     },
                                     onConfirm = {
                                         handleSaveTheme()
@@ -154,6 +153,16 @@ fun ThemeDetailPage(
                                     },
                                     onDismiss = {
                                         modalState.hide()
+                                    },
+                                    content = {
+                                        Text(
+                                            text = if (isDefault) {
+                                                context.getString(R.string.custom_theme_dialog_set_as_default)
+                                            } else {
+                                                context.getString(R.string.custom_theme_dialog_unset_default)
+                                            },
+                                            style = SNUTTTypography.body1,
+                                        )
                                     },
                                 ).show()
                             } else {
