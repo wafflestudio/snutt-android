@@ -18,10 +18,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +56,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
+import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -64,6 +69,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
@@ -113,6 +119,20 @@ fun ThemeDetailPage(
 
     BackHandler {
         onBackPressed()
+    }
+
+    LaunchedEffect(Unit) {
+        timetableViewModel.setPreviewTheme(editingTheme)
+    }
+
+    if (LocalNavBottomSheetState.current.targetValue != ModalBottomSheetValue.Hidden) {
+        DisposableEffect(Unit) {
+            onDispose {
+                scope.launch {
+                    timetableViewModel.setPreviewTheme(null)
+                }
+            }
+        }
     }
 
     Column(
@@ -240,6 +260,11 @@ fun ThemeDetailPage(
                                                 .size(30.dp)
                                                 .clicks {
                                                     themeDetailViewModel.duplicateColor(idx)
+                                                    scope.launch {
+                                                        timetableViewModel.setPreviewTheme(
+                                                            editingTheme.copy(colors = themeColors.map { it.item }),
+                                                        )
+                                                    }
                                                 },
                                             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
                                         )
@@ -249,6 +274,11 @@ fun ThemeDetailPage(
                                                 .size(30.dp)
                                                 .clicks {
                                                     themeDetailViewModel.removeColor(idx)
+                                                    scope.launch {
+                                                        timetableViewModel.setPreviewTheme(
+                                                            editingTheme.copy(colors = themeColors.map { it.item }),
+                                                        )
+                                                    }
                                                 },
                                             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
                                         )
@@ -291,6 +321,11 @@ fun ThemeDetailPage(
                                                                     colorWithExpanded.item.bgColor
                                                                         ?: 0xffffff,
                                                                 )
+                                                                scope.launch {
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                    )
+                                                                }
                                                             }
                                                         },
                                                 )
@@ -319,6 +354,11 @@ fun ThemeDetailPage(
                                                                         ?: 0xffffff,
                                                                     it,
                                                                 )
+                                                                scope.launch {
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                    )
+                                                                }
                                                             }
                                                         },
                                                 )
@@ -336,6 +376,11 @@ fun ThemeDetailPage(
                             .height(44.dp)
                             .clicks {
                                 themeDetailViewModel.addColor()
+                                scope.launch {
+                                    timetableViewModel.setPreviewTheme(
+                                        editingTheme.copy(colors = themeColors.map { it.item }),
+                                    )
+                                }
                             },
                     ) {
                         Text(

@@ -37,7 +37,20 @@ fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
 ) {
-    val lectures = LocalTableState.current.table.lectureList
+    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
+    val lectures = LocalTableState.current.table.lectureList.let {
+        if (theme.isCustom) {
+            it.mapIndexed { idx, lecture ->
+                lecture.copy(
+                    colorIndex = 0,
+                    color = theme.colors[idx % theme.colors.size],
+                )
+            }
+        } else {
+            it
+        }
+    }
+
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {

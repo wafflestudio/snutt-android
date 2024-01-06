@@ -84,7 +84,7 @@ fun ChangeThemeBottomSheet(
             item {
                 AddThemeItem(
                     onClick = {
-                        navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
+                        navController.navigate("${NavigationDestination.ThemeDetail}/0")
                     },
                 )
             }

@@ -166,11 +166,11 @@ class RootActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
     @Composable
     fun setUpUI(startDestination: String) {
-        val sheetState = rememberModalBottomSheetState(
+        val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,
         )
-        val bottomSheetNavigator = remember { BottomSheetNavigator(sheetState) }
+        val bottomSheetNavigator = remember { BottomSheetNavigator(navBottomSheetState) }
         val navController = rememberNavController(bottomSheetNavigator)
         val initialHomeTab = remember {
             parseHomePageDeeplink() ?: HomeItem.Timetable
@@ -216,6 +216,7 @@ class RootActivity : AppCompatActivity() {
             LocalCompactState provides compactMode,
             LocalBottomSheetState provides bottomSheet,
             LocalRemoteConfig provides remoteConfig,
+            LocalNavBottomSheetState provides navBottomSheetState,
         ) {
             ModalBottomSheetLayout(bottomSheetNavigator) {
                 NavHost(
@@ -250,39 +251,34 @@ class RootActivity : AppCompatActivity() {
                     }
 
                     bottomSheet(
-                        "${NavigationDestination.CustomThemeDetail}/{themeId}",
-                        arguments = listOf(navArgument("themeId") { type = NavType.LongType }),
+                        "${NavigationDestination.ThemeDetail}?themeId={themeId}&theme={theme}",
+                        arguments = listOf(
+                            navArgument("themeId") {
+                                type = NavType.LongType
+                                defaultValue = 0L
+                            },
+                            navArgument("theme") {
+                                type = NavType.IntType
+                                defaultValue = -1
+                            },
+                        ),
                     ) { backStackEntry ->
                         val parentEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
                         val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(parentEntry)
-                        themeDetailViewModel.initializeCustomTheme(
-                            backStackEntry.arguments?.getLong(
-                                "themeId",
-                            ) ?: 0L,
-                        )
-                        ThemeDetailPage(
-                            themeDetailViewModel = themeDetailViewModel,
-                            onClickSave = { themeConfigViewModel.fetchCustomThemes() },
-                        )
-                    }
-
-                    bottomSheet(
-                        "${NavigationDestination.BuiltInThemeDetail}/{theme}",
-                        arguments = listOf(navArgument("theme") { type = NavType.IntType }),
-                    ) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry(NavigationDestination.Home)
+                        val themeId = backStackEntry.arguments?.getLong("themeId")
+                        val theme = backStackEntry.arguments?.getInt("theme")
+                        theme?.let {
+                            if (theme != -1) {
+                                themeDetailViewModel.initializeBuiltInTheme(theme)
+                            } else {
+                                themeId?.let {
+                                    themeDetailViewModel.initializeCustomTheme(themeId)
+                                }
+                            }
                         }
-                        val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
-                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(parentEntry)
-                        themeDetailViewModel.initializeBuiltInTheme(
-                            backStackEntry.arguments?.getInt(
-                                "theme",
-                            ) ?: 0,
-                        )
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                             onClickSave = { themeConfigViewModel.fetchCustomThemes() },

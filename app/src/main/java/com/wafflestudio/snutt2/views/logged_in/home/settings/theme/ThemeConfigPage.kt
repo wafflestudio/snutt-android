@@ -109,7 +109,7 @@ fun ThemeConfigPage(
                             Spacer(modifier = Modifier.width(20.dp))
                             AddThemeItem(
                                 onClick = {
-                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/0")
+                                    navController.navigate(NavigationDestination.ThemeDetail)
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -120,14 +120,14 @@ fun ThemeConfigPage(
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
-                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/${theme.id}")
+                                    navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
                                 },
                                 onClickMore = {
                                     scope.launch {
                                         bottomSheet.setSheetContent {
                                             CustomThemeMoreActionBottomSheet(
                                                 onClickDetail = {
-                                                    navController.navigate("${NavigationDestination.CustomThemeDetail}/${theme.id}")
+                                                    navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
                                                 },
                                                 onClickRename = {
                                                 },
@@ -168,7 +168,7 @@ fun ThemeConfigPage(
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
-                                    navController.navigate("${NavigationDestination.BuiltInThemeDetail}/${theme.code}")
+                                    navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
