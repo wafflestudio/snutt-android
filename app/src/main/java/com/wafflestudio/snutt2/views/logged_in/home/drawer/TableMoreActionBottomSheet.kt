@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -123,6 +122,7 @@ fun TableMoreActionBottomSheet(
                             onDispose = {
                                 scope.launch {
                                     timetableViewModel.setPreviewTheme(null)
+                                    bottomSheet.hide()
                                 }
                             },
                         )

@@ -69,27 +69,35 @@ fun ChangeThemeBottomSheet(
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
+            .padding(top = 16.dp)
             .fillMaxWidth(),
     ) {
-        Row(modifier = Modifier.padding(10.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(
-                text = stringResource(R.string.home_drawer_table_theme_change),
-                modifier = Modifier.padding(10.dp),
+                text = stringResource(R.string.common_cancel),
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clicks { onDispose() },
                 style = SNUTTTypography.body1,
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Box(modifier = Modifier.clicks { onApply() }) {
-                Text(
-                    text = stringResource(R.string.home_select_theme_confirm),
-                    modifier = Modifier.padding(10.dp),
-                    style = SNUTTTypography.body1,
-                )
-            }
+            Text(
+                text = stringResource(R.string.home_select_theme_confirm),
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clicks { onApply() },
+                style = SNUTTTypography.body1,
+            )
         }
+        Spacer(modifier = Modifier.height(28.dp))
         LazyRow(
             Modifier
-                .padding(vertical = 16.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp),
+                .padding(bottom = 16.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             item {
