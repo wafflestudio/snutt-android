@@ -247,7 +247,11 @@ class RootActivity : AppCompatActivity() {
                     }
                     
                     composable2(NavigationDestination.LectureColorSelector) {
-                        LectureColorSelectorPage()
+                        val parentEntry = remember(it) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
+                        LectureColorSelectorPage(lectureDetailViewModel)
                     }
 
                     bottomSheet(

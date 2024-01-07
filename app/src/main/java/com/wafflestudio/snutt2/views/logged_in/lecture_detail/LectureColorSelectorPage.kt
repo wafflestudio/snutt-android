@@ -7,7 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,25 +28,20 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
-fun LectureColorSelectorPage() {
+fun LectureColorSelectorPage(
+    lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
+) {
     val navController = LocalNavController.current
     val context = LocalContext.current
 
-    // share viewModel
-    val backStackEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationDestination.Home)
-    }
-    val vm = hiltViewModel<LectureDetailViewModel>(backStackEntry)
+    val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
 
-    val lectureState by vm.editingLectureDetail.collectAsState()
-
-    val currentTable by vm.currentTable.collectAsState()
-    val tableColorTheme = currentTable?.theme ?: ThemeDto.SNUTT
+    val currentTable by lectureDetailViewModel.currentTable.collectAsState()
+    val theme = currentTable?.theme ?: ThemeDto.SNUTT
 
     Column(modifier = Modifier.background(SNUTTColors.White900)) {
         SimpleTopBar(
@@ -57,63 +51,91 @@ fun LectureColorSelectorPage() {
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        for (idx in 1L..9L) ColorItem(
-            color = null,
-            index = idx,
-            theme = tableColorTheme,
-            isSelected = (idx == lectureState.colorIndex),
-        ) {
-            vm.editLectureDetail(lectureState.copy(colorIndex = idx, color = ColorDto()))
-            navController.popBackStack()
-        }
-        ColorItem(
-            color = lectureState.color,
-            index = 0,
-            theme = tableColorTheme,
-            isSelected = (lectureState.colorIndex == 0L),
-        ) {
-            colorSelectorDialog(context, "글자 색")
-                .flatMap { fgColor ->
-                    colorSelectorDialog(context, "배경 색").map { Pair(fgColor, it) }
-                }
-                .subscribeBy { (fgColor, bgColor) ->
-                    vm.editLectureDetail(
-                        lectureState.copy(
-                            colorIndex = 0L,
-                            color = ColorDto(fgColor, bgColor),
-                        ),
-                    )
-                    navController.popBackStack()
-                }
+        if (theme.isCustom) {
+            theme.colors.forEachIndexed { idx, color ->
+                ColorItem(
+                    color = color,
+                    title = "${theme.name} $idx",
+                    isSelected = color == lectureState.color,
+                    onClick = {
+                        lectureDetailViewModel.editLectureDetail(
+                            lectureState.copy(
+                                color = color,
+                            ),
+                        )
+                    },
+                )
+            }
+            Column {
+                ColorItem(
+                    color = lectureState.color,
+                    title = "커스텀",
+                    isSelected = false,
+                    onClick = {},
+                )
+            }
+        } else {
+            for (idx in 1L..9L) ColorItem(
+                color = ColorDto(
+                    fgColor = 0xffffff,
+                    bgColor = theme.getColorByIndex(context, idx),
+                ),
+                title = "${theme.name} $idx",
+                isSelected = (idx == lectureState.colorIndex),
+            ) {
+                lectureDetailViewModel.editLectureDetail(
+                    lectureState.copy(
+                        colorIndex = idx,
+                        color = ColorDto(),
+                    ),
+                )
+                navController.popBackStack()
+            }
+            ColorItem(
+                color = lectureState.color,
+                title = "커스텀",
+                isSelected = (lectureState.colorIndex == 0L),
+            ) {
+                colorSelectorDialog(context, "글자 색")
+                    .flatMap { fgColor ->
+                        colorSelectorDialog(context, "배경 색").map { Pair(fgColor, it) }
+                    }
+                    .subscribeBy { (fgColor, bgColor) ->
+                        lectureDetailViewModel.editLectureDetail(
+                            lectureState.copy(
+                                colorIndex = 0L,
+                                color = ColorDto(fgColor, bgColor),
+                            ),
+                        )
+                        navController.popBackStack()
+                    }
+            }
         }
     }
 }
 
 @Composable
 fun ColorItem(
-    color: ColorDto?,
-    index: Long,
-    theme: ThemeDto,
+    color: ColorDto,
+    title: String,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .height(40.dp)
-            .clicks { onClick() },
+            .clicks { onClick() }
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        ColorBox(color)
         Spacer(modifier = Modifier.width(20.dp))
-        ColorBox(lectureColor = color, lectureColorIndex = index, theme = theme)
-        Spacer(modifier = Modifier.width(20.dp))
-        if (index != 0L) {
-            Text(text = "SNUTT$index", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
-        } else {
-            Text(text = "커스텀", style = SNUTTTypography.body1.copy(fontSize = 15.sp))
-        }
+        Text(
+            text = title,
+            style = SNUTTTypography.body1.copy(fontSize = 15.sp),
+        )
         Spacer(modifier = Modifier.weight(1f))
         if (isSelected) CheckedIcon(modifier = Modifier.size(20.dp))
-        Spacer(modifier = Modifier.width(20.dp))
     }
 }
 

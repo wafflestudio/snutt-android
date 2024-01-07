@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -289,9 +290,14 @@ fun LectureDetailPage(
                                 },
                             ) {
                                 ColorBox(
-                                    editingLectureDetail.colorIndex,
-                                    editingLectureDetail.color,
-                                    tableColorTheme,
+                                    if (tableColorTheme.isCustom) {
+                                        editingLectureDetail.color
+                                    } else {
+                                        ColorDto(
+                                            fgColor = 0xffffff,
+                                            bgColor = tableColorTheme.getColorByIndex(context, editingLectureDetail.colorIndex),
+                                        )
+                                    },
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 AnimatedVisibility(visible = modeType is ModeType.Editing) {

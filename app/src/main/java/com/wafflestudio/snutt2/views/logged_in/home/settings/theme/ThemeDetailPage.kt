@@ -51,6 +51,7 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Switch
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -284,7 +285,7 @@ fun ThemeDetailPage(
                                         )
                                     },
                                 ) {
-                                    ColorBox(0, colorWithExpanded.item, previewTheme)
+                                    ColorBox(colorWithExpanded.item)
                                 }
                                 AnimatedVisibility(visible = colorWithExpanded.state) {
                                     Row(
@@ -396,9 +397,10 @@ fun ThemeDetailPage(
                             titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                         ) {
                             ColorBox(
-                                lectureColorIndex = idx.toLong(),
-                                lectureColor = null,
-                                theme = editingTheme,
+                                ColorDto(
+                                    fgColor = 0xffffff,
+                                    bgColor = editingTheme.getColorByIndex(context, idx.toLong()),
+                                ),
                             )
                         }
                     }
