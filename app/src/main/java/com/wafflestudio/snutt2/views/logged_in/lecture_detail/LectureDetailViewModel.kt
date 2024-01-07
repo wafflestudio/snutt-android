@@ -55,10 +55,9 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _editingLectureDetail.emit(editedLecture) }
     }
 
-    suspend fun updateLecture(is_forced: Boolean = false) {
+    suspend fun updateLecture(isForced: Boolean = false) {
         val param = buildPutLectureParams()
-        param.isForced = is_forced
-        currentTableRepository.updateLecture(_editingLectureDetail.value.id, param)
+        currentTableRepository.updateLecture(_editingLectureDetail.value.id, param, isForced)
         initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal)
     }
 
@@ -71,10 +70,9 @@ class LectureDetailViewModel @Inject constructor(
         initializeEditingLectureDetail(originLecture, ModeType.Normal)
     }
 
-    suspend fun createLecture(is_forced: Boolean = false) {
+    suspend fun createLecture(isForced: Boolean = false) {
         val param = buildPostLectureParams()
-        param.isForced = is_forced
-        currentTableRepository.createCustomLecture(param)
+        currentTableRepository.createCustomLecture(param, isForced)
     }
 
     suspend fun getCourseBookUrl(): String {

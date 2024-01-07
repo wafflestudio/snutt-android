@@ -243,10 +243,10 @@ fun LectureDetailPage(
                                             onLectureOverlap = { message ->
                                                 showLectureOverlapDialog(composableStates, message, forceAddApi = {
                                                     if ((modeType as ModeType.Editing).adding) {
-                                                        vm.createLecture(is_forced = true)
+                                                        vm.createLecture(isForced = true)
                                                         scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                                     } else {
-                                                        vm.updateLecture(is_forced = true)
+                                                        vm.updateLecture(isForced = true)
                                                     }
                                                 },)
                                             },

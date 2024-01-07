@@ -18,12 +18,12 @@ interface CurrentTableRepository {
     suspend fun removeLecture(lectureId: String)
 
     // FIXME: do not expose network layer data class
-    suspend fun createCustomLecture(lecture: PostCustomLectureParams)
+    suspend fun createCustomLecture(lecture: PostCustomLectureParams, isForced: Boolean)
 
     suspend fun resetLecture(lectureId: String): LectureDto
 
     // FIXME: do not expose network layer data class
-    suspend fun updateLecture(lectureId: String, target: PutLectureParams)
+    suspend fun updateLecture(lectureId: String, target: PutLectureParams, isForced: Boolean)
 
     suspend fun setPreviewTheme(previewTheme: TimetableColorTheme?)
 

@@ -74,6 +74,7 @@ interface SNUTTRestApi {
     @POST("/v1/tables/{id}/lecture")
     suspend fun _postCustomLecture(
         @Path("id") id: String,
+        @Query(value = "isForced") isForced: Boolean,
         @Body body: PostCustomLectureParams,
     ): PostCustomLectureResults
 
@@ -81,7 +82,7 @@ interface SNUTTRestApi {
     suspend fun _postAddLecture(
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
-        @Body is_forced: PostLectureParams,
+        @Query(value = "isForced") isForced: Boolean,
     ): PostCustomLectureResults
 
     @DELETE("/v1/tables/{id}/lecture/{lecture_id}")
@@ -94,6 +95,7 @@ interface SNUTTRestApi {
     suspend fun _putLecture(
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
+        @Query(value = "isForced") isForced: Boolean,
         @Body body: PutLectureParams,
     ): PutLectureResults
 
