@@ -43,7 +43,11 @@ fun LectureColorSelectorPage(
     val currentTable by lectureDetailViewModel.currentTable.collectAsState()
     val theme = currentTable?.theme ?: ThemeDto.SNUTT
 
-    Column(modifier = Modifier.background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize(),
+    ) {
         SimpleTopBar(
             title = "강의 색상 선택하기",
         ) {

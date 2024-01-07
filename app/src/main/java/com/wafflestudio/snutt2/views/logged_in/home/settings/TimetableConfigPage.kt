@@ -63,7 +63,7 @@ fun TimetableConfigPage() {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(SNUTTColors.SettingBackground)
             .verticalScroll(rememberScrollState()),
     ) {
