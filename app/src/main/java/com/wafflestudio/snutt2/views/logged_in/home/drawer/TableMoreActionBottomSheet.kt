@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -37,7 +38,6 @@ fun TableMoreActionBottomSheet(
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel: TableListViewModel = hiltViewModel()
     val timetableViewModel: TimetableViewModel = hiltViewModel()
-    val theme = LocalTableState.current.table.theme
 
     Column(
         modifier = Modifier
@@ -102,23 +102,11 @@ fun TableMoreActionBottomSheet(
                     bottomSheet.hide()
                     drawerState.close()
 
-                    launchSuspendApi(
-                        apiOnProgress,
-                        apiOnError,
-                    ) {
-                        timetableViewModel.setPreviewTheme(theme)
-                    }
-
                     bottomSheet.setSheetContent {
                         ChangeThemeBottomSheet(
                             onPreview = { theme ->
                                 scope.launch {
-                                    launchSuspendApi(
-                                        apiOnProgress,
-                                        apiOnError,
-                                    ) {
-                                        timetableViewModel.setPreviewTheme(theme)
-                                    }
+                                    timetableViewModel.setPreviewTheme(theme)
                                 }
                             },
                             onApply = {
@@ -128,18 +116,13 @@ fun TableMoreActionBottomSheet(
                                         apiOnError,
                                     ) {
                                         timetableViewModel.updateTheme()
-                                        scope.launch { bottomSheet.hide() }
+                                        bottomSheet.hide()
                                     }
                                 }
                             },
                             onDispose = {
                                 scope.launch {
-                                    launchSuspendApi(
-                                        apiOnProgress,
-                                        apiOnError,
-                                    ) {
-                                        timetableViewModel.setPreviewTheme(null)
-                                    }
+                                    timetableViewModel.setPreviewTheme(null)
                                 }
                             },
                         )

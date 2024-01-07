@@ -1,17 +1,13 @@
 package com.wafflestudio.snutt2.data.current_table
 
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
     val currentTable: StateFlow<TableDto?>
-
-    val previewTheme: Flow<ThemeDto?>
 
     suspend fun addLecture(lectureId: String, isForced: Boolean)
 
@@ -24,8 +20,6 @@ interface CurrentTableRepository {
 
     // FIXME: do not expose network layer data class
     suspend fun updateLecture(lectureId: String, target: PutLectureParams)
-
-    suspend fun setPreviewTheme(previewTheme: ThemeDto?)
 
     suspend fun getLectureSyllabusUrl(
         courseNumber: String,

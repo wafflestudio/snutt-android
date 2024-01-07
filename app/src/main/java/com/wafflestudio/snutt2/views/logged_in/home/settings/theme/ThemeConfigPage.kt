@@ -204,13 +204,13 @@ fun AddThemeItem(
         Spacer(modifier.height(8.dp))
         Text(
             text = stringResource(R.string.theme_new),
-            style = SNUTTTypography.body1,
+            style = SNUTTTypography.body2,
         )
     }
 }
 
 @Composable
-fun ThemeItem(
+private fun ThemeItem(
     theme: ThemeDto,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -252,7 +252,7 @@ fun ThemeItem(
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = SNUTTTypography.body1,
+            style = SNUTTTypography.body2,
         )
     }
 }

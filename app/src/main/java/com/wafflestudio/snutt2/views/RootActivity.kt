@@ -59,6 +59,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -249,7 +251,8 @@ class RootActivity : AppCompatActivity() {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(parentEntry)
                         LectureColorSelectorPage(lectureDetailViewModel)
                     }
 
@@ -270,8 +273,19 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
+                        val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
+                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
+                        val scope = rememberCoroutineScope()
                         ThemeDetailPage(
-                            onClickSave = { themeConfigViewModel.fetchCustomThemes() },
+                            themeDetailViewModel = themeDetailViewModel,
+                            onClickSave = {
+                                themeConfigViewModel.fetchCustomThemes()
+                                if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
+                                    scope.launch {
+                                        timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
+                                    }
+                                }
+                            },
                         )
                     }
 

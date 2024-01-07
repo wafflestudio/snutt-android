@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -12,8 +11,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,11 +23,6 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
         .unwrap(GlobalScope)
-
-    private val _previewTheme = MutableStateFlow<ThemeDto?>(null)
-
-    override val previewTheme: Flow<ThemeDto?>
-        get() = _previewTheme
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
         val prevTable = storage.lastViewedTable.get().value
@@ -66,10 +58,6 @@ class CurrentTableRepositoryImpl @Inject constructor(
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
         val response = api._putLecture(prevTable.id, lectureId, target)
         storage.lastViewedTable.update(response.toOptional())
-    }
-
-    override suspend fun setPreviewTheme(previewTheme: ThemeDto?) {
-        _previewTheme.value = previewTheme
     }
 
     override suspend fun getLectureSyllabusUrl(
