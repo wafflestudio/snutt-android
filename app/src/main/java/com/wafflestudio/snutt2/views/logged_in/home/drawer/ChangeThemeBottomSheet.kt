@@ -44,6 +44,7 @@ fun ChangeThemeBottomSheet(
     val navController = LocalNavController.current
     val bottomSheet = LocalBottomSheetState.current
     val customThemes by themeConfigViewModel.customThemes.collectAsState()
+    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
 
     LaunchedEffect(Unit) {
         themeConfigViewModel.fetchCustomThemes()
@@ -97,7 +98,7 @@ fun ChangeThemeBottomSheet(
                 )
             }
             items(
-                ThemeDto.builtInThemes,
+                items = builtInThemes,
             ) {
                 ThemeItem(
                     theme = it,

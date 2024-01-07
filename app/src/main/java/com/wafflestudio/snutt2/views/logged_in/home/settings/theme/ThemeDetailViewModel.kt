@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -15,30 +16,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
 ) : ViewModel() {
 
-    private val _editingTheme = MutableStateFlow(ThemeDto())
+    private val _editingTheme = MutableStateFlow(ThemeDto.NewCustomTheme)
     val editingTheme: StateFlow<ThemeDto> get() = _editingTheme
 
     // 색상별 id가 없어 expanded 여부를 설정할 수 없으므로 List<Selectable<ColorDto>>로 따로 관리한다
     private val _themeColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
     val themeColors: StateFlow<List<Selectable<ColorDto>>> get() = _themeColors
 
-    fun initializeCustomTheme(themeId: Long) {
+    init {
+        val themeId = savedStateHandle.get<Long>("themeId")
+        val theme = savedStateHandle.get<Int>("theme")
         viewModelScope.launch {
-            _editingTheme.value =
-                if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
+            theme?.let {
+                if (theme != -1) {
+                    _editingTheme.value = ThemeDto.builtInThemeFromCode(theme)
+                } else {
+                    themeId?.let {
+                        _editingTheme.value = if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
+                    }
+                }
+            }
             _themeColors.value = _editingTheme.value.colors.map { color ->
                 color.toDataWithState(false)
             }
-        }
-    }
-
-    fun initializeBuiltInTheme(theme: Int) {
-        _editingTheme.value = ThemeDto.builtInThemeFromInt(theme)
-        _themeColors.value = _editingTheme.value.colors.map { color ->
-            color.toDataWithState(false)
         }
     }
 

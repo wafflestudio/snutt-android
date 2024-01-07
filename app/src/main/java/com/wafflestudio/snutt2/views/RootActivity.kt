@@ -59,7 +59,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -271,20 +270,7 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
-                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(parentEntry)
-                        val themeId = backStackEntry.arguments?.getLong("themeId")
-                        val theme = backStackEntry.arguments?.getInt("theme")
-                        theme?.let {
-                            if (theme != -1) {
-                                themeDetailViewModel.initializeBuiltInTheme(theme)
-                            } else {
-                                themeId?.let {
-                                    themeDetailViewModel.initializeCustomTheme(themeId)
-                                }
-                            }
-                        }
                         ThemeDetailPage(
-                            themeDetailViewModel = themeDetailViewModel,
                             onClickSave = { themeConfigViewModel.fetchCustomThemes() },
                         )
                     }

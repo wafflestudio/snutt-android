@@ -49,8 +49,8 @@ data class ThemeDto(
 
         val builtInThemes = listOf(SNUTT, MODERN, AUTUMN, CHERRY, ICE, GRASS)
 
-        fun builtInThemeFromInt(index: Int): ThemeDto {
-            return when (index) {
+        fun builtInThemeFromCode(code: Int): ThemeDto {
+            return when (code) {
                 0 -> SNUTT
                 1 -> MODERN
                 2 -> AUTUMN
@@ -335,5 +335,5 @@ class ThemeDtoAdapter {
     fun toJson(type: ThemeDto): Int = type.code
 
     @FromJson
-    fun fromJson(value: String): ThemeDto? = ThemeDto.builtInThemeFromInt(value.toInt())
+    fun fromJson(value: String): ThemeDto? = ThemeDto.builtInThemeFromCode(value.toInt())
 }
