@@ -310,7 +310,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                         else -> Toast.makeText(
                             context,
-                            error.errorDTO?.message ?: context.getString(R.string.error_unknown),
+                            error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
@@ -393,5 +393,5 @@ object ErrorCode {
 data class ErrorDTO(
     @Json(name = "errcode") val code: Int? = null,
     @Json(name = "message") val message: String? = null,
-    @Json(name = "ext") val ext: Map<String, String>? = null,
+    @Json(name = "displayMessage") val displayMessage: String? = null,
 )
