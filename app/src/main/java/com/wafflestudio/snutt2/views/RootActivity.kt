@@ -15,12 +15,14 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -219,7 +221,10 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
-            ModalBottomSheetLayout(bottomSheetNavigator) {
+            ModalBottomSheetLayout(
+                bottomSheetNavigator = bottomSheetNavigator,
+                sheetShape = RoundedCornerShape(10.dp),
+            ) {
                 NavHost(
                     navController = navController,
                     startDestination = startDestination,

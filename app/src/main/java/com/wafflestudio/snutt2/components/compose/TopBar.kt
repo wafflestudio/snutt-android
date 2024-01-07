@@ -77,6 +77,41 @@ fun TopBar(
     }
 }
 
+@Composable
+fun CenteredTopBar(
+    modifier: Modifier = Modifier,
+    title: @Composable RowScope.() -> Unit = {},
+    navigationIcon: @Composable RowScope.() -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    Box(
+        modifier = modifier
+            .background(color = SNUTTColors.White900)
+            .fillMaxWidth()
+            .height(56.dp)
+            .padding(horizontal = 20.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterStart),
+            horizontalArrangement = Arrangement.Center,
+        ) { navigationIcon() }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.Center),
+            verticalAlignment = Alignment.CenterVertically,
+        ) { title() }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) { actions() }
+    }
+}
+
 @Preview
 @Composable
 fun TopBarPreview() {

@@ -18,13 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,13 +40,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Switch
-import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -57,7 +54,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
-import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -70,7 +66,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
@@ -126,26 +121,16 @@ fun ThemeDetailPage(
         timetableViewModel.setPreviewTheme(editingTheme)
     }
 
-    if (LocalNavBottomSheetState.current.targetValue != ModalBottomSheetValue.Hidden) {
-        DisposableEffect(Unit) {
-            onDispose {
-                scope.launch {
-                    timetableViewModel.setPreviewTheme(null)
-                }
-            }
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxHeight(0.95f)
             .fillMaxWidth(),
     ) {
-        TopBar(
+        CenteredTopBar(
             title = {
                 Text(
                     text = "커스텀 테마",
-                    style = SNUTTTypography.h2,
+                    style = SNUTTTypography.h3,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -260,28 +245,40 @@ fun ThemeDetailPage(
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clicks {
-                                                    themeDetailViewModel.duplicateColor(idx)
-                                                    scope.launch {
-                                                        timetableViewModel.setPreviewTheme(
-                                                            editingTheme.copy(colors = themeColors.map { it.item }),
-                                                        )
+                                                    if (themeColors.size < 9) {
+                                                        themeDetailViewModel.duplicateColor(idx)
+                                                        scope.launch {
+                                                            timetableViewModel.setPreviewTheme(
+                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                            )
+                                                        }
                                                     }
                                                 },
-                                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
+                                            colorFilter = ColorFilter.tint(
+                                                MaterialTheme.colors.onSurfaceVariant.copy(
+                                                    alpha = if (themeColors.size < 9) 1f else 0.3f,
+                                                ),
+                                            ),
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         CloseIcon(
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clicks {
-                                                    themeDetailViewModel.removeColor(idx)
-                                                    scope.launch {
-                                                        timetableViewModel.setPreviewTheme(
-                                                            editingTheme.copy(colors = themeColors.map { it.item }),
-                                                        )
+                                                    if (themeColors.size > 1) {
+                                                        themeDetailViewModel.removeColor(idx)
+                                                        scope.launch {
+                                                            timetableViewModel.setPreviewTheme(
+                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                            )
+                                                        }
                                                     }
                                                 },
-                                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceVariant),
+                                            colorFilter = ColorFilter.tint(
+                                                MaterialTheme.colors.onSurfaceVariant.copy(
+                                                    alpha = if (themeColors.size > 1) 1f else 0.3f,
+                                                ),
+                                            ),
                                         )
                                     },
                                 ) {
@@ -371,24 +368,26 @@ fun ThemeDetailPage(
                             }
                         }
                     }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(44.dp)
-                            .clicks {
-                                themeDetailViewModel.addColor()
-                                scope.launch {
-                                    timetableViewModel.setPreviewTheme(
-                                        editingTheme.copy(colors = themeColors.map { it.item }),
-                                    )
-                                }
-                            },
-                    ) {
-                        Text(
-                            text = "+ 색상 추가",
-                            modifier = Modifier.align(Alignment.Center),
-                            color = MaterialTheme.colors.onBackground,
-                        )
+                    AnimatedVisibility(themeColors.size < 9) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(44.dp)
+                                .clicks {
+                                    themeDetailViewModel.addColor()
+                                    scope.launch {
+                                        timetableViewModel.setPreviewTheme(
+                                            editingTheme.copy(colors = themeColors.map { it.item }),
+                                        )
+                                    }
+                                },
+                        ) {
+                            Text(
+                                text = "+ 색상 추가",
+                                modifier = Modifier.align(Alignment.Center),
+                                color = MaterialTheme.colors.onBackground,
+                            )
+                        }
                     }
                 } else {
                     (1..9).forEach { idx ->
@@ -459,7 +458,7 @@ fun ThemeDetailItem(
         Text(
             text = title,
             modifier = Modifier.width(60.dp),
-            style = SNUTTTypography.body1.copy(
+            style = SNUTTTypography.body2.copy(
                 color = titleColor,
             ),
         )
