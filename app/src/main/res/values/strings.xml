@@ -164,7 +164,9 @@
     <string name="search_result_placeholder_2">다양한 조합으로 검색해보세요.</string>
     <string name="search_result_placeholder_3">ex) 2학년 컴공 전필 / 경영 영강</string>
     <string name="search_result_placeholder_4">줄임말로 검색해보세요.</string>
-    <string name="search_result_placeholder_5">ex) 죽음의 과학적 이해 유성호 죽과이 → 유성호</string>
+    <string name="search_result_placeholder_5">ex) 죽음의 과학적 이해 유성호 → 유성호 죽과이</string>
+    <string name="search_result_placeholder_6">강의실 위치로 검색해보세요.</string>
+    <string name="search_result_placeholder_7">ex) 26동 / 302-208 / 대글2 43-1동</string>
     <string name="search_option_tag_type_academic_year">학년</string>
     <string name="search_option_tag_type_classification">구분</string>
     <string name="search_option_tag_type_credit">학점</string>
@@ -298,7 +300,7 @@
     <string name="email_unverified_cta_message">강의평 확인을 위해 이메일 인증이 필요합니다.\n이메일 인증을 진행하시겠습니까?</string>
     <string name="bookmark_remove_toast">관심강좌 목록에서 제거하였습니다.</string>
     <string name="bookmark_remove_check_message">강의를 관심강좌 목록에서 제외하시겠습니까?</string>
-    <string name="bookmark_first_alert_message">시간표 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
+    <string name="bookmark_first_alert_message">검색탭 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
     <string name="bookmark_page_title">관심강좌</string>
     <string name="bookmark_page_placeholder_1">추가한 관심강좌가 없습니다</string>
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>

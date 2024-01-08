@@ -1,23 +1,25 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
@@ -36,7 +38,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
@@ -46,7 +47,6 @@ fun SearchPage(
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
-    val keyBoardController = LocalSoftwareKeyboardController.current
 
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val tableListViewModel: TableListViewModel = hiltViewModel()
@@ -55,64 +55,121 @@ fun SearchPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val vacancyViewModel = hiltViewModel<VacancyViewModel>()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
-    val selectedTags by searchViewModel.selectedTags.collectAsState()
-    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
-    val lazyListState = searchViewModel.lazyListState
-    val loadState = searchResultPagingItems.loadState
+    val pageMode by searchViewModel.pageMode.collectAsState()
+    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
     val reviewBottomSheetWebViewContainer = remember {
         WebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
-            this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
+            this.webView.addJavascriptInterface(
+                CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }),
+                "Snutt",
+            )
         }
     }
 
     Column {
-        SearchTopBar {
-            SearchIcon(
-                modifier = Modifier.clicks {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            searchViewModel.query()
+        TopBar(
+            title = {
+                AnimatedContent(
+                    targetState = pageMode,
+                    transitionSpec = {
+                        when (targetState) {
+                            SearchPageMode.Search -> {
+                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
+                            }
+                            SearchPageMode.Bookmark -> {
+                                slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
+                            }
+                        }
+                    },
+                    label = "top bar animation",
+                ) {
+                    when (it) {
+                        SearchPageMode.Search -> {
+                            Row(
+                                modifier = Modifier
+                                    .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
+                                    .weight(1f)
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                SearchIcon(
+                                    modifier = Modifier.clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                searchViewModel.query()
+                                            }
+                                        }
+                                    },
+                                )
+                                SearchEditText(
+                                    searchEditTextFocused = searchEditTextFocused,
+                                    onFocus = { isFocused ->
+                                        searchEditTextFocused = isFocused
+                                    },
+                                )
+                                if (searchEditTextFocused) {
+                                    ExitIcon(
+                                        modifier = Modifier.clicks {
+                                            scope.launch {
+                                                searchViewModel.clearEditText()
+                                                searchEditTextFocused = false
+                                            }
+                                        },
+                                    )
+                                } else {
+                                    FilterIcon(
+                                        modifier = Modifier.clicks {
+                                            // 강의 검색 필터 sheet 띄우기
+                                            bottomSheet.setSheetContent {
+                                                SearchOptionSheet(
+                                                    applyOption = {
+                                                        scope.launch {
+                                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                                searchViewModel.query()
+                                                            }
+                                                        }
+                                                        scope.launch { bottomSheet.hide() }
+                                                    },
+                                                )
+                                            }
+                                            scope.launch { bottomSheet.show() }
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                        SearchPageMode.Bookmark -> {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 12.dp),
+                                text = stringResource(R.string.bookmark_page_title),
+                                style = SNUTTTypography.h2,
+                            )
                         }
                     }
-                },
-            )
-            SearchEditText(
-                searchEditTextFocused = searchEditTextFocused,
-                onFocus = { isFocused ->
-                    searchEditTextFocused = isFocused
-                },
-            )
-            if (searchEditTextFocused) {
-                ExitIcon(
-                    modifier = Modifier.clicks {
-                        scope.launch {
-                            searchViewModel.clearEditText()
-                            searchEditTextFocused = false
-                        }
-                    },
-                )
-            } else {
-                FilterIcon(
-                    modifier = Modifier.clicks {
-                        // 강의 검색 필터 sheet 띄우기
-                        bottomSheet.setSheetContent {
-                            SearchOptionSheet(applyOption = {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        searchViewModel.query()
-                                    }
-                                }
-                                scope.launch { bottomSheet.hide() }
-                            },)
-                        }
-                        scope.launch { bottomSheet.show() }
-                    },
-                )
-            }
-        }
+                }
+            },
+            actions = {
+                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
+                    BookmarkIcon(
+                        modifier = centerAlignedModifier
+                            .size(30.dp)
+                            .clicks {
+                                searchViewModel.togglePageMode()
+                            },
+                        marked = pageMode == SearchPageMode.Bookmark,
+                    )
+                }
+            },
+        )
+
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -120,129 +177,47 @@ fun SearchPage(
                 .fillMaxWidth(),
         ) {
             TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
-            Column(
-                modifier = Modifier
-                    .background(SNUTTColors.Dim2)
-                    .fillMaxSize(),
-            ) {
-                AnimatedLazyRow(itemList = selectedTags, itemKey = { it.name }) {
-                    TagCell(tagDto = it, onClick = {
-                        scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                searchViewModel.toggleTag(it)
-                                searchViewModel.query()
-                            }
+            AnimatedContent(
+                targetState = pageMode,
+                modifier = Modifier.background(SNUTTColors.Dim2),
+                transitionSpec = {
+                    when (targetState) {
+                        SearchPageMode.Search -> {
+                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
                         }
-                    },)
-                }
-                // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-                if (placeHolderState) {
-                    SearchPlaceHolder(
-                        onClickSearchIcon = {
-                            scope.launch {
-                                keyBoardController?.hide()
-                                searchViewModel.query()
-                            }
-                        },
-                    )
-                } else {
-                    when {
-                        loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
-                            SearchEmptyPage()
-                        }
-                        else -> {
-                            LazyColumn(
-                                state = lazyListState, modifier = Modifier.fillMaxSize(),
-                            ) {
-                                items(searchResultPagingItems) { lectureDataWithState ->
-                                    lectureDataWithState?.let {
-                                        LectureListItem(
-                                            lectureDataWithState,
-                                            reviewBottomSheetWebViewContainer,
-                                            false,
-                                            searchViewModel,
-                                            timetableViewModel,
-                                            tableListViewModel,
-                                            lectureDetailViewModel,
-                                            userViewModel,
-                                            vacancyViewModel,
-                                        )
-                                    }
-                                }
-                            }
+                        SearchPageMode.Bookmark -> {
+                            slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
                         }
                     }
+                },
+                label = "body animation",
+            ) { pageMode ->
+                when (pageMode) {
+                    SearchPageMode.Search -> SearchResultList(
+                        scope,
+                        searchResultPagingItems,
+                        searchViewModel,
+                        timetableViewModel,
+                        tableListViewModel,
+                        lectureDetailViewModel,
+                        userViewModel,
+                        vacancyViewModel,
+                        reviewBottomSheetWebViewContainer,
+                    )
+                    SearchPageMode.Bookmark -> BookmarkList(
+                        searchViewModel,
+                        timetableViewModel,
+                        tableListViewModel,
+                        lectureDetailViewModel,
+                        userViewModel,
+                        vacancyViewModel,
+                        reviewBottomSheetWebViewContainer,
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        BigSearchIcon(
-            modifier = Modifier
-                .width(78.dp)
-                .height(76.dp)
-                .padding(10.dp)
-                .clicks {
-                    onClickSearchIcon.invoke()
-                },
-        )
-        Spacer(modifier = Modifier.height(25.dp))
-        Text(
-            text = stringResource(R.string.search_result_placeholder_1),
-            style = SNUTTTypography.h1.copy(fontSize = 25.sp, color = SNUTTColors.White700),
-        )
-        Spacer(modifier = Modifier.height(35.dp))
-        Text(
-            text = stringResource(R.string.search_result_placeholder_2),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = stringResource(R.string.search_result_placeholder_3),
-            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
-        )
-        Spacer(modifier = Modifier.height(25.dp))
-        Text(
-            text = stringResource(R.string.search_result_placeholder_4),
-            style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = stringResource(R.string.search_result_placeholder_5),
-            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.White500),
-        )
-    }
-}
-
-@Composable
-private fun SearchEmptyPage() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        BigSearchIcon(
-            modifier = Modifier
-                .width(58.dp)
-                .height(56.dp),
-        )
-        Spacer(modifier = Modifier.height(35.dp))
-        Text(
-            text = stringResource(R.string.search_result_empty),
-            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp),
-        )
     }
 }
 

@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,7 +31,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsPage(
-    uncheckedNotification: Boolean,
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
@@ -63,16 +61,6 @@ fun SettingsPage(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
-            },
-            actions = {
-                IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
-                    NotificationIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks { navController.navigate(NavigationDestination.Notification) },
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                    )
-                }
             },
         )
         Column(
@@ -330,10 +318,4 @@ fun NewBadge(
 private fun showLicenseDialog(context: Context) {
     LicensesDialog.Builder(context).setNotices(R.raw.notices).setIncludeOwnLicense(true).build()
         .show()
-}
-
-@Preview
-@Composable
-fun SettingsPagePreview() {
-    SettingsPage(false)
 }
