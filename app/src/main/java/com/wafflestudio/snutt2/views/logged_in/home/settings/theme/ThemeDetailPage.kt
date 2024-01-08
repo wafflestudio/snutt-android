@@ -20,11 +20,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -81,7 +79,6 @@ fun ThemeDetailPage(
     val scope = rememberCoroutineScope()
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
-    val navBottomSheetState = LocalNavBottomSheetState.current
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -93,7 +90,6 @@ fun ThemeDetailPage(
     val themeColors by themeDetailViewModel.themeColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
     var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
-    var userPressedBack by remember { mutableStateOf(false) }
 
     val onBackPressed: () -> Unit = {
         if (themeDetailViewModel.hasChange(themeName, isDefault)) {
@@ -102,7 +98,6 @@ fun ThemeDetailPage(
                 title = "테마 편집 취소",
                 onConfirm = {
                     modalState.hide()
-                    userPressedBack = true
                     navController.popBackStack()
                 },
                 onDismiss = {
@@ -116,25 +111,12 @@ fun ThemeDetailPage(
                 },
             ).show()
         } else {
-            userPressedBack = true
             navController.popBackStack()
         }
     }
 
     BackHandler {
         onBackPressed()
-    }
-
-    if (navBottomSheetState.targetValue != ModalBottomSheetValue.Hidden) {
-        DisposableEffect(Unit) {
-            onDispose {
-                if (userPressedBack.not()) {
-                    scope.launch {
-                        navBottomSheetState.show()
-                    }
-                }
-            }
-        }
     }
 
     LaunchedEffect(Unit) {
@@ -189,7 +171,6 @@ fun ThemeDetailPage(
                                             }
                                             onClickSave()
                                             modalState.hide()
-                                            userPressedBack = true
                                             navController.popBackStack()
                                         }
                                     },
@@ -211,7 +192,6 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     themeDetailViewModel.saveTheme(themeName, isDefault)
                                     onClickSave()
-                                    userPressedBack = true
                                     navController.popBackStack()
                                 }
                             }

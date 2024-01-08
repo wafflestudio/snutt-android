@@ -38,10 +38,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.bottomSheet
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -173,9 +171,12 @@ class RootActivity : AppCompatActivity() {
         val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,
-            confirmValueChange = { false },
         )
-        val bottomSheetNavigator = remember { BottomSheetNavigator(navBottomSheetState) }
+        val bottomSheetNavigator = remember {
+            com.wafflestudio.snutt2.layouts.bottomsheetnavigation.BottomSheetNavigator(
+                navBottomSheetState,
+            )
+        }
         val navController = rememberNavController(bottomSheetNavigator)
         val initialHomeTab = remember {
             parseHomePageDeeplink() ?: HomeItem.Timetable
@@ -223,8 +224,9 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
-            ModalBottomSheetLayout(
+            com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
+                sheetGesturesEnabled = false,
                 sheetShape = RoundedCornerShape(10.dp),
                 scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
             ) {
@@ -282,7 +284,8 @@ class RootActivity : AppCompatActivity() {
                         }
                         val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
                         val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
-                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
+                        val themeDetailViewModel =
+                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         val scope = rememberCoroutineScope()
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
