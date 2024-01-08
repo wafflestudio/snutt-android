@@ -475,7 +475,7 @@ fun ThemeDetailItem(
     ) {
         Text(
             text = title,
-            modifier = Modifier.padding(end = 44.dp),
+            modifier = Modifier.width(72.dp),
             style = SNUTTTypography.body2.copy(
                 color = titleColor,
             ),
