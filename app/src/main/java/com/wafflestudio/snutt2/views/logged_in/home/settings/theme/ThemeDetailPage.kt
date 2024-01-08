@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +55,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
-import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -67,7 +67,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
@@ -286,7 +285,11 @@ fun ThemeDetailPage(
                                 ) {
                                     ColorBox(colorWithExpanded.item)
                                 }
-                                AnimatedVisibility(visible = colorWithExpanded.state) {
+                                AnimatedVisibility(
+                                    visible = colorWithExpanded.state,
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically(),
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -437,6 +440,7 @@ fun ThemeDetailPage(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -459,7 +463,7 @@ fun ThemeDetailItem(
     ) {
         Text(
             text = title,
-            modifier = Modifier.width(60.dp),
+            modifier = Modifier.padding(end = 44.dp),
             style = SNUTTTypography.body2.copy(
                 color = titleColor,
             ),

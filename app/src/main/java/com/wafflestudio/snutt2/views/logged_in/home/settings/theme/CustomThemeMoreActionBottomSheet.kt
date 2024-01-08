@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
@@ -32,22 +33,42 @@ fun CustomThemeMoreActionBottomSheet(
             .fillMaxWidth(),
     ) {
         MoreActionItem(
-            icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                PaletteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
             text = stringResource(R.string.custom_theme_action_detail),
             onClick = { onClickDetail() },
         )
         MoreActionItem(
-            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                WriteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
             text = stringResource(R.string.custom_theme_action_rename),
             onClick = { onClickRename() },
         )
         MoreActionItem(
-            icon = { DuplicateIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                DuplicateIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
             text = stringResource(R.string.custom_theme_action_duplicate),
             onClick = { onClickDuplicate() },
         )
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                TrashIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
             text = stringResource(R.string.custom_theme_action_delete),
             onClick = { onClickDelete() },
         )
