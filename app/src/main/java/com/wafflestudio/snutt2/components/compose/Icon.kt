@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun DrawerIcon(
@@ -775,7 +776,7 @@ fun CustomThemeMoreIcon(
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_custom_theme_more),
+        painter = painterResource(if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more),
         contentDescription = "",
     )
 }

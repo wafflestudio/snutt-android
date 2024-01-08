@@ -9,13 +9,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 
@@ -26,8 +23,7 @@ fun ThemeIcon(
 ) {
     if (theme.isCustom) {
         Row(
-            modifier = modifier
-                .clip(RoundedCornerShape(6.dp)),
+            modifier = modifier,
         ) {
             val colors = theme.colors.map { Color(it.bgColor!!) }
             when (theme.colors.size) {

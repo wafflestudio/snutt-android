@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -29,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,6 +51,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
@@ -210,6 +215,7 @@ fun AddThemeItem(
                 modifier = Modifier
                     .size(30.dp)
                     .align(Alignment.Center),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
             )
         }
         Spacer(modifier.height(8.dp))
@@ -235,10 +241,10 @@ private fun ThemeItem(
             if (onClickMore != null) {
                 CustomThemeMoreIcon(
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(32.dp)
                         .zIndex(1f)
                         .align(Alignment.TopEnd)
-                        .offset(8.dp, (-8).dp)
+                        .offset(12.dp, (-8).dp)
                         .clicks { onClickMore() },
                 )
             }
@@ -253,13 +259,27 @@ private fun ThemeItem(
             }
             ThemeIcon(
                 theme = theme,
-                modifier = Modifier.size(80.dp),
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(6.dp)),
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = theme.name,
-            modifier = Modifier.width(80.dp),
+            modifier = Modifier
+                .widthIn(max = 80.dp)
+                .then(
+                    if (theme.isDefault) {
+                        Modifier.background(
+                            color = if (isDarkMode()) SNUTTColors.DarkerGray else SNUTTColors.Gray,
+                            shape = CircleShape,
+                        )
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(horizontal = 8.dp, vertical = 2.dp),
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

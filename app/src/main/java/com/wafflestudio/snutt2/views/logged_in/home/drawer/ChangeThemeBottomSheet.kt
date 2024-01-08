@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +37,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
@@ -140,7 +143,9 @@ private fun ThemeItem(
         modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box {
+        Box(
+            modifier = Modifier.clip(RoundedCornerShape(6.dp)),
+        ) {
             ThemeIcon(
                 theme = theme,
                 modifier = Modifier.size(80.dp),
@@ -154,28 +159,25 @@ private fun ThemeItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Box(
+        Text(
+            text = theme.name,
             modifier = Modifier
                 .widthIn(max = 80.dp)
                 .then(
                     if (selected) {
                         Modifier.background(
-                            color = SNUTTColors.Gray20.copy(alpha = 0.5f),
+                            color = if (isDarkMode()) SNUTTColors.DarkerGray else SNUTTColors.Gray,
                             shape = CircleShape,
                         )
                     } else {
                         Modifier
                     },
                 )
-                .padding(horizontal = 8.dp),
-        ) {
-            Text(
-                text = theme.name,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = SNUTTTypography.body2,
-            )
-        }
+                .padding(horizontal = 8.dp, vertical = 2.dp),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = SNUTTTypography.body2,
+        )
     }
 }

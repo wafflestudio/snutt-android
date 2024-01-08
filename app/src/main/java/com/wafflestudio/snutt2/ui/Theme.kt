@@ -28,20 +28,20 @@ private val LightThemeColors @Composable get() = lightColors(
 )
 
 private val DarkThemeColors @Composable get() = darkColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.ExtraDarkGray,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.White,
     secondary = SNUTTColors.DarkMainBlue,
     onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
     background = SNUTTColors.Gray900,
-    onBackground = SNUTTColors.DarkerGray,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    onBackground = SNUTTColors.Gray30,
+    surface = SNUTTColors.ExtraDarkGray,
+    onSurface = SNUTTColors.White,
 )
 
 val Colors.onSurfaceVariant: Color
-    get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.DarkGray
+    get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
 enum class ThemeMode {
     DARK, LIGHT, AUTO, ;

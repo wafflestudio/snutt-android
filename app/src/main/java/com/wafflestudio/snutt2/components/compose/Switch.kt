@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 private fun animateHorizontalAlignmentAsState(
@@ -44,7 +45,15 @@ fun Switch(
     val horizontalBias by remember(checked) { mutableFloatStateOf(if (checked) 1f else -1f) }
     val alignment by animateHorizontalAlignmentAsState(targetBiasValue = horizontalBias)
     val color by animateColorAsState(
-        targetValue = if (checked) MaterialTheme.colors.secondary else SNUTTColors.Gray10,
+        targetValue = if (checked) {
+            MaterialTheme.colors.secondary
+        } else {
+            if (isDarkMode()) {
+                SNUTTColors.DarkerGray
+            } else {
+                SNUTTColors.Gray10
+            }
+        },
         label = "",
     )
     Column(
@@ -61,7 +70,7 @@ fun Switch(
                 .aspectRatio(1f)
                 .fillMaxSize()
                 .shadow(elevation = 5.dp, shape = CircleShape)
-                .background(color = MaterialTheme.colors.surface, shape = CircleShape)
+                .background(color = SNUTTColors.White, shape = CircleShape)
                 .align(alignment),
         )
     }

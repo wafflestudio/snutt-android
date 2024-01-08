@@ -1,12 +1,22 @@
 package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun SimpleTopBar(
@@ -84,11 +95,22 @@ fun CenteredTopBar(
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
+    val isDarkMode = isDarkMode()
     Box(
         modifier = modifier
-            .background(color = SNUTTColors.White900)
+            .background(color = MaterialTheme.colors.primary)
             .fillMaxWidth()
             .height(56.dp)
+            .drawWithCache {
+                onDrawWithContent {
+                    drawLine(
+                        color = if (isDarkMode) SNUTTColors.DarkerGray else SNUTTColors.Gray10,
+                        start = Offset(0f, this.size.height), end = Offset(this.size.width, this.size.height),
+                        strokeWidth = 1f,
+                    )
+                    drawContent()
+                }
+            }
             .padding(horizontal = 20.dp),
     ) {
         Row(

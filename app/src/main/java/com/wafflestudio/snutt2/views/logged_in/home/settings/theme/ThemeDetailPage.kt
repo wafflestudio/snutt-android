@@ -50,7 +50,6 @@ import com.wafflestudio.snutt2.components.compose.Switch
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
@@ -422,7 +421,7 @@ fun ThemeDetailPage(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(SNUTTColors.White)
+                        .background(MaterialTheme.colors.surface)
                         .padding(15.dp)
                         .size(
                             (LocalConfiguration.current.screenWidthDp * 0.8).dp,
