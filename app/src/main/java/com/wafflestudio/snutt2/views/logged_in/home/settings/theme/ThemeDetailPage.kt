@@ -129,18 +129,8 @@ fun ThemeDetailPage(
     if (navBottomSheetState.targetValue != ModalBottomSheetValue.Hidden) {
         DisposableEffect(Unit) {
             onDispose {
-                Timber.tag("asdf").d(navBottomSheetState.progress.toString())
-                if (userPressedBack.not()) {
-                    if (navBottomSheetState.progress < 0.5f) {
-                        scope.launch {
-                            navBottomSheetState.show()
-                            onBackPressed()
-                        }
-                    } else {
-                        scope.launch {
-                            navBottomSheetState.show()
-                        }
-                    }
+                scope.launch {
+                    navBottomSheetState.show()
                 }
             }
         }
