@@ -68,7 +68,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialog
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -129,8 +128,10 @@ fun ThemeDetailPage(
     if (navBottomSheetState.targetValue != ModalBottomSheetValue.Hidden) {
         DisposableEffect(Unit) {
             onDispose {
-                scope.launch {
-                    navBottomSheetState.show()
+                if (userPressedBack.not()) {
+                    scope.launch {
+                        navBottomSheetState.show()
+                    }
                 }
             }
         }
