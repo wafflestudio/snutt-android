@@ -173,6 +173,7 @@ class RootActivity : AppCompatActivity() {
         val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,
+            confirmValueChange = { false },
         )
         val bottomSheetNavigator = remember { BottomSheetNavigator(navBottomSheetState) }
         val navController = rememberNavController(bottomSheetNavigator)

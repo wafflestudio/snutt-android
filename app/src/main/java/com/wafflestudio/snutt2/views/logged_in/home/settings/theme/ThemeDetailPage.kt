@@ -18,10 +18,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,6 +56,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
+import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -64,7 +68,9 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialog
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
@@ -76,6 +82,7 @@ fun ThemeDetailPage(
     val scope = rememberCoroutineScope()
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
+    val navBottomSheetState = LocalNavBottomSheetState.current
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -87,6 +94,7 @@ fun ThemeDetailPage(
     val themeColors by themeDetailViewModel.themeColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
     var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
+    var userPressedBack by remember { mutableStateOf(false) }
 
     val onBackPressed: () -> Unit = {
         if (themeDetailViewModel.hasChange(themeName, isDefault)) {
@@ -95,6 +103,7 @@ fun ThemeDetailPage(
                 title = "테마 편집 취소",
                 onConfirm = {
                     modalState.hide()
+                    userPressedBack = true
                     navController.popBackStack()
                 },
                 onDismiss = {
@@ -108,12 +117,33 @@ fun ThemeDetailPage(
                 },
             ).show()
         } else {
+            userPressedBack = true
             navController.popBackStack()
         }
     }
 
     BackHandler {
         onBackPressed()
+    }
+
+    if (navBottomSheetState.targetValue != ModalBottomSheetValue.Hidden) {
+        DisposableEffect(Unit) {
+            onDispose {
+                Timber.tag("asdf").d(navBottomSheetState.progress.toString())
+                if (userPressedBack.not()) {
+                    if (navBottomSheetState.progress < 0.5f) {
+                        scope.launch {
+                            navBottomSheetState.show()
+                            onBackPressed()
+                        }
+                    } else {
+                        scope.launch {
+                            navBottomSheetState.show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -168,6 +198,7 @@ fun ThemeDetailPage(
                                             }
                                             onClickSave()
                                             modalState.hide()
+                                            userPressedBack = true
                                             navController.popBackStack()
                                         }
                                     },
@@ -189,6 +220,7 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     themeDetailViewModel.saveTheme(themeName, isDefault)
                                     onClickSave()
+                                    userPressedBack = true
                                     navController.popBackStack()
                                 }
                             }
