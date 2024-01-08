@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -99,7 +100,7 @@ fun ThemeDetailPage(
         if (themeDetailViewModel.hasChange(themeName, isDefault)) {
             modalState.setOkCancel(
                 context = context,
-                title = "테마 편집 취소",
+                title = context.getString(R.string.theme_detail_dialog_cancel_edit_title),
                 onConfirm = {
                     modalState.hide()
                     navController.popBackStack()
@@ -109,7 +110,7 @@ fun ThemeDetailPage(
                 },
                 content = {
                     Text(
-                        text = context.getString(R.string.custom_theme_dialog_cancel_edit),
+                        text = context.getString(R.string.theme_detail_dialog_cancel_edit_body),
                         style = SNUTTTypography.body1,
                     )
                 },
@@ -135,7 +136,11 @@ fun ThemeDetailPage(
         CenteredTopBar(
             title = {
                 Text(
-                    text = "커스텀 테마",
+                    text = if (editingTheme.isCustom) {
+                        stringResource(R.string.theme_detail_app_bar_title_custom)
+                    } else {
+                        stringResource(R.string.theme_detail_app_bar_title_builtin)
+                    },
                     style = SNUTTTypography.h3,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -143,7 +148,7 @@ fun ThemeDetailPage(
             },
             navigationIcon = {
                 Text(
-                    text = "취소",
+                    text = stringResource(R.string.common_cancel),
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
@@ -153,7 +158,7 @@ fun ThemeDetailPage(
             },
             actions = {
                 Text(
-                    text = "저장",
+                    text = stringResource(R.string.common_save),
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
@@ -161,9 +166,9 @@ fun ThemeDetailPage(
                                 modalState.setOkCancel(
                                     context = context,
                                     title = if (isDefault) {
-                                        "기본 테마 지정"
+                                        context.getString(R.string.theme_detail_dialog_set_default_title)
                                     } else {
-                                        "기본 테마 해제"
+                                        context.getString(R.string.theme_detail_dialog_unset_default_title)
                                     },
                                     onConfirm = {
                                         scope.launch {
@@ -184,9 +189,9 @@ fun ThemeDetailPage(
                                     content = {
                                         Text(
                                             text = if (isDefault) {
-                                                context.getString(R.string.custom_theme_dialog_set_as_default)
+                                                context.getString(R.string.theme_detail_dialog_set_default_body)
                                             } else {
-                                                context.getString(R.string.custom_theme_dialog_unset_default)
+                                                context.getString(R.string.theme_detail_dialog_unset_default_body)
                                             },
                                             style = SNUTTTypography.body1,
                                         )
@@ -210,7 +215,7 @@ fun ThemeDetailPage(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             ThemeDetailItem(
-                title = "테마명",
+                title = stringResource(R.string.theme_detail_theme_name),
                 titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = if (editingTheme.isCustom) 1f else 0.5f),
             ) {
                 EditText(
@@ -232,19 +237,19 @@ fun ThemeDetailPage(
                 )
             }
             SettingColumn(
-                title = "색 조합",
+                title = stringResource(R.string.theme_detail_theme_colors),
             ) {
                 if (editingTheme.isCustom) {
                     themeColors.forEachIndexed { idx, colorWithExpanded ->
                         val state = remember {
                             MutableTransitionState(
-                                navBottomSheetState.currentValue == ModalBottomSheetValue.Hidden    // 바텀시트 올라올 때에는 애니메이션 적용 안하기 위함
+                                navBottomSheetState.currentValue == ModalBottomSheetValue.Hidden, // 바텀시트 올라올 때에는 애니메이션 적용 안하기 위함
                             ).apply { targetState = true }
                         }
                         AnimatedVisibility(state) {
                             Column {
                                 ThemeDetailItem(
-                                    title = "색상${idx + 1}",
+                                    title = stringResource(R.string.theme_detail_color_item, idx + 1),
                                     modifier = Modifier.clicks {
                                         themeDetailViewModel.toggleColorExpanded(idx)
                                     },
@@ -310,7 +315,7 @@ fun ThemeDetailPage(
                                                 verticalAlignment = Alignment.CenterVertically,
                                             ) {
                                                 Text(
-                                                    text = "글꼴색",
+                                                    text = stringResource(R.string.theme_detail_color_fg),
                                                     color = MaterialTheme.colors.onSurfaceVariant,
                                                     style = SNUTTTypography.body2,
                                                 )
@@ -343,7 +348,7 @@ fun ThemeDetailPage(
                                             Spacer(modifier = Modifier.height(8.dp))
                                             Row {
                                                 Text(
-                                                    text = "배경색",
+                                                    text = stringResource(R.string.theme_detail_color_bg),
                                                     color = MaterialTheme.colors.onSurfaceVariant,
                                                     style = SNUTTTypography.body2,
                                                 )
@@ -395,7 +400,7 @@ fun ThemeDetailPage(
                                 },
                         ) {
                             Text(
-                                text = "+ 색상 추가",
+                                text = stringResource(R.string.theme_detail_add_color),
                                 modifier = Modifier.align(Alignment.Center),
                                 color = MaterialTheme.colors.onBackground,
                             )
@@ -404,7 +409,7 @@ fun ThemeDetailPage(
                 } else {
                     (1..9).forEach { idx ->
                         ThemeDetailItem(
-                            title = "색상${idx + 1}",
+                            title = stringResource(R.string.theme_detail_color_item, idx + 1),
                             titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                         ) {
                             ColorBox(
@@ -419,7 +424,7 @@ fun ThemeDetailPage(
             }
             Spacer(modifier = Modifier.height(12.dp))
             SettingItem(
-                title = "기본 테마로 지정",
+                title = stringResource(R.string.theme_detail_set_default),
                 hasNextPage = false,
             ) {
                 Switch(
@@ -428,7 +433,7 @@ fun ThemeDetailPage(
                 )
             }
             SettingColumn(
-                title = "미리보기",
+                title = stringResource(R.string.theme_detail_preview),
             ) {
                 Box(
                     modifier = Modifier

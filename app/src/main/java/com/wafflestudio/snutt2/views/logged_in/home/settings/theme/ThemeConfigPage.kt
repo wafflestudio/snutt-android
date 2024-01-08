@@ -93,7 +93,7 @@ fun ThemeConfigPage(
             modifier = Modifier.fillMaxSize(),
         ) {
             SimpleTopBar(
-                title = "시간표 테마",
+                title = stringResource(R.string.theme_config_app_bar_title),
                 onClickNavigateBack = {
                     onBackPressed()
                 },
@@ -104,7 +104,7 @@ fun ThemeConfigPage(
                     .background(MaterialTheme.colors.background),
             ) {
                 SettingColumn(
-                    title = "커스텀 테마",
+                    title = stringResource(R.string.theme_config_custom_theme),
                     titleStyle = SNUTTTypography.body2.copy(
                         color = MaterialTheme.colors.onSurfaceVariant,
                         fontSize = 13.sp,
@@ -167,7 +167,7 @@ fun ThemeConfigPage(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 SettingColumn(
-                    title = "제공 테마",
+                    title = stringResource(R.string.theme_config_builtin_theme),
                     titleStyle = SNUTTTypography.body2.copy(
                         color = MaterialTheme.colors.onSurfaceVariant,
                         fontSize = 13.sp,
@@ -221,7 +221,7 @@ fun AddThemeItem(
         }
         Spacer(modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.theme_new),
+            text = stringResource(R.string.theme_create),
             style = SNUTTTypography.body2,
         )
     }
