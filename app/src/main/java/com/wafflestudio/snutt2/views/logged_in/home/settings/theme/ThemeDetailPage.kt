@@ -409,7 +409,7 @@ fun ThemeDetailPage(
                 } else {
                     (1..9).forEach { idx ->
                         ThemeDetailItem(
-                            title = stringResource(R.string.theme_detail_color_item, idx + 1),
+                            title = stringResource(R.string.theme_detail_color_item, idx),
                             titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
                         ) {
                             ColorBox(

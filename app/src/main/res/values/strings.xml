@@ -342,7 +342,7 @@
     <string name="theme_detail_dialog_unset_default_body">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
     <string name="theme_detail_theme_name">테마명</string>
     <string name="theme_detail_theme_colors">색 조합</string>
-    <string name="theme_detail_color_item">색상$d</string>
+    <string name="theme_detail_color_item">색상%d</string>
     <string name="theme_detail_color_fg">글꼴색</string>
     <string name="theme_detail_color_bg">배경색</string>
     <string name="theme_detail_add_color">+ 색상 추가</string>
