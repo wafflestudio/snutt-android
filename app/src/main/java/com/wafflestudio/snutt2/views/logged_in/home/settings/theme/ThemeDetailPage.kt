@@ -20,7 +20,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -55,6 +57,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
+import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -67,6 +70,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
@@ -78,6 +82,7 @@ fun ThemeDetailPage(
     val scope = rememberCoroutineScope()
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
+    val navBottomSheetState = LocalNavBottomSheetState.current
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -232,7 +237,9 @@ fun ThemeDetailPage(
                 if (editingTheme.isCustom) {
                     themeColors.forEachIndexed { idx, colorWithExpanded ->
                         val state = remember {
-                            MutableTransitionState(false).apply { targetState = true }
+                            MutableTransitionState(
+                                navBottomSheetState.currentValue == ModalBottomSheetValue.Hidden    // 바텀시트 올라올 때에는 애니메이션 적용 안하기 위함
+                            ).apply { targetState = true }
                         }
                         AnimatedVisibility(state) {
                             Column {
