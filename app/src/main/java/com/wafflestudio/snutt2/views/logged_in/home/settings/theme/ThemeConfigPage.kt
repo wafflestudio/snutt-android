@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -46,6 +47,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -97,6 +99,10 @@ fun ThemeConfigPage(
             ) {
                 SettingColumn(
                     title = "커스텀 테마",
+                    titleStyle = SNUTTTypography.body2.copy(
+                        color = MaterialTheme.colors.onSurfaceVariant,
+                        fontSize = 13.sp,
+                    ),
                 ) {
                     LazyRow(
                         modifier = Modifier
@@ -153,8 +159,13 @@ fun ThemeConfigPage(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(4.dp))
                 SettingColumn(
                     title = "제공 테마",
+                    titleStyle = SNUTTTypography.body2.copy(
+                        color = MaterialTheme.colors.onSurfaceVariant,
+                        fontSize = 13.sp,
+                    ),
                 ) {
                     Row(
                         modifier = Modifier

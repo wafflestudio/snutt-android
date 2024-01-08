@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -237,6 +238,9 @@ fun SettingsPage(
 fun SettingColumn(
     modifier: Modifier = Modifier,
     title: String = "",
+    titleStyle: TextStyle = SNUTTTypography.body2.copy(
+        color = MaterialTheme.colors.onSurfaceVariant,
+    ),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -250,9 +254,7 @@ fun SettingColumn(
                 modifier = Modifier
                     .padding(top = 24.dp, bottom = 8.dp, start = 20.dp)
                     .align(Alignment.Start),
-                style = SNUTTTypography.body2.copy(
-                    color = MaterialTheme.colors.onSurfaceVariant,
-                ),
+                style = titleStyle,
             )
             Spacer(modifier = Modifier.size(5.dp))
         }
