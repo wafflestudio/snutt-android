@@ -87,6 +87,7 @@ fun ThemeConfigPage(
         sheetContent = bottomSheet.content,
         sheetShape = RoundedCornerShape(5.dp),
         sheetGesturesEnabled = false,
+        scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

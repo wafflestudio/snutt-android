@@ -50,6 +50,7 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
@@ -224,6 +225,7 @@ class RootActivity : AppCompatActivity() {
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetShape = RoundedCornerShape(10.dp),
+                scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
             ) {
                 NavHost(
                     navController = navController,
