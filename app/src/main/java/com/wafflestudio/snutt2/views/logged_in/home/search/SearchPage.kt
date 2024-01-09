@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
@@ -8,10 +9,22 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,7 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.BookmarkIcon
+import com.wafflestudio.snutt2.components.compose.ExitIcon
+import com.wafflestudio.snutt2.components.compose.FilterIcon
+import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.components.compose.SearchIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
@@ -29,14 +48,17 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchPage(
@@ -67,6 +89,10 @@ fun SearchPage(
                 "Snutt",
             )
         }
+    }
+
+    BackHandler(pageMode == SearchPageMode.Bookmark) {
+        searchViewModel.togglePageMode()
     }
 
     Column {
