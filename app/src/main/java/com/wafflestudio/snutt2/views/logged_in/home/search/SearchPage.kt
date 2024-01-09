@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -118,7 +119,12 @@ fun SearchPage(
                         SearchPageMode.Search -> {
                             Row(
                                 modifier = Modifier
-                                    .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
+                                    .padding(start = 8.dp, top = 5.dp, bottom = 5.dp)
+                                    .background(
+                                        SNUTTColors.Gray100,
+                                        shape = RoundedCornerShape(6.dp),
+                                    )
+                                    .fillMaxHeight()
                                     .weight(1f)
                                     .padding(horizontal = 8.dp, vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -171,13 +177,18 @@ fun SearchPage(
                             }
                         }
                         SearchPageMode.Bookmark -> {
-                            Text(
+                            Row(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(start = 12.dp),
-                                text = stringResource(R.string.bookmark_page_title),
-                                style = SNUTTTypography.h2,
-                            )
+                                    .fillMaxHeight()
+                                    .padding(start = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.bookmark_page_title),
+                                    style = SNUTTTypography.h2,
+                                )
+                            }
                         }
                     }
                 }
