@@ -49,6 +49,7 @@ import com.wafflestudio.snutt2.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
+import com.wafflestudio.snutt2.components.compose.ColorPicker
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Switch
@@ -359,22 +360,37 @@ fun ThemeDetailPage(
                                                     modifier = Modifier
                                                         .size(25.dp)
                                                         .clicks {
-                                                            colorSelectorDialog(
-                                                                context,
-                                                                "배경색",
-                                                            ).subscribeBy {
-                                                                themeDetailViewModel.updateColor(
-                                                                    idx,
-                                                                    colorWithExpanded.item.fgColor
-                                                                        ?: 0xffffff,
-                                                                    it,
-                                                                )
-                                                                scope.launch {
-                                                                    timetableViewModel.setPreviewTheme(
-                                                                        editingTheme.copy(colors = themeColors.map { it.item }),
+                                                            var selectedColor by mutableStateOf(
+                                                                colorWithExpanded.item.bgColor ?: 0xffffff,
+                                                            )
+                                                            modalState
+                                                                .setOkCancel(
+                                                                    context = context,
+                                                                    onDismiss = { modalState.hide() },
+                                                                    onConfirm = {
+                                                                        themeDetailViewModel.updateColor(
+                                                                            idx,
+                                                                            colorWithExpanded.item.fgColor ?: 0xffffff,
+                                                                            selectedColor,
+                                                                        )
+                                                                        scope.launch {
+                                                                            timetableViewModel.setPreviewTheme(
+                                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                            )
+                                                                            modalState.hide()
+                                                                        }
+                                                                    },
+                                                                    title = "색상 선택",
+                                                                ) {
+                                                                    ColorPicker(
+                                                                        initialColor = colorWithExpanded.item.bgColor
+                                                                            ?: 0xffffff,
+                                                                        onColorChanged = {
+                                                                            selectedColor = it
+                                                                        },
                                                                     )
                                                                 }
-                                                            }
+                                                                .show()
                                                         },
                                                 )
                                             }
