@@ -20,11 +20,6 @@ object SNUTTColors {
     val MainBlue = Color(0xff1bd0c8)
     val DarkMainBlue = Color(0xff00b8b0)
 
-//    val MediumGray @Composable get() = if (isDarkMode()) DarkGray else Gray2
-//    val NormalGray @Composable get() = if (isDarkMode()) DarkGray else Gray20
-//    val LightGray @Composable get() = if (isDarkMode()) DarkerGray else Gray
-//    val Background @Composable get() = if (isDarkMode()) ExtraDarkGray else White
-
     val Colors.Gray100 @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff505050)
     val Gray100 @Composable get() = MaterialTheme.colors.Gray100
 

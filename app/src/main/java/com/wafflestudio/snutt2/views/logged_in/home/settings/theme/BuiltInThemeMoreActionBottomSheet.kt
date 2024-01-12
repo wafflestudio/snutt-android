@@ -12,21 +12,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.PinIcon
 import com.wafflestudio.snutt2.components.compose.PinOffIcon
-import com.wafflestudio.snutt2.components.compose.TrashIcon
 
 @Composable
-fun CustomThemeMoreActionBottomSheet(
+fun BuiltInThemeMoreActionBottomSheet(
     isThemeDefault: Boolean,
     onClickDetail: () -> Unit,
     onClickSetDefault: () -> Unit,
     onClickUnsetDefault: () -> Unit,
-    onClickDuplicate: () -> Unit,
-    onClickDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -42,7 +38,7 @@ fun CustomThemeMoreActionBottomSheet(
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
             },
-            text = stringResource(R.string.custom_theme_action_detail_edit),
+            text = stringResource(R.string.custom_theme_action_detail_view),
             onClick = { onClickDetail() },
         )
         if (isThemeDefault) {
@@ -68,25 +64,5 @@ fun CustomThemeMoreActionBottomSheet(
                 onClick = { onClickSetDefault() },
             )
         }
-        MoreActionItem(
-            icon = {
-                DuplicateIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
-                )
-            },
-            text = stringResource(R.string.custom_theme_action_duplicate),
-            onClick = { onClickDuplicate() },
-        )
-        MoreActionItem(
-            icon = {
-                TrashIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
-                )
-            },
-            text = stringResource(R.string.custom_theme_action_delete),
-            onClick = { onClickDelete() },
-        )
     }
 }

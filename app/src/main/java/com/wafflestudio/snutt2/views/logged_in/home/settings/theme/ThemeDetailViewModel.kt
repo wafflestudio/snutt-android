@@ -93,7 +93,7 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun setAsDefaultTheme() {
+    suspend fun setThemeDefault() {
         if (_editingTheme.value is CustomTheme) {
             themeRepository.setCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {
@@ -101,7 +101,7 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun unsetDefaultTheme() {
+    suspend fun unsetThemeDefault() {
         if (_editingTheme.value is CustomTheme) {
             themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {

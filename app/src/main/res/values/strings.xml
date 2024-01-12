@@ -328,8 +328,10 @@
     <string name="theme_config_custom_theme">커스텀 테마</string>
     <string name="theme_config_builtin_theme">제공 테마</string>
     <string name="theme_create">새로운 테마</string>
-    <string name="custom_theme_action_detail">상세 수정</string>
-    <string name="custom_theme_action_rename">테마명 변경</string>
+    <string name="custom_theme_action_detail_edit">상세 수정</string>
+    <string name="custom_theme_action_detail_view">상세 보기</string>
+    <string name="custom_theme_action_set_default">기본 테마로 지정</string>
+    <string name="custom_theme_action_unset_default">기본 테마 해제</string>
     <string name="custom_theme_action_duplicate">테마 복제</string>
     <string name="custom_theme_action_delete">테마 삭제</string>
     <string name="theme_detail_app_bar_title_custom">커스텀 테마</string>

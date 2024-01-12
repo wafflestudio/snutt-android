@@ -275,6 +275,32 @@ fun PaletteIcon(
 }
 
 @Composable
+fun PinIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun PinOffIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_pin_off),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -767,17 +793,6 @@ fun AddIcon(
         painter = painterResource(R.drawable.ic_add),
         contentDescription = "",
         colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun CustomThemeMoreIcon(
-    modifier: Modifier = Modifier,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more),
-        contentDescription = "",
     )
 }
 

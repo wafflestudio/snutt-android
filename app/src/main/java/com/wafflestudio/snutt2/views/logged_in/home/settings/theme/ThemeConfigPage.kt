@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -42,8 +41,8 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
+import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
-import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
 import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
@@ -132,16 +131,23 @@ fun ThemeConfigPage(
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
-                                    navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
-                                },
-                                onClickMore = {
                                     scope.launch {
                                         bottomSheet.setSheetContent {
                                             CustomThemeMoreActionBottomSheet(
                                                 onClickDetail = {
                                                     navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
                                                 },
-                                                onClickRename = {
+                                                onClickSetDefault = {
+                                                    scope.launch {
+                                                        themeListViewModel.setThemeDefault(theme.id)
+                                                        bottomSheet.hide()
+                                                    }
+                                                },
+                                                onClickUnsetDefault = {
+                                                    scope.launch {
+                                                        themeListViewModel.unsetThemeDefault(theme.id)
+                                                        bottomSheet.hide()
+                                                    }
                                                 },
                                                 onClickDuplicate = {
                                                     scope.launch {
@@ -155,6 +161,7 @@ fun ThemeConfigPage(
                                                         bottomSheet.hide()
                                                     }
                                                 },
+                                                isThemeDefault = theme.isDefault,
                                             )
                                         }
                                         bottomSheet.show()
@@ -185,7 +192,29 @@ fun ThemeConfigPage(
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
-                                    navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                    scope.launch {
+                                        bottomSheet.setSheetContent {
+                                            BuiltInThemeMoreActionBottomSheet(
+                                                isThemeDefault = theme.isDefault,
+                                                onClickDetail = {
+                                                    navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                                },
+                                                onClickSetDefault = {
+                                                    scope.launch {
+                                                        themeListViewModel.setThemeDefault(theme.code)
+                                                        bottomSheet.hide()
+                                                    }
+                                                },
+                                                onClickUnsetDefault = {
+                                                    scope.launch {
+                                                        themeListViewModel.unsetThemeDefault(theme.code)
+                                                        bottomSheet.hide()
+                                                    }
+                                                },
+                                            )
+                                        }
+                                        bottomSheet.show()
+                                    }
                                 },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -232,23 +261,12 @@ private fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickMore: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box {
-            if (onClickMore != null) {
-                CustomThemeMoreIcon(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .zIndex(1f)
-                        .align(Alignment.TopEnd)
-                        .offset(12.dp, (-8).dp)
-                        .clicks { onClickMore() },
-                )
-            }
             if (theme.isDefault) {
                 CustomThemePinIcon(
                     modifier = Modifier
@@ -266,25 +284,24 @@ private fun ThemeItem(
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = theme.name,
+        Row(
             modifier = Modifier
                 .widthIn(max = 80.dp)
-                .then(
-                    if (theme.isDefault) {
-                        Modifier.background(
-                            color = if (isDarkMode()) SNUTTColors.DarkerGray else SNUTTColors.Gray,
-                            shape = CircleShape,
-                        )
-                    } else {
-                        Modifier
-                    },
-                )
                 .padding(horizontal = 8.dp, vertical = 2.dp),
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = SNUTTTypography.body2,
-        )
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = theme.name,
+                modifier = Modifier.weight(1f, false),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = SNUTTTypography.body2,
+            )
+            ArrowRight(
+                modifier = Modifier.size(10.dp).offset(y = 1.dp),
+                colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+            )
+        }
     }
 }

@@ -179,9 +179,9 @@ fun ThemeDetailPage(
                                         scope.launch {
                                             themeDetailViewModel.saveTheme(themeName)
                                             if (isDefault) {
-                                                themeDetailViewModel.setAsDefaultTheme()
+                                                themeDetailViewModel.setThemeDefault()
                                             } else {
-                                                themeDetailViewModel.unsetDefaultTheme()
+                                                themeDetailViewModel.unsetThemeDefault()
                                             }
                                             onClickSave()
                                             modalState.hide()
