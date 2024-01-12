@@ -95,7 +95,7 @@ fun ThemeDetailPage(
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
 
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
-    val themeColors by themeDetailViewModel.themeColors.collectAsState()
+    val editingColors by themeDetailViewModel.editingColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
     var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
 
@@ -243,7 +243,7 @@ fun ThemeDetailPage(
                 title = stringResource(R.string.theme_detail_theme_colors),
             ) {
                 if (editingTheme is CustomTheme) {
-                    themeColors.forEachIndexed { idx, colorWithExpanded ->
+                    editingColors.forEachIndexed { idx, colorWithExpanded ->
                         val state = remember {
                             MutableTransitionState(
                                 navBottomSheetState.currentValue == ModalBottomSheetValue.Hidden, // 바텀시트 올라올 때에는 애니메이션 적용 안하기 위함
@@ -261,18 +261,20 @@ fun ThemeDetailPage(
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clicks {
-                                                    if (themeColors.size < 9) {
+                                                    if (editingColors.size < 9) {
                                                         themeDetailViewModel.duplicateColor(idx)
                                                         scope.launch {
                                                             timetableViewModel.setPreviewTheme(
-                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
+                                                                (editingTheme as CustomTheme).copy(
+                                                                    colors = editingColors.map { it.item },
+                                                                ),
                                                             )
                                                         }
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
                                                 MaterialTheme.colors.onSurfaceVariant.copy(
-                                                    alpha = if (themeColors.size < 9) 1f else 0.3f,
+                                                    alpha = if (editingColors.size < 9) 1f else 0.3f,
                                                 ),
                                             ),
                                         )
@@ -281,18 +283,20 @@ fun ThemeDetailPage(
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clicks {
-                                                    if (themeColors.size > 1) {
+                                                    if (editingColors.size > 1) {
                                                         themeDetailViewModel.removeColor(idx)
                                                         scope.launch {
                                                             timetableViewModel.setPreviewTheme(
-                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
+                                                                (editingTheme as CustomTheme).copy(
+                                                                    colors = editingColors.map { it.item },
+                                                                ),
                                                             )
                                                         }
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
                                                 MaterialTheme.colors.onSurfaceVariant.copy(
-                                                    alpha = if (themeColors.size > 1) 1f else 0.3f,
+                                                    alpha = if (editingColors.size > 1) 1f else 0.3f,
                                                 ),
                                             ),
                                         )
@@ -341,7 +345,9 @@ fun ThemeDetailPage(
                                                                 )
                                                                 scope.launch {
                                                                     timetableViewModel.setPreviewTheme(
-                                                                        (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
+                                                                        (editingTheme as CustomTheme).copy(
+                                                                            colors = editingColors.map { it.item },
+                                                                        ),
                                                                     )
                                                                 }
                                                             }
@@ -363,7 +369,8 @@ fun ThemeDetailPage(
                                                         .size(25.dp)
                                                         .clicks {
                                                             var selectedColor by mutableStateOf(
-                                                                colorWithExpanded.item.bgColor ?: 0xffffff,
+                                                                colorWithExpanded.item.bgColor
+                                                                    ?: 0xffffff,
                                                             )
                                                             modalState
                                                                 .setOkCancel(
@@ -372,12 +379,15 @@ fun ThemeDetailPage(
                                                                     onConfirm = {
                                                                         themeDetailViewModel.updateColor(
                                                                             idx,
-                                                                            colorWithExpanded.item.fgColor ?: 0xffffff,
+                                                                            colorWithExpanded.item.fgColor
+                                                                                ?: 0xffffff,
                                                                             selectedColor,
                                                                         )
                                                                         scope.launch {
                                                                             timetableViewModel.setPreviewTheme(
-                                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
+                                                                                (editingTheme as CustomTheme).copy(
+                                                                                    colors = editingColors.map { it.item },
+                                                                                ),
                                                                             )
                                                                             modalState.hide()
                                                                         }
@@ -403,7 +413,7 @@ fun ThemeDetailPage(
                             }
                         }
                     }
-                    AnimatedVisibility(themeColors.size < 9) {
+                    AnimatedVisibility(editingColors.size < 9) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -412,7 +422,7 @@ fun ThemeDetailPage(
                                     themeDetailViewModel.addColor()
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(
-                                            (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
+                                            (editingTheme as CustomTheme).copy(colors = editingColors.map { it.item }),
                                         )
                                     }
                                 },

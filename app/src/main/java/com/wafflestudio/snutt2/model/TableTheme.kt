@@ -3,8 +3,6 @@ package com.wafflestudio.snutt2.model
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.ToJson
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -166,7 +164,7 @@ data class BuiltInTheme(
     }
 
     @Composable
-    fun getBuiltInColorByIndex(colorIndex: Long): androidx.compose.ui.graphics.Color {
+    fun getColorByIndexComposable(colorIndex: Long): androidx.compose.ui.graphics.Color {
         return if (isDarkMode()) {
             when (code) {
                 SNUTT.code -> listOf(
@@ -341,12 +339,4 @@ data class BuiltInTheme(
             }[colorIndex.toInt() - 1]
         }
     }
-}
-
-class BuiltInThemeAdapter {
-    @ToJson
-    fun toJson(builtInTheme: BuiltInTheme): Int = builtInTheme.code
-
-    @FromJson
-    fun fromJson(value: String): BuiltInTheme = BuiltInTheme.fromCode(value.toInt())
 }

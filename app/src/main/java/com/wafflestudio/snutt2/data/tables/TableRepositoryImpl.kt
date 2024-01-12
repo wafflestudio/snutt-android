@@ -7,7 +7,6 @@ import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -65,8 +64,8 @@ class TableRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateTableTheme(tableId: String, theme: BuiltInTheme) {
-        val response = api._putTableTheme(tableId, PutTableThemeParams(theme = theme))
+    override suspend fun updateTableTheme(tableId: String, code: Int) {
+        val response = api._putTableTheme(tableId, PutTableThemeParams(theme = code))
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
             if (prev?.id == tableId) {

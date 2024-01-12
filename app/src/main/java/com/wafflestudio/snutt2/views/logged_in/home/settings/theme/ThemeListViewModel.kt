@@ -20,14 +20,6 @@ class ThemeListViewModel @Inject constructor(
         themeRepository.fetchThemes()
     }
 
-    fun getTheme(themeId: String): CustomTheme {
-        return themeRepository.getTheme(themeId)
-    }
-
-    fun getTheme(code: Int): BuiltInTheme {
-        return themeRepository.getTheme(code)
-    }
-
     suspend fun deleteTheme(themeId: String) {
         themeRepository.deleteTheme(themeId)
         fetchThemes()

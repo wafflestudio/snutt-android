@@ -29,24 +29,21 @@ import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun LectureColorSelectorPage(
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
-    themeListViewModel: ThemeListViewModel = hiltViewModel(),
+    timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
 
     val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
 
-    val currentTable by lectureDetailViewModel.currentTable.collectAsState()
-    val theme = currentTable?.themeId?.let {
-        themeListViewModel.getTheme(it)
-    } ?: currentTable?.theme ?: BuiltInTheme.SNUTT
+    val theme by timetableViewModel.tableTheme.collectAsState()
 
     Column(
         modifier = Modifier
@@ -61,7 +58,7 @@ fun LectureColorSelectorPage(
 
         Spacer(modifier = Modifier.height(10.dp))
         if (theme is CustomTheme) {
-            theme.colors.forEachIndexed { idx, color ->
+            (theme as CustomTheme).colors.forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
                     title = "${theme.name} $idx",

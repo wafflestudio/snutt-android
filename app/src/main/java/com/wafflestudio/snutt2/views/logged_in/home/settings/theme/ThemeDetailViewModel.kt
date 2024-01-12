@@ -24,8 +24,8 @@ class ThemeDetailViewModel @Inject constructor(
     val editingTheme: StateFlow<TableTheme> get() = _editingTheme
 
     // 색상별 id가 없어 expanded 여부를 설정할 수 없으므로 List<Selectable<ColorDto>>로 따로 관리한다
-    private val _themeColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
-    val themeColors: StateFlow<List<Selectable<ColorDto>>> get() = _themeColors
+    private val _editingColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
+    val editingColors: StateFlow<List<Selectable<ColorDto>>> get() = _editingColors
 
     init {
         val themeId = savedStateHandle.get<String>("themeId")
@@ -36,7 +36,7 @@ class ThemeDetailViewModel @Inject constructor(
             } else {
                 themeId?.let {
                     _editingTheme.value = if (themeId.isEmpty()) CustomTheme.New else themeRepository.getTheme(themeId)
-                    _themeColors.value = (_editingTheme.value as CustomTheme).colors.map { color ->
+                    _editingColors.value = (_editingTheme.value as CustomTheme).colors.map { color ->
                         color.toDataWithState(false)
                     }
                 }
@@ -45,31 +45,31 @@ class ThemeDetailViewModel @Inject constructor(
     }
 
     fun addColor() {
-        _themeColors.value = _themeColors.value.toMutableList().apply {
+        _editingColors.value = _editingColors.value.toMutableList().apply {
             add(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8).toDataWithState(true))
         }
     }
 
     fun removeColor(index: Int) {
-        _themeColors.value = _themeColors.value.toMutableList().apply {
+        _editingColors.value = _editingColors.value.toMutableList().apply {
             removeAt(index)
         }
     }
 
     fun updateColor(index: Int, fgColor: Int, bgColor: Int) {
-        _themeColors.value = _themeColors.value.toMutableList().apply {
+        _editingColors.value = _editingColors.value.toMutableList().apply {
             set(index, ColorDto(fgColor, bgColor).toDataWithState(get(index).state))
         }
     }
 
     fun duplicateColor(index: Int) {
-        _themeColors.value = _themeColors.value.toMutableList().apply {
+        _editingColors.value = _editingColors.value.toMutableList().apply {
             add(index + 1, get(index).copy(state = false))
         }
     }
 
     fun toggleColorExpanded(index: Int) {
-        _themeColors.value = _themeColors.value.toMutableList().apply {
+        _editingColors.value = _editingColors.value.toMutableList().apply {
             set(index, get(index).run { copy(state = !state) })
         }
     }
@@ -77,16 +77,16 @@ class ThemeDetailViewModel @Inject constructor(
     fun hasChange(name: String, isDefault: Boolean): Boolean {
         return name != _editingTheme.value.name ||
             isDefault != _editingTheme.value.isDefault ||
-            (_editingTheme.value is CustomTheme && _themeColors.value.map { it.item } != (_editingTheme.value as CustomTheme).colors)
+            (_editingTheme.value is CustomTheme && _editingColors.value.map { it.item } != (_editingTheme.value as CustomTheme).colors)
     }
 
     suspend fun saveTheme(name: String) {
         if (_editingTheme.value is CustomTheme) {
             val newTheme = (_editingTheme.value as CustomTheme).id.let { id ->
                 if (id.isEmpty()) {
-                    themeRepository.createTheme(name, _themeColors.value.map { it.item })
+                    themeRepository.createTheme(name, _editingColors.value.map { it.item })
                 } else {
-                    themeRepository.updateTheme(id, name, _themeColors.value.map { it.item })
+                    themeRepository.updateTheme(id, name, _editingColors.value.map { it.item })
                 }
             }
             _editingTheme.value = newTheme
@@ -105,7 +105,7 @@ class ThemeDetailViewModel @Inject constructor(
         if (_editingTheme.value is CustomTheme) {
             themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {
-            themeRepository.setBuiltInThemeDefault(0)
+            themeRepository.setBuiltInThemeDefault(0) // FIXME: DELETE /themes/basic/~/default 나오면 바꾸기
         }
     }
 }

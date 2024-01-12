@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import kotlinx.coroutines.flow.StateFlow
 
 interface TableRepository {
@@ -20,7 +19,7 @@ interface TableRepository {
 
     suspend fun updateTableName(id: String, title: String)
 
-    suspend fun updateTableTheme(tableId: String, theme: BuiltInTheme)
+    suspend fun updateTableTheme(tableId: String, code: Int)
 
     suspend fun updateTableTheme(tableId: String, themeId: String)
 

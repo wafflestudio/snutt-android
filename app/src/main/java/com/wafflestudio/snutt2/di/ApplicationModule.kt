@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.wafflestudio.snutt2.model.BuiltInThemeAdapter
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.Module
 import dagger.Provides
@@ -18,7 +17,6 @@ object ApplicationModule {
     @Singleton
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
-            .add(BuiltInThemeAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
     }

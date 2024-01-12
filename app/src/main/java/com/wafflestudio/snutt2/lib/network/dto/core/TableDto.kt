@@ -13,7 +13,7 @@ data class TableDto(
     @Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
-    @Json(name = "theme") val theme: BuiltInTheme,
+    @Json(name = "theme") val theme: Int,
     @Json(name = "themeId") val themeId: String? = null,
     @Json(name = "isPrimary") val isPrimary: Boolean = false,
 ) : Comparable<TableDto> {
@@ -41,7 +41,7 @@ data class TableDto(
             lectureList = emptyList(),
             updatedAt = "default",
             totalCredit = 0,
-            theme = BuiltInTheme.SNUTT,
+            theme = BuiltInTheme.SNUTT.code,
         )
     }
 }

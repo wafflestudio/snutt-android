@@ -39,18 +39,24 @@ fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
 ) {
-    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
-    val lectures = LocalTableState.current.table.lectureList.let {
-        if (theme is CustomTheme) {
-            it.mapIndexed { idx, lecture ->
-                lecture.copy(
-                    colorIndex = 0,
-                    color = theme.colors[idx % theme.colors.size],
-                )
+    val previewTheme = LocalTableState.current.previewTheme
+    val lectures = LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+        previewTheme?.let { theme ->
+            if (previewTheme is CustomTheme) {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = 0,
+                        color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                    )
+                }
+            } else {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = idx % 9L + 1,
+                    )
+                }
             }
-        } else {
-            it
-        }
+        } ?: it
     }
 
     val trimParam = LocalTableState.current.trimParam
@@ -95,7 +101,10 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
-                            lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
+                            lectureDetailViewModel.initializeEditingLectureDetail(
+                                lecture,
+                                ModeType.Normal,
+                            )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
                             }
@@ -196,7 +205,6 @@ private fun DrawLecture(
     fittedTrimParam: TableTrimParam,
 ) {
     val context = LocalContext.current
-    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
 
     DrawClassTime(
         fittedTrimParam = fittedTrimParam,
@@ -206,7 +214,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            (theme as BuiltInTheme).getBuiltInColorByIndex(
+            BuiltInTheme.fromCode(LocalTableState.current.table.theme).getColorByIndexComposable(
                 lecture.colorIndex,
             ).toArgb()
         },

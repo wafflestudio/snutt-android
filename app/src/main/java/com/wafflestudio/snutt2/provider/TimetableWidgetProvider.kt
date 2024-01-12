@@ -16,7 +16,9 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -31,6 +33,9 @@ TimetableWidgetProvider : AppWidgetProvider() {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var themeRepository: ThemeRepository
 
     override fun onUpdate(
         context: Context,
@@ -53,7 +58,9 @@ TimetableWidgetProvider : AppWidgetProvider() {
             currentLectureRepository.currentTable.value?.let { table ->
                 val tableView = TimetableView(context, compactMode)
 
-                tableView.theme = table.theme
+                tableView.theme = table.themeId?.let {
+                    themeRepository.getTheme(it)
+                } ?: BuiltInTheme.fromCode(table.theme)
                 tableView.lectures = table.lectureList
                 tableView.trimParam = userRepository.tableTrimParam.value
 
