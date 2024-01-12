@@ -1,13 +1,13 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.model.BuiltInTheme
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -65,11 +65,23 @@ class TableRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateTableTheme(id: String, theme: ThemeDto) {
-        val response = api._putTableTheme(id, PutTableThemeParams(theme))
+    override suspend fun updateTableTheme(tableId: String, theme: BuiltInTheme) {
+        val response = api._putTableTheme(tableId, PutTableThemeParams(theme = theme))
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
-            if (prev?.id == id) {
+            if (prev?.id == tableId) {
+                response.toOptional()
+            } else {
+                prev.toOptional()
+            },
+        )
+    }
+
+    override suspend fun updateTableTheme(tableId: String, themeId: String) {
+        val response = api._putTableTheme(tableId, PutTableThemeParams(themeId = themeId))
+        val prev = snuttStorage.lastViewedTable.get().value
+        snuttStorage.lastViewedTable.update(
+            if (prev?.id == tableId) {
                 response.toOptional()
             } else {
                 prev.toOptional()

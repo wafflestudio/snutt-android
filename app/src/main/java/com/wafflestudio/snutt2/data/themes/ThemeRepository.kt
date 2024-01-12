@@ -1,19 +1,34 @@
 package com.wafflestudio.snutt2.data.themes
 
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
+import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {
-    suspend fun getThemes(): List<ThemeDto>
 
-    suspend fun getTheme(themeId: Long): ThemeDto
+    val customThemes: StateFlow<List<CustomTheme>>
 
-    suspend fun createTheme(themeDto: ThemeDto): ThemeDto
+    val builtInThemes: StateFlow<List<BuiltInTheme>>
 
-    suspend fun updateTheme(themeDto: ThemeDto): ThemeDto
+    suspend fun fetchThemes()
 
-    suspend fun deleteTheme(themeDto: ThemeDto)
+    fun getTheme(themeId: String): CustomTheme
 
-    suspend fun setDefaultTheme(themeId: Long)
+    fun getTheme(code: Int): BuiltInTheme
 
-    suspend fun setDefaultTheme(code: Int)
+    suspend fun createTheme(name: String, colors: List<ColorDto>): TableTheme
+
+    suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): TableTheme
+
+    suspend fun copyTheme(themeId: String): TableTheme
+
+    suspend fun deleteTheme(themeId: String)
+
+    suspend fun setCustomThemeDefault(themeId: String): TableTheme
+
+    suspend fun setBuiltInThemeDefault(theme: Int): TableTheme
+
+    suspend fun unsetCustomThemeDefault(themeId: String): TableTheme
 }

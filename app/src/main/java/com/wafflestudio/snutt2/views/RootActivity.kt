@@ -58,7 +58,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -270,8 +270,8 @@ class RootActivity : AppCompatActivity() {
                         "${NavigationDestination.ThemeDetail}?themeId={themeId}&theme={theme}",
                         arguments = listOf(
                             navArgument("themeId") {
-                                type = NavType.LongType
-                                defaultValue = 0L
+                                type = NavType.StringType
+                                defaultValue = ""
                             },
                             navArgument("theme") {
                                 type = NavType.IntType
@@ -282,7 +282,7 @@ class RootActivity : AppCompatActivity() {
                         val parentEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
+                        val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
                         val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
                         val themeDetailViewModel =
                             hiltViewModel<ThemeDetailViewModel>(backStackEntry)
@@ -290,7 +290,7 @@ class RootActivity : AppCompatActivity() {
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                             onClickSave = {
-                                themeConfigViewModel.fetchCustomThemes()
+                                themeListViewModel.fetchThemes()
                                 if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
@@ -397,8 +397,8 @@ class RootActivity : AppCompatActivity() {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
-            val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
-            ThemeConfigPage(themeConfigViewModel)
+            val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
+            ThemeConfigPage(themeListViewModel)
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }

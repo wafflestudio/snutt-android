@@ -35,7 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -43,25 +45,25 @@ import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 
 @Composable
 fun ChangeThemeBottomSheet(
-    onPreview: (ThemeDto) -> Unit,
+    onPreview: (TableTheme) -> Unit,
     onApply: () -> Unit,
     onDispose: () -> Unit,
-    themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
+    themeListViewModel: ThemeListViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val bottomSheet = LocalBottomSheetState.current
-    val customThemes by themeConfigViewModel.customThemes.collectAsState()
-    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
+    val customThemes by themeListViewModel.customThemes.collectAsState()
+    val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
 
     LaunchedEffect(Unit) {
-        themeConfigViewModel.fetchCustomThemes()
+        themeListViewModel.fetchThemes()
     }
 
     if (bottomSheet.isVisible) {
@@ -117,7 +119,7 @@ fun ChangeThemeBottomSheet(
                 ThemeItem(
                     theme = it,
                     onClick = { onPreview(it) },
-                    selected = previewTheme?.isCustom == true && previewTheme?.id == it.id,
+                    selected = previewTheme is CustomTheme && (previewTheme as CustomTheme).id == it.id,
                 )
             }
             items(
@@ -126,7 +128,7 @@ fun ChangeThemeBottomSheet(
                 ThemeItem(
                     theme = it,
                     onClick = { onPreview(it) },
-                    selected = previewTheme?.isCustom == false && previewTheme?.code == it.code,
+                    selected = previewTheme is BuiltInTheme && (previewTheme as BuiltInTheme).code == it.code,
                 )
             }
         }
@@ -135,7 +137,7 @@ fun ChangeThemeBottomSheet(
 
 @Composable
 private fun ThemeItem(
-    theme: ThemeDto,
+    theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,

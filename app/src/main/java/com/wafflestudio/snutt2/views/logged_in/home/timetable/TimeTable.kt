@@ -21,6 +21,8 @@ import com.wafflestudio.snutt2.lib.*
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.rx.dp
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalCompactState
@@ -39,7 +41,7 @@ fun TimeTable(
 ) {
     val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
     val lectures = LocalTableState.current.table.lectureList.let {
-        if (theme.isCustom) {
+        if (theme is CustomTheme) {
             it.mapIndexed { idx, lecture ->
                 lecture.copy(
                     colorIndex = 0,
@@ -204,7 +206,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            theme.getBuiltInColorByIndex(
+            (theme as BuiltInTheme).getBuiltInColorByIndex(
                 lecture.colorIndex,
             ).toArgb()
         },

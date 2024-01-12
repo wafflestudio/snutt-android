@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -17,6 +16,8 @@ import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import io.reactivex.rxjava3.core.Observable
 import kotlin.math.max
@@ -96,7 +97,7 @@ class TimetableView : View {
             invalidate()
         }
 
-    var theme: ThemeDto = ThemeDto.SNUTT
+    var theme: TableTheme = BuiltInTheme.SNUTT
         set(value) {
             field = value
             invalidate()
@@ -228,7 +229,7 @@ class TimetableView : View {
                 if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
                     lecture.color.bgColor!!
                 } else {
-                    theme.getColorByIndex(
+                    (theme as BuiltInTheme).getColorByIndex(
                         context,
                         lecture.colorIndex,
                     )

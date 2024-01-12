@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.model.BuiltInTheme
 
 @JsonClass(generateAdapter = true)
 data class TableDto(
@@ -12,7 +13,8 @@ data class TableDto(
     @Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
-    @Json(name = "theme") val theme: ThemeDto,
+    @Json(name = "theme") val theme: BuiltInTheme,
+    @Json(name = "themeId") val themeId: String? = null,
     @Json(name = "isPrimary") val isPrimary: Boolean = false,
 ) : Comparable<TableDto> {
 
@@ -39,7 +41,7 @@ data class TableDto(
             lectureList = emptyList(),
             updatedAt = "default",
             totalCredit = 0,
-            theme = ThemeDto.SNUTT,
+            theme = BuiltInTheme.SNUTT,
         )
     }
 }

@@ -2,16 +2,16 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.toDataWithState
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,28 +20,26 @@ class ThemeDetailViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
 ) : ViewModel() {
 
-    private val _editingTheme = MutableStateFlow(ThemeDto.NewCustomTheme)
-    val editingTheme: StateFlow<ThemeDto> get() = _editingTheme
+    private val _editingTheme = MutableStateFlow<TableTheme>(CustomTheme.New)
+    val editingTheme: StateFlow<TableTheme> get() = _editingTheme
 
     // 색상별 id가 없어 expanded 여부를 설정할 수 없으므로 List<Selectable<ColorDto>>로 따로 관리한다
     private val _themeColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
     val themeColors: StateFlow<List<Selectable<ColorDto>>> get() = _themeColors
 
     init {
-        val themeId = savedStateHandle.get<Long>("themeId")
+        val themeId = savedStateHandle.get<String>("themeId")
         val theme = savedStateHandle.get<Int>("theme")
-        viewModelScope.launch {
-            theme?.let {
-                if (theme != -1) {
-                    _editingTheme.value = ThemeDto.builtInThemeFromCode(theme)
-                } else {
-                    themeId?.let {
-                        _editingTheme.value = if (themeId == 0L) ThemeDto.NewCustomTheme else themeRepository.getTheme(themeId)
+        theme?.let {
+            if (theme != -1) {
+                _editingTheme.value = themeRepository.getTheme(theme)
+            } else {
+                themeId?.let {
+                    _editingTheme.value = if (themeId.isEmpty()) CustomTheme.New else themeRepository.getTheme(themeId)
+                    _themeColors.value = (_editingTheme.value as CustomTheme).colors.map { color ->
+                        color.toDataWithState(false)
                     }
                 }
-            }
-            _themeColors.value = _editingTheme.value.colors.map { color ->
-                color.toDataWithState(false)
             }
         }
     }
@@ -77,33 +75,37 @@ class ThemeDetailViewModel @Inject constructor(
     }
 
     fun hasChange(name: String, isDefault: Boolean): Boolean {
-        return name != _editingTheme.value.name || isDefault != _editingTheme.value.isDefault || _themeColors.value.map { it.item } != _editingTheme.value.colors
+        return name != _editingTheme.value.name ||
+            isDefault != _editingTheme.value.isDefault ||
+            (_editingTheme.value is CustomTheme && _themeColors.value.map { it.item } != (_editingTheme.value as CustomTheme).colors)
     }
 
-    suspend fun saveTheme(name: String, isDefault: Boolean) {
-        val newTheme = _editingTheme.value.copy(
-            name = name,
-            isDefault = isDefault,
-            colors = _themeColors.value.map { it.item },
-        ).let {
-            if (_editingTheme.value.id == 0L) {
-                themeRepository.createTheme(it)
-            } else {
-                themeRepository.updateTheme(it)
+    suspend fun saveTheme(name: String) {
+        if (_editingTheme.value is CustomTheme) {
+            val newTheme = (_editingTheme.value as CustomTheme).id.let { id ->
+                if (id.isEmpty()) {
+                    themeRepository.createTheme(name, _themeColors.value.map { it.item })
+                } else {
+                    themeRepository.updateTheme(id, name, _themeColors.value.map { it.item })
+                }
             }
+            _editingTheme.value = newTheme
         }
-        _editingTheme.value = newTheme
     }
 
     suspend fun setAsDefaultTheme() {
-        if (_editingTheme.value.isCustom) {
-            themeRepository.setDefaultTheme(_editingTheme.value.id ?: 0L)
+        if (_editingTheme.value is CustomTheme) {
+            themeRepository.setCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {
-            themeRepository.setDefaultTheme(_editingTheme.value.code)
+            themeRepository.setBuiltInThemeDefault((_editingTheme.value as BuiltInTheme).code)
         }
     }
 
     suspend fun unsetDefaultTheme() {
-        themeRepository.setDefaultTheme(0)
+        if (_editingTheme.value is CustomTheme) {
+            themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
+        } else {
+            themeRepository.setBuiltInThemeDefault(0)
+        }
     }
 }

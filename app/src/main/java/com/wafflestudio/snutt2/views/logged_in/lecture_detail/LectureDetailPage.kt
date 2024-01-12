@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
@@ -44,6 +43,8 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -51,6 +52,7 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
@@ -60,6 +62,7 @@ fun LectureDetailPage(
     vm: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
+    themeListViewModel: ThemeListViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -76,7 +79,9 @@ fun LectureDetailPage(
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
     val currentTable by vm.currentTable.collectAsState()
-    val tableColorTheme = currentTable?.theme ?: ThemeDto.SNUTT
+    val tableColorTheme = currentTable?.themeId?.let {
+        themeListViewModel.getTheme(it)
+    } ?: currentTable?.theme ?: BuiltInTheme.SNUTT
     val isCustom = editingLectureDetail.isCustom
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
@@ -186,9 +191,15 @@ fun LectureDetailPage(
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                             if (vacancyRegistered) {
-                                                vacancyViewModel.removeVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.removeVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             } else {
-                                                vacancyViewModel.addVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.addVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             }
                                         }
                                     }
@@ -291,12 +302,12 @@ fun LectureDetailPage(
                                 },
                             ) {
                                 ColorBox(
-                                    if (tableColorTheme.isCustom) {
+                                    if (tableColorTheme is CustomTheme) {
                                         editingLectureDetail.color
                                     } else {
                                         ColorDto(
                                             fgColor = 0xffffff,
-                                            bgColor = tableColorTheme.getColorByIndex(context, editingLectureDetail.colorIndex),
+                                            bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(context, editingLectureDetail.colorIndex),
                                         )
                                     },
                                 )

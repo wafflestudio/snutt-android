@@ -56,6 +56,8 @@ import com.wafflestudio.snutt2.components.compose.Switch
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
@@ -137,7 +139,7 @@ fun ThemeDetailPage(
         CenteredTopBar(
             title = {
                 Text(
-                    text = if (editingTheme.isCustom) {
+                    text = if (editingTheme is CustomTheme) {
                         stringResource(R.string.theme_detail_app_bar_title_custom)
                     } else {
                         stringResource(R.string.theme_detail_app_bar_title_builtin)
@@ -173,7 +175,7 @@ fun ThemeDetailPage(
                                     },
                                     onConfirm = {
                                         scope.launch {
-                                            themeDetailViewModel.saveTheme(themeName, isDefault)
+                                            themeDetailViewModel.saveTheme(themeName)
                                             if (isDefault) {
                                                 themeDetailViewModel.setAsDefaultTheme()
                                             } else {
@@ -200,7 +202,7 @@ fun ThemeDetailPage(
                                 ).show()
                             } else {
                                 scope.launch {
-                                    themeDetailViewModel.saveTheme(themeName, isDefault)
+                                    themeDetailViewModel.saveTheme(themeName)
                                     onClickSave()
                                     navController.popBackStack()
                                 }
@@ -217,17 +219,17 @@ fun ThemeDetailPage(
             Spacer(modifier = Modifier.height(20.dp))
             ThemeDetailItem(
                 title = stringResource(R.string.theme_detail_theme_name),
-                titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = if (editingTheme.isCustom) 1f else 0.5f),
+                titleColor = MaterialTheme.colors.onSurfaceVariant.copy(alpha = if (editingTheme is CustomTheme) 1f else 0.5f),
             ) {
                 EditText(
                     value = themeName,
                     onValueChange = { themeName = it },
-                    enabled = editingTheme.isCustom,
+                    enabled = editingTheme is CustomTheme,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     underlineEnabled = false,
                     textStyle = SNUTTTypography.body1.copy(
-                        color = if (editingTheme.isCustom) {
+                        color = if (editingTheme is CustomTheme) {
                             MaterialTheme.colors.onSurface
                         } else {
                             MaterialTheme.colors.onSurfaceVariant.copy(
@@ -240,7 +242,7 @@ fun ThemeDetailPage(
             SettingColumn(
                 title = stringResource(R.string.theme_detail_theme_colors),
             ) {
-                if (editingTheme.isCustom) {
+                if (editingTheme is CustomTheme) {
                     themeColors.forEachIndexed { idx, colorWithExpanded ->
                         val state = remember {
                             MutableTransitionState(
@@ -263,7 +265,7 @@ fun ThemeDetailPage(
                                                         themeDetailViewModel.duplicateColor(idx)
                                                         scope.launch {
                                                             timetableViewModel.setPreviewTheme(
-                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
                                                             )
                                                         }
                                                     }
@@ -283,7 +285,7 @@ fun ThemeDetailPage(
                                                         themeDetailViewModel.removeColor(idx)
                                                         scope.launch {
                                                             timetableViewModel.setPreviewTheme(
-                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
                                                             )
                                                         }
                                                     }
@@ -339,7 +341,7 @@ fun ThemeDetailPage(
                                                                 )
                                                                 scope.launch {
                                                                     timetableViewModel.setPreviewTheme(
-                                                                        editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                        (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
                                                                     )
                                                                 }
                                                             }
@@ -375,7 +377,7 @@ fun ThemeDetailPage(
                                                                         )
                                                                         scope.launch {
                                                                             timetableViewModel.setPreviewTheme(
-                                                                                editingTheme.copy(colors = themeColors.map { it.item }),
+                                                                                (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
                                                                             )
                                                                             modalState.hide()
                                                                         }
@@ -410,7 +412,7 @@ fun ThemeDetailPage(
                                     themeDetailViewModel.addColor()
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(
-                                            editingTheme.copy(colors = themeColors.map { it.item }),
+                                            (editingTheme as CustomTheme).copy(colors = themeColors.map { it.item }),
                                         )
                                     }
                                 },
@@ -431,7 +433,7 @@ fun ThemeDetailPage(
                             ColorBox(
                                 ColorDto(
                                     fgColor = 0xffffff,
-                                    bgColor = editingTheme.getColorByIndex(context, idx.toLong()),
+                                    bgColor = (editingTheme as BuiltInTheme).getColorByIndex(context, idx.toLong()),
                                 ),
                             )
                         }

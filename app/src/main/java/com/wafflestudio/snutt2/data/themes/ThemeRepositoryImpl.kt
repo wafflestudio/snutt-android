@@ -1,60 +1,73 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 @Singleton
-class ThemeRepositoryImpl @Inject constructor() : ThemeRepository {
+class ThemeRepositoryImpl @Inject constructor(
+    private val api: SNUTTRestApi,
+) : ThemeRepository {
 
-    val dummy = MutableList(15) {
-        ThemeDto(
-            id = Random.nextLong(),
-            isCustom = true,
-            isDefault = false,
-            name = "커스텀테마 $it",
-            colors = List(Random.nextInt(1, 9)) {
-                ColorDto(fgColor = 0xffffff, bgColor = Random.nextInt(0, 0xffffff))
-            },
-        )
-    }.apply { addAll(ThemeDto.builtInThemes.toMutableList().apply { set(0, first().copy(isDefault = true)) }) }
+    private val _customThemes = MutableStateFlow<List<CustomTheme>>(emptyList())
+    override val customThemes: StateFlow<List<CustomTheme>>
+        get() = _customThemes
 
-    override suspend fun getThemes(): List<ThemeDto> {
-        return dummy.toList()
-    }
+    private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
+    override val builtInThemes: StateFlow<List<BuiltInTheme>>
+        get() = _builtInThemes
 
-    override suspend fun getTheme(themeId: Long): ThemeDto {
-        return dummy.find { it.id == themeId } ?: ThemeDto.NewCustomTheme
-    }
-
-    override suspend fun createTheme(themeDto: ThemeDto): ThemeDto {
-        val newTheme = themeDto.copy(id = Random.nextLong())
-        dummy.add(newTheme)
-        return newTheme
-    }
-
-    override suspend fun updateTheme(themeDto: ThemeDto): ThemeDto {
-        dummy.indexOfFirst { it.id == themeDto.id }.let {
-            dummy.set(it, themeDto)
-        }
-        return themeDto
-    }
-
-    override suspend fun deleteTheme(themeDto: ThemeDto) {
-        dummy.removeIf { it.id == themeDto.id }
-    }
-
-    override suspend fun setDefaultTheme(themeId: Long) {
-        dummy.forEachIndexed { idx, theme ->
-            dummy[idx] = theme.copy(isDefault = (theme.isCustom && theme.id == themeId))
+    override suspend fun fetchThemes() {
+        api._getThemes().let { themes ->
+            _customThemes.value = themes.filter { it.isCustom }.map { it.toTableTheme() as CustomTheme }
+            _builtInThemes.value = themes.filter { !it.isCustom }.map { it.toTableTheme() as BuiltInTheme }
         }
     }
 
-    override suspend fun setDefaultTheme(code: Int) {
-        dummy.forEachIndexed { idx, theme ->
-            dummy[idx] = theme.copy(isDefault = (theme.isCustom.not() && theme.code == code))
-        }
+    override fun getTheme(themeId: String): CustomTheme {
+        return _customThemes.value.find { it.id == themeId } ?: CustomTheme.New
+    }
+
+    override fun getTheme(code: Int): BuiltInTheme {
+        return _builtInThemes.value.find { it.code == code } ?: BuiltInTheme.SNUTT
+    }
+
+    override suspend fun createTheme(name: String, colors: List<ColorDto>): TableTheme {
+        return api._postTheme(PostThemeParams(name = name, colors = colors)).toTableTheme()
+    }
+
+    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): TableTheme {
+        return api._patchTheme(
+            themeId = themeId,
+            patchThemeParams = PatchThemeParams(name = name, colors = colors),
+        ).toTableTheme()
+    }
+
+    override suspend fun copyTheme(themeId: String): TableTheme {
+        return api._postCopyTheme(themeId = themeId).toTableTheme()
+    }
+
+    override suspend fun deleteTheme(themeId: String) {
+        api._deleteTheme(themeId = themeId)
+    }
+
+    override suspend fun setCustomThemeDefault(themeId: String): TableTheme {
+        return api._postCustomThemeDefault(themeId = themeId).toTableTheme()
+    }
+
+    override suspend fun setBuiltInThemeDefault(theme: Int): TableTheme {
+        return api._postBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme()
+    }
+
+    override suspend fun unsetCustomThemeDefault(themeId: String): TableTheme {
+        return api._deleteCustomThemeDefault(themeId = themeId).toTableTheme()
     }
 }

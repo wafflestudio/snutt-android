@@ -14,14 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 
 @Composable
 fun ThemeIcon(
-    theme: ThemeDto,
+    theme: TableTheme,
     modifier: Modifier = Modifier,
 ) {
-    if (theme.isCustom) {
+    if (theme is CustomTheme) {
         Row(
             modifier = modifier,
         ) {
@@ -181,43 +183,43 @@ fun ThemeIcon(
             }
         }
     } else {
-        when (theme.code) {
-            ThemeDto.SNUTT.code -> {
+        when ((theme as BuiltInTheme).code) {
+            BuiltInTheme.SNUTT.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_snutt),
                     contentDescription = null,
                     modifier = modifier,
                 )
             }
-            ThemeDto.MODERN.code -> {
+            BuiltInTheme.MODERN.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_modern),
                     contentDescription = null,
                     modifier = modifier,
                 )
             }
-            ThemeDto.AUTUMN.code -> {
+            BuiltInTheme.AUTUMN.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_autumn),
                     contentDescription = null,
                     modifier = modifier,
                 )
             }
-            ThemeDto.CHERRY.code -> {
+            BuiltInTheme.CHERRY.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_pink),
                     contentDescription = null,
                     modifier = modifier,
                 )
             }
-            ThemeDto.ICE.code -> {
+            BuiltInTheme.ICE.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_ice),
                     contentDescription = null,
                     modifier = modifier,
                 )
             }
-            ThemeDto.GRASS.code -> {
+            BuiltInTheme.GRASS.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_grass),
                     contentDescription = null,

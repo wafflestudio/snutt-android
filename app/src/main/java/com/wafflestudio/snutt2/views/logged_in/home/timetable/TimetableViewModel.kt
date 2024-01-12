@@ -1,12 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +21,8 @@ class TimetableViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
-    private val _previewTheme = MutableStateFlow<ThemeDto?>(null)
-    val previewTheme: StateFlow<ThemeDto?> get() = _previewTheme
+    private val _previewTheme = MutableStateFlow<TableTheme?>(null)
+    val previewTheme: StateFlow<TableTheme?> get() = _previewTheme
 
     suspend fun addLecture(lecture: LectureDto, is_force: Boolean) {
         currentTableRepository
@@ -38,12 +40,16 @@ class TimetableViewModel @Inject constructor(
     suspend fun updateTheme() {
         currentTable.value?.id?.let { id ->
             _previewTheme.value?.let { theme ->
-                tableRepository.updateTableTheme(id, theme)
+                if (theme is BuiltInTheme) {
+                    tableRepository.updateTableTheme(id, theme)
+                } else {
+                    tableRepository.updateTableTheme(id, (theme as CustomTheme).id)
+                }
             }
         }
     }
 
-    fun setPreviewTheme(previewTheme: ThemeDto?) {
+    fun setPreviewTheme(previewTheme: TableTheme?) {
         _previewTheme.value = previewTheme
     }
 }

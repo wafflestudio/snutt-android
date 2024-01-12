@@ -23,17 +23,20 @@ import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 @Composable
 fun LectureColorSelectorPage(
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
+    themeListViewModel: ThemeListViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -41,7 +44,9 @@ fun LectureColorSelectorPage(
     val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
 
     val currentTable by lectureDetailViewModel.currentTable.collectAsState()
-    val theme = currentTable?.theme ?: ThemeDto.SNUTT
+    val theme = currentTable?.themeId?.let {
+        themeListViewModel.getTheme(it)
+    } ?: currentTable?.theme ?: BuiltInTheme.SNUTT
 
     Column(
         modifier = Modifier
@@ -55,7 +60,7 @@ fun LectureColorSelectorPage(
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        if (theme.isCustom) {
+        if (theme is CustomTheme) {
             theme.colors.forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
@@ -82,7 +87,7 @@ fun LectureColorSelectorPage(
             for (idx in 1L..9L) ColorItem(
                 color = ColorDto(
                     fgColor = 0xffffff,
-                    bgColor = theme.getColorByIndex(context, idx),
+                    bgColor = (theme as BuiltInTheme).getColorByIndex(context, idx),
                 ),
                 title = "${theme.name} $idx",
                 isSelected = (idx == lectureState.colorIndex),

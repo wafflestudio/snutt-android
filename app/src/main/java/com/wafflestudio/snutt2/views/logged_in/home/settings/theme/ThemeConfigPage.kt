@@ -48,7 +48,7 @@ import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.ThemeDto
+import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -61,14 +61,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeConfigPage(
-    themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
+    themeListViewModel: ThemeListViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
 
-    val customThemes by themeConfigViewModel.customThemes.collectAsState()
-    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
+    val customThemes by themeListViewModel.customThemes.collectAsState()
+    val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
@@ -145,13 +145,13 @@ fun ThemeConfigPage(
                                                 },
                                                 onClickDuplicate = {
                                                     scope.launch {
-                                                        themeConfigViewModel.duplicateCustomTheme(theme)
+                                                        themeListViewModel.copyTheme(theme.id)
                                                         bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickDelete = {
                                                     scope.launch {
-                                                        themeConfigViewModel.deleteCustomTheme(theme)
+                                                        themeListViewModel.deleteTheme(theme.id)
                                                         bottomSheet.hide()
                                                     }
                                                 },
@@ -229,7 +229,7 @@ fun AddThemeItem(
 
 @Composable
 private fun ThemeItem(
-    theme: ThemeDto,
+    theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onClickMore: (() -> Unit)? = null,
