@@ -302,10 +302,17 @@ fun LectureDetailPage(
                                     if (tableColorTheme is CustomTheme) {
                                         editingLectureDetail.color
                                     } else {
-                                        ColorDto(
-                                            fgColor = 0xffffff,
-                                            bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(context, editingLectureDetail.colorIndex),
-                                        )
+                                        if (editingLectureDetail.colorIndex == 0L) {
+                                            editingLectureDetail.color
+                                        } else {
+                                            ColorDto(
+                                                fgColor = 0xffffff,
+                                                bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
+                                                    context,
+                                                    editingLectureDetail.colorIndex,
+                                                ),
+                                            )
+                                        }
                                     },
                                 )
                                 Spacer(modifier = Modifier.weight(1f))

@@ -7,9 +7,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +34,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import com.wafflestudio.snutt2.R
 
 @Composable
 fun LectureColorSelectorPage(
@@ -42,6 +45,7 @@ fun LectureColorSelectorPage(
     val context = LocalContext.current
 
     val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
+    val initialLectureColor = remember(Unit) { lectureState.color }
 
     val theme by timetableViewModel.tableTheme.collectAsState()
 
@@ -51,7 +55,7 @@ fun LectureColorSelectorPage(
             .fillMaxSize(),
     ) {
         SimpleTopBar(
-            title = "강의 색상 선택하기",
+            title = stringResource(R.string.lecture_color_selector_page_app_bar_title),
         ) {
             navController.popBackStack()
         }
@@ -74,10 +78,24 @@ fun LectureColorSelectorPage(
             }
             Column {
                 ColorItem(
-                    color = lectureState.color,
-                    title = "커스텀",
-                    isSelected = false,
-                    onClick = {},
+                    color = initialLectureColor,
+                    title = stringResource(R.string.lecture_color_selector_page_custom_color),
+                    isSelected = (theme as CustomTheme).colors.contains(lectureState.color).not(),
+                    onClick = {
+                        colorSelectorDialog(context, "글자 색")
+                            .flatMap { fgColor ->
+                                colorSelectorDialog(context, "배경 색").map { Pair(fgColor, it) }
+                            }
+                            .subscribeBy { (fgColor, bgColor) ->
+                                lectureDetailViewModel.editLectureDetail(
+                                    lectureState.copy(
+                                        colorIndex = 0L,
+                                        color = ColorDto(fgColor, bgColor),
+                                    ),
+                                )
+                                navController.popBackStack()
+                            }
+                    },
                 )
             }
         } else {
@@ -99,7 +117,7 @@ fun LectureColorSelectorPage(
             }
             ColorItem(
                 color = lectureState.color,
-                title = "커스텀",
+                title = stringResource(R.string.lecture_color_selector_page_custom_color),
                 isSelected = (lectureState.colorIndex == 0L),
             ) {
                 colorSelectorDialog(context, "글자 색")

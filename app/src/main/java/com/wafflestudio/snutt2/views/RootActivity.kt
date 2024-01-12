@@ -295,7 +295,7 @@ class RootActivity : AppCompatActivity() {
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
                                     }
-                                }
+                                } // ChangeThemeBottomSheet에서 테마 생성한 경우 자동으로 미리보기
                             },
                         )
                     }
