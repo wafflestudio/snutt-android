@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,10 +53,10 @@ import com.wafflestudio.snutt2.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
-import com.wafflestudio.snutt2.components.compose.ColorPicker
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
@@ -72,8 +73,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.colorSelectorDialog
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -265,13 +264,11 @@ fun ThemeDetailPage(
                                                 .clicks {
                                                     if (editingColors.size < 9) {
                                                         themeDetailViewModel.duplicateColor(idx)
-                                                        scope.launch {
-                                                            timetableViewModel.setPreviewTheme(
-                                                                (editingTheme as CustomTheme).copy(
-                                                                    colors = editingColors.map { it.item },
-                                                                ),
-                                                            )
-                                                        }
+                                                        timetableViewModel.setPreviewTheme(
+                                                            (editingTheme as CustomTheme).copy(
+                                                                colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                                            ),
+                                                        )
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
@@ -287,13 +284,11 @@ fun ThemeDetailPage(
                                                 .clicks {
                                                     if (editingColors.size > 1) {
                                                         themeDetailViewModel.removeColor(idx)
-                                                        scope.launch {
-                                                            timetableViewModel.setPreviewTheme(
-                                                                (editingTheme as CustomTheme).copy(
-                                                                    colors = editingColors.map { it.item },
-                                                                ),
-                                                            )
-                                                        }
+                                                        timetableViewModel.setPreviewTheme(
+                                                            (editingTheme as CustomTheme).copy(
+                                                                colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                                            ),
+                                                        )
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
@@ -335,24 +330,24 @@ fun ThemeDetailPage(
                                                     modifier = Modifier
                                                         .size(25.dp)
                                                         .clicks {
-                                                            colorSelectorDialog(
-                                                                context,
-                                                                "글꼴색",
-                                                            ).subscribeBy {
-                                                                themeDetailViewModel.updateColor(
-                                                                    idx,
-                                                                    it,
-                                                                    colorWithExpanded.item.bgColor
-                                                                        ?: 0xffffff,
-                                                                )
-                                                                scope.launch {
+                                                            showColorPickerDialog(
+                                                                context = context,
+                                                                modalState = modalState,
+                                                                initialColor = Color(colorWithExpanded.item.fgColor ?: 0xffffff),
+                                                                onColorPicked = { color ->
+                                                                    themeDetailViewModel.updateColor(
+                                                                        idx,
+                                                                        color.toArgb(),
+                                                                        colorWithExpanded.item.bgColor
+                                                                            ?: 0xffffff,
+                                                                    )
                                                                     timetableViewModel.setPreviewTheme(
                                                                         (editingTheme as CustomTheme).copy(
-                                                                            colors = editingColors.map { it.item },
+                                                                            colors = themeDetailViewModel.editingColors.value.map { it.item },
                                                                         ),
                                                                     )
-                                                                }
-                                                            }
+                                                                },
+                                                            )
                                                         },
                                                 )
                                             }
@@ -370,41 +365,24 @@ fun ThemeDetailPage(
                                                     modifier = Modifier
                                                         .size(25.dp)
                                                         .clicks {
-                                                            var selectedColor by mutableStateOf(
-                                                                colorWithExpanded.item.bgColor
-                                                                    ?: 0xffffff,
-                                                            )
-                                                            modalState
-                                                                .setOkCancel(
-                                                                    context = context,
-                                                                    onDismiss = { modalState.hide() },
-                                                                    onConfirm = {
-                                                                        themeDetailViewModel.updateColor(
-                                                                            idx,
-                                                                            colorWithExpanded.item.fgColor
-                                                                                ?: 0xffffff,
-                                                                            selectedColor,
-                                                                        )
-                                                                        scope.launch {
-                                                                            timetableViewModel.setPreviewTheme(
-                                                                                (editingTheme as CustomTheme).copy(
-                                                                                    colors = editingColors.map { it.item },
-                                                                                ),
-                                                                            )
-                                                                            modalState.hide()
-                                                                        }
-                                                                    },
-                                                                    title = "색상 선택",
-                                                                ) {
-                                                                    ColorPicker(
-                                                                        initialColor = colorWithExpanded.item.bgColor
+                                                            showColorPickerDialog(
+                                                                context = context,
+                                                                modalState = modalState,
+                                                                initialColor = Color(colorWithExpanded.item.bgColor ?: 0xffffff),
+                                                                onColorPicked = { color ->
+                                                                    themeDetailViewModel.updateColor(
+                                                                        idx,
+                                                                        colorWithExpanded.item.fgColor
                                                                             ?: 0xffffff,
-                                                                        onColorChanged = {
-                                                                            selectedColor = it
-                                                                        },
+                                                                        color.toArgb(),
                                                                     )
-                                                                }
-                                                                .show()
+                                                                    timetableViewModel.setPreviewTheme(
+                                                                        (editingTheme as CustomTheme).copy(
+                                                                            colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                                                        ),
+                                                                    )
+                                                                },
+                                                            )
                                                         },
                                                 )
                                             }
@@ -422,11 +400,11 @@ fun ThemeDetailPage(
                                 .height(44.dp)
                                 .clicks {
                                     themeDetailViewModel.addColor()
-                                    scope.launch {
-                                        timetableViewModel.setPreviewTheme(
-                                            (editingTheme as CustomTheme).copy(colors = editingColors.map { it.item }),
-                                        )
-                                    }
+                                    timetableViewModel.setPreviewTheme(
+                                        (editingTheme as CustomTheme).copy(
+                                            colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                        ),
+                                    )
                                 },
                         ) {
                             Text(

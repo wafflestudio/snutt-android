@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun DrawerIcon(
