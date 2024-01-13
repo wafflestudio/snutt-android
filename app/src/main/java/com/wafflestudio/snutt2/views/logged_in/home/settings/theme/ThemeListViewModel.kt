@@ -22,31 +22,25 @@ class ThemeListViewModel @Inject constructor(
 
     suspend fun setThemeDefault(themeId: String) {
         themeRepository.setCustomThemeDefault(themeId)
-        fetchThemes()
     }
 
     suspend fun setThemeDefault(code: Int) {
         themeRepository.setBuiltInThemeDefault(code)
-        fetchThemes()
     }
 
     suspend fun unsetThemeDefault(themeId: String) {
         themeRepository.unsetCustomThemeDefault(themeId)
-        fetchThemes()
     }
 
     suspend fun unsetThemeDefault(code: Int) {
-        themeRepository.setBuiltInThemeDefault(0)       // FIXME: DELETE /themes/basic/~/default 나오면 바꾸기
-        fetchThemes()
+        themeRepository.setBuiltInThemeDefault(0) // FIXME: DELETE /themes/basic/~/default 나오면 바꾸기
     }
 
     suspend fun deleteTheme(themeId: String) {
         themeRepository.deleteTheme(themeId)
-        fetchThemes()
     }
 
     suspend fun copyTheme(themeId: String) {
         themeRepository.copyTheme(themeId)
-        fetchThemes()
     }
 }

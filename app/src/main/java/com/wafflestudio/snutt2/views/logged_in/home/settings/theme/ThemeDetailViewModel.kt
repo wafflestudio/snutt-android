@@ -82,14 +82,13 @@ class ThemeDetailViewModel @Inject constructor(
 
     suspend fun saveTheme(name: String) {
         if (_editingTheme.value is CustomTheme) {
-            val newTheme = (_editingTheme.value as CustomTheme).id.let { id ->
+            (_editingTheme.value as CustomTheme).id.let { id ->
                 if (id.isEmpty()) {
                     themeRepository.createTheme(name, _editingColors.value.map { it.item })
                 } else {
                     themeRepository.updateTheme(id, name, _editingColors.value.map { it.item })
                 }
             }
-            _editingTheme.value = newTheme
         }
     }
 

@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -44,34 +43,60 @@ class ThemeRepositoryImpl @Inject constructor(
         return _builtInThemes.value.find { it.code == code } ?: BuiltInTheme.SNUTT
     }
 
-    override suspend fun createTheme(name: String, colors: List<ColorDto>): TableTheme {
-        return api._postTheme(PostThemeParams(name = name, colors = colors)).toTableTheme()
+    override suspend fun createTheme(name: String, colors: List<ColorDto>) {
+        val newTheme = api._postTheme(PostThemeParams(name = name, colors = colors)).toTableTheme() as CustomTheme
+        _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
     }
 
-    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): TableTheme {
-        return api._patchTheme(
+    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>) {
+        val newTheme = api._patchTheme(
             themeId = themeId,
             patchThemeParams = PatchThemeParams(name = name, colors = colors),
-        ).toTableTheme()
+        ).toTableTheme() as CustomTheme
+        _customThemes.value = _customThemes.value.toMutableList().apply {
+            set(indexOfFirst { it.id == newTheme.id }, newTheme)
+        }
     }
 
-    override suspend fun copyTheme(themeId: String): TableTheme {
-        return api._postCopyTheme(themeId = themeId).toTableTheme()
+    override suspend fun copyTheme(themeId: String) {
+        val newTheme = api._postCopyTheme(themeId = themeId).toTableTheme() as CustomTheme
+        _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
     }
 
     override suspend fun deleteTheme(themeId: String) {
         api._deleteTheme(themeId = themeId)
+        _customThemes.value = _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
     }
 
-    override suspend fun setCustomThemeDefault(themeId: String): TableTheme {
-        return api._postCustomThemeDefault(themeId = themeId).toTableTheme()
+    override suspend fun setCustomThemeDefault(themeId: String) {
+        val newTheme = api._postCustomThemeDefault(themeId = themeId).toTableTheme() as CustomTheme
+        _customThemes.value = _customThemes.value.map {
+            it.copy(isDefault = it.id == newTheme.id)
+        }
+        _builtInThemes.value = _builtInThemes.value.map {
+            it.copy(isDefault = false)
+        }
     }
 
-    override suspend fun setBuiltInThemeDefault(theme: Int): TableTheme {
-        return api._postBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme()
+    override suspend fun setBuiltInThemeDefault(theme: Int) {
+        val newTheme = api._postBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
+        _builtInThemes.value = _builtInThemes.value.map {
+            it.copy(isDefault = it.code == newTheme.code)
+        }
+        _customThemes.value = _customThemes.value.map {
+            it.copy(isDefault = false)
+        }
     }
 
-    override suspend fun unsetCustomThemeDefault(themeId: String): TableTheme {
-        return api._deleteCustomThemeDefault(themeId = themeId).toTableTheme()
+    override suspend fun unsetCustomThemeDefault(themeId: String) {
+        val newTheme = api._deleteCustomThemeDefault(themeId = themeId).toTableTheme() as? BuiltInTheme
+        if (newTheme != null) {
+            _builtInThemes.value = _builtInThemes.value.map {
+                it.copy(isDefault = it.code == newTheme.code)
+            }
+        }
+        _customThemes.value = _customThemes.value.map {
+            it.copy(isDefault = false)
+        }
     }
 }
