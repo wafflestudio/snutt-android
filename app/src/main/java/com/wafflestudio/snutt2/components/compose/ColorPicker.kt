@@ -130,10 +130,7 @@ fun ColorPicker(
                         try {
                             hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
                         } catch (e: Exception) {
-                            hexCode = String.format(
-                                "#%06X",
-                                0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
-                            )
+                            hexCode = hsvToString(hsv)
                         }
                     },
                 ),
