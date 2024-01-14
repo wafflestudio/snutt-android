@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.search
+package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +37,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import kotlinx.coroutines.launch
 
 @Composable

@@ -31,6 +31,9 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.BookmarkList
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
+import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
