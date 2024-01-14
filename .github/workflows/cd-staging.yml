@@ -1,17 +1,9 @@
 name: CD-STAGING
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
+  push:
+    branches:
+      - 'feat/time-specific-search'
 
 jobs:
   build-staging:
