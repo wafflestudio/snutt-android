@@ -63,10 +63,13 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -88,6 +91,8 @@ fun ThemeDetailPage(
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
     val navBottomSheetState = LocalNavBottomSheetState.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -176,11 +181,13 @@ fun ThemeDetailPage(
                                     },
                                     onConfirm = {
                                         scope.launch {
-                                            themeDetailViewModel.saveTheme(themeName)
-                                            if (isDefault) {
-                                                themeDetailViewModel.setThemeDefault()
-                                            } else {
-                                                themeDetailViewModel.unsetThemeDefault()
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                themeDetailViewModel.saveTheme(themeName)
+                                                if (isDefault) {
+                                                    themeDetailViewModel.setThemeDefault()
+                                                } else {
+                                                    themeDetailViewModel.unsetThemeDefault()
+                                                }
                                             }
                                             onClickSave()
                                             modalState.hide()
@@ -203,7 +210,9 @@ fun ThemeDetailPage(
                                 ).show()
                             } else {
                                 scope.launch {
-                                    themeDetailViewModel.saveTheme(themeName)
+                                    launchSuspendApi(apiOnProgress, apiOnError) {
+                                        themeDetailViewModel.saveTheme(themeName)
+                                    }
                                     onClickSave()
                                     navController.popBackStack()
                                 }
@@ -333,7 +342,10 @@ fun ThemeDetailPage(
                                                             showColorPickerDialog(
                                                                 context = context,
                                                                 modalState = modalState,
-                                                                initialColor = Color(colorWithExpanded.item.fgColor ?: 0xffffff),
+                                                                initialColor = Color(
+                                                                    colorWithExpanded.item.fgColor
+                                                                        ?: 0xffffff,
+                                                                ),
                                                                 onColorPicked = { color ->
                                                                     themeDetailViewModel.updateColor(
                                                                         idx,
@@ -368,7 +380,10 @@ fun ThemeDetailPage(
                                                             showColorPickerDialog(
                                                                 context = context,
                                                                 modalState = modalState,
-                                                                initialColor = Color(colorWithExpanded.item.bgColor ?: 0xffffff),
+                                                                initialColor = Color(
+                                                                    colorWithExpanded.item.bgColor
+                                                                        ?: 0xffffff,
+                                                                ),
                                                                 onColorPicked = { color ->
                                                                     themeDetailViewModel.updateColor(
                                                                         idx,

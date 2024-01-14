@@ -290,7 +290,9 @@ class RootActivity : AppCompatActivity() {
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                             onClickSave = {
-                                themeListViewModel.fetchThemes()
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    themeListViewModel.fetchThemes()
+                                }
                                 if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)

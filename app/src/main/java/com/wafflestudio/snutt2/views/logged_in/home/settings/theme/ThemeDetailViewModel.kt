@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.BuiltInTheme
@@ -18,9 +19,10 @@ import javax.inject.Inject
 class ThemeDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
-    private val _editingTheme = MutableStateFlow<TableTheme>(CustomTheme.New)
+    private val _editingTheme = MutableStateFlow<TableTheme>(CustomTheme.Default)
     val editingTheme: StateFlow<TableTheme> get() = _editingTheme
 
     // 색상별 id가 없어 expanded 여부를 설정할 수 없으므로 List<Selectable<ColorDto>>로 따로 관리한다
@@ -32,10 +34,23 @@ class ThemeDetailViewModel @Inject constructor(
         val theme = savedStateHandle.get<Int>("theme")
         theme?.let {
             if (theme != -1) {
-                _editingTheme.value = themeRepository.getTheme(theme)
+                try {
+                    _editingTheme.value = themeRepository.getTheme(theme)
+                } catch (e: Exception) {
+                    apiOnError(e)
+                }
             } else {
                 themeId?.let {
-                    _editingTheme.value = if (themeId.isEmpty()) CustomTheme.New else themeRepository.getTheme(themeId)
+                    _editingTheme.value = if (themeId.isEmpty()) {
+                        CustomTheme.Default
+                    } else {
+                        try {
+                            themeRepository.getTheme(themeId)
+                        } catch (e: Exception) {
+                            apiOnError(e)
+                            CustomTheme.Default
+                        }
+                    }
                     _editingColors.value = (_editingTheme.value as CustomTheme).colors.map { color ->
                         color.toDataWithState(false)
                     }

@@ -53,9 +53,12 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import kotlinx.coroutines.launch
 
@@ -67,6 +70,8 @@ fun ThemeConfigPage(
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
     val context = LocalContext.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
 
@@ -143,19 +148,27 @@ fun ThemeConfigPage(
                                                 },
                                                 onClickSetDefault = {
                                                     scope.launch {
-                                                        themeListViewModel.setThemeDefault(theme.id)
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            themeListViewModel.setThemeDefault(theme.id)
+                                                        }
                                                         bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickUnsetDefault = {
                                                     scope.launch {
-                                                        themeListViewModel.unsetThemeDefault(theme.id)
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            themeListViewModel.unsetThemeDefault(
+                                                                theme.id,
+                                                            )
+                                                        }
                                                         bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickDuplicate = {
                                                     scope.launch {
-                                                        themeListViewModel.copyTheme(theme.id)
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            themeListViewModel.copyTheme(theme.id)
+                                                        }
                                                         bottomSheet.hide()
                                                     }
                                                 },
@@ -167,9 +180,11 @@ fun ThemeConfigPage(
                                                         },
                                                         onConfirm = {
                                                             scope.launch {
-                                                                themeListViewModel.deleteTheme(
-                                                                    theme.id,
-                                                                )
+                                                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                                                    themeListViewModel.deleteTheme(
+                                                                        theme.id,
+                                                                    )
+                                                                }
                                                                 bottomSheet.hide()
                                                                 modalState.hide()
                                                             }
@@ -222,13 +237,19 @@ fun ThemeConfigPage(
                                                 },
                                                 onClickSetDefault = {
                                                     scope.launch {
-                                                        themeListViewModel.setThemeDefault(theme.code)
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            themeListViewModel.setThemeDefault(theme.code)
+                                                        }
                                                         bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickUnsetDefault = {
                                                     scope.launch {
-                                                        themeListViewModel.unsetThemeDefault(theme.code)
+                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                            themeListViewModel.unsetThemeDefault(
+                                                                theme.code,
+                                                            )
+                                                        }
                                                         bottomSheet.hide()
                                                     }
                                                 },

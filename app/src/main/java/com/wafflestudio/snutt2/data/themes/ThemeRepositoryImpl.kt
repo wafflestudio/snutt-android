@@ -36,7 +36,7 @@ class ThemeRepositoryImpl @Inject constructor(
     }
 
     override fun getTheme(themeId: String): CustomTheme {
-        return _customThemes.value.find { it.id == themeId } ?: CustomTheme.New
+        return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
     }
 
     override fun getTheme(code: Int): BuiltInTheme {

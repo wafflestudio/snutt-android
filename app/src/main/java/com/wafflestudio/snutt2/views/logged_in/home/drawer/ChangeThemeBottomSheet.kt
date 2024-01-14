@@ -41,9 +41,12 @@ import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -58,12 +61,16 @@ fun ChangeThemeBottomSheet(
 ) {
     val navController = LocalNavController.current
     val bottomSheet = LocalBottomSheetState.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
 
     LaunchedEffect(Unit) {
-        themeListViewModel.fetchThemes()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            themeListViewModel.fetchThemes()
+        }
     }
 
     if (bottomSheet.isVisible) {

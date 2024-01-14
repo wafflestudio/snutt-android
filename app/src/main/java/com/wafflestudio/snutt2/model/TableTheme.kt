@@ -20,7 +20,7 @@ data class CustomTheme(
 ) : TableTheme(name, isDefault) {
 
     companion object {
-        val New = CustomTheme(
+        val Default = CustomTheme(
             id = "",
             name = "새 커스텀 테마",
             colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
