@@ -22,6 +22,7 @@ fun ModalDrawerWithBottomSheetLayout(
     sheetShape: RoundedCornerShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
     drawerContent: @Composable ColumnScope.() -> Unit = { HomeDrawer() },
     drawerState: DrawerState,
+    sheetGesturesEnabled: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -32,6 +33,7 @@ fun ModalDrawerWithBottomSheetLayout(
         sheetContent = bottomSheet.content,
         sheetState = bottomSheet.state,
         sheetShape = sheetShape,
+        sheetGesturesEnabled = sheetGesturesEnabled,
 //        onDismissScrim = {
 //            scope.launch { bottomSheet.hide() }
 //        }
