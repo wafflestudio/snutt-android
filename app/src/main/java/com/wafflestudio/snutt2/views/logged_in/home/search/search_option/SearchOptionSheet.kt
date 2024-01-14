@@ -1,171 +1,140 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
-import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+
+private enum class OptionSheetMode {
+    Normal, TimeSelect,
+}
 
 @Composable
 fun SearchOptionSheet(
     applyOption: () -> Unit,
+    draggedTimeBlock: State<List<List<Boolean>>>,
 ) {
     val viewModel = hiltViewModel<SearchViewModel>()
     val tagsByTagType by viewModel.tagsByTagType.collectAsState()
     val selectedTagType by viewModel.selectedTagType.collectAsState()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
-    val tagTypeList = remember {
-        listOf(
-            context.getString(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
-            context.getString(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
-            context.getString(R.string.search_option_tag_type_credit) to TagType.CREDIT,
-            context.getString(R.string.search_option_tag_type_time) to TagType.TIME,
-            context.getString(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
-            context.getString(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
-            context.getString(R.string.search_option_tag_type_etc) to TagType.ETC,
-        )
+    var optionSheetMode by remember {
+        mutableStateOf(OptionSheetMode.Normal)
     }
 
-    Column(
-        modifier = Modifier
-            .background(SNUTTColors.White900)
-            .fillMaxWidth(),
-    ) {
-        Spacer(modifier = Modifier.height(40.dp))
-        // tag column의 높이를 tagType column의 높이로 설정
-        SubcomposeLayout(modifier = Modifier) { constraints ->
-            val tagTypeColumn = subcompose(slotId = 1) {
-                Column(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .padding(start = 20.dp, bottom = 10.dp),
-                ) {
-                    tagTypeList.forEach { (name, type) ->
-                        Text(
-                            text = name,
-                            style = SNUTTTypography.h2.copy(
-                                fontSize = 17.sp,
-                                color = if (type == selectedTagType) {
-                                    SNUTTColors.Black900
-                                } else {
-                                    SNUTTColors.Gray200
-                                },
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .clicks {
-                                    scope.launch { viewModel.setTagType(type) }
-                                },
-                        )
-                    }
-                }
-            }
-            val tagTypePlaceables = tagTypeColumn.map {
-                it.measure(constraints)
-            }
-            val maxSize = tagTypePlaceables.fold(IntSize.Zero) { currentMax, placeable ->
-                IntSize(
-                    width = maxOf(currentMax.width, placeable.width),
-                    height = maxOf(currentMax.height, placeable.height),
-                )
-            }
+    // 전환 애니메이션에서 베이스가 되는 float 값 (일반 모드일 때 0f, 시간대 선택 모드일 때 1f)
+    val baseAnimatedFloat = animateFloatAsState(
+        targetValue = when (optionSheetMode) {
+            OptionSheetMode.Normal -> 0f
+            OptionSheetMode.TimeSelect -> 1f
+        },
+        animationSpec = SearchOptionSheetConstants.SearchOptionSheetAnimationSpec,
+        label = "baseAnimatedFloat",
+    )
 
-            layout(maxSize.width, maxSize.height) {
-                val tagListColumn = subcompose(slotId = 2, content = {
-                    LazyColumn(
-                        modifier = Modifier
-                            .height(maxSize.height.toDp())
-                            .padding(start = 20.dp, bottom = 10.dp),
-                        // FIXME: rememberLazyListState() 넣으면 오류
-                    ) {
-                        items(tagsByTagType) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                                    .fillMaxWidth()
-                                    .clicks {
-                                        scope.launch { viewModel.toggleTag(it.item) }
-                                    },
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                if (it.state) {
-                                    VividCheckedIcon(modifier = Modifier.size(15.dp))
-                                } else {
-                                    VividUncheckedIcon(modifier = Modifier.size(15.dp))
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = it.item.name,
-                                    modifier = Modifier.weight(1f),
-                                    style = SNUTTTypography.body1,
-                                )
-                            }
-                        }
-                    }
-                },)
-                val tagListPlaceables: List<Placeable> = tagListColumn.map {
-                    it.measure(constraints)
-                }
-                tagTypePlaceables.forEach { it.placeRelative(0, 0) }
-                tagListPlaceables.forEach { it.placeRelative(maxSize.width, 0) }
-            }
+    var normalSheetHeightPx = remember { 0 }
+    var maxSheetHeightPx = remember { 0 }
+    val sheetHeightAnimatedPx = remember {
+        derivedStateOf {
+            (normalSheetHeightPx + baseAnimatedFloat.value * (maxSheetHeightPx - normalSheetHeightPx)).roundToInt()
         }
-        Row(
-            modifier = Modifier
-                .background(SNUTTColors.Sky)
-                .fillMaxWidth()
-                .clicks { applyOption() },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+    }
+
+    SubcomposeLayout(
+        modifier = Modifier.background(SNUTTColors.White900),
+    ) { constraints ->
+        val tagTypePlaceable = subcompose(slotId = 1) {
+            TagTypeColumn(
+                selectedTagType = selectedTagType,
+                baseAnimatedFloat = baseAnimatedFloat,
+            ) {
+                scope.launch {
+                    viewModel.setTagType(it)
+                }
+            }
+        }.first().measure(constraints)
+
+        val tagListPlaceable = subcompose(slotId = 2) {
+            TagsColumn(
+                tagsByTagType = tagsByTagType,
+                selectedTimes = draggedTimeBlock,
+                baseAnimatedFloat = baseAnimatedFloat,
+                // tag column의 높이를 tagType column의 높이로 설정
+                height = tagTypePlaceable.height.toDp(),
+                width = constraints.maxWidth.toDp() - tagTypePlaceable.width.toDp(),
+                toggleTimeSelectTagTo = {
+                    optionSheetMode = if (it) {
+                        OptionSheetMode.TimeSelect
+                    } else {
+                        OptionSheetMode.Normal
+                    }
+                    scope.launch {
+                        viewModel.toggleTimeSpecificSearchTag(it)
+                    }
+                },
+                onToggleTag = {
+                    scope.launch {
+                        viewModel.toggleTag(it)
+                    }
+                },
+            )
+        }.first().measure(constraints)
+
+        val dragSheetPlaceable = subcompose(slotId = 3) {
+            TimeSelectSheet(
+                basedAnimatedFloat = baseAnimatedFloat,
+                initialDraggedTimeBlock = draggedTimeBlock,
+                onCancel = {
+                    optionSheetMode = OptionSheetMode.Normal
+                    scope.launch {
+                        viewModel.toggleTimeSpecificSearchTag(draggedTimeBlock.value.any { it.any { it } })
+                    }
+                },
+                onConfirm = {
+                    optionSheetMode = OptionSheetMode.Normal
+                    scope.launch {
+                        viewModel.setDraggedTimeBlock(it)
+                        val timeSelected = it.any { it.any { it } }
+                        viewModel.toggleTimeSpecificSearchTag(timeSelected)
+                    }
+                },
+            )
+        }.first().measure(constraints)
+
+        val confirmButtonPlaceable = subcompose(slotId = 4) {
+            SearchOptionConfirmButton(baseAnimatedFloat, applyOption)
+        }.first().measure(constraints)
+
+        normalSheetHeightPx =
+            tagTypePlaceable.height + 40.dp.toPx().roundToInt() + confirmButtonPlaceable.height
+        maxSheetHeightPx = dragSheetPlaceable.height
+        layout(
+            tagTypePlaceable.width,
+            sheetHeightAnimatedPx.value,
         ) {
-            Text(
-                text = stringResource(R.string.search_option_apply_button),
-                textAlign = TextAlign.Center,
-                style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.AllWhite),
-                modifier = Modifier.padding(vertical = 20.dp),
+            tagTypePlaceable.placeRelative(0, 40.dp.toPx().roundToInt())
+            tagListPlaceable.placeRelative(tagTypePlaceable.width, 40.dp.toPx().roundToInt())
+            if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
+            confirmButtonPlaceable.placeRelative(
+                0,
+                tagTypePlaceable.height + 40.dp.toPx().roundToInt(),
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun SearchOptionSheetPreview() {
 }

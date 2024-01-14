@@ -12,5 +12,6 @@ data class TableTrimParam(
 ) {
     companion object {
         val Default = TableTrimParam(0, 4, 9, 18, true)
+        val SearchOption = TableTrimParam(0, 4, 8, 21, true)
     }
 }

@@ -96,7 +96,7 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
 }
 
 @Composable
-private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
+fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight

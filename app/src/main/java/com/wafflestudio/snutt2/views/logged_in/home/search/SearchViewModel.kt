@@ -8,14 +8,34 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.concatenate
+import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
+import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.toDataWithState
+import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
+import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,6 +78,11 @@ class SearchViewModel @Inject constructor(
 
     private val _pageMode = MutableStateFlow(SearchPageMode.Search)
     val pageMode: StateFlow<SearchPageMode> get() = _pageMode
+
+    private val _draggedTimeBlock = MutableStateFlow(List(5) { List(28) { false } })
+    val draggedTimeBlock = _draggedTimeBlock.asStateFlow()
+
+    private val _searchTimeList = MutableStateFlow<List<SearchTimeDto>?>(null)
 
     init {
         viewModelScope.launch {
@@ -119,7 +144,7 @@ class SearchViewModel @Inject constructor(
                 semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                times = null, // TODO: 시간대 검색
+                times = _searchTimeList.value, // TODO: 시간대 검색
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
@@ -160,6 +185,12 @@ class SearchViewModel @Inject constructor(
     suspend fun toggleTag(tag: TagDto) {
         _selectedTags.emit(
             if (_selectedTags.value.contains(tag)) {
+                // FIXME : 로직 하나로 묶기
+                if (tag == TagDto.TIME_SELECT) {
+                    _draggedTimeBlock.emit(List(5) { List(28) { false } })
+                    _searchTimeList.emit(null)
+                }
+
                 _selectedTags.value.filter { it != tag }
             } else {
                 concatenate(_selectedTags.value, listOf(tag))
@@ -196,6 +227,32 @@ class SearchViewModel @Inject constructor(
     suspend fun deleteBookmark(lecture: LectureDto) {
         currentTableRepository.deleteBookmark(lecture)
         getBookmarkList()
+    }
+
+    suspend fun toggleTimeSpecificSearchTag(selected: Boolean) {
+        if (selected) {
+            if (_selectedTags.value.contains(TagDto.TIME_SELECT).not()) {
+                _selectedTags.emit(_selectedTags.value + TagDto.TIME_SELECT)
+            }
+        } else {
+            _selectedTags.emit(
+                _selectedTags.value.toMutableList().apply {
+                    remove(TagDto.TIME_SELECT)
+                },
+            )
+            _searchTimeList.emit(null)
+        }
+    }
+
+    suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
+        _draggedTimeBlock.emit(draggedTimeBlock)
+        draggedTimeBlock.clusterToTimeBlocks().let {
+            if (it.isEmpty()) {
+                _searchTimeList.emit(null)
+            } else {
+                _searchTimeList.emit(it)
+            }
+        }
     }
 
     private suspend fun clear() {

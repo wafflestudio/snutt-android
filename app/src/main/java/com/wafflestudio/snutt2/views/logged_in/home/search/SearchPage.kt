@@ -60,6 +60,7 @@ fun SearchPage(
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+    val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
@@ -95,7 +96,10 @@ fun SearchPage(
                         SearchPageMode.Search -> {
                             Row(
                                 modifier = Modifier
-                                    .background(SNUTTColors.Gray100, shape = RoundedCornerShape(6.dp))
+                                    .background(
+                                        SNUTTColors.Gray100,
+                                        shape = RoundedCornerShape(6.dp),
+                                    )
                                     .weight(1f)
                                     .padding(horizontal = 8.dp, vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -139,6 +143,7 @@ fun SearchPage(
                                                         }
                                                         scope.launch { bottomSheet.hide() }
                                                     },
+                                                    draggedTimeBlock = draggedTimeBlock,
                                                 )
                                             }
                                             scope.launch { bottomSheet.show() }
