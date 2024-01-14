@@ -17,7 +17,6 @@ import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import io.reactivex.rxjava3.core.Observable
 import kotlin.math.max
@@ -97,7 +96,7 @@ class TimetableView : View {
             invalidate()
         }
 
-    var theme: TableTheme = BuiltInTheme.SNUTT
+    var theme: Int = BuiltInTheme.SNUTT.code
         set(value) {
             field = value
             invalidate()
@@ -229,7 +228,7 @@ class TimetableView : View {
                 if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
                     lecture.color.bgColor!!
                 } else {
-                    (theme as BuiltInTheme).getColorByIndex(
+                    BuiltInTheme.fromCode(theme).getColorByIndex(
                         context,
                         lecture.colorIndex,
                     )
