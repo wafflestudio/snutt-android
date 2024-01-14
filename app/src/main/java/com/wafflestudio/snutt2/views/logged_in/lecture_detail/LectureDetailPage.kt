@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -35,6 +37,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.MapProperties
+import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.PolygonOverlay
+import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.compose.rememberMarkerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
@@ -56,7 +70,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun LectureDetailPage(
     vm: LectureDetailViewModel = hiltViewModel(),
@@ -144,6 +161,28 @@ fun LectureDetailPage(
             }
         }
 
+    /* 지도 카메라 */
+    val cameraPositionState = rememberCameraPositionState()
+    LaunchedEffect(Unit) {
+        cameraPositionState.move(
+            CameraUpdate.fitBounds(
+                LatLngBounds.from(
+                    listOf(
+                        LatLng(37.458926, 126.949390),
+                        LatLng(37.452880, 126.950163),
+                    ),
+                ),
+                150, 300, 150, 100,
+            ),
+        )
+    }
+
+    /* 지도 dim */
+    var mapDimmed by remember {
+        mutableStateOf(false)
+    }
+    val symbolScale = animateFloatAsState(targetValue = if (mapDimmed) 0f else 1f, label = "")
+
     ModalBottomSheetLayout(
         sheetContent = bottomSheet.content,
         sheetState = bottomSheet.state,
@@ -187,9 +226,15 @@ fun LectureDetailPage(
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                             if (vacancyRegistered) {
-                                                vacancyViewModel.removeVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.removeVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             } else {
-                                                vacancyViewModel.addVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.addVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             }
                                         }
                                     }
@@ -490,6 +535,59 @@ fun LectureDetailPage(
                                 text = stringResource(R.string.lecture_detail_add_class_time),
                                 textAlign = TextAlign.Center,
                                 style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                            )
+                        }
+                    }
+                    NaverMap(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(480.dp),
+                        cameraPositionState = cameraPositionState,
+                        onMapClick = { _, _ ->
+                            mapDimmed = mapDimmed.not()
+                        },
+                        properties = MapProperties(symbolScale = symbolScale.value),
+                        uiSettings = MapUiSettings(isLogoClickEnabled = false, isZoomControlEnabled = false),
+                    ) {
+                        Marker(
+                            state = rememberMarkerState(position = CameraPosition(LatLng(37.452880, 126.950163), 6.0).target),
+                            onClick = {
+                                if (mapDimmed) {
+                                    Intent(Intent.ACTION_VIEW, Uri.parse("nmap://place?lat=37.458926&lng=126.949390&name=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%A0%95%EC%9E%90%EB%8F%99&appname=com.wafflestudio.snutt2"))
+                                        .apply {
+                                            context.startActivity(this)
+                                        }
+                                    mapDimmed = false
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
+                        )
+                        Marker(
+                            state = rememberMarkerState(position = CameraPosition(LatLng(37.458926, 126.949390), 6.0).target),
+                            onClick = {
+                                if (mapDimmed) {
+                                    Intent(Intent.ACTION_VIEW, Uri.parse("nmap://place?lat=37.458926&lng=126.949390&name=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%A0%95%EC%9E%90%EB%8F%99&appname=com.wafflestudio.snutt2"))
+                                        .apply {
+                                            context.startActivity(this)
+                                        }
+                                    mapDimmed = false
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
+                        )
+                        if (mapDimmed) {
+                            PolygonOverlay(
+                                coords = listOf(
+                                    LatLng(38.0, 126.0),
+                                    LatLng(38.0, 127.0),
+                                    LatLng(37.0, 127.0),
+                                    LatLng(37.0, 126.0),
+                                ),
+                                color = Color.Black.copy(alpha = 0.8f),
                             )
                         }
                     }
