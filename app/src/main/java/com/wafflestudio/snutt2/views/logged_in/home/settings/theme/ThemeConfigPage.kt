@@ -215,6 +215,7 @@ fun ThemeConfigPage(
                                     scope.launch {
                                         bottomSheet.setSheetContent {
                                             BuiltInThemeMoreActionBottomSheet(
+                                                themeCode = theme.code,
                                                 isThemeDefault = theme.isDefault,
                                                 onClickDetail = {
                                                     navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")

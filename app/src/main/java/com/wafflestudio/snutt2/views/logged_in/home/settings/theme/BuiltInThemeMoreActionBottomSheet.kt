@@ -1,8 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
@@ -16,9 +20,14 @@ import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.PinIcon
 import com.wafflestudio.snutt2.components.compose.PinOffIcon
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.onSurfaceVariant
 
 @Composable
 fun BuiltInThemeMoreActionBottomSheet(
+    themeCode: Int,
     isThemeDefault: Boolean,
     onClickDetail: () -> Unit,
     onClickSetDefault: () -> Unit,
@@ -46,10 +55,17 @@ fun BuiltInThemeMoreActionBottomSheet(
                 icon = {
                     PinOffIcon(
                         modifier = Modifier.size(30.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                        colorFilter = ColorFilter.tint(
+                            if (themeCode == 0) {
+                                if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2
+                            } else {
+                                MaterialTheme.colors.onSurface
+                            }
+                        ),
                     )
                 },
                 text = stringResource(R.string.custom_theme_action_unset_default),
+                enabled = themeCode != 0,
                 onClick = { onClickUnsetDefault() },
             )
         } else {
