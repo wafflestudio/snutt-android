@@ -25,6 +25,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -88,6 +89,12 @@ fun ThemeConfigPage(
 
     BackHandler {
         onBackPressed()
+    }
+
+    LaunchedEffect(Unit) {
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            themeListViewModel.fetchThemes()
+        }
     }
 
     ModalBottomSheetLayout(

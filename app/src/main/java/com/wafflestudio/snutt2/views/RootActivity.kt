@@ -282,7 +282,6 @@ class RootActivity : AppCompatActivity() {
                         val parentEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
                         val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
                         val themeDetailViewModel =
                             hiltViewModel<ThemeDetailViewModel>(backStackEntry)
@@ -290,9 +289,6 @@ class RootActivity : AppCompatActivity() {
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                             onClickSave = {
-                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                    themeListViewModel.fetchThemes()
-                                }
                                 if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
                                     scope.launch {
                                         timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
