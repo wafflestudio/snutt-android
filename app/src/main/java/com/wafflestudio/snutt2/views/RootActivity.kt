@@ -227,7 +227,7 @@ class RootActivity : AppCompatActivity() {
             com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
-                sheetShape = RoundedCornerShape(10.dp),
+                sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
                 scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
             ) {
                 NavHost(
