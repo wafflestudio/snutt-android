@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,6 +53,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
@@ -63,6 +65,8 @@ fun ThemeConfigPage(
     themeListViewModel: ThemeListViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
+    val modalState = LocalModalState.current
+    val context = LocalContext.current
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
 
@@ -156,10 +160,26 @@ fun ThemeConfigPage(
                                                     }
                                                 },
                                                 onClickDelete = {
-                                                    scope.launch {
-                                                        themeListViewModel.deleteTheme(theme.id)
-                                                        bottomSheet.hide()
-                                                    }
+                                                    modalState.setOkCancel(
+                                                        context = context,
+                                                        onDismiss = {
+                                                            modalState.hide()
+                                                        },
+                                                        onConfirm = {
+                                                            scope.launch {
+                                                                themeListViewModel.deleteTheme(
+                                                                    theme.id,
+                                                                )
+                                                                bottomSheet.hide()
+                                                                modalState.hide()
+                                                            }
+                                                        },
+                                                        title = context.getString(R.string.theme_config_dialog_delete_title),
+                                                    ) {
+                                                        Text(
+                                                            text = stringResource(R.string.theme_config_dialog_delete_body),
+                                                        )
+                                                    }.show()
                                                 },
                                                 isThemeDefault = theme.isDefault,
                                             )
@@ -299,7 +319,9 @@ private fun ThemeItem(
                 style = SNUTTTypography.body2,
             )
             ArrowRight(
-                modifier = Modifier.size(10.dp).offset(y = 1.dp),
+                modifier = Modifier
+                    .size(10.dp)
+                    .offset(y = 1.dp),
                 colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
             )
         }
