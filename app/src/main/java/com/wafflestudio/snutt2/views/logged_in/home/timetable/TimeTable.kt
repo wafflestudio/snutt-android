@@ -205,6 +205,7 @@ private fun DrawLecture(
     fittedTrimParam: TableTrimParam,
 ) {
     val context = LocalContext.current
+    val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
 
     DrawClassTime(
         fittedTrimParam = fittedTrimParam,
@@ -214,7 +215,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            BuiltInTheme.fromCode(LocalTableState.current.table.theme).getColorByIndexComposable(
+            BuiltInTheme.fromCode(code).getColorByIndexComposable(
                 lecture.colorIndex,
             ).toArgb()
         },
