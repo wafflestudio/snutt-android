@@ -13,6 +13,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,14 +23,19 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -44,13 +51,16 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toRect
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import android.graphics.Color as AndroidColor
 
 @Composable
@@ -69,6 +79,19 @@ fun ColorPicker(
             ),
         )
     }
+    val setHsvWithHexCode = {
+        try {
+            hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
+        } catch (e: Exception) {
+            hexCode = hsvToString(hsv)
+        }
+    }
+    val textSelectionColors = TextSelectionColors(
+        handleColor = SNUTTColors.Black900,
+        backgroundColor = SNUTTColors.Black300,
+    )
+    val focusManager = LocalFocusManager.current
+
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -90,10 +113,13 @@ fun ColorPicker(
                 onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
             },
         )
-        Row {
+        Row(
+            modifier = Modifier.height(30.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Row(
                 modifier = Modifier
-                    .size(width = 140.dp, height = 40.dp)
+                    .width(120.dp)
                     .border(
                         width = 0.5.dp,
                         color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2,
@@ -114,42 +140,53 @@ fun ColorPicker(
                         .background(color = Color.hsv(hsv.first, hsv.second, hsv.third)),
                 )
             }
-            Spacer(modifier = Modifier.width(20.dp))
-            BasicTextField(
-                value = hexCode,
-                onValueChange = {
-                    hexCode = it
-                },
-                modifier = Modifier
-                    .clearFocusOnKeyboardDismiss()
-                    .weight(1f)
-                    .height(40.dp),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        try {
-                            hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
-                        } catch (e: Exception) {
-                            hexCode = hsvToString(hsv)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "HEX",
+                modifier = Modifier.padding(end = 6.dp),
+                color = MaterialTheme.colors.onSurfaceVariant,
+                style = SNUTTTypography.body1,
+            )
+            CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
+                BasicTextField(
+                    value = hexCode.substringAfter('#'),
+                    onValueChange = {
+                        hexCode = "#$it"
+                    },
+                    modifier = Modifier
+                        .clearFocusOnKeyboardDismiss()
+                        .onFocusChanged {
+                            if (it.isFocused.not()) {
+                                setHsvWithHexCode()
+                            }
+                        }
+                        .width(85.dp)
+                        .fillMaxHeight(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        setHsvWithHexCode()
+                        focusManager.clearFocus()
+                    },),
+                    textStyle = SNUTTTypography.body1.copy(
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 1.sp,
+                    ),
+                    singleLine = true,
+                    decorationBox = {
+                        Row(
+                            modifier = Modifier
+                                .border(
+                                    width = 0.5.dp,
+                                    color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2,
+                                    shape = RoundedCornerShape(10.dp),
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            it()
                         }
                     },
-                ),
-                textStyle = SNUTTTypography.body1.copy(textAlign = TextAlign.Center),
-                singleLine = true,
-                decorationBox = {
-                    Row(
-                        modifier = Modifier
-                            .border(
-                                width = 0.5.dp,
-                                color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2,
-                                shape = RoundedCornerShape(10.dp),
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        it()
-                    }
-                },
-            )
+                )
+            }
         }
     }
 }
@@ -166,6 +203,11 @@ fun HueBar(
             .pointerInput(Unit) {
                 detectDragGestures { input, _ ->
                     onHueChanged(input.position.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width)
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    onHueChanged(it.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width)
                 }
             }
             .clip(CircleShape),
@@ -212,6 +254,14 @@ fun SatValPanel(
                     onSatValChanged(
                         1f / size.width * input.position.x.coerceIn(0f..size.width.toFloat()),
                         1f - 1f / size.height * input.position.y.coerceIn(0f..size.height.toFloat()),
+                    )
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    onSatValChanged(
+                        1f / size.width * it.x.coerceIn(0f..size.width.toFloat()),
+                        1f - 1f / size.height * it.y.coerceIn(0f..size.height.toFloat()),
                     )
                 }
             }

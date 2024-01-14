@@ -54,7 +54,7 @@ fun BuiltInThemeMoreActionBottomSheet(
                                 if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2
                             } else {
                                 MaterialTheme.colors.onSurface
-                            }
+                            },
                         ),
                     )
                 },
