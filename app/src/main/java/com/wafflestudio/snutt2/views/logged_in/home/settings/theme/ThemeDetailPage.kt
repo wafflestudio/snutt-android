@@ -334,8 +334,7 @@ fun ThemeDetailPage(
                                                 )
                                                 Spacer(modifier = Modifier.width(11.dp))
                                                 ColorCircle(
-                                                    color = colorWithExpanded.item.fgColor
-                                                        ?: 0xffffff,
+                                                    color = Color(colorWithExpanded.item.fgColor ?: 0xffffff),
                                                     modifier = Modifier
                                                         .size(25.dp)
                                                         .clicks {
@@ -372,8 +371,7 @@ fun ThemeDetailPage(
                                                 )
                                                 Spacer(modifier = Modifier.width(11.dp))
                                                 ColorCircle(
-                                                    color = colorWithExpanded.item.bgColor
-                                                        ?: 0xffffff,
+                                                    color = Color(colorWithExpanded.item.bgColor ?: 0xffffff),
                                                     modifier = Modifier
                                                         .size(25.dp)
                                                         .clicks {

@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun ColorCircle(
-    color: Int,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -33,11 +33,11 @@ fun ColorCircle(
                 .padding(3.dp)
                 .border(
                     width = 2.dp,
-                    color = if (Color(color) == MaterialTheme.colors.surface) SNUTTColors.Gray20 else MaterialTheme.colors.surface,
+                    color = if (color == MaterialTheme.colors.surface) SNUTTColors.Gray20 else MaterialTheme.colors.surface,
                     shape = CircleShape,
                 )
                 .clip(CircleShape)
-                .background(Color(color)),
+                .background(color),
         )
     }
 }
