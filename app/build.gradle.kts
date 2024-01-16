@@ -86,6 +86,7 @@ android {
                 artifactType = "APK"
                 testers = "urban"
                 serviceCredentialsFile = "gcp-service-account-staging.json"
+                releaseNotes = "Custom theme release test"
             }
         }
 
