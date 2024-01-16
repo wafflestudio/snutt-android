@@ -354,4 +354,5 @@
     <string name="theme_detail_preview">미리보기</string>
     <string name="lecture_color_selector_page_app_bar_title">강의 색상 선택</string>
     <string name="lecture_color_selector_page_custom_color">커스텀</string>
+    <string name="color_picker_dialog_title">색상 선택</string>
 </resources>

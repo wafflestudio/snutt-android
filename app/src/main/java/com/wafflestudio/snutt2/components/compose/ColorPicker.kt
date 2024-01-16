@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toRect
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -82,6 +83,7 @@ fun ColorPicker(
     val setHsvWithHexCode = {
         try {
             hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
+            onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
         } catch (e: Exception) {
             hexCode = hsvToString(hsv)
         }
@@ -316,7 +318,7 @@ fun showColorPickerDialog(
             onColorPicked(currentColor)
             modalState.hide()
         },
-        title = "색상 선택",
+        title = context.getString(R.string.color_picker_dialog_title),
     ) {
         ColorPicker(
             initialColor = initialColor,
