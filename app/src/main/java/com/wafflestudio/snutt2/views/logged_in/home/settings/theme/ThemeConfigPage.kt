@@ -101,7 +101,6 @@ fun ThemeConfigPage(
         sheetState = bottomSheet.state,
         sheetContent = bottomSheet.content,
         sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        sheetGesturesEnabled = false,
         scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
     ) {
         Column(
