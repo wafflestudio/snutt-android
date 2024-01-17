@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.notifications
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -49,9 +52,7 @@ fun NotificationPage() {
         when {
             refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()
             refreshState is LoadState.Error -> NotificationError()
-            else -> LazyColumn(
-                modifier = Modifier.padding(horizontal = 9.dp),
-            ) {
+            else -> LazyColumn {
                 items(notificationList) {
                     it?.let { NotificationItem(it) }
                 }
@@ -63,34 +64,72 @@ fun NotificationPage() {
 @Composable
 fun NotificationItem(info: NotificationDto) {
     val context = LocalContext.current
-    Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 15.dp)) {
-        when (info.type) {
-            0 -> WarningIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            1 -> CalendarIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            2 -> RefreshIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            3 -> TrashIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            4 -> NotificationIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            5 -> PeopleIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-            else -> MegaphoneIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        Column {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = info.title, style = SNUTTTypography.h4)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = getNotificationTime(context, info),
-                    style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray600),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
+        ) {
+            when (info.type) {
+                0 -> WarningIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                1 -> CalendarIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                2 -> RefreshTimeIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                3 -> NotificationTrashIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                4 -> NotificationVacancyIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                5 -> NotificationFriendIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+
+                else -> MegaphoneIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }
-            Spacer(modifier = Modifier.height(7.dp))
-            Text(
-                text = info.message,
-                style = SNUTTTypography.body2,
-            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.padding(vertical = 7.dp),
+            ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontSize = 14.sp, fontWeight = FontWeight.SemiBold))
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = getNotificationTime(context, info),
+                        style = SNUTTTypography.body1.copy(fontSize = 14.sp, color = SNUTTColors.Gray600),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = info.message,
+                    style = SNUTTTypography.body1.copy(fontSize = 14.sp),
+                )
+            }
         }
+        Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)
     }
 }
 
@@ -137,6 +176,12 @@ fun NotificationPlaceholder() {
             textAlign = TextAlign.Center,
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationItemPreview() {
+    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null))
 }
 
 @Preview(showBackground = true)

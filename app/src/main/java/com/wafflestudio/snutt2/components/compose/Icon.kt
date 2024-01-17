@@ -584,13 +584,13 @@ fun CalendarIcon(
 }
 
 @Composable
-fun RefreshIcon(
+fun RefreshTimeIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_refresh),
+        painter = painterResource(id = R.drawable.ic_refresh_time),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -769,6 +769,45 @@ fun MegaphoneIcon(
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_megaphone),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationVacancyIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationFriendIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationTrashIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_trash_new),
         contentDescription = "",
         colorFilter = colorFilter,
     )
