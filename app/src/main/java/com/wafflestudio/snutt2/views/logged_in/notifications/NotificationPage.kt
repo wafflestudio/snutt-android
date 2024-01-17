@@ -117,7 +117,7 @@ fun NotificationItem(info: NotificationDto) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = getNotificationTime(context, info),
-                        style = SNUTTTypography.body1.copy(fontSize = 14.sp, color = SNUTTColors.Gray600),
+                        style = SNUTTTypography.body1.copy(fontSize = 14.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
