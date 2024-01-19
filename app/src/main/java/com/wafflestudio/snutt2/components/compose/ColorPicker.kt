@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -198,32 +199,50 @@ fun HueBar(
     hue: Float,
     onHueChanged: (Float) -> Unit,
 ) {
-    Canvas(
+    Box(
         modifier = Modifier
             .height(20.dp)
             .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectDragGestures { input, _ ->
-                    onHueChanged(input.position.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width)
-                }
-            }
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    onHueChanged(it.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width)
-                }
-            }
             .clip(CircleShape),
     ) {
+        HueBackground( // hue에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
+            modifier = Modifier.fillMaxSize(),
+        )
+        HueCircle(
+            hue = hue,
+            onHueChanged = onHueChanged,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+fun HueBackground(
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier,
+    ) {
         val bitmap =
-            Bitmap.createBitmap(size.width.toInt(), size.height.toInt(), Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(
+                size.width.toInt(),
+                size.height.toInt(),
+                Bitmap.Config.ARGB_8888,
+            )
         val hueCanvas = Canvas(bitmap)
         val huePanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val hueColors = IntArray(huePanel.width().toInt()) {
-            AndroidColor.HSVToColor(floatArrayOf((360f / huePanel.width().toInt()) * it, 1f, 1f))
+            AndroidColor.HSVToColor(
+                floatArrayOf(
+                    (360f / huePanel.width().toInt()) * it, // 색 -> 위치 변환. hue값을 0부터 360까지 균일하게 변화시켜 huePanel.width() 길이의 배열에 저장
+                    1f,
+                    1f,
+                ),
+            )
         }
         Paint().let { linePaint ->
             linePaint.strokeWidth = 0f
-            hueColors.forEachIndexed { idx, col ->
+            hueColors.forEachIndexed { idx, col -> // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
                 linePaint.color = col
                 hueCanvas.drawLine(idx.toFloat(), 0f, idx.toFloat(), huePanel.bottom, linePaint)
             }
@@ -232,6 +251,28 @@ fun HueBar(
         drawIntoCanvas {
             it.nativeCanvas.drawBitmap(bitmap, null, huePanel.toRect(), null)
         }
+    }
+}
+
+@Composable
+fun HueCircle(
+    hue: Float,
+    onHueChanged: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectDragGestures { input, _ ->
+                    onHueChanged(input.position.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width) // 색 -> 위치 변환의 역산
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    onHueChanged(it.x.coerceIn(0f..size.width.toFloat()) * 360f / size.width) // 색 -> 위치 변환의 역산
+                }
+            },
+    ) {
         drawCircle(
             color = SNUTTColors.White,
             radius = size.height / 2,
@@ -247,56 +288,92 @@ fun SatValPanel(
     satVal: Pair<Float, Float>,
     onSatValChanged: (Float, Float) -> Unit,
 ) {
-    Canvas(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .pointerInput(Unit) {
-                detectDragGestures { input, _ ->
-                    onSatValChanged(
-                        1f / size.width * input.position.x.coerceIn(0f..size.width.toFloat()),
-                        1f - 1f / size.height * input.position.y.coerceIn(0f..size.height.toFloat()),
-                    )
-                }
-            }
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    onSatValChanged(
-                        1f / size.width * it.x.coerceIn(0f..size.width.toFloat()),
-                        1f - 1f / size.height * it.y.coerceIn(0f..size.height.toFloat()),
-                    )
-                }
-            }
             .clip(RoundedCornerShape(12.dp)),
     ) {
+        SatValBackground( // sat, val에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
+            hue = hue,
+            modifier = Modifier.fillMaxSize(),
+        )
+        SatValCircle(
+            satVal = satVal,
+            onSatValChanged = onSatValChanged,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+fun SatValBackground(
+    hue: Float,
+    modifier: Modifier = Modifier,
+) {
+    Canvas( // TODO: hue가 바뀌면 전부 다시 그려야 함. 최적화?
+        modifier = modifier,
+    ) {
         val bitmap =
-            Bitmap.createBitmap(size.width.toInt(), size.height.toInt(), Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(
+                size.width.toInt(),
+                size.height.toInt(),
+                Bitmap.Config.ARGB_8888,
+            )
         val canvas = Canvas(bitmap)
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))
         val satShader = LinearGradient(
             satValPanel.left, satValPanel.top, satValPanel.right, satValPanel.top,
             -0x1, rgb, Shader.TileMode.CLAMP,
-        )
+        ) // 하얀색부터 HSV(hue, 1, 1)까지를 좌상단에서 우상단까지 gradient
         val valShader = LinearGradient(
             satValPanel.left, satValPanel.top, satValPanel.left, satValPanel.bottom,
             -0x1, -0x10000000, Shader.TileMode.CLAMP,
-        )
+        ) // 하얀색부터 검정색까지를 좌상단에서 좌하단까지 gradient
         canvas.drawRoundRect(
             satValPanel,
             12.dp.toPx(),
             12.dp.toPx(),
             Paint().apply {
-                shader = ComposeShader(valShader, satShader, PorterDuff.Mode.MULTIPLY)
+                shader = ComposeShader(valShader, satShader, PorterDuff.Mode.MULTIPLY) // 두 shader를 곱함
             },
         )
         drawIntoCanvas {
             it.nativeCanvas.drawBitmap(bitmap, null, satValPanel.toRect(), null)
         }
+    }
+}
+
+@Composable
+fun SatValCircle(
+    satVal: Pair<Float, Float>,
+    onSatValChanged: (Float, Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectDragGestures { input, _ ->
+                    onSatValChanged(
+                        1f / size.width * input.position.x.coerceIn(0f..size.width.toFloat()), // x좌표 0~size.width를 0~1로 변환
+                        1f - 1f / size.height * input.position.y.coerceIn(0f..size.height.toFloat()), // y좌표 0~size.height를 1~0으로 변환
+                    )
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    onSatValChanged(
+                        1f / size.width * it.x.coerceIn(0f..size.width.toFloat()), // x좌표 0~size.width를 0~1로 변환
+                        1f - 1f / size.height * it.y.coerceIn(0f..size.height.toFloat()), // y좌표 0~size.height를 1~0으로 변환
+                    )
+                }
+            },
+    ) {
         drawCircle(
             color = SNUTTColors.White,
             radius = 8.dp.toPx(),
-            center = Offset(satVal.first * size.width, (1f - satVal.second) * size.height),
+            center = Offset(satVal.first * size.width, (1f - satVal.second) * size.height), // 좌표 -> 색 변환의 역산
             style = Stroke(width = 2.dp.toPx()),
         )
     }
