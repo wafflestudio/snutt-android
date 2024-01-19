@@ -33,7 +33,7 @@ class ThemeListViewModel @Inject constructor(
     }
 
     suspend fun unsetThemeDefault(code: Int) {
-        themeRepository.setBuiltInThemeDefault(0) // FIXME: DELETE /themes/basic/~/default 나오면 바꾸기
+        themeRepository.unsetBuiltInThemeDefault(code)
     }
 
     suspend fun deleteTheme(themeId: String) {

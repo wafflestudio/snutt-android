@@ -303,4 +303,9 @@ interface SNUTTRestApi {
     suspend fun _deleteCustomThemeDefault(
         @Path("themeId") themeId: String,
     ): DeleteCustomThemeDefaultResults
+
+    @DELETE("/v1/themes/basic/{basicThemeTypeValue}/default")
+    suspend fun _deleteBuiltInThemeDefault(
+        @Path("basicThemeTypeValue") basicThemeTypeValue: Int,
+    ): DeleteBuiltInThemeDefaultResults
 }

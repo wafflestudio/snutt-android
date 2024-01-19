@@ -99,4 +99,16 @@ class ThemeRepositoryImpl @Inject constructor(
             it.copy(isDefault = false)
         }
     }
+
+    override suspend fun unsetBuiltInThemeDefault(theme: Int) {
+        val newTheme = api._deleteBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as? BuiltInTheme
+        if (newTheme != null) {
+            _builtInThemes.value = _builtInThemes.value.map {
+                it.copy(isDefault = it.code == newTheme.code)
+            }
+        }
+        _customThemes.value = _customThemes.value.map {
+            it.copy(isDefault = false)
+        }
+    }
 }

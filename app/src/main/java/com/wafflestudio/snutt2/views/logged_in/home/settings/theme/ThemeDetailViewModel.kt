@@ -119,7 +119,7 @@ class ThemeDetailViewModel @Inject constructor(
         if (_editingTheme.value is CustomTheme) {
             themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {
-            themeRepository.setBuiltInThemeDefault(0) // FIXME: DELETE /themes/basic/~/default 나오면 바꾸기
+            themeRepository.unsetBuiltInThemeDefault((_editingTheme.value as BuiltInTheme).code)
         }
     }
 }

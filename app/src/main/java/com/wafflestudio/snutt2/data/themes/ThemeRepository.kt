@@ -30,4 +30,6 @@ interface ThemeRepository {
     suspend fun setBuiltInThemeDefault(theme: Int)
 
     suspend fun unsetCustomThemeDefault(themeId: String)
+
+    suspend fun unsetBuiltInThemeDefault(theme: Int)
 }
