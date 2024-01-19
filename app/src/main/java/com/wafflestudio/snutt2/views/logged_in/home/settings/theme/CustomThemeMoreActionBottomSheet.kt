@@ -18,6 +18,8 @@ import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.PinIcon
 import com.wafflestudio.snutt2.components.compose.PinOffIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun CustomThemeMoreActionBottomSheet(
@@ -82,10 +84,17 @@ fun CustomThemeMoreActionBottomSheet(
             icon = {
                 TrashIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                    colorFilter = ColorFilter.tint(
+                        if (isThemeDefault) {
+                            if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2
+                        } else {
+                            MaterialTheme.colors.onSurface
+                        },
+                    ),
                 )
             },
             text = stringResource(R.string.custom_theme_action_delete),
+            enabled = isThemeDefault.not(),
             onClick = { onClickDelete() },
         )
     }
