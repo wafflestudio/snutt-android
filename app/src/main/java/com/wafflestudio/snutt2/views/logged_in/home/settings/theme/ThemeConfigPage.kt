@@ -150,7 +150,10 @@ fun ThemeConfigPage(
                                         bottomSheet.setSheetContent {
                                             CustomThemeMoreActionBottomSheet(
                                                 onClickDetail = {
-                                                    navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                                                    scope.launch {
+                                                        navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                                                        bottomSheet.hide()
+                                                    }
                                                 },
                                                 onClickSetDefault = {
                                                     scope.launch {
@@ -191,8 +194,8 @@ fun ThemeConfigPage(
                                                                         theme.id,
                                                                     )
                                                                 }
-                                                                bottomSheet.hide()
                                                                 modalState.hide()
+                                                                bottomSheet.hide()
                                                             }
                                                         },
                                                         title = context.getString(R.string.theme_config_dialog_delete_title),
@@ -239,7 +242,10 @@ fun ThemeConfigPage(
                                                 themeCode = theme.code,
                                                 isThemeDefault = theme.isDefault,
                                                 onClickDetail = {
-                                                    navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                                    scope.launch {
+                                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                                        bottomSheet.hide()
+                                                    }
                                                 },
                                                 onClickSetDefault = {
                                                     scope.launch {
