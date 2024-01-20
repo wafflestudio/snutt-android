@@ -45,6 +45,7 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
@@ -224,7 +225,7 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
-            com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout(
+            ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
                 sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
