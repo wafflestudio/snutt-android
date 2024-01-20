@@ -91,11 +91,9 @@ class ThemeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun unsetCustomThemeDefault(themeId: String) {
-        val newTheme = api._deleteCustomThemeDefault(themeId = themeId).toTableTheme() as? BuiltInTheme
-        if (newTheme != null) {
-            _builtInThemes.value = _builtInThemes.value.map {
-                it.copy(isDefault = it.code == newTheme.code)
-            }
+        val newTheme = api._deleteCustomThemeDefault(themeId = themeId).toTableTheme() as BuiltInTheme
+        _builtInThemes.value = _builtInThemes.value.map {
+            it.copy(isDefault = it.code == newTheme.code)
         }
         _customThemes.value = _customThemes.value.map {
             it.copy(isDefault = false)
@@ -103,11 +101,9 @@ class ThemeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun unsetBuiltInThemeDefault(theme: Int) {
-        val newTheme = api._deleteBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as? BuiltInTheme
-        if (newTheme != null) {
-            _builtInThemes.value = _builtInThemes.value.map {
-                it.copy(isDefault = it.code == newTheme.code)
-            }
+        val newTheme = api._deleteBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
+        _builtInThemes.value = _builtInThemes.value.map {
+            it.copy(isDefault = it.code == newTheme.code)
         }
         _customThemes.value = _customThemes.value.map {
             it.copy(isDefault = false)
