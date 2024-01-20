@@ -33,7 +33,7 @@ fun ColorCircle(
                 .padding(3.dp)
                 .border(
                     width = 2.dp,
-                    color = if (color == MaterialTheme.colors.surface) SNUTTColors.Gray20 else MaterialTheme.colors.surface,    // color가 surface일 경우 배경(surface)과 구분이 되지 않으므로 Gray20으로 칠함
+                    color = if (color == MaterialTheme.colors.surface) SNUTTColors.Gray20 else MaterialTheme.colors.surface, // color가 surface일 경우 배경(surface)과 구분이 되지 않으므로 Gray20으로 칠함
                     shape = CircleShape,
                 )
                 .clip(CircleShape)

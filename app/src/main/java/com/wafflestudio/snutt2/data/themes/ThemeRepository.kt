@@ -17,9 +17,9 @@ interface ThemeRepository {
 
     fun getTheme(code: Int): BuiltInTheme
 
-    suspend fun createTheme(name: String, colors: List<ColorDto>)
+    suspend fun createTheme(name: String, colors: List<ColorDto>): CustomTheme
 
-    suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>)
+    suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): CustomTheme
 
     suspend fun copyTheme(themeId: String)
 

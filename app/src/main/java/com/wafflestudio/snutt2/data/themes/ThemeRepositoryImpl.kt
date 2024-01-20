@@ -43,12 +43,13 @@ class ThemeRepositoryImpl @Inject constructor(
         return _builtInThemes.value.find { it.code == code } ?: BuiltInTheme.SNUTT
     }
 
-    override suspend fun createTheme(name: String, colors: List<ColorDto>) {
+    override suspend fun createTheme(name: String, colors: List<ColorDto>): CustomTheme {
         val newTheme = api._postTheme(PostThemeParams(name = name, colors = colors)).toTableTheme() as CustomTheme
         _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
+        return newTheme
     }
 
-    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>) {
+    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): CustomTheme {
         val newTheme = api._patchTheme(
             themeId = themeId,
             patchThemeParams = PatchThemeParams(name = name, colors = colors),
@@ -56,6 +57,7 @@ class ThemeRepositoryImpl @Inject constructor(
         _customThemes.value = _customThemes.value.toMutableList().apply {
             set(indexOfFirst { it.id == newTheme.id }, newTheme)
         }
+        return newTheme
     }
 
     override suspend fun copyTheme(themeId: String) {
