@@ -346,7 +346,7 @@
     <string name="theme_detail_dialog_unset_default_body">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
     <string name="theme_detail_theme_name">테마명</string>
     <string name="theme_detail_theme_colors">색 조합</string>
-    <string name="theme_detail_color_item">색상%d</string>
+    <string name="theme_detail_color_item">색상 %d</string>
     <string name="theme_detail_color_fg">글꼴색</string>
     <string name="theme_detail_color_bg">배경색</string>
     <string name="theme_detail_add_color">+ 색상 추가</string>
@@ -354,5 +354,6 @@
     <string name="theme_detail_preview">미리보기</string>
     <string name="lecture_color_selector_page_app_bar_title">강의 색상 선택</string>
     <string name="lecture_color_selector_page_custom_color">커스텀</string>
+    <string name="lecture_color_selector_page_color_item">색상 %d</string>
     <string name="color_picker_dialog_title">색상 선택</string>
 </resources>

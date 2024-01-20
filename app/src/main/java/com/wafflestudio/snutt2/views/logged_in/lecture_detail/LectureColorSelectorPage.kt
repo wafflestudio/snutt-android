@@ -99,13 +99,12 @@ fun LectureColorSelectorPage(
         ) {
             onBackPressed()
         }
-
         Spacer(modifier = Modifier.height(10.dp))
         if (theme is CustomTheme) {
             (theme as CustomTheme).colors.forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
-                    title = "색상 ${idx + 1}",
+                    title = stringResource(R.string.lecture_color_selector_page_color_item, idx + 1),
                     isSelected = idx == selectedIndex,
                     onClick = {
                         selectedIndex = idx
@@ -118,7 +117,7 @@ fun LectureColorSelectorPage(
                     fgColor = 0xffffff,
                     bgColor = (theme as BuiltInTheme).getColorByIndex(context, colorIndex),
                 ),
-                title = "색상 $colorIndex",
+                title = stringResource(R.string.lecture_color_selector_page_color_item, colorIndex),
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,
             ) {
                 selectedIndex = colorIndex.toInt() - 1
