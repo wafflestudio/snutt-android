@@ -159,8 +159,8 @@ fun ThemeConfigPage(
                                                     scope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                                             themeListViewModel.setThemeDefault(theme.id)
+                                                            bottomSheet.hide()
                                                         }
-                                                        bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickUnsetDefault = {
@@ -169,16 +169,16 @@ fun ThemeConfigPage(
                                                             themeListViewModel.unsetThemeDefault(
                                                                 theme.id,
                                                             )
+                                                            bottomSheet.hide()
                                                         }
-                                                        bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickDuplicate = {
                                                     scope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                                             themeListViewModel.copyTheme(theme.id)
+                                                            bottomSheet.hide()
                                                         }
-                                                        bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickDelete = {
@@ -193,9 +193,9 @@ fun ThemeConfigPage(
                                                                     themeListViewModel.deleteTheme(
                                                                         theme.id,
                                                                     )
+                                                                    modalState.hide()
+                                                                    bottomSheet.hide()
                                                                 }
-                                                                modalState.hide()
-                                                                bottomSheet.hide()
                                                             }
                                                         },
                                                         title = context.getString(R.string.theme_config_dialog_delete_title),
@@ -251,8 +251,8 @@ fun ThemeConfigPage(
                                                     scope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                                             themeListViewModel.setThemeDefault(theme.code)
+                                                            bottomSheet.hide()
                                                         }
-                                                        bottomSheet.hide()
                                                     }
                                                 },
                                                 onClickUnsetDefault = {
@@ -261,8 +261,8 @@ fun ThemeConfigPage(
                                                             themeListViewModel.unsetThemeDefault(
                                                                 theme.code,
                                                             )
+                                                            bottomSheet.hide()
                                                         }
-                                                        bottomSheet.hide()
                                                     }
                                                 },
                                             )

@@ -188,10 +188,10 @@ fun ThemeDetailPage(
                                                 } else {
                                                     themeDetailViewModel.unsetThemeDefault()
                                                 }
+                                                onClickSave()
+                                                modalState.hide()
+                                                navController.popBackStack()
                                             }
-                                            onClickSave()
-                                            modalState.hide()
-                                            navController.popBackStack()
                                         }
                                     },
                                     onDismiss = {
@@ -212,9 +212,9 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         themeDetailViewModel.saveTheme(themeName)
+                                        onClickSave()
+                                        navController.popBackStack()
                                     }
-                                    onClickSave()
-                                    navController.popBackStack()
                                 }
                             }
                         },
