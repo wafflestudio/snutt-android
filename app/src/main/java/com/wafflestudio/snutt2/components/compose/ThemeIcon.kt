@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,14 +10,22 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import kotlin.random.Random
 
 @Composable
 fun ThemeIcon(
@@ -191,6 +200,7 @@ fun ThemeIcon(
                     modifier = modifier,
                 )
             }
+
             BuiltInTheme.MODERN.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_modern),
@@ -198,6 +208,7 @@ fun ThemeIcon(
                     modifier = modifier,
                 )
             }
+
             BuiltInTheme.AUTUMN.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_autumn),
@@ -205,6 +216,7 @@ fun ThemeIcon(
                     modifier = modifier,
                 )
             }
+
             BuiltInTheme.CHERRY.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_pink),
@@ -212,6 +224,7 @@ fun ThemeIcon(
                     modifier = modifier,
                 )
             }
+
             BuiltInTheme.ICE.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_ice),
@@ -219,6 +232,7 @@ fun ThemeIcon(
                     modifier = modifier,
                 )
             }
+
             BuiltInTheme.GRASS.code -> {
                 Image(
                     painter = painterResource(R.drawable.theme_preview_grass),
@@ -277,5 +291,29 @@ private fun RowScope.Column3Colors(color1: Color, color2: Color, color3: Color) 
                 .weight(1f)
                 .fillMaxWidth(),
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ThemeIconPreview() {
+    Column(
+        modifier = Modifier.padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        (1..9).forEach {
+            ThemeIcon(
+                theme = CustomTheme(
+                    id = "", name = "",
+                    colors = List(it) {
+                        ColorDto(
+                            fgColor = SNUTTColors.White.toArgb(),
+                            bgColor = Random.nextInt(0x0, 0xffffff),
+                        )
+                    },
+                ),
+                modifier = Modifier.size(80.dp),
+            )
+        }
     }
 }
