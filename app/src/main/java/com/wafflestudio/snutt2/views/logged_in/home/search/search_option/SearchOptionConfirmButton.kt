@@ -34,7 +34,7 @@ fun SearchOptionConfirmButton(
     }
     val offsetYAnimatedDp by remember {
         derivedStateOf {
-            baseAnimatedFloat.value.dp * 500
+            baseAnimatedFloat.value.dp * 500 // FIXME
         }
     }
 

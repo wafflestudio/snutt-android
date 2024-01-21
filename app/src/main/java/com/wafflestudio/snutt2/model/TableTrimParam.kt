@@ -13,5 +13,11 @@ data class TableTrimParam(
     companion object {
         val Default = TableTrimParam(0, 4, 9, 18, true)
         val SearchOption = TableTrimParam(0, 4, 8, 21, true)
+        val TimeBlockGridDefault =
+            List(SearchOption.dayOfWeekTo - SearchOption.dayOfWeekFrom + 1) {
+                List((SearchOption.hourTo - SearchOption.hourFrom + 1) * 2) {
+                    false
+                }
+            }
     }
 }

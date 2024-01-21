@@ -1,9 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.ColorInt
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -43,7 +42,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.MagicIcon
 import com.wafflestudio.snutt2.components.compose.ResetIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -67,31 +65,44 @@ fun TimeSelectSheet(
         initialDraggedTimeBlock.value.map { it.map { mutableStateOf(it) } }
     }
 
-    val backgroundLectureTimes =
-        LocalTableState.current.table.lectureList.flatMap { it.class_time_json }
-            .mapNotNull {
-                it.trimByTrimParam(TableTrimParam.SearchOption)
-            }
-    val `빈_시간대_칠하기` = {
-        // 드래그 상태 초기화
+    val currentTableLectures = LocalTableState.current.table.lectureList
+    val backgroundLectureTimes = remember {
+        currentTableLectures.flatMap { it.class_time_json }.mapNotNull {
+            it.trimByTrimParam(TableTrimParam.SearchOption)
+        }
+    }
+    val 빈_시간대_칠하기 = {
         draggedTimeBlock.forEachIndexed { i, row ->
             row.forEachIndexed { j, _ ->
                 draggedTimeBlock[i][j].value = true
             }
         }
         backgroundLectureTimes.forEach {
-            for (timeIndex in (it.startMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30 .. (it.endMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30) {
+            for (timeIndex in (it.startMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30..(it.endMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30) {
                 draggedTimeBlock[it.day][timeIndex].value = false
             }
         }
     }
+    val 변경_전_색칠로_복구 = {
+        draggedTimeBlock.forEachIndexed { dayIndex, dayColumn ->
+            dayColumn.forEachIndexed { timeIndex, _ ->
+                draggedTimeBlock[dayIndex][timeIndex].value =
+                    initialDraggedTimeBlock.value[dayIndex][timeIndex]
+            }
+        }
+    }
 
+    // 시간대 선택에서 뒤로가기 하면 태그 선택으로 가기
+    BackHandler {
+        변경_전_색칠로_복구()
+        onCancel()
+    }
 
     Column(
         modifier = Modifier
             .alpha(alphaAnimatedFloat)
             .padding(bottom = 20.dp)
-            .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * 0.85f),
+            .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * SearchOptionSheetConstants.MaxHeightRatio),
     ) {
         Row(
             modifier = Modifier
@@ -103,12 +114,7 @@ fun TimeSelectSheet(
                 text = stringResource(R.string.common_cancel),
                 style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
-                    draggedTimeBlock.forEachIndexed { dayIndex, dayColumn ->
-                        dayColumn.forEachIndexed { timeIndex, value ->
-                            draggedTimeBlock[dayIndex][timeIndex].value =
-                                initialDraggedTimeBlock.value[dayIndex][timeIndex]
-                        }
-                    }
+                    변경_전_색칠로_복구()
                     onCancel()
                 },
             )
@@ -126,10 +132,7 @@ fun TimeSelectSheet(
                         color = SNUTTColors.Gray2,
                         shape = RoundedCornerShape(6.dp),
                     )
-                    .clicks {
-                        // 빈 시간대 모두 색칠
-                        빈_시간대_칠하기()
-                    }
+                    .clicks { 빈_시간대_칠하기() }
                     .padding(vertical = 4.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -139,7 +142,7 @@ fun TimeSelectSheet(
                         .padding(3.dp),
                 )
                 Text(
-                    text = "빈 시간대 선택하기",
+                    text = stringResource(R.string.search_option_select_empty_time_slots),
                     style = SNUTTTypography.body1.copy(color = SNUTTColors.AllWhite),
                 )
             }
@@ -147,9 +150,9 @@ fun TimeSelectSheet(
                 modifier = Modifier
                     .clicks {
                         // 드래그 상태 초기화
-                        initialDraggedTimeBlock.value.forEachIndexed { i, row ->
-                            row.forEachIndexed { j, initialValue ->
-                                draggedTimeBlock[i][j].value = initialValue
+                        draggedTimeBlock.forEachIndexed { i, row ->
+                            row.forEachIndexed { j, _ ->
+                                draggedTimeBlock[i][j].value = false
                             }
                         }
                     }
@@ -157,17 +160,16 @@ fun TimeSelectSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ResetIcon(
-                    modifier = Modifier
-                        .size(20.dp),
+                    modifier = Modifier.size(20.dp),
                 )
                 Text(
-                    text = "초기화",
+                    text = stringResource(R.string.search_option_select_clear_time_slots),
                     style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray2),
                 )
             }
         }
         Text(
-            text = "드래그하여 시간대를 선택해보세요",
+            text = stringResource(R.string.search_option_select_guide),
             style = SNUTTTypography.body1.copy(color = SNUTTColors.VacancyGray),
             modifier = Modifier.padding(start = 30.dp, bottom = 9.dp),
         )
@@ -185,7 +187,7 @@ fun TimeTableDragSheet(
     for (day in draggedTimeBlock.indices) {
         for (time in draggedTimeBlock.first().indices) {
             if (draggedTimeBlock[day][time].value) {
-                DrawTimeBlock(day = day, (16 + time) * 30)
+                DrawTimeBlock(day = day, (2 * TableTrimParam.SearchOption.hourFrom + time) * 30)
             }
         }
     }
@@ -206,10 +208,7 @@ fun TimeTableDragSheet(
         lectures = LocalTableState.current.table.lectureList.map {
             it.copy(
                 colorIndex = 0L,
-                color = ColorDto(
-                    fgRaw = "#FFFFFF",
-                    bgRaw = "#B3DADADA",
-                ),
+                color = SearchOptionSheetConstants.TimeBlockColor,
             )
         },
     )
@@ -219,11 +218,14 @@ fun TimeTableDragSheet(
 private fun DrawTimeBlock(
     day: Int,
     startMinute: Int,
-    @ColorInt bgColor: Int = Color.argb(153, 27, 208, 200),
+    @ColorInt bgColor: Int = SearchOptionSheetConstants.BackgroundLectureBlockColor,
 ) {
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val hourRangeOffset = Pair(startMinute / 60f - 8f, (startMinute + 30f) / 60f - 8f)
+    val hourRangeOffset = Pair(
+        startMinute / 60f - TableTrimParam.SearchOption.hourFrom,
+        (startMinute + 30f) / 60f - TableTrimParam.SearchOption.hourFrom,
+    )
 
     Canvas(
         modifier = Modifier
@@ -231,9 +233,9 @@ private fun DrawTimeBlock(
             .zIndex(100f),
     ) {
         val unitWidth =
-            (size.width - hourLabelWidth) / 5
+            (size.width - hourLabelWidth) / (TableTrimParam.SearchOption.dayOfWeekTo - TableTrimParam.SearchOption.dayOfWeekFrom + 1)
         val unitHeight =
-            (size.height - dayLabelHeight) / 14
+            (size.height - dayLabelHeight) / (TableTrimParam.SearchOption.hourTo - TableTrimParam.SearchOption.hourFrom + 1)
 
         val left = hourLabelWidth + day * unitWidth
         val right = hourLabelWidth + day * unitWidth + unitWidth
@@ -347,12 +349,14 @@ private fun DrawDragEventCanvas(
                     onTap = { offset ->
                         // 여기서는 drag 콜백에서 썼던 touchedTimeIndex, erase 등등을 사용하지 않는다. (충돌 방지)
                         if (touchedDayIndex == null && touchedTimeIndex == null) {
-                            val dayIndex =
-                                ((offset.x - hourLabelWidth) / unitWidth).toInt()
-                            val timeIndex =
-                                ((offset.y - dayLabelHeight) / unitHeight).toInt()
+                            val dayIndex = ((offset.x - hourLabelWidth) / unitWidth).toInt()
+                            val timeIndex = ((offset.y - dayLabelHeight) / unitHeight).toInt()
 
-                            if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
+                            val dayIndexOutOfBound =
+                                timeIndex < TableTrimParam.SearchOption.dayOfWeekFrom || dayIndex > TableTrimParam.SearchOption.dayOfWeekTo
+                            val timeIndexOutOfBound =
+                                timeIndex >= (TableTrimParam.SearchOption.hourTo - TableTrimParam.SearchOption.hourFrom + 1) * 2
+                            if (dayIndexOutOfBound || timeIndexOutOfBound) {
                                 return@detectTapGestures
                             }
 

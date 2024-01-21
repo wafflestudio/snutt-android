@@ -16,6 +16,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
+import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
@@ -79,9 +80,12 @@ class SearchViewModel @Inject constructor(
     private val _pageMode = MutableStateFlow(SearchPageMode.Search)
     val pageMode: StateFlow<SearchPageMode> get() = _pageMode
 
-    private val _draggedTimeBlock = MutableStateFlow(List(5) { List(28) { false } })
+    // 드래그하고 확정한 시간대 검색 격자 (월~금 5칸, 8시~22시 30분 간격 28칸)
+    private val _draggedTimeBlock =
+        MutableStateFlow(TableTrimParam.TimeBlockGridDefault)
     val draggedTimeBlock = _draggedTimeBlock.asStateFlow()
 
+    // 검색 쿼리에 들어가는 시간대 검색 시간대 목록
     private val _searchTimeList = MutableStateFlow<List<SearchTimeDto>?>(null)
 
     init {
@@ -144,7 +148,7 @@ class SearchViewModel @Inject constructor(
                 semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                times = _searchTimeList.value, // TODO: 시간대 검색
+                times = _searchTimeList.value,
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
@@ -183,19 +187,25 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun toggleTag(tag: TagDto) {
-        _selectedTags.emit(
-            if (_selectedTags.value.contains(tag)) {
-                // FIXME : 로직 하나로 묶기
-                if (tag == TagDto.TIME_SELECT) {
-                    _draggedTimeBlock.emit(List(5) { List(28) { false } })
-                    _searchTimeList.emit(null)
-                }
+        if (_selectedTags.value.contains(tag)) {
+            _selectedTags.emit(_selectedTags.value.filter { it != tag })
 
-                _selectedTags.value.filter { it != tag }
-            } else {
-                concatenate(_selectedTags.value, listOf(tag))
-            },
-        )
+            if (tag == TagDto.TIME_SELECT) {
+                _searchTimeList.emit(null)
+            }
+        } else {
+            _selectedTags.emit(concatenate(_selectedTags.value, listOf(tag)))
+
+            if (tag == TagDto.TIME_SELECT) {
+                _draggedTimeBlock.value.clusterToTimeBlocks().let {
+                    if (it.isEmpty()) {
+                        _searchTimeList.emit(null)
+                    } else {
+                        _searchTimeList.emit(it)
+                    }
+                }
+            }
+        }
     }
 
     suspend fun query() {
@@ -227,21 +237,6 @@ class SearchViewModel @Inject constructor(
     suspend fun deleteBookmark(lecture: LectureDto) {
         currentTableRepository.deleteBookmark(lecture)
         getBookmarkList()
-    }
-
-    suspend fun toggleTimeSpecificSearchTag(selected: Boolean) {
-        if (selected) {
-            if (_selectedTags.value.contains(TagDto.TIME_SELECT).not()) {
-                _selectedTags.emit(_selectedTags.value + TagDto.TIME_SELECT)
-            }
-        } else {
-            _selectedTags.emit(
-                _selectedTags.value.toMutableList().apply {
-                    remove(TagDto.TIME_SELECT)
-                },
-            )
-            _searchTimeList.emit(null)
-        }
     }
 
     suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {

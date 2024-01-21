@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -13,12 +14,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -46,14 +45,15 @@ fun SearchOptionSheet(
             OptionSheetMode.Normal -> 0f
             OptionSheetMode.TimeSelect -> 1f
         },
-        animationSpec = SearchOptionSheetConstants.SearchOptionSheetAnimationSpec,
+        animationSpec = SearchOptionSheetConstants.AnimationSpec,
         label = "baseAnimatedFloat",
     )
 
-    var normalSheetHeightPx = remember { 0 }
-    var maxSheetHeightPx = remember { 0 }
+    var normalSheetHeightPx = remember { 0 } // 태그 선택 sheet의 높이
+    var maxSheetHeightPx = remember { 0 } // 시간대 선택 sheet의 높이
     val sheetHeightAnimatedPx = remember {
         derivedStateOf {
+            // 태그 선택 sheet의 높이 ~ 시간대 선택 sheet의 높이까지 baseAnimatedFloat에 따라 변하는 값
             (normalSheetHeightPx + baseAnimatedFloat.value * (maxSheetHeightPx - normalSheetHeightPx)).roundToInt()
         }
     }
@@ -74,26 +74,26 @@ fun SearchOptionSheet(
 
         val tagListPlaceable = subcompose(slotId = 2) {
             TagsColumn(
+                modifier = Modifier.size(
+                    width = constraints.maxWidth.toDp() - tagTypePlaceable.width.toDp(),
+                    // tag column의 높이를 tagType column의 높이로 설정
+                    height = tagTypePlaceable.height.toDp(),
+                ),
                 tagsByTagType = tagsByTagType,
                 selectedTimes = draggedTimeBlock,
                 baseAnimatedFloat = baseAnimatedFloat,
-                // tag column의 높이를 tagType column의 높이로 설정
-                height = tagTypePlaceable.height.toDp(),
-                width = constraints.maxWidth.toDp() - tagTypePlaceable.width.toDp(),
-                toggleTimeSelectTagTo = {
-                    optionSheetMode = if (it) {
-                        OptionSheetMode.TimeSelect
-                    } else {
-                        OptionSheetMode.Normal
-                    }
-                    scope.launch {
-                        viewModel.toggleTimeSpecificSearchTag(it)
-                    }
-                },
                 onToggleTag = {
                     scope.launch {
+                        if (it == TagDto.TIME_SELECT) {
+                            if (tagsByTagType.first { it.item == TagDto.TIME_SELECT }.state.not() && draggedTimeBlock.value.all { it.all { it.not() } }) {
+                                optionSheetMode = OptionSheetMode.TimeSelect
+                            }
+                        }
                         viewModel.toggleTag(it)
                     }
+                },
+                openTimeSelectSheet = {
+                    optionSheetMode = OptionSheetMode.TimeSelect
                 },
             )
         }.first().measure(constraints)
@@ -104,16 +104,21 @@ fun SearchOptionSheet(
                 initialDraggedTimeBlock = draggedTimeBlock,
                 onCancel = {
                     optionSheetMode = OptionSheetMode.Normal
-                    scope.launch {
-                        viewModel.toggleTimeSpecificSearchTag(draggedTimeBlock.value.any { it.any { it } })
+                    // 확정 선택된 시간대(회색 밑줄로 뜨는 부분)가 없는 상태에서 취소를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
+                    if (draggedTimeBlock.value.all { it.all { it.not() } }) {
+                        scope.launch {
+                            viewModel.toggleTag(TagDto.TIME_SELECT)
+                        }
                     }
                 },
                 onConfirm = {
                     optionSheetMode = OptionSheetMode.Normal
                     scope.launch {
                         viewModel.setDraggedTimeBlock(it)
-                        val timeSelected = it.any { it.any { it } }
-                        viewModel.toggleTimeSpecificSearchTag(timeSelected)
+                        // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
+                        if (it.all { it.all { it.not() } }) {
+                            viewModel.toggleTag(TagDto.TIME_SELECT)
+                        }
                     }
                 },
             )
@@ -123,24 +128,29 @@ fun SearchOptionSheet(
             SearchOptionConfirmButton(baseAnimatedFloat, applyOption)
         }.first().measure(constraints)
 
-        normalSheetHeightPx =
-            tagTypePlaceable.height + 40.dp.toPx().roundToInt() + confirmButtonPlaceable.height
-        maxSheetHeightPx = dragSheetPlaceable.height
+        // 한번만 계산, 할당
+        if (normalSheetHeightPx == 0 && maxSheetHeightPx == 0) {
+            normalSheetHeightPx =
+                tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
+                    .roundToInt() + confirmButtonPlaceable.height
+            maxSheetHeightPx = dragSheetPlaceable.height
+        }
+
         layout(
-            tagTypePlaceable.width,
-            sheetHeightAnimatedPx.value,
+            width = tagTypePlaceable.width + tagListPlaceable.width,
+            height = sheetHeightAnimatedPx.value,
         ) {
             tagTypePlaceable.placeRelative(
                 0,
-                SearchOptionSheetConstants.SheetTopMargin.toPx().roundToInt(),
+                SearchOptionSheetConstants.TopMargin.toPx().roundToInt(),
             )
             tagListPlaceable.placeRelative(
                 tagTypePlaceable.width,
-                SearchOptionSheetConstants.SheetTopMargin.toPx().roundToInt(),
+                SearchOptionSheetConstants.TopMargin.toPx().roundToInt(),
             )
             confirmButtonPlaceable.placeRelative(
                 0,
-                tagTypePlaceable.height + SearchOptionSheetConstants.SheetTopMargin.toPx()
+                tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
                     .roundToInt(),
             )
             if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)

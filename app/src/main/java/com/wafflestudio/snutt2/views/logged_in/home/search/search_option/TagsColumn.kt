@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,16 +34,15 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun TagsColumn(
+    modifier: Modifier,
     tagsByTagType: List<Selectable<TagDto>>,
     selectedTimes: State<List<List<Boolean>>>,
     baseAnimatedFloat: State<Float>,
-    height: Dp,
-    width: Dp,
-    toggleTimeSelectTagTo: (Boolean) -> Unit,
     onToggleTag: (TagDto) -> Unit,
+    openTimeSelectSheet: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-
+    val context = LocalContext.current
     val alphaAnimatedFloat by remember {
         derivedStateOf { 1f - baseAnimatedFloat.value }
     }
@@ -55,10 +55,9 @@ fun TagsColumn(
     }
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .offset(x = offsetXAnimatedDp)
             .alpha(alphaAnimatedFloat)
-            .size(width, height)
             .padding(start = 20.dp, bottom = 10.dp),
         // FIXME: rememberLazyListState() 넣으면 오류
     ) {
@@ -67,13 +66,7 @@ fun TagsColumn(
                 Row(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .clicks {
-                            if (it.item == TagDto.TIME_SELECT) {
-                                toggleTimeSelectTagTo(it.state.not())
-                            } else {
-                                onToggleTag(it.item)
-                            }
-                        },
+                        .clicks { onToggleTag(it.item) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (it.state) {
@@ -88,14 +81,14 @@ fun TagsColumn(
                     )
                 }
                 if (it.item == TagDto.TIME_SELECT) {
-                    timeSlotsToFormattedString(selectedTimes.value).let {
+                    timeSlotsToFormattedString(context, selectedTimes.value).let {
                         if (it.isNotEmpty()) {
                             Text(
                                 text = it,
                                 modifier = Modifier
                                     .padding(start = 25.dp)
                                     .clicks {
-                                        toggleTimeSelectTagTo(true)
+                                        openTimeSelectSheet()
                                     },
                                 style = SNUTTTypography.body2.copy(
                                     color = SNUTTColors.Gray600,
