@@ -3,8 +3,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,13 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -37,7 +37,6 @@ import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableCanvasObjects
-import kotlinx.coroutines.sync.Semaphore
 
 @Composable
 fun TimeSelectSheet(
@@ -72,7 +71,8 @@ fun TimeSelectSheet(
                 modifier = Modifier.clicks {
                     draggedTimeBlock.forEachIndexed { dayIndex, dayColumn ->
                         dayColumn.forEachIndexed { timeIndex, value ->
-                            draggedTimeBlock[dayIndex][timeIndex].value = initialDraggedTimeBlock.value[dayIndex][timeIndex]
+                            draggedTimeBlock[dayIndex][timeIndex].value =
+                                initialDraggedTimeBlock.value[dayIndex][timeIndex]
                         }
                     }
                     onCancel()
@@ -101,15 +101,16 @@ fun TimeTableDragSheet(draggedTimeBlock: List<List<MutableState<Boolean>>>) {
             }
         }
     }
+
     DrawDragEventCanvas(
-        isSelected = { day, time ->
-            draggedTimeBlock[day][(time * 2).toInt() - 16].value
+        isSelected = { dayIndex, timeIndex ->
+            draggedTimeBlock[dayIndex][timeIndex].value
         },
-        select = { day, time ->
-            draggedTimeBlock[day][(time * 2).toInt() - 16].value = true
+        select = { dayIndex, timeIndex ->
+            draggedTimeBlock[dayIndex][timeIndex].value = true
         },
-        unSelect = { day, time ->
-            draggedTimeBlock[day][(time * 2).toInt() - 16].value = false
+        unSelect = { dayIndex, timeIndex ->
+            draggedTimeBlock[dayIndex][timeIndex].value = false
         },
     )
 }
@@ -143,21 +144,16 @@ private fun DrawTimeBlock(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun DrawDragEventCanvas(
-    isSelected: (day: Int, time: Float) -> Boolean,
-    select: (day: Int, time: Float) -> Unit,
-    unSelect: (day: Int, time: Float) -> Unit,
+    isSelected: (dayIndex: Int, timeIndex: Int) -> Boolean,
+    select: (dayIndex: Int, timeIndex: Int) -> Unit,
+    unSelect: (dayIndex: Int, timeIndex: Int) -> Unit,
 ) {
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
     val fittedTrimParam = TableTrimParam.SearchOption
-
-    var touchedBefore by remember {
-        mutableStateOf<Pair<Int, Int>?>(synchronized(Semaphore(permits = 1)) { null })
-    }
 
     val unitWidth by remember {
         derivedStateOf {
@@ -166,39 +162,87 @@ private fun DrawDragEventCanvas(
     }
     val unitHeight by remember {
         derivedStateOf {
-            (canvasSize.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            (canvasSize.height - dayLabelHeight) / ((fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1) * 2) // 30분 칸의 높이
         }
     }
+
+    var touchedDayIndex: Int? = remember { null }
+    var touchedTimeIndex: Int? = remember { null } // 8시 ~ 8시30분 칸 : 0, 8시 30분 ~ 9시 칸 : 1, ...
+    var eraseMode: Boolean = remember { false } // true면 지우는 모드, false면 칠하는 모드
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInteropFilter { event ->
-                // FIXME: 로직 정리하기
-                if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_MOVE) {
-                    val day =
-                        (((event.x - hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom)
-                    val time =
-                        (((event.y - dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom)
-                    if (day < fittedTrimParam.dayOfWeekFrom || day > fittedTrimParam.dayOfWeekTo) return@pointerInteropFilter false
-                    if (time < fittedTrimParam.hourFrom || time > fittedTrimParam.hourTo + 1) return@pointerInteropFilter false
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        val dayIndex = ((offset.x - hourLabelWidth) / unitWidth).toInt()
+                        val timeIndex = ((offset.y - dayLabelHeight) / unitHeight).toInt()
 
-                    if (touchedBefore?.first != day || touchedBefore?.second != (time * 2).toInt()) {
-                        touchedBefore = null
-                    }
+                        if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
+                            return@detectDragGestures
+                        }
 
-                    if (event.action == MotionEvent.ACTION_MOVE) {
-                        if (touchedBefore != null) return@pointerInteropFilter true
-                    }
+                        eraseMode = isSelected(dayIndex, timeIndex)
+                        if (eraseMode) unSelect(dayIndex, timeIndex)
+                        else select(dayIndex, timeIndex)
 
-                    touchedBefore = day to (time * 2).toInt()
-                    if (isSelected(day, time)) {
-                        unSelect(day, time)
-                    } else {
-                        select(day, time)
-                    }
-                }
-                true
+                        touchedTimeIndex = timeIndex
+                        touchedDayIndex = dayIndex
+                    },
+                    onDrag = { change, _ ->
+                        val dayIndex = ((change.position.x - hourLabelWidth) / unitWidth).toInt()
+                        val timeIndex = ((change.position.y - dayLabelHeight) / unitHeight).toInt()
+
+                        if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
+                            return@detectDragGestures
+                        }
+
+                        val _touchedTimeIndex = touchedTimeIndex
+                        val _touchedDayIndex = touchedDayIndex
+                        if (_touchedTimeIndex != null && _touchedDayIndex != null) {
+                            if (_touchedTimeIndex < timeIndex) {
+                                for (t in _touchedTimeIndex + 1..timeIndex) {
+                                    if (eraseMode) unSelect(dayIndex, t)
+                                    else select(dayIndex, t)
+                                }
+                            } else if (_touchedTimeIndex > timeIndex) {
+                                for (t in timeIndex..<_touchedTimeIndex) {
+                                    if (eraseMode) unSelect(dayIndex, t)
+                                    else select(dayIndex, t)
+                                }
+                            } else if (_touchedDayIndex != dayIndex) {
+                                if (eraseMode) unSelect(dayIndex, timeIndex)
+                                else select(dayIndex, timeIndex)
+                            }
+                        }
+                        touchedTimeIndex = timeIndex
+                        touchedDayIndex = dayIndex
+                    },
+                    onDragEnd = {
+                        touchedTimeIndex = null
+                        touchedDayIndex = null
+                    },
+                )
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset ->
+                        if (touchedDayIndex == null && touchedTimeIndex == null) {
+                            val dayIndex =
+                                ((offset.x - hourLabelWidth) / unitWidth).toInt()
+                            val timeIndex =
+                                ((offset.y - dayLabelHeight) / unitHeight).toInt()
+
+                            if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
+                                return@detectTapGestures
+                            }
+
+                            if (isSelected(dayIndex, timeIndex)) unSelect(dayIndex, timeIndex)
+                            else select(dayIndex, timeIndex)
+                        }
+                    },
+                )
             },
     ) {
         canvasSize = size
