@@ -71,7 +71,7 @@ fun TimeSelectSheet(
             it.trimByTrimParam(TableTrimParam.SearchOption)
         }
     }
-    val 빈_시간대_칠하기 = {
+    val selectComplementBlocks = {
         draggedTimeBlock.forEachIndexed { i, row ->
             row.forEachIndexed { j, _ ->
                 draggedTimeBlock[i][j].value = true
@@ -83,7 +83,7 @@ fun TimeSelectSheet(
             }
         }
     }
-    val 변경_전_색칠로_복구 = {
+    val resetToInitialBlocks = {
         draggedTimeBlock.forEachIndexed { dayIndex, dayColumn ->
             dayColumn.forEachIndexed { timeIndex, _ ->
                 draggedTimeBlock[dayIndex][timeIndex].value =
@@ -94,7 +94,7 @@ fun TimeSelectSheet(
 
     // 시간대 선택에서 뒤로가기 하면 태그 선택으로 가기
     BackHandler {
-        변경_전_색칠로_복구()
+        resetToInitialBlocks()
         onCancel()
     }
 
@@ -114,7 +114,7 @@ fun TimeSelectSheet(
                 text = stringResource(R.string.common_cancel),
                 style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
-                    변경_전_색칠로_복구()
+                    resetToInitialBlocks()
                     onCancel()
                 },
             )
@@ -132,7 +132,7 @@ fun TimeSelectSheet(
                         color = SNUTTColors.Gray2,
                         shape = RoundedCornerShape(6.dp),
                     )
-                    .clicks { 빈_시간대_칠하기() }
+                    .clicks { selectComplementBlocks() }
                     .padding(vertical = 4.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

@@ -14,6 +14,7 @@ object SearchOptionSheetConstants {
         visibilityThreshold = 1f,
         stiffness = 200f,
     )
+
     @ColorInt val BackgroundLectureBlockColor = Color.argb(153, 27, 208, 200)
     val TimeBlockColor = ColorDto(
         fgRaw = "#FFFFFF",
