@@ -5,7 +5,11 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -17,10 +21,14 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
+import com.wafflestudio.snutt2.lib.toDayString
+import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalCompactState
@@ -80,7 +88,10 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
-                            lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
+                            lectureDetailViewModel.initializeEditingLectureDetail(
+                                lecture,
+                                ModeType.Normal,
+                            )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
                             }
@@ -162,7 +173,7 @@ fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
 }
 
 @Composable
-private fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     lectures.forEach { lecture ->
         lecture.class_time_json
             .mapNotNull {

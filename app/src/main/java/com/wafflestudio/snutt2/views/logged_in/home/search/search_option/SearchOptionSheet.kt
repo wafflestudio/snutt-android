@@ -16,7 +16,9 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -128,13 +130,20 @@ fun SearchOptionSheet(
             tagTypePlaceable.width,
             sheetHeightAnimatedPx.value,
         ) {
-            tagTypePlaceable.placeRelative(0, 40.dp.toPx().roundToInt())
-            tagListPlaceable.placeRelative(tagTypePlaceable.width, 40.dp.toPx().roundToInt())
-            if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
+            tagTypePlaceable.placeRelative(
+                0,
+                SearchOptionSheetConstants.SheetTopMargin.toPx().roundToInt(),
+            )
+            tagListPlaceable.placeRelative(
+                tagTypePlaceable.width,
+                SearchOptionSheetConstants.SheetTopMargin.toPx().roundToInt(),
+            )
             confirmButtonPlaceable.placeRelative(
                 0,
-                tagTypePlaceable.height + 40.dp.toPx().roundToInt(),
+                tagTypePlaceable.height + SearchOptionSheetConstants.SheetTopMargin.toPx()
+                    .roundToInt(),
             )
+            if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
         }
     }
 }
