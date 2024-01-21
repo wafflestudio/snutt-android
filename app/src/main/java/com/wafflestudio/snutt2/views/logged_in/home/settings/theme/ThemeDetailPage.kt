@@ -53,6 +53,7 @@ import com.wafflestudio.snutt2.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.components.compose.CloseIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
 import com.wafflestudio.snutt2.components.compose.ColorCircle
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -93,6 +94,7 @@ fun ThemeDetailPage(
     val navBottomSheetState = LocalNavBottomSheetState.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
+    val composableStates = ComposableStatesWithScope(scope)
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -107,23 +109,13 @@ fun ThemeDetailPage(
 
     val onBackPressed: () -> Unit = {
         if (themeDetailViewModel.hasChange(themeName, isDefault)) {
-            modalState.setOkCancel(
-                context = context,
-                title = context.getString(R.string.theme_detail_dialog_cancel_edit_title),
+            showCancelEditDialog(
+                composableStates = composableStates,
                 onConfirm = {
                     modalState.hide()
                     navController.popBackStack()
                 },
-                onDismiss = {
-                    modalState.hide()
-                },
-                content = {
-                    Text(
-                        text = context.getString(R.string.theme_detail_dialog_cancel_edit_body),
-                        style = SNUTTTypography.body1,
-                    )
-                },
-            ).show()
+            )
         } else {
             navController.popBackStack()
         }
@@ -172,42 +164,26 @@ fun ThemeDetailPage(
                     modifier = Modifier
                         .clicks {
                             if (isDefault != editingTheme.isDefault) {
-                                modalState.setOkCancel(
-                                    context = context,
-                                    title = if (isDefault) {
-                                        context.getString(R.string.theme_detail_dialog_set_default_title)
-                                    } else {
-                                        context.getString(R.string.theme_detail_dialog_unset_default_title)
-                                    },
-                                    onConfirm = {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                themeDetailViewModel.saveTheme(themeName)
-                                                if (isDefault) {
-                                                    themeDetailViewModel.setThemeDefault()
-                                                } else {
-                                                    themeDetailViewModel.unsetThemeDefault()
-                                                }
-                                                onClickSave()
-                                                modalState.hide()
-                                                navController.popBackStack()
-                                            }
-                                        }
-                                    },
-                                    onDismiss = {
-                                        modalState.hide()
-                                    },
-                                    content = {
-                                        Text(
-                                            text = if (isDefault) {
-                                                context.getString(R.string.theme_detail_dialog_set_default_body)
-                                            } else {
-                                                context.getString(R.string.theme_detail_dialog_unset_default_body)
-                                            },
-                                            style = SNUTTTypography.body1,
-                                        )
-                                    },
-                                ).show()
+                                when (isDefault) {
+                                    true -> showSetDefaultDialog(
+                                        composableStates = composableStates,
+                                        onConfirm = {
+                                            themeDetailViewModel.saveTheme(themeName)
+                                            themeDetailViewModel.setThemeDefault()
+                                            onClickSave()
+                                            navController.popBackStack()
+                                        },
+                                    )
+                                    false -> showUnsetDefaultDialog(
+                                        composableStates = composableStates,
+                                        onConfirm = {
+                                            themeDetailViewModel.saveTheme(themeName)
+                                            themeDetailViewModel.unsetThemeDefault()
+                                            onClickSave()
+                                            navController.popBackStack()
+                                        },
+                                    )
+                                }
                             } else {
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
@@ -315,92 +291,36 @@ fun ThemeDetailPage(
                                     enter = expandVertically(),
                                     exit = shrinkVertically(),
                                 ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(color = MaterialTheme.colors.surface),
-                                    ) {
-                                        Spacer(modifier = Modifier.width(92.dp))
-                                        Column(
-                                            modifier = Modifier.padding(top = 5.dp, bottom = 12.dp),
-                                        ) {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.theme_detail_color_fg),
-                                                    color = MaterialTheme.colors.onSurfaceVariant,
-                                                    style = SNUTTTypography.body2,
-                                                )
-                                                Spacer(modifier = Modifier.width(11.dp))
-                                                ColorCircle(
-                                                    color = Color(colorWithExpanded.item.fgColor ?: 0xffffff),
-                                                    modifier = Modifier
-                                                        .size(25.dp)
-                                                        .clicks {
-                                                            showColorPickerDialog(
-                                                                context = context,
-                                                                modalState = modalState,
-                                                                initialColor = Color(
-                                                                    colorWithExpanded.item.fgColor
-                                                                        ?: 0xffffff,
-                                                                ),
-                                                                onColorPicked = { color ->
-                                                                    themeDetailViewModel.updateColor(
-                                                                        idx,
-                                                                        color.toArgb(),
-                                                                        colorWithExpanded.item.bgColor
-                                                                            ?: 0xffffff,
-                                                                    )
-                                                                    timetableViewModel.setPreviewTheme(
-                                                                        (editingTheme as CustomTheme).copy(
-                                                                            colors = themeDetailViewModel.editingColors.value.map { it.item },
-                                                                        ),
-                                                                    )
-                                                                },
-                                                            )
-                                                        },
-                                                )
-                                            }
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            Row {
-                                                Text(
-                                                    text = stringResource(R.string.theme_detail_color_bg),
-                                                    color = MaterialTheme.colors.onSurfaceVariant,
-                                                    style = SNUTTTypography.body2,
-                                                )
-                                                Spacer(modifier = Modifier.width(11.dp))
-                                                ColorCircle(
-                                                    color = Color(colorWithExpanded.item.bgColor ?: 0xffffff),
-                                                    modifier = Modifier
-                                                        .size(25.dp)
-                                                        .clicks {
-                                                            showColorPickerDialog(
-                                                                context = context,
-                                                                modalState = modalState,
-                                                                initialColor = Color(
-                                                                    colorWithExpanded.item.bgColor
-                                                                        ?: 0xffffff,
-                                                                ),
-                                                                onColorPicked = { color ->
-                                                                    themeDetailViewModel.updateColor(
-                                                                        idx,
-                                                                        colorWithExpanded.item.fgColor
-                                                                            ?: 0xffffff,
-                                                                        color.toArgb(),
-                                                                    )
-                                                                    timetableViewModel.setPreviewTheme(
-                                                                        (editingTheme as CustomTheme).copy(
-                                                                            colors = themeDetailViewModel.editingColors.value.map { it.item },
-                                                                        ),
-                                                                    )
-                                                                },
-                                                            )
-                                                        },
-                                                )
-                                            }
-                                        }
-                                    }
+                                    ColorEditItem(
+                                        fgColor = colorWithExpanded.item.fgColor ?: 0xffffff,
+                                        bgColor = colorWithExpanded.item.bgColor ?: 0xffffff,
+                                        onFgColorPicked = { color ->
+                                            themeDetailViewModel.updateColor(
+                                                idx,
+                                                color.toArgb(),
+                                                colorWithExpanded.item.bgColor
+                                                    ?: 0xffffff,
+                                            )
+                                            timetableViewModel.setPreviewTheme(
+                                                (editingTheme as CustomTheme).copy(
+                                                    colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                                ),
+                                            )
+                                        },
+                                        onBgColorPicked = { color ->
+                                            themeDetailViewModel.updateColor(
+                                                idx,
+                                                colorWithExpanded.item.fgColor
+                                                    ?: 0xffffff,
+                                                color.toArgb(),
+                                            )
+                                            timetableViewModel.setPreviewTheme(
+                                                (editingTheme as CustomTheme).copy(
+                                                    colors = themeDetailViewModel.editingColors.value.map { it.item },
+                                                ),
+                                            )
+                                        },
+                                    )
                                 }
                                 Divider(thickness = 0.5.dp, color = MaterialTheme.colors.background)
                             }
@@ -507,5 +427,81 @@ fun ThemeDetailItem(
         content()
         Spacer(modifier = Modifier.weight(1f))
         actions()
+    }
+}
+
+@Composable
+fun ColorEditItem(
+    fgColor: Int,
+    bgColor: Int,
+    onFgColorPicked: (Color) -> Unit,
+    onBgColorPicked: (Color) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val modalState = LocalModalState.current
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.surface),
+    ) {
+        Spacer(modifier = Modifier.width(92.dp))
+        Column(
+            modifier = Modifier.padding(top = 5.dp, bottom = 12.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.theme_detail_color_fg),
+                    color = MaterialTheme.colors.onSurfaceVariant,
+                    style = SNUTTTypography.body2,
+                )
+                Spacer(modifier = Modifier.width(11.dp))
+                ColorCircle(
+                    color = Color(fgColor),
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clicks {
+                            showColorPickerDialog(
+                                context = context,
+                                modalState = modalState,
+                                initialColor = Color(
+                                    fgColor,
+                                ),
+                                onColorPicked = { color ->
+                                    onFgColorPicked(color)
+                                },
+                            )
+                        },
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row {
+                Text(
+                    text = stringResource(R.string.theme_detail_color_bg),
+                    color = MaterialTheme.colors.onSurfaceVariant,
+                    style = SNUTTTypography.body2,
+                )
+                Spacer(modifier = Modifier.width(11.dp))
+                ColorCircle(
+                    color = Color(bgColor),
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clicks {
+                            showColorPickerDialog(
+                                context = context,
+                                modalState = modalState,
+                                initialColor = Color(
+                                    bgColor,
+                                ),
+                                onColorPicked = { color ->
+                                    onBgColorPicked(color)
+                                },
+                            )
+                        },
+                )
+            }
+        }
     }
 }

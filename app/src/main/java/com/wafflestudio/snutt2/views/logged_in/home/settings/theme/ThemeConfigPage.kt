@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +44,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
@@ -70,11 +70,11 @@ fun ThemeConfigPage(
 ) {
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
-    val context = LocalContext.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
+    val composableStates = ComposableStatesWithScope(scope)
 
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
@@ -182,28 +182,14 @@ fun ThemeConfigPage(
                                                     }
                                                 },
                                                 onClickDelete = {
-                                                    modalState.setOkCancel(
-                                                        context = context,
-                                                        onDismiss = {
-                                                            modalState.hide()
-                                                        },
+                                                    showDeleteThemeDialog(
+                                                        composableStates = composableStates,
                                                         onConfirm = {
-                                                            scope.launch {
-                                                                launchSuspendApi(apiOnProgress, apiOnError) {
-                                                                    themeListViewModel.deleteTheme(
-                                                                        theme.id,
-                                                                    )
-                                                                    modalState.hide()
-                                                                    bottomSheet.hide()
-                                                                }
-                                                            }
+                                                            themeListViewModel.deleteTheme(theme.id)
+                                                            modalState.hide()
+                                                            bottomSheet.hide()
                                                         },
-                                                        title = context.getString(R.string.theme_config_dialog_delete_title),
-                                                    ) {
-                                                        Text(
-                                                            text = stringResource(R.string.theme_config_dialog_delete_body),
-                                                        )
-                                                    }.show()
+                                                    )
                                                 },
                                                 isThemeDefault = theme.isDefault,
                                             )
@@ -258,9 +244,7 @@ fun ThemeConfigPage(
                                                 onClickUnsetDefault = {
                                                     scope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.unsetThemeDefault(
-                                                                theme.code,
-                                                            )
+                                                            themeListViewModel.unsetThemeDefault(theme.code)
                                                             bottomSheet.hide()
                                                         }
                                                     }
