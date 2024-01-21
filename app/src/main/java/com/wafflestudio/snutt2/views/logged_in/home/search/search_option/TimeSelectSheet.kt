@@ -213,19 +213,6 @@ fun TimeTableDragSheet(
             )
         },
     )
-    LocalTableState.current.table.lectureList.forEach {
-        AAA(A(it.course_title))
-    }
-}
-
-data class A(
-    val a: String?
-)
-
-@Composable
-fun AAA(text: A) {
-    Log.d("aaaa", text.a.toString())
-    Text(text = text.a.toString())
 }
 
 @Composable
