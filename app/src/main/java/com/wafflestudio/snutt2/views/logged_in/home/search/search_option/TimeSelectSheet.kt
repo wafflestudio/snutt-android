@@ -62,7 +62,7 @@ fun TimeSelectSheet(
         derivedStateOf { basedAnimatedFloat.value }
     }
     val draggedTimeBlock = remember {
-        initialDraggedTimeBlock.value.map { it.map { mutableStateOf(it) } }
+        initialDraggedTimeBlock.value.map { row -> row.map { mutableStateOf(it) } }
     }
 
     val currentTableLectures = LocalTableState.current.table.lectureList
@@ -121,7 +121,7 @@ fun TimeSelectSheet(
             Text(
                 text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
-                    onConfirm(draggedTimeBlock.map { it.map { it.value } })
+                    onConfirm(draggedTimeBlock.map { row -> row.map { it.value } })
                 },
             )
         }
@@ -294,8 +294,11 @@ private fun DrawDragEventCanvas(
                         // 터치를 시작한 칸이 칠해져 있으면 지우기 모드
                         // 터치를 시작한 칸이 비어 있으면 칠하기 모드
                         eraseMode = isSelected(dayIndex, timeIndex)
-                        if (eraseMode) erase(dayIndex, timeIndex)
-                        else select(dayIndex, timeIndex)
+                        if (eraseMode) {
+                            erase(dayIndex, timeIndex)
+                        } else {
+                            select(dayIndex, timeIndex)
+                        }
 
                         // 처리한 칸 저장
                         touchedTimeIndex = timeIndex
@@ -317,20 +320,29 @@ private fun DrawDragEventCanvas(
                                 // vertical drag, 방향은 위
                                 // 터치 콜백이 온 마지막 칸과 현재 칸 사이의 모든 칸을 처리해 준다.
                                 for (t in lastTouchedTimeIndex + 1..timeIndex) {
-                                    if (eraseMode) erase(dayIndex, t)
-                                    else select(dayIndex, t)
+                                    if (eraseMode) {
+                                        erase(dayIndex, t)
+                                    } else {
+                                        select(dayIndex, t)
+                                    }
                                 }
                             } else if (lastTouchedTimeIndex > timeIndex) {
                                 // vertical drag, 방향은 아래
                                 // 터치 콜백이 온 마지막 칸과 현재 칸 사이의 모든 칸을 처리해 준다.
-                                for (t in timeIndex..<lastTouchedTimeIndex) {
-                                    if (eraseMode) erase(dayIndex, t)
-                                    else select(dayIndex, t)
+                                for (t in timeIndex until lastTouchedTimeIndex) {
+                                    if (eraseMode) {
+                                        erase(dayIndex, t)
+                                    } else {
+                                        select(dayIndex, t)
+                                    }
                                 }
                             } else if (lastTouchedDayIndex != dayIndex) {
                                 // 여긴 horizontal drag에 해당
-                                if (eraseMode) erase(dayIndex, timeIndex)
-                                else select(dayIndex, timeIndex)
+                                if (eraseMode) {
+                                    erase(dayIndex, timeIndex)
+                                } else {
+                                    select(dayIndex, timeIndex)
+                                }
                             }
                         }
                         // 처리한 칸 저장
@@ -360,8 +372,11 @@ private fun DrawDragEventCanvas(
                                 return@detectTapGestures
                             }
 
-                            if (isSelected(dayIndex, timeIndex)) erase(dayIndex, timeIndex)
-                            else select(dayIndex, timeIndex)
+                            if (isSelected(dayIndex, timeIndex)) {
+                                erase(dayIndex, timeIndex)
+                            } else {
+                                select(dayIndex, timeIndex)
+                            }
                         }
                     },
                 )
