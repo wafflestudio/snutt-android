@@ -40,11 +40,10 @@ fun CourseBookDto.toFormattedString(context: Context): String {
 
 fun TagType.color(): androidx.compose.ui.graphics.Color {
     return when (this) {
-        TagType.ACADEMIC_YEAR -> SNUTTColors.Red
-        TagType.CLASSIFICATION -> SNUTTColors.Orange
-        TagType.INSTRUCTOR -> SNUTTColors.Yellow
-        TagType.CREDIT -> SNUTTColors.Grass
-        TagType.DEPARTMENT -> SNUTTColors.Sky
+        TagType.CLASSIFICATION -> SNUTTColors.Red
+        TagType.DEPARTMENT -> SNUTTColors.Orange
+        TagType.ACADEMIC_YEAR -> SNUTTColors.Grass
+        TagType.CREDIT -> SNUTTColors.Sky
         TagType.TIME -> SNUTTColors.Blue
         TagType.CATEGORY -> SNUTTColors.NavyBlue
         TagType.ETC -> SNUTTColors.Violet
