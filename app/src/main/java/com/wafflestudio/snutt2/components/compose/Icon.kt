@@ -778,7 +778,7 @@ fun MegaphoneIcon(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_megaphone),
         contentDescription = "",
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
 

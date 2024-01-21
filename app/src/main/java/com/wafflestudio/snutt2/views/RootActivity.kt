@@ -257,7 +257,7 @@ class RootActivity : AppCompatActivity() {
                             vacancyViewModel = vacancyViewModel,
                         )
                     }
-                    
+
                     composable2(NavigationDestination.LectureColorSelector) {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
