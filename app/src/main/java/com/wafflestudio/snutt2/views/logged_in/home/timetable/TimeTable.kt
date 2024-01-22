@@ -2,22 +2,17 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.graphics.Paint
 import android.graphics.RectF
-import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -56,35 +51,33 @@ fun TimeTable(
             trimParam
         }
 
-    if (touchEnabled) DrawClickEventCanvas(lectures, fittedTrimParam)
+    if (touchEnabled) DrawClickEventDetector(lectures, fittedTrimParam)
     DrawTableGrid(fittedTrimParam)
     DrawLectures(lectures, fittedTrimParam)
     DrawSelectedLecture(selectedLecture, fittedTrimParam)
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     val navigator = LocalNavController.current
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
-    var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
 
-    Canvas(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInteropFilter { event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    val unitWidth =
-                        (canvasSize.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
-                    val unitHeight =
-                        (canvasSize.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            .pointerInput(Unit) {
+                val unitWidth =
+                    (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+                val unitHeight =
+                    (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
+                detectTapGestures {
                     val day =
-                        ((event.x - hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
+                        ((it.x - hourLabelWidth) / unitWidth).toInt() + fittedTrimParam.dayOfWeekFrom
                     val time =
-                        ((event.y - dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom
+                        ((it.y - dayLabelHeight) / unitHeight) + fittedTrimParam.hourFrom
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
@@ -99,11 +92,8 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
                         }
                     }
                 }
-                true
             },
-    ) {
-        canvasSize = size
-    }
+    )
 }
 
 @Composable
