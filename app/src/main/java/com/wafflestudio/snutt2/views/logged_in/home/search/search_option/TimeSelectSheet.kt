@@ -2,18 +2,18 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import android.graphics.Paint
 import android.graphics.RectF
+import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
 import androidx.annotation.ColorInt
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,12 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -104,7 +105,7 @@ fun TimeSelectSheet(
         modifier = Modifier
             .alpha(alphaAnimatedFloat)
             .padding(bottom = 20.dp)
-            .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * SearchOptionSheetConstants.MaxHeightRatio),
+            .heightIn(LocalConfiguration.current.screenHeightDp.dp * SearchOptionSheetConstants.MaxHeightRatio),
     ) {
         Row(
             modifier = Modifier
@@ -194,7 +195,7 @@ fun TimeTableDragSheet(
         }
     }
 
-    DrawDragEventCanvas(
+    DrawDragEventDetector(
         isSelected = { dayIndex, timeIndex ->
             draggedTimeBlock[dayIndex][timeIndex].value
         },
@@ -256,8 +257,9 @@ private fun DrawTimeBlock(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun DrawDragEventCanvas(
+private fun DrawDragEventDetector(
     isSelected: (dayIndex: Int, timeIndex: Int) -> Boolean,
     select: (dayIndex: Int, timeIndex: Int) -> Unit,
     erase: (dayIndex: Int, timeIndex: Int) -> Unit,
@@ -280,50 +282,43 @@ private fun DrawDragEventCanvas(
 
     // 드래그 속도가 빠를 때, 중간중간 터치 콜백이 비는 칸을 채워주기 위해 가장 마지막으로 처리한 칸을 저장한다.
     // 가장 마지막으로 처리한 칸과 현재 터치 콜백이 온 칸 사이의 모든 칸들을 처리한다.
-    var touchedTimeIndex: Int? = remember { null } // 8시 ~ 8시30분 칸 : 0, 8시 30분 ~ 9시 칸 : 1, ...
-    var touchedDayIndex: Int? = remember { null }
-    var eraseMode: Boolean = remember { false } // true면 지우는 모드, false면 칠하는 모드
+    var touchedTimeIndex: Int? by remember { mutableStateOf(null) } // 8시 ~ 8시30분 칸 : 0, 8시 30분 ~ 9시 칸 : 1, ...
+    var touchedDayIndex: Int? by remember { mutableStateOf(null) }
+    var eraseMode: Boolean by remember { mutableStateOf(false) } // true면 지우는 모드, false면 칠하는 모드
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { offset ->
-                        val dayIndex = ((offset.x - hourLabelWidth) / unitWidth).toInt()
-                        val timeIndex = ((offset.y - dayLabelHeight) / unitHeight).toInt()
+            .pointerInteropFilter {
+                val dayIndex = ((it.x - hourLabelWidth) / unitWidth).toInt()
+                val timeIndex = ((it.y - dayLabelHeight) / unitHeight).toInt()
 
-                        if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
-                            return@detectDragGestures
-                        }
+                if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
+                    return@pointerInteropFilter false
+                }
 
-                        // 터치를 시작한 칸이 칠해져 있으면 지우기 모드
-                        // 터치를 시작한 칸이 비어 있으면 칠하기 모드
+                when (it.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        // 터치를 시작한 칸이 칠해져 있으면 지우기 모드, 비어 있으면 칠하기 모드
                         eraseMode = isSelected(dayIndex, timeIndex)
                         if (eraseMode) {
                             erase(dayIndex, timeIndex)
                         } else {
                             select(dayIndex, timeIndex)
                         }
-
                         // 처리한 칸 저장
                         touchedTimeIndex = timeIndex
                         touchedDayIndex = dayIndex
-                    },
-                    onDrag = { change, _ ->
-                        val dayIndex = ((change.position.x - hourLabelWidth) / unitWidth).toInt()
-                        val timeIndex = ((change.position.y - dayLabelHeight) / unitHeight).toInt()
+                        true
+                    }
 
-                        if (dayIndex < 0 || dayIndex > 4 || timeIndex < 0 || timeIndex > 27) {
-                            return@detectDragGestures
-                        }
-
+                    MotionEvent.ACTION_MOVE -> {
                         // nullable var 이라서 지역 변수로 저장
                         val lastTouchedTimeIndex = touchedTimeIndex
                         val lastTouchedDayIndex = touchedDayIndex
                         if (lastTouchedTimeIndex != null && lastTouchedDayIndex != null) {
                             if (lastTouchedTimeIndex < timeIndex) {
-                                // vertical drag, 방향은 위
+                                // vertical drag, 방향은 아래
                                 // 터치 콜백이 온 마지막 칸과 현재 칸 사이의 모든 칸을 처리해 준다.
                                 for (t in lastTouchedTimeIndex + 1..timeIndex) {
                                     if (eraseMode) {
@@ -333,7 +328,7 @@ private fun DrawDragEventCanvas(
                                     }
                                 }
                             } else if (lastTouchedTimeIndex > timeIndex) {
-                                // vertical drag, 방향은 아래
+                                // vertical drag, 방향은 위
                                 // 터치 콜백이 온 마지막 칸과 현재 칸 사이의 모든 칸을 처리해 준다.
                                 for (t in timeIndex until lastTouchedTimeIndex) {
                                     if (eraseMode) {
@@ -343,7 +338,7 @@ private fun DrawDragEventCanvas(
                                     }
                                 }
                             } else if (lastTouchedDayIndex != dayIndex) {
-                                // 여긴 horizontal drag에 해당
+                                // horizontal drag
                                 if (eraseMode) {
                                     erase(dayIndex, timeIndex)
                                 } else {
@@ -351,41 +346,17 @@ private fun DrawDragEventCanvas(
                                 }
                             }
                         }
+
                         // 처리한 칸 저장
                         touchedTimeIndex = timeIndex
                         touchedDayIndex = dayIndex
-                    },
-                    onDragEnd = {
-                        touchedTimeIndex = null
-                        touchedDayIndex = null
-                    },
-                )
-            }
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    // drag가 아닌 단순 tap도 따로 콜백을 달아야 한다.
-                    onTap = { offset ->
-                        // 여기서는 drag 콜백에서 썼던 touchedTimeIndex, erase 등등을 사용하지 않는다. (충돌 방지)
-                        if (touchedDayIndex == null && touchedTimeIndex == null) {
-                            val dayIndex = ((offset.x - hourLabelWidth) / unitWidth).toInt()
-                            val timeIndex = ((offset.y - dayLabelHeight) / unitHeight).toInt()
+                        true
+                    }
 
-                            val dayIndexOutOfBound =
-                                timeIndex < TableTrimParam.SearchOption.dayOfWeekFrom || dayIndex > TableTrimParam.SearchOption.dayOfWeekTo
-                            val timeIndexOutOfBound =
-                                timeIndex >= (TableTrimParam.SearchOption.hourTo - TableTrimParam.SearchOption.hourFrom + 1) * 2
-                            if (dayIndexOutOfBound || timeIndexOutOfBound) {
-                                return@detectTapGestures
-                            }
-
-                            if (isSelected(dayIndex, timeIndex)) {
-                                erase(dayIndex, timeIndex)
-                            } else {
-                                select(dayIndex, timeIndex)
-                            }
-                        }
-                    },
-                )
+                    else -> {
+                        false
+                    }
+                }
             },
     ) {
         canvasSize = size
