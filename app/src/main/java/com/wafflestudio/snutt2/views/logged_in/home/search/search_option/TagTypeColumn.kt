@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -43,14 +41,9 @@ fun TagTypeColumn(
         )
     }
 
-    val alphaAnimatedFloat by remember {
-        derivedStateOf { 1f - baseAnimatedFloat.value }
-    }
-    val offsetXAnimatedDp by remember {
-        derivedStateOf {
-            baseAnimatedFloat.value.dp * -SearchOptionSheetConstants.TagColumnWidthDp
-        }
-    }
+    val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
+    val offsetXAnimatedDp =
+        baseAnimatedFloat.value.dp * -SearchOptionSheetConstants.TagColumnWidthDp
 
     Column(
         modifier = Modifier
