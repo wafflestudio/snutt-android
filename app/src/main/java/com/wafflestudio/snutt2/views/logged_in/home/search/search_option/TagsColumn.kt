@@ -42,16 +42,8 @@ fun TagsColumn(
 ) {
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
-    val alphaAnimatedFloat by remember {
-        derivedStateOf { 1f - baseAnimatedFloat.value }
-    }
-    val offsetXAnimatedDp by remember {
-        derivedStateOf {
-            val tagsColumnWidth =
-                configuration.screenWidthDp - SearchOptionSheetConstants.TagColumnWidthDp
-            return@derivedStateOf tagsColumnWidth.dp * baseAnimatedFloat.value
-        }
-    }
+    val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
+    val offsetXAnimatedDp = (configuration.screenWidthDp - SearchOptionSheetConstants.TagColumnWidthDp).dp * baseAnimatedFloat.value
 
     LazyColumn(
         modifier = modifier
