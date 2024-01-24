@@ -62,7 +62,9 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
@@ -257,8 +259,8 @@ fun ThemeDetailPage(
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
-                                                MaterialTheme.colors.onSurfaceVariant.copy(
-                                                    alpha = if (editingColors.size < 9) 1f else 0.3f,
+                                                (if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray40).copy(
+                                                    alpha = if (editingColors.size > 1) 1f else 0.3f,
                                                 ),
                                             ),
                                         )
@@ -277,7 +279,7 @@ fun ThemeDetailPage(
                                                     }
                                                 },
                                             colorFilter = ColorFilter.tint(
-                                                MaterialTheme.colors.onSurfaceVariant.copy(
+                                                (if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray40).copy(
                                                     alpha = if (editingColors.size > 1) 1f else 0.3f,
                                                 ),
                                             ),

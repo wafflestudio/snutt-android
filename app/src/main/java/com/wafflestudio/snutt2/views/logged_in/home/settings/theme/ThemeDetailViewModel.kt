@@ -51,8 +51,8 @@ class ThemeDetailViewModel @Inject constructor(
                             CustomTheme.Default
                         }
                     }
-                    _editingColors.value = (_editingTheme.value as CustomTheme).colors.map { color ->
-                        color.toDataWithState(false)
+                    _editingColors.value = (_editingTheme.value as CustomTheme).colors.mapIndexed { idx, color ->
+                        color.toDataWithState(idx == 0)
                     }
                 }
             }

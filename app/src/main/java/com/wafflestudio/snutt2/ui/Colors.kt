@@ -12,6 +12,7 @@ object SNUTTColors {
     val Gray20 = Color(0xffcacaca)
     val Gray2 = Color(0xffb3b3b3)
     val Gray30 = Color(0xffa6a6a6)
+    val Gray40 = Color(0xff979797)
     val DarkGray = Color(0xff777777)
     val DarkerGray = Color(0xff505050)
     val ExtraDarkGray = Color(0xff2b2b2b)
