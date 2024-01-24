@@ -294,8 +294,8 @@ fun ThemeDetailPage(
                                     exit = shrinkVertically(),
                                 ) {
                                     ColorEditItem(
-                                        fgColor = colorWithExpanded.item.fgColor ?: 0xffffff,
-                                        bgColor = colorWithExpanded.item.bgColor ?: 0xffffff,
+                                        fgColor = Color(colorWithExpanded.item.fgColor ?: 0xffffff),
+                                        bgColor = Color(colorWithExpanded.item.bgColor ?: 0xffffff),
                                         onFgColorPicked = { color ->
                                             themeDetailViewModel.updateColor(
                                                 idx,
@@ -434,8 +434,8 @@ fun ThemeDetailItem(
 
 @Composable
 fun ColorEditItem(
-    fgColor: Int,
-    bgColor: Int,
+    fgColor: Color,
+    bgColor: Color,
     onFgColorPicked: (Color) -> Unit,
     onBgColorPicked: (Color) -> Unit,
     modifier: Modifier = Modifier,
@@ -461,16 +461,14 @@ fun ColorEditItem(
                 )
                 Spacer(modifier = Modifier.width(11.dp))
                 ColorCircle(
-                    color = Color(fgColor),
+                    color = fgColor,
                     modifier = Modifier
                         .size(25.dp)
                         .clicks {
                             showColorPickerDialog(
                                 context = context,
                                 modalState = modalState,
-                                initialColor = Color(
-                                    fgColor,
-                                ),
+                                initialColor = fgColor,
                                 onColorPicked = { color ->
                                     onFgColorPicked(color)
                                 },
@@ -487,16 +485,14 @@ fun ColorEditItem(
                 )
                 Spacer(modifier = Modifier.width(11.dp))
                 ColorCircle(
-                    color = Color(bgColor),
+                    color = bgColor,
                     modifier = Modifier
                         .size(25.dp)
                         .clicks {
                             showColorPickerDialog(
                                 context = context,
                                 modalState = modalState,
-                                initialColor = Color(
-                                    bgColor,
-                                ),
+                                initialColor = bgColor,
                                 onColorPicked = { color ->
                                     onBgColorPicked(color)
                                 },
