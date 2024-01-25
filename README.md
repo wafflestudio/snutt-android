@@ -6,14 +6,26 @@
   </a>
   <h3 align="center">SNUTT Android</h3>
   <p align="center">
-    <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
-    <img src="https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white" />
-    <img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
-    <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
+    The best timetable application for SNU students, developed and maintained by SNU students.
+    <div style=" padding-bottom: 1rem;">
+      <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+      <img src="https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white" />
+      <img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
+      <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
+    </div>
   </p>
 </div>
 
 ## Features
+- 줄임말으로 강의 검색
+- 시간대로 강의 검색
+- 관심강좌
+- 강의평
+- 빈자리 알림
+- 친구 시간표
+- 커스텀 테마
+
+## Tech Stack
 - MVVM
 - Jetpack Compose
 - Dependency Injection with Hilt
