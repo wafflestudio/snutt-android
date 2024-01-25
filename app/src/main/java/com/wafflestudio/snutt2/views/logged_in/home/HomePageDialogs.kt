@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ComposableStates
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
@@ -29,11 +30,15 @@ fun showTitleChangeDialog(
     modalState.set(
         onDismiss = { modalState.hide() },
         onConfirm = {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    onConfirm(tableId, newTitle)
-                    modalState.hide()
-                    bottomSheet.hide()
+            if (newTitle.isEmpty()) {
+                context.toast(context.getString(R.string.error_no_timetable_title))
+            } else {
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        onConfirm(tableId, newTitle)
+                        modalState.hide()
+                        bottomSheet.hide()
+                    }
                 }
             }
         },
