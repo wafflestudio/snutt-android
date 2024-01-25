@@ -1,7 +1,7 @@
 [![CI](https://github.com/wafflestudio/SNUTT-android/actions/workflows/ci.yml/badge.svg)](https://github.com/wafflestudio/SNUTT-android/actions/workflows/ci.yml)
 [![CD](https://github.com/wafflestudio/SNUTT-android/actions/workflows/cd.yml/badge.svg)](https://github.com/wafflestudio/SNUTT-android/actions/workflows/cd.yml)
 <div align="center">
-  <a href="https://github.com/wafflestudio/snutt-ios">
+  <a href="https://github.com/wafflestudio/snutt-android">
     <img src="https://user-images.githubusercontent.com/33917774/199519767-60590904-b15a-4464-ab21-e3a424649d5c.svg" alt="Logo" width="70" height="70">
   </a>
   <h3 align="center">SNUTT Android</h3>
