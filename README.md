@@ -34,11 +34,11 @@
 
 ## Getting Started
 ### Secrets
-Staging 빌드를 위해 다음 파일들이 필요합니다.
+Staging 빌드를 위해 다음 파일이 필요합니다.
   - `app/src/staging/google-services.json`
   - `app/src/staging/res/value/strings.xml`
 
-Live 빌드를 위해 다음 파일들이 필요합니다.
+Live 빌드를 위해 다음 파일이 필요합니다.
   - `app/src/live/google-services.json`
   - `app/src/live/res/value/strings.xml`
 
