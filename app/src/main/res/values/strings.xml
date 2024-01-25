@@ -168,12 +168,16 @@
     <string name="search_result_placeholder_6">강의실 위치로 검색해보세요.</string>
     <string name="search_result_placeholder_7">ex) 26동 / 302-208 / 대글2 43-1동</string>
     <string name="search_option_tag_type_academic_year">학년</string>
-    <string name="search_option_tag_type_classification">구분</string>
+    <string name="search_option_tag_type_classification">분류</string>
     <string name="search_option_tag_type_credit">학점</string>
+    <string name="search_option_tag_type_time">시간</string>
     <string name="search_option_tag_type_department">학과</string>
     <string name="search_option_tag_type_general_category">교양분류</string>
     <string name="search_option_tag_type_etc">기타</string>
     <string name="search_option_apply_button">필터 적용</string>
+    <string name="search_option_select_empty_time_slots">빈 시간대 선택하기</string>
+    <string name="search_option_select_clear_time_slots">초기화</string>
+    <string name="search_option_select_guide">드래그하여 시간대를 선택해보세요</string>
     <string name="lecture_detail_app_bar_title">강의 상세 보기</string>
     <string name="lecture_detail_top_bar_complete">완료</string>
     <string name="lecture_detail_top_bar_edit">편집</string>

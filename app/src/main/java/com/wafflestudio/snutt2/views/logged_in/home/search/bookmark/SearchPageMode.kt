@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.search
+package com.wafflestudio.snutt2.views.logged_in.home.search.bookmark
 
 enum class SearchPageMode {
     Search, Bookmark;

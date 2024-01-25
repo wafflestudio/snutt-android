@@ -27,7 +27,6 @@ class LectureSearchPagingSource(
         classification = tags.extractTagString(TagType.CLASSIFICATION),
         credit = tags.extractTagString(TagType.CREDIT).map { it.toCreditNumber() },
         academic_year = tags.extractTagString(TagType.ACADEMIC_YEAR),
-        instructor = tags.extractTagString(TagType.INSTRUCTOR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
         times = times,
