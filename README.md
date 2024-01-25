@@ -26,7 +26,7 @@ Staging 빌드를 위해 다음 파일들이 필요합니다.
   - `app/src/staging/res/value/strings.xml`
 Live 빌드를 위해 다음 파일들이 필요합니다.
   - `app/src/live/google-services.json`
-  - `ap/src/live/res/value/strings.xml`
+  - `app/src/live/res/value/strings.xml`
 필요시 maintainer에게 요청해주세요.
 
 ### Installation
