@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.lecture_detail
+package com.wafflestudio.snutt2.components.compose.embed_map
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.components.compose.EmbedMap
 import com.wafflestudio.snutt2.components.compose.MapIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -55,6 +54,7 @@ fun FoldableEmbedMap(
                             .clicks {
                                 if (embedMapFolded) {
                                     embedMapFolded = false
+                                    isEmbedMapFoldedSaved = false
                                 }
                             },
                         horizontalArrangement = Arrangement.Center,
@@ -76,10 +76,10 @@ fun FoldableEmbedMap(
                         EmbedMap(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(255.dp)
+                                .height(if (it.size == 1) 255.dp else 350.dp)
                                 .alpha(embedMapAlpha)
                                 .padding(horizontal = 20.dp),
-                            buildings = it,
+                            distinctBuildings = it.distinct(),
                         )
                         Row(
                             modifier = Modifier
@@ -88,7 +88,10 @@ fun FoldableEmbedMap(
                                 .alpha(embedMapAlpha)
                                 .padding(vertical = 12.dp)
                                 .clicks {
-                                    if (embedMapFolded.not()) embedMapFolded = true
+                                    if (embedMapFolded.not()) {
+                                        embedMapFolded = true
+                                        isEmbedMapFoldedSaved = true
+                                    }
                                 },
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
