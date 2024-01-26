@@ -39,16 +39,9 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
-import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
-import com.naver.maps.map.compose.MapProperties
-import com.naver.maps.map.compose.MapUiSettings
-import com.naver.maps.map.compose.Marker
-import com.naver.maps.map.compose.NaverMap
-import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.naver.maps.map.compose.rememberMarkerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.data.TimetableColorTheme
@@ -94,6 +87,7 @@ fun LectureDetailPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
+    val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val currentTable by vm.currentTable.collectAsState()
     val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
     val isCustom = editingLectureDetail.isCustom
@@ -538,59 +532,11 @@ fun LectureDetailPage(
                             )
                         }
                     }
-                    NaverMap(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(480.dp),
-                        cameraPositionState = cameraPositionState,
-                        onMapClick = { _, _ ->
-                            mapDimmed = mapDimmed.not()
-                        },
-                        properties = MapProperties(symbolScale = symbolScale.value),
-                        uiSettings = MapUiSettings(isLogoClickEnabled = false, isZoomControlEnabled = false),
-                    ) {
-                        Marker(
-                            state = rememberMarkerState(position = CameraPosition(LatLng(37.452880, 126.950163), 6.0).target),
-                            onClick = {
-                                if (mapDimmed) {
-                                    Intent(Intent.ACTION_VIEW, Uri.parse("nmap://place?lat=37.458926&lng=126.949390&name=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%A0%95%EC%9E%90%EB%8F%99&appname=com.wafflestudio.snutt2"))
-                                        .apply {
-                                            context.startActivity(this)
-                                        }
-                                    mapDimmed = false
-                                    true
-                                } else {
-                                    false
-                                }
-                            },
-                        )
-                        Marker(
-                            state = rememberMarkerState(position = CameraPosition(LatLng(37.458926, 126.949390), 6.0).target),
-                            onClick = {
-                                if (mapDimmed) {
-                                    Intent(Intent.ACTION_VIEW, Uri.parse("nmap://place?lat=37.458926&lng=126.949390&name=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%A0%95%EC%9E%90%EB%8F%99&appname=com.wafflestudio.snutt2"))
-                                        .apply {
-                                            context.startActivity(this)
-                                        }
-                                    mapDimmed = false
-                                    true
-                                } else {
-                                    false
-                                }
-                            },
-                        )
-                        if (mapDimmed) {
-                            PolygonOverlay(
-                                coords = listOf(
-                                    LatLng(38.0, 126.0),
-                                    LatLng(38.0, 127.0),
-                                    LatLng(37.0, 127.0),
-                                    LatLng(37.0, 126.0),
-                                ),
-                                color = Color.Black.copy(alpha = 0.8f),
-                            )
-                        }
-                    }
+                    FoldableEmbedMap(
+                        distinctBuildings = selectedLecture?.class_time_json?.mapNotNull {
+                            it.lectureBuilding
+                        }?.distinct().orEmpty(),
+                    )
                 }
                 AnimatedVisibility(
                     visible = modeType !is ModeType.Editing,

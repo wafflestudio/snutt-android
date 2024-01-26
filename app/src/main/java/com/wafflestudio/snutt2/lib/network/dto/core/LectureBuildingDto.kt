@@ -17,4 +17,14 @@ data class LectureBuildingDto(
     @Json(name = "locationInDMS") val locationInDMS: GeoCoordinate,
     @Json(name = "locationInDecimal") val locationInDecimal: GeoCoordinate,
     @Json(name = "campus") val campus: Campus,
-) : Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean {
+        return (other as? LectureBuildingDto)?.let {
+            (buildingNameKor == other.buildingNameKor) && (locationInDMS == other.locationInDMS)
+        } ?: false
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+}
