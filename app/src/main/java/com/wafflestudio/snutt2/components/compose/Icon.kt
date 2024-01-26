@@ -788,6 +788,19 @@ fun MagicIcon(
 }
 
 @Composable
+fun MapIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_map),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun ResetIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
