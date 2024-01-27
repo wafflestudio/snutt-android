@@ -71,19 +71,7 @@ fun EmbedMap(
                 mapDimmed = mapDimmed.not()
             },
             properties = MapProperties(symbolScale = symbolScale.value),
-            uiSettings = MapUiSettings(
-                isLogoClickEnabled = false,
-                isZoomControlEnabled = false,
-                isCompassEnabled = false,
-                isIndoorLevelPickerEnabled = false,
-                isLocationButtonEnabled = false,
-                isRotateGesturesEnabled = false,
-                isScrollGesturesEnabled = false,
-                isStopGesturesEnabled = false,
-                isTiltGesturesEnabled = false,
-                isZoomGesturesEnabled = false,
-                isScaleBarEnabled = false,
-            ),
+            uiSettings = EmbedMapConstants.DefaultMapUISettings,
         ) {
             distinctBuildings.forEach { building ->
                 Marker(
