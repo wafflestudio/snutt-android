@@ -51,5 +51,5 @@ class RemoteConfig @Inject constructor(
     val settingPageNewBadgeTitles: Flow<List<String>>
         get() = config.map { it.settingsBadgeConfig.new }
     val embedMapEnabled: Flow<Boolean>
-        get() = config.map { it.embedMapConfig.enabled }
+        get() = config.map { it.disableMapFeature }
 }
