@@ -813,7 +813,6 @@ fun ResetIcon(
     )
 }
 
-
 @Composable
 fun BetaIcon(
     modifier: Modifier = Modifier,
