@@ -812,3 +812,17 @@ fun ResetIcon(
         colorFilter = colorFilter,
     )
 }
+
+
+@Composable
+fun BetaIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_beta_tag),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
