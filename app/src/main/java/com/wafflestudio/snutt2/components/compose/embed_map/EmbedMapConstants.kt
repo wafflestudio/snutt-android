@@ -9,17 +9,17 @@ object EmbedMapConstants {
     const val SinglePinMapZoom = 14.3
     const val BaseLongitude = 126.9527
     val DefaultMapUISettings = MapUiSettings(
-    isLogoClickEnabled = false,
-    isZoomControlEnabled = false,
-    isCompassEnabled = false,
-    isIndoorLevelPickerEnabled = false,
-    isLocationButtonEnabled = false,
-    isRotateGesturesEnabled = false,
-    isScrollGesturesEnabled = false,
-    isStopGesturesEnabled = false,
-    isTiltGesturesEnabled = false,
-    isZoomGesturesEnabled = false,
-    isScaleBarEnabled = false,
+        isLogoClickEnabled = false,
+        isZoomControlEnabled = false,
+        isCompassEnabled = false,
+        isIndoorLevelPickerEnabled = false,
+        isLocationButtonEnabled = false,
+        isRotateGesturesEnabled = false,
+        isScrollGesturesEnabled = false,
+        isStopGesturesEnabled = false,
+        isTiltGesturesEnabled = false,
+        isZoomGesturesEnabled = false,
+        isScaleBarEnabled = false,
     )
 }
 
