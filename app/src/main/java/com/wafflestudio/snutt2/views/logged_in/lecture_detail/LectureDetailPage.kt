@@ -96,7 +96,7 @@ fun LectureDetailPage(
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
     val vacancyList by vacancyViewModel.vacancyLectures.collectAsState()
     val vacancyRegistered = vacancyList.map { it.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
-    val embedMapEnabled by LocalRemoteConfig.current.embedMapEnabled.collectAsState(false)
+    val embedMapDisabled by LocalRemoteConfig.current.embedMapDisabled.collectAsState(false)
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
@@ -534,12 +534,8 @@ fun LectureDetailPage(
                             )
                         }
                     }
-                    if (embedMapEnabled) {
-                        FoldableEmbedMap(
-                            distinctBuildings = selectedLecture?.class_time_json?.mapNotNull {
-                                it.lectureBuilding
-                            }?.distinct().orEmpty(),
-                        )
+                    if (embedMapDisabled.not()) {
+                        FoldableEmbedMap(selectedLecture?.buildings.orEmpty())
                     }
                 }
                 AnimatedVisibility(

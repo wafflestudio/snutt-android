@@ -17,9 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.MapIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -31,7 +32,7 @@ var isEmbedMapFoldedSaved = true
 
 @Composable
 fun FoldableEmbedMap(
-    distinctBuildings: List<LectureBuildingDto>,
+    buildings: List<LectureBuildingDto>,
 ) {
     var embedMapFolded by remember {
         mutableStateOf(isEmbedMapFoldedSaved)
@@ -42,71 +43,68 @@ fun FoldableEmbedMap(
     )
 
     Column {
-        distinctBuildings.let {
-            if (it.isNotEmpty()) {
-                AnimatedVisibility(visible = embedMapFolded) {
+        if (buildings.isNotEmpty()) {
+            AnimatedVisibility(visible = embedMapFolded) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(vertical = 12.dp)
+                        .clicks {
+                            embedMapFolded = false
+                            isEmbedMapFoldedSaved = false
+                        },
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    MapIcon(
+                        modifier = Modifier.size(17.dp, 19.dp),
+                    )
+                    Text(
+                        text = stringResource(R.string.embed_map_unfold_button),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.DarkGray),
+                        modifier = Modifier.padding(start = 8.dp, end = 4.dp),
+                    )
+                    ArrowDownIcon(modifier = Modifier.size(24.dp))
+                }
+            }
+            AnimatedVisibility(visible = embedMapFolded.not()) {
+                Column {
+                    EmbedMap(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(
+                                if (buildings.size == 1) {
+                                    EmbedMapConstants.MapShortHeight
+                                } else {
+                                    EmbedMapConstants.MapLongHeight
+                                },
+                            )
+                            .padding(horizontal = 20.dp),
+                        buildings = buildings,
+                    )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)
-                            .alpha(1f - embedMapAlpha)
                             .padding(vertical = 12.dp)
                             .clicks {
-                                if (embedMapFolded) {
-                                    embedMapFolded = false
-                                    isEmbedMapFoldedSaved = false
-                                }
+                                embedMapFolded = true
+                                isEmbedMapFoldedSaved = true
                             },
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        MapIcon(
-                            modifier = Modifier.size(17.dp, 19.dp),
-                        )
                         Text(
-                            text = "지도에서 보기",
+                            text = stringResource(R.string.embed_map_fold_button),
                             style = SNUTTTypography.body1.copy(color = SNUTTColors.DarkGray),
                             modifier = Modifier.padding(start = 8.dp, end = 4.dp),
                         )
-                        ArrowDownIcon(modifier = Modifier.size(24.dp))
-                    }
-                }
-                AnimatedVisibility(visible = embedMapFolded.not()) {
-                    Column {
-                        EmbedMap(
+                        ArrowDownIcon(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(if (it.size == 1) 255.dp else 350.dp)
-                                .alpha(embedMapAlpha)
-                                .padding(horizontal = 20.dp),
-                            distinctBuildings = it.distinct(),
+                                .size(24.dp)
+                                .rotate(180f),
                         )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .alpha(embedMapAlpha)
-                                .padding(vertical = 12.dp)
-                                .clicks {
-                                    if (embedMapFolded.not()) {
-                                        embedMapFolded = true
-                                        isEmbedMapFoldedSaved = true
-                                    }
-                                },
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = "지도 닫기",
-                                style = SNUTTTypography.body1.copy(color = SNUTTColors.DarkGray),
-                                modifier = Modifier.padding(start = 8.dp, end = 4.dp),
-                            )
-                            ArrowDownIcon(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .rotate(180f),
-                            )
-                        }
                     }
                 }
             }

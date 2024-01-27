@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.components.compose.embed_map
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,14 +32,12 @@ import com.wafflestudio.snutt2.components.compose.BetaIcon
 import com.wafflestudio.snutt2.databinding.MapPinBinding
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun EmbedMap(
     modifier: Modifier,
-    distinctBuildings: List<LectureBuildingDto>,
+    buildings: List<LectureBuildingDto>,
 ) {
     val context = LocalContext.current
 
@@ -49,7 +45,7 @@ fun EmbedMap(
     var mapDimmed by remember {
         mutableStateOf(false)
     }
-    val symbolScale = animateFloatAsState(targetValue = if (mapDimmed) 0f else 1f, label = "")
+    val symbolScale by animateFloatAsState(targetValue = if (mapDimmed) 0f else 1f, label = "")
     val dimAlpha by animateFloatAsState(targetValue = if (mapDimmed) 0.4f else 0f, label = "")
 
     /* 지도 카메라 */
@@ -57,36 +53,43 @@ fun EmbedMap(
     LaunchedEffect(Unit) {
         cameraPositionState.move(
             EmbedMapUtils.getCameraUpdateFromLatLngList(
-                distinctBuildings.map { it.locationInDMS.toLatLng() },
+                buildings.map { it.locationInDMS.toLatLng() },
             ),
         )
     }
 
-    Box(modifier = modifier, contentAlignment = Alignment.TopEnd) {
-        BetaIcon(modifier = Modifier.size(59.5.dp, 44.5.dp).zIndex(5f))
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.TopEnd,
+    ) {
+        BetaIcon(
+            modifier = Modifier
+                .size(59.5.dp, 44.5.dp)
+                .zIndex(5f),
+        )
         NaverMap(
             cameraPositionState = cameraPositionState,
             onMapClick = { _, _ ->
                 mapDimmed = mapDimmed.not()
             },
-            properties = MapProperties(symbolScale = symbolScale.value),
+            properties = MapProperties(symbolScale = symbolScale),
             uiSettings = EmbedMapConstants.DefaultMapUISettings,
         ) {
-            distinctBuildings.forEach { building ->
+            buildings.forEach { building ->
+                val dimmedMarker = remember {
+                    OverlayImage.fromView(
+                        MapPinBinding.inflate(LayoutInflater.from(context)).root.also {
+                            it.findViewById<TextView>(R.id.building_text).text =
+                                context.getString(
+                                    R.string.embed_map_pin_highlighted,
+                                    building.buildingNameKor ?: "",
+                                )
+                        },
+                    )
+                }
                 Marker(
                     anchor = MarkerDefaults.Anchor,
-                    icon = if (mapDimmed) {
-                        OverlayImage.fromView(
-                            MapPinBinding.inflate(LayoutInflater.from(context)).root.also {
-                                it.findViewById<TextView>(R.id.building_text).text =
-                                    "${building.buildingNameKor} 길찾기"
-                            },
-                        )
-                    } else {
-                        OverlayImage.fromResource(
-                            R.drawable.ic_map_pin,
-                        )
-                    },
+                    icon = if (mapDimmed) dimmedMarker else EmbedMapConstants.normalMarker,
                     captionText = building.buildingNameKor,
                     state = rememberMarkerState(
                         position = CameraPosition(
@@ -95,30 +98,14 @@ fun EmbedMap(
                         ).target,
                     ),
                     onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(
-                                "nmap://place?lat=${building.locationInDMS.latitude}&lng=${building.locationInDMS.longitude}&name=${
-                                URLEncoder.encode(
-                                    building.buildingNameKor,
-                                    StandardCharsets.UTF_8.toString(),
-                                )
-                                }&appname=com.wafflestudio.snutt2",
-                            ),
-                        )
-                        context.startActivity(intent)
+                        EmbedMapUtils.moveToMapApplication(context, building)
                         mapDimmed = false
                         true
                     },
                 )
             }
             PolygonOverlay(
-                coords = listOf(
-                    LatLng(38.0, 126.0),
-                    LatLng(38.0, 127.0),
-                    LatLng(37.0, 127.0),
-                    LatLng(37.0, 126.0),
-                ),
+                coords = EmbedMapConstants.DimBoundary,
                 color = SNUTTColors.Black900.copy(alpha = dimAlpha),
             )
         }

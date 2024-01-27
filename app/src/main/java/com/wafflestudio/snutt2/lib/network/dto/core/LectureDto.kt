@@ -32,6 +32,9 @@ data class LectureDto(
     val isCustom: Boolean
         get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
 
+    val buildings: List<LectureBuildingDto>
+        get() = class_time_json.mapNotNull { it.lectureBuilding }.distinct()
+
     companion object {
         val Default = LectureDto(
             id = "",
