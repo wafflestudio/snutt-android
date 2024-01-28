@@ -512,7 +512,7 @@ fun LectureDetailPage(
                         ) {
                             FoldableEmbedMap(
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                buildings = selectedLecture?.buildings.orEmpty(),
+                                buildings = editingLectureDetail.buildings,
                             )
                         }
                     }
