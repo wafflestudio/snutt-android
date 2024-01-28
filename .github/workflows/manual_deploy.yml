@@ -6,7 +6,7 @@ on:
       ref:
         description: 'branch to build'
         required: true
-        default: 'main'
+        default: 'develop'
       variant:
         description: 'live / staging'
         required: true
