@@ -10,6 +10,9 @@ on:
         options:
           - live
           - staging
+      firebase:
+        type: boolean
+        description: Upload artifact to Firebase
       slack:
         type: boolean
         description: Send message to slack
@@ -89,10 +92,10 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution (Live)
-        if: startsWith(github.event.inputs.variant, 'live')
+        if: startsWith(github.event.inputs.variant, 'live') && ${{ github.event.inputs.firebase == 'true' }}
         run: ./gradlew appDistributionUploadLiveRelease
       - name: Upload artifact to Firebase App Distribution (Staging)
-        if: startsWith(github.event.inputs.variant, 'staging')
+        if: startsWith(github.event.inputs.variant, 'staging') && ${{ github.event.inputs.firebase == 'true' }}
         run: ./gradlew appDistributionUploadStagingRelease
       - name: Set Message
         if: ${{ github.event.inputs.slack == 'true' }}
