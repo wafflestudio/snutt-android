@@ -10,9 +10,15 @@ on:
         options:
           - live
           - staging
+      firebase:
+        type: boolean
+        description: Upload artifact to Firebase
       slack:
         type: boolean
-        description: Send message to slack
+        description: Send artifact to slack
+      slack_message:
+        type: string
+        description: Message to send with artifact
 
 jobs:
   deploy:
@@ -89,10 +95,10 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution (Live)
-        if: startsWith(github.event.inputs.variant, 'live')
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'Live') }}
         run: ./gradlew appDistributionUploadLiveRelease
       - name: Upload artifact to Firebase App Distribution (Staging)
-        if: startsWith(github.event.inputs.variant, 'staging')
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
         run: ./gradlew appDistributionUploadStagingRelease
       - name: Set Message
         if: ${{ github.event.inputs.slack == 'true' }}
@@ -100,7 +106,7 @@ jobs:
           PROPERTY=$(head -n 1 version.properties)
           VERSION="${PROPERTY/snuttVersionName=}"
           TITLE="SNUTT Android 빌드 알림"
-          MESSAGE="${VERSION} 빌드 완료"
+          MESSAGE=${{ github.event.inputs.slack_message }}
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
@@ -111,3 +117,23 @@ jobs:
           SLACK_TITLE: ${{ env.TITLE }}
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
+      - name: Slack Upload APK (Live)
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'live') }}
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
+          file_path: './app/build/outputs/apk/live/release/app-live-release.apk'
+          file_name: 'app-live-release.apk'
+          file_type: 'apk'
+          initial_comment: 'live-release APK'
+      - name: Slack Upload APK (Staging)
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
+          file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
+          file_name: 'app-staging-release.apk'
+          file_type: 'apk'
+          initial_comment: 'staging-release APK'
