@@ -15,7 +15,7 @@ on:
         description: Upload artifact to Firebase
       slack:
         type: boolean
-        description: Send message to slack
+        description: Send artifact to slack
       slack_message:
         type: string
         description: Message to send with artifact
