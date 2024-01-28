@@ -33,7 +33,7 @@ data class LectureDto(
         get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
 
     val buildings: List<LectureBuildingDto>
-        get() = class_time_json.mapNotNull { it.lectureBuilding }.distinct()
+        get() = class_time_json.flatMap { it.lectureBuildings.orEmpty() }.distinct()
 
     companion object {
         val Default = LectureDto(

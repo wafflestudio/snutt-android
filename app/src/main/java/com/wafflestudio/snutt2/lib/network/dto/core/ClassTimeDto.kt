@@ -13,7 +13,7 @@ data class ClassTimeDto(
     @Json(name = "_id") val id: String? = null,
     @Json(name = "startMinute") val startMinute: Int = 0,
     @Json(name = "endMinute") val endMinute: Int = 0,
-    @Json(name = "lectureBuilding") val lectureBuilding: LectureBuildingDto? = null,
+    @Json(name = "lectureBuildings") val lectureBuildings: List<LectureBuildingDto>? = null,
 ) : Parcelable {
 
     val startTimeInFloat: Float
