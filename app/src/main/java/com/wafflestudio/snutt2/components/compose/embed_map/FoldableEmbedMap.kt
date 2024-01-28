@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.components.compose.embed_map
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,17 +31,14 @@ var isEmbedMapFoldedSaved = true
 
 @Composable
 fun FoldableEmbedMap(
+    modifier: Modifier,
     buildings: List<LectureBuildingDto>,
 ) {
     var embedMapFolded by remember {
         mutableStateOf(isEmbedMapFoldedSaved)
     }
-    val embedMapAlpha by animateFloatAsState(
-        targetValue = if (embedMapFolded) 0f else 1f,
-        label = "",
-    )
 
-    Column {
+    Column(modifier = modifier) {
         if (buildings.isNotEmpty()) {
             AnimatedVisibility(visible = embedMapFolded) {
                 Row(

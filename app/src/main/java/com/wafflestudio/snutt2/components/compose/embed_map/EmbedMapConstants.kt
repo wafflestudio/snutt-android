@@ -76,7 +76,7 @@ object EmbedMapUtils {
             openNaverMap(context, building)
         } catch (e: Exception) {
             try {
-                openOtherMap(context, building)
+                openKakaoMap(context, building)
             } catch (e: Exception) {
                 context.toast(context.getString(R.string.embed_map_cannot_open_url_scheme))
             }
@@ -99,11 +99,11 @@ object EmbedMapUtils {
         )
     }
 
-    private fun openOtherMap(context: Context, building: LectureBuildingDto) {
+    private fun openKakaoMap(context: Context, building: LectureBuildingDto) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("geo:${building.locationInDMS.latitude},${building.locationInDMS.longitude}"),
+                Uri.parse("kakaomap:look?p=${building.locationInDMS.latitude},${building.locationInDMS.longitude}"),
             ),
         )
     }
