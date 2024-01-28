@@ -118,7 +118,7 @@ jobs:
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
       - name: Slack Upload APK (Live)
-        if: ${{ github.event.inputs.slack == 'true' }} && startsWith(github.event.inputs.variant, 'live')
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'live') }}
         uses: MeilCli/slack-upload-file@v3
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
