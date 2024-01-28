@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
@@ -37,11 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
-import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
-import com.naver.maps.map.compose.rememberCameraPositionState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
@@ -156,28 +151,6 @@ fun LectureDetailPage(
                 this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
             }
         }
-
-    /* 지도 카메라 */
-    val cameraPositionState = rememberCameraPositionState()
-    LaunchedEffect(Unit) {
-        cameraPositionState.move(
-            CameraUpdate.fitBounds(
-                LatLngBounds.from(
-                    listOf(
-                        LatLng(37.458926, 126.949390),
-                        LatLng(37.452880, 126.950163),
-                    ),
-                ),
-                150, 300, 150, 100,
-            ),
-        )
-    }
-
-    /* 지도 dim */
-    var mapDimmed by remember {
-        mutableStateOf(false)
-    }
-    val symbolScale = animateFloatAsState(targetValue = if (mapDimmed) 0f else 1f, label = "")
 
     ModalBottomSheetLayout(
         sheetContent = bottomSheet.content,
