@@ -3,18 +3,16 @@ name: Manual Deploy
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'branch to build'
-        required: true
-        default: 'develop'
       variant:
+        type: choice
         description: 'live / staging'
         required: true
-        default: 'staging'
+        options:
+          - live
+          - staging
       slack:
-        description: 'Send output to slack'
-        required: true
-        default: false
+        type: boolean
+        description: Send message to slack
 
 jobs:
   deploy:
