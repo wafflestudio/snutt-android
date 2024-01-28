@@ -435,8 +435,7 @@ fun LectureDetailPage(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(SNUTTColors.White900)
-                        .padding(bottom = 10.dp),
+                        .background(SNUTTColors.White900),
                 ) {
                     Text(
                         text = stringResource(R.string.lecture_detail_class_time),
