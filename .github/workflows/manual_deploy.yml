@@ -100,22 +100,13 @@ jobs:
       - name: Upload artifact to Firebase App Distribution (Staging)
         if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
         run: ./gradlew appDistributionUploadStagingRelease
-      - name: Set Message
-        if: ${{ github.event.inputs.slack == 'true' }}
-        run: |
-          PROPERTY=$(head -n 1 version.properties)
-          VERSION="${PROPERTY/snuttVersionName=}"
-          TITLE="SNUTT Android 빌드 알림"
-          MESSAGE=${{ github.event.inputs.slack_message }}
-          echo "TITLE=$TITLE" >> $GITHUB_ENV
-          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
         if: ${{ github.event.inputs.slack == 'true' }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: ${{ env.TITLE }}
-          SLACK_MESSAGE: ${{ env.MESSAGE }}
+          SLACK_TITLE: SNUTT Android 빌드 알림
+          SLACK_MESSAGE: ${{ github.event.inputs.slack_message }}
           SLACK_USERNAME: BuildNoti
       - name: Slack Upload APK (Live)
         if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'live') }}
