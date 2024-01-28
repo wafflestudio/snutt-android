@@ -128,7 +128,7 @@ jobs:
           file_type: 'apk'
           initial_comment: 'live-release APK'
       - name: Slack Upload APK (Staging)
-        if: ${{ github.event.inputs.slack == 'true' }} && startsWith(github.event.inputs.variant, 'staging')
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
         uses: MeilCli/slack-upload-file@v3
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
