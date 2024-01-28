@@ -17,13 +17,13 @@
 </div>
 
 ## Features
-- 줄임말으로 강의 검색
-- 시간대로 강의 검색
-- 관심강좌
-- 강의평
-- 빈자리 알림
-- 친구 시간표
-- 커스텀 테마
+- Abbreviated course search
+- Course search by time slot
+- Courses of interest
+- Course reviews
+- Vacancy notifications
+- Friend's timetable
+- Custom timetable theme
 
 ## Tech Stack
 - MVVM
@@ -34,33 +34,33 @@
 
 ## Getting Started
 ### Secrets
-Staging 빌드를 위해 다음 파일이 필요합니다.
+The following files are required for Staging build:
   - `app/src/staging/google-services.json`
   - `app/src/staging/res/value/strings.xml`
 
-Live 빌드를 위해 다음 파일이 필요합니다.
+The following files are required for Live build:
   - `app/src/live/google-services.json`
   - `app/src/live/res/value/strings.xml`
 
-필요시 maintainer에게 요청해주세요.
+Please request these files from the maintainer if needed.
 
 ### Installation
-1. [Android Studio](https://developer.android.com/studio)를 설치합니다.
-2. 다음 명령어를 입력하여 repository를 clone하고, Android Studio로 프로젝트를 엽니다.
+1. Install [Android Studio](https://developer.android.com/studio).
+2. Clone the repository and open the project in Android Studio by entering the following command:
    ```
    git clone https://github.com/wafflestudio/snutt-android
    ```
-4. JDK 17으로 프로젝트를 빌드하여 실행합니다.
+3. Build and run the project using JDK 17.
+
 ### Deployment
-1. `develop`에 모든 PR을 머지하고 `release-${version-code}` 브랜치를 생성합니다.
-2. `version.properties`의 version code를 rc를 포함하여 입력하고(e.g. 3.4.0-rc1) 푸쉬하면 `cd.yml`에 따라 app distribution에 apk가 업로드되며, 테스트를 거치며 rc 버전을 올립니다.
-3. 테스트가 완료되면 version code를 정식 버전으로 입력하고 푸쉬합니다. app distribution에 업로드된 apk를 플레이스토어에 등록합니다.
-4. `release-${version-code}` 브랜치를 `develop`에 머지합니다. 출시된 버전이 가장 최근의 `release-${version-code}` 브랜치와 동일하도록 유지해주세요.
+1. Create a `release-${version-code}` branch and modify the version code in `version.properties`.
+2. Upload the APK file to the Play Store.
+3. Merge the `release-${version-code}` branch into the `develop` branch and create a new tag and release for the new version.
 
 ## Branch Conventions
-- default branch는 `develop`입니다.
-- PR 브랜치 이름은 `${username}/${changes}`(e.g. `sanggggg/renewal-table-ui`)으로 합니다.
-- 머지 시 squash merge만을 사용합니다.
+- The default branch is `develop`.
+- PR branch names should follow the format `${username}/${changes}` (e.g., `sanggggg/renewal-table-ui`).
+- Only use squash merge when merging.
 
 ## Maintainers
 - [@JuTaK97](https://github.com/JuTak97)
