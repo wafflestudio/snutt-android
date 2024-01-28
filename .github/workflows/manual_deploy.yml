@@ -95,10 +95,10 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution (Live)
-        if: startsWith(github.event.inputs.variant, 'live') && ${{ github.event.inputs.firebase == 'true' }}
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'Live') }}
         run: ./gradlew appDistributionUploadLiveRelease
       - name: Upload artifact to Firebase App Distribution (Staging)
-        if: startsWith(github.event.inputs.variant, 'staging') && ${{ github.event.inputs.firebase == 'true' }}
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
         run: ./gradlew appDistributionUploadStagingRelease
       - name: Set Message
         if: ${{ github.event.inputs.slack == 'true' }}
