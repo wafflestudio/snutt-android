@@ -16,6 +16,9 @@ on:
       slack:
         type: boolean
         description: Send message to slack
+      slack_message:
+        type: string
+        description: Message to send with artifact
 
 jobs:
   deploy:
@@ -103,7 +106,7 @@ jobs:
           PROPERTY=$(head -n 1 version.properties)
           VERSION="${PROPERTY/snuttVersionName=}"
           TITLE="SNUTT Android 빌드 알림"
-          MESSAGE="${VERSION} 빌드 완료"
+          MESSAGE=${{ github.event.inputs.slack_message }}
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
