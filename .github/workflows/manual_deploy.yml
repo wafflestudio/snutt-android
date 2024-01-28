@@ -3,7 +3,7 @@ name: Manual Deploy
 on:
   workflow_dispatch:
     inputs:
-      branch:
+      ref:
         description: 'branch to build'
         required: true
         default: 'main'
