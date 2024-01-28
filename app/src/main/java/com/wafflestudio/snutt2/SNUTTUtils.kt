@@ -1,11 +1,9 @@
 package com.wafflestudio.snutt2
 
 import android.content.Context
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.DisplayMetrics
-import com.wafflestudio.snutt2.model.TagType
 import kotlin.math.roundToInt
 
 /**
@@ -108,16 +106,4 @@ object SNUTTUtils {
     @JvmStatic
     val Context.displayHeight: Float
         get() = this.resources.displayMetrics.heightPixels.toFloat()
-
-    fun getTagColor(type: TagType?): Int {
-        return when (type) {
-            TagType.ACADEMIC_YEAR -> Color.rgb(229, 68, 89)
-            TagType.CLASSIFICATION -> Color.rgb(245, 141, 61)
-            TagType.CREDIT -> Color.rgb(166, 217, 48)
-            TagType.DEPARTMENT -> Color.rgb(27, 208, 200)
-            TagType.INSTRUCTOR -> Color.rgb(29, 153, 232)
-            TagType.CATEGORY -> Color.rgb(175, 86, 179)
-            else -> Color.RED
-        }
-    }
 }
