@@ -25,6 +25,7 @@ class RemoteConfig @Inject constructor(
     networkConnectivityManager: NetworkConnectivityManager,
 ) {
     private val config = MutableStateFlow(RemoteConfigDto())
+
     init {
         CoroutineScope(Dispatchers.Main).launch {
             combine(
@@ -36,6 +37,10 @@ class RemoteConfig @Inject constructor(
                         api._getRemoteConfig()
                     }.onSuccess {
                         config.emit(it)
+                    }.onFailure {
+                        // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 true 인지 false 인지 모를 경우 지도를 숨긴다.
+                        // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
+                        config.emit(RemoteConfigDto(disableMapFeature = true))
                     }
                 }
             }.collect()
@@ -50,6 +55,6 @@ class RemoteConfig @Inject constructor(
         get() = config.map { it.vacancyUrlConfig.url }.filterNotNull()
     val settingPageNewBadgeTitles: Flow<List<String>>
         get() = config.map { it.settingsBadgeConfig.new }
-    val embedMapDisabled: Flow<Boolean>
+    val disableMapFeature: Flow<Boolean>
         get() = config.map { it.disableMapFeature }
 }
