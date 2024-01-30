@@ -82,7 +82,7 @@ fun EmbedMap(
                             it.findViewById<TextView>(R.id.building_text).text =
                                 context.getString(
                                     R.string.embed_map_pin_highlighted,
-                                    building.buildingNameKor ?: "",
+                                    building.buildingNumber,
                                 )
                         },
                     )
@@ -90,7 +90,10 @@ fun EmbedMap(
                 Marker(
                     anchor = MarkerDefaults.Anchor,
                     icon = if (mapDimmed) dimmedMarker else EmbedMapConstants.normalMarker,
-                    captionText = building.buildingNameKor,
+                    captionText = context.getString(
+                        R.string.embed_map_pin_highlighted,
+                        building.buildingNumber,
+                    ),
                     state = rememberMarkerState(
                         position = CameraPosition(
                             building.locationInDMS.let { LatLng(it.latitude, it.longitude) },
