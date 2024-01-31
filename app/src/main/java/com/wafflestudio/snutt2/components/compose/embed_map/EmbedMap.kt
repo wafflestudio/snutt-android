@@ -82,7 +82,7 @@ fun EmbedMap(
                         MapPinBinding.inflate(LayoutInflater.from(context)).root.also {
                             it.findViewById<TextView>(R.id.building_text).text =
                                 context.getString(
-                                    R.string.embed_map_pin_highlighted,
+                                    R.string.embed_map_pin_highlighted_find,
                                     building.buildingNumber,
                                 )
                         },
@@ -92,7 +92,7 @@ fun EmbedMap(
                     anchor = if (mapDimmed) MarkerDefaults.Anchor else Offset(0.5f, 0.6f),
                     icon = if (mapDimmed) dimmedMarker else EmbedMapConstants.normalMarker,
                     captionText = context.getString(
-                        R.string.embed_map_pin_highlighted,
+                        R.string.embed_map_pin_highlighted_dong,
                         building.buildingNumber,
                     ),
                     captionOffset = (-26).dp,
