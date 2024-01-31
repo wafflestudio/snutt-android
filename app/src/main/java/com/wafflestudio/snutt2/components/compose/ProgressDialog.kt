@@ -69,23 +69,27 @@ fun CustomDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            shape = RoundedCornerShape(10),
+            shape = RoundedCornerShape(20.dp),
             elevation = 10.dp,
         ) {
-            Column(modifier = Modifier.width(width ?: (screenWidthInDp - 50.dp)).background(SNUTTColors.White900)) {
+            Column(
+                modifier = Modifier
+                    .width(width ?: (screenWidthInDp - 50.dp))
+                    .background(SNUTTColors.White900),
+            ) {
                 title?.let {
                     Row {
-                        Box(modifier = Modifier.padding(20.dp)) {
+                        Box(modifier = Modifier.padding(horizontal = 25.dp, vertical = 20.dp)) {
                             Text(
                                 text = it,
-                                style = SNUTTTypography.h2.copy(fontWeight = FontWeight.Normal),
+                                style = SNUTTTypography.h2.copy(fontWeight = FontWeight.Medium),
                             )
                         }
                         Box(modifier = Modifier.weight(1f))
                     }
                 }
 
-                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Box(modifier = Modifier.padding(horizontal = 25.dp)) {
                     content()
                 }
 

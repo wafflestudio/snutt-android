@@ -22,6 +22,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -40,7 +42,26 @@ fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
 ) {
-    val lectures = LocalTableState.current.table.lectureList
+    val previewTheme = LocalTableState.current.previewTheme
+    val lectures = LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+        previewTheme?.let { theme ->
+            if (previewTheme is CustomTheme) {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = 0,
+                        color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                    )
+                }
+            } else {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = idx % 9L + 1,
+                    )
+                }
+            }
+        } ?: it
+    }
+
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
@@ -182,7 +203,7 @@ private fun DrawLecture(
     fittedTrimParam: TableTrimParam,
 ) {
     val context = LocalContext.current
-    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
+    val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
 
     DrawClassTime(
         fittedTrimParam = fittedTrimParam,
@@ -192,7 +213,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            theme.getColorByIndexComposable(
+            BuiltInTheme.fromCode(code).getColorByIndexComposable(
                 lecture.colorIndex,
             ).toArgb()
         },

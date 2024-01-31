@@ -25,4 +25,6 @@ object NavigationDestination {
     const val NetworkLog = "network_log"
     const val VacancyNotification = "vacancy"
     const val Friends = "friends"
+    const val ThemeConfig = "theme_config"
+    const val ThemeDetail = "theme_detail"
 }

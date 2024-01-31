@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +26,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import de.psdev.licensesdialog.LicensesDialog
@@ -111,6 +114,14 @@ fun SettingsPage(
                     onClick = {
                         navController.navigate(
                             NavigationDestination.TimeTableConfig,
+                        )
+                    },
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_theme_config_title),
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.ThemeConfig,
                         )
                     },
                 )
@@ -227,27 +238,27 @@ fun SettingsPage(
 fun SettingColumn(
     modifier: Modifier = Modifier,
     title: String = "",
+    titleStyle: TextStyle = SNUTTTypography.body2.copy(
+        color = MaterialTheme.colors.onSurfaceVariant,
+    ),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (title.isNotEmpty()) {
             Text(
                 text = title,
-                modifier = Modifier.padding(start = 30.dp),
-                style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.SettingColumnTitle,
-                ),
+                modifier = Modifier
+                    .padding(top = 24.dp, bottom = 8.dp, start = 20.dp)
+                    .align(Alignment.Start),
+                style = titleStyle,
             )
             Spacer(modifier = Modifier.size(5.dp))
         }
-        Column(
-            modifier = Modifier
-                .background(SNUTTColors.White900),
-        ) {
-            content()
-        }
+        content()
     }
 }
 
@@ -255,7 +266,7 @@ fun SettingColumn(
 fun SettingItem(
     title: String,
     modifier: Modifier = Modifier,
-    titleColor: Color = SNUTTColors.Black900,
+    titleColor: Color = MaterialTheme.colors.onSurface,
     leadingIcon: @Composable () -> Unit = {},
     hasNextPage: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -266,7 +277,7 @@ fun SettingItem(
         modifier = modifier
             .fillMaxWidth()
             .height(45.dp)
-            .background(SNUTTColors.White900)
+            .background(MaterialTheme.colors.surface)
             .clicks { if (onClick != null) onClick() }
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,

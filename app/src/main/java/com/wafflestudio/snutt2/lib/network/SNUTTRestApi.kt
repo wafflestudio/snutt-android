@@ -264,4 +264,48 @@ interface SNUTTRestApi {
     suspend fun _deletePrimaryTable(
         @Path("id") tableId: String,
     )
+
+    @GET("/v1/themes")
+    suspend fun _getThemes(): GetThemesResults
+
+    @POST("/v1/themes")
+    suspend fun _postTheme(
+        @Body body: PostThemeParams,
+    ): PostThemeResults
+
+    @POST("/v1/themes/basic/{basicThemeTypeValue}/default")
+    suspend fun _postBuiltInThemeDefault(
+        @Path("basicThemeTypeValue") basicThemeTypeValue: Int,
+    ): PostBuiltInThemeDefaultResults
+
+    @DELETE("/v1/themes/{themeId}")
+    suspend fun _deleteTheme(
+        @Path("themeId") themeId: String,
+    )
+
+    @PATCH("/v1/themes/{themeId}")
+    suspend fun _patchTheme(
+        @Path("themeId") themeId: String,
+        @Body patchThemeParams: PatchThemeParams,
+    ): PatchThemeResults
+
+    @POST("/v1/themes/{themeId}/copy")
+    suspend fun _postCopyTheme(
+        @Path("themeId") themeId: String,
+    ): PostCopyThemeResults
+
+    @POST("/v1/themes/{themeId}/default")
+    suspend fun _postCustomThemeDefault(
+        @Path("themeId") themeId: String,
+    ): PostCustomThemeDefaultResults
+
+    @DELETE("/v1/themes/{themeId}/default")
+    suspend fun _deleteCustomThemeDefault(
+        @Path("themeId") themeId: String,
+    ): DeleteCustomThemeDefaultResults
+
+    @DELETE("/v1/themes/basic/{basicThemeTypeValue}/default")
+    suspend fun _deleteBuiltInThemeDefault(
+        @Path("basicThemeTypeValue") basicThemeTypeValue: Int,
+    ): DeleteBuiltInThemeDefaultResults
 }

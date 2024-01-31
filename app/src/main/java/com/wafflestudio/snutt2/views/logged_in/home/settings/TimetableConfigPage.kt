@@ -63,7 +63,7 @@ fun TimetableConfigPage() {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(SNUTTColors.SettingBackground)
             .verticalScroll(rememberScrollState()),
     ) {
@@ -157,7 +157,7 @@ fun TimetableConfigPage() {
 }
 
 @Composable
-private fun PoorSwitch(state: Boolean) {
+fun PoorSwitch(state: Boolean) {
     val switchOffset by animateDpAsState(
         targetValue = if (state) 10.dp else 30.dp,
     )

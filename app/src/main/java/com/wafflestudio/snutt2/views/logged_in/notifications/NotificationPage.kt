@@ -36,7 +36,11 @@ fun NotificationPage() {
     val refreshState = notificationList.loadState.refresh
     val appendState = notificationList.loadState.append
 
-    Column(modifier = Modifier.background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize(),
+    ) {
         SimpleTopBar(
             title = stringResource(R.string.notifications_app_bar_title),
             onClickNavigateBack = {
