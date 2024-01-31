@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -88,12 +89,13 @@ fun EmbedMap(
                     )
                 }
                 Marker(
-                    anchor = MarkerDefaults.Anchor,
+                    anchor = if (mapDimmed) MarkerDefaults.Anchor else Offset(0.5f, 0.6f),
                     icon = if (mapDimmed) dimmedMarker else EmbedMapConstants.normalMarker,
                     captionText = context.getString(
                         R.string.embed_map_pin_highlighted,
                         building.buildingNumber,
                     ),
+                    captionOffset = (-26).dp,
                     state = rememberMarkerState(
                         position = CameraPosition(
                             building.locationInDMS.let { LatLng(it.latitude, it.longitude) },
