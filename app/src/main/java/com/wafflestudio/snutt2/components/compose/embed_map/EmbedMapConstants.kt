@@ -103,7 +103,7 @@ object EmbedMapUtils {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("kakaomap://roadView?p=${building.locationInDMS.latitude},${building.locationInDMS.longitude}"),
+                Uri.parse("kakaomap://look?p=${building.locationInDMS.latitude},${building.locationInDMS.longitude}"),
             ),
         )
     }
