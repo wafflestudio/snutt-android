@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,6 +38,7 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTColors.SettingBackground
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 
@@ -95,7 +97,7 @@ private fun NetworkLogItem(log: NetworkLog) {
                 '4' -> SNUTTColors.Red
                 '5' -> SNUTTColors.Orange
                 '2' -> SNUTTColors.Grass
-                else -> SNUTTColors.DarkGray
+                else -> MaterialTheme.colors.SettingBackground
             },
         )
     }

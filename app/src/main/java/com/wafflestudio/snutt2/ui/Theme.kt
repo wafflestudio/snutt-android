@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -15,26 +17,33 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.White,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.Black,
+    secondary = SNUTTColors.MainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    background = SNUTTColors.Gray,
+    onBackground = SNUTTColors.DarkGray,
+    surface = SNUTTColors.White,
+    onSurface = SNUTTColors.Black,
 )
 
 private val DarkThemeColors @Composable get() = darkColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.ExtraDarkGray,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.White,
+    secondary = SNUTTColors.DarkMainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    background = SNUTTColors.Gray900,
+    onBackground = SNUTTColors.Gray30,
+    surface = SNUTTColors.ExtraDarkGray,
+    onSurface = SNUTTColors.White,
 )
+
+val Colors.onSurfaceVariant: Color
+    get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
 enum class ThemeMode {
     DARK, LIGHT, AUTO, ;

@@ -1,84 +1,142 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 
 @Composable
 fun ChangeThemeBottomSheet(
-    onLaunch: () -> Unit,
-    onPreview: (Int) -> Unit,
+    onPreview: (TableTheme) -> Unit,
     onApply: () -> Unit,
     onDispose: () -> Unit,
+    themeListViewModel: ThemeListViewModel = hiltViewModel(),
+    timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
+    val navController = LocalNavController.current
+    val bottomSheet = LocalBottomSheetState.current
+    val apiOnError = LocalApiOnError.current
+    val apiOnProgress = LocalApiOnProgress.current
+    val customThemes by themeListViewModel.customThemes.collectAsState()
+    val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
+    val previewTheme by timetableViewModel.previewTheme.collectAsState()
+
     LaunchedEffect(Unit) {
-        onLaunch()
+        launchSuspendApi(apiOnProgress, apiOnError) {
+            themeListViewModel.fetchThemes()
+        }
     }
 
-    DisposableEffect(LocalLifecycleOwner.current) {
-        onDispose { onDispose() }
+    if (bottomSheet.isVisible) {
+        DisposableEffect(LocalLifecycleOwner.current) {
+            onDispose { onDispose() }
+        }
     }
-
-    val themeList = listOf(
-        stringResource(R.string.home_select_theme_snutt) to painterResource(R.drawable.theme_preview_snutt),
-        stringResource(R.string.home_select_theme_modern) to painterResource(R.drawable.theme_preview_modern),
-        stringResource(R.string.home_select_theme_autumn) to painterResource(R.drawable.theme_preview_autumn),
-        stringResource(R.string.home_select_theme_pink) to painterResource(R.drawable.theme_preview_pink),
-        stringResource(R.string.home_select_theme_ice) to painterResource(R.drawable.theme_preview_ice),
-        stringResource(R.string.home_select_theme_grass) to painterResource(R.drawable.theme_preview_grass),
-    )
 
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
+            .padding(top = 16.dp)
             .fillMaxWidth(),
     ) {
-        Row(modifier = Modifier.padding(10.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(
-                text = stringResource(R.string.home_drawer_table_theme_change),
-                modifier = Modifier.padding(10.dp),
+                text = stringResource(R.string.common_cancel),
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clicks { onDispose() },
                 style = SNUTTTypography.body1,
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Box(modifier = Modifier.clicks { onApply() }) {
-                Text(
-                    text = stringResource(R.string.home_select_theme_confirm),
-                    modifier = Modifier.padding(10.dp),
-                    style = SNUTTTypography.body1,
+            Text(
+                text = stringResource(R.string.home_select_theme_confirm),
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clicks { onApply() },
+                style = SNUTTTypography.body1,
+            )
+        }
+        Spacer(modifier = Modifier.height(28.dp))
+        LazyRow(
+            Modifier
+                .padding(bottom = 16.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            item {
+                AddThemeItem(
+                    onClick = {
+                        navController.navigate(NavigationDestination.ThemeDetail)
+                    },
                 )
             }
-        }
-        Row(
-            Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(16.dp),
-        ) {
-            Spacer(modifier = Modifier.width(10.dp))
-            themeList.forEachIndexed { themeIdx, nameAndIdPair ->
+            items(
+                items = customThemes,
+            ) {
                 ThemeItem(
-                    name = nameAndIdPair.first,
-                    painter = nameAndIdPair.second,
-                    modifier = Modifier.clicks { onPreview(themeIdx) },
+                    theme = it,
+                    onClick = { onPreview(it) },
+                    selected = previewTheme is CustomTheme && (previewTheme as CustomTheme).id == it.id,
                 )
-                Spacer(modifier = Modifier.width(20.dp))
+            }
+            items(
+                items = builtInThemes,
+            ) {
+                ThemeItem(
+                    theme = it,
+                    onClick = { onPreview(it) },
+                    selected = previewTheme is BuiltInTheme && (previewTheme as BuiltInTheme).code == it.code,
+                )
             }
         }
     }
@@ -86,20 +144,50 @@ fun ChangeThemeBottomSheet(
 
 @Composable
 private fun ThemeItem(
-    name: String,
-    painter: Painter,
-    modifier: Modifier,
+    theme: TableTheme,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        Image(
-            painter = painter, contentDescription = "", modifier = Modifier.size(80.dp),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        modifier = modifier.clicks { onClick() },
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.clip(RoundedCornerShape(6.dp)),
         ) {
-            Text(text = name, textAlign = TextAlign.Center, style = SNUTTTypography.body1)
+            ThemeIcon(
+                theme = theme,
+                modifier = Modifier.size(80.dp),
+            )
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .background(color = MaterialTheme.colors.surface.copy(alpha = 0.5f)),
+                )
+            }
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = theme.name,
+            modifier = Modifier
+                .widthIn(max = 80.dp)
+                .then(
+                    if (selected) {
+                        Modifier.background(
+                            color = if (isDarkMode()) SNUTTColors.DarkerGray else SNUTTColors.Gray,
+                            shape = CircleShape,
+                        )
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(horizontal = 8.dp, vertical = 2.dp),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = SNUTTTypography.body2,
+        )
     }
 }

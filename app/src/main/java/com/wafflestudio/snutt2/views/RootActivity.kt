@@ -15,9 +15,14 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,19 +31,25 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
@@ -47,6 +58,11 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -150,9 +166,19 @@ class RootActivity : AppCompatActivity() {
         return isInitialRefreshFinished
     }
 
+    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
     @Composable
     fun setUpUI(startDestination: String) {
-        val navController = rememberNavController()
+        val navBottomSheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true,
+        )
+        val bottomSheetNavigator = remember {
+            com.wafflestudio.snutt2.layouts.bottomsheetnavigation.BottomSheetNavigator(
+                navBottomSheetState,
+            )
+        }
+        val navController = rememberNavController(bottomSheetNavigator)
         val initialHomeTab = remember {
             parseHomePageDeeplink() ?: HomeItem.Timetable
         }
@@ -161,7 +187,7 @@ class RootActivity : AppCompatActivity() {
         }
         val compactMode by userViewModel.compactMode.collectAsState()
 
-        val bottomSheet = bottomSheet()
+        val bottomSheet = BottomSheet()
         val dialogState = rememberModalState()
         ShowModal(state = dialogState)
 
@@ -197,38 +223,84 @@ class RootActivity : AppCompatActivity() {
             LocalCompactState provides compactMode,
             LocalBottomSheetState provides bottomSheet,
             LocalRemoteConfig provides remoteConfig,
+            LocalNavBottomSheetState provides navBottomSheetState,
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = startDestination,
+            ModalBottomSheetLayout(
+                bottomSheetNavigator = bottomSheetNavigator,
+                sheetGesturesEnabled = false,
+                sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+                scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
             ) {
-                onboardGraph()
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                ) {
+                    onboardGraph()
 
-                composableRoot(NavigationDestination.Home) { HomePage() }
+                    composableRoot(NavigationDestination.Home) { HomePage() }
 
-                composable2(NavigationDestination.Notification) { NotificationPage() }
+                    composable2(NavigationDestination.Notification) { NotificationPage() }
 
-                composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
+                    composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
-                composable2(NavigationDestination.LectureDetail) {
-                    val parentEntry = remember(it) {
-                        navController.getBackStackEntry(NavigationDestination.Home)
+                    composable2(NavigationDestination.LectureDetail) {
+                        val parentEntry = remember(it) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(parentEntry)
+                        val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
+                        val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
+                        LectureDetailPage(
+                            vm = lectureDetailViewModel,
+                            searchViewModel = searchViewModel,
+                            vacancyViewModel = vacancyViewModel,
+                        )
                     }
-                    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(parentEntry)
-                    val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-                    val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-                    LectureDetailPage(
-                        vm = lectureDetailViewModel,
-                        searchViewModel = searchViewModel,
-                        vacancyViewModel = vacancyViewModel,
-                    )
-                }
 
-                composable2(NavigationDestination.LectureColorSelector) {
-                    LectureColorSelectorPage()
-                }
+                    composable2(NavigationDestination.LectureColorSelector) {
+                        val parentEntry = remember(it) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(parentEntry)
+                        LectureColorSelectorPage(lectureDetailViewModel)
+                    }
 
-                settingcomposable2(navController)
+                    bottomSheet(
+                        "${NavigationDestination.ThemeDetail}?themeId={themeId}&theme={theme}",
+                        arguments = listOf(
+                            navArgument("themeId") {
+                                type = NavType.StringType
+                                defaultValue = ""
+                            },
+                            navArgument("theme") {
+                                type = NavType.IntType
+                                defaultValue = -1
+                            },
+                        ),
+                    ) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
+                        val themeDetailViewModel =
+                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
+                        val scope = rememberCoroutineScope()
+                        ThemeDetailPage(
+                            themeDetailViewModel = themeDetailViewModel,
+                            onClickSave = {
+                                if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
+                                    scope.launch {
+                                        timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
+                                    }
+                                } // ChangeThemeBottomSheet에서 테마 생성한 경우 자동으로 미리보기
+                            },
+                        )
+                    }
+
+                    settingcomposable2(navController)
+                }
             }
         }
     }
@@ -261,9 +333,14 @@ class RootActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun NavGraphBuilder.composable2(
         route: String,
-        deepLinks: List<NavDeepLink> = listOf(navDeepLink { uriPattern = "${applicationContext.getString(R.string.scheme)}$route" }),
+        deepLinks: List<NavDeepLink> = listOf(
+            navDeepLink {
+                uriPattern = "${applicationContext.getString(R.string.scheme)}$route"
+            },
+        ),
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
@@ -315,13 +392,21 @@ class RootActivity : AppCompatActivity() {
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
         }
+        composable2(NavigationDestination.ThemeConfig) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationDestination.Home)
+            }
+            val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
+            ThemeConfigPage(themeListViewModel)
+        }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
 
     // 안드 13 대응
     private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+            val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }

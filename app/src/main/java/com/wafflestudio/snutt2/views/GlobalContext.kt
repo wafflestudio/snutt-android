@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views
 
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavController
@@ -65,5 +67,10 @@ val LocalTableState = compositionLocalOf<TableState> {
 }
 
 val LocalRemoteConfig = staticCompositionLocalOf<RemoteConfig> {
+    throw RuntimeException("")
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+val LocalNavBottomSheetState = compositionLocalOf<ModalBottomSheetState> {
     throw RuntimeException("")
 }

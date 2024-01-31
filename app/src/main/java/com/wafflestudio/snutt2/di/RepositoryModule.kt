@@ -10,6 +10,8 @@ import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepositoryImpl
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepositoryImpl
+import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.data.themes.ThemeRepositoryImpl
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.user.UserRepositoryImpl
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
@@ -43,4 +45,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsVacancyRepository(impl: VacancyRepositoryImpl): VacancyRepository
+
+    @Binds
+    abstract fun bindsThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
 }

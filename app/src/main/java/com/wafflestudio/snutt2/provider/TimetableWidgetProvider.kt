@@ -16,6 +16,7 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,9 @@ TimetableWidgetProvider : AppWidgetProvider() {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var themeRepository: ThemeRepository
 
     override fun onUpdate(
         context: Context,

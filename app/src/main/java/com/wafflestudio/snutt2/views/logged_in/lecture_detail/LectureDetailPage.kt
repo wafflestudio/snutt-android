@@ -8,7 +8,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,11 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
@@ -46,6 +43,8 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -53,6 +52,7 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
@@ -62,6 +62,7 @@ fun LectureDetailPage(
     vm: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
+    timetableViewModel: TimetableViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -77,8 +78,7 @@ fun LectureDetailPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
-    val currentTable by vm.currentTable.collectAsState()
-    val tableColorTheme = currentTable?.theme ?: TimetableColorTheme.SNUTT
+    val tableColorTheme by timetableViewModel.tableTheme.collectAsState()
     val isCustom = editingLectureDetail.isCustom
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
@@ -94,7 +94,7 @@ fun LectureDetailPage(
     }
 
     /* 바텀시트 관련 */
-    val bottomSheet = bottomSheet()
+    val bottomSheet = BottomSheet()
 
     /* 뒤로가기 핸들링 */
     val onBackPressed: () -> Unit = {
@@ -148,6 +148,7 @@ fun LectureDetailPage(
         sheetContent = bottomSheet.content,
         sheetState = bottomSheet.state,
         sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
+        scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
 //        onDismissScrim = {
 //            scope.launch { bottomSheet.hide() }
 //        }
@@ -187,9 +188,15 @@ fun LectureDetailPage(
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                             if (vacancyRegistered) {
-                                                vacancyViewModel.removeVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.removeVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             } else {
-                                                vacancyViewModel.addVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.addVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             }
                                         }
                                     }
@@ -292,9 +299,21 @@ fun LectureDetailPage(
                                 },
                             ) {
                                 ColorBox(
-                                    editingLectureDetail.colorIndex,
-                                    editingLectureDetail.color,
-                                    tableColorTheme,
+                                    if (tableColorTheme is CustomTheme) {
+                                        editingLectureDetail.color
+                                    } else {
+                                        if (editingLectureDetail.colorIndex == 0L) {
+                                            editingLectureDetail.color
+                                        } else {
+                                            ColorDto(
+                                                fgColor = 0xffffff,
+                                                bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
+                                                    context,
+                                                    editingLectureDetail.colorIndex,
+                                                ),
+                                            )
+                                        }
+                                    },
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 AnimatedVisibility(visible = modeType is ModeType.Editing) {
@@ -695,49 +714,6 @@ fun Margin(height: Dp) {
             .fillMaxWidth()
             .height(height),
     )
-}
-
-@Composable
-fun ColorBox(
-    lectureColorIndex: Long,
-    lectureColor: ColorDto?, // null 이면 반드시 기존 테마.
-    theme: TimetableColorTheme,
-) {
-    Row(
-        modifier = Modifier
-            .width(40.dp)
-            .height(20.dp)
-            .zIndex(1f)
-            .border(width = (0.5f).dp, color = SNUTTColors.Black250),
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    // colorIndex == 0 이면 사용자 커스텀 색
-                    // colorIndex > 0 이면 bgColor 는 스누티티 지정 테마 색깔, fgColor = -0x1 (디폴트 흰색)
-                    if ((lectureColorIndex) > 0) {
-                        Color(-0x1)
-                    } // 커스텀 fg 색이면 null 이 오지 않아서 원래는 !! 처리했지만..
-                    else {
-                        Color(lectureColor?.fgColor ?: -0x1)
-                    },
-                )
-                .size(20.dp),
-        )
-        Box(
-            modifier = Modifier
-                .background(
-                    // index > 0 : 스누티티 지정 테마 색깔.
-                    if (lectureColorIndex > 0) {
-                        theme.getColorByIndexComposable(lectureColorIndex)
-                    } // 사용자 지정 bgColor, 역시 이때는 null이 오지 않아서 !! 처리를 했었다. 그냥 !! 해도 될지도
-                    else {
-                        Color(lectureColor?.bgColor ?: (-0x1))
-                    },
-                )
-                .size(20.dp),
-        )
-    }
 }
 
 @Preview(showBackground = true, widthDp = 480, heightDp = 880)
