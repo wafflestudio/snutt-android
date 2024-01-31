@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.search
+package com.wafflestudio.snutt2.views.logged_in.home.search.bookmark
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel

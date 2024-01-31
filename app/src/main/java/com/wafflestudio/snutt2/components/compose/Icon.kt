@@ -796,6 +796,19 @@ fun AddIcon(
 }
 
 @Composable
+fun MagicIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_magic),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun CustomThemePinIcon(
     modifier: Modifier = Modifier,
 ) {
@@ -820,4 +833,17 @@ fun CustomThemePinIcon(
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary),
         )
     }
+}
+
+@Composable
+fun ResetIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_reset),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
 }
