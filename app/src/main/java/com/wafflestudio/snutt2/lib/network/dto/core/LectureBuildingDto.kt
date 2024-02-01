@@ -20,11 +20,11 @@ data class LectureBuildingDto(
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         return (other as? LectureBuildingDto)?.let {
-            (buildingNameKor == other.buildingNameKor) && (locationInDMS == other.locationInDMS)
+            (buildingNumber == other.buildingNumber) && (locationInDMS == other.locationInDMS)
         } ?: false
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        return buildingNumber.hashCode() + locationInDMS.hashCode()
     }
 }
