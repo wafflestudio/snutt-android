@@ -27,7 +27,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
-var isEmbedMapFoldedSaved = true
+// FIXME: 귀찮아요 그냥 이렇게 할래요
+private var isEmbedMapFoldedSaved = true
 
 @Composable
 fun FoldableEmbedMap(
