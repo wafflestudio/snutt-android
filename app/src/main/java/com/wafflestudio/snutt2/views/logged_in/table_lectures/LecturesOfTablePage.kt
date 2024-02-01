@@ -48,7 +48,7 @@ fun LecturesOfTablePage() {
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_app_bar_title),
