@@ -167,15 +167,16 @@ fun ThemeDetailPage(
                         .clicks {
                             if (isDefault != editingTheme.isDefault) {
                                 when (isDefault) {
-                                    true -> showSetDefaultDialog(
-                                        composableStates = composableStates,
-                                        onConfirm = {
-                                            themeDetailViewModel.saveTheme(themeName)
-                                            themeDetailViewModel.setThemeDefault()
-                                            onClickSave()
-                                            navController.popBackStack()
-                                        },
-                                    )
+                                    true -> {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                themeDetailViewModel.saveTheme(themeName)
+                                                themeDetailViewModel.setThemeDefault()
+                                                onClickSave()
+                                                navController.popBackStack()
+                                            }
+                                        }
+                                    }
                                     false -> showUnsetDefaultDialog(
                                         composableStates = composableStates,
                                         onConfirm = {
