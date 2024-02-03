@@ -344,8 +344,6 @@
     <string name="theme_detail_app_bar_title_builtin">제공 테마</string>
     <string name="theme_detail_dialog_cancel_edit_title">테마 편집 취소</string>
     <string name="theme_detail_dialog_cancel_edit_body">테마 편집을 취소하시겠습니까?</string>
-    <string name="theme_detail_dialog_set_default_title">기본 테마 지정</string>
-    <string name="theme_detail_dialog_set_default_body">기본 테마로 지정하시겠습니까?\n새로 만드는 시간표에 적용됩니다.</string>
     <string name="theme_detail_dialog_unset_default_title">기본 테마 해제</string>
     <string name="theme_detail_dialog_unset_default_body">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
     <string name="theme_detail_theme_name">테마명</string>
