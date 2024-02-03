@@ -153,7 +153,6 @@ fun HomePage() {
             BottomNavigation(
                 pageState = pageController.homePageState.value,
                 onUpdatePageState = { pageController.update(it) },
-                uncheckedNotification = uncheckedNotification,
             )
         }
     }
