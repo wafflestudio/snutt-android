@@ -13,7 +13,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 internal fun BottomNavigation(
     pageState: HomeItem,
     onUpdatePageState: (HomeItem) -> Unit,
-    uncheckedNotification: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -94,13 +93,11 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Settings)
             },
         ) {
-            IconWithAlertDot(uncheckedNotification && pageState != HomeItem.Settings) { centerAlignedModifier ->
-                HorizontalMoreIcon(
-                    modifier = centerAlignedModifier.size(30.dp),
-                    isSelected = pageState == HomeItem.Settings,
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                )
-            }
+            HorizontalMoreIcon(
+                modifier = Modifier.size(30.dp),
+                isSelected = pageState == HomeItem.Settings,
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
         }
     }
 }

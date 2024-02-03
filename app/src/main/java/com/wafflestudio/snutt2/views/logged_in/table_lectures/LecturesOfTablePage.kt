@@ -45,7 +45,11 @@ fun LecturesOfTablePage() {
     val currentTable: TableDto? by viewModel.currentTable.collectAsState()
     val lectureList = currentTable?.lectureList ?: emptyList()
 
-    Column(modifier = Modifier.background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize(),
+    ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() },
