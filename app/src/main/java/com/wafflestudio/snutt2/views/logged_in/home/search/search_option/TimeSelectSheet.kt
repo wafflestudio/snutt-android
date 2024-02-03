@@ -95,7 +95,7 @@ fun TimeSelectSheet(
     }
 
     // 시간대 선택에서 뒤로가기 하면 태그 선택으로 가기
-    BackHandler() {
+    BackHandler(basedAnimatedFloat.value != 0f) {
         resetToInitialBlocks()
         onCancel()
     }
