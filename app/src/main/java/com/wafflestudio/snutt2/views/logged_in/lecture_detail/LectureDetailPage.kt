@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -35,8 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
 import com.wafflestudio.snutt2.data.TimetableColorTheme
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
@@ -56,7 +59,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun LectureDetailPage(
     vm: LectureDetailViewModel = hiltViewModel(),
@@ -84,6 +90,7 @@ fun LectureDetailPage(
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }
     val vacancyList by vacancyViewModel.vacancyLectures.collectAsState()
     val vacancyRegistered = vacancyList.map { it.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+    val disableMapFeature by LocalRemoteConfig.current.disableMapFeature.collectAsState(true) // NOTE: config를 받아오기 전까지는 지도를 숨긴다.
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
@@ -187,9 +194,15 @@ fun LectureDetailPage(
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
                                             if (vacancyRegistered) {
-                                                vacancyViewModel.removeVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.removeVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             } else {
-                                                vacancyViewModel.addVacancyLecture(editingLectureDetail.lecture_id ?: editingLectureDetail.id)
+                                                vacancyViewModel.addVacancyLecture(
+                                                    editingLectureDetail.lecture_id
+                                                        ?: editingLectureDetail.id,
+                                                )
                                             }
                                         }
                                     }
@@ -394,8 +407,7 @@ fun LectureDetailPage(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(SNUTTColors.White900)
-                        .padding(bottom = 10.dp),
+                        .background(SNUTTColors.White900),
                 ) {
                     Text(
                         text = stringResource(R.string.lecture_detail_class_time),
@@ -490,6 +502,16 @@ fun LectureDetailPage(
                                 text = stringResource(R.string.lecture_detail_add_class_time),
                                 textAlign = TextAlign.Center,
                                 style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                            )
+                        }
+                    }
+                    if (disableMapFeature.not()) {
+                        AnimatedVisibility(
+                            visible = modeType !is ModeType.Editing,
+                        ) {
+                            FoldableEmbedMap(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                buildings = editingLectureDetail.buildings,
                             )
                         }
                     }

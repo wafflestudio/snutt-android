@@ -326,4 +326,9 @@
     <string name="vacancy_delete_selected_message">선택한 강의의 빈자리 알림을 해제하시겠습니까?</string>
     <string name="vacancy_empty_detail">자세히 보기</string>
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
+    <string name="embed_map_unfold_button">지도에서 보기</string>
+    <string name="embed_map_fold_button">지도 닫기</string>
+    <string name="embed_map_pin_highlighted_dong">%s동</string>
+    <string name="embed_map_pin_highlighted_find">%s동 길찾기</string>
+    <string name="embed_map_cannot_open_url_scheme">실행 가능한 지도 어플리케이션이 없습니다.</string>
 </resources>

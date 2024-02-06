@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/pink_round_rectangle"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp">
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_walking_human" />
+
+        <TextView
+            android:id="@+id/building_text"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            tools:text="302동으로 이동하기" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="14dp"
+        android:layout_height="10dp"
+        android:translationY="-1dp"
+        android:background="@drawable/ic_map_pin_pink"/>
+
+</LinearLayout>
