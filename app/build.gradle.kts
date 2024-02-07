@@ -191,4 +191,8 @@ dependencies {
     implementation("com.facebook.react:react-android:0.72.3")
     implementation("com.facebook.react:hermes-android:0.72.3")
     implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
+
+    // naver map
+    implementation("com.naver.maps:map-sdk:3.17.0")
+    implementation("io.github.fornewid:naver-map-compose:1.4.1")
 }

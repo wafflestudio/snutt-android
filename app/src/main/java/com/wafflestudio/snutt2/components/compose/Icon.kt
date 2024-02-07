@@ -836,6 +836,19 @@ fun CustomThemePinIcon(
 }
 
 @Composable
+fun MapIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_map),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun ResetIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
@@ -843,6 +856,19 @@ fun ResetIcon(
     Image(
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_reset),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BetaIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_beta_tag),
         contentDescription = "",
         colorFilter = colorFilter,
     )

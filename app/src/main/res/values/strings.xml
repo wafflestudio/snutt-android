@@ -358,4 +358,9 @@
     <string name="lecture_color_selector_page_custom_color">커스텀</string>
     <string name="lecture_color_selector_page_color_item">색상 %d</string>
     <string name="color_picker_dialog_title">색상 선택</string>
+    <string name="embed_map_unfold_button">지도에서 보기</string>
+    <string name="embed_map_fold_button">지도 닫기</string>
+    <string name="embed_map_pin_highlighted_dong">%s동</string>
+    <string name="embed_map_pin_highlighted_find">%s동 길찾기</string>
+    <string name="embed_map_cannot_open_url_scheme">실행 가능한 지도 어플리케이션이 없습니다.</string>
 </resources>

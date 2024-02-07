@@ -455,7 +455,7 @@ fun NavController.navigateAsOrigin(route: String) {
 suspend fun launchSuspendApi(
     apiOnProgress: ApiOnProgress,
     apiOnError: ApiOnError,
-    onError: () -> Unit = {},
+    onError: suspend () -> Unit = {},
     loadingIndicatorTitle: String? = null,
     api: suspend () -> Unit,
 ) {
