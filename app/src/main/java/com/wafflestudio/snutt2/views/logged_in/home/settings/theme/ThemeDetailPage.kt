@@ -73,6 +73,7 @@ import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -87,6 +88,7 @@ fun ThemeDetailPage(
     onClickSave: suspend () -> Unit = {},
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
+    tableListViewModel: TableListViewModel = hiltViewModel(),   // NavigationDestination.HOME에 scope된 viewmodel
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -172,6 +174,7 @@ fun ThemeDetailPage(
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 themeDetailViewModel.saveTheme(themeName)
                                                 themeDetailViewModel.setThemeDefault()
+                                                table?.let { tableListViewModel.changeSelectedTable(it.id) }
                                                 onClickSave()
                                                 navController.popBackStack()
                                             }
@@ -182,6 +185,7 @@ fun ThemeDetailPage(
                                         onConfirm = {
                                             themeDetailViewModel.saveTheme(themeName)
                                             themeDetailViewModel.unsetThemeDefault()
+                                            table?.let { tableListViewModel.changeSelectedTable(it.id) }
                                             onClickSave()
                                             navController.popBackStack()
                                         },
@@ -191,6 +195,7 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         themeDetailViewModel.saveTheme(themeName)
+                                        table?.let { tableListViewModel.changeSelectedTable(it.id) }
                                         onClickSave()
                                         navController.popBackStack()
                                     }

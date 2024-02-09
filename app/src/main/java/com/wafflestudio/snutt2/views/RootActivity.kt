@@ -55,6 +55,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -284,11 +285,13 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
+                        val tableListViewModel = hiltViewModel<TableListViewModel>(parentEntry)
                         val themeDetailViewModel =
                             hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         val scope = rememberCoroutineScope()
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
+                            tableListViewModel = tableListViewModel,
                             onClickSave = {
                                 if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
                                     scope.launch {
