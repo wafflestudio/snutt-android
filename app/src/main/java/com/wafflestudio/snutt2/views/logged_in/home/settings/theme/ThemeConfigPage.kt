@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -25,9 +26,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +63,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -74,6 +78,8 @@ fun ThemeConfigPage(
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
     val composableStates = ComposableStatesWithScope(scope)
+    val customThemeScrollState = rememberLazyListState()
+    val builtInThemeScrollState = rememberScrollState()
 
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
@@ -88,6 +94,22 @@ fun ThemeConfigPage(
 
     BackHandler {
         onBackPressed()
+    }
+
+    LaunchedEffect(customThemes) {
+        snapshotFlow { customThemes.find { it.isDefault } }
+            .filterNotNull()
+            .collect {
+                customThemeScrollState.animateScrollToItem(0)
+            }
+    }
+
+    LaunchedEffect(builtInThemes) {
+        snapshotFlow { builtInThemes.find { it.isDefault } }
+            .filterNotNull()
+            .collect {
+                builtInThemeScrollState.animateScrollTo(0)
+            }
     }
 
     ModalBottomSheetLayout(
@@ -122,6 +144,7 @@ fun ThemeConfigPage(
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(top = 20.dp, bottom = 12.dp),
+                        state = customThemeScrollState,
                         horizontalArrangement = Arrangement.Start,
                     ) {
                         item {
@@ -134,7 +157,7 @@ fun ThemeConfigPage(
                             Spacer(modifier = Modifier.width(20.dp))
                         }
                         items(
-                            items = customThemes,
+                            items = customThemes.sortedBy { it.isDefault.not() },
                         ) { theme ->
                             ThemeItem(
                                 theme = theme,
@@ -208,10 +231,10 @@ fun ThemeConfigPage(
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(top = 20.dp, bottom = 12.dp)
-                            .horizontalScroll(rememberScrollState()),
+                            .horizontalScroll(builtInThemeScrollState),
                     ) {
                         Spacer(modifier = Modifier.width(20.dp))
-                        builtInThemes.forEach { theme ->
+                        builtInThemes.sortedBy { it.isDefault.not() }.forEach { theme ->
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
