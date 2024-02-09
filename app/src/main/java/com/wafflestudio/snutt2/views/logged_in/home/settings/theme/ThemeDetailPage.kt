@@ -173,7 +173,11 @@ fun ThemeDetailPage(
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 themeDetailViewModel.saveTheme(themeName)
                                                 themeDetailViewModel.setThemeDefault()
-                                                table?.let { tableListViewModel.changeSelectedTable(it.id) }
+                                                table?.let {
+                                                    if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
+                                                        tableListViewModel.changeSelectedTable(it.id)
+                                                    }
+                                                }
                                                 navController.popBackStack()
                                             }
                                         }
@@ -183,7 +187,11 @@ fun ThemeDetailPage(
                                         onConfirm = {
                                             themeDetailViewModel.saveTheme(themeName)
                                             themeDetailViewModel.unsetThemeDefault()
-                                            table?.let { tableListViewModel.changeSelectedTable(it.id) }
+                                            table?.let {
+                                                if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
+                                                    tableListViewModel.changeSelectedTable(it.id)
+                                                }
+                                            }
                                             navController.popBackStack()
                                         },
                                     )
@@ -192,7 +200,11 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         themeDetailViewModel.saveTheme(themeName)
-                                        table?.let { tableListViewModel.changeSelectedTable(it.id) }
+                                        table?.let {
+                                            if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
+                                                tableListViewModel.changeSelectedTable(it.id)
+                                            }
+                                        }
                                         navController.popBackStack()
                                     }
                                 }
