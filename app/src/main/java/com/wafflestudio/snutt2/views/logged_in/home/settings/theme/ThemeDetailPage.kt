@@ -85,10 +85,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeDetailPage(
-    onClickSave: suspend () -> Unit = {},
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(),   // NavigationDestination.HOME에 scope된 viewmodel
+    tableListViewModel: TableListViewModel = hiltViewModel(), // NavigationDestination.HOME에 scope된 viewmodel
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -175,7 +174,6 @@ fun ThemeDetailPage(
                                                 themeDetailViewModel.saveTheme(themeName)
                                                 themeDetailViewModel.setThemeDefault()
                                                 table?.let { tableListViewModel.changeSelectedTable(it.id) }
-                                                onClickSave()
                                                 navController.popBackStack()
                                             }
                                         }
@@ -186,7 +184,6 @@ fun ThemeDetailPage(
                                             themeDetailViewModel.saveTheme(themeName)
                                             themeDetailViewModel.unsetThemeDefault()
                                             table?.let { tableListViewModel.changeSelectedTable(it.id) }
-                                            onClickSave()
                                             navController.popBackStack()
                                         },
                                     )
@@ -196,7 +193,6 @@ fun ThemeDetailPage(
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         themeDetailViewModel.saveTheme(themeName)
                                         table?.let { tableListViewModel.changeSelectedTable(it.id) }
-                                        onClickSave()
                                         navController.popBackStack()
                                     }
                                 }

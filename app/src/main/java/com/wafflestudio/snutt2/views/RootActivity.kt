@@ -63,7 +63,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPa
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -284,21 +283,11 @@ class RootActivity : AppCompatActivity() {
                         val parentEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val timetableViewModel = hiltViewModel<TimetableViewModel>(parentEntry)
                         val tableListViewModel = hiltViewModel<TableListViewModel>(parentEntry)
-                        val themeDetailViewModel =
-                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
-                        val scope = rememberCoroutineScope()
+                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                             tableListViewModel = tableListViewModel,
-                            onClickSave = {
-                                if (navController.previousBackStackEntry?.destination?.route == NavigationDestination.Home) {
-                                    scope.launch {
-                                        timetableViewModel.setPreviewTheme(themeDetailViewModel.editingTheme.value)
-                                    }
-                                } // ChangeThemeBottomSheet에서 테마 생성한 경우 자동으로 미리보기
-                            },
                         )
                     }
 

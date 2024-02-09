@@ -96,7 +96,7 @@ fun ThemeConfigPage(
         onBackPressed()
     }
 
-    LaunchedEffect(customThemes) {
+    LaunchedEffect(Unit) {
         snapshotFlow { customThemes.find { it.isDefault } }
             .filterNotNull()
             .collect {
@@ -104,7 +104,7 @@ fun ThemeConfigPage(
             }
     }
 
-    LaunchedEffect(builtInThemes) {
+    LaunchedEffect(Unit) {
         snapshotFlow { builtInThemes.find { it.isDefault } }
             .filterNotNull()
             .collect {
