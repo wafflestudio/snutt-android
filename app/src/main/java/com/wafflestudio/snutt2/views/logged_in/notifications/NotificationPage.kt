@@ -1,7 +1,16 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -22,11 +31,20 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.AlarmOnIcon
+import com.wafflestudio.snutt2.components.compose.CalendarIcon
+import com.wafflestudio.snutt2.components.compose.MegaphoneIcon
+import com.wafflestudio.snutt2.components.compose.NotificationFriendIcon
+import com.wafflestudio.snutt2.components.compose.NotificationTrashIcon
+import com.wafflestudio.snutt2.components.compose.NotificationVacancyIcon
+import com.wafflestudio.snutt2.components.compose.RefreshTimeIcon
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
@@ -79,37 +97,37 @@ fun NotificationItem(info: NotificationDto) {
             when (info.type) {
                 0 -> WarningIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 1 -> CalendarIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 2 -> RefreshTimeIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 3 -> NotificationTrashIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 4 -> NotificationVacancyIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 5 -> NotificationFriendIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
 
                 else -> MegaphoneIcon(
                     modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -129,7 +147,7 @@ fun NotificationItem(info: NotificationDto) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = info.message,
-                    style = SNUTTTypography.body1,
+                    style = SNUTTTypography.body1.copy(lineHeight = 18.2.sp),
                 )
             }
         }
