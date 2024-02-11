@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,6 +33,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
@@ -47,6 +49,8 @@ import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawLectures
@@ -131,7 +135,7 @@ fun TimeSelectSheet(
             Row(
                 modifier = Modifier
                     .background(
-                        color = SNUTTColors.Gray2,
+                        color = if (isDarkMode()) SNUTTColors.DarkerGray else SNUTTColors.Gray2,
                         shape = RoundedCornerShape(6.dp),
                     )
                     .clicks { selectComplementBlocks() }
@@ -142,10 +146,11 @@ fun TimeSelectSheet(
                     modifier = Modifier
                         .size(20.dp)
                         .padding(3.dp),
+                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray20 else SNUTTColors.White),
                 )
                 Text(
                     text = stringResource(R.string.search_option_select_empty_time_slots),
-                    style = SNUTTTypography.body1.copy(color = SNUTTColors.AllWhite),
+                    style = SNUTTTypography.body1.copy(color = if (isDarkMode()) SNUTTColors.Gray20 else SNUTTColors.White),
                 )
             }
             Row(
@@ -166,7 +171,7 @@ fun TimeSelectSheet(
                 )
                 Text(
                     text = stringResource(R.string.search_option_select_clear_time_slots),
-                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray2),
+                    style = SNUTTTypography.body1.copy(color = MaterialTheme.colors.onSurfaceVariant),
                 )
             }
         }
