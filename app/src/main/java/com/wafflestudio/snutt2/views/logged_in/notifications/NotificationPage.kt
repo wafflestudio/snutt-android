@@ -110,14 +110,14 @@ fun NotificationItem(info: NotificationDto) {
             }
             Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier.padding(vertical = 7.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontSize = 14.sp, fontWeight = FontWeight.SemiBold))
+                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontWeight = FontWeight.SemiBold))
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = getNotificationTime(context, info),
-                        style = SNUTTTypography.body1.copy(fontSize = 14.sp, color = SNUTTColors.Gray2),
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray2),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -125,7 +125,7 @@ fun NotificationItem(info: NotificationDto) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = info.message,
-                    style = SNUTTTypography.body1.copy(fontSize = 14.sp),
+                    style = SNUTTTypography.body1,
                 )
             }
         }
