@@ -592,13 +592,13 @@ fun CalendarIcon(
 }
 
 @Composable
-fun RefreshIcon(
+fun RefreshTimeIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_refresh),
+        painter = painterResource(id = R.drawable.ic_refresh_time),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -770,13 +770,26 @@ fun CloseCircleIcon(
 }
 
 @Composable
-fun MegaphoneIcon(
+fun MagicIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_megaphone),
+        painter = painterResource(id = R.drawable.ic_magic),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BetaIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_beta_tag),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -796,13 +809,78 @@ fun AddIcon(
 }
 
 @Composable
-fun MagicIcon(
+fun MapIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_magic),
+        painter = painterResource(id = R.drawable.ic_map),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun ResetIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_reset),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun MegaphoneIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_megaphone),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationVacancyIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationFriendIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun NotificationTrashIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier.size(30.dp),
+        painter = painterResource(R.drawable.ic_trash_new),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -833,43 +911,4 @@ fun CustomThemePinIcon(
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary),
         )
     }
-}
-
-@Composable
-fun MapIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_map),
-        contentDescription = "",
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ResetIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_reset),
-        contentDescription = "",
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun BetaIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.ic_beta_tag),
-        contentDescription = "",
-        colorFilter = colorFilter,
-    )
 }
