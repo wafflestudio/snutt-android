@@ -6,6 +6,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object SNUTTColors {
+    val White = Color(0xffffffff)
+    val Gray = Color(0xfff2f2f2)
+    val Gray10 = Color(0xffdadada)
+    val Gray20 = Color(0xffcacaca)
+    val Gray2 = Color(0xffb3b3b3)
+    val Gray30 = Color(0xffa6a6a6)
+    val Gray40 = Color(0xff979797)
+    val DarkGray = Color(0xff777777)
+    val DarkerGray = Color(0xff505050)
+    val ExtraDarkGray = Color(0xff2b2b2b)
+    val Gray900 = Color(0xff1e1e1e)
+    val Black = Color(0xff000000)
+    val MainBlue = Color(0xff1bd0c8)
+    val DarkMainBlue = Color(0xff00b8b0)
+
     val Colors.Gray100 @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff505050)
     val Gray100 @Composable get() = MaterialTheme.colors.Gray100
 
@@ -18,9 +33,6 @@ object SNUTTColors {
     val Colors.Gray600 @Composable get() = if (isLight) Color(0xff777777) else Color(0xffffffff)
     val Gray600 @Composable get() = MaterialTheme.colors.Gray600
 
-    val Colors.Gray2 @Composable get() = if (isLight) Color(0xffb3b3b3) else Color(0xff777777)
-    val Gray2 @Composable get() = MaterialTheme.colors.Gray2
-
     val Colors.MoreTabBackground @Composable get() = if (isLight) Color(0xfff2f2f7) else Color(0xff505050)
     val MoreTabBackground @Composable get() = MaterialTheme.colors.MoreTabBackground
 
@@ -30,16 +42,16 @@ object SNUTTColors {
     val Colors.SettingBackground @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff1e1e1e)
     val SettingBackground @Composable get() = MaterialTheme.colors.SettingBackground
 
-    val Colors.Gray10 @Composable get() = if (isLight) Color(0xffdadada) else Color(0xff505050)
-    val Gray10 @Composable get() = MaterialTheme.colors.Gray10
-
     val DARKER_GRAY @Composable get() = Color(0xff777777)
 
     val Red = Color(0xffe54459)
     val Orange = Color(0xfff58d3d)
+    val Yellow = Color(0xffFAC42D)
     val Grass = Color(0xffa6d930)
+    val Green = Color(0xff2BC267)
     val Sky = Color(0xff1bd0c8)
     val Blue = Color(0xff1d99e8)
+    val NavyBlue = Color(0xff4F48C4)
     val Violet = Color(0xffaf56b3)
 
     val FacebookBlue = Color(0x993c5dd4)
@@ -113,8 +125,6 @@ object SNUTTColors {
 
     val Colors.TableGrid2 @Composable get() = if (isLight) Color(0xfff3f3f3) else Color(0xff3c3c3c)
     val TableGrid2 @Composable get() = MaterialTheme.colors.TableGrid2
-
-    val DarkGray @Composable get() = MaterialTheme.colors.Gray600
 
     val Colors.AllWhite @Composable get() = Color(0xffffffff)
     val AllWhite @Composable get() = MaterialTheme.colors.AllWhite

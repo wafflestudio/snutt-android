@@ -5,7 +5,11 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -17,10 +21,16 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.lib.toDayString
+import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalCompactState
@@ -37,7 +47,26 @@ fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
 ) {
-    val lectures = LocalTableState.current.table.lectureList
+    val previewTheme = LocalTableState.current.previewTheme
+    val lectures = LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+        previewTheme?.let { theme ->
+            if (previewTheme is CustomTheme) {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = 0,
+                        color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                    )
+                }
+            } else {
+                it.mapIndexed { idx, lecture ->
+                    lecture.copy(
+                        colorIndex = idx % 9L + 1,
+                    )
+                }
+            }
+        } ?: it
+    }
+
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
@@ -48,7 +77,7 @@ fun TimeTable(
             trimParam
         }
 
-    if (touchEnabled) DrawClickEventCanvas(lectures, fittedTrimParam)
+    if (touchEnabled) DrawClickEventDetector(lectures, fittedTrimParam)
     DrawTableGrid(fittedTrimParam)
     DrawLectures(lectures, fittedTrimParam)
     DrawSelectedLecture(selectedLecture, fittedTrimParam)
@@ -56,7 +85,7 @@ fun TimeTable(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     val navigator = LocalNavController.current
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
     var canvasSize by remember { mutableStateOf(Size.Zero) }
@@ -96,7 +125,7 @@ private fun DrawClickEventCanvas(lectures: List<LectureDto>, fittedTrimParam: Ta
 }
 
 @Composable
-private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
+fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
@@ -162,7 +191,7 @@ private fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
 }
 
 @Composable
-private fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     lectures.forEach { lecture ->
         lecture.class_time_json
             .mapNotNull {
@@ -181,7 +210,7 @@ private fun DrawLecture(
     fittedTrimParam: TableTrimParam,
 ) {
     val context = LocalContext.current
-    val theme = LocalTableState.current.previewTheme ?: LocalTableState.current.table.theme
+    val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
 
     DrawClassTime(
         fittedTrimParam = fittedTrimParam,
@@ -191,7 +220,7 @@ private fun DrawLecture(
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
         } else {
-            theme.getColorByIndexComposable(
+            BuiltInTheme.fromCode(code).getColorByIndexComposable(
                 lecture.colorIndex,
             ).toArgb()
         },

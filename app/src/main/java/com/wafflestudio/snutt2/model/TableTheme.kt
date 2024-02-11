@@ -1,25 +1,81 @@
-package com.wafflestudio.snutt2.data
+package com.wafflestudio.snutt2.model
 
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.ToJson
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.isDarkMode
 
-enum class TimetableColorTheme(val code: Int) {
+abstract class TableTheme(
+    open val name: String,
+    open val isDefault: Boolean,
+)
 
-    SNUTT(0),
-    MODERN(1),
-    AUTUMN(2),
-    CHERRY(3),
-    ICE(4),
-    GRASS(5), ;
+data class CustomTheme(
+    val id: String,
+    override val name: String,
+    override val isDefault: Boolean = false,
+    val colors: List<ColorDto>,
+) : TableTheme(name, isDefault) {
+
+    companion object {
+        val Default = CustomTheme(
+            id = "",
+            name = "새 커스텀 테마",
+            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
+        )
+    }
+}
+
+data class BuiltInTheme(
+    val code: Int,
+    override val name: String,
+    override val isDefault: Boolean = false,
+) : TableTheme(name, isDefault) {
+
+    companion object {
+        val SNUTT = BuiltInTheme(
+            code = 0,
+            name = "SNUTT",
+        )
+        val MODERN = BuiltInTheme(
+            code = 1,
+            name = "모던",
+        )
+        val AUTUMN = BuiltInTheme(
+            code = 2,
+            name = "가을",
+        )
+        val CHERRY = BuiltInTheme(
+            code = 3,
+            name = "벚꽃",
+        )
+        val ICE = BuiltInTheme(
+            code = 4,
+            name = "얼음",
+        )
+        val GRASS = BuiltInTheme(
+            code = 5,
+            name = "잔디",
+        )
+
+        fun fromCode(code: Int): BuiltInTheme {
+            return when (code) {
+                0 -> SNUTT
+                1 -> MODERN
+                2 -> AUTUMN
+                3 -> CHERRY
+                4 -> ICE
+                5 -> GRASS
+                else -> SNUTT
+            }
+        }
+    }
 
     fun getColorByIndex(context: Context, colorIndex: Long): Int {
-        return when (this) {
-            SNUTT -> listOf(
+        return when (code) {
+            SNUTT.code -> listOf(
                 context.getColor(R.color.theme_snutt_0),
                 context.getColor(R.color.theme_snutt_1),
                 context.getColor(R.color.theme_snutt_2),
@@ -30,7 +86,8 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_snutt_7),
                 context.getColor(R.color.theme_snutt_8),
             )
-            MODERN -> listOf(
+
+            MODERN.code -> listOf(
                 context.getColor(R.color.theme_modern_0),
                 context.getColor(R.color.theme_modern_1),
                 context.getColor(R.color.theme_modern_2),
@@ -41,7 +98,8 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_modern_7),
                 context.getColor(R.color.theme_modern_8),
             )
-            AUTUMN -> listOf(
+
+            AUTUMN.code -> listOf(
                 context.getColor(R.color.theme_autumn_0),
                 context.getColor(R.color.theme_autumn_1),
                 context.getColor(R.color.theme_autumn_2),
@@ -52,7 +110,8 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_autumn_7),
                 context.getColor(R.color.theme_autumn_8),
             )
-            CHERRY -> listOf(
+
+            CHERRY.code -> listOf(
                 context.getColor(R.color.theme_cherry_0),
                 context.getColor(R.color.theme_cherry_1),
                 context.getColor(R.color.theme_cherry_2),
@@ -63,7 +122,8 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_cherry_7),
                 context.getColor(R.color.theme_cherry_8),
             )
-            ICE -> listOf(
+
+            ICE.code -> listOf(
                 context.getColor(R.color.theme_ice_0),
                 context.getColor(R.color.theme_ice_1),
                 context.getColor(R.color.theme_ice_2),
@@ -74,7 +134,8 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_ice_7),
                 context.getColor(R.color.theme_ice_8),
             )
-            GRASS -> listOf(
+
+            GRASS.code -> listOf(
                 context.getColor(R.color.theme_grass_0),
                 context.getColor(R.color.theme_grass_1),
                 context.getColor(R.color.theme_grass_2),
@@ -85,15 +146,28 @@ enum class TimetableColorTheme(val code: Int) {
                 context.getColor(R.color.theme_grass_7),
                 context.getColor(R.color.theme_grass_8),
             )
+
+            else -> {
+                listOf(
+                    context.getColor(R.color.theme_snutt_0),
+                    context.getColor(R.color.theme_snutt_1),
+                    context.getColor(R.color.theme_snutt_2),
+                    context.getColor(R.color.theme_snutt_3),
+                    context.getColor(R.color.theme_snutt_4),
+                    context.getColor(R.color.theme_snutt_5),
+                    context.getColor(R.color.theme_snutt_6),
+                    context.getColor(R.color.theme_snutt_7),
+                    context.getColor(R.color.theme_snutt_8),
+                )
+            }
         }[colorIndex.toInt() - 1]
     }
 
-    // TODO: 나중에 위에꺼 지우고 이름 바꾸기
     @Composable
     fun getColorByIndexComposable(colorIndex: Long): androidx.compose.ui.graphics.Color {
         return if (isDarkMode()) {
-            when (this) {
-                SNUTT -> listOf(
+            when (code) {
+                SNUTT.code -> listOf(
                     colorResource(R.color.theme_snutt_dark_0),
                     colorResource(R.color.theme_snutt_dark_1),
                     colorResource(R.color.theme_snutt_dark_2),
@@ -104,7 +178,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_snutt_dark_7),
                     colorResource(R.color.theme_snutt_dark_8),
                 )
-                MODERN -> listOf(
+
+                MODERN.code -> listOf(
                     colorResource(R.color.theme_modern_dark_0),
                     colorResource(R.color.theme_modern_dark_1),
                     colorResource(R.color.theme_modern_dark_2),
@@ -115,7 +190,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_modern_dark_7),
                     colorResource(R.color.theme_modern_dark_8),
                 )
-                AUTUMN -> listOf(
+
+                AUTUMN.code -> listOf(
                     colorResource(R.color.theme_autumn_dark_0),
                     colorResource(R.color.theme_autumn_dark_1),
                     colorResource(R.color.theme_autumn_dark_2),
@@ -126,7 +202,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_autumn_dark_7),
                     colorResource(R.color.theme_autumn_dark_8),
                 )
-                CHERRY -> listOf(
+
+                CHERRY.code -> listOf(
                     colorResource(R.color.theme_cherry_dark_0),
                     colorResource(R.color.theme_cherry_dark_1),
                     colorResource(R.color.theme_cherry_dark_2),
@@ -137,7 +214,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_cherry_dark_7),
                     colorResource(R.color.theme_cherry_dark_8),
                 )
-                ICE -> listOf(
+
+                ICE.code -> listOf(
                     colorResource(R.color.theme_ice_dark_0),
                     colorResource(R.color.theme_ice_dark_1),
                     colorResource(R.color.theme_ice_dark_2),
@@ -148,7 +226,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_ice_dark_7),
                     colorResource(R.color.theme_ice_dark_8),
                 )
-                GRASS -> listOf(
+
+                GRASS.code -> listOf(
                     colorResource(R.color.theme_grass_dark_0),
                     colorResource(R.color.theme_grass_dark_1),
                     colorResource(R.color.theme_grass_dark_2),
@@ -159,10 +238,22 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_grass_dark_7),
                     colorResource(R.color.theme_grass_dark_8),
                 )
+
+                else -> listOf(
+                    colorResource(R.color.theme_snutt_dark_0),
+                    colorResource(R.color.theme_snutt_dark_1),
+                    colorResource(R.color.theme_snutt_dark_2),
+                    colorResource(R.color.theme_snutt_dark_3),
+                    colorResource(R.color.theme_snutt_dark_4),
+                    colorResource(R.color.theme_snutt_dark_5),
+                    colorResource(R.color.theme_snutt_dark_6),
+                    colorResource(R.color.theme_snutt_dark_7),
+                    colorResource(R.color.theme_snutt_dark_8),
+                )
             }[colorIndex.toInt() - 1]
         } else {
-            when (this) {
-                SNUTT -> listOf(
+            when (code) {
+                SNUTT.code -> listOf(
                     colorResource(R.color.theme_snutt_0),
                     colorResource(R.color.theme_snutt_1),
                     colorResource(R.color.theme_snutt_2),
@@ -173,7 +264,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_snutt_7),
                     colorResource(R.color.theme_snutt_8),
                 )
-                MODERN -> listOf(
+
+                MODERN.code -> listOf(
                     colorResource(R.color.theme_modern_0),
                     colorResource(R.color.theme_modern_1),
                     colorResource(R.color.theme_modern_2),
@@ -184,7 +276,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_modern_7),
                     colorResource(R.color.theme_modern_8),
                 )
-                AUTUMN -> listOf(
+
+                AUTUMN.code -> listOf(
                     colorResource(R.color.theme_autumn_0),
                     colorResource(R.color.theme_autumn_1),
                     colorResource(R.color.theme_autumn_2),
@@ -195,7 +288,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_autumn_7),
                     colorResource(R.color.theme_autumn_8),
                 )
-                CHERRY -> listOf(
+
+                CHERRY.code -> listOf(
                     colorResource(R.color.theme_cherry_0),
                     colorResource(R.color.theme_cherry_1),
                     colorResource(R.color.theme_cherry_2),
@@ -206,7 +300,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_cherry_7),
                     colorResource(R.color.theme_cherry_8),
                 )
-                ICE -> listOf(
+
+                ICE.code -> listOf(
                     colorResource(R.color.theme_ice_0),
                     colorResource(R.color.theme_ice_1),
                     colorResource(R.color.theme_ice_2),
@@ -217,7 +312,8 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_ice_7),
                     colorResource(R.color.theme_ice_8),
                 )
-                GRASS -> listOf(
+
+                GRASS.code -> listOf(
                     colorResource(R.color.theme_grass_0),
                     colorResource(R.color.theme_grass_1),
                     colorResource(R.color.theme_grass_2),
@@ -228,19 +324,19 @@ enum class TimetableColorTheme(val code: Int) {
                     colorResource(R.color.theme_grass_7),
                     colorResource(R.color.theme_grass_8),
                 )
+
+                else -> listOf(
+                    colorResource(R.color.theme_snutt_0),
+                    colorResource(R.color.theme_snutt_1),
+                    colorResource(R.color.theme_snutt_2),
+                    colorResource(R.color.theme_snutt_3),
+                    colorResource(R.color.theme_snutt_4),
+                    colorResource(R.color.theme_snutt_5),
+                    colorResource(R.color.theme_snutt_6),
+                    colorResource(R.color.theme_snutt_7),
+                    colorResource(R.color.theme_snutt_8),
+                )
             }[colorIndex.toInt() - 1]
         }
     }
-
-    companion object {
-        fun fromInt(type: Int) = values().associateBy(TimetableColorTheme::code)[type]
-    }
-}
-
-class TimetableColorThemeAdapter {
-    @ToJson
-    fun toJson(type: TimetableColorTheme): Int = type.code
-
-    @FromJson
-    fun fromJson(value: String): TimetableColorTheme? = TimetableColorTheme.fromInt(value.toInt())
 }

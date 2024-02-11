@@ -1,0 +1,130 @@
+name: Manual Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        type: choice
+        description: 'live / staging'
+        required: true
+        options:
+          - live
+          - staging
+      firebase:
+        type: boolean
+        description: Upload artifact to Firebase
+      slack:
+        type: boolean
+        description: Send artifact to slack
+      slack_message:
+        type: string
+        description: Message to send with artifact
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Clean build
+        run: ./gradlew clean
+      - name: Setup google-services.json (Live)
+        if: startsWith(github.event.inputs.variant, 'live')
+        run: |
+          mkdir -p ./app/src/live
+          cat << EOF > ./app/src/live/google-services.json
+          ${{ secrets.google_services_json_live }}
+          EOF
+      - name: Setup google-services.json (Staging)
+        if: startsWith(github.event.inputs.variant, 'staging')
+        run: |
+          mkdir -p ./app/src/staging
+          cat << EOF > ./app/src/staging/google-services.json
+          ${{ secrets.google_services_json_staging }}
+          EOF
+      - name: Setup gcp-service-account.json (Live)
+        if: startsWith(github.event.inputs.variant, 'live')
+        run: |
+          cat << EOF > ./gcp-service-account-live.json
+          ${{ secrets.app_distribution_service_account_live }}
+          EOF
+      - name: Setup gcp-service-account.json (Staging)
+        if: startsWith(github.event.inputs.variant, 'staging')
+        run: |
+          cat << EOF > ./gcp-service-account-staging.json
+          ${{ secrets.app_distribution_service_account_staging }}
+          EOF
+      - name: Setup secrets.xml (Live)
+        if: startsWith(github.event.inputs.variant, 'live')
+        run: |
+          mkdir -p ./app/src/live/res/values
+          cat << EOF > ./app/src/live/res/values/secrets.xml
+          ${{ secrets.secrets_xml_live }}
+          EOF
+      - name: Setup secrets.xml (Staging)
+        if: startsWith(github.event.inputs.variant, 'staging')
+        run: |
+          mkdir -p ./app/src/staging/res/values
+          cat << EOF > ./app/src/staging/res/values/secrets.xml
+          ${{ secrets.secrets_xml_staging }}
+          EOF
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE }}
+        run: |
+          mkdir -p ./app/keystore
+          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
+      - name: Build production apk (Live)
+        if: startsWith(github.event.inputs.variant, 'live')
+        run: ./gradlew bundleLiveRelease
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Build production apk (Staging)
+        if: startsWith(github.event.inputs.variant, 'staging')
+        run: ./gradlew assembleStagingRelease
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Upload artifact to Firebase App Distribution (Live)
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'Live') }}
+        run: ./gradlew appDistributionUploadLiveRelease
+      - name: Upload artifact to Firebase App Distribution (Staging)
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
+        run: ./gradlew appDistributionUploadStagingRelease
+      - name: Slack Notification
+        if: ${{ github.event.inputs.slack == 'true' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: SNUTT Android 빌드 알림
+          SLACK_MESSAGE: ${{ github.event.inputs.slack_message }}
+          SLACK_USERNAME: BuildNoti
+      - name: Slack Upload APK (Live)
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'live') }}
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
+          file_path: './app/build/outputs/apk/live/release/app-live-release.apk'
+          file_name: 'app-live-release.apk'
+          file_type: 'apk'
+          initial_comment: 'live-release APK'
+      - name: Slack Upload APK (Staging)
+        if: ${{ github.event.inputs.slack == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
+          channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
+          file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
+          file_name: 'app-staging-release.apk'
+          file_type: 'apk'
+          initial_comment: 'staging-release APK'

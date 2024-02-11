@@ -179,6 +179,7 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.32.0")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
@@ -190,4 +191,8 @@ dependencies {
     implementation("com.facebook.react:react-android:0.72.3")
     implementation("com.facebook.react:hermes-android:0.72.3")
     implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
+
+    // naver map
+    implementation("com.naver.maps:map-sdk:3.17.0")
+    implementation("io.github.fornewid:naver-map-compose:1.4.1")
 }

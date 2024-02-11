@@ -4,35 +4,46 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.White,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.Black,
+    secondary = SNUTTColors.MainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    background = SNUTTColors.Gray,
+    onBackground = SNUTTColors.DarkGray,
+    surface = SNUTTColors.White,
+    onSurface = SNUTTColors.Black,
 )
 
 private val DarkThemeColors @Composable get() = darkColors(
-    primary = SNUTTColors.White900,
+    primary = SNUTTColors.ExtraDarkGray,
     primaryVariant = SNUTTColors.Gray400,
-    onPrimary = SNUTTColors.Black900,
+    onPrimary = SNUTTColors.White,
+    secondary = SNUTTColors.DarkMainBlue,
+    onSecondary = SNUTTColors.White,
     error = SNUTTColors.Red,
-    background = SNUTTColors.White900,
-    onBackground = SNUTTColors.Black900,
-    surface = SNUTTColors.White900,
-    onSurface = SNUTTColors.Black900,
+    background = SNUTTColors.Gray900,
+    onBackground = SNUTTColors.Gray30,
+    surface = SNUTTColors.ExtraDarkGray,
+    onSurface = SNUTTColors.White,
 )
+
+val Colors.onSurfaceVariant: Color
+    get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
 enum class ThemeMode {
     DARK, LIGHT, AUTO, ;
@@ -82,13 +93,17 @@ fun SNUTTTheme(
      * 원래는 values-night/styles.xml를 통해 다크모드의 색을 지정하지만, 우리는 시스템의 테마와 앱의 테마를
      * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
      */
-    (LocalContext.current as Activity).window.setBackgroundDrawableResource(
-        if (isDarkMode()) {
-            R.color.black_dark
-        } else {
-            R.color.white
-        },
-    )
+    val window = (LocalContext.current as Activity).window
+    val primaryColor = LocalContext.current.getColor(if (isDarkMode()) R.color.black_dark else R.color.white)
+    window.apply {
+        setBackgroundDrawableResource(if (isDarkMode()) R.color.black_dark else R.color.white)
+        statusBarColor = primaryColor
+        navigationBarColor = primaryColor
+    }
+    WindowCompat.getInsetsController(window, LocalView.current).apply {
+        isAppearanceLightStatusBars = isDarkMode().not()
+        isAppearanceLightNavigationBars = isDarkMode().not()
+    }
     MaterialTheme(
         colors = if (isDarkMode()) DarkThemeColors else LightThemeColors,
         typography = SNUTTTypography,

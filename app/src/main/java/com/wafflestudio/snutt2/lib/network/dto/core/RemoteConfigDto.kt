@@ -9,6 +9,7 @@ data class RemoteConfigDto(
     @Json(name = "vacancyNotificationBanner") val vacancyBannerConfig: VacancyBannerConfig = VacancyBannerConfig(false),
     @Json(name = "vacancySugangSnuUrl") val vacancyUrlConfig: VacancyUrlConfig = VacancyUrlConfig(),
     @Json(name = "settingsBadge") val settingsBadgeConfig: SettingsBadgeConfig = SettingsBadgeConfig(),
+    @Json(name = "disableMapFeature") val disableMapFeature: Boolean? = null,
 ) {
     data class ReactNativeBundleSrc(
         @Json(name = "src") val src: Map<String, String>,

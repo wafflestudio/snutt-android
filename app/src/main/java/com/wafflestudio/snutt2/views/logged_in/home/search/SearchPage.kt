@@ -54,6 +54,9 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.BookmarkList
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
+import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -80,6 +83,7 @@ fun SearchPage(
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+    val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
@@ -168,6 +172,7 @@ fun SearchPage(
                                                         }
                                                         scope.launch { bottomSheet.hide() }
                                                     },
+                                                    draggedTimeBlock = draggedTimeBlock,
                                                 )
                                             }
                                             scope.launch { bottomSheet.show() }

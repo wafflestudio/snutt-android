@@ -13,7 +13,6 @@ data class PostSearchQueryParams(
     @Json(name = "credit") val credit: List<Long>? = null,
     @Json(name = "course_number") val courseNumber: List<Long>? = null,
     @Json(name = "academic_year") val academic_year: List<String>? = null,
-    @Json(name = "instructor") val instructor: List<String>? = null,
     @Json(name = "department") val department: List<String>? = null,
     @Json(name = "category") val category: List<String>? = null,
     @Json(name = "etc") val etc: List<String>? = null,

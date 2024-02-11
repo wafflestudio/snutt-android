@@ -8,14 +8,35 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
-import com.wafflestudio.snutt2.lib.*
+import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.concatenate
+import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
+import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.toDataWithState
+import com.wafflestudio.snutt2.model.SearchTimeDto
+import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
+import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -59,6 +80,14 @@ class SearchViewModel @Inject constructor(
     private val _pageMode = MutableStateFlow(SearchPageMode.Search)
     val pageMode: StateFlow<SearchPageMode> get() = _pageMode
 
+    // 드래그하고 확정한 시간대 검색 격자 (월~금 5칸, 8시~22시 30분 간격 28칸)
+    private val _draggedTimeBlock =
+        MutableStateFlow(TableTrimParam.TimeBlockGridDefault)
+    val draggedTimeBlock = _draggedTimeBlock.asStateFlow()
+
+    // 검색 쿼리에 들어가는 시간대 검색 시간대 목록
+    private val _searchTimeList = MutableStateFlow<List<SearchTimeDto>?>(null)
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -74,12 +103,13 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private val etcTags = listOf(TagDto.ETC_EMPTY, TagDto.ETC_ENG, TagDto.ETC_MILITARY)
+    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
+    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
         _searchTagList, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
-        (tags + etcTags).filter { it.type == selectedTagType }
+        (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -118,8 +148,8 @@ class SearchViewModel @Inject constructor(
                 semester = currentTable.semester,
                 title = _searchTitle.value,
                 tags = _selectedTags.value,
-                times = null, // TODO: 시간대 검색
-                timesToExclude = if (_selectedTags.value.contains(TagDto.ETC_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
+                times = _searchTimeList.value,
+                timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
         _selectedLecture, currentTable.filterNotNull(),
@@ -157,13 +187,25 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun toggleTag(tag: TagDto) {
-        _selectedTags.emit(
-            if (_selectedTags.value.contains(tag)) {
-                _selectedTags.value.filter { it != tag }
-            } else {
-                concatenate(_selectedTags.value, listOf(tag))
-            },
-        )
+        if (_selectedTags.value.contains(tag)) {
+            _selectedTags.emit(_selectedTags.value.filter { it != tag })
+
+            if (tag == TagDto.TIME_SELECT) {
+                _searchTimeList.emit(null)
+            }
+        } else {
+            _selectedTags.emit(concatenate(_selectedTags.value, listOf(tag)))
+
+            if (tag == TagDto.TIME_SELECT) {
+                _draggedTimeBlock.value.clusterToTimeBlocks().let {
+                    if (it.isEmpty()) {
+                        _searchTimeList.emit(null)
+                    } else {
+                        _searchTimeList.emit(it)
+                    }
+                }
+            }
+        }
     }
 
     suspend fun query() {
@@ -195,6 +237,17 @@ class SearchViewModel @Inject constructor(
     suspend fun deleteBookmark(lecture: LectureDto) {
         currentTableRepository.deleteBookmark(lecture)
         getBookmarkList()
+    }
+
+    suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
+        _draggedTimeBlock.emit(draggedTimeBlock)
+        draggedTimeBlock.clusterToTimeBlocks().let {
+            if (it.isEmpty()) {
+                _searchTimeList.emit(null)
+            } else {
+                _searchTimeList.emit(it)
+            }
+        }
     }
 
     private suspend fun clear() {

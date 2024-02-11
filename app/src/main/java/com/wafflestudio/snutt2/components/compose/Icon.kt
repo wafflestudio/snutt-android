@@ -2,8 +2,13 @@ package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +17,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
@@ -492,13 +498,15 @@ fun CheckedIcon(
 }
 
 @Composable
-fun WhiteCloseIcon(
+fun CloseIcon(
     modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_close_white),
+        painter = painterResource(R.drawable.ic_close),
         contentDescription = "",
+        colorFilter = colorFilter,
     )
 }
 
@@ -762,6 +770,71 @@ fun CloseCircleIcon(
 }
 
 @Composable
+fun MagicIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_magic),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun BetaIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_beta_tag),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun AddIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_add),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun MapIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_map),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun ResetIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.ic_reset),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun MegaphoneIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
@@ -811,4 +884,31 @@ fun NotificationTrashIcon(
         contentDescription = "",
         colorFilter = colorFilter,
     )
+}
+
+@Composable
+fun CustomThemePinIcon(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .background(color = MaterialTheme.colors.surface, shape = CircleShape),
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(3.dp)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.secondary, shape = CircleShape)
+                .zIndex(1f)
+                .align(Alignment.Center),
+        )
+        Image(
+            painter = painterResource(R.drawable.ic_pin_bold),
+            contentDescription = null,
+            modifier = Modifier
+                .zIndex(2f)
+                .align(Alignment.Center),
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary),
+        )
+    }
 }
