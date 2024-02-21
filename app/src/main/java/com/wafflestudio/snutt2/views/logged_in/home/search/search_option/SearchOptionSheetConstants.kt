@@ -21,8 +21,8 @@ object SearchOptionSheetConstants {
     val TimeBlockColor: ColorDto
         @Composable get() = if (isDarkMode()) {
             ColorDto(
-                fgRaw = "#BBBBBB",
-                bgRaw = "#B3666666",
+                fgRaw = "#777777",
+                bgRaw = "#B3505050",
             )
         } else {
             ColorDto(
