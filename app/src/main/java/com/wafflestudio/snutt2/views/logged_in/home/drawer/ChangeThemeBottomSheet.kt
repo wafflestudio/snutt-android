@@ -20,8 +20,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,11 +62,18 @@ fun ChangeThemeBottomSheet(
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
+    var previousCustomThemes = remember { customThemes }
 
     if (bottomSheet.isVisible) {
         DisposableEffect(LocalLifecycleOwner.current) {
             onDispose { onDispose() }
         }
+    }
+
+    LaunchedEffect(customThemes) {
+        val newTheme = customThemes.firstOrNull { previousCustomThemes.contains(it).not() }
+        timetableViewModel.setPreviewTheme(newTheme)
+        previousCustomThemes = customThemes
     }
 
     Column(
