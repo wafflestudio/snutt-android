@@ -124,6 +124,16 @@ fun ThemeDetailPage(
         }
     }
 
+    val navigateBackAfterSave: suspend () -> Unit = {
+        table?.let {
+            // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
+            if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
+                tableListViewModel.changeSelectedTable(it.id)
+            }
+        }
+        navController.popBackStack()
+    }
+
     BackHandler {
         onBackPressed()
     }
@@ -173,12 +183,7 @@ fun ThemeDetailPage(
                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                 themeDetailViewModel.saveTheme(themeName)
                                                 themeDetailViewModel.setThemeDefault()
-                                                table?.let {
-                                                    if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
-                                                        tableListViewModel.changeSelectedTable(it.id)
-                                                    }
-                                                }
-                                                navController.popBackStack()
+                                                navigateBackAfterSave()
                                             }
                                         }
                                     }
@@ -187,12 +192,7 @@ fun ThemeDetailPage(
                                         onConfirm = {
                                             themeDetailViewModel.saveTheme(themeName)
                                             themeDetailViewModel.unsetThemeDefault()
-                                            table?.let {
-                                                if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
-                                                    tableListViewModel.changeSelectedTable(it.id)
-                                                }
-                                            }
-                                            navController.popBackStack()
+                                            navigateBackAfterSave()
                                         },
                                     )
                                 }
@@ -200,12 +200,7 @@ fun ThemeDetailPage(
                                 scope.launch {
                                     launchSuspendApi(apiOnProgress, apiOnError) {
                                         themeDetailViewModel.saveTheme(themeName)
-                                        table?.let {
-                                            if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
-                                                tableListViewModel.changeSelectedTable(it.id)
-                                            }
-                                        }
-                                        navController.popBackStack()
+                                        navigateBackAfterSave()
                                     }
                                 }
                             }
