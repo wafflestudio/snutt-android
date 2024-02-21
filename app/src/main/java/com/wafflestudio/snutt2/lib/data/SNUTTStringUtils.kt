@@ -65,7 +65,7 @@ object SNUTTStringUtils {
             val days = hours / 24
             return when {
                 days > 0 -> {
-                    DateFormat.getDateInstance().format(date1)
+                    SimpleDateFormat("yyyy/MM/dd").format(date1)
                 }
                 hours > 0 -> {
                     context.getString(R.string.time_hours_ago, hours)
