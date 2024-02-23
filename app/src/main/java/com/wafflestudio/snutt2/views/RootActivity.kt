@@ -389,7 +389,11 @@ class RootActivity : AppCompatActivity() {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
-            ThemeConfigPage(themeListViewModel)
+            val tableListViewModel = hiltViewModel<TableListViewModel>(parentEntry)
+            ThemeConfigPage(
+                themeListViewModel = themeListViewModel,
+                tableListViewModel = tableListViewModel,
+            )
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
     }
