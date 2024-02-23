@@ -269,7 +269,7 @@ fun ThemeDetailPage(
                                                 },
                                             colorFilter = ColorFilter.tint(
                                                 (if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray40).copy(
-                                                    alpha = if (editingColors.size > 1) 1f else 0.3f,
+                                                    alpha = if (editingColors.size in 2..8) 1f else 0.3f,
                                                 ),
                                             ),
                                         )

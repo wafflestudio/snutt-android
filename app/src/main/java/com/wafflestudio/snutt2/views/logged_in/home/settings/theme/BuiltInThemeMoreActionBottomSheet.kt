@@ -30,7 +30,7 @@ fun BuiltInThemeMoreActionBottomSheet(
 ) {
     Column(
         modifier = modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colors.surface)
             .padding(vertical = 12.dp)
             .fillMaxWidth(),
     ) {
