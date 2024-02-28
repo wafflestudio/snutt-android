@@ -67,34 +67,32 @@ class ReactNativeBundleManager @Inject constructor(
                 reloadSignal.onStart { emit(Unit) },
             ) { bundleSrc, token, theme, _, _ ->
                 getExistingBundleFileOrNull(applicationContext, bundleSrc)?.let { bundleFile ->
-                    withContext(Dispatchers.Main) {
-                        checkBundleIntegrity(bundleFile, activityContext) {
-                            if (myReactInstanceManager == null) {
-                                myReactInstanceManager = ReactInstanceManager.builder()
-                                    .setApplication(applicationContext as Application)
-                                    .setCurrentActivity(activityContext as Activity)
-                                    .setJavaScriptExecutorFactory(HermesExecutorFactory())
-                                    .setJSBundleFile(bundleFile.absolutePath)
-                                    .addPackages(
-                                        listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage(), AsyncStoragePackage()),
-                                    )
-                                    .setInitialLifecycleState(LifecycleState.RESUMED)
-                                    .build()
-                            }
-
-                            reactRootView.value = ReactRootView(activityContext).apply {
-                                startReactApplication(
-                                    myReactInstanceManager ?: return@apply,
-                                    FRIENDS_MODULE_NAME,
-                                    Bundle().apply {
-                                        putString("x-access-token", token)
-                                        putString("x-access-apikey", context.getString(R.string.api_key))
-                                        putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
-                                        putBoolean("allowFontScaling", true)
-                                        putStringArrayList("feature", arrayListOf("ASYNC_STORAGE"))
-                                    },
+                    checkBundleIntegrity(bundleFile, activityContext) {
+                        if (myReactInstanceManager == null) {
+                            myReactInstanceManager = ReactInstanceManager.builder()
+                                .setApplication(applicationContext as Application)
+                                .setCurrentActivity(activityContext as Activity)
+                                .setJavaScriptExecutorFactory(HermesExecutorFactory())
+                                .setJSBundleFile(bundleFile.absolutePath)
+                                .addPackages(
+                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage(), AsyncStoragePackage()),
                                 )
-                            }
+                                .setInitialLifecycleState(LifecycleState.RESUMED)
+                                .build()
+                        }
+
+                        reactRootView.value = ReactRootView(activityContext).apply {
+                            startReactApplication(
+                                myReactInstanceManager ?: return@apply,
+                                FRIENDS_MODULE_NAME,
+                                Bundle().apply {
+                                    putString("x-access-token", token)
+                                    putString("x-access-apikey", context.getString(R.string.api_key))
+                                    putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
+                                    putBoolean("allowFontScaling", true)
+                                    putStringArrayList("feature", arrayListOf("ASYNC_STORAGE"))
+                                },
+                            )
                         }
                     }
                 }
