@@ -333,6 +333,8 @@
     <string name="theme_config_app_bar_title">시간표 테마</string>
     <string name="theme_config_custom_theme">커스텀 테마</string>
     <string name="theme_config_builtin_theme">제공 테마</string>
+    <string name="theme_config_guide_title">테마는 어떻게 적용하나요?</string>
+    <string name="theme_config_guide_0">시간표 적용은 시간표 목록 > 더보기 버튼 > 테마 설정에서 개별적으로 할 수 있어요.</string>
     <string name="theme_config_dialog_delete_title">테마 삭제</string>
     <string name="theme_config_dialog_delete_body">테마를 삭제하시겠습니까?\n이 테마가 지정된 시간표의 강의 색상은 유지됩니다.</string>
     <string name="theme_create">새로운 테마</string>
