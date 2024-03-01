@@ -102,10 +102,9 @@ fun ThemeDetailPage(
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
     val editingColors by themeDetailViewModel.editingColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
-    var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
 
     val onBackPressed: () -> Unit = {
-        if (themeDetailViewModel.hasChange(themeName, isDefault)) {
+        if (themeDetailViewModel.hasChange(themeName)) {
             showCancelEditDialog(
                 composableStates = composableStates,
                 cancelEdit = {

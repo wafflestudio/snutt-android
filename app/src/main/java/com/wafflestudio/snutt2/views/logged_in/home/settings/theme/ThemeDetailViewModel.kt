@@ -22,8 +22,8 @@ class ThemeDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
-    private val currentTableRepository: CurrentTableRepository,
-    private val apiOnError: ApiOnError,
+    currentTableRepository: CurrentTableRepository,
+    apiOnError: ApiOnError,
 ) : ViewModel() {
 
     private val _editingTheme = MutableStateFlow<TableTheme>(CustomTheme.Default)
@@ -97,9 +97,8 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
-    fun hasChange(name: String, isDefault: Boolean): Boolean {
+    fun hasChange(name: String): Boolean {
         return name != _editingTheme.value.name ||
-            isDefault != _editingTheme.value.isDefault ||
             (_editingTheme.value is CustomTheme && _editingColors.value.map { it.item } != (_editingTheme.value as CustomTheme).colors)
     }
 
@@ -112,22 +111,6 @@ class ThemeDetailViewModel @Inject constructor(
                     themeRepository.updateTheme(id, name, _editingColors.value.map { it.item })
                 }
             }
-        }
-    }
-
-    suspend fun setThemeDefault() {
-        if (_editingTheme.value is CustomTheme) {
-            themeRepository.setCustomThemeDefault((_editingTheme.value as CustomTheme).id)
-        } else {
-            themeRepository.setBuiltInThemeDefault((_editingTheme.value as BuiltInTheme).code)
-        }
-    }
-
-    suspend fun unsetThemeDefault() {
-        if (_editingTheme.value is CustomTheme) {
-            themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
-        } else {
-            themeRepository.unsetBuiltInThemeDefault((_editingTheme.value as BuiltInTheme).code)
         }
     }
 

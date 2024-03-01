@@ -12,7 +12,6 @@ data class ThemeDto(
     val name: String = "",
     val colors: List<ColorDto> = emptyList(),
     val isCustom: Boolean = false,
-    val isDefault: Boolean = false,
 ) {
 
     fun toTableTheme(): TableTheme {
@@ -20,14 +19,12 @@ data class ThemeDto(
             CustomTheme(
                 id = id!!,
                 name = name,
-                isDefault = isDefault,
                 colors = colors,
             )
         } else {
             BuiltInTheme(
                 code = theme,
                 name = name,
-                isDefault = isDefault,
             )
         }
     }

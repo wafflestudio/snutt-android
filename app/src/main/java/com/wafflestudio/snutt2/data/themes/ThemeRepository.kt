@@ -24,12 +24,4 @@ interface ThemeRepository {
     suspend fun copyTheme(themeId: String)
 
     suspend fun deleteTheme(themeId: String)
-
-    suspend fun setCustomThemeDefault(themeId: String)
-
-    suspend fun setBuiltInThemeDefault(theme: Int)
-
-    suspend fun unsetCustomThemeDefault(themeId: String)
-
-    suspend fun unsetBuiltInThemeDefault(theme: Int)
 }

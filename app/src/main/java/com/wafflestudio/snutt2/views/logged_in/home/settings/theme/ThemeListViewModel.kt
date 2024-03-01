@@ -13,8 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ThemeListViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
-    private val currentTableRepository: CurrentTableRepository,
     private val tableRepository: TableRepository,
+    currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
     val customThemes: StateFlow<List<CustomTheme>> get() = themeRepository.customThemes
@@ -24,22 +24,6 @@ class ThemeListViewModel @Inject constructor(
 
     suspend fun fetchThemes() {
         themeRepository.fetchThemes()
-    }
-
-    suspend fun setThemeDefault(themeId: String) {
-        themeRepository.setCustomThemeDefault(themeId)
-    }
-
-    suspend fun setThemeDefault(code: Int) {
-        themeRepository.setBuiltInThemeDefault(code)
-    }
-
-    suspend fun unsetThemeDefault(themeId: String) {
-        themeRepository.unsetCustomThemeDefault(themeId)
-    }
-
-    suspend fun unsetThemeDefault(code: Int) {
-        themeRepository.unsetBuiltInThemeDefault(code)
     }
 
     suspend fun deleteThemeAndRefreshTableIfNeeded(themeId: String) { // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴

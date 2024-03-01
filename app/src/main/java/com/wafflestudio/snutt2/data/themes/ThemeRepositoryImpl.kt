@@ -28,9 +28,7 @@ class ThemeRepositoryImpl @Inject constructor(
         api._getThemes().let { themes ->
             _customThemes.value = themes.filter { it.isCustom }.map { it.toTableTheme() as CustomTheme }
             _builtInThemes.value = (0..5).map { code ->
-                BuiltInTheme.fromCode(code).copy(
-                    isDefault = themes.find { it.theme == code }?.isDefault ?: false,
-                )
+                BuiltInTheme.fromCode(code)
             }
         }
     }
@@ -68,45 +66,5 @@ class ThemeRepositoryImpl @Inject constructor(
     override suspend fun deleteTheme(themeId: String) {
         api._deleteTheme(themeId = themeId)
         _customThemes.value = _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
-    }
-
-    override suspend fun setCustomThemeDefault(themeId: String) {
-        val newTheme = api._postCustomThemeDefault(themeId = themeId).toTableTheme() as CustomTheme
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = it.id == newTheme.id)
-        }
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun setBuiltInThemeDefault(theme: Int) {
-        val newTheme = api._postBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun unsetCustomThemeDefault(themeId: String) {
-        val newTheme = api._deleteCustomThemeDefault(themeId = themeId).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun unsetBuiltInThemeDefault(theme: Int) {
-        val newTheme = api._deleteBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
     }
 }

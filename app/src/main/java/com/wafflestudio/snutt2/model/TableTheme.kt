@@ -9,15 +9,13 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 
 abstract class TableTheme(
     open val name: String,
-    open val isDefault: Boolean,
 )
 
 data class CustomTheme(
     val id: String,
     override val name: String,
-    override val isDefault: Boolean = false,
     val colors: List<ColorDto>,
-) : TableTheme(name, isDefault) {
+) : TableTheme(name) {
 
     companion object {
         val Default = CustomTheme(
@@ -31,8 +29,7 @@ data class CustomTheme(
 data class BuiltInTheme(
     val code: Int,
     override val name: String,
-    override val isDefault: Boolean = false,
-) : TableTheme(name, isDefault) {
+) : TableTheme(name) {
 
     companion object {
         val SNUTT = BuiltInTheme(
