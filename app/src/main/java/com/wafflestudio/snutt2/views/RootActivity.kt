@@ -55,7 +55,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -384,10 +383,8 @@ class RootActivity : AppCompatActivity() {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
-            val tableListViewModel = hiltViewModel<TableListViewModel>(parentEntry)
             ThemeConfigPage(
                 themeListViewModel = themeListViewModel,
-                tableListViewModel = tableListViewModel,
             )
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }

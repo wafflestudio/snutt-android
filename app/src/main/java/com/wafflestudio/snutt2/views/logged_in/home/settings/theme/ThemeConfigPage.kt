@@ -60,9 +60,7 @@ import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
@@ -70,8 +68,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ThemeConfigPage(
     themeListViewModel: ThemeListViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(), // NavigationDestination.HOME에 scope된 viewmodel
 ) {
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
@@ -85,7 +81,6 @@ fun ThemeConfigPage(
 
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
-    val table by timetableViewModel.currentTable.collectAsState()
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
@@ -186,13 +181,7 @@ fun ThemeConfigPage(
                                                     showDeleteThemeDialog(
                                                         composableStates = composableStates,
                                                         onConfirm = {
-                                                            themeListViewModel.deleteTheme(theme.id)
-                                                            table?.let {
-                                                                // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-                                                                if (it.themeId != null && it.themeId == theme.id) {
-                                                                    tableListViewModel.changeSelectedTable(it.id)
-                                                                }
-                                                            }
+                                                            themeListViewModel.deleteThemeAndRefreshTableIfNeeded(theme.id)
                                                             modalState.hide()
                                                             bottomSheet.hide()
                                                         },

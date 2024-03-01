@@ -151,7 +151,7 @@ class ThemeDetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun refreshCurrentTableIfNeeded() {
+    suspend fun refreshCurrentTableIfNeeded() { // 현재 선택된 시간표의 테마라면 새로고침
         currentTable.value?.let {
             if (it.themeId != null && it.themeId == (_editingTheme.value as? CustomTheme)?.id) {
                 tableRepository.fetchTableById(it.id)
