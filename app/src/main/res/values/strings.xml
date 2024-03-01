@@ -143,6 +143,8 @@
     <string name="common_cancel">취소</string>
     <string name="common_complete">완료</string>
     <string name="common_save">저장</string>
+    <string name="common_yes">예</string>
+    <string name="common_no">아니오</string>
     <string name="home_drawer_table_delete">시간표 삭제</string>
     <string name="home_drawer_change_name_dialog_title">이름 변경하기</string>
     <string name="home_drawer_table_credit">(%d학점)</string>
@@ -346,6 +348,8 @@
     <string name="theme_detail_dialog_cancel_edit_body">테마 편집을 취소하시겠습니까?</string>
     <string name="theme_detail_dialog_unset_default_title">기본 테마 해제</string>
     <string name="theme_detail_dialog_unset_default_body">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
+    <string name="theme_detail_dialog_apply_to_current_table_title">현재 시간표에 적용</string>
+    <string name="theme_detail_dialog_apply_to_current_table_body">테마를 현재 시간표에 적용하시겠습니까?</string>
     <string name="theme_detail_theme_name">테마명</string>
     <string name="theme_detail_theme_colors">색 조합</string>
     <string name="theme_detail_color_item">색상 %d</string>

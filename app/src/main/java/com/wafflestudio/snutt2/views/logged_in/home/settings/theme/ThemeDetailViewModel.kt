@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -19,6 +21,8 @@ import javax.inject.Inject
 class ThemeDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
+    private val tableRepository: TableRepository,
+    private val currentTableRepository: CurrentTableRepository,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
@@ -29,10 +33,14 @@ class ThemeDetailViewModel @Inject constructor(
     private val _editingColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
     val editingColors: StateFlow<List<Selectable<ColorDto>>> get() = _editingColors
 
+    val currentTable = currentTableRepository.currentTable
+
+    var isNewTheme = false
+
     init {
         val themeId = savedStateHandle.get<String>("themeId")
         val theme = savedStateHandle.get<Int>("theme")
-        theme?.let {
+        if (theme != null && themeId != null) {
             if (theme != -1) {
                 try {
                     _editingTheme.value = themeRepository.getTheme(theme)
@@ -40,21 +48,21 @@ class ThemeDetailViewModel @Inject constructor(
                     apiOnError(e)
                 }
             } else {
-                themeId?.let {
-                    _editingTheme.value = if (themeId.isEmpty()) {
+                _editingTheme.value = if (themeId.isEmpty()) {
+                    isNewTheme = true
+                    CustomTheme.Default
+                } else {
+                    try {
+                        themeRepository.getTheme(themeId)
+                    } catch (e: Exception) {
+                        apiOnError(e)
                         CustomTheme.Default
-                    } else {
-                        try {
-                            themeRepository.getTheme(themeId)
-                        } catch (e: Exception) {
-                            apiOnError(e)
-                            CustomTheme.Default
-                        }
-                    }
-                    _editingColors.value = (_editingTheme.value as CustomTheme).colors.mapIndexed { idx, color ->
-                        color.toDataWithState(idx == 0)
                     }
                 }
+                _editingColors.value =
+                    (_editingTheme.value as CustomTheme).colors.mapIndexed { idx, color ->
+                        color.toDataWithState(idx == 0)
+                    }
             }
         }
     }
@@ -120,6 +128,34 @@ class ThemeDetailViewModel @Inject constructor(
             themeRepository.unsetCustomThemeDefault((_editingTheme.value as CustomTheme).id)
         } else {
             themeRepository.unsetBuiltInThemeDefault((_editingTheme.value as BuiltInTheme).code)
+        }
+    }
+
+    suspend fun applyThemeToCurrentTable() {
+        currentTable.value?.let { table ->
+            when (_editingTheme.value) {
+                is CustomTheme -> {
+                    tableRepository.updateTableTheme(
+                        table.id,
+                        (_editingTheme.value as CustomTheme).id,
+                    )
+                }
+
+                is BuiltInTheme -> {
+                    tableRepository.updateTableTheme(
+                        table.id,
+                        (_editingTheme.value as BuiltInTheme).code,
+                    )
+                }
+            }
+        }
+    }
+
+    suspend fun refreshCurrentTableIfNeeded() {
+        currentTable.value?.let {
+            if (it.themeId != null && it.themeId == (_editingTheme.value as? CustomTheme)?.id) {
+                tableRepository.fetchTableById(it.id)
+            }
         }
     }
 }

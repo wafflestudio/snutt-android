@@ -280,14 +280,9 @@ class RootActivity : AppCompatActivity() {
                             },
                         ),
                     ) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry(NavigationDestination.Home)
-                        }
-                        val tableListViewModel = hiltViewModel<TableListViewModel>(parentEntry)
                         val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
-                            tableListViewModel = tableListViewModel,
                         )
                     }
 

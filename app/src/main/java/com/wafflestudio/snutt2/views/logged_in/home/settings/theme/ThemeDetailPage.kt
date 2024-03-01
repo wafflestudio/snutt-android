@@ -70,7 +70,6 @@ import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
@@ -83,7 +82,6 @@ import kotlinx.coroutines.launch
 fun ThemeDetailPage(
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(), // NavigationDestination.HOME에 scope된 viewmodel
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -118,16 +116,6 @@ fun ThemeDetailPage(
         } else {
             navController.popBackStack()
         }
-    }
-
-    val navigateBackAfterSave: suspend () -> Unit = {
-        table?.let {
-            // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-            if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
-                tableListViewModel.changeSelectedTable(it.id)
-            }
-        }
-        navController.popBackStack()
     }
 
     BackHandler {
@@ -172,31 +160,25 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            if (isDefault != editingTheme.isDefault) {
-                                when (isDefault) {
-                                    true -> {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                themeDetailViewModel.saveTheme(themeName)
-                                                themeDetailViewModel.setThemeDefault()
-                                                navigateBackAfterSave()
-                                            }
-                                        }
-                                    }
-                                    false -> showUnsetDefaultDialog(
-                                        composableStates = composableStates,
-                                        onConfirm = {
-                                            themeDetailViewModel.saveTheme(themeName)
-                                            themeDetailViewModel.unsetThemeDefault()
-                                            navigateBackAfterSave()
-                                        },
-                                    )
-                                }
-                            } else {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        themeDetailViewModel.saveTheme(themeName)
-                                        navigateBackAfterSave()
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    themeDetailViewModel.saveTheme(themeName)
+                                    if (themeDetailViewModel.isNewTheme) {
+                                        showApplyToCurrentTableDialog(
+                                            composableStates = composableStates,
+                                            apply = {
+                                                themeDetailViewModel.applyThemeToCurrentTable()
+                                                modalState.hide()
+                                                navController.popBackStack()
+                                            },
+                                            avoid = {
+                                                modalState.hide()
+                                                navController.popBackStack()
+                                            },
+                                        )
+                                    } else {
+                                        themeDetailViewModel.refreshCurrentTableIfNeeded()
+                                        navController.popBackStack()
                                     }
                                 }
                             }
