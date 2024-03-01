@@ -108,7 +108,7 @@ fun ThemeDetailPage(
         if (themeDetailViewModel.hasChange(themeName, isDefault)) {
             showCancelEditDialog(
                 composableStates = composableStates,
-                onConfirm = {
+                cancelEdit = {
                     modalState.hide()
                     navController.popBackStack()
                 },

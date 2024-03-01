@@ -41,7 +41,7 @@ fun showUnsetDefaultDialog(
 
 fun showCancelEditDialog(
     composableStates: ComposableStates,
-    onConfirm: suspend () -> Unit,
+    cancelEdit: suspend () -> Unit,
 ) {
     val modalState = composableStates.modalState
     val context = composableStates.context
@@ -55,7 +55,7 @@ fun showCancelEditDialog(
         onConfirm = {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
-                    onConfirm()
+                    cancelEdit()
                     modalState.hide()
                 }
             }
