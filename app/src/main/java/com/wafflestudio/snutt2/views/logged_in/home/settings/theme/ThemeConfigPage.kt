@@ -40,14 +40,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
-import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -176,24 +174,6 @@ fun ThemeConfigPage(
                                                         bottomSheet.hide()
                                                     }
                                                 },
-                                                onClickSetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.setThemeDefault(theme.id)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                                onClickUnsetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.unsetThemeDefault(
-                                                                theme.id,
-                                                            )
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
                                                 onClickDuplicate = {
                                                     scope.launch {
                                                         launchSuspendApi(apiOnProgress, apiOnError) {
@@ -218,7 +198,6 @@ fun ThemeConfigPage(
                                                         },
                                                     )
                                                 },
-                                                isThemeDefault = theme.isDefault,
                                             )
                                         }
                                         bottomSheet.show()
@@ -252,28 +231,10 @@ fun ThemeConfigPage(
                                     scope.launch {
                                         bottomSheet.setSheetContent {
                                             BuiltInThemeMoreActionBottomSheet(
-                                                themeCode = theme.code,
-                                                isThemeDefault = theme.isDefault,
                                                 onClickDetail = {
                                                     scope.launch {
                                                         navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
                                                         bottomSheet.hide()
-                                                    }
-                                                },
-                                                onClickSetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.setThemeDefault(theme.code)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                                onClickUnsetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.unsetThemeDefault(theme.code)
-                                                            bottomSheet.hide()
-                                                        }
                                                     }
                                                 },
                                             )
@@ -331,23 +292,12 @@ private fun ThemeItem(
         modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box {
-            if (theme.isDefault) {
-                CustomThemePinIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .zIndex(1f)
-                        .align(Alignment.TopStart)
-                        .offset((-8).dp, (-8).dp),
-                )
-            }
-            ThemeIcon(
-                theme = theme,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(6.dp)),
-            )
-        }
+        ThemeIcon(
+            theme = theme,
+            modifier = Modifier
+                .size(80.dp)
+                .clip(RoundedCornerShape(6.dp)),
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier

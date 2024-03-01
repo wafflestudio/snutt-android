@@ -6,7 +6,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +23,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -75,7 +72,6 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -373,19 +369,6 @@ fun ThemeDetailPage(
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            SettingItem(
-                title = stringResource(R.string.theme_detail_set_default),
-                hasNextPage = false,
-            ) {
-                Switch(
-                    checked = isDefault,
-                    onCheckedChange = { isDefault = it },
-                    enabled = (editingTheme.isDefault && (editingTheme as? BuiltInTheme)?.code == BuiltInTheme.SNUTT.code).not(),
-                    interactionSource = MutableInteractionSource(),
-                    colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.secondary),
-                )
             }
             SettingColumn(
                 title = stringResource(R.string.theme_detail_preview),
