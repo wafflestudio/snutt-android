@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
+import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
@@ -139,6 +140,12 @@ fun ThemeConfigPage(
                                 theme = theme,
                                 onClick = {
                                     scope.launch {
+                                        navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                                        bottomSheet.hide()
+                                    }
+                                },
+                                onClickMore = {
+                                    scope.launch {
                                         bottomSheet.setSheetContent {
                                             CustomThemeMoreActionBottomSheet(
                                                 onClickDetail = {
@@ -196,17 +203,8 @@ fun ThemeConfigPage(
                                 theme = theme,
                                 onClick = {
                                     scope.launch {
-                                        bottomSheet.setSheetContent {
-                                            BuiltInThemeMoreActionBottomSheet(
-                                                onClickDetail = {
-                                                    scope.launch {
-                                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
-                                                        bottomSheet.hide()
-                                                    }
-                                                },
-                                            )
-                                        }
-                                        bottomSheet.show()
+                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                        bottomSheet.hide()
                                     }
                                 },
                             )
@@ -260,17 +258,30 @@ private fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClickMore: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ThemeIcon(
-            theme = theme,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(6.dp)),
-        )
+        Box {
+            ThemeIcon(
+                theme = theme,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(6.dp)),
+            )
+            onClickMore?.let {
+                CustomThemeMoreIcon(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 8.dp, y = (-8).dp)
+                        .clicks {
+                            it()
+                        },
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier

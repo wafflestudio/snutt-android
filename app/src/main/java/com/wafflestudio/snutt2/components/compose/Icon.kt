@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun DrawerIcon(
@@ -877,5 +878,18 @@ fun NotificationTrashIcon(
         painter = painterResource(R.drawable.ic_trash_new),
         contentDescription = "",
         colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun CustomThemeMoreIcon(
+    modifier: Modifier = Modifier,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(
+            if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more,
+        ),
+        contentDescription = "",
     )
 }
