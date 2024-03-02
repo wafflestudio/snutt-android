@@ -17,12 +17,10 @@ class ThemeRepositoryImpl @Inject constructor(
 ) : ThemeRepository {
 
     private val _customThemes = MutableStateFlow<List<CustomTheme>>(emptyList())
-    override val customThemes: StateFlow<List<CustomTheme>>
-        get() = _customThemes
+    override val customThemes: StateFlow<List<CustomTheme>> = _customThemes
 
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
-    override val builtInThemes: StateFlow<List<BuiltInTheme>>
-        get() = _builtInThemes
+    override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
     override suspend fun fetchThemes() {
         api._getThemes().let { themes ->
@@ -35,10 +33,6 @@ class ThemeRepositoryImpl @Inject constructor(
 
     override fun getTheme(themeId: String): CustomTheme {
         return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
-    }
-
-    override fun getTheme(code: Int): BuiltInTheme {
-        return _builtInThemes.value.find { it.code == code } ?: BuiltInTheme.SNUTT
     }
 
     override suspend fun createTheme(name: String, colors: List<ColorDto>): CustomTheme {

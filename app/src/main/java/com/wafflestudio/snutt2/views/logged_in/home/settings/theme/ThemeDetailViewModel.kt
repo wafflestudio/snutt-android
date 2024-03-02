@@ -43,7 +43,7 @@ class ThemeDetailViewModel @Inject constructor(
         if (theme != null && themeId != null) {
             if (theme != -1) {
                 try {
-                    _editingTheme.value = themeRepository.getTheme(theme)
+                    _editingTheme.value = BuiltInTheme.fromCode(theme)
                 } catch (e: Exception) {
                     apiOnError(e)
                 }
