@@ -33,8 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -156,7 +161,10 @@ fun ThemeConfigPage(
                                                 },
                                                 onClickDuplicate = {
                                                     scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                        launchSuspendApi(
+                                                            apiOnProgress,
+                                                            apiOnError,
+                                                        ) {
                                                             themeListViewModel.copyTheme(theme.id)
                                                             bottomSheet.hide()
                                                         }
@@ -166,7 +174,9 @@ fun ThemeConfigPage(
                                                     showDeleteThemeDialog(
                                                         composableStates = composableStates,
                                                         onConfirm = {
-                                                            themeListViewModel.deleteThemeAndRefreshTableIfNeeded(theme.id)
+                                                            themeListViewModel.deleteThemeAndRefreshTableIfNeeded(
+                                                                theme.id,
+                                                            )
                                                             modalState.hide()
                                                             bottomSheet.hide()
                                                         },
@@ -311,6 +321,11 @@ private fun ThemeItem(
 fun ThemeGuideTexts(
     modifier: Modifier = Modifier,
 ) {
+    val texts = listOf(
+        stringResource(R.string.theme_config_guide_0),
+        stringResource(R.string.theme_config_guide_1),
+        stringResource(R.string.theme_config_guide_2),
+    )
     Column(
         modifier = modifier,
     ) {
@@ -329,7 +344,27 @@ fun ThemeGuideTexts(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.theme_config_guide_0),
+            text = buildAnnotatedString {
+                withStyle(
+                    ParagraphStyle(lineHeight = 12.sp * 1.3f),
+                ) {
+                    withStyle(
+                        SpanStyle(fontWeight = FontWeight.SemiBold),
+                    ) {
+                        append(texts[0])
+                    }
+                    withStyle(
+                        SpanStyle(fontWeight = FontWeight.Normal),
+                    ) {
+                        append(texts[1])
+                    }
+                }
+            },
+            style = SNUTTTypography.body2.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.theme_config_guide_2),
             style = SNUTTTypography.body2.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
         )
     }
