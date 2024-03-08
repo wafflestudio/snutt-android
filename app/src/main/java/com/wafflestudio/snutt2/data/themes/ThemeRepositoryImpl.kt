@@ -17,30 +17,22 @@ class ThemeRepositoryImpl @Inject constructor(
 ) : ThemeRepository {
 
     private val _customThemes = MutableStateFlow<List<CustomTheme>>(emptyList())
-    override val customThemes: StateFlow<List<CustomTheme>>
-        get() = _customThemes
+    override val customThemes: StateFlow<List<CustomTheme>> = _customThemes
 
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
-    override val builtInThemes: StateFlow<List<BuiltInTheme>>
-        get() = _builtInThemes
+    override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
     override suspend fun fetchThemes() {
         api._getThemes().let { themes ->
             _customThemes.value = themes.filter { it.isCustom }.map { it.toTableTheme() as CustomTheme }
             _builtInThemes.value = (0..5).map { code ->
-                BuiltInTheme.fromCode(code).copy(
-                    isDefault = themes.find { it.theme == code }?.isDefault ?: false,
-                )
+                BuiltInTheme.fromCode(code)
             }
         }
     }
 
     override fun getTheme(themeId: String): CustomTheme {
         return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
-    }
-
-    override fun getTheme(code: Int): BuiltInTheme {
-        return _builtInThemes.value.find { it.code == code } ?: BuiltInTheme.SNUTT
     }
 
     override suspend fun createTheme(name: String, colors: List<ColorDto>): CustomTheme {
@@ -68,45 +60,5 @@ class ThemeRepositoryImpl @Inject constructor(
     override suspend fun deleteTheme(themeId: String) {
         api._deleteTheme(themeId = themeId)
         _customThemes.value = _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
-    }
-
-    override suspend fun setCustomThemeDefault(themeId: String) {
-        val newTheme = api._postCustomThemeDefault(themeId = themeId).toTableTheme() as CustomTheme
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = it.id == newTheme.id)
-        }
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun setBuiltInThemeDefault(theme: Int) {
-        val newTheme = api._postBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun unsetCustomThemeDefault(themeId: String) {
-        val newTheme = api._deleteCustomThemeDefault(themeId = themeId).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
-    }
-
-    override suspend fun unsetBuiltInThemeDefault(theme: Int) {
-        val newTheme = api._deleteBuiltInThemeDefault(basicThemeTypeValue = theme).toTableTheme() as BuiltInTheme
-        _builtInThemes.value = _builtInThemes.value.map {
-            it.copy(isDefault = it.code == newTheme.code)
-        }
-        _customThemes.value = _customThemes.value.map {
-            it.copy(isDefault = false)
-        }
     }
 }

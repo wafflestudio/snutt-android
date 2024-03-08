@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -63,6 +64,15 @@ fun ChangeThemeBottomSheet(
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     var previousCustomThemes = remember { customThemes }
+    val selectedTheme by remember {
+        derivedStateOf {
+            if (previewTheme == null) {
+                timetableViewModel.tableTheme.value
+            } else {
+                previewTheme
+            }
+        }
+    }
 
     if (bottomSheet.isVisible) {
         DisposableEffect(LocalLifecycleOwner.current) {
@@ -123,7 +133,7 @@ fun ChangeThemeBottomSheet(
                 ThemeItem(
                     theme = it,
                     onClick = { onPreview(it) },
-                    selected = previewTheme is CustomTheme && (previewTheme as CustomTheme).id == it.id,
+                    selected = selectedTheme is CustomTheme && (selectedTheme as CustomTheme).id == it.id,
                 )
             }
             items(
@@ -132,7 +142,7 @@ fun ChangeThemeBottomSheet(
                 ThemeItem(
                     theme = it,
                     onClick = { onPreview(it) },
-                    selected = previewTheme is BuiltInTheme && (previewTheme as BuiltInTheme).code == it.code,
+                    selected = selectedTheme is BuiltInTheme && (selectedTheme as BuiltInTheme).code == it.code,
                 )
             }
         }

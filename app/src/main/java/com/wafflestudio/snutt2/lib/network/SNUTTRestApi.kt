@@ -273,11 +273,6 @@ interface SNUTTRestApi {
         @Body body: PostThemeParams,
     ): PostThemeResults
 
-    @POST("/v1/themes/basic/{basicThemeTypeValue}/default")
-    suspend fun _postBuiltInThemeDefault(
-        @Path("basicThemeTypeValue") basicThemeTypeValue: Int,
-    ): PostBuiltInThemeDefaultResults
-
     @DELETE("/v1/themes/{themeId}")
     suspend fun _deleteTheme(
         @Path("themeId") themeId: String,
@@ -293,19 +288,4 @@ interface SNUTTRestApi {
     suspend fun _postCopyTheme(
         @Path("themeId") themeId: String,
     ): PostCopyThemeResults
-
-    @POST("/v1/themes/{themeId}/default")
-    suspend fun _postCustomThemeDefault(
-        @Path("themeId") themeId: String,
-    ): PostCustomThemeDefaultResults
-
-    @DELETE("/v1/themes/{themeId}/default")
-    suspend fun _deleteCustomThemeDefault(
-        @Path("themeId") themeId: String,
-    ): DeleteCustomThemeDefaultResults
-
-    @DELETE("/v1/themes/basic/{basicThemeTypeValue}/default")
-    suspend fun _deleteBuiltInThemeDefault(
-        @Path("basicThemeTypeValue") basicThemeTypeValue: Int,
-    ): DeleteBuiltInThemeDefaultResults
 }

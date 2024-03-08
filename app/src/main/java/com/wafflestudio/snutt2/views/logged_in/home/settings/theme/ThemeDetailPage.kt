@@ -6,7 +6,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +23,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -73,9 +70,7 @@ import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -87,7 +82,6 @@ import kotlinx.coroutines.launch
 fun ThemeDetailPage(
     themeDetailViewModel: ThemeDetailViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(), // NavigationDestination.HOME에 scope된 viewmodel
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -108,13 +102,12 @@ fun ThemeDetailPage(
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
     val editingColors by themeDetailViewModel.editingColors.collectAsState()
     var themeName by remember { mutableStateOf(editingTheme.name) }
-    var isDefault by remember { mutableStateOf(editingTheme.isDefault) }
 
     val onBackPressed: () -> Unit = {
-        if (themeDetailViewModel.hasChange(themeName, isDefault)) {
+        if (themeDetailViewModel.hasChange(themeName)) {
             showCancelEditDialog(
                 composableStates = composableStates,
-                onConfirm = {
+                cancelEdit = {
                     modalState.hide()
                     navController.popBackStack()
                 },
@@ -122,16 +115,6 @@ fun ThemeDetailPage(
         } else {
             navController.popBackStack()
         }
-    }
-
-    val navigateBackAfterSave: suspend () -> Unit = {
-        table?.let {
-            // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-            if (it.themeId != null && it.themeId == (editingTheme as? CustomTheme)?.id) {
-                tableListViewModel.changeSelectedTable(it.id)
-            }
-        }
-        navController.popBackStack()
     }
 
     BackHandler {
@@ -176,31 +159,25 @@ fun ThemeDetailPage(
                     style = SNUTTTypography.body1,
                     modifier = Modifier
                         .clicks {
-                            if (isDefault != editingTheme.isDefault) {
-                                when (isDefault) {
-                                    true -> {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                themeDetailViewModel.saveTheme(themeName)
-                                                themeDetailViewModel.setThemeDefault()
-                                                navigateBackAfterSave()
-                                            }
-                                        }
-                                    }
-                                    false -> showUnsetDefaultDialog(
-                                        composableStates = composableStates,
-                                        onConfirm = {
-                                            themeDetailViewModel.saveTheme(themeName)
-                                            themeDetailViewModel.unsetThemeDefault()
-                                            navigateBackAfterSave()
-                                        },
-                                    )
-                                }
-                            } else {
-                                scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        themeDetailViewModel.saveTheme(themeName)
-                                        navigateBackAfterSave()
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    themeDetailViewModel.saveTheme(themeName)
+                                    if (themeDetailViewModel.isNewTheme) {
+                                        showApplyToCurrentTableDialog(
+                                            composableStates = composableStates,
+                                            apply = {
+                                                themeDetailViewModel.applyThemeToCurrentTable()
+                                                modalState.hide()
+                                                navController.popBackStack()
+                                            },
+                                            avoid = {
+                                                modalState.hide()
+                                                navController.popBackStack()
+                                            },
+                                        )
+                                    } else {
+                                        themeDetailViewModel.refreshCurrentTableIfNeeded()
+                                        navController.popBackStack()
                                     }
                                 }
                             }
@@ -373,19 +350,6 @@ fun ThemeDetailPage(
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            SettingItem(
-                title = stringResource(R.string.theme_detail_set_default),
-                hasNextPage = false,
-            ) {
-                Switch(
-                    checked = isDefault,
-                    onCheckedChange = { isDefault = it },
-                    enabled = (editingTheme.isDefault && (editingTheme as? BuiltInTheme)?.code == BuiltInTheme.SNUTT.code).not(),
-                    interactionSource = MutableInteractionSource(),
-                    colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.secondary),
-                )
             }
             SettingColumn(
                 title = stringResource(R.string.theme_detail_preview),
