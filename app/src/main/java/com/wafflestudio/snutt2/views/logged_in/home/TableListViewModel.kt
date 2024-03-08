@@ -61,10 +61,6 @@ class TableListViewModel @Inject constructor(
         return tableRepository.updateTableName(tableId, name)
     }
 
-    suspend fun deleteTable(tableId: String) {
-        return tableRepository.deleteTable(tableId)
-    }
-
     suspend fun createTable(courseBook: CourseBookDto, tableName: String) {
         tableRepository.createTable(
             year = courseBook.year, semester = courseBook.semester, title = tableName,
@@ -86,7 +82,7 @@ class TableListViewModel @Inject constructor(
         val tables = tableListOfEachCourseBook.map { it.values.flatten() }
         val index = tables.first().indexOfFirst { it.id == tableId }
 
-        deleteTable(tableId)
+        tableRepository.deleteTable(tableId)
 
         if (currentTableRepository.currentTable.value?.id == tableId) {
             if (siblingTables.first().isEmpty()) {

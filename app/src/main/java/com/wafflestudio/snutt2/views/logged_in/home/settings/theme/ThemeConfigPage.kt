@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,28 +25,31 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
 import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
-import com.wafflestudio.snutt2.components.compose.CustomThemePinIcon
+import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
+import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -62,18 +64,13 @@ import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeConfigPage(
     themeListViewModel: ThemeListViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(), // NavigationDestination.HOME에 scope된 viewmodel
 ) {
     val navController = LocalNavController.current
     val modalState = LocalModalState.current
@@ -82,12 +79,9 @@ fun ThemeConfigPage(
     val bottomSheet = BottomSheet()
     val scope = rememberCoroutineScope()
     val composableStates = ComposableStatesWithScope(scope)
-    val customThemeScrollState = rememberLazyListState()
-    val builtInThemeScrollState = rememberScrollState()
 
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
-    val table by timetableViewModel.currentTable.collectAsState()
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
@@ -99,22 +93,6 @@ fun ThemeConfigPage(
 
     BackHandler {
         onBackPressed()
-    }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow { customThemes.find { it.isDefault } }
-            .filterNotNull()
-            .collect {
-                customThemeScrollState.animateScrollToItem(0)
-            }
-    }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow { builtInThemes.find { it.isDefault } }
-            .filterNotNull()
-            .collect {
-                builtInThemeScrollState.animateScrollTo(0)
-            }
     }
 
     ModalBottomSheetLayout(
@@ -149,7 +127,6 @@ fun ThemeConfigPage(
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(top = 20.dp, bottom = 12.dp),
-                        state = customThemeScrollState,
                         horizontalArrangement = Arrangement.Start,
                     ) {
                         item {
@@ -162,11 +139,17 @@ fun ThemeConfigPage(
                             Spacer(modifier = Modifier.width(20.dp))
                         }
                         items(
-                            items = customThemes.sortedBy { it.isDefault.not() },
+                            items = customThemes,
                         ) { theme ->
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
+                                    scope.launch {
+                                        navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                                        bottomSheet.hide()
+                                    }
+                                },
+                                onClickMore = {
                                     scope.launch {
                                         bottomSheet.setSheetContent {
                                             CustomThemeMoreActionBottomSheet(
@@ -176,27 +159,12 @@ fun ThemeConfigPage(
                                                         bottomSheet.hide()
                                                     }
                                                 },
-                                                onClickSetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.setThemeDefault(theme.id)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                                onClickUnsetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.unsetThemeDefault(
-                                                                theme.id,
-                                                            )
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
                                                 onClickDuplicate = {
                                                     scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
+                                                        launchSuspendApi(
+                                                            apiOnProgress,
+                                                            apiOnError,
+                                                        ) {
                                                             themeListViewModel.copyTheme(theme.id)
                                                             bottomSheet.hide()
                                                         }
@@ -206,19 +174,14 @@ fun ThemeConfigPage(
                                                     showDeleteThemeDialog(
                                                         composableStates = composableStates,
                                                         onConfirm = {
-                                                            themeListViewModel.deleteTheme(theme.id)
-                                                            table?.let {
-                                                                // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-                                                                if (it.themeId != null && it.themeId == theme.id) {
-                                                                    tableListViewModel.changeSelectedTable(it.id)
-                                                                }
-                                                            }
+                                                            themeListViewModel.deleteThemeAndRefreshTableIfNeeded(
+                                                                theme.id,
+                                                            )
                                                             modalState.hide()
                                                             bottomSheet.hide()
                                                         },
                                                     )
                                                 },
-                                                isThemeDefault = theme.isDefault,
                                             )
                                         }
                                         bottomSheet.show()
@@ -242,43 +205,16 @@ fun ThemeConfigPage(
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(top = 20.dp, bottom = 12.dp)
-                            .horizontalScroll(builtInThemeScrollState),
+                            .horizontalScroll(rememberScrollState()),
                     ) {
                         Spacer(modifier = Modifier.width(20.dp))
-                        builtInThemes.sortedBy { it.isDefault.not() }.forEach { theme ->
+                        builtInThemes.forEach { theme ->
                             ThemeItem(
                                 theme = theme,
                                 onClick = {
                                     scope.launch {
-                                        bottomSheet.setSheetContent {
-                                            BuiltInThemeMoreActionBottomSheet(
-                                                themeCode = theme.code,
-                                                isThemeDefault = theme.isDefault,
-                                                onClickDetail = {
-                                                    scope.launch {
-                                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
-                                                        bottomSheet.hide()
-                                                    }
-                                                },
-                                                onClickSetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.setThemeDefault(theme.code)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                                onClickUnsetDefault = {
-                                                    scope.launch {
-                                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                                            themeListViewModel.unsetThemeDefault(theme.code)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                            )
-                                        }
-                                        bottomSheet.show()
+                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                                        bottomSheet.hide()
                                     }
                                 },
                             )
@@ -286,6 +222,12 @@ fun ThemeConfigPage(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(25.dp))
+                ThemeGuideTexts(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 26.dp),
+                )
             }
         }
     }
@@ -326,27 +268,29 @@ private fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClickMore: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.clicks { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box {
-            if (theme.isDefault) {
-                CustomThemePinIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .zIndex(1f)
-                        .align(Alignment.TopStart)
-                        .offset((-8).dp, (-8).dp),
-                )
-            }
             ThemeIcon(
                 theme = theme,
                 modifier = Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(6.dp)),
             )
+            onClickMore?.let {
+                CustomThemeMoreIcon(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 8.dp, y = (-8).dp)
+                        .clicks {
+                            it()
+                        },
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -370,5 +314,58 @@ private fun ThemeItem(
                 colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
             )
         }
+    }
+}
+
+@Composable
+fun ThemeGuideTexts(
+    modifier: Modifier = Modifier,
+) {
+    val texts = listOf(
+        stringResource(R.string.theme_config_guide_0),
+        stringResource(R.string.theme_config_guide_1),
+        stringResource(R.string.theme_config_guide_2),
+    )
+    Column(
+        modifier = modifier,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            QuestionCircleIcon(
+                modifier = Modifier.size(14.dp),
+                colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = stringResource(R.string.theme_config_guide_title),
+                style = SNUTTTypography.h5.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = buildAnnotatedString {
+                withStyle(
+                    ParagraphStyle(lineHeight = 12.sp * 1.3f),
+                ) {
+                    withStyle(
+                        SpanStyle(fontWeight = FontWeight.SemiBold),
+                    ) {
+                        append(texts[0])
+                    }
+                    withStyle(
+                        SpanStyle(fontWeight = FontWeight.Normal),
+                    ) {
+                        append(texts[1])
+                    }
+                }
+            },
+            style = SNUTTTypography.body2.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.theme_config_guide_2),
+            style = SNUTTTypography.body2.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
+        )
     }
 }

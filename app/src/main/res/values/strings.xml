@@ -143,6 +143,8 @@
     <string name="common_cancel">취소</string>
     <string name="common_complete">완료</string>
     <string name="common_save">저장</string>
+    <string name="common_yes">예</string>
+    <string name="common_no">아니요</string>
     <string name="home_drawer_table_delete">시간표 삭제</string>
     <string name="home_drawer_change_name_dialog_title">이름 변경하기</string>
     <string name="home_drawer_table_credit">(%d학점)</string>
@@ -331,6 +333,10 @@
     <string name="theme_config_app_bar_title">시간표 테마</string>
     <string name="theme_config_custom_theme">커스텀 테마</string>
     <string name="theme_config_builtin_theme">제공 테마</string>
+    <string name="theme_config_guide_title">테마는 어떻게 적용하나요?</string>
+    <string name="theme_config_guide_0">시간표 목록 > 더보기 버튼 > 테마 설정</string>
+    <string name="theme_config_guide_1">에서 개별적으로 적용할 수 있어요.</string>
+    <string name="theme_config_guide_2">새로운 시간표에는 가장 최근 편집한 커스텀 테마가 적용돼요.</string>
     <string name="theme_config_dialog_delete_title">테마 삭제</string>
     <string name="theme_config_dialog_delete_body">테마를 삭제하시겠습니까?\n이 테마가 지정된 시간표의 강의 색상은 유지됩니다.</string>
     <string name="theme_create">새로운 테마</string>
@@ -344,15 +350,14 @@
     <string name="theme_detail_app_bar_title_builtin">제공 테마</string>
     <string name="theme_detail_dialog_cancel_edit_title">테마 편집 취소</string>
     <string name="theme_detail_dialog_cancel_edit_body">테마 편집을 취소하시겠습니까?</string>
-    <string name="theme_detail_dialog_unset_default_title">기본 테마 해제</string>
-    <string name="theme_detail_dialog_unset_default_body">기본 테마 적용을 취소하시겠습니까?\n\'SNUTT\' 테마가 기본 적용됩니다.</string>
+    <string name="theme_detail_dialog_apply_to_current_table_title">현재 시간표에 적용</string>
+    <string name="theme_detail_dialog_apply_to_current_table_body">테마를 현재 시간표에 적용하시겠습니까?</string>
     <string name="theme_detail_theme_name">테마명</string>
     <string name="theme_detail_theme_colors">색 조합</string>
     <string name="theme_detail_color_item">색상 %d</string>
     <string name="theme_detail_color_fg">글꼴색</string>
     <string name="theme_detail_color_bg">배경색</string>
     <string name="theme_detail_add_color">+ 색상 추가</string>
-    <string name="theme_detail_set_default">기본 테마로 지정</string>
     <string name="theme_detail_preview">미리보기</string>
     <string name="lecture_color_selector_page_app_bar_title">강의 색상 선택</string>
     <string name="lecture_color_selector_page_custom_color">커스텀</string>

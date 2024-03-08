@@ -75,6 +75,24 @@ class ModalState {
         }
     }
 
+    fun setYesNo(
+        context: Context,
+        onDismiss: () -> Unit,
+        onConfirm: () -> Unit,
+        title: String,
+        content: @Composable () -> Unit,
+    ): ModalState {
+        return this.apply {
+            this.onDismiss = onDismiss
+            this.onConfirm = onConfirm
+            this.title = title
+            this.positiveButtonText = context.getString(R.string.common_yes)
+            this.negativeButtonText = context.getString(R.string.common_no)
+            this.width = null
+            this.content = content
+        }
+    }
+
     companion object {
         fun Saver() = Saver<ModalState, Boolean>(save = { it.isVisible }, restore = { null })
     }

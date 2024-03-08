@@ -28,15 +28,16 @@ class TimetableViewModel @Inject constructor(
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
     private val _previewTheme = MutableStateFlow<TableTheme?>(null)
-    val previewTheme: StateFlow<TableTheme?> get() = _previewTheme
+    val previewTheme: StateFlow<TableTheme?> = _previewTheme
 
-    val tableTheme: StateFlow<TableTheme> get() = currentTableRepository.currentTable.map { table ->
+    val tableTheme: StateFlow<TableTheme> = currentTableRepository.currentTable.map { table ->
         table?.themeId?.let {
+            themeRepository.fetchThemes()
             themeRepository.getTheme(it)
         } ?: table?.theme?.let {
             BuiltInTheme.fromCode(it)
         } ?: BuiltInTheme.SNUTT
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT) // TODO: currentTable과 마찬가지로 repository 단으로 옮기기
 
     suspend fun addLecture(lecture: LectureDto, is_force: Boolean) {
         currentTableRepository

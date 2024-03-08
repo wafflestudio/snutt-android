@@ -1,9 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -11,11 +13,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
+import com.wafflestudio.snutt2.components.compose.MoreActionItem
+import com.wafflestudio.snutt2.components.compose.PaletteIcon
+import com.wafflestudio.snutt2.components.compose.PeopleIcon
+import com.wafflestudio.snutt2.components.compose.PeopleOffIcon
+import com.wafflestudio.snutt2.components.compose.TrashIcon
+import com.wafflestudio.snutt2.components.compose.WriteIcon
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTableDeleteDialog
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
