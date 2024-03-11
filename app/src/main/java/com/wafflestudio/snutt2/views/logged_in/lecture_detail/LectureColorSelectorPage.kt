@@ -30,7 +30,6 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
@@ -40,7 +39,6 @@ import com.wafflestudio.snutt2.views.LocalModalState
 @Composable
 fun LectureColorSelectorPage(
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -48,9 +46,9 @@ fun LectureColorSelectorPage(
 
     val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
 
-    val theme by timetableViewModel.tableTheme.collectAsState()
+    val theme by lectureDetailViewModel.currentTableTheme.collectAsState()
     var customFgColor by remember { mutableStateOf(Color(lectureState.color.fgColor?.toLong() ?: 0xffffffff)) }
-    var customBgColor by remember { mutableStateOf(Color(lectureState.color.bgColor?.toLong() ?: 0xff1bd0c8)) }
+    var customBgColor by remember { mutableStateOf(Color(lectureState.color.bgColor?.toLong() ?: 0xffffffff)) }
 
     var selectedIndex by remember { // -1: 커스텀 색상.  0,1,2...: 선택된 색상의 0-based 인덱스
         if (theme is CustomTheme) {

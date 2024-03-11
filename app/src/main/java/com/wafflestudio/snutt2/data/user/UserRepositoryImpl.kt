@@ -11,7 +11,7 @@ import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -25,10 +25,11 @@ class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
+    externalScope: CoroutineScope,
 ) : UserRepository {
 
     override val user = storage.user.asStateFlow()
-        .unwrap(GlobalScope)
+        .unwrap(externalScope)
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
 
