@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListView
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn

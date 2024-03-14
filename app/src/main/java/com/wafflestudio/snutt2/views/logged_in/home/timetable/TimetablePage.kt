@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NamedNavArgument
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
@@ -39,10 +43,12 @@ import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.deeplink.NavArgumentMap
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
@@ -50,7 +56,11 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun TimetablePage(uncheckedNotification: Boolean) {
@@ -61,14 +71,50 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     val drawerState = LocalDrawerState.current
     val table = LocalTableState.current.table
     val remoteConfig = LocalRemoteConfig.current
+    val apiOnProgress = LocalApiOnProgress.current
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
     var bannerHeight by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        val deeplink = navController.currentBackStackEntry?.arguments
+        if (deeplink?.isEmpty != false || deeplink.getBoolean("handled")) {
+            return@LaunchedEffect
+        }
+        scope.launch(Dispatchers.IO) {
+            val deeplinkTableId = deeplink.getString("timetableId") ?: run {
+                apiOnProgress.hideProgress()
+                return@launch
+            }
+            val deeplinkLectureId = deeplink.getString("lectureId") ?: run {
+                apiOnProgress.hideProgress()
+                return@launch
+            }
+            try {
+                apiOnProgress.showProgress("로딩중입니다...")
+                tableListViewModel.changeSelectedTable(deeplinkTableId)
+                val lecture = table.lectureList.find { lecture ->
+                    lecture.lecture_id == deeplinkLectureId
+                } ?: return@launch
+                lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
+                withContext(Dispatchers.Main.immediate) {
+                    navController.navigate(NavigationDestination.LectureDetail) {
+                        launchSingleTop = true
+                    }
+                    apiOnProgress.hideProgress()
+                }
+            } catch (e: Exception) {
+                apiOnProgress.hideProgress()
+            }
+        }
+    }
+
 
     Column(Modifier.background(SNUTTColors.White900)) {
         TopBar(

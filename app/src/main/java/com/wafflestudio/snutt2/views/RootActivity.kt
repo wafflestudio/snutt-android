@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -39,13 +40,15 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.deeplink.NavArgumentMap
+import com.wafflestudio.snutt2.deeplink.NavRouteMap
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
@@ -59,9 +62,9 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -232,19 +235,20 @@ class RootActivity : AppCompatActivity() {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = startDestination,
+                    startDestination = NavRouteMap[startDestination] ?: startDestination,
                 ) {
                     onboardGraph()
 
-                    composableRoot(NavigationDestination.Home) { HomePage() }
-
+                    composableRoot(NavigationDestination.Home) {
+                        HomePage()
+                    }
                     composable2(NavigationDestination.Notification) { NotificationPage() }
 
                     composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
                     composable2(NavigationDestination.LectureDetail) {
                         val parentEntry = remember(it) {
-                            navController.getBackStackEntry(NavigationDestination.Home)
+                            navController.getBackStackEntry(NavRouteMap[NavigationDestination.Home] ?: NavigationDestination.Home)
                         }
                         val lectureDetailViewModel =
                             hiltViewModel<LectureDetailViewModel>(parentEntry)
@@ -330,7 +334,8 @@ class RootActivity : AppCompatActivity() {
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
-            route,
+            route = NavRouteMap[route] ?: route,
+            arguments = NavArgumentMap[route] ?: emptyList(),
             deepLinks = deepLinks,
             enterTransition = {
                 slideInHorizontally(
@@ -353,7 +358,8 @@ class RootActivity : AppCompatActivity() {
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable(
-            route,
+            route = NavRouteMap[route] ?: route,
+            arguments = NavArgumentMap[route] ?: emptyList(),
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { fadeOut() },

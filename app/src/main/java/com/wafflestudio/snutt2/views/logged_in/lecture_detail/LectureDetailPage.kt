@@ -8,14 +8,35 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,8 +57,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
+import com.wafflestudio.snutt2.components.compose.ArrowRight
+import com.wafflestudio.snutt2.components.compose.BookmarkIcon
+import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.ColorBox
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
+import com.wafflestudio.snutt2.components.compose.TipCloseIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
+import com.wafflestudio.snutt2.deeplink.popBackStackWithoutQuery
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
@@ -51,13 +83,26 @@ import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalHomePageController
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.LocalRemoteConfig
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.search.*
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.checkLectureOverlap
+import com.wafflestudio.snutt2.views.logged_in.home.search.openReviewBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.search.showLectureOverlapDialog
+import com.wafflestudio.snutt2.views.logged_in.home.search.verifyEmailBeforeApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
-import kotlinx.coroutines.*
+import com.wafflestudio.snutt2.views.navigateAsOrigin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
@@ -111,7 +156,7 @@ fun LectureDetailPage(
             when (modeType) {
                 ModeType.Normal -> {
                     if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
-                        navController.popBackStack()
+                        navController.popBackStackWithoutQuery()
                     }
                 }
                 is ModeType.Editing -> {

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,8 @@ import com.wafflestudio.snutt2.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
+import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -76,7 +79,9 @@ fun NotificationPage() {
             refreshState is LoadState.Error -> NotificationError()
             else -> LazyColumn {
                 items(notificationList) {
-                    it?.let { NotificationItem(it) }
+                    it?.let { NotificationItem(it) { deeplink ->
+                        DeeplinkExecutor.execute(deeplink, navController)
+                    } }
                 }
             }
         }
@@ -84,10 +89,13 @@ fun NotificationPage() {
 }
 
 @Composable
-fun NotificationItem(info: NotificationDto) {
+fun NotificationItem(info: NotificationDto, onClick: ((String?) -> Unit)? = null) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
+            .clicks {
+                onClick?.invoke(info.deeplink)
+            }
             .padding(horizontal = 16.dp),
     ) {
         Row(
@@ -203,7 +211,7 @@ fun NotificationPlaceholder() {
 @Preview(showBackground = true)
 @Composable
 fun NotificationItemPreview() {
-    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null))
+    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null, null))
 }
 
 @Preview(showBackground = true)
