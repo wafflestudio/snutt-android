@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ class ThemeListViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
+    private val apiOnError: ApiOnError
 ) : ViewModel() {
 
     val customThemes: StateFlow<List<CustomTheme>> get() = themeRepository.customThemes
@@ -26,7 +28,9 @@ class ThemeListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            themeRepository.fetchThemes()
+            runCatching {
+                themeRepository.fetchThemes()
+            }.onFailure(apiOnError)
         }
     }
 

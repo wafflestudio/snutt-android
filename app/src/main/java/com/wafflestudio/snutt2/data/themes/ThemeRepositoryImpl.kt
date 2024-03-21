@@ -2,18 +2,23 @@ package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.map
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,6 +27,7 @@ class ThemeRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
+    private val apiOnError: ApiOnError
 ) : ThemeRepository {
 
     private val _customThemes = MutableStateFlow<List<CustomTheme>>(emptyList())
@@ -30,14 +36,25 @@ class ThemeRepositoryImpl @Inject constructor(
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
     override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
-    override val currentTableTheme = storage.lastViewedTable.asStateFlow().map { table ->
-        table.value?.themeId?.let {
-            fetchThemes()
-            getTheme(it)
-        } ?: table.value?.theme?.let {
-            BuiltInTheme.fromCode(it)
-        } ?: BuiltInTheme.SNUTT
-    }.stateIn(externalScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT) // FIXME: themeRepository에 넣기보다는 currentTableRepository와 themeRepository에 의존하는 UseCase를 만드는 게 낫지 않을까
+    private val _currentTableTheme = MutableStateFlow<TableTheme>(BuiltInTheme.SNUTT)
+    override val currentTableTheme = _currentTableTheme // FIXME: themeRepository에 넣기보다는 currentTableRepository와 themeRepository에 의존하는 UseCase를 만드는 게 낫지 않을까
+
+    init {
+        externalScope.launch {
+            runCatching {
+                fetchThemes()
+            }.onFailure(apiOnError)
+            storage.lastViewedTable.asStateFlow().map { table ->
+                table.value?.themeId?.let {
+                    getTheme(it)
+                } ?: table.value?.theme?.let {
+                    BuiltInTheme.fromCode(it)
+                } ?: BuiltInTheme.SNUTT
+            }.collect {
+                _currentTableTheme.value = it
+            }
+        }
+    }
 
     override suspend fun fetchThemes() {
         api._getThemes().let { themes ->
