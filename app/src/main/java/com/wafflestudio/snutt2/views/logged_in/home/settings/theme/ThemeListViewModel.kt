@@ -18,7 +18,7 @@ class ThemeListViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
-    private val apiOnError: ApiOnError
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
     val customThemes: StateFlow<List<CustomTheme>> get() = themeRepository.customThemes

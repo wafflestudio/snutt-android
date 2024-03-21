@@ -11,14 +11,10 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,7 +23,7 @@ class ThemeRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
-    private val apiOnError: ApiOnError
+    private val apiOnError: ApiOnError,
 ) : ThemeRepository {
 
     private val _customThemes = MutableStateFlow<List<CustomTheme>>(emptyList())
