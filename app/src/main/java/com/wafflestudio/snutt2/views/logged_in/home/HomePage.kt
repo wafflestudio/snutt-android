@@ -70,7 +70,6 @@ fun HomePage() {
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                themeListViewModel.fetchThemes()
                 tableListViewModel.fetchTableMap()
                 tableListViewModel.fetchCourseBooks()
             }
