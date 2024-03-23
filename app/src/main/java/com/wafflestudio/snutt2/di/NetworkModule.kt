@@ -26,6 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -33,6 +34,7 @@ object NetworkModule {
 
     @SuppressLint("HardwareIds")
     @Provides
+    @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
         snuttStorage: SNUTTStorage,
@@ -126,6 +128,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     fun provideSNUTTRestApi(retrofit: Retrofit): SNUTTRestApi {
         return retrofit.create(SNUTTRestApi::class.java)
     }
@@ -135,6 +138,7 @@ object NetworkModule {
         ).toLong()
 
     @Provides
+    @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,
     ): ConnectivityManager {
