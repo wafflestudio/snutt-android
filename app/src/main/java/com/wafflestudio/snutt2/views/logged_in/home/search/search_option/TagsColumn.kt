@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,14 +48,14 @@ fun TagsColumn(
         modifier = modifier
             .offset(x = offsetXAnimatedDp)
             .alpha(alphaAnimatedFloat)
-            .padding(start = 20.dp, bottom = 10.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         // FIXME: rememberLazyListState() 넣으면 오류
     ) {
         items(tagsByTagType) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column {
                 Row(
                     modifier = Modifier
-                        .padding(vertical = 8.dp)
                         .clicks { onToggleTag(it.item) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -70,6 +71,7 @@ fun TagsColumn(
                     )
                 }
                 if (it.item == TagDto.TIME_SELECT) {
+                    Spacer(modifier = Modifier.height(6.dp))
                     timeSlotsToFormattedString(context, selectedTimes.value).let {
                         if (it.isNotEmpty()) {
                             Text(
