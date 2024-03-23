@@ -5,8 +5,10 @@ import android.os.Build.VERSION_CODES
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -109,110 +111,116 @@ fun UserConfigPage() {
             title = stringResource(R.string.user_settings_app_bar_title),
             onClickNavigateBack = { navController.popBackStack() },
         )
-        Margin(height = 10.dp)
-        SettingColumn {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_change_nickname),
+                    onClick = {
+                        navController.navigate(NavigationDestination.ChangeNickname)
+                    },
+                ) {
+                    Text(
+                        text = user?.nickname.toString(),
+                        style = SNUTTTypography.body1.copy(
+                            color = SNUTTColors.Black500,
+                        ),
+                    )
+                }
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_copy_nickname),
+                    hasNextPage = false,
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
+                        if (Build.VERSION.SDK_INT <= VERSION_CODES.S_V2) {
+                            context.toast(context.getString(R.string.settings_user_nickname_copied_toast))
+                        }
+                    },
+                ) {
+                    DuplicateIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                    )
+                }
+            }
+            Margin(height = 10.dp)
+            SettingColumn {
+                if (user?.localId.isNullOrEmpty().not()) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_id),
+                        hasNextPage = false,
+                    ) {
+                        Text(
+                            text = user?.localId.toString(),
+                            style = SNUTTTypography.body1.copy(
+                                color = SNUTTColors.Black500,
+                            ),
+                        )
+                    }
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_change_password),
+                        onClick = { passwordChangeDialogState = true },
+                    )
+                } else {
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_add_local_id),
+                        onClick = { addIdPasswordDialogState = true },
+                    )
+                }
+            }
+            Margin(height = 10.dp)
+            if (facebookConnected) {
+                SettingColumn {
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_facebook_name),
+                        hasNextPage = false,
+                    ) {
+                        Text(
+                            text = user?.fbName ?: "",
+                            style = SNUTTTypography.body1.copy(
+                                color = SNUTTColors.Black500,
+                            ),
+                        )
+                    }
+                    SettingItem(
+                        title = stringResource(R.string.settings_user_config_facebook_disconnect),
+                        onClick = { disconnectFacebookDialogState = true },
+                    )
+                }
+            } else {
+                SettingItem(
+                    title = stringResource(R.string.settings_user_config_connect_facebook),
+                    onClick = {
+                        // FIXME: 실패했을 때.
+                        LoginManager.getInstance().logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner, callbackManager, emptyList(),
+                        )
+                    },
+                )
+            }
+            Margin(height = 10.dp)
             SettingItem(
-                title = stringResource(R.string.settings_user_config_change_nickname),
-                onClick = {
-                    navController.navigate(NavigationDestination.ChangeNickname)
-                },
+                title = stringResource(R.string.settings_app_report_email),
+                hasNextPage = false,
             ) {
                 Text(
-                    text = user?.nickname.toString(),
+                    text = user?.email ?: "",
                     style = SNUTTTypography.body1.copy(
                         color = SNUTTColors.Black500,
                     ),
                 )
             }
+            Margin(height = 10.dp)
             SettingItem(
-                title = stringResource(R.string.settings_user_config_copy_nickname),
-                hasNextPage = false,
-                onClick = {
-                    clipboardManager.setText(AnnotatedString(user?.nickname.toString()))
-                    if (Build.VERSION.SDK_INT <= VERSION_CODES.S_V2) {
-                        context.toast(context.getString(R.string.settings_user_nickname_copied_toast))
-                    }
-                },
-            ) {
-                DuplicateIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black500),
-                )
-            }
-        }
-        Margin(height = 10.dp)
-        SettingColumn {
-            if (user?.localId.isNullOrEmpty().not()) {
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_id),
-                    hasNextPage = false,
-                ) {
-                    Text(
-                        text = user?.localId.toString(),
-                        style = SNUTTTypography.body1.copy(
-                            color = SNUTTColors.Black500,
-                        ),
-                    )
-                }
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_change_password),
-                    onClick = { passwordChangeDialogState = true },
-                )
-            } else {
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_add_local_id),
-                    onClick = { addIdPasswordDialogState = true },
-                )
-            }
-        }
-        Margin(height = 10.dp)
-        if (facebookConnected) {
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_facebook_name),
-                    hasNextPage = false,
-                ) {
-                    Text(
-                        text = user?.fbName ?: "",
-                        style = SNUTTTypography.body1.copy(
-                            color = SNUTTColors.Black500,
-                        ),
-                    )
-                }
-                SettingItem(
-                    title = stringResource(R.string.settings_user_config_facebook_disconnect),
-                    onClick = { disconnectFacebookDialogState = true },
-                )
-            }
-        } else {
-            SettingItem(
-                title = stringResource(R.string.settings_user_config_connect_facebook),
-                onClick = {
-                    // FIXME: 실패했을 때.
-                    LoginManager.getInstance().logInWithReadPermissions(
-                        context as ActivityResultRegistryOwner, callbackManager, emptyList(),
-                    )
-                },
+                title = stringResource(R.string.settings_user_config_leave),
+                titleColor = SNUTTColors.Red,
+                onClick = { leaveDialogState = true },
             )
+            Margin(height = 10.dp)
         }
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_app_report_email),
-            hasNextPage = false,
-        ) {
-            Text(
-                text = user?.email ?: "",
-                style = SNUTTTypography.body1.copy(
-                    color = SNUTTColors.Black500,
-                ),
-            )
-        }
-        Margin(height = 10.dp)
-        SettingItem(
-            title = stringResource(R.string.settings_user_config_leave),
-            titleColor = SNUTTColors.Red,
-            onClick = { leaveDialogState = true },
-        )
     }
 
     if (addIdPasswordDialogState) {
