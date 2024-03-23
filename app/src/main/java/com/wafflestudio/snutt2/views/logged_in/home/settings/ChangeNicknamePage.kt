@@ -2,9 +2,11 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -95,52 +97,57 @@ fun ChangeNicknamePage() {
                 )
             },
         )
-        Margin(10.dp)
-        SettingColumn(
-            title = stringResource(R.string.settings_change_nickname_title),
-        ) {
-            NicknameEditText(
-                value = nicknameField,
-                onValueChange = { nicknameField = it },
-                onDone = {
-                    if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
-                        handleChangeNickname()
-                    }
-                },
-                hint = initialNickname,
-            )
-        }
-        Margin(12.dp)
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp),
+                .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = stringResource(R.string.settings_change_nickname_guide),
-                style = SNUTTTypography.body2.copy(
-                    color = SNUTTColors.Black500,
-                ),
-            )
-            Margin(30.dp)
+            SettingColumn(
+                title = stringResource(R.string.settings_change_nickname_title),
+            ) {
+                NicknameEditText(
+                    value = nicknameField,
+                    onValueChange = { nicknameField = it },
+                    onDone = {
+                        if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
+                            handleChangeNickname()
+                        }
+                    },
+                    hint = initialNickname,
+                )
+            }
+            Margin(12.dp)
             Column(
-                verticalArrangement = Arrangement.spacedBy(2.sp.toDp()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.settings_change_nickname_requirement_title),
-                    style = SNUTTTypography.h5.copy(
+                    text = stringResource(R.string.settings_change_nickname_guide),
+                    style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.Black500,
                     ),
                 )
-                nicknameRequirementTexts.forEach {
-                    BulletedParagraph(
-                        text = it,
-                        style = SNUTTTypography.body2.copy(
+                Margin(30.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.sp.toDp()),
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_change_nickname_requirement_title),
+                        style = SNUTTTypography.h5.copy(
                             color = SNUTTColors.Black500,
                         ),
                     )
+                    nicknameRequirementTexts.forEach {
+                        BulletedParagraph(
+                            text = it,
+                            style = SNUTTTypography.body2.copy(
+                                color = SNUTTColors.Black500,
+                            ),
+                        )
+                    }
                 }
             }
+            Margin(height = 10.dp)
         }
     }
 }
