@@ -55,7 +55,6 @@ import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
@@ -68,7 +67,6 @@ fun LectureDetailPage(
     vm: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -84,7 +82,7 @@ fun LectureDetailPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
-    val tableColorTheme by timetableViewModel.tableTheme.collectAsState()
+    val tableColorTheme by vm.currentTableTheme.collectAsState()
     val isCustom = editingLectureDetail.isCustom
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
     val isBookmarked = remember(bookmarkList) { bookmarkList.map { it.item.id }.contains(editingLectureDetail.lecture_id ?: editingLectureDetail.id) }

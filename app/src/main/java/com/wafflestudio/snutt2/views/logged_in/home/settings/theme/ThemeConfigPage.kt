@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
@@ -113,7 +114,8 @@ fun ThemeConfigPage(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background),
+                    .background(MaterialTheme.colors.background)
+                    .verticalScroll(rememberScrollState()),
             ) {
                 SettingColumn(
                     title = stringResource(R.string.theme_config_custom_theme),
@@ -228,6 +230,7 @@ fun ThemeConfigPage(
                         .fillMaxWidth()
                         .padding(horizontal = 26.dp),
                 )
+                Spacer(modifier = Modifier.height(25.dp))
             }
         }
     }

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.themes
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {
@@ -10,6 +11,8 @@ interface ThemeRepository {
     val customThemes: StateFlow<List<CustomTheme>>
 
     val builtInThemes: StateFlow<List<BuiltInTheme>>
+
+    val currentTableTheme: StateFlow<TableTheme>
 
     suspend fun fetchThemes()
 

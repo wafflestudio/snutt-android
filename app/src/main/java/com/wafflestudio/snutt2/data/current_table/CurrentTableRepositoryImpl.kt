@@ -10,7 +10,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,10 +19,11 @@ import javax.inject.Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
+    externalScope: CoroutineScope,
 ) : CurrentTableRepository {
 
     override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
-        .unwrap(GlobalScope)
+        .unwrap(externalScope)
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
         val prevTable = storage.lastViewedTable.get().value
