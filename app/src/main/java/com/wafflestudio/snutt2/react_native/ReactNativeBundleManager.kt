@@ -1,9 +1,13 @@
 package com.wafflestudio.snutt2.react_native
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import androidx.annotation.MainThread
 import androidx.compose.runtime.mutableStateOf
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactInstanceManager
@@ -33,8 +37,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -62,7 +66,7 @@ class ReactNativeBundleManager @Inject constructor(
                 reloadSignal.onStart { emit(Unit) },
             ) { bundleSrc, token, theme, _, _ ->
                 getExistingBundleFileOrNull(applicationContext, bundleSrc)?.let { bundleFile ->
-                    withContext(Dispatchers.Main) {
+                    checkBundleIntegrity(bundleFile, activityContext) {
                         if (myReactInstanceManager == null) {
                             myReactInstanceManager = ReactInstanceManager.builder()
                                 .setApplication(applicationContext as Application)
@@ -153,6 +157,20 @@ class ReactNativeBundleManager @Inject constructor(
         return targetFile
     }
 
+    @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+    private fun checkBundleIntegrity(
+        bundleFile: File,
+        activityContext: Context,
+        @MainThread onVerified: () -> Unit,
+    ) {
+        CoroutineScope(Dispatchers.Main.immediate).launch {
+            val webView = WebView(activityContext)
+            webView.settings.javaScriptEnabled = true
+            webView.addJavascriptInterface(JSCheckBridge(onVerified), "jsCheckBridge")
+            webView.evaluateJavascript("try { ${readFileAsString(bundleFile)} } catch(e) { jsCheckBridge.postMessage() }") {}
+        }
+    }
+
     // 수동으로 번들 reload하고 싶을 때 사용
     suspend fun reloadBundle() {
         reloadSignal.emit(Unit)
@@ -171,5 +189,34 @@ class ReactNativeBundleManager @Inject constructor(
         const val USE_LOCAL_BUNDLE = false
         const val LOCAL_BUNDLE_FILE_NAME = "android.jsbundle"
         const val LOCAL_BUNDLE_URL = "http://localhost:8081/index.bundle?platform=android"
+    }
+}
+
+fun readFileAsString(file: File): String {
+    val stringBuilder = StringBuilder()
+    val inputStream: FileInputStream
+
+    try {
+        inputStream = FileInputStream(file)
+        val buffer = ByteArray(1024)
+        var length: Int
+
+        while (inputStream.read(buffer).also { length = it } != -1) {
+            stringBuilder.append(String(buffer, 0, length))
+        }
+
+        inputStream.close()
+    } catch (e: Exception) {
+        return "-"
+    }
+    return stringBuilder.toString()
+}
+
+class JSCheckBridge(@MainThread private val onVerified: () -> Unit) {
+    @JavascriptInterface
+    fun postMessage() {
+        CoroutineScope(Dispatchers.Main).launch {
+            onVerified.invoke()
+        }
     }
 }
