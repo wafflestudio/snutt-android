@@ -45,6 +45,7 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -227,6 +228,7 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
+            InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
@@ -269,13 +271,10 @@ class RootActivity : AppCompatActivity() {
                             },
                         ),
                     ) { backStackEntry ->
-                        val parentBackStackEntry = navController.previousBackStackEntry ?: return@composable2
-                        val lectureDetailViewModel =
-                            hiltViewModel<LectureDetailViewModel>(parentBackStackEntry)
-
                         val homeBackStackEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
+                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
                         val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
                         DeeplinkLectureDetailPage(lectureDetailViewModel, tableListViewModel)
                     }
@@ -302,7 +301,8 @@ class RootActivity : AppCompatActivity() {
                             },
                         ),
                     ) { backStackEntry ->
-                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
+                        val themeDetailViewModel =
+                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                         )

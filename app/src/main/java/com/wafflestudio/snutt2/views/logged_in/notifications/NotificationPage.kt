@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -43,34 +42,19 @@ import com.wafflestudio.snutt2.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun NotificationPage() {
     val navController = LocalNavController.current
     val vm = hiltViewModel<NotificationsViewModel>()
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
-    val tableListViewModel = hiltViewModel<TableListViewModel>()
-    val searchViewModel = hiltViewModel<SearchViewModel>()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-    val scope = rememberCoroutineScope()
 
     val notificationList = vm.notificationList.collectAsLazyPagingItems()
     val refreshState = notificationList.loadState.refresh
@@ -96,57 +80,10 @@ fun NotificationPage() {
             else -> LazyColumn {
                 items(notificationList) {
                     it?.let {
-                        NotificationItem(
-                            it,
-                            onClick = { deeplink ->
-                                val uri = Uri.parse(deeplink)
-
-                                when (uri.host) {
-                                    NavigationDestination.TimetableLecture -> {
-                                        val timetableId = uri.getQueryParameter("timetableId") ?: return@NotificationItem
-                                        val lectureId = uri.getQueryParameter("lectureId") ?: return@NotificationItem
-
-                                        scope.launch(Dispatchers.IO) {
-                                            launchSuspendApi(apiOnProgress, apiOnError, loadingIndicatorTitle = "잠시만 기다려 주세요...") {
-                                                tableListViewModel.searchTableById(timetableId).lectureList.find {
-                                                    it.lecture_id == lectureId
-                                                }?.let {
-                                                    lectureDetailViewModel.initializeEditingLectureDetail(it, ModeType.Viewing)
-                                                    withContext(Dispatchers.Main) {
-                                                        navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    NavigationDestination.Bookmark -> {
-                                        val year = uri.getQueryParameter("year")?.toLongOrNull() ?: return@NotificationItem
-                                        val semester = uri.getQueryParameter("semester")?.let {
-                                            when (it) {
-                                                // FIXME
-                                                "SPRING" -> 1L
-                                                "SUMMER" -> 2L
-                                                "FALL" -> 3L
-                                                "WINTER" -> 4L
-                                                else -> 0L
-                                            }
-                                        } ?: return@NotificationItem
-                                        val lectureId = uri.getQueryParameter("lectureId") ?: return@NotificationItem
-
-                                        scope.launch(Dispatchers.IO) {
-                                            launchSuspendApi(apiOnProgress, apiOnError, loadingIndicatorTitle = "잠시만 기다려 주세요...") {
-                                                searchViewModel.getBookmarkLecture(year, semester, lectureId)?.let {
-                                                    lectureDetailViewModel.initializeEditingLectureDetail(it, ModeType.Viewing)
-                                                    withContext(Dispatchers.Main) {
-                                                        navController.navigate(NavigationDestination.TimetableLecture)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                        )
+                        NotificationItem(it, onClick = {
+                            val uri = Uri.parse(it.deeplink ?: return@NotificationItem)
+                            DeeplinkExecutor.execute(uri)
+                        },)
                     }
                 }
             }
@@ -155,12 +92,12 @@ fun NotificationPage() {
 }
 
 @Composable
-fun NotificationItem(info: NotificationDto, onClick: (String) -> Unit) {
+fun NotificationItem(info: NotificationDto, onClick: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
             .clicks {
-                info.deeplink?.let(onClick)
+                onClick()
             }
             .padding(horizontal = 16.dp),
     ) {
