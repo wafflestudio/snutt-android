@@ -270,8 +270,6 @@ class RootActivity : AppCompatActivity() {
                         ),
                     ) { backStackEntry ->
                         val parentBackStackEntry = navController.previousBackStackEntry ?: return@composable2
-                        val tableId = backStackEntry.arguments?.getString("tableId")
-
                         val lectureDetailViewModel =
                             hiltViewModel<LectureDetailViewModel>(parentBackStackEntry)
 
@@ -279,7 +277,7 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        DeeplinkLectureDetailPage(lectureDetailViewModel, tableListViewModel, tableId)
+                        DeeplinkLectureDetailPage(lectureDetailViewModel, tableListViewModel)
                     }
 
                     composable2(NavigationDestination.LectureColorSelector) {

@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink
 
-import android.view.MotionEvent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,16 +8,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -29,33 +22,14 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DeeplinkLectureDetailPage(
     lectureDetailViewModel: LectureDetailViewModel,
     tableListViewModel: TableListViewModel,
-    tableId: String?,
 ) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
-
-    val colors = remember {
-        listOf(
-            SNUTTColors.Red,
-            SNUTTColors.Orange,
-            SNUTTColors.Yellow,
-            SNUTTColors.Grass,
-            SNUTTColors.Green,
-            SNUTTColors.Sky,
-            SNUTTColors.Blue,
-            SNUTTColors.NavyBlue,
-            SNUTTColors.Violet,
-        )
-    }
-    var colorIndex by remember {
-        mutableIntStateOf(0)
-    }
-    val color = animateColorAsState(targetValue = colors[colorIndex % 9], label = "")
+    val tableId = navController.currentBackStackEntry?.arguments?.getString("tableId")
 
     Box(modifier = Modifier.fillMaxSize()) {
         LectureDetailPage(
@@ -69,28 +43,17 @@ fun DeeplinkLectureDetailPage(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 15.dp)
-                    .background(shape = RoundedCornerShape(30.dp), color = color.value)
+                    .background(shape = RoundedCornerShape(30.dp), color = SNUTTColors.Gray20)
                     .size(width = 150.dp, height = 40.dp)
-                    .pointerInteropFilter {
-                        when (it.action) {
-                            MotionEvent.ACTION_DOWN -> {
-                                colorIndex++
-                            }
-                            MotionEvent.ACTION_MOVE -> {
-                                colorIndex++
-                            }
-                            MotionEvent.ACTION_UP -> {
-                                scope.launch {
-                                    tableListViewModel.changeSelectedTable(tableId)
-                                    navController.navigate(NavigationDestination.Home) {
-                                        popUpTo(NavigationDestination.Home) {
-                                            inclusive = false
-                                        }
-                                    }
+                    .clicks {
+                        scope.launch {
+                            tableListViewModel.changeSelectedTable(tableId)
+                            navController.navigate(NavigationDestination.Home) {
+                                popUpTo(NavigationDestination.Home) {
+                                    inclusive = false
                                 }
                             }
                         }
-                        true
                     },
                 contentAlignment = Alignment.Center,
             ) {
