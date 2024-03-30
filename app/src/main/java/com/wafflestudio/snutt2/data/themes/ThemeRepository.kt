@@ -12,7 +12,7 @@ interface ThemeRepository {
 
     val builtInThemes: StateFlow<List<BuiltInTheme>>
 
-    val currentTableTheme: StateFlow<TableTheme>
+    val currentTableTheme: StateFlow<TableTheme> // FIXME: 이게 ThemeRepository에 있는 게 맞나... ThemeRepository와 CurrentTableRepository에 의존하는 UseCase를 만들어야 할까?
 
     suspend fun fetchThemes()
 
