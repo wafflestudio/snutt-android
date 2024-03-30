@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,54 +39,59 @@ fun ColorModeSelectPage() {
         ) {
             navController.popBackStack()
         }
-        Margin(height = 10.dp)
-        SettingColumn {
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_auto),
-                hasNextPage = false,
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.AUTO)
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_auto),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.AUTO)
+                        }
+                    },
+                ) {
+                    if (themeMode == ThemeMode.AUTO) {
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        )
                     }
-                },
-            ) {
-                if (themeMode == ThemeMode.AUTO) {
-                    CheckedIcon(
-                        modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
-                    )
                 }
-            }
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_dark),
-                hasNextPage = false,
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.DARK)
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_dark),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.DARK)
+                        }
+                    },
+                ) {
+                    if (themeMode == ThemeMode.DARK) {
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        )
                     }
-                },
-            ) {
-                if (themeMode == ThemeMode.DARK) {
-                    CheckedIcon(
-                        modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
-                    )
                 }
-            }
-            SettingItem(
-                title = stringResource(R.string.settings_select_color_mode_light),
-                hasNextPage = false,
-                onClick = {
-                    scope.launch {
-                        userViewModel.setThemeMode(ThemeMode.LIGHT)
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_light),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            userViewModel.setThemeMode(ThemeMode.LIGHT)
+                        }
+                    },
+                ) {
+                    if (themeMode == ThemeMode.LIGHT) {
+                        CheckedIcon(
+                            modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                        )
                     }
-                },
-            ) {
-                if (themeMode == ThemeMode.LIGHT) {
-                    CheckedIcon(
-                        modifier = Modifier.size(22.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black500),
-                    )
                 }
             }
         }
