@@ -28,6 +28,8 @@ interface CurrentTableRepository {
 
     suspend fun getBookmarks(): List<LectureDto>
 
+    suspend fun getBookmarksOfSemester(year: Long, semester: Long): List<LectureDto>
+
     suspend fun addBookmark(lecture: LectureDto)
 
     suspend fun deleteBookmark(lecture: LectureDto)

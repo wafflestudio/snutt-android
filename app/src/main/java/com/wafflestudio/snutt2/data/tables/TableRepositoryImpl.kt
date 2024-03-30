@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -23,6 +24,10 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun fetchTableById(id: String) {
         val response = api._getTableById(id)
         snuttStorage.lastViewedTable.update(response.toOptional())
+    }
+
+    override suspend fun searchTableById(id: String): TableDto {
+        return api._getTableById(id)
     }
 
     override suspend fun fetchDefaultTable() {
