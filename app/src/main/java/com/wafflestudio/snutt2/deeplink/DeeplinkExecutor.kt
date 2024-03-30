@@ -22,8 +22,10 @@ import kotlinx.coroutines.withContext
 
 object DeeplinkExecutor {
     val deeplinkUri = mutableStateOf(Uri.EMPTY)
-    fun execute(uri: Uri) {
-        deeplinkUri.value = uri
+    fun execute(deeplink: String?) {
+        deeplink?.let {
+            deeplinkUri.value = Uri.parse(it)
+        }
     }
 }
 

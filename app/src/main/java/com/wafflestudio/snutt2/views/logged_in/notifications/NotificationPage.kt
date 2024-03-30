@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -81,8 +80,7 @@ fun NotificationPage() {
                 items(notificationList) {
                     it?.let {
                         NotificationItem(it, onClick = {
-                            val uri = Uri.parse(it.deeplink ?: return@NotificationItem)
-                            DeeplinkExecutor.execute(uri)
+                            DeeplinkExecutor.execute(it.deeplink)
                         },)
                     }
                 }
