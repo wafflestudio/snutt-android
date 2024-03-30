@@ -28,7 +28,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -53,7 +52,6 @@ fun HomePage() {
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
-    val themeListViewModel = hiltViewModel<ThemeListViewModel>()
 
     val uncheckedNotification by homeViewModel.unCheckedNotificationExist.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
