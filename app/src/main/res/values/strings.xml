@@ -368,4 +368,5 @@
     <string name="embed_map_pin_highlighted_dong">%s동</string>
     <string name="embed_map_pin_highlighted_find">%s동 길찾기</string>
     <string name="embed_map_cannot_open_url_scheme">실행 가능한 지도 어플리케이션이 없습니다.</string>
+    <string name="deeplink_page_timetable_lecture_page_floating_button">해당 시간표로 이동</string>
 </resources>
