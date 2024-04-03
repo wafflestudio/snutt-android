@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -48,6 +47,7 @@ fun DeeplinkLectureDetailPage(
         )
         if (tableId != null) {
             FloatingButton(
+                modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = {
                     scope.launch {
                         tableListViewModel.changeSelectedTable(tableId)
@@ -64,14 +64,14 @@ fun DeeplinkLectureDetailPage(
 }
 
 @Composable
-private fun BoxScope.FloatingButton(
+private fun FloatingButton(
+    modifier: Modifier,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(25.dp)
 
     Row(
-        modifier = Modifier
-            .align(Alignment.BottomCenter)
+        modifier = modifier
             .padding(bottom = 16.dp)
             .shadow(3.dp, shape)
             .background(SNUTTColors.SNUTTTheme, shape)
