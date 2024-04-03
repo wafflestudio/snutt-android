@@ -77,9 +77,7 @@ private fun BoxScope.FloatingButton(
             .align(Alignment.BottomCenter)
             .padding(bottom = 16.dp)
             .shadow(3.dp, shape)
-            .clip(shape)
-            .background(SNUTTColors.White900)
-            .border(1.dp, SNUTTColors.SNUTTTheme, shape)
+            .background(SNUTTColors.SNUTTTheme, shape)
             .padding(start = 8.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
             .clicks {
                 onClick()
@@ -89,13 +87,12 @@ private fun BoxScope.FloatingButton(
     ) {
         ArrowLeftBold(
             modifier = Modifier.size(23.dp),
-            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
         )
-        LogoIcon(modifier = Modifier.size(13.dp))
         Text(
             text = stringResource(R.string.deeplink_page_timetable_lecture_page_floating_button),
             style = SNUTTTypography.h4,
-            color = SNUTTColors.Black900,
+            color = SNUTTColors.AllWhite,
         )
     }
 }

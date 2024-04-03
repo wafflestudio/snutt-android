@@ -6,8 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -35,6 +38,7 @@ fun InstallInAppDeeplinkExecutor() {
     if (deeplinkUri == Uri.EMPTY) return
 
     val navController = LocalNavController.current
+    val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val homePageBackStackEntry = remember(navController.currentBackStackEntry) {
@@ -48,11 +52,15 @@ fun InstallInAppDeeplinkExecutor() {
     LaunchedEffect(deeplinkUri) {
         if (deeplinkUri == Uri.EMPTY) return@LaunchedEffect
 
+        // 딥링크 핸들링이 끝났으면 초기화해 줘야, 똑같은 딥링크를 다시 눌렀을 때 또 동작할 수 있다.
+        val onDone = {
+            DeeplinkExecutor.deeplinkUri.value = Uri.EMPTY
+        }
+
         withContext(Dispatchers.IO) {
             launchSuspendApi(
-                apiOnProgress,
-                apiOnError,
-                loadingIndicatorTitle = "잠시만 기다려 주세요...",
+                apiOnProgress, apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
             ) {
                 when (deeplinkUri.host) {
                     // 시간표 강의 업데이트 알림 딥링크 이동
@@ -62,10 +70,24 @@ fun InstallInAppDeeplinkExecutor() {
                         val lectureId = deeplinkUri.getQueryParameter("lectureId")
                             ?: return@launchSuspendApi
 
-                        val lectureToShow =
-                            homePageTableListViewModel.searchTableById(timetableId).lectureList.find {
-                                it.lecture_id == lectureId
+                        val lectureToShow = run {
+                            val table = try {
+                                homePageTableListViewModel.searchTableById(timetableId)
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
+                                }
+                                return@launchSuspendApi
                             }
+                            table.lectureList.find {
+                                it.lecture_id == lectureId
+                            } ?: run {
+                                withContext(Dispatchers.Main) {
+                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture))
+                                }
+                                return@launchSuspendApi
+                            }
+                        }
 
                         homePageLectureDetailViewModel.initializeEditingLectureDetail(
                             lectureToShow,
@@ -73,6 +95,7 @@ fun InstallInAppDeeplinkExecutor() {
                         )
                         withContext(Dispatchers.Main) {
                             navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
+                            onDone()
                         }
                     }
                     // 관심강좌 강의 업데이트 알림 딥링크 이동
@@ -85,7 +108,12 @@ fun InstallInAppDeeplinkExecutor() {
                         val lectureId = deeplinkUri.getQueryParameter("lectureId")
                             ?: return@launchSuspendApi
                         val lectureToShow =
-                            searchViewModel.getBookmarkLecture(year, semester, lectureId)
+                            searchViewModel.getBookmarkLecture(year, semester, lectureId) ?: run {
+                                withContext(Dispatchers.Main) {
+                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture))
+                                }
+                                return@launchSuspendApi
+                            }
 
                         homePageLectureDetailViewModel.initializeEditingLectureDetail(
                             lectureToShow,
@@ -93,6 +121,7 @@ fun InstallInAppDeeplinkExecutor() {
                         )
                         withContext(Dispatchers.Main) {
                             navController.navigate(NavigationDestination.TimetableLecture)
+                            onDone()
                         }
                     }
                 }
