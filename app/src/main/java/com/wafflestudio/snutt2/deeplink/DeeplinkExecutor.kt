@@ -52,11 +52,6 @@ fun InstallInAppDeeplinkExecutor() {
     LaunchedEffect(deeplinkUri) {
         if (deeplinkUri == Uri.EMPTY) return@LaunchedEffect
 
-        // 딥링크 핸들링이 끝났으면 초기화해 줘야, 똑같은 딥링크를 다시 눌렀을 때 또 동작할 수 있다.
-        val onDone = {
-            DeeplinkExecutor.deeplinkUri.value = Uri.EMPTY
-        }
-
         withContext(Dispatchers.IO) {
             launchSuspendApi(
                 apiOnProgress, apiOnError,
@@ -95,7 +90,6 @@ fun InstallInAppDeeplinkExecutor() {
                         )
                         withContext(Dispatchers.Main) {
                             navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
-                            onDone()
                         }
                     }
                     // 관심강좌 강의 업데이트 알림 딥링크 이동
@@ -121,11 +115,13 @@ fun InstallInAppDeeplinkExecutor() {
                         )
                         withContext(Dispatchers.Main) {
                             navController.navigate(NavigationDestination.TimetableLecture)
-                            onDone()
                         }
                     }
                 }
             }
+
+            // 딥링크 핸들링이 끝났으면 초기화해 줘야, 똑같은 딥링크를 다시 눌렀을 때 또 동작할 수 있다.
+            DeeplinkExecutor.deeplinkUri.value = Uri.EMPTY
         }
     }
 }
