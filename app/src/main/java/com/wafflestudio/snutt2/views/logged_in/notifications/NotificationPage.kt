@@ -50,164 +50,20 @@ import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
 fun NotificationPage() {
-    val navController = LocalNavController.current
-    val vm = hiltViewModel<NotificationsViewModel>()
-
-    val notificationList = vm.notificationList.collectAsLazyPagingItems()
-    val refreshState = notificationList.loadState.refresh
-    val appendState = notificationList.loadState.append
-
-    Column(
-        modifier = Modifier
-            .background(SNUTTColors.White900)
-            .fillMaxSize(),
-    ) {
-        SimpleTopBar(
-            title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = {
-                if (navController.currentDestination?.route == NavigationDestination.Notification) {
-                    navController.popBackStack()
-                }
-            },
-        )
-
-        when {
-            refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()
-            refreshState is LoadState.Error -> NotificationError()
-            else -> LazyColumn {
-                items(notificationList) {
-                    it?.let { NotificationItem(it) }
-                }
-            }
-        }
-    }
+    // TODO: 알림 페이지 구현
 }
 
 @Composable
 fun NotificationItem(info: NotificationDto) {
-    val context = LocalContext.current
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
-        ) {
-            when (info.type) {
-                0 -> WarningIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                1 -> CalendarIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                2 -> RefreshTimeIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                3 -> NotificationTrashIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                4 -> NotificationVacancyIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                5 -> NotificationFriendIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                else -> MegaphoneIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Column(
-                modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = getNotificationTime(context, info),
-                        style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = info.message,
-                    style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
-                )
-            }
-        }
-        Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)
-    }
+    // TODO: 알림 아이템 하나
 }
 
 @Composable
 fun NotificationError() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.common_network_failure),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
-        )
-    }
+    // TODO: 네트워크 에러 시 보여줄 페이지
 }
 
 @Composable
 fun NotificationPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 30.dp, end = 30.dp, bottom = 40.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AlarmOnIcon(
-            modifier = Modifier.size(40.dp),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.notifications_placeholder_title),
-            style = SNUTTTypography.h2.copy(color = SNUTTColors.Gray200),
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.notifications_placeholder_description),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NotificationItemPreview() {
-    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null))
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NotificationPagePreview() {
-    NotificationPage()
+    // TODO: 알림이 하나도 없을 때 보여줄 페이지 (힌트: 새로 가입한 계정이면 이 화면을 볼 수 있다)
 }

@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.data.notifications
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
@@ -10,20 +8,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
-    NotificationRepository {
+class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) : NotificationRepository {
+
+    // TODO: https://developer.android.com/codelabs/android-paging-basics#5
     override suspend fun getNotificationResultStream(): Flow<PagingData<NotificationDto>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = { NotificationPagingSource(api) },
-        ).flow
+        TODO("Not yet implemented")
     }
 
     override suspend fun getNotificationCount(): Long {
-        return api._getNotificationCount().count
+        // TODO 2: 알림 개수 반환하기
+        return 0L
     }
 
     companion object {
