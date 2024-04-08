@@ -30,7 +30,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import kotlinx.coroutines.launch
 
 @Composable
-fun DeeplinkLectureDetailPage(
+fun TimetableLectureDetailPage(
     lectureDetailViewModel: LectureDetailViewModel,
     tableListViewModel: TableListViewModel,
 ) {

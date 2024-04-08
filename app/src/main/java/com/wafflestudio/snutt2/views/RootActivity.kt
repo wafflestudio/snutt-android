@@ -68,7 +68,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkLectureDetailPage
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
@@ -276,7 +276,7 @@ class RootActivity : AppCompatActivity() {
                         }
                         val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
                         val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        DeeplinkLectureDetailPage(lectureDetailViewModel, tableListViewModel)
+                        TimetableLectureDetailPage(lectureDetailViewModel, tableListViewModel)
                     }
 
                     composable2(NavigationDestination.LectureColorSelector) {
