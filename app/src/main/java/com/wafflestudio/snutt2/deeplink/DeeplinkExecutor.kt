@@ -115,7 +115,6 @@ fun InstallInAppDeeplinkExecutor() {
                 ) {
                     handleTimetableLectureDeeplink()
                 }
-
             }
             // 관심강좌 강의 업데이트 알림 딥링크 이동
             NavigationDestination.Bookmark -> {
