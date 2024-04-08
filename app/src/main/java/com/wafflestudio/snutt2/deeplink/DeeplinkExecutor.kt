@@ -52,76 +52,74 @@ fun InstallInAppDeeplinkExecutor() {
     LaunchedEffect(deeplinkUri) {
         if (deeplinkUri == Uri.EMPTY) return@LaunchedEffect
 
-        withContext(Dispatchers.IO) {
-            launchSuspendApi(
-                apiOnProgress, apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
-            ) {
-                when (deeplinkUri.host) {
-                    // 시간표 강의 업데이트 알림 딥링크 이동
-                    NavigationDestination.TimetableLecture -> {
-                        val timetableId = deeplinkUri.getQueryParameter("timetableId")
-                            ?: return@launchSuspendApi
-                        val lectureId = deeplinkUri.getQueryParameter("lectureId")
-                            ?: return@launchSuspendApi
+        launchSuspendApi(
+            apiOnProgress, apiOnError,
+            loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
+        ) {
+            when (deeplinkUri.host) {
+                // 시간표 강의 업데이트 알림 딥링크 이동
+                NavigationDestination.TimetableLecture -> {
+                    val timetableId = deeplinkUri.getQueryParameter("timetableId")
+                        ?: return@launchSuspendApi
+                    val lectureId = deeplinkUri.getQueryParameter("lectureId")
+                        ?: return@launchSuspendApi
 
-                        val lectureToShow = run {
-                            val table = try {
-                                homePageTableListViewModel.searchTableById(timetableId)
-                            } catch (e: Exception) {
-                                withContext(Dispatchers.Main) {
-                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
-                                }
-                                return@launchSuspendApi
+                    val lectureToShow = run {
+                        val table = try {
+                            homePageTableListViewModel.searchTableById(timetableId)
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
                             }
-                            table.lectureList.find {
-                                it.lecture_id == lectureId
-                            } ?: run {
-                                withContext(Dispatchers.Main) {
-                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture))
-                                }
-                                return@launchSuspendApi
-                            }
+                            return@launchSuspendApi
                         }
-
-                        homePageLectureDetailViewModel.initializeEditingLectureDetail(
-                            lectureToShow,
-                            ModeType.Viewing,
-                        )
-                        withContext(Dispatchers.Main) {
-                            navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
+                        table.lectureList.find {
+                            it.lecture_id == lectureId
+                        } ?: run {
+                            withContext(Dispatchers.Main) {
+                                context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture))
+                            }
+                            return@launchSuspendApi
                         }
                     }
-                    // 관심강좌 강의 업데이트 알림 딥링크 이동
-                    NavigationDestination.Bookmark -> {
-                        val year = deeplinkUri.getQueryParameter("year")?.toLongOrNull()
-                            ?: return@launchSuspendApi
-                        val semester =
-                            deeplinkUri.getQueryParameter("semester")?.semesterStringToLong()
-                                ?: return@launchSuspendApi
-                        val lectureId = deeplinkUri.getQueryParameter("lectureId")
-                            ?: return@launchSuspendApi
-                        val lectureToShow =
-                            searchViewModel.getBookmarkLecture(year, semester, lectureId) ?: run {
-                                withContext(Dispatchers.Main) {
-                                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture))
-                                }
-                                return@launchSuspendApi
-                            }
 
-                        homePageLectureDetailViewModel.initializeEditingLectureDetail(
-                            lectureToShow,
-                            ModeType.Viewing,
-                        )
-                        withContext(Dispatchers.Main) {
-                            navController.navigate(NavigationDestination.TimetableLecture)
+                    homePageLectureDetailViewModel.initializeEditingLectureDetail(
+                        lectureToShow,
+                        ModeType.Viewing,
+                    )
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
+                    }
+                }
+                // 관심강좌 강의 업데이트 알림 딥링크 이동
+                NavigationDestination.Bookmark -> {
+                    val year = deeplinkUri.getQueryParameter("year")?.toLongOrNull()
+                        ?: return@launchSuspendApi
+                    val semester =
+                        deeplinkUri.getQueryParameter("semester")?.semesterStringToLong()
+                            ?: return@launchSuspendApi
+                    val lectureId = deeplinkUri.getQueryParameter("lectureId")
+                        ?: return@launchSuspendApi
+                    val lectureToShow =
+                        searchViewModel.getBookmarkLecture(year, semester, lectureId) ?: run {
+                            withContext(Dispatchers.Main) {
+                                context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture))
+                            }
+                            return@launchSuspendApi
                         }
+
+                    homePageLectureDetailViewModel.initializeEditingLectureDetail(
+                        lectureToShow,
+                        ModeType.Viewing,
+                    )
+                    withContext(Dispatchers.Main) {
+                        navController.navigate(NavigationDestination.TimetableLecture)
                     }
                 }
             }
-
-            // 딥링크 핸들링이 끝났으면 초기화해 줘야, 똑같은 딥링크를 다시 눌렀을 때 또 동작할 수 있다.
-            DeeplinkExecutor.deeplinkUri.value = Uri.EMPTY
         }
+
+        // 딥링크 핸들링이 끝났으면 초기화해 줘야, 똑같은 딥링크를 다시 눌렀을 때 또 동작할 수 있다.
+        DeeplinkExecutor.deeplinkUri.value = Uri.EMPTY
     }
 }
