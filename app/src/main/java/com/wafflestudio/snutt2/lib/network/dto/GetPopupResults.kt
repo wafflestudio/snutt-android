@@ -9,7 +9,7 @@ data class GetPopupResults(
 ) {
     data class Popup(
         @Json(name = "key") val key: String,
-        @Json(name = "imageUri") val url: String,
+        @Json(name = "imageUri") val uri: String,
         @Json(name = "hiddenDays") val popupHideDays: Int?,
     )
 }
