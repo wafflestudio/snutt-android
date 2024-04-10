@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -49,13 +50,67 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
-fun NotificationPage() {
-    // TODO: 알림 페이지 구현
+fun NotificationPage(
+    notificationsViewModel: NotificationsViewModel = hiltViewModel(),
+) {
+    val notificationList = notificationsViewModel.notificationList.collectAsLazyPagingItems()
+    LazyColumn(
+        userScrollEnabled = true,
+        modifier = Modifier
+    ) {
+        items(notificationList){
+            NotificationItem(info = it!!)
+        }
+    }
 }
 
 @Composable
 fun NotificationItem(info: NotificationDto) {
-    // TODO: 알림 아이템 하나
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp)
+    ){
+        when(info.type){
+            0 -> WarningIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            1 -> CalendarIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            2 -> RefreshTimeIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            3 -> NotificationTrashIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            4 -> NotificationVacancyIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            5 -> NotificationFriendIcon(
+                modifier = Modifier.size(30.dp)
+            )
+            else -> MegaphoneIcon(
+                modifier = Modifier.size(30.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(text = info.title)
+                Text(text = info.createdAt)
+            }
+            Text(text = info.message)
+        }
+    }
 }
 
 @Composable
