@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,71 +58,146 @@ fun NotificationPage(
     notificationsViewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val notificationList = notificationsViewModel.notificationList.collectAsLazyPagingItems()
-    LazyColumn(
-        userScrollEnabled = true,
+    val navController = LocalNavController.current
+
+    Column(
         modifier = Modifier
+            .fillMaxSize()
     ) {
-        items(notificationList){
-            NotificationItem(info = it!!)
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .height(30.dp)
+                .fillMaxWidth()
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(painter = painterResource(id = R.drawable.ic_arrow_back), "")
+            }
+            Text(text = "알림")
+        }
+
+        Divider(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+
+        if (notificationList.loadState.refresh is LoadState.Error) {
+            NotificationError()
+        }
+        else if (notificationList.itemCount==0) {
+            NotificationPlaceholder()
+        }
+        else {
+            LazyColumn(
+                userScrollEnabled = true,
+                modifier = Modifier
+            ) {
+                items(notificationList) {
+                    NotificationItem(info = it!!)
+                }
+            }
         }
     }
 }
 
 @Composable
 fun NotificationItem(info: NotificationDto) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 15.dp)
-    ){
-        when(info.type){
-            0 -> WarningIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            1 -> CalendarIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            2 -> RefreshTimeIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            3 -> NotificationTrashIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            4 -> NotificationVacancyIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            5 -> NotificationFriendIcon(
-                modifier = Modifier.size(30.dp)
-            )
-            else -> MegaphoneIcon(
-                modifier = Modifier.size(30.dp)
-            )
-        }
+    val context = LocalContext.current
 
-        Column(
+    Column {
+        Spacer(modifier = Modifier.height(5.dp))
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 10.dp)
+                .padding(horizontal = 15.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = info.title)
-                Text(text = info.createdAt)
+            when (info.type) {
+                0 -> WarningIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                1 -> CalendarIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                2 -> RefreshTimeIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                3 -> NotificationTrashIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                4 -> NotificationVacancyIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                5 -> NotificationFriendIcon(
+                    modifier = Modifier.size(30.dp)
+                )
+
+                else -> MegaphoneIcon(
+                    modifier = Modifier.size(30.dp)
+                )
             }
-            Text(text = info.message)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = info.title)
+                    Text(text = getNotificationTime(context = context, info))
+                }
+                Text(text = info.message)
+            }
         }
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        Divider(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+        )
     }
 }
 
 @Composable
 fun NotificationError() {
-    // TODO: 네트워크 에러 시 보여줄 페이지
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 25.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Icon(painter = painterResource(id = R.drawable.ic_warning), "")
+
+        Text("네트워크 연결 상태를 확인해주세요.")
+    }
 }
 
 @Composable
 fun NotificationPlaceholder() {
-    // TODO: 알림이 하나도 없을 때 보여줄 페이지 (힌트: 새로 가입한 계정이면 이 화면을 볼 수 있다)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 25.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Icon(painter = painterResource(id = R.drawable.ic_alarm_default), "")
+
+        Text("알림이 없습니다")
+
+        Text("넣은 강좌의 수강편람이 바뀌거나, 새로운 수강편람이 뜨면 알림을 줍니다")
+    }
 }

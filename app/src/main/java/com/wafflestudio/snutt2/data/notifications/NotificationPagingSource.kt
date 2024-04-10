@@ -25,8 +25,8 @@ class NotificationPagingSource @Inject constructor(
             )
             LoadResult.Page(
                 data = response,
-                prevKey = offset-params.loadSize,
-                nextKey = offset+params.loadSize
+                prevKey = if(offset == 0) null else offset-params.loadSize,
+                nextKey = if(response.isEmpty()) null else offset+params.loadSize
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
