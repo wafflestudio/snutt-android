@@ -17,11 +17,13 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
         return Pager(
             config = PagingConfig(
                 pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
-                enablePlaceholders = true
+                enablePlaceholders = true,
             ),
-            pagingSourceFactory = {NotificationPagingSource(
-                api = api
-            )}
+            pagingSourceFactory = {
+                NotificationPagingSource(
+                    api = api,
+                )
+            },
         ).flow
     }
 
