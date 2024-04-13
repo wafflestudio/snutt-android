@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
 
 interface TableRepository {
@@ -8,6 +9,8 @@ interface TableRepository {
     val tableMap: StateFlow<Map<String, SimpleTableDto>>
 
     suspend fun fetchTableById(id: String)
+
+    suspend fun searchTableById(id: String): TableDto
 
     suspend fun fetchDefaultTable()
 

@@ -893,3 +893,16 @@ fun CustomThemeMoreIcon(
         contentDescription = "",
     )
 }
+
+@Composable
+fun ArrowLeftBold(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.arrow_left_bold),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
