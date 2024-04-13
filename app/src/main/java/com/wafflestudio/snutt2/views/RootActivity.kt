@@ -27,6 +27,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
@@ -39,13 +40,14 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
+import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
@@ -55,16 +57,18 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
@@ -224,6 +228,7 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
+            InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
@@ -257,6 +262,23 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
+                    composable2(
+                        route = "${NavigationDestination.TimetableLecture}?tableId={tableId}",
+                        arguments = listOf(
+                            navArgument("tableId") {
+                                type = NavType.StringType
+                                nullable = true
+                            },
+                        ),
+                    ) { backStackEntry ->
+                        val homeBackStackEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
+                        val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
+                        TimetableLectureDetailPage(lectureDetailViewModel, tableListViewModel)
+                    }
+
                     composable2(NavigationDestination.LectureColorSelector) {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
@@ -279,7 +301,8 @@ class RootActivity : AppCompatActivity() {
                             },
                         ),
                     ) { backStackEntry ->
-                        val themeDetailViewModel = hiltViewModel<ThemeDetailViewModel>(backStackEntry)
+                        val themeDetailViewModel =
+                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
                         ThemeDetailPage(
                             themeDetailViewModel = themeDetailViewModel,
                         )
@@ -322,6 +345,7 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.composable2(
         route: String,
+        arguments: List<NamedNavArgument> = emptyList(),
         deepLinks: List<NavDeepLink> = listOf(
             navDeepLink {
                 uriPattern = "${applicationContext.getString(R.string.scheme)}$route"
@@ -331,6 +355,7 @@ class RootActivity : AppCompatActivity() {
     ) {
         composable(
             route,
+            arguments = arguments,
             deepLinks = deepLinks,
             enterTransition = {
                 slideInHorizontally(

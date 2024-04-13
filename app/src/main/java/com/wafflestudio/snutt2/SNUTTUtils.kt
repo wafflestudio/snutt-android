@@ -59,6 +59,14 @@ object SNUTTUtils {
         return String.format("%02d:%02d", hour, minute)
     }
 
+    fun String.semesterStringToLong(): Long = when (this) {
+        "SPRING" -> 1L
+        "SUMMER" -> 2L
+        "AUTUMN" -> 3L
+        "WINTER" -> 4L
+        else -> 0L
+    }
+
     fun getTimeList(from: Int, to: Int): Array<String?> {
         val list = arrayOfNulls<String>(to - from + 1)
         for (i in from..to) list[i - from] = numberToTime(i / 2f)

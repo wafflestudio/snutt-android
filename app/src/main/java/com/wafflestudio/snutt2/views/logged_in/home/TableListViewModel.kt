@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.lib.courseBookEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -69,6 +70,10 @@ class TableListViewModel @Inject constructor(
 
     suspend fun copyTable(tableId: String) {
         tableRepository.copyTable(tableId)
+    }
+
+    suspend fun searchTableById(id: String): TableDto {
+        return tableRepository.searchTableById(id)
     }
 
     fun checkTableDeletable(): Boolean {

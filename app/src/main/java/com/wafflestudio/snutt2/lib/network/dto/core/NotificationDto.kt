@@ -11,6 +11,7 @@ data class NotificationDto(
     @Json(name = "created_at") val createdAt: String,
     @Json(name = "type") val type: Int,
     @Json(name = "detail") val detail: Detail?,
+    @Json(name = "deeplink") val deeplink: String?,
 ) {
 
     @JsonClass(generateAdapter = true)

@@ -368,4 +368,9 @@
     <string name="embed_map_pin_highlighted_dong">%s동</string>
     <string name="embed_map_pin_highlighted_find">%s동 길찾기</string>
     <string name="embed_map_cannot_open_url_scheme">실행 가능한 지도 어플리케이션이 없습니다.</string>
+    <string name="deeplink_page_timetable_lecture_page_floating_button">해당 시간표로 이동</string>
+    <string name="deeplink_page_timetable_lecture_page_loading_text">강의 불러오는 중…</string>
+    <string name="deeplink_page_timetable_lecture_page_not_existing_lecture">시간표에서 삭제된 강의입니다</string>
+    <string name="deeplink_page_timetable_lecture_page_not_existing_table">존재하지 않는 시간표입니다</string>
+    <string name="deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture">관심강좌에서 삭제된 강의입니다</string>
 </resources>

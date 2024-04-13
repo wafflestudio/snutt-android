@@ -239,6 +239,12 @@ class SearchViewModel @Inject constructor(
         getBookmarkList()
     }
 
+    suspend fun getBookmarkLecture(year: Long, semester: Long, lectureId: String): LectureDto? {
+        return currentTableRepository.getBookmarksOfSemester(year, semester).find {
+            it.id == lectureId
+        }
+    }
+
     suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
         _draggedTimeBlock.emit(draggedTimeBlock)
         draggedTimeBlock.clusterToTimeBlocks().let {
