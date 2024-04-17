@@ -13,9 +13,11 @@ import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -38,6 +40,7 @@ fun InstallInAppDeeplinkExecutor() {
     if (deeplinkUri == Uri.EMPTY) return
 
     val navController = LocalNavController.current
+    val homePageController = LocalHomePageController.current
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
@@ -103,6 +106,15 @@ fun InstallInAppDeeplinkExecutor() {
         }
     }
 
+    suspend fun handleFriendsDeeplink() {
+        // TODO: 친구탭 서랍 열기
+        val openDrawer = deeplinkUri.getQueryParameter("openDrawer") ?: return
+        withContext(Dispatchers.Main) {
+            navController.navigate(NavigationDestination.Home)
+            homePageController.update(HomeItem.Friends)
+        }
+    }
+
     LaunchedEffect(deeplinkUri) {
         if (deeplinkUri == Uri.EMPTY) return@LaunchedEffect
 
@@ -124,6 +136,9 @@ fun InstallInAppDeeplinkExecutor() {
                 ) {
                     handleBookmarkDeeplink()
                 }
+            }
+            NavigationDestination.Friends -> {
+                handleFriendsDeeplink()
             }
         }
 
