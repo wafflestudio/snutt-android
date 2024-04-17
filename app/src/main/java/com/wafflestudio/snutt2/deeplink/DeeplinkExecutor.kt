@@ -106,13 +106,11 @@ fun InstallInAppDeeplinkExecutor() {
         }
     }
 
-    suspend fun handleFriendsDeeplink() {
+    fun handleFriendsDeeplink() {
         // TODO: 친구탭 서랍 열기
         val openDrawer = deeplinkUri.getQueryParameter("openDrawer") ?: return
-        withContext(Dispatchers.Main) {
-            navController.navigate(NavigationDestination.Home)
-            homePageController.update(HomeItem.Friends)
-        }
+        navController.navigate(NavigationDestination.Home)
+        homePageController.update(HomeItem.Friends)
     }
 
     LaunchedEffect(deeplinkUri) {
