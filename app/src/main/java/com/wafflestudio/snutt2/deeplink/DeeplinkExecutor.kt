@@ -22,6 +22,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
+import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -109,7 +110,7 @@ fun InstallInAppDeeplinkExecutor() {
     fun handleFriendsDeeplink() {
         // TODO: 친구탭 서랍 열기
         val openDrawer = deeplinkUri.getQueryParameter("openDrawer") ?: return
-        navController.navigate(NavigationDestination.Home)
+        navController.navigateAsOrigin(NavigationDestination.Home)
         homePageController.update(HomeItem.Friends)
     }
 
