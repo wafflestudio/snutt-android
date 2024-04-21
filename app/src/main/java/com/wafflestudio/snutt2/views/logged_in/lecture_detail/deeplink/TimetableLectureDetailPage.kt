@@ -27,6 +27,7 @@ import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,11 +52,7 @@ fun TimetableLectureDetailPage(
                 onClick = {
                     scope.launch {
                         tableListViewModel.changeSelectedTable(tableId)
-                        navController.navigate(NavigationDestination.Home) {
-                            popUpTo(NavigationDestination.Home) {
-                                inclusive = false
-                            }
-                        }
+                        navController.navigateAsOrigin(NavigationDestination.Home)
                     }
                 },
             )
