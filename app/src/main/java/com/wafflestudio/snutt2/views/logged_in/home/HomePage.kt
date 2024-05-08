@@ -156,7 +156,7 @@ fun HomePage() {
 
     if (shouldShowPopup) {
         Popup(
-            url = popupState.popup?.url ?: "",
+            uri = popupState.popup?.uri ?: "",
             onClickFewDays = {
                 scope.launch {
                     userViewModel.closePopupWithHiddenDays()
