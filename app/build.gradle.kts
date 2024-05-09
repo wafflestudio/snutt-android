@@ -58,6 +58,7 @@ android {
 
     buildTypes {
         getByName("debug") {
+            isDefault = true
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"))
         }
@@ -77,6 +78,7 @@ android {
 
     productFlavors {
         create("staging") {
+            isDefault = true
             applicationIdSuffix = ".staging"
 
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
