@@ -1,11 +1,23 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -21,7 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
+import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.SendIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -47,7 +63,7 @@ fun AppReportPage() {
     var email by remember { mutableStateOf(userViewModel.userInfo.value?.email ?: "") }
     var detail by remember { mutableStateOf("") }
 
-    var sentEnabled by mutableStateOf(true)
+    var sentEnabled by remember { mutableStateOf(true) }
     val sendFeedback = {
         if (detail.isEmpty()) {
             context.toast(context.getString(R.string.feedback_empty_detail_warning))
@@ -57,7 +73,8 @@ fun AppReportPage() {
             sentEnabled = false
             scope.launch {
                 launchSuspendApi(
-                    apiOnProgress, apiOnError,
+                    apiOnProgress,
+                    apiOnError,
                     onError = {
                         sentEnabled = true
                         apiOnProgress.hideProgress()
@@ -78,12 +95,14 @@ fun AppReportPage() {
             .fillMaxSize()
             .background(SNUTTColors.White900),
     ) {
-        TopBar(title = {
-            Text(
-                text = stringResource(R.string.settings_app_report_title),
-                style = SNUTTTypography.h2,
-            )
-        }, navigationIcon = {
+        TopBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.settings_app_report_title),
+                    style = SNUTTTypography.h2,
+                )
+            },
+            navigationIcon = {
                 ArrowBackIcon(
                     modifier = Modifier
                         .size(30.dp)
@@ -92,19 +111,25 @@ fun AppReportPage() {
                         },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
-            }, actions = {
+            },
+            actions = {
                 SendIcon(
                     modifier = Modifier
                         .size(20.dp)
                         .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
-            },)
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+            },
+        )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp),
+        ) {
             Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = stringResource(R.string.settings_app_report_email),
-                style = SNUTTTypography.h4.copy(fontSize = 13.sp, color = SNUTTColors.Black600),
+                style = SNUTTTypography.body2.copy(color = SNUTTColors.Black600),
             )
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
@@ -114,22 +139,26 @@ fun AppReportPage() {
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email,
                 ),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusManager.moveFocus(
-                        FocusDirection.Down,
-                    )
-                },),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(
+                            FocusDirection.Down,
+                        )
+                    },
+                ),
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = stringResource(R.string.settings_app_report_detail),
-                style = SNUTTTypography.h4.copy(fontSize = 13.sp, color = SNUTTColors.Black600),
+                style = SNUTTTypography.body2.copy(color = SNUTTColors.Black600),
             )
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
-                value = detail, onValueChange = { detail = it },
+                value = detail,
+                onValueChange = { detail = it },
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
             )
             Spacer(modifier = Modifier.height(5.dp))
