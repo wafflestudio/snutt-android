@@ -210,7 +210,7 @@
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
     <string name="settings_app_report_loading_indicator_title">피드백 전송</string>
-    <string name="settings_app_report_content_hint">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
+    <string name="settings_app_report_description">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
     <string name="settings_service_info">서비스 약관</string>

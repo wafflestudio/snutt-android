@@ -163,7 +163,7 @@ fun AppReportPage() {
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(
-                text = stringResource(R.string.settings_app_report_content_hint),
+                text = stringResource(R.string.settings_app_report_description),
                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
             )
         }
