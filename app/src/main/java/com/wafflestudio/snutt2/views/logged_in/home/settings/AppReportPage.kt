@@ -136,7 +136,7 @@ fun AppReportPage() {
                 value = email,
                 onValueChange = { email = it },
                 hint = stringResource(R.string.example_email),
-                textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
+                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -160,7 +160,7 @@ fun AppReportPage() {
                 value = detail,
                 onValueChange = { detail = it },
                 hint = stringResource(R.string.settings_app_report_detail_hint),
-                textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
+                textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(
