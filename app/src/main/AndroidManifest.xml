@@ -41,13 +41,17 @@
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.SEARCH" />
-
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="kakaolink"
+                    android:scheme="@string/kakao_native_app_key_kakao" />
             </intent-filter>
 
         </activity>
@@ -88,5 +92,9 @@ id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
         </provider>
 
     </application>
+
+    <queries>
+        <package android:name="com.kakao.talk" />
+    </queries>
 
 </manifest>
