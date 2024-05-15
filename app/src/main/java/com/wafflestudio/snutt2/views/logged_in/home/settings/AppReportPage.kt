@@ -159,6 +159,7 @@ fun AppReportPage() {
             EditText(
                 value = detail,
                 onValueChange = { detail = it },
+                hint = stringResource(R.string.settings_app_report_detail_hint),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 17.sp),
             )
             Spacer(modifier = Modifier.height(5.dp))
