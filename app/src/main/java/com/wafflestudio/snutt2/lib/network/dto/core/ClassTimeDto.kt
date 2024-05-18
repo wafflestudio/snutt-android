@@ -1,12 +1,9 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
-@Parcelize
 data class ClassTimeDto(
     @Json(name = "day") val day: Int,
     @Json(name = "place") val place: String,
@@ -14,7 +11,7 @@ data class ClassTimeDto(
     @Json(name = "startMinute") val startMinute: Int = 0,
     @Json(name = "endMinute") val endMinute: Int = 0,
     @Json(name = "lectureBuildings") val lectureBuildings: List<LectureBuildingDto>? = null,
-) : Parcelable {
+) {
 
     val startTimeInFloat: Float
         get() = startMinute / 60f
