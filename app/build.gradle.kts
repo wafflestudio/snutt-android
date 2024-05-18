@@ -9,7 +9,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
-    id("kotlin-parcelize")
     id("com.google.firebase.appdistribution")
     id("com.google.firebase.crashlytics")
 }

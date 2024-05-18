@@ -1,12 +1,9 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
-@Parcelize
 data class LectureDto(
     @Json(name = "_id") val id: String,
     @Json(name = "lecture_id") val lecture_id: String? = null,
@@ -27,7 +24,7 @@ data class LectureDto(
     @Json(name = "color") val color: ColorDto = ColorDto(),
     @Json(name = "registrationCount") val registrationCount: Long = 0,
     @Json(name = "wasFull") val wasFull: Boolean = false,
-) : Parcelable {
+) {
 
     val isCustom: Boolean
         get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
