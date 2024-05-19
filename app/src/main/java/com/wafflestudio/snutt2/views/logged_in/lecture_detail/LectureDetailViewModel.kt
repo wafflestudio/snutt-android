@@ -7,7 +7,6 @@ import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTheme
@@ -15,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,8 +42,10 @@ class LectureDetailViewModel @Inject constructor(
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
 
-    private val _editingLectureBuildings = MutableStateFlow(emptyList<LectureBuildingDto>())
-    val editingLectureBuildings = _editingLectureBuildings.asStateFlow()
+    val editingLectureBuildings = editingLectureDetail.map { lecture ->
+        val places = lecture.class_time_json.map { it.place }.distinct().joinToString(",")
+        lectureSearchRepository.getLectureBuildings(places)
+    }
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
@@ -100,11 +102,6 @@ class LectureDetailViewModel @Inject constructor(
             courseNumber = editingLectureDetail.value.course_number ?: return null,
             instructor = editingLectureDetail.value.instructor,
         )
-    }
-
-    suspend fun getLectureBuildingsFromPlaces() {
-        val places = _editingLectureDetail.value.class_time_json.map { it.place }.distinct().joinToString(",")
-        _editingLectureBuildings.emit(lectureSearchRepository.getLectureBuildings(places))
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

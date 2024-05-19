@@ -46,6 +46,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -82,7 +83,7 @@ fun LectureDetailPage(
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
     val editingLectureDetail by vm.editingLectureDetail.collectAsState()
-    val editingLectureBuildings by vm.editingLectureBuildings.collectAsState()
+    val editingLectureBuildings by vm.editingLectureBuildings.collectAsState(emptyList<LectureBuildingDto>())
     val tableColorTheme by vm.currentTableTheme.collectAsState()
     val isCustom = editingLectureDetail.isCustom
     val bookmarkList by searchViewModel.bookmarkList.collectAsState()
@@ -97,7 +98,6 @@ fun LectureDetailPage(
      */
     LaunchedEffect(modeType) {
         if (modeType !is ModeType.Editing) creditText = editingLectureDetail.credit.toString()
-        vm.getLectureBuildingsFromPlaces()
     }
 
     /* 바텀시트 관련 */
