@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -62,6 +63,11 @@ class LectureSearchRepositoryImpl @Inject constructor(
             addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
         }
         return list
+    }
+
+    override suspend fun getLectureBuildings(places: String): List<LectureBuildingDto> {
+        val response = api._getBuildings(places)
+        return response.content
     }
 
     companion object {

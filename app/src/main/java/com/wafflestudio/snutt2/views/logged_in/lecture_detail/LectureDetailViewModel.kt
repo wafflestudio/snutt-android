@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTheme
@@ -37,8 +38,12 @@ class LectureDetailViewModel @Inject constructor(
     val modeType = _modeType.asStateFlow()
 
     private var fixedLectureDetail = LectureDto.Default
+
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
+
+    private val _editingLectureBuildings = MutableStateFlow(emptyList<LectureBuildingDto>())
+    val editingLectureBuildings = _editingLectureBuildings.asStateFlow()
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
@@ -95,6 +100,11 @@ class LectureDetailViewModel @Inject constructor(
             courseNumber = editingLectureDetail.value.course_number ?: return null,
             instructor = editingLectureDetail.value.instructor,
         )
+    }
+
+    suspend fun getLectureBuildingsFromPlaces() {
+        val places = _editingLectureDetail.value.class_time_json.map { it.place }.distinct().joinToString(",")
+        _editingLectureBuildings.emit(lectureSearchRepository.getLectureBuildings(places))
     }
 
     private fun buildPutLectureParams(): PutLectureParams {
