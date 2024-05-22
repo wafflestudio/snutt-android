@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
+import android.content.Context
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.R
 
 @JsonClass(generateAdapter = true)
 data class LectureDto(
@@ -24,6 +26,7 @@ data class LectureDto(
     @Json(name = "color") val color: ColorDto = ColorDto(),
     @Json(name = "registrationCount") val registrationCount: Long = 0,
     @Json(name = "wasFull") val wasFull: Boolean = false,
+    @Json(name = "snuttEvLecture") val review: LectureReviewDto? = null,
 ) {
 
     val isCustom: Boolean
@@ -31,6 +34,12 @@ data class LectureDto(
 
     val buildings: List<LectureBuildingDto>
         get() = class_time_json.flatMap { it.lectureBuildings.orEmpty() }.distinct()
+
+    fun getReviewUrl(context: Context): String? { // DTO와 ui model 분리 후 ui model으로 옮기기
+        return review?.id?.let {
+            context.getString(R.string.review_base_url) + "/detail?id=$it"
+        }
+    }
 
     companion object {
         val Default = LectureDto(

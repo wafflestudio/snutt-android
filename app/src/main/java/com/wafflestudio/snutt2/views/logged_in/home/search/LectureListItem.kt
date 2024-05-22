@@ -226,8 +226,7 @@ fun LazyItemScope.LectureListItem(
                         verifyEmailBeforeApi(
                             composableStates,
                             api = {
-                                val url =
-                                    searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
+                                val url = lectureDataWithState.item.getReviewUrl(context)
                                 openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
                             },
                             onUnverified = {

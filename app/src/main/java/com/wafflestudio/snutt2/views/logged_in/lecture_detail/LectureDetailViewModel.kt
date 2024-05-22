@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
-import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -26,7 +25,6 @@ sealed class ModeType {
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
-    private val lectureSearchRepository: LectureSearchRepository,
     private val themeRepository: ThemeRepository,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
@@ -88,13 +86,6 @@ class LectureDetailViewModel @Inject constructor(
         val lectureNumber = _editingLectureDetail.value.lecture_number
             ?: (throw IllegalStateException("lecture with no course number")) // FIXME
         return currentTableRepository.getLectureSyllabusUrl(courseNumber, lectureNumber)
-    }
-
-    suspend fun getReviewContentsUrl(): String? {
-        return lectureSearchRepository.getLectureReviewUrl(
-            courseNumber = editingLectureDetail.value.course_number ?: return null,
-            instructor = editingLectureDetail.value.instructor,
-        )
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

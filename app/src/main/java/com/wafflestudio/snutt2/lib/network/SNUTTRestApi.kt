@@ -214,12 +214,6 @@ interface SNUTTRestApi {
         @Body body: PostFeedbackParams,
     ): PostFeedbackResults
 
-    @GET("/ev-service/v1/lectures/id")
-    suspend fun _getLecturesId(
-        @Query(value = "course_number") courseNumber: String,
-        @Query(value = "instructor") instructor: String,
-    ): GetLecturesIdResults
-
     @GET("/v1/popups")
     suspend fun _getPopup(): GetPopupResults
 
