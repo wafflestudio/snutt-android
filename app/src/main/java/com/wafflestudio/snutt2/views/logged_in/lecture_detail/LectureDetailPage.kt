@@ -336,6 +336,39 @@ fun LectureDetailPage(
                         .background(SNUTTColors.White900)
                         .padding(vertical = 4.dp),
                 ) {
+                    LectureDetailItem(
+                        title = stringResource(R.string.lecture_detail_review_rating),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            StarIcon(
+                                filled = true,
+                                modifier = Modifier.size(18.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+                            )
+                            Text(
+                                text = editingLectureDetail.review?.rating?.times(10)?.toInt()?.div(10.0).toString(),
+                                style = MaterialTheme.typography.body1.copy(
+                                    fontSize = 15.sp,
+                                ),
+                            )
+                            Text(
+                                text = "(0개)",
+                                style = MaterialTheme.typography.body1.copy(
+                                    fontSize = 15.sp,
+                                    color = SNUTTColors.Gray2,
+                                ),
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .background(SNUTTColors.White900)
+                        .padding(vertical = 4.dp),
+                ) {
                     if (isCustom.not()) {
                         LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_department),
