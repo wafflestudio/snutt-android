@@ -7,5 +7,4 @@ import com.squareup.moshi.JsonClass
 data class BuildingsResponse(
     @Json(name = "content") val content: List<LectureBuildingDto>,
     @Json(name = "totalCount") val totalCount: Int,
-    @Json(name = "nextPageToken") val nextPageToken: String?,
 )
