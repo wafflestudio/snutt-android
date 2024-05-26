@@ -51,7 +51,7 @@ fun EmbedMap(
 
     /* 지도 카메라 */
     val cameraPositionState = rememberCameraPositionState()
-    LaunchedEffect(Unit, buildings) {
+    LaunchedEffect(buildings) {
         cameraPositionState.move(
             EmbedMapUtils.getCameraUpdateFromLatLngList(
                 buildings.map { it.locationInDMS.toLatLng() },

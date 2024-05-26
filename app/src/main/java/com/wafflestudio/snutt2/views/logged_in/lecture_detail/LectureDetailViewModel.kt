@@ -44,7 +44,7 @@ class LectureDetailViewModel @Inject constructor(
 
     val editingLectureBuildings = editingLectureDetail.map { lecture ->
         val places = lecture.class_time_json.map { it.place }.distinct().joinToString(",")
-        lectureSearchRepository.getLectureBuildings(places)
+        lectureSearchRepository.getBuildings(places)
     }
 
     fun setEditMode(adding: Boolean = false) {

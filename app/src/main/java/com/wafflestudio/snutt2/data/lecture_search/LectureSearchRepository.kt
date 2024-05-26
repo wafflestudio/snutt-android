@@ -25,7 +25,7 @@ interface LectureSearchRepository {
 
     suspend fun getSearchTags(year: Long, semester: Long): List<TagDto>
 
-    suspend fun getLectureBuildings(
+    suspend fun getBuildings(
         places: String,
     ): List<LectureBuildingDto>
 }

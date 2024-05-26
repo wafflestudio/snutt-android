@@ -65,7 +65,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
         return list
     }
 
-    override suspend fun getLectureBuildings(places: String): List<LectureBuildingDto> {
+    override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
         val response = api._getBuildings(places)
         return response.content
     }
