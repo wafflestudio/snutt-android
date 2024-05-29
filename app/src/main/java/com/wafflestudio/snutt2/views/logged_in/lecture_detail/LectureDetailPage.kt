@@ -349,7 +349,7 @@ fun LectureDetailPage(
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
                             )
                             Text(
-                                text = editingLectureDetail.review?.rating?.times(10)?.toInt()?.div(10.0).toString(),
+                                text = editingLectureDetail.review?.ratingDisplayText ?: "--",
                                 style = MaterialTheme.typography.body1.copy(
                                     fontSize = 15.sp,
                                 ),
