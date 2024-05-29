@@ -133,11 +133,31 @@ fun LazyItemScope.LectureListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = tagText,
+                    modifier = Modifier.weight(1f),
                     color = SNUTTColors.AllWhite,
                     fontWeight = FontWeight.Light,
                     style = SNUTTTypography.body2,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                Spacer(modifier = Modifier.width(10.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    StarIcon(
+                        modifier = Modifier.size(12.dp),
+                        filled = false,
+                        colorFilter = ColorFilter.tint(SNUTTColors.White),
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = lectureDataWithState.item.review?.displayText ?: "-- (0)", // TODO: dto대신 model 사용하고, non-nullable 프로퍼티 사용하기
+                        color = SNUTTColors.White,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 12.sp,
+                        style = SNUTTTypography.body2,
+                    )
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
