@@ -355,7 +355,7 @@ fun LectureDetailPage(
                                 ),
                             )
                             Text(
-                                text = "(0개)",
+                                text = "(${editingLectureDetail.review?.reviewCount ?: 0}개)",
                                 style = MaterialTheme.typography.body1.copy(
                                     fontSize = 15.sp,
                                     color = SNUTTColors.Gray2,
