@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,8 +38,14 @@ class LectureDetailViewModel @Inject constructor(
     val modeType = _modeType.asStateFlow()
 
     private var fixedLectureDetail = LectureDto.Default
+
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
+
+    val editingLectureBuildings = editingLectureDetail.map { lecture ->
+        val places = lecture.class_time_json.map { it.place }.distinct().joinToString(",")
+        lectureSearchRepository.getBuildings(places)
+    }
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
