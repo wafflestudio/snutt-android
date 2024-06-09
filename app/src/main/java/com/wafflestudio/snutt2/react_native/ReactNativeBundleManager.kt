@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
+import com.wafflestudio.snutt2.react_native.event.RNEventEmitterPackage
 import com.wafflestudio.snutt2.ui.isDarkMode
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -70,7 +71,7 @@ class ReactNativeBundleManager @Inject constructor(
                                 .setJavaScriptExecutorFactory(HermesExecutorFactory())
                                 .setJSBundleFile(bundleFile.absolutePath)
                                 .addPackages(
-                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage(), AsyncStoragePackage()),
+                                    listOf(MainReactPackage(), RNGestureHandlerPackage(), ReanimatedPackage(), SafeAreaContextPackage(), RNCPickerPackage(), SvgPackage(), AsyncStoragePackage(), RNEventEmitterPackage()),
                                 )
                                 .setInitialLifecycleState(LifecycleState.RESUMED)
                                 .build()
@@ -85,7 +86,7 @@ class ReactNativeBundleManager @Inject constructor(
                                     putString("x-access-apikey", context.getString(R.string.api_key))
                                     putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
                                     putBoolean("allowFontScaling", true)
-                                    putStringArrayList("feature", arrayListOf("ASYNC_STORAGE"))
+                                    putStringArrayList("feature", arrayListOf("ASYNC_STORAGE", "ADD_FRIEND_KAKAO"))
                                 },
                             )
                         }
