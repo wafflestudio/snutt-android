@@ -67,7 +67,7 @@ id:name="com.wafflestudio.snutt2.service.MyFirebaseInstanceIDService">
         <!-- </service> -->
         <receiver
             android:name=".provider.TimetableWidgetProvider"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
