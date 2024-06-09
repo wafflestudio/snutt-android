@@ -40,8 +40,8 @@ class SNUTTApplication : Application(), ReactApplication {
         TimetableWidgetProvider.refreshWidget(applicationContext)
     }
 
-    override fun getReactNativeHost(): ReactNativeHost {
-        return object : ReactNativeHost(this) {
+    override val reactNativeHost: ReactNativeHost
+        get() = object : ReactNativeHost(this) {
             override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
             override fun getPackages(): List<ReactPackage> = listOf(
@@ -61,7 +61,6 @@ class SNUTTApplication : Application(), ReactApplication {
                 return HermesExecutorFactory()
             }
         }
-    }
 
     companion object {
         private const val TAG = "SNUTT_APPLICATION"
