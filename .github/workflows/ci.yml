@@ -30,8 +30,8 @@ jobs:
           distribution: 'adopt'
       - name: Clean build
         run: ./gradlew clean
-      - name: Run ktlintDebug
-        run: ./gradlew ktlintMainSourceSetCheck
+      - name: Check spotless
+        run: ./gradlew spotlessCheck --init-script gradle/init.gradle.kts --no-configuration-cache
       - name: Upload ktlint report
         uses: actions/upload-artifact@v2
         if: failure()
