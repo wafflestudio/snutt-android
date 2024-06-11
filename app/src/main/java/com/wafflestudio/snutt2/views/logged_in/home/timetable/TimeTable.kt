@@ -287,10 +287,14 @@ private fun DrawClassTime(
         val cellWidth = right - left - cellPadding * 2
 
         val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
+            courseTitle,
+            cellWidth.toInt(),
+            cellHeight.toInt(),
         )
         val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
+            classTime.place,
+            cellWidth.toInt(),
+            cellHeight.toInt() - courseTitleHeight,
         )
 
         drawIntoCanvas { canvas ->
@@ -317,7 +321,11 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd,
+                fittedTrimParam,
+                classTime,
+                course_title,
+                -0x1f1f20,
+                -0xcccccd,
             )
         }
     }

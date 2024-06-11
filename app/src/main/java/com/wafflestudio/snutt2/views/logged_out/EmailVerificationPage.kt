@@ -30,7 +30,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 private enum class VerifyEmailState {
-    AskContinue, SendCode,
+    AskContinue,
+    SendCode,
 }
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
@@ -167,9 +168,10 @@ fun EmailVerificationPage() {
                                 focusManager.moveFocus(
                                     FocusDirection.Down,
                                 )
-                            },),
+                            }),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Done,
+                                keyboardType = KeyboardType.Number,
                             ),
                             singleLine = true,
                             trailingIcon = {

@@ -196,7 +196,9 @@ fun UserConfigPage() {
                     onClick = {
                         // FIXME: 실패했을 때.
                         LoginManager.getInstance().logInWithReadPermissions(
-                            context as ActivityResultRegistryOwner, callbackManager, emptyList(),
+                            context as ActivityResultRegistryOwner,
+                            callbackManager,
+                            emptyList(),
                         )
                     },
                 )
@@ -279,7 +281,8 @@ fun UserConfigPage() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     viewModel.changePassword(
-                        currentPassword, newPassword,
+                        currentPassword,
+                        newPassword,
                     )
                     context.toast(context.getString(R.string.settings_user_config_change_password_success))
                     passwordChangeDialogState = false

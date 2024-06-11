@@ -57,10 +57,10 @@ object EmbedMapUtils {
                 Intent.ACTION_VIEW,
                 Uri.parse(
                     "nmap://place?lat=${building.locationInDMS.latitude}&lng=${building.locationInDMS.longitude}&name=${
-                    URLEncoder.encode(
-                        building.buildingNameKor,
-                        StandardCharsets.UTF_8.toString(),
-                    )
+                        URLEncoder.encode(
+                            building.buildingNameKor,
+                            StandardCharsets.UTF_8.toString(),
+                        )
                     }&appname=com.wafflestudio.snutt2",
                 ),
             ),
