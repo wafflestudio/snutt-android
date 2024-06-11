@@ -17,7 +17,7 @@ class RNEventEmitterModule(reactContext: ReactApplicationContext) : ReactContext
     }
 
     @ReactMethod
-    fun sendEventToNative(name: String, parameters: ReadableMap?) {
+    fun sendEventToNative(name:  String, parameters: ReadableMap?) {
         Log.d("aaaa", "$name $parameters")
     }
 }
