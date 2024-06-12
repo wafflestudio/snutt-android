@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toRect
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils.px2dp
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -390,7 +389,6 @@ fun showColorPickerDialog(
     initialColor: Color,
     onColorPicked: (Color) -> Unit,
 ) {
-    val screenWidthInDp = context.px2dp(context.resources.displayMetrics.widthPixels.toFloat())
     var currentColor = initialColor
     modalState.setOkCancel(
         context = context,
@@ -402,7 +400,7 @@ fun showColorPickerDialog(
             modalState.hide()
         },
         title = context.getString(R.string.color_picker_dialog_title),
-        width = if (screenWidthInDp - 50 > 400) 400.dp else null,
+        width = 400.dp,
     ) {
         ColorPicker(
             initialColor = initialColor,

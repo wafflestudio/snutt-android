@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wafflestudio.snutt2.R
@@ -64,6 +65,7 @@ fun CustomDialog(
     content: @Composable () -> Unit,
 ) {
     val screenWidthInDp = with(LocalDensity.current) { LocalView.current.width.toDp() }
+    val dialogWidth = min(width ?: Int.MAX_VALUE.dp, screenWidthInDp - 50.dp)
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -74,7 +76,7 @@ fun CustomDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .width(width ?: (screenWidthInDp - 50.dp))
+                    .width(dialogWidth)
                     .background(SNUTTColors.White900),
             ) {
                 title?.let {
