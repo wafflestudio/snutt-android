@@ -62,6 +62,7 @@ class ModalState {
         onDismiss: () -> Unit,
         onConfirm: () -> Unit,
         title: String,
+        width: Dp? = null,
         content: @Composable () -> Unit,
     ): ModalState {
         return this.apply {
@@ -70,7 +71,7 @@ class ModalState {
             this.title = title
             this.positiveButtonText = context.getString(R.string.common_ok)
             this.negativeButtonText = context.getString(R.string.common_cancel)
-            this.width = null
+            this.width = width
             this.content = content
         }
     }
