@@ -400,7 +400,6 @@ fun showColorPickerDialog(
             modalState.hide()
         },
         title = context.getString(R.string.color_picker_dialog_title),
-        width = 400.dp,
     ) {
         ColorPicker(
             initialColor = initialColor,

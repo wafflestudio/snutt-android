@@ -65,7 +65,7 @@ fun CustomDialog(
     content: @Composable () -> Unit,
 ) {
     val screenWidthInDp = with(LocalDensity.current) { LocalView.current.width.toDp() }
-    val dialogWidth = min(width ?: Int.MAX_VALUE.dp, screenWidthInDp - 50.dp)
+    val dialogWidth = width ?: min(400.dp, screenWidthInDp - 50.dp)
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
