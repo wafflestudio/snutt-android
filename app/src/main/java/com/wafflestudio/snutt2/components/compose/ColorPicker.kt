@@ -390,8 +390,7 @@ fun showColorPickerDialog(
     onColorPicked: (Color) -> Unit,
 ) {
     var currentColor = initialColor
-    modalState.setOkCancel(
-        context = context,
+    modalState.set(
         onDismiss = {
             modalState.hide()
         },
@@ -400,6 +399,8 @@ fun showColorPickerDialog(
             modalState.hide()
         },
         title = context.getString(R.string.color_picker_dialog_title),
+        positiveButton = context.getString(R.string.common_ok),
+        negativeButton = context.getString(R.string.common_cancel),
     ) {
         ColorPicker(
             initialColor = initialColor,
