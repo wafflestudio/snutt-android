@@ -138,7 +138,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val networkLog = PrefValue<List<NetworkLog>> (
+    val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,

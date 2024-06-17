@@ -30,19 +30,20 @@ class ErrorParsingCallAdapter<R>(
                 (processed as Call<R>).let {
                     object : Call<R> by it {
                         override fun enqueue(callback: Callback<R>) {
-                            it.enqueue(object : Callback<R> {
-                                override fun onResponse(call: Call<R>, response: Response<R>) {
-                                    if (response.isSuccessful.not()) {
-                                        callback.onFailure(call, parseErrorBody(response))
-                                    } else {
-                                        callback.onResponse(call, response)
+                            it.enqueue(
+                                object : Callback<R> {
+                                    override fun onResponse(call: Call<R>, response: Response<R>) {
+                                        if (response.isSuccessful.not()) {
+                                            callback.onFailure(call, parseErrorBody(response))
+                                        } else {
+                                            callback.onResponse(call, response)
+                                        }
                                     }
-                                }
 
-                                override fun onFailure(call: Call<R>, t: Throwable) {
-                                    callback.onFailure(call, t)
-                                }
-                            },
+                                    override fun onFailure(call: Call<R>, t: Throwable) {
+                                        callback.onFailure(call, t)
+                                    }
+                                },
                             )
                         }
                     }
