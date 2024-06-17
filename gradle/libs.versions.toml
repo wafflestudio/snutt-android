@@ -123,3 +123,5 @@ snutt-android-feature = { id = "snutt.android.feature", version = "unspecified" 
 snutt-android-hilt = { id = "snutt.android.hilt", version = "unspecified" }
 snutt-android-library = { id = "snutt.android.library", version = "unspecified" }
 snutt-android-library-compose = { id = "snutt.android.library.compose", version = "unspecified" }
+snutt-semantic-versioning = { id = "snutt.semantic.versioning", version = "unspecified" }
+

@@ -57,5 +57,9 @@ gradlePlugin {
             id = "snutt.android.application.firebase"
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
         }
+        register("semanticVersioning") {
+            id = "snutt.semantic.versioning"
+            implementationClass = "SemanticVersioningConventionPlugin"
+        }
     }
 }
