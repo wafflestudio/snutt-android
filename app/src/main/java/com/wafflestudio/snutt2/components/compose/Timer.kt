@@ -6,7 +6,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.delay
 
 enum class TimerValue {
-    Initial, Running, End, Paused,
+    Initial,
+    Running,
+    End,
+    Paused,
 }
 
 class TimerState(

@@ -8,27 +8,11 @@ plugins {
     alias(libs.plugins.snutt.android.hilt)
     alias(libs.plugins.snutt.android.application.firebase)
 
-//    id("org.jlleitschuh.gradle.ktlint-idea")
-//    id("org.jlleitschuh.gradle.ktlint")
 //    id("dagger.hilt.android.plugin")
 //    id("kotlin-kapt")
 //    id("com.google.firebase.appdistribution")
 //    id("com.google.firebase.crashlytics")
 }
-
-//ktlint {
-//    reporters {
-//        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
-//        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
-//        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.HTML)
-//    }
-//    filter {
-//        exclude("**/generated/**")
-//        include("**/java/**")
-//    }
-//    // See https://github.com/pinterest/ktlint/issues/527
-//    disabledRules.addAll("import-ordering", "no-wildcard-imports", "package-name", "argument-list-wrapping")
-//}
 
 //val versionProps = Properties().apply {
 //    load(FileInputStream(File(rootProject.rootDir, "version.properties")))

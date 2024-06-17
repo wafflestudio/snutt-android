@@ -16,7 +16,7 @@ data class ColorDto(
 
     /* TODO: Native Canvas 에서 그릴 땐 Int 가 필요하지만, Compose Color 은 ULong 이다.
      *       native canvas 대체할 방법 찾으면 그때 개편하기
-    */
+     */
     val fgColor: Int?
         get() = if (fgRaw != null) Color.parseColor(fgRaw) else null
 

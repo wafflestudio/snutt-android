@@ -121,7 +121,8 @@ fun InstallInAppDeeplinkExecutor() {
             // 시간표 강의 업데이트 알림 딥링크 이동
             NavigationDestination.TimetableLecture -> {
                 launchSuspendApi(
-                    apiOnProgress, apiOnError,
+                    apiOnProgress,
+                    apiOnError,
                     loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
                 ) {
                     handleTimetableLectureDeeplink()
@@ -130,7 +131,8 @@ fun InstallInAppDeeplinkExecutor() {
             // 관심강좌 강의 업데이트 알림 딥링크 이동
             NavigationDestination.Bookmark -> {
                 launchSuspendApi(
-                    apiOnProgress, apiOnError,
+                    apiOnProgress,
+                    apiOnError,
                     loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
                 ) {
                     handleBookmarkDeeplink()

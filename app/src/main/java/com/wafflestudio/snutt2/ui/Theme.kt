@@ -46,7 +46,9 @@ val Colors.onSurfaceVariant: Color
     get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
 enum class ThemeMode {
-    DARK, LIGHT, AUTO, ;
+    DARK,
+    LIGHT,
+    AUTO, ;
 
     override fun toString(): String {
         return when (this) {
