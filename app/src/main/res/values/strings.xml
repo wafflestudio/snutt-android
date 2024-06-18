@@ -3,6 +3,8 @@
     <string name="privacy" translatable="false">privacy_policy</string>
     <string name="member" translatable="false">member</string>
 
+    <string name="web_client_id">472833977397-62l8mgakgi7ql8m654s7ptrlbn5f1pf6.apps.googleusercontent.com</string>
+
     <!-- For sign up fragment -->
     <string name="sign_up_terms_1">회원가입을 누르시면</string>
     <string name="sign_up_terms_2">일반 이용 약관</string>
@@ -78,6 +80,7 @@
     <string name="sign_in_logo_title">SNUTT</string>
     <string name="sign_in_sign_in_button">로그인</string>
     <string name="sign_in_sign_in_facebook_button">페이스북으로 시작하기</string>
+    <string name="sign_in_sign_in_google_button">구글 계정으로 시작하기</string>
     <string name="sign_in_find_id_button">아이디 찾기</string>
     <string name="sign_in_find_password_button">비밀번호 재설정</string>
     <string name="sign_in_id_title">아이디</string>

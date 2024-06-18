@@ -117,6 +117,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+    sourceSets {
+        getByName("staging") {
+            assets {
+                srcDirs("src/staging/assets")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -196,4 +203,10 @@ dependencies {
     // naver map
     implementation("com.naver.maps:map-sdk:3.17.0")
     implementation("io.github.fornewid:naver-map-compose:1.4.1")
+
+    // google login
+    implementation("com.google.android.gms:play-services-auth:21.1.1")
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 }

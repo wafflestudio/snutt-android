@@ -127,6 +127,11 @@ interface SNUTTRestApi {
         @Body body: PostLoginFacebookParams,
     ): PostLoginFacebookResults
 
+    @POST("/v1/auth/login_google")
+    suspend fun _postLoginGoogle(
+        @Body body: PostLoginGoogleParams,
+    ): PostLoginGoogleResults
+
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(
         @Body body: PostForceLogoutParams,

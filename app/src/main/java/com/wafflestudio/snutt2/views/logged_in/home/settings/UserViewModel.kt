@@ -53,6 +53,10 @@ class UserViewModel @Inject constructor(
         userRepository.postLoginFacebook(facebookId, facebookToken)
     }
 
+    suspend fun loginGoogle(googleIdToken: String) {
+        userRepository.postLoginGoogle(googleIdToken)
+    }
+
     suspend fun addNewLocalId(id: String, password: String) {
         userRepository.postUserPassword(id, password)
     }
