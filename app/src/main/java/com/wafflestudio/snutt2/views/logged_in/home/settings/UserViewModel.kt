@@ -23,6 +23,8 @@ class UserViewModel @Inject constructor(
 
     val accessToken: StateFlow<String> = userRepository.accessToken
 
+    val googleAccessToken: StateFlow<String> = userRepository.googleAccessToken
+
     val themeMode: StateFlow<ThemeMode> = userRepository.themeMode
 
     val compactMode: StateFlow<Boolean> = userRepository.compactMode
@@ -87,6 +89,10 @@ class UserViewModel @Inject constructor(
 
     suspend fun getAccessToken(): String {
         return userRepository.getAccessToken()
+    }
+
+    fun setGoogleAccessToken(token: String){
+        userRepository.setGoogleAccessToken(token)
     }
 
     suspend fun sendFeedback(email: String, detail: String) {

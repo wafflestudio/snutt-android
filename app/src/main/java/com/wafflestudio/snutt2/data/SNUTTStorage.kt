@@ -35,6 +35,16 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val googleAccessToken = PrefValue<String>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "pref_key_google_access_token",
+            type = String::class.java,
+            defaultValue = "",
+        ),
+    )
+
     val user = PrefValue<Optional<UserDto>>(
         prefContext,
         PrefOptionalValueMetaData(
