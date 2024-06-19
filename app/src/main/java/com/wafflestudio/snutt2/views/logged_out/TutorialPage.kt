@@ -295,6 +295,7 @@ fun TutorialPage() {
 }
 
 fun handleSignInResult(task: Task<GoogleSignInAccount>, context: Context, setGoogleAccessToken: (String) -> Unit = { _ -> }) {
+    Log.d("GoogleSignIn", "called")
     try {
         val account = task.getResult(ApiException::class.java)
         val authCode = account?.serverAuthCode
