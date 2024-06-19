@@ -13,8 +13,6 @@ interface UserRepository {
 
     val accessToken: StateFlow<String>
 
-    val googleAccessToken: StateFlow<String>
-
     val themeMode: StateFlow<ThemeMode>
 
     val compactMode: StateFlow<Boolean>
@@ -68,8 +66,6 @@ interface UserRepository {
     )
 
     suspend fun getAccessToken(): String
-
-    fun setGoogleAccessToken(token: String)
 
     suspend fun performLogout()
 

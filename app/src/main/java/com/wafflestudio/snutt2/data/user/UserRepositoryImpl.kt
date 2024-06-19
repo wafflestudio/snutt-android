@@ -35,8 +35,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override val accessToken = storage.accessToken.asStateFlow()
 
-    override val googleAccessToken = storage.googleAccessToken.asStateFlow()
-
     override val themeMode = storage.themeMode.asStateFlow()
 
     override val compactMode = storage.compactMode.asStateFlow()
@@ -150,10 +148,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getAccessToken(): String {
         return storage.accessToken.get()
-    }
-
-    override fun setGoogleAccessToken(token: String) {
-        storage.googleAccessToken.update(token)
     }
 
     override suspend fun setTableTrim(
