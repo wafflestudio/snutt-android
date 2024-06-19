@@ -168,23 +168,24 @@ fun TutorialPage() {
 
     LaunchedEffect(googleAccessToken) {
         Log.d("plgafhd",googleAccessToken.value)
-        if(googleAccessToken.value != "") { // TODO : 그러므로, 이렇게 구현을 유지한다면 로그아웃시 accesstoken을 초기화하는 과정도 필요하다. 사실 앱을 나갈때나 다른 화면 갈때도 초기화해줘야 한다.
-            coroutineScope.launch {
-                launchSuspendApi(
-                    apiOnProgress = apiOnProgress,
-                    apiOnError = apiOnError,
-                    loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-                ) {
-                    if (googleAccessToken.value != "") {
-                        userViewModel.loginGoogle(
-                            googleAccessToken.value
-                        )
-                        homeViewModel.refreshData()
-                        navController.navigateAsOrigin(NavigationDestination.Home)
-                    }
-                }
-            }
-        }
+//        if(googleAccessToken.value != "") { // TODO : 그러므로, 이렇게 구현을 유지한다면 로그아웃시 accesstoken을 초기화하는 과정도 필요하다. 사실 앱을 나갈때나 다른 화면 갈때도 초기화해줘야 한다.
+//            coroutineScope.launch {
+//                launchSuspendApi(
+//                    apiOnProgress = apiOnProgress,
+//                    apiOnError = apiOnError,
+//                    loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+//                ) {
+//                    if (googleAccessToken.value != "") {
+//                        userViewModel.loginGoogle(
+//                            googleAccessToken.value
+//                        )
+//                        homeViewModel.refreshData()
+//                        navController.navigateAsOrigin(NavigationDestination.Home)
+//                    }
+//                }
+//            }
+//        }
+//        test(googleAccessToken.value)
     }
 
     Column(
@@ -335,6 +336,7 @@ private fun exchangeAuthCodeForAccessToken(authCode: String, context: Context, s
                 val jsonObject = JSONObject(responseData)
                 val accessToken = jsonObject.getString("access_token")
                 setGoogleAccessToken(accessToken)
+                //test(accessToken)
                 // Use the access token
                 Log.d("GoogleSignIn", "Access Token: $accessToken")
             } else {
