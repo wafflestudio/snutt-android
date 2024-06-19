@@ -61,7 +61,9 @@ fun TutorialPage() {
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val googleAccessToken = userViewModel.googleAccessToken.collectAsState()
+
+    val clientId = context.getString(R.string.web_client_id)
+    val clientSecret = context.getString(R.string.web_client_secret)
 
     val handleFacebookSignIn = {
         coroutineScope.launch {
@@ -81,81 +83,81 @@ fun TutorialPage() {
         }
     }
 
-    /* // TODO : 여기부터
-    val credentialManager = CredentialManager.create(context)
-    val getCredentialRequest2 = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false)
-        .setServerClientId(stringResource(R.string.web_client_id))
-        .setAutoSelectEnabled(true)
-        // .setNonce(<nonce string to use when generating a Google ID token>) // TODO: 이거 나중에 추가 해야함
-        .build().let {
-            GetCredentialRequest.Builder()
-                .addCredentialOption(it)
-                .build()
+    val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .requestServerAuthCode(stringResource(R.string.web_client_id)) // Request server auth code
+        .build().let{
+            GoogleSignIn.getClient(activityContext, it)
         }
 
-    val getCredentialRequest = GetSignInWithGoogleOption.Builder(
-        stringResource(R.string.web_client_id),
-    )
-        .build().let {
-            GetCredentialRequest(listOf(it))
-        }
-
-//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//        .requestEmail()
-//        .requestIdToken(stringResource(R.string.web_client_id)) // Request ID token
-//        .requestServerAuthCode(stringResource(R.string.web_client_id)) // Request server auth code
-//        .requestScopes(Scope("https://www.googleapis.com/auth/userinfo.profile")) // Request profile scope
-//        .build()
-
-    val handleGoogleSignIn = {
+    val googleSignInByAccessToken = { googleAccessToken : String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                Log.d("plgafhd", "00")
-                Log.d("plgafhd", "11")
-                val result = credentialManager.getCredential(
-                    request = getCredentialRequest,
-                    context = activityContext,
+                ) {
+                userViewModel.loginGoogle(
+                    googleAccessToken
                 )
-                Log.d("plgafhd", "22")
-                val loginResult = handleSignIn(result)
-                Log.d("plgafhd", "33")
-                Log.d("plgafhd", loginResult.toString())
-                if (loginResult != null) {
-                    Log.d("plgafhd", "44")
-                    Log.d("plgafhd", loginResult.toString())
-//                    userViewModel.loginGoogle(
-//                        loginResult.idToken
-//                    )
-//                    homeViewModel.refreshData()
-//                    navController.navigateAsOrigin(NavigationDestination.Home)
-                }
+                homeViewModel.refreshData()
+                navController.navigateAsOrigin(NavigationDestination.Home)
             }
         }
-    } // TODO : 여기까지 만약 서버측 수정이 가능하다면 쓸 수 있는 코드이다.
-     */
+//        test(googleAccessToken) // 얘는 google로 다이렉트로 보내는 부분 (테스트용)
+    }
 
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .requestServerAuthCode(stringResource(R.string.web_client_id)) // Request server auth code
-        .build()
+    val authToAccessToken = { authCode : String ->
+        val requestBody = FormBody.Builder()
+            .add("code", authCode)
+            .add("client_id", clientId)
+            .add("client_secret", clientSecret)
+            .add("redirect_uri", "")
+            .add("grant_type", "authorization_code")
+            .build()
 
-    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(activityContext, gso)
+        val request = Request.Builder()
+            .url("https://oauth2.googleapis.com/token")
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val responseData = response.body?.string()
+                    val jsonObject = JSONObject(responseData)
+                    val accessToken = jsonObject.getString("access_token")
+                    if (accessToken != ""){
+                        googleSignInByAccessToken(accessToken)
+                    }
+                    Log.d("GoogleSignIn", "Access Token: $accessToken")
+                } else {
+                    // Handle error
+                    Log.e("GoogleSignIn", "Error: " + response.message)
+                }
+            }
+        })
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            handleSignInResult(
-                task = task,
-                context = context,
-                setGoogleAccessToken = userViewModel::setGoogleAccessToken
-            )
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val authCode = account?.serverAuthCode
+                if (authCode != null) {
+                    authToAccessToken(authCode)
+                }
+            } catch (e: ApiException) {
+                Log.d("GoogleSignIn", "signInResult:failed code=" + e.statusCode)
+            }
         }
     }
 
@@ -164,28 +166,6 @@ fun TutorialPage() {
         coroutineScope.launch {
             launcher.launch(signInIntent)
         }
-    }
-
-    LaunchedEffect(googleAccessToken) {
-        Log.d("plgafhd",googleAccessToken.value)
-//        if(googleAccessToken.value != "") { // TODO : 그러므로, 이렇게 구현을 유지한다면 로그아웃시 accesstoken을 초기화하는 과정도 필요하다. 사실 앱을 나갈때나 다른 화면 갈때도 초기화해줘야 한다.
-//            coroutineScope.launch {
-//                launchSuspendApi(
-//                    apiOnProgress = apiOnProgress,
-//                    apiOnError = apiOnError,
-//                    loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-//                ) {
-//                    if (googleAccessToken.value != "") {
-//                        userViewModel.loginGoogle(
-//                            googleAccessToken.value
-//                        )
-//                        homeViewModel.refreshData()
-//                        navController.navigateAsOrigin(NavigationDestination.Home)
-//                    }
-//                }
-//            }
-//        }
-//        test(googleAccessToken.value)
     }
 
     Column(
@@ -294,36 +274,16 @@ fun TutorialPage() {
     }
 }
 
-fun handleSignInResult(task: Task<GoogleSignInAccount>, context: Context, setGoogleAccessToken: (String) -> Unit = { _ -> }) {
-    Log.d("GoogleSignIn", "called")
-    try {
-        val account = task.getResult(ApiException::class.java)
-        val authCode = account?.serverAuthCode
-        if (authCode != null) {
-            exchangeAuthCodeForAccessToken(authCode, context, setGoogleAccessToken)
-        }
-    } catch (e: ApiException) {
-        Log.d("GoogleSignIn", "signInResult:failed code=" + e.statusCode)
-    }
-}
-
-private fun exchangeAuthCodeForAccessToken(authCode: String, context: Context, setGoogleAccessToken: (String) -> Unit) {
-    val clientId = context.getString(R.string.web_client_id)
-    val clientSecret = context.getString(R.string.web_client_secret)
-    val redirectUri = ""
-
-    val requestBody = FormBody.Builder()
-        .add("code", authCode)
-        .add("client_id", clientId)
-        .add("client_secret", clientSecret)
-        .add("redirect_uri", redirectUri)
-        .add("grant_type", "authorization_code")
-        .build()
+private fun test(googleAccessToken: String) {
+    Log.d("testtesttest",googleAccessToken)
 
     val request = Request.Builder()
-        .url("https://oauth2.googleapis.com/token")
-        .post(requestBody)
+        .url("https://www.googleapis.com/oauth2/v1/userinfo")
+        .addHeader("Authorization", "Bearer "+googleAccessToken)
+        //.post(requestBody)
         .build()
+
+    // 우리 서버 테스트는 postman이나 swagger만 이용하는거로..
 
     val client = OkHttpClient()
     client.newCall(request).enqueue(object : Callback {
@@ -333,16 +293,10 @@ private fun exchangeAuthCodeForAccessToken(authCode: String, context: Context, s
 
         override fun onResponse(call: Call, response: Response) {
             if (response.isSuccessful) {
-                val responseData = response.body?.string()
-                val jsonObject = JSONObject(responseData)
-                val accessToken = jsonObject.getString("access_token")
-                setGoogleAccessToken(accessToken)
-                //test(accessToken)
-                // Use the access token
-                Log.d("GoogleSignIn", "Access Token: $accessToken")
+                Log.d("testtesttest", "success")
             } else {
                 // Handle error
-                Log.e("GoogleSignIn", "Error: " + response.message)
+                Log.d("testtesttest", response.toString())
             }
         }
     })

@@ -132,15 +132,6 @@ class RootActivity : AppCompatActivity() {
         startUpdatingPushToken()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task, this)
-        }
-    }
-
     private fun setUpContents(startDestination: String) {
         composeRoot.setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
