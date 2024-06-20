@@ -16,20 +16,12 @@ plugins {
 //    id("com.google.firebase.crashlytics")
 }
 
-val versionProps = Properties().apply {
-    load(Files.newBufferedReader(Paths.get(rootProject.rootDir.toString(), "version.properties")))
-}
 
 android {
     namespace = "com.wafflestudio.snutt2"
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
-
-        val propertyVersionName = versionProps.getProperty("snuttVersionName")
-        versionName = propertyVersionName
-        versionCode = extensions.getByType<SemanticVersioningUtils>()
-            .semanticVersionToSerializedCode(propertyVersionName).toInt()
     }
 
     signingConfigs {
