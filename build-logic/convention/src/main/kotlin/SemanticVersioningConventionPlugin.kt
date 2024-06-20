@@ -10,7 +10,6 @@ import java.util.Properties
 class SemanticVersioningConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            extensions.create("versioning", SemanticVersioningUtils::class.java)
             extensions.configure<AppExtension> {
                 val versionProps = Properties().apply {
                     load(Files.newBufferedReader(Paths.get(rootProject.rootDir.toString(), "version.properties")))
@@ -19,16 +18,13 @@ class SemanticVersioningConventionPlugin: Plugin<Project> {
                 defaultConfig {
                     val propertyVersionName = versionProps.getProperty("snuttVersionName")
                     versionName = propertyVersionName
-                    versionCode = extensions.getByType<SemanticVersioningUtils>()
-                        .semanticVersionToSerializedCode(propertyVersionName)
+                    versionCode = semanticVersionToSerializedCode(propertyVersionName)
                 }
             }
         }
     }
-}
 
-open class SemanticVersioningUtils {
-    fun semanticVersionToSerializedCode(semanticVersion: String): Int {
+    private fun semanticVersionToSerializedCode(semanticVersion: String): Int {
 
         val semVerRegex = Regex("(\\d+).(\\d+).(\\d+)(-rc.(\\d+))?")
 
