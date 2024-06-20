@@ -34,6 +34,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -85,26 +86,26 @@ fun TutorialPage() {
 
     val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestServerAuthCode(stringResource(R.string.web_client_id)) // Request server auth code
+        .requestServerAuthCode(clientId)
         .build().let{
             GoogleSignIn.getClient(activityContext, it)
         }
 
     val googleSignInByAccessToken = { googleAccessToken : String ->
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-                ) {
-                userViewModel.loginGoogle(
-                    googleAccessToken
-                )
-                homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
-            }
-        }
-//        test(googleAccessToken) // 얘는 google로 다이렉트로 보내는 부분 (테스트용)
+//        coroutineScope.launch {
+//            launchSuspendApi(
+//                apiOnProgress = apiOnProgress,
+//                apiOnError = apiOnError,
+//                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+//                ) {
+//                userViewModel.loginGoogle(
+//                    googleAccessToken
+//                )
+//                homeViewModel.refreshData()
+//                navController.navigateAsOrigin(NavigationDestination.Home)
+//            }
+//        }
+        test(googleAccessToken) // 얘는 google로 다이렉트로 보내는 부분 (테스트용)
     }
 
     val authToAccessToken = { authCode : String ->
@@ -135,10 +136,9 @@ fun TutorialPage() {
                     if (accessToken != ""){
                         googleSignInByAccessToken(accessToken)
                     }
-                    Log.d("GoogleSignIn", "Access Token: $accessToken")
+                    //Log.d("GoogleSignIn", "Access Token: $accessToken")
                 } else {
-                    // Handle error
-                    Log.e("GoogleSignIn", "Error: " + response.message)
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             }
         })
@@ -156,8 +156,11 @@ fun TutorialPage() {
                     authToAccessToken(authCode)
                 }
             } catch (e: ApiException) {
-                Log.d("GoogleSignIn", "signInResult:failed code=" + e.statusCode)
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
+        }
+        else if(result.resultCode == Activity.RESULT_CANCELED){
+            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
         }
     }
 
