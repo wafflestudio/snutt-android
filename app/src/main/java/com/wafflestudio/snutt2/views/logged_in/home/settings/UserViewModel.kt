@@ -85,6 +85,10 @@ class UserViewModel @Inject constructor(
         userRepository.deleteUserAccount()
     }
 
+    suspend fun getAccessToken(): String {
+        return userRepository.getAccessToken()
+    }
+
     suspend fun sendFeedback(email: String, detail: String) {
         return userRepository.postFeedback(email, detail)
     }
