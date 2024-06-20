@@ -1,7 +1,3 @@
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.snutt.android.application)
     alias(libs.plugins.snutt.android.application.compose)
