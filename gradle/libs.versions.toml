@@ -15,6 +15,7 @@ androidxCoreSplashscreen = "1.0.1"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.7.0"
 androidxNavigation = "2.8.0-alpha06"
+appcompat = "1.7.0"
 coil = "2.6.0"
 facebook = "15.0.1"
 firebaseBom = "32.4.0"
@@ -26,6 +27,7 @@ hilt = "2.51.1"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"
 licensesdialog = "2.1.0"
+materialVersion = "1.12.0"
 naverMap = "3.17.0"
 naverMapCompose = "1.4.1"
 material = "1.9.0"
@@ -40,6 +42,7 @@ rxjava = "3.1.0"
 timber = "5.0.1"
 
 [libraries]
+androidx-appcompat-v170 = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout"  }
 accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
@@ -78,6 +81,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 licensesdialog = { group = "de.psdev.licensesdialog", name = "licensesdialog", version.ref = "licensesdialog" }
+material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMap" }
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naverMapCompose" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
