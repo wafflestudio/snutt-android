@@ -8,10 +8,10 @@ import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.core.network.retrofit.RetrofitSNUTTNetworkApi
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
 import dagger.Module
@@ -134,8 +134,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideSNUTTRestApi(retrofit: Retrofit): SNUTTRestApi {
-        return retrofit.create(SNUTTRestApi::class.java)
+    fun provideSNUTTRestApi(retrofit: Retrofit): RetrofitSNUTTNetworkApi {
+        return retrofit.create(RetrofitSNUTTNetworkApi::class.java)
     }
 
     private const val SIZE_OF_CACHE = (
