@@ -265,6 +265,7 @@
     <string name="lecture_detail_instructor_hint">예) 홍길동</string>
     <string name="lecture_detail_color">색상</string>
     <string name="lecture_detail_review_rating">강의평점</string>
+    <string name="lecture_detail_review_count">(%d개)</string>
     <string name="lecture_detail_department">학과</string>
     <string name="lecture_detail_hint_nothing">(없음)</string>
     <string name="lecture_detail_academic_year">학년</string>

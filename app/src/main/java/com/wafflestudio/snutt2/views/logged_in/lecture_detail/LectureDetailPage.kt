@@ -24,11 +24,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -346,20 +349,29 @@ fun LectureDetailPage(
                         ) {
                             StarIcon(
                                 filled = true,
-                                modifier = Modifier.size(18.dp),
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .offset(y = 1.dp),
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
                             )
+                            Spacer(modifier = Modifier.width(2.dp))
                             Text(
-                                text = editingLectureReview?.ratingDisplayText ?: "--",
+                                text = buildAnnotatedString {
+                                    withStyle(SpanStyle(color = SNUTTColors.Black900)) {
+                                        append(editingLectureReview?.ratingDisplayText ?: "--")
+                                        append(" ")
+                                    }
+                                    withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
+                                        append(
+                                            stringResource(
+                                                R.string.lecture_detail_review_count,
+                                                editingLectureReview?.reviewCount ?: 0,
+                                            ),
+                                        )
+                                    }
+                                },
                                 style = MaterialTheme.typography.body1.copy(
                                     fontSize = 15.sp,
-                                ),
-                            )
-                            Text(
-                                text = "(${editingLectureReview?.reviewCount ?: 0}개)",
-                                style = MaterialTheme.typography.body1.copy(
-                                    fontSize = 15.sp,
-                                    color = SNUTTColors.Gray2,
                                 ),
                             )
                         }
