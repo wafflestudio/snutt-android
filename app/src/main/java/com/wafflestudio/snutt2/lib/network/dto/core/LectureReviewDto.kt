@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
+import android.content.Context
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.R
 
 @JsonClass(generateAdapter = true)
 data class LectureReviewDto(
@@ -11,4 +13,10 @@ data class LectureReviewDto(
 ) {
     val ratingDisplayText get() = rating?.times(10)?.toInt()?.div(10.0)?.toString() ?: "--"
     val displayText get() = "$ratingDisplayText (${reviewCount ?: 0})"
+
+    fun getReviewUrl(context: Context): String? { // DTO와 ui model 분리 후 ui model으로 옮기기
+        return id.let {
+            context.getString(R.string.review_base_url) + "/detail?id=$it"
+        }
+    }
 }

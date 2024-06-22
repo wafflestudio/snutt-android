@@ -598,7 +598,7 @@ fun LectureDetailPage(
                                     verifyEmailBeforeApi(
                                         composableStates,
                                         api = {
-                                            val url = editingLectureDetail.getReviewUrl(context)
+                                            val url = editingLectureDetail.review?.getReviewUrl(context)
                                             openReviewBottomSheet(
                                                 url,
                                                 reviewBottomSheetWebViewContainer,
