@@ -369,11 +369,8 @@ fun UserConfigPage() {
                 }
             },
             title = stringResource(R.string.settings_user_config_facebook_disconnect),
-            positiveButtonText = stringResource(
-                R.string.notifications_noti_disconnect,
-            ),
         ) {
-            Text(text = stringResource(R.string.settings_user_config_disconnect_facebook_message))
+            Text(text = stringResource(R.string.settings_user_config_disconnect_facebook_message), style = SNUTTTypography.body2)
         }
     }
 }
