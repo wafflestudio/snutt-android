@@ -7,12 +7,16 @@ import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,6 +41,9 @@ class LectureDetailViewModel @Inject constructor(
     private var fixedLectureDetail = LectureDto.Default
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
+    val editingLectureReview = _editingLectureDetail.map { lecture ->
+        lecture.review?.rating?.let { lecture.review } ?: getLectureReview()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
@@ -86,6 +93,12 @@ class LectureDetailViewModel @Inject constructor(
         val lectureNumber = _editingLectureDetail.value.lecture_number
             ?: (throw IllegalStateException("lecture with no course number")) // FIXME
         return currentTableRepository.getLectureSyllabusUrl(courseNumber, lectureNumber)
+    }
+
+    private suspend fun getLectureReview(): LectureReviewDto? {
+        return _editingLectureDetail.value.lecture_id?.let { lectureId ->
+            currentTableRepository.getLectureReviewSummary(lectureId)
+        }
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

@@ -282,4 +282,9 @@ interface SNUTTRestApi {
     suspend fun _postCopyTheme(
         @Path("themeId") themeId: String,
     ): PostCopyThemeResults
+
+    @GET("/v1/ev/lectures/{lectureId}/summary")
+    suspend fun _getLectureReviewSummary(
+        @Path("lectureId") lectureId: String,
+    ): GetLectureReviewSummaryResult
 }
