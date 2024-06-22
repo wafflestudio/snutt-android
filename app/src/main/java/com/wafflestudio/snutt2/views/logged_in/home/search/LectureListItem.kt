@@ -145,13 +145,15 @@ fun LazyItemScope.LectureListItem(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     StarIcon(
-                        modifier = Modifier.size(12.dp),
+                        modifier = Modifier
+                            .size(12.dp)
+                            .offset(y = 1.dp),
                         filled = false,
                         colorFilter = ColorFilter.tint(SNUTTColors.White),
                     )
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
-                        text = lectureDataWithState.item.review?.displayText ?: "-- (0)", // TODO: dto대신 model 사용하고, non-nullable 프로퍼티 사용하기
+                        text = lectureDataWithState.item.review?.displayText ?: "-- (0)", // TODO: dto대신 model 사용하고, review를 non-nullable로 만들기
                         color = SNUTTColors.White,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp,
