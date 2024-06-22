@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views
 
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -41,9 +40,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -456,7 +452,6 @@ class RootActivity : AppCompatActivity() {
 
     companion object {
         const val URL_SCHEME = "url_scheme"
-        private const val RC_SIGN_IN = 9001
     }
 }
 

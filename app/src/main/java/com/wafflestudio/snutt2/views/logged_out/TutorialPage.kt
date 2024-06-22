@@ -1,18 +1,13 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
-import android.content.Context
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.credentials.GetCredentialRequest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.credentials.CredentialManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -30,8 +23,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.lib.android.toast
@@ -91,24 +82,23 @@ fun TutorialPage() {
             GoogleSignIn.getClient(activityContext, it)
         }
 
-    val googleSignInByAccessToken = { googleAccessToken : String ->
-//        coroutineScope.launch {
-//            launchSuspendApi(
-//                apiOnProgress = apiOnProgress,
-//                apiOnError = apiOnError,
-//                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-//                ) {
-//                userViewModel.loginGoogle(
-//                    googleAccessToken
-//                )
-//                homeViewModel.refreshData()
-//                navController.navigateAsOrigin(NavigationDestination.Home)
-//            }
-//        }
-        test(googleAccessToken) // 얘는 google로 다이렉트로 보내는 부분 (테스트용)
+    val loginGoogleByAccessToken: (String) -> Unit = { googleAccessToken : String ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+                ) {
+                userViewModel.loginGoogle(
+                    googleAccessToken
+                )
+                homeViewModel.refreshData()
+                navController.navigateAsOrigin(NavigationDestination.Home)
+            }
+        }
     }
 
-    val authToAccessToken = { authCode : String ->
+    val getAccessTokenByAuthCode = { authCode : String ->
         val requestBody = FormBody.Builder()
             .add("code", authCode)
             .add("client_id", clientId)
@@ -134,9 +124,8 @@ fun TutorialPage() {
                     val jsonObject = JSONObject(responseData)
                     val accessToken = jsonObject.getString("access_token")
                     if (accessToken != ""){
-                        googleSignInByAccessToken(accessToken)
+                        loginGoogleByAccessToken(accessToken)
                     }
-                    //Log.d("GoogleSignIn", "Access Token: $accessToken")
                 } else {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
@@ -144,7 +133,7 @@ fun TutorialPage() {
         })
     }
 
-    val launcher = rememberLauncherForActivityResult(
+    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -153,7 +142,10 @@ fun TutorialPage() {
                 val account = task.getResult(ApiException::class.java)
                 val authCode = account?.serverAuthCode
                 if (authCode != null) {
-                    authToAccessToken(authCode)
+                    getAccessTokenByAuthCode(authCode)
+                }
+                else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             } catch (e: ApiException) {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
@@ -166,9 +158,7 @@ fun TutorialPage() {
 
     val handleGoogleSignIn = {
         val signInIntent = googleSignInClient.signInIntent
-        coroutineScope.launch {
-            launcher.launch(signInIntent)
-        }
+        googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
     Column(
@@ -253,7 +243,6 @@ fun TutorialPage() {
                 color = SNUTTColors.FacebookBlue,
                 cornerRadius = 10.dp,
                 onClick = { googleSignInClient.signOut().addOnCompleteListener {
-                    // Start sign-in intent again
                     handleGoogleSignIn()
                 } },
             ) {
@@ -275,34 +264,6 @@ fun TutorialPage() {
             }
         }
     }
-}
-
-private fun test(googleAccessToken: String) {
-    Log.d("testtesttest",googleAccessToken)
-
-    val request = Request.Builder()
-        .url("https://www.googleapis.com/oauth2/v1/userinfo")
-        .addHeader("Authorization", "Bearer "+googleAccessToken)
-        //.post(requestBody)
-        .build()
-
-    // 우리 서버 테스트는 postman이나 swagger만 이용하는거로..
-
-    val client = OkHttpClient()
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            e.printStackTrace()
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            if (response.isSuccessful) {
-                Log.d("testtesttest", "success")
-            } else {
-                // Handle error
-                Log.d("testtesttest", response.toString())
-            }
-        }
-    })
 }
 
 @Preview(showBackground = true)
