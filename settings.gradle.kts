@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 rootProject.name = "snutt"
 
 include(":app")
+include(":core:database")
