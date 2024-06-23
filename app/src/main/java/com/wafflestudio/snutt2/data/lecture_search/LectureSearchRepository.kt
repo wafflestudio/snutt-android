@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -18,4 +19,8 @@ interface LectureSearchRepository {
     ): Flow<PagingData<LectureDto>>
 
     suspend fun getSearchTags(year: Long, semester: Long): List<TagDto>
+
+    suspend fun getBuildings(
+        places: String,
+    ): List<LectureBuildingDto>
 }

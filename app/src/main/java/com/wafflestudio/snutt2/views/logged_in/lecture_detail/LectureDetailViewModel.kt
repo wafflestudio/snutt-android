@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
@@ -29,6 +30,7 @@ sealed class ModeType {
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
+    private val lectureSearchRepository: LectureSearchRepository,
     private val themeRepository: ThemeRepository,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
@@ -39,11 +41,17 @@ class LectureDetailViewModel @Inject constructor(
     val modeType = _modeType.asStateFlow()
 
     private var fixedLectureDetail = LectureDto.Default
+
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
     val editingLectureReview = _editingLectureDetail.map { lecture ->
         lecture.review?.rating?.let { lecture.review } ?: getLectureReview()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
+
+    val editingLectureBuildings = editingLectureDetail.map { lecture ->
+        val places = lecture.class_time_json.map { it.place }.distinct().joinToString(",")
+        lectureSearchRepository.getBuildings(places)
+    }
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }

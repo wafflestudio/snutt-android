@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.BuildingsResponse
 import retrofit2.http.*
 
 /**
@@ -282,6 +283,11 @@ interface SNUTTRestApi {
     suspend fun _postCopyTheme(
         @Path("themeId") themeId: String,
     ): PostCopyThemeResults
+
+    @GET("/v1/buildings")
+    suspend fun _getBuildings(
+        @Query("places") places: String,
+    ): BuildingsResponse
 
     @GET("/v1/ev/lectures/{lectureId}/summary")
     suspend fun _getLectureReviewSummary(

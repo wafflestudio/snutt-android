@@ -18,8 +18,7 @@ fun showCancelEditDialog(
     val apiOnProgress = composableStates.apiOnProgress
     val scope = composableStates.scope
 
-    modalState.setOkCancel(
-        context = context,
+    modalState.set(
         onDismiss = { modalState.hide() },
         onConfirm = {
             scope.launch {
@@ -30,6 +29,8 @@ fun showCancelEditDialog(
             }
         },
         title = context.getString(R.string.theme_detail_dialog_cancel_edit_title),
+        positiveButton = context.getString(R.string.common_ok),
+        negativeButton = context.getString(R.string.common_cancel),
         content = {
             Text(
                 text = stringResource(R.string.theme_detail_dialog_cancel_edit_body),
@@ -50,8 +51,7 @@ fun showApplyToCurrentTableDialog(
     val apiOnProgress = composableStates.apiOnProgress
     val scope = composableStates.scope
 
-    modalState.setYesNo(
-        context = context,
+    modalState.set(
         onDismiss = {
             scope.launch {
                 avoid()
@@ -67,6 +67,8 @@ fun showApplyToCurrentTableDialog(
             }
         },
         title = context.getString(R.string.theme_detail_dialog_apply_to_current_table_title),
+        positiveButton = context.getString(R.string.common_yes),
+        negativeButton = context.getString(R.string.common_no),
         content = {
             Text(
                 text = stringResource(R.string.theme_detail_dialog_apply_to_current_table_body),

@@ -10,7 +10,6 @@ data class ClassTimeDto(
     @Json(name = "_id") val id: String? = null,
     @Json(name = "startMinute") val startMinute: Int = 0,
     @Json(name = "endMinute") val endMinute: Int = 0,
-    @Json(name = "lectureBuildings") val lectureBuildings: List<LectureBuildingDto>? = null,
 ) {
 
     val startTimeInFloat: Float

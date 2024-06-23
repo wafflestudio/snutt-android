@@ -18,8 +18,7 @@ fun showDeleteThemeDialog(
     val apiOnProgress = composableStates.apiOnProgress
     val scope = composableStates.scope
 
-    modalState.setOkCancel(
-        context = context,
+    modalState.set(
         onDismiss = { modalState.hide() },
         onConfirm = {
             scope.launch {
@@ -30,6 +29,8 @@ fun showDeleteThemeDialog(
             }
         },
         title = context.getString(R.string.theme_config_dialog_delete_title),
+        positiveButton = context.getString(R.string.common_ok),
+        negativeButton = context.getString(R.string.common_cancel),
         content = {
             Text(
                 text = stringResource(R.string.theme_config_dialog_delete_body),

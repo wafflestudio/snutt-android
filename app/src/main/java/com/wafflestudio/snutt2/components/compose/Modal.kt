@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.components.compose
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +7,6 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
-import com.wafflestudio.snutt2.R
 
 class ModalState {
     var isVisible: Boolean by mutableStateOf(false)
@@ -53,42 +51,6 @@ class ModalState {
             this.positiveButtonText = positiveButton
             this.negativeButtonText = negativeButton
             this.width = width
-            this.content = content
-        }
-    }
-
-    fun setOkCancel(
-        context: Context,
-        onDismiss: () -> Unit,
-        onConfirm: () -> Unit,
-        title: String,
-        content: @Composable () -> Unit,
-    ): ModalState {
-        return this.apply {
-            this.onDismiss = onDismiss
-            this.onConfirm = onConfirm
-            this.title = title
-            this.positiveButtonText = context.getString(R.string.common_ok)
-            this.negativeButtonText = context.getString(R.string.common_cancel)
-            this.width = null
-            this.content = content
-        }
-    }
-
-    fun setYesNo(
-        context: Context,
-        onDismiss: () -> Unit,
-        onConfirm: () -> Unit,
-        title: String,
-        content: @Composable () -> Unit,
-    ): ModalState {
-        return this.apply {
-            this.onDismiss = onDismiss
-            this.onConfirm = onConfirm
-            this.title = title
-            this.positiveButtonText = context.getString(R.string.common_yes)
-            this.negativeButtonText = context.getString(R.string.common_no)
-            this.width = null
             this.content = content
         }
     }
