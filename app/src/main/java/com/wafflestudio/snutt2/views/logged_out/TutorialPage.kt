@@ -219,7 +219,7 @@ fun TutorialPage() {
                 onClick = {
                     googleSignInClient.signOut().addOnCompleteListener {
                         handleGoogleSignIn()
-                    } 
+                    }
                 },
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
