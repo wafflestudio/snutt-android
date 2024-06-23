@@ -68,15 +68,15 @@ fun TutorialPage() {
     }
 
     // accessToken을 SNUTT 서버에 보내 로그인을 실행한다.
-    val loginGoogleByAccessToken: (String) -> Unit = { googleAccessToken : String ->
+    val loginGoogleByAccessToken: (String) -> Unit = { googleAccessToken: String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-                ) {
+            ) {
                 userViewModel.loginGoogle(
-                    googleAccessToken
+                    googleAccessToken,
                 )
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
@@ -85,17 +85,16 @@ fun TutorialPage() {
     }
 
     // 계정을 선택하면 authCode가 받아지는데, 그 authCode를 구글 API로 보내 accessToken을 얻는다.
-    val getAccessTokenByAuthCode: (String) -> Unit = { authCode : String ->
+    val getAccessTokenByAuthCode: (String) -> Unit = { authCode: String ->
         coroutineScope.launch {
             val response = userViewModel.getAccessTokenByAuthCode(
                 authCode = authCode,
                 clientId = clientId,
-                clientSecret = clientSecret
+                clientSecret = clientSecret,
             )
-            if(response.accessToken==null){
+            if (response.accessToken == null) {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-            }
-            else{
+            } else {
                 loginGoogleByAccessToken(response.accessToken)
             }
         }
@@ -103,7 +102,7 @@ fun TutorialPage() {
 
     // 계정 선택 activity에서 결과를 받는 부분
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+        contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -112,15 +111,13 @@ fun TutorialPage() {
                 val authCode = account?.serverAuthCode
                 if (authCode != null) {
                     getAccessTokenByAuthCode(authCode)
-                }
-                else {
+                } else {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             } catch (e: ApiException) {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
-        }
-        else if(result.resultCode == Activity.RESULT_CANCELED){
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
             context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
         }
     }
@@ -128,7 +125,7 @@ fun TutorialPage() {
     val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .requestServerAuthCode(clientId)
-        .build().let{
+        .build().let {
             GoogleSignIn.getClient(activityContext, it)
         }
 
@@ -219,9 +216,11 @@ fun TutorialPage() {
                 modifier = Modifier.fillMaxWidth(),
                 color = SNUTTColors.FacebookBlue,
                 cornerRadius = 10.dp,
-                onClick = { googleSignInClient.signOut().addOnCompleteListener {
-                    handleGoogleSignIn()
-                }},
+                onClick = {
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        handleGoogleSignIn()
+                    } 
+                },
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
