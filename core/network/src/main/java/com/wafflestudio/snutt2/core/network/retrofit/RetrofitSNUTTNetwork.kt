@@ -479,7 +479,7 @@ class RetrofitSNUTTNetwork @Inject constructor(
             year = year,
             semester = semester,
             courseNumber = courseNumber,
-            lectureNumber = lectureNumber
+            lectureNumber = lectureNumber,
         )
 
     override suspend fun _postSignUp(

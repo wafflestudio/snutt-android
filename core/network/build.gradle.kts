@@ -1,14 +1,10 @@
 plugins {
     alias(libs.plugins.snutt.android.application)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.snutt.android.hilt)
 }
 
 android {
-    compileSdk = 34
     namespace = "com.wafflestudio.snutt2.core.network"
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
