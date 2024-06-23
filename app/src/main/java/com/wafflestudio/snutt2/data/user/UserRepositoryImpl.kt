@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -23,6 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
+    private val apiGoogle: SNUTTRestApiForGoogle,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
@@ -269,6 +271,16 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): PostAccessTokenByAuthCodeResults {
+        return apiGoogle._getAccessTokenByAuthCode(
+            PostAccessTokenByAuthCodeParams(
+                authCode = authCode,
+                clientId = clientId,
+                clientSecret = clientSecret,
+            ),
+        )
     }
 
     private suspend fun getFirebaseToken(): String {
