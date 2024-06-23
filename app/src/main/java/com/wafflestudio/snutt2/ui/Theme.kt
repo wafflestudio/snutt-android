@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,10 +9,6 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
@@ -88,22 +83,6 @@ fun isSystemDarkMode(context: Context): Boolean {
 fun SNUTTTheme(
     content: @Composable () -> Unit,
 ) {
-    /* <다크모드에서 내비게이션 시 흰색 깜빡이는 이슈 해결>
-     * 내비게이션 시 액티비티 배경색인 흰색(styles.xml에서 android:windowBackground 로 지정된 색)이 잠깐 노출된다.
-     * 원래는 values-night/styles.xml를 통해 다크모드의 색을 지정하지만, 우리는 시스템의 테마와 앱의 테마를
-     * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
-     */
-    val window = (LocalContext.current as Activity).window
-    val primaryColor = LocalContext.current.getColor(if (isDarkMode()) R.color.black_dark else R.color.white)
-    window.apply {
-        setBackgroundDrawableResource(if (isDarkMode()) R.color.black_dark else R.color.white)
-        statusBarColor = primaryColor
-        navigationBarColor = primaryColor
-    }
-    WindowCompat.getInsetsController(window, LocalView.current).apply {
-        isAppearanceLightStatusBars = isDarkMode().not()
-        isAppearanceLightNavigationBars = isDarkMode().not()
-    }
     MaterialTheme(
         colors = if (isDarkMode()) DarkThemeColors else LightThemeColors,
         typography = SNUTTTypography,
