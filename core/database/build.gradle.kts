@@ -8,5 +8,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.rxjava)
 }
