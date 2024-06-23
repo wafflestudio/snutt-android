@@ -85,7 +85,7 @@ object NetworkModule {
                         "x-device-id",
                         Secure.getString(
                             context.contentResolver,
-                            Secure.ANDROID_ID
+                            Secure.ANDROID_ID,
                         ),
                     )
                     .addHeader(

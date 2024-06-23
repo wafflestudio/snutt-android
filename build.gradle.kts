@@ -19,5 +19,4 @@ plugins {
     alias(libs.plugins.gms) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.jetbrains.kotlin.android) apply false // TODO : core/network에 필요해서 얘가 추가되어 버림
 }

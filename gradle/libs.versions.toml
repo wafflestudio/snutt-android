@@ -38,8 +38,6 @@ retrofit = "2.9.0"
 rxkotlin = "3.0.1"
 rxjava = "3.1.0"
 timber = "5.0.1"
-kotlinVersion = "2.0.0"
-coreKtx = "1.13.1"
 
 [libraries]
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout"  }
@@ -102,7 +100,6 @@ compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsPlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -126,4 +123,3 @@ snutt-android-feature = { id = "snutt.android.feature", version = "unspecified" 
 snutt-android-hilt = { id = "snutt.android.hilt", version = "unspecified" }
 snutt-android-library = { id = "snutt.android.library", version = "unspecified" }
 snutt-android-library-compose = { id = "snutt.android.library.compose", version = "unspecified" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }

@@ -432,7 +432,6 @@ class RetrofitSNUTTNetwork @Inject constructor(
     ): PutTableThemeResult =
         networkApi._putTableTheme(id = id, body = body)
 
-
     override suspend fun _copyTable(
         id: String,
     ): PostCopyTableResults =
@@ -474,9 +473,14 @@ class RetrofitSNUTTNetwork @Inject constructor(
         year: Long,
         semester: Long,
         courseNumber: String,
-        lectureNumber: String
+        lectureNumber: String,
     ): GetCoursebooksOfficialResults =
-        networkApi._getCoursebooksOfficial(year = year, semester = semester, courseNumber = courseNumber, lectureNumber = lectureNumber)
+        networkApi._getCoursebooksOfficial(
+            year = year,
+            semester = semester,
+            courseNumber = courseNumber,
+            lectureNumber = lectureNumber
+        )
 
     override suspend fun _postSignUp(
         body: PostSignUpParams,
@@ -489,7 +493,7 @@ class RetrofitSNUTTNetwork @Inject constructor(
         networkApi._postSignIn(body = body)
 
     override suspend fun _postLoginFacebook(
-        body: PostLoginFacebookParams
+        body: PostLoginFacebookParams,
     ): PostLoginFacebookResults =
         networkApi._postLoginFacebook(body = body)
 
