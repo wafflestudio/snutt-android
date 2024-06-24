@@ -120,6 +120,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 snutt-android-application = { id = "snutt.android.application", version = "unspecified" }
 snutt-android-application-compose = { id = "snutt.android.application.compose", version = "unspecified" }
 snutt-android-application-firebase = { id = "snutt.android.application.firebase", version = "unspecified" }
+snutt-android-application-firebase-app-distribution = { id = "snutt.android.application.firebase.app.distribution", version = "unspecified" }
 snutt-android-application-flavors = { id = "snutt.android.application.flavors", version = "unspecified" }
 snutt-android-feature = { id = "snutt.android.feature", version = "unspecified" }
 snutt-android-hilt = { id = "snutt.android.hilt", version = "unspecified" }
