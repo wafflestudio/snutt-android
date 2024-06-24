@@ -11,6 +11,8 @@ dependencies {
 
     implementation( project (path = ":app", configuration = "stagingDebugApiElements"))
 
+    implementation(libs.gson)
+    implementation(libs.timber)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.hilt.android)
