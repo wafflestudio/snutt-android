@@ -10,8 +10,6 @@ import okio.IOException
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
 
-import com.wafflestudio.snutt2.R
-
 data class NetworkLog(
     val requestMethod: String,
     val requestUrl: String,

@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import com.wafflestudio.snutt2.data.user.UserRepository // TODO : 나중에 해결
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +15,6 @@ import okio.IOException
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
-
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.user.UserRepository
 
 /**
  * Created by makesource on 2017. 4. 28..
@@ -148,7 +146,7 @@ class ApiOnError @Inject constructor(
                                     withContext(Dispatchers.Main) {
                                         Toast.makeText(
                                             context,
-                                            "로그아웃에 실패하였습니다.",
+                                            R.string.error_fail_logout,
                                             Toast.LENGTH_SHORT,
                                         )
                                             .show()
