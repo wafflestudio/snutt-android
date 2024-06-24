@@ -7,4 +7,6 @@ android {
 }
 
 dependencies {
+    implementation(libs.moshi)
+    implementation(libs.naver.map)
 }
