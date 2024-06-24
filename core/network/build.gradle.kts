@@ -12,6 +12,7 @@ dependencies {
     implementation( project (path = ":app", configuration = "stagingDebugApiElements"))
 
     implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
     implementation(libs.hilt.android)
     implementation(libs.hilt.compiler)
     implementation(libs.okhttp.logging)
