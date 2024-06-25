@@ -9,6 +9,14 @@ on:
       - 'develop'
 
 jobs:
+  add-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automatically Assign Reviewers and Assignees
+        uses: kentaro-m/auto-assign-action@v2.0.0
+        with:
+          configuration-path: '.github/auto_reviewers_assignees.yml'
+
   cancel-workflow:
     runs-on: ubuntu-latest
     steps:
