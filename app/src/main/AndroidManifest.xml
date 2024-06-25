@@ -16,8 +16,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Snutt.Splash"
-        android:usesCleartextTraffic="true"
-        android:enableOnBackInvokedCallback="true">
+        android:usesCleartextTraffic="true">
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
