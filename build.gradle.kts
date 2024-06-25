@@ -27,6 +27,7 @@ allprojects {
         mavenCentral()
         maven(url = "https://jitpack.io")
         maven("https://naver.jfrog.io/artifactory/maven/")
+        maven("https://repository.map.naver.com/archive/maven")
     }
 }
 
