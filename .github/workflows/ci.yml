@@ -8,6 +8,7 @@ on:
 
 jobs:
   add-assignees-and-reviewers:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Automatically Assign Reviewers and Assignees
