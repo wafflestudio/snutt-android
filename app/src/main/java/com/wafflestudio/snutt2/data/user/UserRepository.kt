@@ -25,6 +25,8 @@ interface UserRepository {
     // login with facebook id
     suspend fun postLoginFacebook(facebookId: String, facebookToken: String)
 
+    suspend fun postLoginGoogle(googleIdToken: String)
+
     suspend fun postSignUp(id: String, password: String, email: String)
 
     suspend fun fetchUserInfo()
@@ -93,4 +95,10 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
+
+    suspend fun getAccessTokenByAuthCode(
+        authCode: String,
+        clientId: String,
+        clientSecret: String,
+    ): String?
 }

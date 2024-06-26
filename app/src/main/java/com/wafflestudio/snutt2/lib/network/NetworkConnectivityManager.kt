@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
+@Named("Default")
 class NetworkConnectivityManager @Inject constructor(
-    connectivityManager: ConnectivityManager,
+    @Named("Default") connectivityManager: ConnectivityManager,
 ) {
     private val _networkConnectivity = MutableStateFlow<Boolean?>(null)
     val networkConnectivity = _networkConnectivity.filterNotNull()
