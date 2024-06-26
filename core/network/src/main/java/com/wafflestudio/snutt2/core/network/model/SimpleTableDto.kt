@@ -12,15 +12,4 @@ data class SimpleTableDto(
     @Json(name = "updated_at") val updatedAt: String,
     @Json(name = "total_credit") val totalCredit: Long?,
     @Json(name = "isPrimary") val isPrimary: Boolean = false,
-) {
-    companion object {
-        val Default = SimpleTableDto(
-            id = "",
-            year = 2022,
-            semester = 1L,
-            title = "",
-            updatedAt = "",
-            totalCredit = null,
-        )
-    }
-}
+)

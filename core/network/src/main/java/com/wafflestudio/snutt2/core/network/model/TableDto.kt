@@ -15,17 +15,4 @@ data class TableDto(
     @Json(name = "theme") val theme: Int,
     @Json(name = "themeId") val themeId: String? = null,
     @Json(name = "isPrimary") val isPrimary: Boolean = false,
-) {
-    companion object {
-        val Default = TableDto(
-            id = "",
-            year = 2022,
-            semester = 1,
-            title = "나의 시간표",
-            lectureList = emptyList(),
-            updatedAt = "default",
-            totalCredit = 0,
-            theme = BuiltInTheme.SNUTT.code,
-        )
-    }
-}
+)

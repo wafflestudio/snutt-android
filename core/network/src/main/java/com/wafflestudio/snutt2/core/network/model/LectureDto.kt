@@ -24,25 +24,4 @@ data class LectureDto(
     @Json(name = "color") val color: ColorDto = ColorDto(),
     @Json(name = "registrationCount") val registrationCount: Long = 0,
     @Json(name = "wasFull") val wasFull: Boolean = false,
-) {
-    companion object {
-        val Default = LectureDto(
-            id = "",
-            course_title = "",
-            instructor = "",
-            colorIndex = 1L,
-            color = ColorDto(),
-            department = null,
-            academic_year = null,
-            credit = 0,
-            category = null,
-            classification = null,
-            course_number = null,
-            lecture_number = null,
-            quota = 0L,
-            freshmanQuota = null,
-            remark = "",
-            class_time_json = emptyList(),
-        )
-    }
-}
+)
