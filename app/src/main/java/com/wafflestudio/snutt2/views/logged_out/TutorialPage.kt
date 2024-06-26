@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,8 +17,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -31,9 +41,13 @@ fun TutorialPage() {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
+    val activityContext = LocalContext.current as Activity
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
+
+    val clientId = context.getString(R.string.web_client_id)
+    val clientSecret = context.getString(R.string.web_client_secret)
 
     val handleFacebookSignIn = {
         coroutineScope.launch {
@@ -51,6 +65,63 @@ fun TutorialPage() {
                 navController.navigateAsOrigin(NavigationDestination.Home)
             }
         }
+    }
+
+    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                val googleAccessToken = userViewModel.getAccessTokenByAuthCode(
+                    authCode = authCode,
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                )
+                if (googleAccessToken != null) {
+                    userViewModel.loginGoogle(googleAccessToken)
+                    homeViewModel.refreshData()
+                    navController.navigateAsOrigin(NavigationDestination.Home)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+        }
+    }
+
+    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val authCode = account?.serverAuthCode
+                if (authCode != null) {
+                    handleGoogleSignInCallback(authCode)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            } catch (e: ApiException) {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+            }
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+        }
+    }
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .requestServerAuthCode(clientId)
+        .build().let {
+            GoogleSignIn.getClient(activityContext, it)
+        }
+
+    // 구글 계정 선택 창 띄움
+    val handleGoogleSignIn = {
+        val signInIntent = googleSignInClient.signInIntent
+        googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
     Column(
@@ -124,6 +195,33 @@ fun TutorialPage() {
 
                     Text(
                         text = stringResource(R.string.sign_in_sign_in_facebook_button),
+                        color = SNUTTColors.FacebookBlue,
+                        style = SNUTTTypography.button,
+                    )
+                }
+            }
+
+            BorderButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = SNUTTColors.FacebookBlue,
+                cornerRadius = 10.dp,
+                onClick = {
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        handleGoogleSignIn()
+                    }
+                },
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.iconfacebook),
+                        contentDescription = stringResource(id = R.string.sign_in_sign_in_google_button),
+                        modifier = Modifier
+                            .height(18.dp)
+                            .padding(end = 12.dp),
+                    )
+
+                    Text(
+                        text = stringResource(R.string.sign_in_sign_in_google_button),
                         color = SNUTTColors.FacebookBlue,
                         style = SNUTTTypography.button,
                     )

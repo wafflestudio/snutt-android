@@ -53,6 +53,10 @@ class UserViewModel @Inject constructor(
         userRepository.postLoginFacebook(facebookId, facebookToken)
     }
 
+    suspend fun loginGoogle(googleIdToken: String) {
+        userRepository.postLoginGoogle(googleIdToken)
+    }
+
     suspend fun addNewLocalId(id: String, password: String) {
         userRepository.postUserPassword(id, password)
     }
@@ -158,5 +162,9 @@ class UserViewModel @Inject constructor(
 
     suspend fun setFirstBookmarkAlertShown() {
         userRepository.setFirstBookmarkAlertShown()
+    }
+
+    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
     }
 }

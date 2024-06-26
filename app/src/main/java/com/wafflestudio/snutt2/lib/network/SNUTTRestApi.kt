@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.dto.core.BuildingsResponse
 import retrofit2.http.*
 
 /**
@@ -126,6 +125,11 @@ interface SNUTTRestApi {
     suspend fun _postLoginFacebook(
         @Body body: PostLoginFacebookParams,
     ): PostLoginFacebookResults
+
+    @POST("/v1/auth/login_google")
+    suspend fun _postLoginGoogle(
+        @Body body: PostLoginGoogleParams,
+    ): PostLoginGoogleResults
 
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(

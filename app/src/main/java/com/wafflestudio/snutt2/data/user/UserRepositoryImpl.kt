@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -23,6 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
+    private val apiGoogle: SNUTTRestApiForGoogle,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
@@ -49,6 +51,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
         val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginGoogle(googleIdToken: String) {
+        val response = api._postLoginGoogle(PostLoginGoogleParams(googleIdToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -263,6 +271,16 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return apiGoogle._getAccessTokenByAuthCode(
+            PostAccessTokenByAuthCodeParams(
+                authCode = authCode,
+                clientId = clientId,
+                clientSecret = clientSecret,
+            ),
+        ).accessToken
     }
 
     private suspend fun getFirebaseToken(): String {

@@ -196,4 +196,8 @@ dependencies {
     // naver map
     implementation("com.naver.maps:map-sdk:3.17.0")
     implementation("io.github.fornewid:naver-map-compose:1.4.1")
+
+    // google login
+    implementation("com.google.android.gms:play-services-auth:21.1.1")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 }
