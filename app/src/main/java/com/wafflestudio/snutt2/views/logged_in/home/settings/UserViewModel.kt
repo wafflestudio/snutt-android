@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
-import com.wafflestudio.snutt2.lib.network.dto.PostAccessTokenByAuthCodeResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode

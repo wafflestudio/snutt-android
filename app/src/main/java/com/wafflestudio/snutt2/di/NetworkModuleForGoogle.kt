@@ -2,15 +2,12 @@ package com.wafflestudio.snutt2.di
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.ConnectivityManager
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
 import dagger.Module
 import dagger.Provides
@@ -21,7 +18,6 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Singleton
@@ -79,5 +75,4 @@ object NetworkModuleForGoogle {
     private const val SIZE_OF_CACHE = (
         10 * 1024 * 1024 // 10 MB
         ).toLong()
-
 }
