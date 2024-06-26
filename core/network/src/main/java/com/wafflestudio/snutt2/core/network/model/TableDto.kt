@@ -15,22 +15,7 @@ data class TableDto(
     @Json(name = "theme") val theme: Int,
     @Json(name = "themeId") val themeId: String? = null,
     @Json(name = "isPrimary") val isPrimary: Boolean = false,
-) : Comparable<TableDto> {
-
-    override fun compareTo(other: TableDto): Int {
-        if (year > other.year) return -1
-        if (year < other.year) return 1
-        if (year == other.year) {
-            if (semester > other.semester) return -1
-            if (semester < other.semester) return 1
-            if (semester == other.semester) {
-                // update time 기준으로 비교!
-                return 0
-            }
-        }
-        return 0
-    }
-
+) {
     companion object {
         val Default = TableDto(
             id = "",
