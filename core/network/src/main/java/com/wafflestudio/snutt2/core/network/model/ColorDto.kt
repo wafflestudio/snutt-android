@@ -7,9 +7,4 @@ import com.squareup.moshi.JsonClass
 data class ColorDto(
     @Json(name = "fg") val fgRaw: String? = null,
     @Json(name = "bg") val bgRaw: String? = null,
-) {
-    constructor(fgColor: Int, bgColor: Int) : this(
-        "#%06X".format(0xFFFFFF and fgColor),
-        "#%06X".format(0xFFFFFF and bgColor),
-    )
-}
+)
