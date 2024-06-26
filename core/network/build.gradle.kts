@@ -8,9 +8,6 @@ android {
 }
 
 dependencies {
-
-    implementation( project (path = ":app", configuration = "stagingDebugApiElements"))
-
     implementation(libs.gson)
     implementation(libs.timber)
     implementation(libs.moshi)
