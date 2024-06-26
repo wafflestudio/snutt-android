@@ -26,7 +26,6 @@ interface UserRepository {
     // login with facebook id
     suspend fun postLoginFacebook(facebookId: String, facebookToken: String)
 
-    // google 계정으로 로그인
     suspend fun postLoginGoogle(googleIdToken: String)
 
     suspend fun postSignUp(id: String, password: String, email: String)
@@ -102,5 +101,5 @@ interface UserRepository {
         authCode: String,
         clientId: String,
         clientSecret: String,
-    ): PostAccessTokenByAuthCodeResults
+    ): String?
 }

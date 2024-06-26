@@ -62,18 +62,11 @@ object NetworkModuleForGoogle {
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
         moshi: Moshi,
-        serializer: Serializer,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(context.getString(R.string.api_google_server))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(
-                ErrorParsingCallAdapterFactory(
-                    RxJava3CallAdapterFactory.create(),
-                    serializer,
-                ),
-            )
             .build()
     }
 
@@ -87,11 +80,4 @@ object NetworkModuleForGoogle {
         10 * 1024 * 1024 // 10 MB
         ).toLong()
 
-    @Provides
-    @Singleton
-    fun provideConnectivityManagerForGoogle(
-        @ApplicationContext context: Context,
-    ): ConnectivityManager {
-        return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-    }
 }

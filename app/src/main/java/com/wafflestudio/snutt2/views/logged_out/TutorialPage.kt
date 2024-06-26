@@ -67,40 +67,29 @@ fun TutorialPage() {
         }
     }
 
-    // accessToken을 SNUTT 서버에 보내 로그인을 실행한다.
-    val loginGoogleByAccessToken: (String) -> Unit = { googleAccessToken: String ->
+    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                userViewModel.loginGoogle(
-                    googleAccessToken,
+                val googleAccessToken = userViewModel.getAccessTokenByAuthCode(
+                    authCode = authCode,
+                    clientId = clientId,
+                    clientSecret = clientSecret,
                 )
-                homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
+                if (googleAccessToken != null) {
+                    userViewModel.loginGoogle(googleAccessToken)
+                    homeViewModel.refreshData()
+                    navController.navigateAsOrigin(NavigationDestination.Home)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
             }
         }
     }
 
-    // 계정을 선택하면 authCode가 받아지는데, 그 authCode를 구글 API로 보내 accessToken을 얻는다.
-    val getAccessTokenByAuthCode: (String) -> Unit = { authCode: String ->
-        coroutineScope.launch {
-            val response = userViewModel.getAccessTokenByAuthCode(
-                authCode = authCode,
-                clientId = clientId,
-                clientSecret = clientSecret,
-            )
-            if (response.accessToken == null) {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-            } else {
-                loginGoogleByAccessToken(response.accessToken)
-            }
-        }
-    }
-
-    // 계정 선택 activity에서 결과를 받는 부분
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
@@ -110,7 +99,7 @@ fun TutorialPage() {
                 val account = task.getResult(ApiException::class.java)
                 val authCode = account?.serverAuthCode
                 if (authCode != null) {
-                    getAccessTokenByAuthCode(authCode)
+                    handleGoogleSignInCallback(authCode)
                 } else {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
@@ -129,7 +118,7 @@ fun TutorialPage() {
             GoogleSignIn.getClient(activityContext, it)
         }
 
-    // 사용자가 버튼을 누르면 이게 실행되어 googleLoginActivityResultLauncher를 실행하게 된다.
+    // 구글 계정 선택 창 띄움
     val handleGoogleSignIn = {
         val signInIntent = googleSignInClient.signInIntent
         googleLoginActivityResultLauncher.launch(signInIntent)

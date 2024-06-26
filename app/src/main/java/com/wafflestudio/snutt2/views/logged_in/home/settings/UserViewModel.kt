@@ -165,7 +165,7 @@ class UserViewModel @Inject constructor(
         userRepository.setFirstBookmarkAlertShown()
     }
 
-    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): PostAccessTokenByAuthCodeResults {
+    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
         return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
     }
 }

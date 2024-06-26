@@ -273,14 +273,14 @@ class UserRepositoryImpl @Inject constructor(
         storage.firstBookmarkAlert.update(false)
     }
 
-    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): PostAccessTokenByAuthCodeResults {
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
         return apiGoogle._getAccessTokenByAuthCode(
             PostAccessTokenByAuthCodeParams(
                 authCode = authCode,
                 clientId = clientId,
                 clientSecret = clientSecret,
             ),
-        )
+        ).accessToken
     }
 
     private suspend fun getFirebaseToken(): String {
