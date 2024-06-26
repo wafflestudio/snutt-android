@@ -5,8 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class GetLecturesIdParams(
-    @Json(name = "course_number")
-    val courseNumber: String,
-    @Json(name = "instructor")
-    val instructor: String,
+    @Json(name = "course_number") val courseNumber: String,
+    @Json(name = "instructor") val instructor: String,
 )

@@ -1,9 +1,7 @@
 package com.wafflestudio.snutt2.core.network.model
 
-import android.content.Context
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.core.network.R
 
 @JsonClass(generateAdapter = true)
 data class CourseBookDto(
@@ -22,20 +20,4 @@ data class CourseBookDto(
         }
         return 0
     }
-}
-
-fun CourseBookDto.toFullString(context: Context): String {
-    return StringBuilder()
-        .append(this.year)
-        .append("년 ")
-        .append(
-            when (this.semester) {
-                1L -> context.getString(R.string.course_book_spring_semster)
-                2L -> context.getString(R.string.course_book_summer_semester)
-                3L -> context.getString(R.string.course_book_authum)
-                4L -> context.getString(R.string.course_book_winter)
-                else -> ""
-            },
-        )
-        .toString()
 }

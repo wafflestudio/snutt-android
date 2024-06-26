@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.core.network.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.model.BuiltInTheme // TODO : 얘는 옮겨오지 못했다. 나중에 처리
 
 @JsonClass(generateAdapter = true)
 data class TableDto(

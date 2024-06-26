@@ -25,10 +25,6 @@ data class LectureDto(
     @Json(name = "registrationCount") val registrationCount: Long = 0,
     @Json(name = "wasFull") val wasFull: Boolean = false,
 ) {
-
-    val isCustom: Boolean
-        get() = course_number.isNullOrBlank() && lecture_number.isNullOrEmpty()
-
     companion object {
         val Default = LectureDto(
             id = "",
