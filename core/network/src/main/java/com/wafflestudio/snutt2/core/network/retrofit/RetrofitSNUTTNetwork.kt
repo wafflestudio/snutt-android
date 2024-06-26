@@ -1,8 +1,5 @@
 package com.wafflestudio.snutt2.core.network.retrofit
 
-interface RetrofitSNUTTNetworkApi {
-}
+interface RetrofitSNUTTNetworkApi
 
-class RetrofitSNUTTNetwork{
-
-}
+class RetrofitSNUTTNetwork
