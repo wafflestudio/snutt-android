@@ -1,6 +1,0 @@
-<resources>
-    <string name="course_book_spring_semster">1학기</string>
-    <string name="course_book_summer_semester">여름학기</string>
-    <string name="course_book_authum">2학기</string>
-    <string name="course_book_winter">겨울학기</string>
-</resources>
