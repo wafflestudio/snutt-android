@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.dto.BuildingsResponse
 import retrofit2.http.*
 
 /**
