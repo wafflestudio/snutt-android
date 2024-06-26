@@ -27,7 +27,6 @@ import java.io.File
 import javax.inject.Singleton
 
 // TODO : 아직은 이 NetworkModule이 아니라 원래 있던 NetworkModule을 쓰고 있다. (순환 종속 방지)
-// TODO : 사실 순환 종속 안걸릴수도 있는데 기존의 NetworkModule을 가져다 쓰는 곳이 app/di에 있는 의문의 java 파일들이라서 일단 둠
 
 @Module
 @InstallIn(dagger.hilt.components.SingletonComponent::class)
