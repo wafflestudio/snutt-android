@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.wafflestidio.snutt2.buildlogic"
+group = "com.wafflestudio.snutt2.build-logic"
 
 // Configure the build-logic plugins to target JDK 17
 // This matches the JDK used to build the project, and is not related to what is running on device.
@@ -24,6 +24,7 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.firebase.crashlytics.gradlePlugin)
+    compileOnly(libs.firebase.app.distribution.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
 }
@@ -56,6 +57,10 @@ gradlePlugin {
         register("androidFirebase") {
             id = "snutt.android.application.firebase"
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
+        }
+        register("androidFirebaseAppDistibution") {
+            id = "snutt.android.application.firebase.app.distribution"
+            implementationClass = "AndroidApplicationFirebaseAppDistributionConventionPlugin"
         }
         register("semanticVersioning") {
             id = "snutt.semantic.versioning"
