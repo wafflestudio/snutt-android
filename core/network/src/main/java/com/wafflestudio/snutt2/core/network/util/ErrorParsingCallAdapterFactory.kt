@@ -1,6 +1,5 @@
-package com.wafflestudio.snutt2.core.network
+package com.wafflestudio.snutt2.core.network.util
 
-import com.wafflestudio.snutt2.core.network.di.Serializer
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType

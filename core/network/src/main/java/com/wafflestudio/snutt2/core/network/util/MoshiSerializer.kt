@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.core.network.di
+package com.wafflestudio.snutt2.core.network.util
 
 import com.squareup.moshi.Moshi
 import java.lang.reflect.Type

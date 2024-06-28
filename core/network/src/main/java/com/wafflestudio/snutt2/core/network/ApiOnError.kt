@@ -5,8 +5,11 @@ import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
+import com.wafflestudio.snutt2.core.network.util.runOnUiThread
 import com.wafflestudio.snutt2.data.user.UserRepository // TODO : 나중에 해결
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -311,7 +314,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                     }
                 }
-                is kotlinx.coroutines.CancellationException -> {} // do nothing
+                is CancellationException -> {} // do nothing
                 else -> {
                     Toast.makeText(
                         context,

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.core.network
+package com.wafflestudio.snutt2.core.network.util
 
 import android.os.Handler
 import android.os.Looper
