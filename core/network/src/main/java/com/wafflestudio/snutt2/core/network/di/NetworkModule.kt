@@ -17,6 +17,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,7 +30,7 @@ import javax.inject.Singleton
 // TODO : 아직은 이 NetworkModule이 아니라 원래 있던 NetworkModule을 쓰고 있다. (순환 종속 방지)
 
 @Module
-@InstallIn(dagger.hilt.components.SingletonComponent::class)
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @SuppressLint("HardwareIds")

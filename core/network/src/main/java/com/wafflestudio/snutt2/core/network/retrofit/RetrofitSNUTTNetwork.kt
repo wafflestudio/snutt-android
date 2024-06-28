@@ -11,6 +11,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface RetrofitSNUTTNetworkApi {
     // API Basics and Auth
@@ -301,6 +302,7 @@ interface RetrofitSNUTTNetworkApi {
     ): BuildingsResponse
 }
 
+@Singleton
 class RetrofitSNUTTNetwork @Inject constructor(
     private val networkApi: RetrofitSNUTTNetworkApi,
 ) : SNUTTNetworkDataSource {
