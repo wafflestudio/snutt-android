@@ -2,8 +2,6 @@ name: CI
 
 on:
   pull_request:
-    branches:
-      - 'develop'
   push:
     branches:
       - 'develop'
@@ -19,6 +17,7 @@ jobs:
           configuration-path: '.github/auto_reviewers_assignees.yml'
 
   cancel-workflow:
+    if: github.base_ref == 'develop'
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
@@ -27,6 +26,7 @@ jobs:
           access_token: ${{ github.token }}
 
   static-check:
+    if: github.base_ref == 'develop'
     runs-on: ubuntu-latest
     needs: cancel-workflow
     steps:
@@ -49,6 +49,7 @@ jobs:
           path: ./**/build/reports/ktlint/**/*.html
 
   build:
+    if: github.base_ref == 'develop'
     runs-on: ubuntu-latest
     needs: static-check
     steps:
