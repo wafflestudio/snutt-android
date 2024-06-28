@@ -6,7 +6,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
-import com.wafflestudio.snutt2.BuildConfig // TODO : 나중에 해결
+import com.wafflestudio.snutt2.core.network.BuildConfig
 import com.wafflestudio.snutt2.core.network.util.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.core.network.R
 import com.wafflestudio.snutt2.core.network.createNewNetworkLog

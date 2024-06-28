@@ -5,6 +5,9 @@ plugins {
 
 android {
     namespace = "com.wafflestudio.snutt2.core.network"
+    buildFeatures{
+        buildConfig = true
+    }
 }
 
 dependencies {
