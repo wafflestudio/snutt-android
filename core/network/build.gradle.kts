@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.snutt.android.library)
     alias(libs.plugins.snutt.android.hilt)
-    alias(libs.plugins.snutt.semantic.versioning)
 }
 
 android {

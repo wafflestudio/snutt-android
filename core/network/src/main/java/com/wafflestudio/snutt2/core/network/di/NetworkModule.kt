@@ -76,7 +76,7 @@ object NetworkModule {
                     )
                     .addHeader(
                         "x-app-version",
-                        BuildConfig.VERSION_NAME,
+                        context.packageManager.getPackageInfo(context.packageName, 0).versionName,
                     )
                     .addHeader(
                         "x-app-type",
