@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.core.network.util
 
-import com.wafflestudio.snutt2.core.network.ErrorDTO
+import com.wafflestudio.snutt2.core.network.model.ErrorDTO
 import retrofit2.HttpException
 import retrofit2.Response
 
