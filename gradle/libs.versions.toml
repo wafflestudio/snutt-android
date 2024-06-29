@@ -18,6 +18,7 @@ androidxNavigation = "2.8.0-alpha06"
 coil = "2.6.0"
 facebook = "15.0.1"
 firebaseBom = "32.4.0"
+firebaseAppdistributionPlugin = "5.0.0"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
 gmsPlugin = "4.4.1"
@@ -97,6 +98,7 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+firebase-app-distribution-gradlePlugin = { group = "com.google.firebase", name = "firebase-appdistribution-gradle", version.ref = "firebaseAppdistributionPlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsPlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
@@ -106,6 +108,7 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+firebase-app-distribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppdistributionPlugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
@@ -118,8 +121,11 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 snutt-android-application = { id = "snutt.android.application", version = "unspecified" }
 snutt-android-application-compose = { id = "snutt.android.application.compose", version = "unspecified" }
 snutt-android-application-firebase = { id = "snutt.android.application.firebase", version = "unspecified" }
+snutt-android-application-firebase-app-distribution = { id = "snutt.android.application.firebase.app.distribution", version = "unspecified" }
 snutt-android-application-flavors = { id = "snutt.android.application.flavors", version = "unspecified" }
 snutt-android-feature = { id = "snutt.android.feature", version = "unspecified" }
 snutt-android-hilt = { id = "snutt.android.hilt", version = "unspecified" }
 snutt-android-library = { id = "snutt.android.library", version = "unspecified" }
 snutt-android-library-compose = { id = "snutt.android.library.compose", version = "unspecified" }
+snutt-semantic-versioning = { id = "snutt.semantic.versioning", version = "unspecified" }
+

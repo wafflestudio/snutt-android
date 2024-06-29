@@ -1,30 +1,22 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     alias(libs.plugins.snutt.android.application)
     alias(libs.plugins.snutt.android.application.compose)
     alias(libs.plugins.snutt.android.application.flavors)
     alias(libs.plugins.snutt.android.hilt)
     alias(libs.plugins.snutt.android.application.firebase)
+    alias(libs.plugins.snutt.android.application.firebase.app.distribution)
+    alias(libs.plugins.snutt.semantic.versioning)
 
 //    id("dagger.hilt.android.plugin")
 //    id("kotlin-kapt")
-//    id("com.google.firebase.appdistribution")
-//    id("com.google.firebase.crashlytics")
 }
 
-//val versionProps = Properties().apply {
-//    load(FileInputStream(File(rootProject.rootDir, "version.properties")))
-//}
 
 android {
     namespace = "com.wafflestudio.snutt2"
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
-        versionCode = 1
-        versionName = "3.6.0"
     }
 
     signingConfigs {
@@ -60,27 +52,9 @@ android {
         create("staging") {
             isDefault = true
             applicationIdSuffix = ".staging"
-
-//            val propertyVersionName = versionProps.getProperty("snuttVersionName")
-//            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
-//            versionName = propertyVersionName
-//            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
-//                artifactType = "APK"
-//                testers = "urban"
-//                serviceCredentialsFile = "gcp-service-account-staging.json"
-//            }
         }
-
         create("live") {
             applicationIdSuffix = ".live"
-
-//            val propertyVersionName = versionProps.getProperty("snuttVersionName")
-//            versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
-//            versionName = propertyVersionName
-//            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
-//                artifactType = "AAB"
-//                serviceCredentialsFile = "gcp-service-account-live.json"
-//            }
         }
     }
 }
