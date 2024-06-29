@@ -20,7 +20,7 @@
 - Abbreviated course search
 - Course search by time slot
 - Courses of interest
-- Course reviews
+- Course review
 - Vacancy notifications
 - Friend's timetable
 - Custom timetable theme
