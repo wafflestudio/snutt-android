@@ -18,11 +18,13 @@ abstract class SerializerModule {
     @Binds
     abstract fun bindSerializer(moshiSerializer: MoshiSerializer): Serializer
 
-    @Provides
-    @Singleton
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+    companion object {
+        @Provides
+        @Singleton
+        fun provideMoshi(): Moshi {
+            return Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+        }
     }
 }
