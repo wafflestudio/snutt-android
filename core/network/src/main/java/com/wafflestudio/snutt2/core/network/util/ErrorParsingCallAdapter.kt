@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.core.network.util
 
-import com.wafflestudio.snutt2.core.network.ErrorDTO
+import com.wafflestudio.snutt2.core.network.model.ErrorDTO
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
