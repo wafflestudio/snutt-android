@@ -4,12 +4,11 @@ plugins {
     alias(libs.plugins.snutt.android.application.flavors)
     alias(libs.plugins.snutt.android.hilt)
     alias(libs.plugins.snutt.android.application.firebase)
+    alias(libs.plugins.snutt.android.application.firebase.app.distribution)
     alias(libs.plugins.snutt.semantic.versioning)
 
 //    id("dagger.hilt.android.plugin")
 //    id("kotlin-kapt")
-//    id("com.google.firebase.appdistribution")
-//    id("com.google.firebase.crashlytics")
 }
 
 
@@ -53,19 +52,9 @@ android {
         create("staging") {
             isDefault = true
             applicationIdSuffix = ".staging"
-//            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
-//                artifactType = "APK"
-//                testers = "urban"
-//                serviceCredentialsFile = "gcp-service-account-staging.json"
-//            }
         }
-
         create("live") {
             applicationIdSuffix = ".live"
-//            configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
-//                artifactType = "AAB"
-//                serviceCredentialsFile = "gcp-service-account-live.json"
-//            }
         }
     }
 }
