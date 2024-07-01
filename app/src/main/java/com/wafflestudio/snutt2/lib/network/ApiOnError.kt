@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.android.MessagingError
@@ -26,7 +25,6 @@ import javax.inject.Singleton
 @Singleton
 class ApiOnError @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val moshi: Moshi,
     private val userRepository: UserRepository,
 ) : (Throwable) -> Unit {
 
