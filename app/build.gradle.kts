@@ -45,18 +45,6 @@ android {
             )
         }
     }
-
-    flavorDimensions.add("mode")
-
-    productFlavors {
-        create("staging") {
-            isDefault = true
-            applicationIdSuffix = ".staging"
-        }
-        create("live") {
-            applicationIdSuffix = ".live"
-        }
-    }
 }
 
 dependencies {
