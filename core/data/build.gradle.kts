@@ -10,5 +10,7 @@ android {
 dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    implementation(libs.rxjava)
+
+    // temp test
+    implementation(project(":core:network"))
 }
