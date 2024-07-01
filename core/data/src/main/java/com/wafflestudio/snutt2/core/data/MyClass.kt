@@ -114,6 +114,11 @@ fun GetUserFacebookResults.toTempModel() =
         attached = this.attached,
     )
 
+fun GetVacancyLecturesResults.toTempModel() =
+    GetVacancyLecturesResultsT(
+        lectures = this.lectures.map { it.toTempModel() }
+    )
+
 fun LectureBuildingDto.toTempModel() = LectureBuildingDtoT(
     id = this.id,
     buildingNumber = this.buildingNumber,
@@ -282,6 +287,8 @@ fun PostSearchQueryParams.toTempModel() =
         offset = this.offset,
         limit = this.limit,
     )
+
+fun PostSearchQueryResults.toTempModel() = this.map { it.toTempModel() }
 
 fun PostSendCodeToEmailParams.toTempModel() =
     PostSendCodeToEmailParamsT(

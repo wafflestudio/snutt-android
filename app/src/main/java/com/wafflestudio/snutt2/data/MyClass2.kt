@@ -4,6 +4,8 @@ import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.core.data.model.*
+import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.network.model.GetVacancyLecturesResults
 import com.wafflestudio.snutt2.model.*
 
 fun BuildingsResponse.toTempModel() = BuildingsResponseT(
@@ -115,6 +117,11 @@ fun GetUserFacebookResults.toTempModel() =
     GetUserFacebookResultsT(
         name = this.name,
         attached = this.attached,
+    )
+
+fun GetVacancyLecturesResults.toTempModel() =
+    GetVacancyLecturesResultsT(
+        lectures = this.lectures.map { it.toTempModel() }
     )
 
 fun LectureBuildingDto.toTempModel() = LectureBuildingDtoT(
@@ -285,6 +292,8 @@ fun PostSearchQueryParams.toTempModel() =
         offset = this.offset,
         limit = this.limit,
     )
+
+fun PostSearchQueryResults.toTempModel() = this.map { it.toTempModel() }
 
 fun PostSendCodeToEmailParams.toTempModel() =
     PostSendCodeToEmailParamsT(

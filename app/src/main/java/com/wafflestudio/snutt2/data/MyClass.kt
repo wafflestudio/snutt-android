@@ -4,6 +4,7 @@ import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.core.data.model.*
+import com.wafflestudio.snutt2.core.network.model.PostSearchQueryResults
 import com.wafflestudio.snutt2.model.*
 
 fun BuildingsResponseT.toExternalModel() = BuildingsResponse(
@@ -107,6 +108,10 @@ fun GetThemesResultsT.toExternalModel() = this.map { it.toExternalModel() }
 fun GetUserFacebookResultsT.toExternalModel() = GetUserFacebookResults(
     name = this.name,
     attached = this.attached,
+)
+
+fun GetVacancyLecturesResultsT.toExternalModel() = GetVacancyLecturesResults(
+    lectures = this.lectures.map { it.toExternalModel() }
 )
 
 fun LectureBuildingDtoT.toExternalModel() = LectureBuildingDto(
@@ -267,6 +272,8 @@ fun PostSearchQueryParamsT.toExternalModel() = PostSearchQueryParams(
     limit = this.limit,
 )
 
+fun PostSearchQueryResultsT.toExternalModel() = this.map { it.toExternalModel() }
+
 fun PostSendCodeToEmailParamsT.toExternalModel() = PostSendCodeToEmailParams(
     email = this.email,
 )
@@ -331,7 +338,7 @@ fun PostVerifyEmailCodeParamsT.toExternalModel() = PostVerifyEmailCodeParams(
 )
 
 fun PostVerifyPwResetCodeParamsT.toExternalModel() =
-    PostVerifyPwResetCodeParamsT(
+    PostVerifyPwResetCodeParams(
         id = this.id,
         code = this.code,
     )

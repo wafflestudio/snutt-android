@@ -106,6 +106,10 @@ fun GetUserFacebookResultsT.toNetworkModel() = GetUserFacebookResults(
     attached = this.attached,
 )
 
+fun GetVacancyLecturesResultsT.toNetworkModel() = GetVacancyLecturesResults(
+    lectures = this.lectures.map { it.toNetworkModel() }
+)
+
 fun LectureBuildingDtoT.toNetworkModel() = LectureBuildingDto(
     id = this.id,
     buildingNumber = this.buildingNumber,
@@ -264,6 +268,8 @@ fun PostSearchQueryParamsT.toNetworkModel() = PostSearchQueryParams(
     limit = this.limit,
 )
 
+fun PostSearchQueryResultsT.toNetworkModel() = this.map { it.toNetworkModel() }
+
 fun PostSendCodeToEmailParamsT.toNetworkModel() = PostSendCodeToEmailParams(
     email = this.email,
 )
@@ -328,7 +334,7 @@ fun PostVerifyEmailCodeParamsT.toNetworkModel() = PostVerifyEmailCodeParams(
 )
 
 fun PostVerifyPwResetCodeParamsT.toNetworkModel() =
-    PostVerifyPwResetCodeParamsT(
+    PostVerifyPwResetCodeParams(
         id = this.id,
         code = this.code,
     )
