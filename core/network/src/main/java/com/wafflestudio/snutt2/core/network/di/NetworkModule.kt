@@ -7,14 +7,10 @@ import android.os.Build
 import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.core.network.BuildConfig
-import com.wafflestudio.snutt2.core.network.NetworkLog
 import com.wafflestudio.snutt2.core.network.R
-import com.wafflestudio.snutt2.core.network.createNewNetworkLog
 import com.wafflestudio.snutt2.core.network.retrofit.RetrofitSNUTTNetworkApi
 import com.wafflestudio.snutt2.core.network.util.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.core.network.util.Serializer
-//import com.wafflestudio.snutt2.data.SNUTTStorage
-//import com.wafflestudio.snutt2.data.addNetworkLog
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,13 +36,13 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        snuttStorage: SNUTTStorage,
+        // snuttStorage: SNUTTStorage,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor { chain ->
-                val token = snuttStorage.accessToken.get()
+                val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdHJpbmciOiJhbmRyb2lkIiwia2V5X3ZlcnNpb24iOiIwIiwiaWF0IjoxNTA3NzIzNzA3fQ.XVhn7m0CnPvIWeZ36PEMqm_oROQj-iPy4gAgg62N97A" // snuttStorage.accessToken.get()
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-access-token",
@@ -98,7 +94,7 @@ object NetworkModule {
             }
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response)) // TODO : addNetworkLog 옮기면서 type를 바꿔줘야 할 듯
+                // if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response)) // TODO : addNetworkLog 옮기면서 type를 바꿔줘야 할 듯
                 response
             }
             .addInterceptor(
@@ -151,13 +147,3 @@ object NetworkModule {
         return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
     }
 }
-
-object SNUTTStorage {
-    val accessToken: Something = Something()
-}
-
-class Something {
-    fun get(): String = "test"
-}
-
-fun SNUTTStorage.addNetworkLog(newLog: NetworkLog) {}
