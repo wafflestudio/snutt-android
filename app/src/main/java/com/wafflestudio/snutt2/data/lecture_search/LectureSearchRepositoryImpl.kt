@@ -3,8 +3,10 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.data.toExternalModel
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -16,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
     private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 
@@ -48,12 +50,12 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLectureReviewUrl(courseNumber: String, instructor: String): String {
-        val response = api._getLecturesId(courseNumber, instructor)
+        val response = api._getLecturesId(courseNumber, instructor).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         return snuttUrls.getReviewDetail(response.id)
     }
 
     override suspend fun getSearchTags(year: Long, semester: Long): List<TagDto> {
-        val response = api._getTagList(year.toInt(), semester.toInt())
+        val response = api._getTagList(year.toInt(), semester.toInt()).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         val list = mutableListOf<TagDto>()
         list.apply {
             addAll(response.department.map { TagDto(TagType.DEPARTMENT, it) })
@@ -66,7 +68,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
-        val response = api._getBuildings(places)
+        val response = api._getBuildings(places).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         return response.content
     }
 

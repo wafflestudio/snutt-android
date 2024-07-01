@@ -3,14 +3,16 @@ package com.wafflestudio.snutt2.data.notifications
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.data.toExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
+class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTNetworkDataSource) :
     NotificationRepository {
     override suspend fun getNotificationResultStream(): Flow<PagingData<NotificationDto>> {
         return Pager(
@@ -23,7 +25,7 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
     }
 
     override suspend fun getNotificationCount(): Long {
-        return api._getNotificationCount().count
+        return api._getNotificationCount().toTempModel().toExternalModel().count // TODO : 변환 함수 사용 부분
     }
 
     companion object {

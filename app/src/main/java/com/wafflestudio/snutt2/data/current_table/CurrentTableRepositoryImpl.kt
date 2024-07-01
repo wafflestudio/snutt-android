@@ -1,7 +1,11 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import com.wafflestudio.snutt2.core.data.toNetworkModel
+import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.data.toExternalModel
+import com.wafflestudio.snutt2.data.toTempModel
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
@@ -17,7 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {
@@ -28,7 +32,8 @@ class CurrentTableRepositoryImpl @Inject constructor(
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot add lecture when current table not exists")
-        val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
+        val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced).toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.lastViewedTable.update(response.toOptional())
     }
 
@@ -36,13 +41,15 @@ class CurrentTableRepositoryImpl @Inject constructor(
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot remove lecture when current table not exists")
         val response = api._deleteLecture(prevTable.id, lectureId)
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun createCustomLecture(lecture: PostCustomLectureParams) {
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot create custom lecture when current table not exists")
-        val response = api._postCustomLecture(prevTable.id, lecture)
+        val response = api._postCustomLecture(prevTable.id, lecture.toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.lastViewedTable.update(response.toOptional())
     }
 
@@ -50,6 +57,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot reset lecture when current table not exists")
         val response = api._resetLecture(prevTable.id, lectureId)
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.lastViewedTable.update(response.toOptional())
         return response.lectureList.find { it.id == lectureId }!!
     }
@@ -57,7 +65,8 @@ class CurrentTableRepositoryImpl @Inject constructor(
     override suspend fun updateLecture(lectureId: String, target: PutLectureParams) {
         val prevTable = storage.lastViewedTable.get().value
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
-        val response = api._putLecture(prevTable.id, lectureId, target)
+        val response = api._putLecture(prevTable.id, lectureId, target.toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.lastViewedTable.update(response.toOptional())
     }
 
@@ -72,26 +81,28 @@ class CurrentTableRepositoryImpl @Inject constructor(
             prevTable.semester,
             courseNumber,
             lectureNumber,
-        ).url
+        ).toTempModel().toExternalModel().url // TODO : 변환 함수 사용 부분
     }
 
     override suspend fun getBookmarks(): List<LectureDto> {
         return currentTable.value?.let {
-            api._getBookmarkList(it.year, it.semester).lectures
+            api._getBookmarkList(it.year, it.semester)
+                .toTempModel().toExternalModel().lectures // TODO : 변환 함수 사용 부분
         } ?: emptyList()
     }
 
     override suspend fun getBookmarksOfSemester(year: Long, semester: Long): List<LectureDto> {
-        return api._getBookmarkList(year, semester).lectures
+        return api._getBookmarkList(year, semester)
+            .toTempModel().toExternalModel().lectures // TODO : 변환 함수 사용 부분
     }
 
     // 유저 시간표 내의 강의는 id가 바뀌어 저장되기 때문에, parent id인 lecture_id 필드를 사용한다.
     // 검색 결과 혹은 관심강좌의 강의는 원본 그대로이므로 lecture_id == null이며, id 필드를 그대로 사용한다.
     override suspend fun addBookmark(lecture: LectureDto) {
-        api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+        api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id).toTempModel().toNetworkModel()) // TODO : 변환 함수 사용 부분
     }
 
     override suspend fun deleteBookmark(lecture: LectureDto) {
-        api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+        api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id).toTempModel().toNetworkModel()) // TODO : 변환 함수 사용 부분
     }
 }

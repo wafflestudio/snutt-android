@@ -3,8 +3,12 @@ package com.wafflestudio.snutt2.data.user
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wafflestudio.snutt2.core.data.toNetworkModel
+import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.data.toExternalModel
+import com.wafflestudio.snutt2.data.toTempModel
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -22,7 +26,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
@@ -42,30 +46,34 @@ class UserRepositoryImpl @Inject constructor(
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
-        val response = api._postSignIn(PostSignInParams(id, password))
+        val response = api._postSignIn(PostSignInParams(id, password).toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken).toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
-        val response = api._postSignUp(PostSignUpParams(id, password, email))
+        val response = api._postSignUp(PostSignUpParams(id, password, email).toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun fetchUserInfo() {
-        val response = api._getUserInfo()
+        val response = api._getUserInfo().toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.user.update(response.toOptional())
     }
 
     override suspend fun patchUserInfo(nickname: String) {
-        val response = api._patchUserInfo(PatchUserInfoParams(nickname))
+        val response = api._patchUserInfo(PatchUserInfoParams(nickname).toTempModel().toNetworkModel())
+            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.user.update(response.toOptional())
     }
 
@@ -82,13 +90,13 @@ class UserRepositoryImpl @Inject constructor(
             PutUserPasswordParams(
                 newPassword = newPassword,
                 oldPassword = oldPassword,
-            ),
-        )
+            ).toTempModel().toNetworkModel(),
+        ).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.accessToken.update(response.token)
     }
 
     override suspend fun getUserFacebook(): GetUserFacebookResults {
-        return api._getUserFacebook()
+        return api._getUserFacebook().toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
     }
 
     override suspend fun postUserPassword(id: String, password: String) {
@@ -96,13 +104,13 @@ class UserRepositoryImpl @Inject constructor(
             PostUserPasswordParams(
                 id = id,
                 password = password,
-            ),
-        )
+            ).toTempModel().toNetworkModel(),
+        ).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.accessToken.update(response.token)
     }
 
     override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook()
+        val response = api._deleteUserFacebook().toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.accessToken.update(response.token)
     }
 
@@ -114,13 +122,13 @@ class UserRepositoryImpl @Inject constructor(
             PostUserFacebookParams(
                 facebookId = facebookId,
                 facebookToken = facebookToken,
-            ),
-        )
+            ).toTempModel().toNetworkModel(),
+        ).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postFeedback(email: String, detail: String) {
-        api._postFeedback(PostFeedbackParams(email = email, message = detail))
+        api._postFeedback(PostFeedbackParams(email = email, message = detail).toTempModel().toNetworkModel()) // TODO : 변환 함수 사용 부분
     }
 
     override suspend fun deleteFirebaseToken() {
@@ -135,7 +143,7 @@ class UserRepositoryImpl @Inject constructor(
             PostForceLogoutParams(
                 userId = userId,
                 registrationId = firebaseToken,
-            ),
+            ).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
         performLogout()
     }
@@ -169,7 +177,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().popups.firstOrNull {
+        val latestPopup = api._getPopup().toTempModel().toExternalModel().popups.firstOrNull { // TODO : 변환 함수 사용 부분
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
@@ -207,7 +215,7 @@ class UserRepositoryImpl @Inject constructor(
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
-            RegisterFirebaseTokenParams(),
+            RegisterFirebaseTokenParams().toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
@@ -217,43 +225,43 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun findIdByEmail(email: String) {
         api._postFindId(
-            PostFindIdParams(email),
+            PostFindIdParams(email).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
     override suspend fun checkEmailById(id: String): String {
         return api._postCheckEmailById(
-            PostCheckEmailByIdParams(id),
-        ).email
+            PostCheckEmailByIdParams(id).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
+        ).toTempModel().toExternalModel().email // TODO : 변환 함수 사용 부분
     }
 
     override suspend fun sendPwResetCodeToEmail(email: String) {
         api._postSendPwResetCodeToEmailById(
-            PostSendPwResetCodeParams(email),
+            PostSendPwResetCodeParams(email).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
     override suspend fun verifyPwResetCode(id: String, code: String) {
         api._postVerifyCodeToResetPassword(
-            PostVerifyPwResetCodeParams(id, code),
+            PostVerifyPwResetCodeParams(id, code).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
     override suspend fun resetPassword(id: String, password: String) {
         api._postResetPassword(
-            PostResetPasswordParams(id, password),
+            PostResetPasswordParams(id, password).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
     override suspend fun sendCodeToEmail(email: String) {
         api._postSendCodeToEmail(
-            PostSendCodeToEmailParams(email),
+            PostSendCodeToEmailParams(email).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
     override suspend fun verifyEmailCode(code: String) {
         api._postVerifyEmailCode(
-            PostVerifyEmailCodeParams(code),
+            PostVerifyEmailCodeParams(code).toTempModel().toNetworkModel(), // TODO : 변환 함수 사용 부분
         )
     }
 
