@@ -2,10 +2,12 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.wafflestudio.snutt2.core.data.toLectureTempModel
 import com.wafflestudio.snutt2.core.data.toNetworkModel
 import com.wafflestudio.snutt2.core.data.toTempModel
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.toExternalModel
+import com.wafflestudio.snutt2.data.toLectureExternalModel
 import com.wafflestudio.snutt2.data.toTempModel
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -55,7 +57,7 @@ class LectureSearchPagingSource(
                     offset = offset,
                     limit = params.loadSize.toLong(),
                 ).toTempModel().toNetworkModel(),
-            ).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+            ).toLectureTempModel().toLectureExternalModel() // TODO : 변환 함수 사용 부분
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == LECTURE_SEARCH_STARTING_PAGE_INDEX) null else offset - params.loadSize,

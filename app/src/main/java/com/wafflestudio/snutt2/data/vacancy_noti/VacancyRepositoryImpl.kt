@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
+import com.wafflestudio.snutt2.core.data.toTempModel
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.toExternalModel

@@ -39,8 +39,6 @@ fun DeleteFirebaseTokenResults.toTempModel() =
         message = this.message,
     )
 
-fun DeleteTableResults.toTempModel() = this.map { it.toTempModel() }
-
 fun DeleteUserAccountResults.toTempModel() =
     DeleteUserAccountResultsT(
         message = this.message,
@@ -85,8 +83,6 @@ fun GetNotificationCountResults.toTempModel() =
         count = this.count,
     )
 
-fun GetNotificationResults.toTempModel() = this.map { it.toTempModel() }
-
 fun GetPopupResults.toTempModel() = GetPopupResultsT(
     popups = this.popups.map { it.toTempModel() },
 )
@@ -105,8 +101,6 @@ fun GetTagListResults.toTempModel() = GetTagListResultsT(
     instructor = this.instructor,
     category = this.category,
 )
-
-fun GetThemesResults.toTempModel() = this.map { it.toTempModel() }
 
 fun GetUserFacebookResults.toTempModel() =
     GetUserFacebookResultsT(
@@ -287,8 +281,6 @@ fun PostSearchQueryParams.toTempModel() =
         offset = this.offset,
         limit = this.limit,
     )
-
-fun PostSearchQueryResults.toTempModel() = this.map { it.toTempModel() }
 
 fun PostSendCodeToEmailParams.toTempModel() =
     PostSendCodeToEmailParamsT(
@@ -498,3 +490,11 @@ fun UserDto.toTempModel() = UserDtoT(
     fbName = this.fbName,
     nickname = this.nickname?.toTempModel(),
 )
+
+fun List<SimpleTableDto>.toSimpleTableTempModel() = this.map { it.toTempModel() }
+
+fun List<NotificationDto>.toNotificationTempModel() = this.map { it.toTempModel() }
+
+fun List<ThemeDto>.toThemeTempModel() = this.map { it.toTempModel() }
+
+fun List<LectureDto>.toLectureTempModel() = this.map { it.toTempModel() }

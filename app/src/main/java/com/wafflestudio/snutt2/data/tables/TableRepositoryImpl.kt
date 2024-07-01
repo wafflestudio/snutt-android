@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.core.data.toNetworkModel
+import com.wafflestudio.snutt2.core.data.toSimpleTableTempModel
 import com.wafflestudio.snutt2.core.data.toTempModel
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.toExternalModel
+import com.wafflestudio.snutt2.data.toSimpleTableExternalModel
 import com.wafflestudio.snutt2.data.toTempModel
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
@@ -40,14 +42,14 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTableList(): List<SimpleTableDto> {
-        val response = api._getTableList().toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+        val response = api._getTableList().toSimpleTableTempModel().toSimpleTableExternalModel() // TODO : 변환 함수 사용 부분
         snuttStorage.tableMap.update(response.associateBy { it.id })
         return response
     }
 
     override suspend fun createTable(year: Long, semester: Long, title: String?) {
         val response = api._postTable(PostTableParams(year, semester, title).toTempModel().toNetworkModel())
-            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+            .toSimpleTableTempModel().toSimpleTableExternalModel() // TODO : 변환 함수 사용 부분
         snuttStorage.tableMap.update(response.associateBy { it.id })
         response
             .firstOrNull { it.year == year && it.semester == semester && it.title == title }
@@ -57,13 +59,13 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteTable(id: String) {
-        val response = api._deleteTable(id).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+        val response = api._deleteTable(id).toSimpleTableTempModel().toSimpleTableExternalModel() // TODO : 변환 함수 사용 부분
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
 
     override suspend fun updateTableName(id: String, title: String) {
         val response = api._putTable(id, PutTableParams(title).toTempModel().toNetworkModel())
-            .toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+            .toSimpleTableTempModel().toSimpleTableExternalModel() // TODO : 변환 함수 사용 부분
         snuttStorage.tableMap.update(response.associateBy { it.id })
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
@@ -102,7 +104,7 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun copyTable(id: String) {
-        val response = api._copyTable(id).toTempModel().toExternalModel() // TODO : 변환 함수 사용 부분
+        val response = api._copyTable(id).toSimpleTableTempModel().toSimpleTableExternalModel()// TODO : 변환 함수 사용 부분
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
 

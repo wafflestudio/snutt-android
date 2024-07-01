@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.core.data.model.*
+import com.wafflestudio.snutt2.core.data.toTempModel
 import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -41,8 +42,6 @@ fun DeleteFirebaseTokenResultsT.toExternalModel() = DeleteFirebaseTokenResults(
     message = this.message,
 )
 
-fun DeleteTableResultsT.toExternalModel() = this.map { it.toExternalModel() }
-
 fun DeleteUserAccountResultsT.toExternalModel() = DeleteUserAccountResults(
     message = this.message,
 )
@@ -81,8 +80,6 @@ fun GetNotificationCountResultsT.toExternalModel() = GetNotificationCountResults
     count = this.count,
 )
 
-fun GetNotificationResultsT.toExternalModel() = this.map { it.toExternalModel() }
-
 fun GetPopupResultsT.toExternalModel() = GetPopupResults(
     popups = this.popups.map { it.toExternalModel() },
 )
@@ -101,8 +98,6 @@ fun GetTagListResultsT.toExternalModel() = GetTagListResults(
     instructor = this.instructor,
     category = this.category,
 )
-
-fun GetThemesResultsT.toExternalModel() = this.map { it.toExternalModel() }
 
 fun GetUserFacebookResultsT.toExternalModel() = GetUserFacebookResults(
     name = this.name,
@@ -270,8 +265,6 @@ fun PostSearchQueryParamsT.toExternalModel() = PostSearchQueryParams(
     offset = this.offset,
     limit = this.limit,
 )
-
-fun PostSearchQueryResultsT.toExternalModel() = this.map { it.toExternalModel() }
 
 fun PostSendCodeToEmailParamsT.toExternalModel() = PostSendCodeToEmailParams(
     email = this.email,
@@ -469,3 +462,11 @@ fun UserDtoT.toExternalModel() = UserDto(
     fbName = this.fbName,
     nickname = this.nickname?.toExternalModel(),
 )
+
+fun List<SimpleTableDtoT>.toSimpleTableExternalModel() = this.map { it.toExternalModel() }
+
+fun List<NotificationDtoT>.toNotificationExternalModel() = this.map { it.toExternalModel() }
+
+fun List<ThemeDtoT>.toThemeExternalModel() = this.map { it.toExternalModel() }
+
+fun List<LectureDtoT>.toLectureExternalModel() = this.map { it.toExternalModel() }

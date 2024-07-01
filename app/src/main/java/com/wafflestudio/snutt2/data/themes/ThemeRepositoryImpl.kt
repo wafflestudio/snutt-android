@@ -2,10 +2,12 @@ package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.core.data.toNetworkModel
 import com.wafflestudio.snutt2.core.data.toTempModel
+import com.wafflestudio.snutt2.core.data.toThemeTempModel
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.toExternalModel
 import com.wafflestudio.snutt2.data.toTempModel
+import com.wafflestudio.snutt2.data.toThemeExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -43,7 +45,7 @@ class ThemeRepositoryImpl @Inject constructor(
 
     override suspend fun fetchThemes() {
         // TODO : 변환 함수 사용 부분
-        api._getThemes().toTempModel().toExternalModel().let { themes ->
+        api._getThemes().toThemeTempModel().toThemeExternalModel().let { themes ->
             _customThemes.value = themes.filter { it.isCustom }.map { it.toTableTheme() as CustomTheme }
             _builtInThemes.value = (0..5).map { code ->
                 BuiltInTheme.fromCode(code)

@@ -38,8 +38,6 @@ fun DeleteFirebaseTokenResultsT.toNetworkModel() = DeleteFirebaseTokenResults(
     message = this.message,
 )
 
-fun DeleteTableResultsT.toNetworkModel() = this.map { it.toNetworkModel() }
-
 fun DeleteUserAccountResultsT.toNetworkModel() = DeleteUserAccountResults(
     message = this.message,
 )
@@ -78,8 +76,6 @@ fun GetNotificationCountResultsT.toNetworkModel() = GetNotificationCountResults(
     count = this.count,
 )
 
-fun GetNotificationResultsT.toNetworkModel() = this.map { it.toNetworkModel() }
-
 fun GetPopupResultsT.toNetworkModel() = GetPopupResults(
     popups = this.popups.map { it.toNetworkModel() },
 )
@@ -98,8 +94,6 @@ fun GetTagListResultsT.toNetworkModel() = GetTagListResults(
     instructor = this.instructor,
     category = this.category,
 )
-
-fun GetThemesResultsT.toNetworkModel() = this.map { it.toNetworkModel() }
 
 fun GetUserFacebookResultsT.toNetworkModel() = GetUserFacebookResults(
     name = this.name,
@@ -267,8 +261,6 @@ fun PostSearchQueryParamsT.toNetworkModel() = PostSearchQueryParams(
     offset = this.offset,
     limit = this.limit,
 )
-
-fun PostSearchQueryResultsT.toNetworkModel() = this.map { it.toNetworkModel() }
 
 fun PostSendCodeToEmailParamsT.toNetworkModel() = PostSendCodeToEmailParams(
     email = this.email,
@@ -466,3 +458,11 @@ fun UserDtoT.toNetworkModel() = UserDto(
     fbName = this.fbName,
     nickname = this.nickname?.toNetworkModel(),
 )
+
+fun List<SimpleTableDtoT>.toSimpleTableNetworkModel() = this.map { it.toNetworkModel() }
+
+fun List<NotificationDtoT>.toNotificationNetworkModel() = this.map { it.toNetworkModel() }
+
+fun List<ThemeDtoT>.toThemeNetworkModel() = this.map { it.toNetworkModel() }
+
+fun List<LectureDtoT>.toLectureNetworkModel() = this.map { it.toNetworkModel() }
