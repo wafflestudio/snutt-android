@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.data.model.*
 import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.*
+import com.wafflestudio.snutt2.core.data.model.*
 import com.wafflestudio.snutt2.model.*
 
 fun BuildingsResponseT.toExternalModel() = BuildingsResponse(
@@ -330,10 +330,11 @@ fun PostVerifyEmailCodeParamsT.toExternalModel() = PostVerifyEmailCodeParams(
     code = this.code,
 )
 
-fun PostVerifyPwResetCodeParamsT.toExternalModel() = PostVerifyPwResetCodeParamsT(
-    id = this.id,
-    code = this.code,
-)
+fun PostVerifyPwResetCodeParamsT.toExternalModel() =
+    PostVerifyPwResetCodeParamsT(
+        id = this.id,
+        code = this.code,
+    )
 
 fun PutLectureParamsT.toExternalModel() = PutLectureParams(
     id = this.id,
