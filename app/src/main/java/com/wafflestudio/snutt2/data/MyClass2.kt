@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.lib.network.ErrorDTO
-import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.core.data.model.*
 import com.wafflestudio.snutt2.core.data.toTempModel
 import com.wafflestudio.snutt2.core.network.model.GetVacancyLecturesResults
+import com.wafflestudio.snutt2.lib.network.ErrorDTO
+import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.model.*
 
 fun BuildingsResponse.toTempModel() = BuildingsResponseT(
@@ -14,7 +14,7 @@ fun BuildingsResponse.toTempModel() = BuildingsResponseT(
 )
 
 fun Campus.toTempModel(): CampusT {
-    return when (this){
+    return when (this) {
         Campus.GWANAK -> CampusT.GWANAK
         Campus.YEONGEON -> CampusT.YEONGEON
         Campus.PYEONGCHANG -> CampusT.PYEONGCHANG
@@ -121,7 +121,7 @@ fun GetUserFacebookResults.toTempModel() =
 
 fun GetVacancyLecturesResults.toTempModel() =
     GetVacancyLecturesResultsT(
-        lectures = this.lectures.map { it.toTempModel() }
+        lectures = this.lectures.map { it.toTempModel() },
     )
 
 fun LectureBuildingDto.toTempModel() = LectureBuildingDtoT(

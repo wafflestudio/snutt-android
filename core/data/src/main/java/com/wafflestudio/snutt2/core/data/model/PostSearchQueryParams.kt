@@ -15,8 +15,8 @@ data class PostSearchQueryParamsT(
     @Json(name = "department") val department: List<String>? = null,
     @Json(name = "category") val category: List<String>? = null,
     @Json(name = "etc") val etc: List<String>? = null,
-    @Json(name = "times") val times: List<com.wafflestudio.snutt2.core.data.model.SearchTimeDtoT>?,
-    @Json(name = "timesToExclude") val timesToExclude: List<com.wafflestudio.snutt2.core.data.model.SearchTimeDtoT>?,
+    @Json(name = "times") val times: List<SearchTimeDtoT>?,
+    @Json(name = "timesToExclude") val timesToExclude: List<SearchTimeDtoT>?,
     @Json(name = "offset") val offset: Long? = null,
     @Json(name = "limit") val limit: Long? = null,
 )

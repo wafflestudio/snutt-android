@@ -1,19 +1,18 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.core.data.model.*
 import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.dto.core.*
-import com.wafflestudio.snutt2.core.data.model.*
-import com.wafflestudio.snutt2.core.network.model.PostSearchQueryResults
 import com.wafflestudio.snutt2.model.*
 
 fun BuildingsResponseT.toExternalModel() = BuildingsResponse(
     content = this.content.map { it.toExternalModel() },
-    totalCount = this.totalCount
+    totalCount = this.totalCount,
 )
 
 fun CampusT.toExternalModel(): Campus {
-    return when (this){
+    return when (this) {
         CampusT.GWANAK -> Campus.GWANAK
         CampusT.YEONGEON -> Campus.YEONGEON
         CampusT.PYEONGCHANG -> Campus.PYEONGCHANG
@@ -111,7 +110,7 @@ fun GetUserFacebookResultsT.toExternalModel() = GetUserFacebookResults(
 )
 
 fun GetVacancyLecturesResultsT.toExternalModel() = GetVacancyLecturesResults(
-    lectures = this.lectures.map { it.toExternalModel() }
+    lectures = this.lectures.map { it.toExternalModel() },
 )
 
 fun LectureBuildingDtoT.toExternalModel() = LectureBuildingDto(
@@ -434,7 +433,7 @@ fun TableDtoT.toExternalModel() = TableDto(
     year = this.year,
     semester = this.semester,
     title = this.title,
-    lectureList = this.lectureList.map { it.toExternalModel()},
+    lectureList = this.lectureList.map { it.toExternalModel() },
     updatedAt = this.updatedAt,
     totalCredit = this.totalCredit,
     theme = this.theme,
