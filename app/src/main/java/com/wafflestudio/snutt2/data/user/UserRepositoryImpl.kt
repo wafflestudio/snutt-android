@@ -3,10 +3,11 @@ package com.wafflestudio.snutt2.data.user
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -20,10 +21,27 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookParams as PostLoginFacebookParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PatchUserInfoParams as PatchUserInfoParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PutUserPasswordParams as PutUserPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostUserPasswordParams as PostUserPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostFeedbackParams as PostFeedbackParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostForceLogoutParams as PostForceLogoutParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as RegisterFirebaseTokenParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostFindIdParams as PostFindIdParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostCheckEmailByIdParams as PostCheckEmailByIdParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as PostVerifyPwResetCodeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    @App private val api: SNUTTRestApi,
+    @CoreNetwork private val api: SNUTTNetworkDataSource,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
@@ -43,30 +61,30 @@ class UserRepositoryImpl @Inject constructor(
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
-        val response = api._postSignIn(PostSignInParams(id, password))
+        val response = api._postSignIn(PostSignInParamsNetwork(id, password)).toExternalModel()
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+        val response = api._postLoginFacebook(PostLoginFacebookParamsNetwork(facebookId, facebookToken)).toExternalModel()
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
-        val response = api._postSignUp(PostSignUpParams(id, password, email))
+        val response = api._postSignUp(PostSignUpParamsNetwork(id, password, email)).toExternalModel()
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun fetchUserInfo() {
-        val response = api._getUserInfo()
+        val response = api._getUserInfo().toExternalModel()
         storage.user.update(response.toOptional())
     }
 
     override suspend fun patchUserInfo(nickname: String) {
-        val response = api._patchUserInfo(PatchUserInfoParams(nickname))
+        val response = api._patchUserInfo(PatchUserInfoParamsNetwork(nickname)).toExternalModel()
         storage.user.update(response.toOptional())
     }
 
@@ -80,30 +98,30 @@ class UserRepositoryImpl @Inject constructor(
         newPassword: String,
     ) {
         val response = api._putUserPassword(
-            PutUserPasswordParams(
+            PutUserPasswordParamsNetwork(
                 newPassword = newPassword,
                 oldPassword = oldPassword,
             ),
-        )
+        ).toExternalModel()
         storage.accessToken.update(response.token)
     }
 
     override suspend fun getUserFacebook(): GetUserFacebookResults {
-        return api._getUserFacebook()
+        return api._getUserFacebook().toExternalModel()
     }
 
     override suspend fun postUserPassword(id: String, password: String) {
         val response = api._postUserPassword(
-            PostUserPasswordParams(
+            PostUserPasswordParamsNetwork(
                 id = id,
                 password = password,
             ),
-        )
+        ).toExternalModel()
         storage.accessToken.update(response.token)
     }
 
     override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook()
+        val response = api._deleteUserFacebook().toExternalModel()
         storage.accessToken.update(response.token)
     }
 
@@ -112,16 +130,16 @@ class UserRepositoryImpl @Inject constructor(
         facebookToken: String,
     ) {
         val response = api._postUserFacebook(
-            PostUserFacebookParams(
+            PostUserFacebookParamsNetwork(
                 facebookId = facebookId,
                 facebookToken = facebookToken,
             ),
-        )
+        ).toExternalModel()
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postFeedback(email: String, detail: String) {
-        api._postFeedback(PostFeedbackParams(email = email, message = detail))
+        api._postFeedback(PostFeedbackParamsNetwork(email = email, message = detail))
     }
 
     override suspend fun deleteFirebaseToken() {
@@ -133,7 +151,7 @@ class UserRepositoryImpl @Inject constructor(
         val firebaseToken = getFirebaseToken()
         val userId = storage.prefKeyUserId.get().value ?: return
         api._postForceLogout(
-            PostForceLogoutParams(
+            PostForceLogoutParamsNetwork(
                 userId = userId,
                 registrationId = firebaseToken,
             ),
@@ -170,7 +188,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().popups.firstOrNull {
+        val latestPopup = api._getPopup().toExternalModel().popups.firstOrNull {
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
@@ -208,7 +226,7 @@ class UserRepositoryImpl @Inject constructor(
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
-            RegisterFirebaseTokenParams(),
+            RegisterFirebaseTokenParamsNetwork(),
         )
     }
 
@@ -218,43 +236,43 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun findIdByEmail(email: String) {
         api._postFindId(
-            PostFindIdParams(email),
+            PostFindIdParamsNetwork(email),
         )
     }
 
     override suspend fun checkEmailById(id: String): String {
         return api._postCheckEmailById(
-            PostCheckEmailByIdParams(id),
-        ).email
+            PostCheckEmailByIdParamsNetwork(id),
+        ).toExternalModel().email
     }
 
     override suspend fun sendPwResetCodeToEmail(email: String) {
         api._postSendPwResetCodeToEmailById(
-            PostSendPwResetCodeParams(email),
+            PostSendPwResetCodeParamsNetwork(email),
         )
     }
 
     override suspend fun verifyPwResetCode(id: String, code: String) {
         api._postVerifyCodeToResetPassword(
-            PostVerifyPwResetCodeParams(id, code),
+            PostVerifyPwResetCodeParamsNetwork(id, code),
         )
     }
 
     override suspend fun resetPassword(id: String, password: String) {
         api._postResetPassword(
-            PostResetPasswordParams(id, password),
+            PostResetPasswordParamsNetwork(id, password),
         )
     }
 
     override suspend fun sendCodeToEmail(email: String) {
         api._postSendCodeToEmail(
-            PostSendCodeToEmailParams(email),
+            PostSendCodeToEmailParamsNetwork(email),
         )
     }
 
     override suspend fun verifyEmailCode(code: String) {
         api._postVerifyEmailCode(
-            PostVerifyEmailCodeParams(code),
+            PostVerifyEmailCodeParamsNetwork(code),
         )
     }
 
