@@ -49,3 +49,11 @@ fun ClassTimeDtoNetwork.toExternalModel() = ClassTimeDto(
     startMinute = startMinute,
     endMinute = endMinute,
 )
+
+fun ClassTimeDto.toNetworkModel() = ClassTimeDtoNetwork(
+    day = day,
+    place = place,
+    id = id,
+    startMinute = startMinute,
+    endMinute = endMinute,
+)

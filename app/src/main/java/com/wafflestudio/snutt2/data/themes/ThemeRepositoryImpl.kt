@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ThemeRepositoryImpl @Inject constructor(
-    @App  private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : ThemeRepository {

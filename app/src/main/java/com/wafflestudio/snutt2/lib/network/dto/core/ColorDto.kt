@@ -29,3 +29,8 @@ fun ColorDtoNetwork.toExternalModel() = ColorDto(
     fgRaw = fgRaw,
     bgRaw = bgRaw,
 )
+
+fun ColorDto.toNetworkModel() = ColorDtoNetwork(
+    fgRaw = fgRaw,
+    bgRaw = bgRaw,
+)
