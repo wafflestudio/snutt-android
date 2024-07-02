@@ -1,21 +1,22 @@
 package com.wafflestudio.snutt2.data.tables
 
-import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.toOptional
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.wafflestudio.snutt2.core.network.model.PostTableParams as PostTableParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PutTableParams as PutTableParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PutTableThemeParams as PutTableThemeParamsNetwork
 
 @Singleton
 class TableRepositoryImpl @Inject constructor(
-    @App private val api: SNUTTRestApi,
+    @CoreNetwork private val api: SNUTTNetworkDataSource,
     private val snuttStorage: SNUTTStorage,
 ) : TableRepository {
 
@@ -23,27 +24,27 @@ class TableRepositoryImpl @Inject constructor(
         snuttStorage.tableMap.asStateFlow()
 
     override suspend fun fetchTableById(id: String) {
-        val response = api._getTableById(id)
+        val response = api._getTableById(id).toExternalModel()
         snuttStorage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun searchTableById(id: String): TableDto {
-        return api._getTableById(id)
+        return api._getTableById(id).toExternalModel()
     }
 
     override suspend fun fetchDefaultTable() {
-        val response = api._getRecentTable()
+        val response = api._getRecentTable().toExternalModel()
         snuttStorage.lastViewedTable.update(response.toOptional())
     }
 
     override suspend fun getTableList(): List<SimpleTableDto> {
-        val response = api._getTableList()
+        val response = api._getTableList().map { it.toExternalModel() }
         snuttStorage.tableMap.update(response.associateBy { it.id })
         return response
     }
 
     override suspend fun createTable(year: Long, semester: Long, title: String?) {
-        val response = api._postTable(PostTableParams(year, semester, title))
+        val response = api._postTable(PostTableParamsNetwork(year, semester, title)).map { it.toExternalModel() }
         snuttStorage.tableMap.update(response.associateBy { it.id })
         response
             .firstOrNull { it.year == year && it.semester == semester && it.title == title }
@@ -53,12 +54,12 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteTable(id: String) {
-        val response = api._deleteTable(id)
+        val response = api._deleteTable(id).map { it.toExternalModel() }
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
 
     override suspend fun updateTableName(id: String, title: String) {
-        val response = api._putTable(id, PutTableParams(title))
+        val response = api._putTable(id, PutTableParamsNetwork(title)).map { it.toExternalModel() }
         snuttStorage.tableMap.update(response.associateBy { it.id })
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
@@ -71,7 +72,7 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTableTheme(tableId: String, code: Int) {
-        val response = api._putTableTheme(tableId, PutTableThemeParams(theme = code))
+        val response = api._putTableTheme(tableId, PutTableThemeParamsNetwork(theme = code)).toExternalModel()
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
             if (prev?.id == tableId) {
@@ -83,7 +84,7 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTableTheme(tableId: String, themeId: String) {
-        val response = api._putTableTheme(tableId, PutTableThemeParams(themeId = themeId))
+        val response = api._putTableTheme(tableId, PutTableThemeParamsNetwork(themeId = themeId)).toExternalModel()
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
             if (prev?.id == tableId) {
@@ -95,7 +96,7 @@ class TableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun copyTable(id: String) {
-        val response = api._copyTable(id)
+        val response = api._copyTable(id).map { it.toExternalModel() }
         snuttStorage.tableMap.update(response.associateBy { it.id })
     }
 
