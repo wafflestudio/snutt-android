@@ -131,6 +131,7 @@ object NetworkModule {
     }
 
     @Provides
+    @App
     @Singleton
     fun provideSNUTTRestApi(@App retrofit: Retrofit): SNUTTRestApi {
         return retrofit.create(SNUTTRestApi::class.java)

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 

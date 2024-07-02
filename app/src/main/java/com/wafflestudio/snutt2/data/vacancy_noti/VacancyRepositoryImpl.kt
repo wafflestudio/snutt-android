@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -9,7 +10,7 @@ import javax.inject.Singleton
 
 @Singleton
 class VacancyRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
 ) : VacancyRepository {
 

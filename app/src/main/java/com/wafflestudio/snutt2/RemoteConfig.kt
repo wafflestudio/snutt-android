@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RemoteConfig @Inject constructor(
-    api: SNUTTRestApi,
+    @App api: SNUTTRestApi,
     userRepository: UserRepository,
     networkConnectivityManager: NetworkConnectivityManager,
 ) {

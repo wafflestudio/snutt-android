@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.core.network.retrofit
 
+import android.util.Log
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.*
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
@@ -31,8 +32,10 @@ class RetrofitSNUTTNetwork @Inject constructor(
     ): PostSearchQueryResults =
         networkApi._postSearchQuery(body = body)
 
-    override suspend fun _getCoursebook(): GetCoursebookResults =
-        networkApi._getCoursebook()
+    override suspend fun _getCoursebook(): GetCoursebookResults {
+        Log.d("plgafhd","ok")
+        return networkApi._getCoursebook()
+    }
 
     override suspend fun _getTableList(): GetTableListResults =
         networkApi._getTableList()

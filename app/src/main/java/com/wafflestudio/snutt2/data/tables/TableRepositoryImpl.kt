@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.tables
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class TableRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val snuttStorage: SNUTTStorage,
 ) : TableRepository {
 

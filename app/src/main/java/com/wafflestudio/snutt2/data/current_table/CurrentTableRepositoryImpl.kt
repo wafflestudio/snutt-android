@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {

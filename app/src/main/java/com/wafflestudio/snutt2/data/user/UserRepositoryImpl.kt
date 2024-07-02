@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.user
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.*
@@ -22,7 +23,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    @App private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
