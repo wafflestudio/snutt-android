@@ -3,11 +3,14 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.toExternalModel
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
@@ -17,7 +20,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    @App private val api: SNUTTRestApi,
+    @CoreNetwork private val api: SNUTTNetworkDataSource,
     private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 
@@ -67,7 +70,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
-        val response = api._getBuildings(places)
+        val response = api._getBuildings(places).toExternalModel()
         return response.content
     }
 
