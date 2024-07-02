@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.core.network.createNewNetworkLog
 import com.wafflestudio.snutt2.core.network.retrofit.RetrofitSNUTTNetworkApi
 import com.wafflestudio.snutt2.core.network.util.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.core.network.util.Serializer
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 //import com.wafflestudio.snutt2.data.SNUTTStorage
 //import com.wafflestudio.snutt2.data.addNetworkLog
 import dagger.Module
@@ -36,6 +37,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @SuppressLint("HardwareIds")
+    @CoreNetwork
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -114,11 +116,12 @@ object NetworkModule {
     }
 
     @Provides
+    @CoreNetwork
     fun provideRetrofit(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient,
-        moshi: Moshi,
-        serializer: Serializer,
+        @CoreNetwork okHttpClient: OkHttpClient,
+        @CoreNetwork moshi: Moshi,
+        @CoreNetwork serializer: Serializer,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -134,8 +137,9 @@ object NetworkModule {
     }
 
     @Provides
+    @CoreNetwork
     @Singleton
-    fun provideSNUTTRestApi(retrofit: Retrofit): RetrofitSNUTTNetworkApi {
+    fun provideSNUTTRestApi(@CoreNetwork retrofit: Retrofit): RetrofitSNUTTNetworkApi {
         return retrofit.create(RetrofitSNUTTNetworkApi::class.java)
     }
 
@@ -144,6 +148,7 @@ object NetworkModule {
         ).toLong()
 
     @Provides
+    @CoreNetwork
     @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,

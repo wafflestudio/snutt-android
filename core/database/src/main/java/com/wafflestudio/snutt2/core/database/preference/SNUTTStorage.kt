@@ -15,12 +15,13 @@ import com.wafflestudio.snutt2.core.database.preference.context.PrefOptionalValu
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValue
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValueMetaData
 import com.wafflestudio.snutt2.core.database.util.Optional
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SNUTTStorage @Inject constructor(
-    private val prefContext: PrefContext,
+    @CoreDatabase private val prefContext: PrefContext,
 ) {
 
     val prefKeyUserId = PrefValue<Optional<String>>(

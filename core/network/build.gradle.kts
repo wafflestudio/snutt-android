@@ -21,4 +21,7 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.adapter.rxjava3)
     implementation(libs.retrofit.converter.moshi)
+
+    // temp test
+    implementation(project(":core:qualifiers"))
 }

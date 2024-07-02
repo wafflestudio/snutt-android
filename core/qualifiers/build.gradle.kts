@@ -4,14 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.wafflestudio.snutt2.core.database"
+    namespace = "com.wafflestudio.snutt2.core.data"
 }
 
 dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    implementation(libs.rxjava)
-
-    // temp test
-    implementation(project(":core:qualifiers"))
 }

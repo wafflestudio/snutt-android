@@ -2,12 +2,13 @@ package com.wafflestudio.snutt2.core.network.retrofit
 
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.*
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RetrofitSNUTTNetwork @Inject constructor(
-    private val networkApi: RetrofitSNUTTNetworkApi,
+    @CoreNetwork private val networkApi: RetrofitSNUTTNetworkApi,
 ) : SNUTTNetworkDataSource {
     override suspend fun _getNotification(
         limit: Int,
