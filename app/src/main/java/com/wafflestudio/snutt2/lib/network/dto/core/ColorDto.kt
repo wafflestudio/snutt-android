@@ -26,11 +26,11 @@ data class ColorDto(
 }
 
 fun ColorDtoNetwork.toExternalModel() = ColorDto(
-    fgRaw = fgRaw,
-    bgRaw = bgRaw,
+    fgRaw = this.fgRaw,
+    bgRaw = this.bgRaw,
 )
 
 fun ColorDto.toNetworkModel() = ColorDtoNetwork(
-    fgRaw = fgRaw,
-    bgRaw = bgRaw,
+    fgRaw = this.fgRaw,
+    bgRaw = this.bgRaw,
 )
