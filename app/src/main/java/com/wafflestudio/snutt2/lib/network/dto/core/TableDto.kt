@@ -73,3 +73,16 @@ fun Table.toExternalModel() = TableDto(
     themeId = this.themeId,
     isPrimary = this.isPrimary,
 )
+
+fun TableDto.toDatabaseModel() = Table(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    lectureList = this.lectureList.map { it.toDatabaseModel() },
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    theme = this.theme,
+    themeId = this.themeId,
+    isPrimary = this.isPrimary,
+)

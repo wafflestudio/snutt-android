@@ -66,3 +66,12 @@ fun ClassTime.toExternalModel() = ClassTimeDto(
     startMinute = startMinute,
     endMinute = endMinute,
 )
+
+fun ClassTimeDto.toDatabaseModel() = ClassTime(
+    day = day,
+    place = place,
+    id = id,
+    startMinute = startMinute,
+    endMinute = endMinute,
+)
+

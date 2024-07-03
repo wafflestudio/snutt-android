@@ -185,7 +185,7 @@ class UserRepositoryImpl @Inject constructor(
         hourTo: Int?,
         isAuto: Boolean?,
     ) {
-        val prevTrimParam = storage.tableTrimParam.get()
+        val prevTrimParam = storage.tableTrimParam.get().toExternalModel()
         storage.tableTrimParam.update(
             TableTrimParam(
                 dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,

@@ -40,3 +40,8 @@ fun ColorDatabase.toExternalModel() = ColorDto(
     fgRaw = this.fgRaw,
     bgRaw = this.bgRaw,
 )
+
+fun ColorDto.toDatabaseModel() = ColorDatabase(
+    fgRaw = this.fgRaw,
+    bgRaw = this.bgRaw,
+)
