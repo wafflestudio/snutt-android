@@ -9,6 +9,7 @@ import okio.Buffer
 import okio.IOException
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
+import com.wafflestudio.snutt2.core.database.model.NetworkLog as NetworkLogDatabase
 
 data class NetworkLog(
     val requestMethod: String,
@@ -92,3 +93,12 @@ fun Interceptor.Chain.createHttpFailLog(e: IOException, context: Context): Netwo
 
     return NetworkLog(requestMethod, requestUrl, requestHeader, requestBody, "FAIL", "HTTP FAILED: $e")
 }
+
+fun NetworkLog.toDatabaseModel() = NetworkLogDatabase(
+    requestMethod = this.requestMethod,
+    requestUrl = this.requestUrl,
+    requestHeader = this.requestHeader,
+    requestBody = this.requestBody,
+    responseCode = this.responseCode,
+    responseBody = this.responseBody,
+)
