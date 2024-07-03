@@ -95,12 +95,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun fetchUserInfo() {
         val response = api._getUserInfo().toExternalModel()
-        storage.user.update(response.toDatabaseModel().toOptional())
+        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun patchUserInfo(nickname: String) {
         val response = api._patchUserInfo(PatchUserInfoParamsNetwork(nickname)).toExternalModel()
-        storage.user.update(response.toDatabaseModel().toOptional())
+        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun deleteUserAccount() {
@@ -193,7 +193,7 @@ class UserRepositoryImpl @Inject constructor(
                 hourFrom = hourFrom ?: prevTrimParam.hourFrom,
                 hourTo = hourTo ?: prevTrimParam.hourTo,
                 forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ).toDatabaseModel(),
+            ).toDatabaseModel(), // TODO : database 변환 사용 부분
         )
     }
 
@@ -246,7 +246,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {
-        storage.themeMode.update(mode.toDatabaseModel())
+        storage.themeMode.update(mode.toDatabaseModel()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun findIdByEmail(email: String) {
