@@ -12,6 +12,7 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@App
 interface SNUTTStorage {
     val prefKeyUserId: PrefValue<Optional<String>>
 

@@ -19,7 +19,8 @@ import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface SNUTTStorage {
+@CoreDatabase
+interface SNUTTStorageTemp {
     val prefKeyUserId: PrefValue<Optional<String>>
 
     val accessToken: PrefValue<String>
@@ -48,14 +49,16 @@ interface SNUTTStorage {
 
     val firstVacancyVisit: PrefValue<Boolean>
 
-    fun clearLoginScope(): Unit
+    fun clearLoginScope()
+
+    fun addNetworkLog(newLog: NetworkLog)
 }
 
 @Singleton
 @CoreDatabase
-class SNUTTStorageImpl @Inject constructor(
+class SNUTTStorageTempImpl @Inject constructor(
     @CoreDatabase private val prefContext: PrefContext,
-): SNUTTStorage {
+): SNUTTStorageTemp {
 
     override val prefKeyUserId = PrefValue<Optional<String>>(
         prefContext,
@@ -203,6 +206,20 @@ class SNUTTStorageImpl @Inject constructor(
     override fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)
+    }
+
+    override fun addNetworkLog(newLog: NetworkLog) {
+        networkLog.update(
+            networkLog.get().toMutableList().apply {
+                add(0, newLog)
+            }.let {
+                if (it.size > 100) {
+                    it.subList(0, 100)
+                } else {
+                    it
+                }
+            },
+        )
     }
 
     companion object {
