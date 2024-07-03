@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.core.database.model.ClassTime
 import com.wafflestudio.snutt2.core.network.model.ClassTimeDto as ClassTimeDtoNetwork
 
 @JsonClass(generateAdapter = true)
@@ -51,6 +52,14 @@ fun ClassTimeDtoNetwork.toExternalModel() = ClassTimeDto(
 )
 
 fun ClassTimeDto.toNetworkModel() = ClassTimeDtoNetwork(
+    day = day,
+    place = place,
+    id = id,
+    startMinute = startMinute,
+    endMinute = endMinute,
+)
+
+fun ClassTime.toExternalModel() = ClassTimeDto(
     day = day,
     place = place,
     id = id,
