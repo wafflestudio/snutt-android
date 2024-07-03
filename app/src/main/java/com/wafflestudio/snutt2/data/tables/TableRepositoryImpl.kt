@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
@@ -17,7 +18,7 @@ import com.wafflestudio.snutt2.core.network.model.PutTableThemeParams as PutTabl
 @Singleton
 class TableRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val snuttStorage: SNUTTStorage,
+    @App private val snuttStorage: SNUTTStorage,
 ) : TableRepository {
 
     override val tableMap: StateFlow<Map<String, SimpleTableDto>> =

@@ -4,6 +4,7 @@ import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.*
@@ -42,7 +43,7 @@ import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as P
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @App private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
 ) : UserRepository {

@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -21,7 +22,7 @@ import com.wafflestudio.snutt2.core.network.model.PostLectureParams as PostLectu
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @App private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {
 

@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.core.database.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorage
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageImpl
 import com.wafflestudio.snutt2.core.database.preference.storage.MoshiSerializer
 import com.wafflestudio.snutt2.core.database.preference.storage.Serializer
 import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
@@ -20,6 +22,10 @@ abstract class SerializerModule {
     @Binds
     @CoreDatabase
     abstract fun bindSerializer(moshiSerializer: MoshiSerializer): Serializer
+
+    @Binds
+    @CoreDatabase
+    abstract fun bindStorage(impl: SNUTTStorageImpl): SNUTTStorage
 
     companion object {
         @Provides

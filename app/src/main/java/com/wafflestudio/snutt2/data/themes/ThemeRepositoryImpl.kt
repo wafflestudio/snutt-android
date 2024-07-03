@@ -26,7 +26,7 @@ import com.wafflestudio.snutt2.core.network.model.PatchThemeParams as PatchTheme
 @Singleton
 class ThemeRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @App private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : ThemeRepository {
 
