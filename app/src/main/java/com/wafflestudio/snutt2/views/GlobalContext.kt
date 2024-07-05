@@ -50,8 +50,8 @@ val LocalPopupState = compositionLocalOf<PopupState> {
     throw RuntimeException("")
 }
 
-val LocalThemeState = compositionLocalOf<ThemeMode> {
-    throw RuntimeException("")
+val LocalThemeState = compositionLocalOf {
+    ThemeMode.AUTO
 }
 
 val LocalModalState = compositionLocalOf<ModalState> {
