@@ -70,5 +70,9 @@ gradlePlugin {
             id = "snutt.semantic.versioning"
             implementationClass = "SemanticVersioningConventionPlugin"
         }
+        register("secrets") {
+            id = "snutt.buildconfig.secrets"
+            implementationClass = "BuildConfigSecretsConventionPlugin"
+        }
     }
 }

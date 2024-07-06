@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.snutt.android.application.firebase)
     alias(libs.plugins.snutt.android.application.firebase.app.distribution)
     alias(libs.plugins.snutt.semantic.versioning)
+    alias(libs.plugins.snutt.buildconfig.secrets)
 
 //    id("dagger.hilt.android.plugin")
 //    id("kotlin-kapt")
