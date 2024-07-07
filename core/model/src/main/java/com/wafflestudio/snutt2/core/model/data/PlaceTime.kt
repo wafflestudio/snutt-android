@@ -24,6 +24,12 @@ enum class Day {
 data class Time (
     val timeInMinutes: Int
 ) {
+    companion object {
+        fun fromHour(timeInHours: Int): Time = Time(
+            timeInHours * 60
+        )
+    }
+
     val minute: Int get() = timeInMinutes % 60
     val hour: Int get() = timeInMinutes / 60
 }
