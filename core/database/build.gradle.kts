@@ -14,4 +14,5 @@ dependencies {
 
     // temp test
     implementation(project(":core:qualifiers"))
+    implementation(project(":core:model"))
 }

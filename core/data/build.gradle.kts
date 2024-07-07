@@ -11,6 +11,6 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
 
-    // temp test
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
 }
