@@ -14,7 +14,7 @@ internal fun Project.configureSecrets(
             SNUTTFlavor.values().forEach {
                 val flavor = getByName(it.name)
                 val flavorPropertiesFile =
-                    project.rootProject.file("gradle-${flavor.name}.properties")
+                    project.rootProject.file("secrets-${flavor.name}.properties")
                 val flavorProperties = loadProperties(flavorPropertiesFile)
                 flavorProperties.forEach { key, value ->
                     flavor.buildConfigField("String", key as String, value as String)
