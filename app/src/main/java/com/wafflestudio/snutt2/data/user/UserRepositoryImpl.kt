@@ -3,15 +3,26 @@ package com.wafflestudio.snutt2.data.user
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wafflestudio.snutt2.core.database.model.User
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
+import com.wafflestudio.snutt2.core.database.util.map
+import com.wafflestudio.snutt2.core.database.util.toOptional
+import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
-import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.model.toDatabaseModel
+import com.wafflestudio.snutt2.model.toExternalModel
 import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.toDatabaseModel
+import com.wafflestudio.snutt2.ui.toExternalModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -38,23 +49,27 @@ import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as
 import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
+import com.wafflestudio.snutt2.core.database.model.TableTrimParam as TableTrimParamDatabase
+import com.wafflestudio.snutt2.core.database.model.ThemeMode as ThemeModeDatabase
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @CoreDatabase private val storage: SNUTTStorageTemp,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
 ) : UserRepository {
 
     override val user = storage.user.asStateFlow()
-        .unwrap(externalScope)
+        .unwrap(externalScope).map(externalScope) {it:User? -> it?.toExternalModel()} // TODO : 이게 맞나..? 싶어서 이런 부분은 다 TODO 달아놓음
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
+        .map(externalScope) {it:TableTrimParamDatabase -> it.toExternalModel()} // TODO : database 변환 사용 부분
 
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()
+        .map(externalScope) {it:ThemeModeDatabase -> it.toExternalModel()} // TODO : database 변환 사용 부분
 
     override val compactMode = storage.compactMode.asStateFlow()
 
@@ -80,12 +95,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun fetchUserInfo() {
         val response = api._getUserInfo().toExternalModel()
-        storage.user.update(response.toOptional())
+        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun patchUserInfo(nickname: String) {
         val response = api._patchUserInfo(PatchUserInfoParamsNetwork(nickname)).toExternalModel()
-        storage.user.update(response.toOptional())
+        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun deleteUserAccount() {
@@ -170,7 +185,7 @@ class UserRepositoryImpl @Inject constructor(
         hourTo: Int?,
         isAuto: Boolean?,
     ) {
-        val prevTrimParam = storage.tableTrimParam.get()
+        val prevTrimParam = storage.tableTrimParam.get().toExternalModel()
         storage.tableTrimParam.update(
             TableTrimParam(
                 dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
@@ -178,7 +193,7 @@ class UserRepositoryImpl @Inject constructor(
                 hourFrom = hourFrom ?: prevTrimParam.hourFrom,
                 hourTo = hourTo ?: prevTrimParam.hourTo,
                 forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ),
+            ).toDatabaseModel(), // TODO : database 변환 사용 부분
         )
     }
 
@@ -231,7 +246,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {
-        storage.themeMode.update(mode)
+        storage.themeMode.update(mode.toDatabaseModel()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun findIdByEmail(email: String) {

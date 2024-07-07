@@ -24,4 +24,5 @@ dependencies {
 
     // temp test
     implementation(project(":core:qualifiers"))
+    implementation(project(":core:database")) // TODO : 나중에 삭제
 }

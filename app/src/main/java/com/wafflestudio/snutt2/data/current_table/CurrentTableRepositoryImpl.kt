@@ -1,15 +1,22 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import com.wafflestudio.snutt2.core.database.model.Table
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
+import com.wafflestudio.snutt2.core.database.util.map
+import com.wafflestudio.snutt2.core.database.util.unwrap
+import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.toNetworkModel
-import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -21,54 +28,54 @@ import com.wafflestudio.snutt2.core.network.model.PostLectureParams as PostLectu
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @CoreDatabase private val storage: SNUTTStorageTemp,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {
 
     override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
-        .unwrap(externalScope)
+        .unwrap(externalScope).map(externalScope) {it: Table? -> it?.toExternalModel()} // TODO : database 변환 사용 부분
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean) {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot add lecture when current table not exists")
         val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParamsNetwork(isForced)).toExternalModel()
-        storage.lastViewedTable.update(response.toOptional())
+        storage.lastViewedTable.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun removeLecture(lectureId: String) {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot remove lecture when current table not exists")
         val response = api._deleteLecture(prevTable.id, lectureId).toExternalModel()
-        storage.lastViewedTable.update(response.toOptional())
+        storage.lastViewedTable.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun createCustomLecture(lecture: PostCustomLectureParams) {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot create custom lecture when current table not exists")
         val response = api._postCustomLecture(prevTable.id, lecture.toNetworkModel()).toExternalModel()
-        storage.lastViewedTable.update(response.toOptional())
+        storage.lastViewedTable.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun resetLecture(lectureId: String): LectureDto {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot reset lecture when current table not exists")
         val response = api._resetLecture(prevTable.id, lectureId).toExternalModel()
-        storage.lastViewedTable.update(response.toOptional())
+        storage.lastViewedTable.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
         return response.lectureList.find { it.id == lectureId }!!
     }
 
     override suspend fun updateLecture(lectureId: String, target: PutLectureParams) {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
         val response = api._putLecture(prevTable.id, lectureId, target.toNetworkModel()).toExternalModel()
-        storage.lastViewedTable.update(response.toOptional())
+        storage.lastViewedTable.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
     }
 
     override suspend fun getLectureSyllabusUrl(
         courseNumber: String,
         lectureNumber: String,
     ): String {
-        val prevTable = storage.lastViewedTable.get().value
+        val prevTable = storage.lastViewedTable.get().value?.toExternalModel()
             ?: throw IllegalStateException("cannot update lecture when current table not exists")
         return api._getCoursebooksOfficial(
             prevTable.year,

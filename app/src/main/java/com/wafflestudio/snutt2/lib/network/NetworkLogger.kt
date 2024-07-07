@@ -10,6 +10,7 @@ import okio.Buffer
 import okio.IOException
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
+import com.wafflestudio.snutt2.core.database.model.NetworkLog as NetworkLogDatabase
 
 data class NetworkLog(
     val requestMethod: String,
@@ -18,6 +19,15 @@ data class NetworkLog(
     val requestBody: String,
     val responseCode: String,
     val responseBody: String,
+)
+
+fun NetworkLogDatabase.toExternalModel() = NetworkLog(
+    requestMethod = this.requestMethod,
+    requestUrl = this.requestUrl,
+    requestHeader = this.requestHeader,
+    requestBody = this.requestBody,
+    responseCode = this.responseCode,
+    responseBody = this.responseBody,
 )
 
 fun Interceptor.Chain.createNewNetworkLog(
