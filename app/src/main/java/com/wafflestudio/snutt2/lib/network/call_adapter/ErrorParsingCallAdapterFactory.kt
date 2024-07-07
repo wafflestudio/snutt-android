@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib.network.call_adapter
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
@@ -8,7 +9,7 @@ import java.lang.reflect.Type
 
 class ErrorParsingCallAdapterFactory(
     private val delegation: CallAdapter.Factory,
-    private val serializer: Serializer,
+    @App private val serializer: Serializer,
 ) : CallAdapter.Factory() {
 
     @Suppress("UNCHECKED_CAST")

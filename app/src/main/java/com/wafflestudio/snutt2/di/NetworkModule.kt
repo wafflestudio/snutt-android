@@ -8,6 +8,7 @@ import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
@@ -33,6 +34,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @SuppressLint("HardwareIds")
+    @App
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -108,11 +110,12 @@ object NetworkModule {
     }
 
     @Provides
+    @App
     fun provideRetrofit(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient,
-        moshi: Moshi,
-        serializer: Serializer,
+        @App okHttpClient: OkHttpClient,
+        @App moshi: Moshi,
+        @App serializer: Serializer,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -128,8 +131,9 @@ object NetworkModule {
     }
 
     @Provides
+    @App
     @Singleton
-    fun provideSNUTTRestApi(retrofit: Retrofit): SNUTTRestApi {
+    fun provideSNUTTRestApi(@App retrofit: Retrofit): SNUTTRestApi {
         return retrofit.create(SNUTTRestApi::class.java)
     }
 
@@ -138,6 +142,7 @@ object NetworkModule {
         ).toLong()
 
     @Provides
+    @App
     @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,

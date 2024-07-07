@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib.network.call_adapter
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.ErrorDTO
 import io.reactivex.rxjava3.core.Completable
@@ -10,7 +11,7 @@ import java.lang.reflect.Type
 
 class ErrorParsingCallAdapter<R>(
     private val delegation: CallAdapter<R, Any>?,
-    private val serializer: Serializer,
+    @App private val serializer: Serializer,
     private val bodyType: Type,
 ) : CallAdapter<R, Any> {
 

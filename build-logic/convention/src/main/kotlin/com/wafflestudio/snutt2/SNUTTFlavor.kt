@@ -12,7 +12,7 @@ enum class FlavorDimension {
 @Suppress("EnumEntryName")
 enum class SNUTTFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String) {
     // TODO: dev, prod 로 변경
-    staging(FlavorDimension.mode, applicationIdSuffix = ".demo"),
+    staging(FlavorDimension.mode, applicationIdSuffix = ".staging"),
     live(FlavorDimension.mode, applicationIdSuffix = ".live")
 }
 

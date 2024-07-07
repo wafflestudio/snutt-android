@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.core.database.preference.context.PrefContext
 import com.wafflestudio.snutt2.core.database.preference.storage.PrefStorage
 import com.wafflestudio.snutt2.core.database.preference.storage.PrefStorageImpl
 import com.wafflestudio.snutt2.core.database.preference.storage.Serializer
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,21 +19,24 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class PreferenceModule {
     @Provides
+    @CoreDatabase
     @Singleton
-    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext {
+    fun providePrefContext(@CoreDatabase prefStorage: PrefStorage, @CoreDatabase prefCache: PrefCache): PrefContext {
         return PrefContext(prefStorage, prefCache)
     }
 
     @Provides
+    @CoreDatabase
     @Singleton
     fun providePrefStorage(
         @ApplicationContext context: Context,
-        serializer: Serializer,
+        @CoreDatabase serializer: Serializer,
     ): PrefStorage {
         return PrefStorageImpl(context, serializer)
     }
 
     @Provides
+    @CoreDatabase
     @Singleton
     fun providePrefCache(): PrefCache {
         return PrefCacheImpl(64)

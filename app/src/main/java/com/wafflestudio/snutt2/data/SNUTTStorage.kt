@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SNUTTStorage @Inject constructor(
-    private val prefContext: PrefContext,
+    @App private val prefContext: PrefContext,
 ) {
 
     val prefKeyUserId = PrefValue<Optional<String>>(
