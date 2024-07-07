@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -26,7 +27,7 @@ fun PersonalInformationPolicyPage() {
 
     val url = stringResource(R.string.api_server) + stringResource(R.string.privacy)
     val headers = HashMap<String, String>()
-    headers["x-access-apikey"] = stringResource(R.string.api_key)
+    headers["x-access-apikey"] = BuildConfig.API_KEY
     headers["dark"] = when (themeMode) {
         ThemeMode.DARK -> "dark"
         ThemeMode.LIGHT -> "light"

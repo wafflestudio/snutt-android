@@ -67,7 +67,7 @@ class WebViewContainer(
         CookieManager.getInstance().apply {
             setCookie(
                 reviewUrlHost,
-                "x-access-apikey=${context.getString(R.string.api_key)}",
+                "x-access-apikey=${BuildConfig.API_KEY}",
             )
             setCookie(
                 reviewUrlHost,
@@ -109,7 +109,7 @@ class WebViewContainer(
         CookieManager.getInstance().apply {
             setCookie(
                 reviewUrlHost,
-                "x-access-apikey=${context.getString(R.string.api_key)}",
+                "x-access-apikey=${BuildConfig.API_KEY}",
             )
             setCookie(
                 reviewUrlHost,

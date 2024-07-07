@@ -16,7 +16,7 @@ import com.reactnativecommunity.picker.RNCPickerPackage
 import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
-import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
@@ -83,7 +83,7 @@ class ReactNativeBundleManager @Inject constructor(
                                 FRIENDS_MODULE_NAME,
                                 Bundle().apply {
                                     putString("x-access-token", token)
-                                    putString("x-access-apikey", context.getString(R.string.api_key))
+                                    putString("x-access-apikey", BuildConfig.API_KEY)
                                     putString("theme", if (isDarkMode(activityContext, theme)) "dark" else "light")
                                     putBoolean("allowFontScaling", true)
                                     putStringArrayList("feature", arrayListOf("ASYNC_STORAGE", "ADD_FRIEND_KAKAO"))

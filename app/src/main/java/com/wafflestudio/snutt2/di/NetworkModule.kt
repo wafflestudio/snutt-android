@@ -56,7 +56,7 @@ object NetworkModule {
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
                         "x-access-apikey",
-                        context.getString(R.string.api_key),
+                        BuildConfig.API_KEY,
                     )
                     .build()
                 chain.proceed(newRequest)
