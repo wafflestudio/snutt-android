@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.core.database.model.Lecture
 import com.wafflestudio.snutt2.core.network.model.LectureDto as LectureDtoNetwork
 
 @JsonClass(generateAdapter = true)
@@ -70,6 +71,50 @@ fun LectureDtoNetwork.toExternalModel() = LectureDto(
     category = category,
     colorIndex = colorIndex,
     color = color.toExternalModel(),
+    registrationCount = registrationCount,
+    wasFull = wasFull,
+)
+
+fun Lecture.toExternalModel() = LectureDto(
+    id = id,
+    lecture_id = lecture_id,
+    classification = classification,
+    department = department,
+    academic_year = academic_year,
+    course_number = course_number,
+    lecture_number = lecture_number,
+    course_title = course_title,
+    credit = credit,
+    class_time_json = class_time_json.map { it.toExternalModel() },
+    instructor = instructor,
+    quota = quota,
+    freshmanQuota = freshmanQuota,
+    remark = remark,
+    category = category,
+    colorIndex = colorIndex,
+    color = color.toExternalModel(),
+    registrationCount = registrationCount,
+    wasFull = wasFull,
+)
+
+fun LectureDto.toDatabaseModel() = Lecture(
+    id = id,
+    lecture_id = lecture_id,
+    classification = classification,
+    department = department,
+    academic_year = academic_year,
+    course_number = course_number,
+    lecture_number = lecture_number,
+    course_title = course_title,
+    credit = credit,
+    class_time_json = class_time_json.map { it.toDatabaseModel() },
+    instructor = instructor,
+    quota = quota,
+    freshmanQuota = freshmanQuota,
+    remark = remark,
+    category = category,
+    colorIndex = colorIndex,
+    color = color.toDatabaseModel(),
     registrationCount = registrationCount,
     wasFull = wasFull,
 )

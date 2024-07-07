@@ -33,7 +33,6 @@ class RetrofitSNUTTNetwork @Inject constructor(
         networkApi._postSearchQuery(body = body)
 
     override suspend fun _getCoursebook(): GetCoursebookResults {
-        Log.d("plgafhd","ok")
         return networkApi._getCoursebook()
     }
 

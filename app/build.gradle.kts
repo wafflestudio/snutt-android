@@ -117,9 +117,9 @@ dependencies {
 
     // temp test
     implementation(project(":core:data"))
+    implementation(project(":core:database"))
     implementation(project(":core:qualifiers"))
     implementation(project(":core:network"))
-    implementation(project(":core:database"))
 
 //    testImplementation("junit:junit:4.13.2")
 //    implementation("androidx.legacy:legacy-support-v4:1.0.0")

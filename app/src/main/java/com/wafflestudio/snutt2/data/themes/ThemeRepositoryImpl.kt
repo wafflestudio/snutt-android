@@ -1,7 +1,14 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.core.database.model.Table
+import com.wafflestudio.snutt2.core.database.model.User
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
+import com.wafflestudio.snutt2.core.database.util.Optional
+import com.wafflestudio.snutt2.core.database.util.map
+import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -10,6 +17,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
+import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,7 +35,7 @@ import com.wafflestudio.snutt2.core.network.model.PatchThemeParams as PatchTheme
 @Singleton
 class ThemeRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @CoreDatabase private val storage: SNUTTStorageTemp,
     externalScope: CoroutineScope,
 ) : ThemeRepository {
 
@@ -36,7 +45,9 @@ class ThemeRepositoryImpl @Inject constructor(
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
     override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
-    override val currentTableTheme = combine(storage.lastViewedTable.asStateFlow(), _customThemes) { table, _ ->
+    override val currentTableTheme = combine(storage.lastViewedTable.asStateFlow()
+        .unwrap(externalScope).map(externalScope) {it: Table? -> it?.toExternalModel().toOptional()} // TODO : 변환 함수 사용, revisit 필요
+        ,_customThemes) { table, _ ->
         table.value?.themeId?.let { themeId ->
             getTheme(themeId)
         } ?: table.value?.theme?.let {

@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -14,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class VacancyRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorage,
+    @CoreDatabase private val storage: SNUTTStorageTemp,
 ) : VacancyRepository {
 
     override val firstVacancyVisit = storage.firstVacancyVisit.asStateFlow()

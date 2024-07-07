@@ -10,7 +10,6 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
@@ -39,7 +38,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        snuttStorage: SNUTTStorage,
+        @App snuttStorage: SNUTTStorage,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
