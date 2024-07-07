@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.core.qualifiers.App
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -10,12 +12,48 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SNUTTStorage @Inject constructor(
-    private val prefContext: PrefContext,
-) {
+@App
+interface SNUTTStorage {
+    val prefKeyUserId: PrefValue<Optional<String>>
 
-    val prefKeyUserId = PrefValue<Optional<String>>(
+    val accessToken: PrefValue<String>
+
+    val user: PrefValue<Optional<UserDto>>
+
+    val tableMap: PrefValue<Map<String, SimpleTableDto>>
+
+    val shownPopupIdsAndTimestamp: PrefValue<Map<String, Long>>
+
+    val lastViewedTable: PrefValue<Optional<TableDto>>
+
+    val tableTrimParam: PrefValue<TableTrimParam>
+
+    val themeMode: PrefValue<ThemeMode>
+
+    val compactMode: PrefValue<Boolean>
+
+    val firstBookmarkAlert: PrefValue<Boolean>
+
+    val courseBooks: PrefValue<List<CourseBookDto>>
+
+    val tags: PrefValue<List<TagDto>>
+
+    val networkLog: PrefValue<List<NetworkLog>>
+
+    val firstVacancyVisit: PrefValue<Boolean>
+
+    fun clearLoginScope()
+
+    fun addNetworkLog(newLog: NetworkLog)
+}
+
+@Singleton
+@App
+class SNUTTStorageImpl @Inject constructor(
+    @App private val prefContext: PrefContext,
+):SNUTTStorage {
+
+    override val prefKeyUserId = PrefValue<Optional<String>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -25,7 +63,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val accessToken = PrefValue<String>(
+    override val accessToken = PrefValue<String>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -35,7 +73,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val user = PrefValue<Optional<UserDto>>(
+    override val user = PrefValue<Optional<UserDto>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -45,7 +83,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableMap = PrefValue<Map<String, SimpleTableDto>>(
+    override val tableMap = PrefValue<Map<String, SimpleTableDto>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -56,7 +94,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
+    override val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -68,7 +106,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val lastViewedTable = PrefValue<Optional<TableDto>>(
+    override val lastViewedTable = PrefValue<Optional<TableDto>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -78,7 +116,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableTrimParam = PrefValue<TableTrimParam>(
+    override val tableTrimParam = PrefValue<TableTrimParam>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -88,7 +126,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val themeMode = PrefValue<ThemeMode>(
+    override val themeMode = PrefValue<ThemeMode>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -98,7 +136,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val compactMode = PrefValue<Boolean>(
+    override val compactMode = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -108,7 +146,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val firstBookmarkAlert = PrefValue<Boolean>(
+    override val firstBookmarkAlert = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -118,7 +156,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val courseBooks = PrefValue<List<CourseBookDto>>(
+    override val courseBooks = PrefValue<List<CourseBookDto>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -128,7 +166,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tags = PrefValue<List<TagDto>>(
+    override val tags = PrefValue<List<TagDto>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -138,7 +176,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val networkLog = PrefValue<List<NetworkLog>>(
+    override val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -148,7 +186,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val firstVacancyVisit = PrefValue<Boolean>(
+    override val firstVacancyVisit = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -158,9 +196,23 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    fun clearLoginScope() {
+    override fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)
+    }
+
+    override fun addNetworkLog(newLog: NetworkLog) {
+        networkLog.update(
+            networkLog.get().toMutableList().apply {
+                add(0, newLog)
+            }.let {
+                if (it.size > 100) {
+                    it.subList(0, 100)
+                } else {
+                    it
+                }
+            },
+        )
     }
 
     companion object {

@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.core.network.model.SimpleTableDto as SimpleTableDtoNetwork
+import com.wafflestudio.snutt2.core.database.model.SimpleTable
 
 @JsonClass(generateAdapter = true)
 data class SimpleTableDto(
@@ -24,3 +26,33 @@ data class SimpleTableDto(
         )
     }
 }
+
+fun SimpleTableDtoNetwork.toExternalModel() = SimpleTableDto(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    isPrimary = this.isPrimary,
+)
+
+fun SimpleTable.toExternalModel() = SimpleTableDto(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    isPrimary = this.isPrimary,
+)
+
+fun SimpleTableDto.toDatabaseModel() = SimpleTable(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    isPrimary = this.isPrimary,
+)

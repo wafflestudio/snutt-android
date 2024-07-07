@@ -6,13 +6,17 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
 import com.wafflestudio.snutt2.core.network.BuildConfig
 import com.wafflestudio.snutt2.core.network.NetworkLog
 import com.wafflestudio.snutt2.core.network.R
 import com.wafflestudio.snutt2.core.network.createNewNetworkLog
 import com.wafflestudio.snutt2.core.network.retrofit.RetrofitSNUTTNetworkApi
+import com.wafflestudio.snutt2.core.network.toDatabaseModel
 import com.wafflestudio.snutt2.core.network.util.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.core.network.util.Serializer
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 //import com.wafflestudio.snutt2.data.SNUTTStorage
 //import com.wafflestudio.snutt2.data.addNetworkLog
 import dagger.Module
@@ -36,11 +40,12 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @SuppressLint("HardwareIds")
+    @CoreNetwork
     @Provides
     @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        snuttStorage: SNUTTStorage,
+        @CoreDatabase snuttStorage: SNUTTStorageTemp,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
@@ -98,7 +103,7 @@ object NetworkModule {
             }
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response)) // TODO : addNetworkLog 옮기면서 type를 바꿔줘야 할 듯
+                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response).toDatabaseModel()) // TODO : addNetworkLog 옮기면서 type를 바꿔줘야 할 듯
                 response
             }
             .addInterceptor(
@@ -114,11 +119,12 @@ object NetworkModule {
     }
 
     @Provides
+    @CoreNetwork
     fun provideRetrofit(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient,
-        moshi: Moshi,
-        serializer: Serializer,
+        @CoreNetwork okHttpClient: OkHttpClient,
+        @CoreNetwork moshi: Moshi,
+        @CoreNetwork serializer: Serializer,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -134,8 +140,9 @@ object NetworkModule {
     }
 
     @Provides
+    @CoreNetwork
     @Singleton
-    fun provideSNUTTRestApi(retrofit: Retrofit): RetrofitSNUTTNetworkApi {
+    fun provideSNUTTRestApi(@CoreNetwork retrofit: Retrofit): RetrofitSNUTTNetworkApi {
         return retrofit.create(RetrofitSNUTTNetworkApi::class.java)
     }
 
@@ -144,6 +151,7 @@ object NetworkModule {
         ).toLong()
 
     @Provides
+    @CoreNetwork
     @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,
@@ -151,13 +159,3 @@ object NetworkModule {
         return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
     }
 }
-
-object SNUTTStorage {
-    val accessToken: Something = Something()
-}
-
-class Something {
-    fun get(): String = "test"
-}
-
-fun SNUTTStorage.addNetworkLog(newLog: NetworkLog) {}

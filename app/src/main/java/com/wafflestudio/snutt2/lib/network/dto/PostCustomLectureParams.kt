@@ -4,6 +4,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
+import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams as PostCustomLectureParamsNetwork
 
 @JsonClass(generateAdapter = true)
 data class PostCustomLectureParams(
@@ -26,4 +28,26 @@ data class PostCustomLectureParams(
     @Json(name = "colorIndex") var colorIndex: Long? = null, // 색상
     @Json(name = "color") var color: ColorDto? = null,
     @Json(name = "is_forced") var isForced: Boolean? = false,
+)
+
+fun PostCustomLectureParams.toNetworkModel() = PostCustomLectureParamsNetwork(
+    id = this.id,
+    classification = this.classification,
+    department = this.department,
+    academic_year = this.academic_year,
+    course_number = this.course_number,
+    lecture_number = this.lecture_number,
+    course_title = this.course_title,
+    credit = credit,
+    class_time = this.class_time,
+    class_time_json = this.class_time_json?.map { it.toNetworkModel() },
+    location = this.location,
+    instructor = this.instructor,
+    quota = this.quota,
+    enrollment = this.enrollment,
+    remark = this.remark,
+    category = this.category,
+    colorIndex = this.colorIndex,
+    color = this.color?.toNetworkModel(),
+    isForced = this.isForced,
 )

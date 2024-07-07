@@ -115,6 +115,12 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
+    // temp test
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
+    implementation(project(":core:qualifiers"))
+    implementation(project(":core:network"))
+
 //    testImplementation("junit:junit:4.13.2")
 //    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 //

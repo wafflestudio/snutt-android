@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
+import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.lib.preferences.cache.PrefCache
 import com.wafflestudio.snutt2.lib.preferences.cache.PrefCacheImpl
@@ -14,25 +15,28 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object PreferenceModule {
     @Provides
+    @App
     @Singleton
-    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext {
+    fun providePrefContext(@App prefStorage: PrefStorage, @App prefCache: PrefCache): PrefContext {
         return PrefContext(prefStorage, prefCache)
     }
 
     @Provides
+    @App
     @Singleton
     fun providePrefStorage(
         @ApplicationContext context: Context,
-        serializer: Serializer,
+        @App serializer: Serializer,
     ): PrefStorage {
         return PrefStorageImpl(context, serializer)
     }
 
     @Provides
+    @App
     @Singleton
     fun providePrefCache(): PrefCache {
         return PrefCacheImpl(64)

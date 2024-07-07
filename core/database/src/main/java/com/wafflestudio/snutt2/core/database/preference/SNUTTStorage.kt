@@ -15,15 +15,52 @@ import com.wafflestudio.snutt2.core.database.preference.context.PrefOptionalValu
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValue
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValueMetaData
 import com.wafflestudio.snutt2.core.database.util.Optional
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SNUTTStorage @Inject constructor(
-    private val prefContext: PrefContext,
-) {
+@CoreDatabase
+interface SNUTTStorageTemp {
+    val prefKeyUserId: PrefValue<Optional<String>>
 
-    val prefKeyUserId = PrefValue<Optional<String>>(
+    val accessToken: PrefValue<String>
+
+    val user: PrefValue<Optional<User>>
+
+    val tableMap: PrefValue<Map<String, SimpleTable>>
+
+    val shownPopupIdsAndTimestamp: PrefValue<Map<String, Long>>
+
+    val lastViewedTable: PrefValue<Optional<Table>>
+
+    val tableTrimParam: PrefValue<TableTrimParam>
+
+    val themeMode: PrefValue<ThemeMode>
+
+    val compactMode: PrefValue<Boolean>
+
+    val firstBookmarkAlert: PrefValue<Boolean>
+
+    val courseBooks: PrefValue<List<CourseBook>>
+
+    val tags: PrefValue<List<Tag>>
+
+    val networkLog: PrefValue<List<NetworkLog>>
+
+    val firstVacancyVisit: PrefValue<Boolean>
+
+    fun clearLoginScope()
+
+    fun addNetworkLog(newLog: NetworkLog)
+}
+
+@Singleton
+@CoreDatabase
+class SNUTTStorageTempImpl @Inject constructor(
+    @CoreDatabase private val prefContext: PrefContext,
+): SNUTTStorageTemp {
+
+    override val prefKeyUserId = PrefValue<Optional<String>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -33,7 +70,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val accessToken = PrefValue<String>(
+    override val accessToken = PrefValue<String>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -43,7 +80,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val user = PrefValue<Optional<User>>(
+    override val user = PrefValue<Optional<User>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -53,7 +90,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableMap = PrefValue<Map<String, SimpleTable>>(
+    override val tableMap = PrefValue<Map<String, SimpleTable>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -64,7 +101,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
+    override val shownPopupIdsAndTimestamp = PrefValue<Map<String, Long>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -76,7 +113,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val lastViewedTable = PrefValue<Optional<Table>>(
+    override val lastViewedTable = PrefValue<Optional<Table>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -86,7 +123,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableTrimParam = PrefValue<TableTrimParam>(
+    override val tableTrimParam = PrefValue<TableTrimParam>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -96,7 +133,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val themeMode = PrefValue<ThemeMode>(
+    override val themeMode = PrefValue<ThemeMode>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -106,7 +143,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val compactMode = PrefValue<Boolean>(
+    override val compactMode = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -116,7 +153,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val firstBookmarkAlert = PrefValue<Boolean>(
+    override val firstBookmarkAlert = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -126,7 +163,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val courseBooks = PrefValue<List<CourseBook>>(
+    override val courseBooks = PrefValue<List<CourseBook>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -136,7 +173,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tags = PrefValue<List<Tag>>(
+    override val tags = PrefValue<List<Tag>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -146,7 +183,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val networkLog = PrefValue<List<NetworkLog>>(
+    override val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
@@ -156,7 +193,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val firstVacancyVisit = PrefValue<Boolean>(
+    override val firstVacancyVisit = PrefValue<Boolean>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
@@ -166,9 +203,23 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    fun clearLoginScope() {
+    override fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)
+    }
+
+    override fun addNetworkLog(newLog: NetworkLog) {
+        networkLog.update(
+            networkLog.get().toMutableList().apply {
+                add(0, newLog)
+            }.let {
+                if (it.size > 100) {
+                    it.subList(0, 100)
+                } else {
+                    it
+                }
+            },
+        )
     }
 
     companion object {

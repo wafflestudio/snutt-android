@@ -1,13 +1,15 @@
 package com.wafflestudio.snutt2.core.network.retrofit
 
+import android.util.Log
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.*
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RetrofitSNUTTNetwork @Inject constructor(
-    private val networkApi: RetrofitSNUTTNetworkApi,
+    @CoreNetwork private val networkApi: RetrofitSNUTTNetworkApi,
 ) : SNUTTNetworkDataSource {
     override suspend fun _getNotification(
         limit: Int,
@@ -30,8 +32,9 @@ class RetrofitSNUTTNetwork @Inject constructor(
     ): PostSearchQueryResults =
         networkApi._postSearchQuery(body = body)
 
-    override suspend fun _getCoursebook(): GetCoursebookResults =
-        networkApi._getCoursebook()
+    override suspend fun _getCoursebook(): GetCoursebookResults {
+        return networkApi._getCoursebook()
+    }
 
     override suspend fun _getTableList(): GetTableListResults =
         networkApi._getTableList()
