@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class NetworkConnectivityManager @Inject constructor(
-    connectivityManager: ConnectivityManager,
+    @CoreNetwork connectivityManager: ConnectivityManager,
 ) {
     private val _networkConnectivity = MutableStateFlow<Boolean?>(null)
     val networkConnectivity = _networkConnectivity.filterNotNull()

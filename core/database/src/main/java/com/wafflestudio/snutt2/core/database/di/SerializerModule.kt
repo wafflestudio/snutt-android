@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snutt2.core.database.preference.storage.MoshiSerializer
 import com.wafflestudio.snutt2.core.database.preference.storage.Serializer
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -17,13 +18,17 @@ import javax.inject.Singleton
 abstract class SerializerModule {
 
     @Binds
+    @CoreDatabase
     abstract fun bindSerializer(moshiSerializer: MoshiSerializer): Serializer
 
-    @Provides
-    @Singleton
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+    companion object {
+        @Provides
+        @CoreDatabase
+        @Singleton
+        fun provideMoshi(): Moshi {
+            return Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+        }
     }
 }

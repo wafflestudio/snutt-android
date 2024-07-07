@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.model
 
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.core.network.model.SearchTimeDto as SearchTimeDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class SearchTimeDto(
@@ -14,3 +15,9 @@ data class SearchTimeDto(
         const val LAST = 1435
     }
 }
+
+fun SearchTimeDto.toNetworkModel() = SearchTimeDtoNetwork(
+    day = this.day,
+    startMinute = this.startMinute,
+    endMinute = this.endMinute,
+)
