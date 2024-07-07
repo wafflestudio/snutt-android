@@ -5,7 +5,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 
-class BuildConfigSecretsConventionPlugin : Plugin<Project> {
+class AndroidSecretsConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             plugins.withId("com.android.application") {
