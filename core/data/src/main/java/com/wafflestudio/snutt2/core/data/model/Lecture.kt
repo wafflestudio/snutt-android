@@ -14,46 +14,49 @@ import com.wafflestudio.snutt2.core.network.model.LectureDto
 
 fun LectureDto.toExternalModel(): Lecture {
     return when (this.color == ColorDto()) { // TODO : revisit (true이면 OriginalLecture, false이면 TimeTableLecture 반환)
-        true -> OriginalLecture(
-            id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
-            classification = this.classification,
-            department = this.department,
-            academicYear = this.academic_year,
-            courseNumber = this.course_number,
-            lectureNumber = this.lecture_number,
-            title = this.course_title,
-            credit = this.credit,
-            placeTimes = this.class_time_json.map { it.toExternalModel() },
-            instructor = this.instructor,
-            quota = this.quota,
-            freshmanQuota = this.freshmanQuota,
-            remark = this.remark,
-            category = this.category,
-            registrationCount = this.registrationCount,
-            wasFull = this.wasFull
-        )
-
-        false -> TimetableLecture(
-            id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
-            classification = this.classification,
-            department = this.department,
-            academicYear = this.academic_year,
-            lectureNumber = this.lecture_number,
-            courseNumber = this.course_number,
-            title = this.course_title,
-            credit = this.credit,
-            placeTimes = this.class_time_json.map { it.toExternalModel() },
-            instructor = this.instructor,
-            quota = this.quota,
-            freshmanQuota = this.freshmanQuota,
-            remark = this.remark,
-            category = this.category,
-            originalLectureId = this.lecture_id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
-            colorIndex = this.colorIndex,
-            color = this.color.toExternalModel(),
-        )
+        true -> this.toOriginalLecture()
+        false -> this.toTimetableLecture()
     }
 }
+
+fun LectureDto.toOriginalLecture() = OriginalLecture(
+    id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    classification = this.classification,
+    department = this.department,
+    academicYear = this.academic_year,
+    courseNumber = this.course_number,
+    lectureNumber = this.lecture_number,
+    title = this.course_title,
+    credit = this.credit,
+    placeTimes = this.class_time_json.map { it.toExternalModel() },
+    instructor = this.instructor,
+    quota = this.quota,
+    freshmanQuota = this.freshmanQuota,
+    remark = this.remark,
+    category = this.category,
+    registrationCount = this.registrationCount,
+    wasFull = this.wasFull
+)
+
+fun LectureDto.toTimetableLecture() = TimetableLecture(
+    id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    classification = this.classification,
+    department = this.department,
+    academicYear = this.academic_year,
+    lectureNumber = this.lecture_number,
+    courseNumber = this.course_number,
+    title = this.course_title,
+    credit = this.credit,
+    placeTimes = this.class_time_json.map { it.toExternalModel() },
+    instructor = this.instructor,
+    quota = this.quota,
+    freshmanQuota = this.freshmanQuota,
+    remark = this.remark,
+    category = this.category,
+    originalLectureId = this.lecture_id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    colorIndex = this.colorIndex,
+    color = this.color.toExternalModel(),
+)
 
 fun ClassTimeDto.toExternalModel() = PlaceTime(
     timetableBlock = TimetableBlock(
