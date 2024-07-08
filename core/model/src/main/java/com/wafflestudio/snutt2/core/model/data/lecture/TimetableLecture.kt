@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.core.model.data.lecture
 import com.wafflestudio.snutt2.core.model.data.LectureColor
 import com.wafflestudio.snutt2.core.model.data.PlaceTime
 
-abstract class TimetableLecture(
+data class TimetableLecture(
     override val id: String,
     override val classification: String?,
     override val department: String?,

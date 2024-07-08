@@ -15,11 +15,6 @@ fun LectureBuildingDto.toExternalModel() = Building(
     coordinate = this.locationInDMS.toExternalModel(), // TODO : locationInDMS랑 locationinDecicmal이 내려오고 있다..
 )
 
-data class GeoCoordinate(
-    val latitude: Double,
-    val longitude: Double,
-)
-
 fun CampusNetwork.toExternalModel(): Campus {
     return when (this) {
         CampusNetwork.GWANAK -> Campus.GWANAK

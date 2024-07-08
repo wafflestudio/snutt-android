@@ -36,5 +36,5 @@ data class Time (
 
 data class Place(
     val name: String,
-    val building: Building
+    val building: Building?
 )
