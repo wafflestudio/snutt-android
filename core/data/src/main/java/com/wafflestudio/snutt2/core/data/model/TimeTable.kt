@@ -14,6 +14,6 @@ fun TableDto.toExternalModel() = TimeTable(
     title = this.title,
     lectureList = this.lectureList.map { it.toTimetableLecture() },
     totalCredit = this.totalCredit ?: 0L,
-    theme = // TODO : 이 부분에서 문제 발생
+    theme = this.theme
     isPrimary = this.isPrimary,
 )
