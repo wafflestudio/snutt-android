@@ -14,6 +14,6 @@ fun TableDto.toExternalModel() = TimeTable(
     title = this.title,
     lectureList = this.lectureList.map { it.toTimetableLecture() },
     totalCredit = this.totalCredit ?: 0L,
-    theme = this.theme
+    theme = this.theme,
     isPrimary = this.isPrimary,
 )
