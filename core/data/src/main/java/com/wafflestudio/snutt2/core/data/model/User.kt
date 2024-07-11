@@ -5,9 +5,9 @@ import com.wafflestudio.snutt2.core.model.data.User
 import com.wafflestudio.snutt2.core.network.model.UserDto
 
 fun UserDto.toExternalModel() = User(
-    isAdmin = this.isAdmin,
-    email = this.email,
-    localId = this.localId,
-    facebookName = this.fbName,
-    nickname = this.nickname?.toExternalModel() ?: Nickname("", ""),
+    isAdmin = isAdmin,
+    email = email,
+    localId = localId,
+    facebookName = fbName,
+    nickname = nickname?.toExternalModel() ?: Nickname("", ""),
 )

@@ -8,11 +8,11 @@ import com.wafflestudio.snutt2.core.network.model.Campus as CampusNetwork
 import com.wafflestudio.snutt2.core.network.model.LectureBuildingDto
 
 fun LectureBuildingDto.toExternalModel() = Building(
-    campus = this.campus.toExternalModel(),
-    buildingNumber = this.buildingNumber,
-    buildingNameKor = this.buildingNameKor ?: "",
-    buildingNameEng = this.buildingNameEng ?: "",
-    coordinate = this.locationInDMS.toExternalModel(),
+    campus = campus.toExternalModel(),
+    buildingNumber = buildingNumber,
+    buildingNameKor = buildingNameKor ?: "",
+    buildingNameEng = buildingNameEng ?: "",
+    coordinate = locationInDMS.toExternalModel(),
 )
 
 fun CampusNetwork.toExternalModel(): Campus {
@@ -24,6 +24,6 @@ fun CampusNetwork.toExternalModel(): Campus {
 }
 
 fun GeoCoordinateNetwork.toExternalModel() = GeoCoordinate(
-    latitude = this.latitude,
-    longitude = this.longitude,
+    latitude = latitude,
+    longitude = longitude,
 )

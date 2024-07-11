@@ -6,10 +6,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 fun NotificationDto.toExternalModel() = Notification(
-    title = this.title,
-    message = this.message,
-    createdAt = LocalDateTime.parse(this.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")),
-    type = when(this.type) {
+    title = title,
+    message = message,
+    createdAt = LocalDateTime.parse(createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")),
+    type = when(type) {
         0 -> Notification.Type.Normal
         1 -> Notification.Type.NewCourseBook
         2 -> Notification.Type.LectureUpdated
@@ -18,5 +18,5 @@ fun NotificationDto.toExternalModel() = Notification(
         5 -> Notification.Type.Friend
         else -> Notification.Type.Fallback
     },
-    deeplink = this.deeplink,
+    deeplink = deeplink,
 )
