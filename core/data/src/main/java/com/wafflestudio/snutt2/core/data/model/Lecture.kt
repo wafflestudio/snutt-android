@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.core.data.model
 
 import com.wafflestudio.snutt2.core.model.data.Day
-import com.wafflestudio.snutt2.core.model.data.Place
 import com.wafflestudio.snutt2.core.model.data.PlaceTime
 import com.wafflestudio.snutt2.core.model.data.Time
 import com.wafflestudio.snutt2.core.model.data.TimetableBlock
@@ -9,7 +8,6 @@ import com.wafflestudio.snutt2.core.model.data.lecture.Lecture
 import com.wafflestudio.snutt2.core.model.data.lecture.OriginalLecture
 import com.wafflestudio.snutt2.core.model.data.lecture.TimetableLecture
 import com.wafflestudio.snutt2.core.network.model.ClassTimeDto
-import com.wafflestudio.snutt2.core.network.model.ColorDto
 import com.wafflestudio.snutt2.core.network.model.LectureDto
 
 fun LectureDto.toExternalModel(): Lecture {
@@ -77,10 +75,7 @@ fun ClassTimeDto.toExternalModel() = PlaceTime(
         )
 
     ),
-    place = Place(
-        name = place,
-        building = null
-    )
+    placeName = place
 )
 
 // TODO : 제대로 되는지 테스트 해보면 좋을 듯
