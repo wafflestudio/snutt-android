@@ -13,14 +13,14 @@ import com.wafflestudio.snutt2.core.network.model.ColorDto
 import com.wafflestudio.snutt2.core.network.model.LectureDto
 
 fun LectureDto.toExternalModel(): Lecture {
-    return when (this.color == ColorDto()) { // TODO : revisit (true이면 OriginalLecture, false이면 TimeTableLecture 반환)
+    return when (this.lecture_id == null) {
         true -> this.toOriginalLecture()
         false -> this.toTimetableLecture()
     }
 }
 
 fun LectureDto.toOriginalLecture() = OriginalLecture(
-    id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    id = this.id,
     classification = this.classification,
     department = this.department,
     academicYear = this.academic_year,
@@ -39,7 +39,7 @@ fun LectureDto.toOriginalLecture() = OriginalLecture(
 )
 
 fun LectureDto.toTimetableLecture() = TimetableLecture(
-    id = this.id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    id = this.id,
     classification = this.classification,
     department = this.department,
     academicYear = this.academic_year,
@@ -53,7 +53,7 @@ fun LectureDto.toTimetableLecture() = TimetableLecture(
     freshmanQuota = this.freshmanQuota,
     remark = this.remark,
     category = this.category,
-    originalLectureId = this.lecture_id, // TODO : 모지 이거 id랑 lecture_id 중에 뭐가 필요한거지..?
+    originalLectureId = this.lecture_id,
     colorIndex = this.colorIndex,
     color = this.color.toExternalModel(),
 )
