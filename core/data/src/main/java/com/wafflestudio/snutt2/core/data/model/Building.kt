@@ -12,7 +12,7 @@ fun LectureBuildingDto.toExternalModel() = Building(
     buildingNumber = this.buildingNumber,
     buildingNameKor = this.buildingNameKor ?: "",
     buildingNameEng = this.buildingNameEng ?: "",
-    coordinate = this.locationInDMS.toExternalModel(), // TODO : locationInDMS랑 locationinDecicmal이 내려오고 있다..
+    coordinate = this.locationInDMS.toExternalModel(),
 )
 
 fun CampusNetwork.toExternalModel(): Campus {
