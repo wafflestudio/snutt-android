@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
@@ -21,7 +22,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun Popup(uri: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
-    val imageWidth = (LocalConfiguration.current.screenWidthDp * 0.8).dp
+    val imageWidth = min((LocalConfiguration.current.screenWidthDp * 0.8).dp, 400.dp)
     Box(
         modifier = Modifier
             .zIndex(2f)
