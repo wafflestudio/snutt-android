@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,10 +36,10 @@ fun Popup(uri: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
             modifier = Modifier.width(imageWidth),
         ) {
             AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
                 model = uri,
                 contentDescription = "",
                 error = painterResource(id = R.drawable.img_reviews_coming_soon),
-                contentScale = ContentScale.FillWidth,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
