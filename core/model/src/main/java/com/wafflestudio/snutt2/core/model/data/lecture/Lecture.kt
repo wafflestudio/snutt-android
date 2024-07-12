@@ -36,25 +36,3 @@ abstract class Lecture(
         return isCourseNumberEquals(lecture) && lectureNumber == lecture.lectureNumber
     }
 }
-
-// TODO : context가 필요한 확장 함수는 어떻게 하지?
-//fun Lecture.getQuotaTitle(context: Context): String = StringBuilder().apply {
-//    append(context.getString(R.string.lecture_detail_quota))
-//    if (freshmanQuota != null && freshmanQuota != 0L) append("(${context.getString(R.string.lecture_detail_senior)})")
-//}.toString()
-
-
-// TODO : quota랑 freshmanQuota가 open val이면 null 관련 오류 발생
-fun OriginalLecture.getFullQuota(): String = StringBuilder().apply {
-    append(quota)
-    if (quota != null && freshmanQuota != null && freshmanQuota != 0L) {
-        append("(${quota - freshmanQuota})")
-    }
-}.toString()
-
-fun TimetableLecture.getFullQuota(): String = StringBuilder().apply {
-    append(quota)
-    if (quota != null && freshmanQuota != null && freshmanQuota != 0L) {
-        append("(${quota - freshmanQuota})")
-    }
-}.toString()
