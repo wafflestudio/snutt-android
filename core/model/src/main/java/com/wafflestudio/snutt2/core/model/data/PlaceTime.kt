@@ -11,7 +11,7 @@ data class TimetableBlock (
     val endTime: Time,
 )
 
-enum class Day(toInt: Int) {
+enum class Day(fromInt: Int) {
     MONDAY(0),
     TUESDAY(1),
     WEDNESDAY(2),
