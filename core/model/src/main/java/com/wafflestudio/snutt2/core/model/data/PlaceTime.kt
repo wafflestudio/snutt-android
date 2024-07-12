@@ -21,9 +21,9 @@ enum class Day(toInt: Int) {
     SUNDAY(6),
 }
 
-data class Time (
+data class Time(
     val timeInMinutes: Int
-) {
+) : Comparable<Time> {
     companion object {
         fun fromHour(timeInHours: Int): Time = Time(
             timeInHours * 60
@@ -32,6 +32,10 @@ data class Time (
 
     val minute: Int get() = timeInMinutes % 60
     val hour: Int get() = timeInMinutes / 60
+
+    override fun compareTo(other: Time): Int {
+        return this.timeInMinutes - other.timeInMinutes
+    }
 }
 
 data class Place(

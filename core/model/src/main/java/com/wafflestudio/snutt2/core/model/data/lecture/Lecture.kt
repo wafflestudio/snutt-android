@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.core.model.data.lecture
 
+import com.wafflestudio.snutt2.core.model.data.Day
 import com.wafflestudio.snutt2.core.model.data.PlaceTime
+import com.wafflestudio.snutt2.core.model.data.Time
 
 abstract class Lecture(
     open val id: String,
@@ -19,15 +21,10 @@ abstract class Lecture(
     open val placeTimes: List<PlaceTime>,
 )
 
-fun Lecture.contains(queryDay: Int, queryTime: Float): Boolean {
-    for (placeTime in this.placeTimes) {
-        val start = placeTime.timetableBlock.startTime.timeInMinutes / 60f
-        val end = placeTime.timetableBlock.endTime.timeInMinutes / 60f
-
-        if (queryDay != placeTime.timetableBlock.day.ordinal) continue // TODO : ordinal?
-        if (queryTime in start..end) return true
-    }
-    return false
+fun Lecture.contains(day: Day, time: Time): Boolean = placeTimes.map {
+    it.timetableBlock
+}.any { timetableBlock ->
+    day == timetableBlock.day && time in timetableBlock.startTime..timetableBlock.endTime
 }
 
 fun Lecture.isCourseNumberEquals(lecture: Lecture): Boolean {
