@@ -28,11 +28,13 @@ fun Lecture.contains(day: Day, time: Time): Boolean = placeTimes.map {
 }
 
 fun Lecture.isCourseNumberEquals(lecture: Lecture): Boolean {
-    return courseNumber != null && courseNumber == lecture.courseNumber
+    if (courseNumber == null) return false
+    return courseNumber == lecture.courseNumber
 }
 
 fun Lecture.isLectureNumberEquals(lecture: Lecture): Boolean {
-    return isCourseNumberEquals(lecture) && lectureNumber != null && lectureNumber == lecture.lectureNumber
+    if (lectureNumber == null) return false
+    return isCourseNumberEquals(lecture) && lectureNumber == lecture.lectureNumber
 }
 
 // TODO : context가 필요한 확장 함수는 어떻게 하지?
