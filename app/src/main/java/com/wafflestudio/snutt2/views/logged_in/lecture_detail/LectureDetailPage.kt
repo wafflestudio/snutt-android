@@ -611,22 +611,14 @@ fun LectureDetailPage(
                                     }
                                 }
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
-                                    verifyEmailBeforeApi(
-                                        composableStates,
-                                        api = {
-                                            val url = editingLectureDetail.review?.getReviewUrl(context)
-                                            openReviewBottomSheet(
-                                                url,
-                                                reviewBottomSheetWebViewContainer,
-                                                bottomSheet,
-                                            )
-                                        },
-                                        onUnverified = {
-                                            onCloseViewMode(scope)
-                                            navController.navigateAsOrigin(NavigationDestination.Home)
-                                            pageController.update(HomeItem.Review())
-                                        },
-                                    )
+                                    scope.launch {
+                                        val url = editingLectureReview?.getReviewUrl(context)
+                                        openReviewBottomSheet(
+                                            url,
+                                            reviewBottomSheetWebViewContainer,
+                                            bottomSheet,
+                                        )
+                                    }
                                 }
                             }
                         }

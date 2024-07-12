@@ -245,21 +245,10 @@ fun LazyItemScope.LectureListItem(
                     title = stringResource(R.string.search_result_item_review_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        verifyEmailBeforeApi(
-                            composableStates,
-                            api = {
-                                val url = lectureDataWithState.item.review?.getReviewUrl(context)
-                                openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
-                            },
-                            onUnverified = {
-                                if (isBookmarkPage) {
-                                    navController.navigateAsOrigin(
-                                        NavigationDestination.Home,
-                                    )
-                                }
-                                pageController.update(HomeItem.Review())
-                            },
-                        )
+                        scope.launch {
+                            val url = lectureDataWithState.item.review?.getReviewUrl(context)
+                            openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
+                        }
                     },
                 ) {
                     ThickReviewIcon(

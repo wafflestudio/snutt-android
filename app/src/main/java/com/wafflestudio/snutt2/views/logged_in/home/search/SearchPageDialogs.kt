@@ -16,50 +16,6 @@ import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import kotlinx.coroutines.launch
 
-fun verifyEmailBeforeApi(
-    composableStates: ComposableStates,
-    onUnverified: () -> Unit,
-    api: suspend () -> Unit,
-) {
-    val scope = composableStates.scope
-    val context = composableStates.context
-    val apiOnError = composableStates.apiOnError
-    val modalState = composableStates.modalState
-
-    scope.launch {
-        try {
-            api()
-        } catch (e: Exception) {
-            when (e) {
-                is ErrorParsedHttpException -> {
-                    if (e.errorDTO?.code == EMAIL_NOT_VERIFIED) {
-                        modalState
-                            .set(
-                                onDismiss = { modalState.hide() },
-                                title = context.getString(R.string.email_unverified_cta_title),
-                                positiveButton = context.getString(R.string.common_ok),
-                                negativeButton = context.getString(R.string.common_cancel),
-                                onConfirm = {
-                                    modalState.hide()
-                                    onUnverified()
-                                },
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.email_unverified_cta_message),
-                                    style = SNUTTTypography.button,
-                                )
-                            }
-                            .show()
-                    } else {
-                        apiOnError(e)
-                    }
-                }
-                else -> apiOnError(e)
-            }
-        }
-    }
-}
-
 suspend fun openReviewBottomSheet(
     url: String?,
     reviewWebViewContainer: WebViewContainer,
