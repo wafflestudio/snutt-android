@@ -45,7 +45,7 @@ class LectureDetailViewModel @Inject constructor(
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
     val editingLectureReview = _editingLectureDetail.map { lecture ->
-        lecture.review?.rating?.let { lecture.review } ?: getLectureReview()
+        lecture.review ?: getLectureReview()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
 
     val editingLectureBuildings = editingLectureDetail.map { lecture ->
@@ -104,7 +104,12 @@ class LectureDetailViewModel @Inject constructor(
     }
 
     private suspend fun getLectureReview(): LectureReviewDto? {
-        return _editingLectureDetail.value.lecture_id?.let { lectureId ->
+        val originalLectureId =
+            if (modeType.value == ModeType.Viewing)
+                editingLectureDetail.value.id
+            else
+                editingLectureDetail.value.lecture_id
+        return originalLectureId?.let { lectureId ->
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
     }
