@@ -337,45 +337,47 @@ fun LectureDetailPage(
                         }
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .background(SNUTTColors.White900)
-                        .padding(vertical = 4.dp),
-                ) {
-                    LectureDetailItem(
-                        title = stringResource(R.string.lecture_detail_review_rating),
+                AnimatedVisibility(isCustom.not() && (modeType !is ModeType.Editing)) {
+                    Column(
+                        modifier = Modifier
+                            .background(SNUTTColors.White900)
+                            .padding(vertical = 4.dp),
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_review_rating),
                         ) {
-                            StarIcon(
-                                filled = true,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .offset(y = 1.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
-                            )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                text = buildAnnotatedString {
-                                    withStyle(SpanStyle(color = SNUTTColors.Black900)) {
-                                        append(editingLectureReview?.ratingDisplayText ?: "--")
-                                        append(" ")
-                                    }
-                                    withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
-                                        append(
-                                            stringResource(
-                                                R.string.lecture_detail_review_count,
-                                                editingLectureReview?.reviewCount ?: 0,
-                                            ),
-                                        )
-                                    }
-                                },
-                                style = MaterialTheme.typography.body1.copy(
-                                    fontSize = 15.sp,
-                                ),
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
+                                StarIcon(
+                                    filled = true,
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .offset(y = 1.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(SpanStyle(color = SNUTTColors.Black900)) {
+                                            append(editingLectureReview?.ratingDisplayText ?: "--")
+                                            append(" ")
+                                        }
+                                        withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
+                                            append(
+                                                stringResource(
+                                                    R.string.lecture_detail_review_count,
+                                                    editingLectureReview?.reviewCount ?: 0,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    style = MaterialTheme.typography.body1.copy(
+                                        fontSize = 15.sp,
+                                    ),
+                                )
+                            }
                         }
                     }
                 }
