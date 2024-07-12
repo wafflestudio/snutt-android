@@ -19,22 +19,22 @@ abstract class Lecture(
     open val freshmanQuota: Long?,
     open val remark: String,
     open val placeTimes: List<PlaceTime>,
-)
+) {
+    fun contains(day: Day, time: Time): Boolean = placeTimes.map {
+        it.timetableBlock
+    }.any { timetableBlock ->
+        day == timetableBlock.day && time in timetableBlock.startTime..timetableBlock.endTime
+    }
 
-fun Lecture.contains(day: Day, time: Time): Boolean = placeTimes.map {
-    it.timetableBlock
-}.any { timetableBlock ->
-    day == timetableBlock.day && time in timetableBlock.startTime..timetableBlock.endTime
-}
+    fun isCourseNumberEquals(lecture: Lecture): Boolean {
+        if (courseNumber == null) return false
+        return courseNumber == lecture.courseNumber
+    }
 
-fun Lecture.isCourseNumberEquals(lecture: Lecture): Boolean {
-    if (courseNumber == null) return false
-    return courseNumber == lecture.courseNumber
-}
-
-fun Lecture.isLectureNumberEquals(lecture: Lecture): Boolean {
-    if (lectureNumber == null) return false
-    return isCourseNumberEquals(lecture) && lectureNumber == lecture.lectureNumber
+    fun isLectureNumberEquals(lecture: Lecture): Boolean {
+        if (lectureNumber == null) return false
+        return isCourseNumberEquals(lecture) && lectureNumber == lecture.lectureNumber
+    }
 }
 
 // TODO : context가 필요한 확장 함수는 어떻게 하지?
