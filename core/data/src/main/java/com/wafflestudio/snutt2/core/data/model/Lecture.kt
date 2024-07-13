@@ -51,7 +51,7 @@ fun LectureDto.toTimetableLecture() = TimetableLecture(
     freshmanQuota = freshmanQuota,
     remark = remark,
     category = category,
-    originalLectureId = lecture_id,
+    lectureId = lecture_id,
     colorIndex = colorIndex,
     color = color.toExternalModel(),
 )
