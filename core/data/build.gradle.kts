@@ -10,9 +10,9 @@ android {
 dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    implementation(libs.androidx.paging.compose)
+    api(libs.androidx.paging.compose)
 
-    implementation(project(":core:network"))
+    api(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:model")) // TODO : revisit
     implementation(project(":core:qualifiers")) // TODO : revisit
