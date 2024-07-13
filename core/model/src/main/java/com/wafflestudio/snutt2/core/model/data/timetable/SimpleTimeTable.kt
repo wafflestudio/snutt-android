@@ -8,4 +8,12 @@ data class SimpleTimeTable(
     val title: String,
     val totalCredit: Long,
     val isPrimary: Boolean,
-)
+){
+    fun courseBookEquals(other: SimpleTimeTable): Boolean {
+        return courseBook == other.courseBook
+    }
+
+    fun courseBookEquals(other: TimeTable): Boolean {
+        return courseBook == other.courseBook
+    }
+}
