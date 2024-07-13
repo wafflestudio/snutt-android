@@ -105,10 +105,11 @@ class LectureDetailViewModel @Inject constructor(
 
     private suspend fun getLectureReview(): LectureReviewDto? {
         val originalLectureId =
-            if (modeType.value == ModeType.Viewing)
+            if (modeType.value == ModeType.Viewing) {
                 editingLectureDetail.value.id
-            else
+            } else {
                 editingLectureDetail.value.lecture_id
+            }
         return originalLectureId?.let { lectureId ->
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
