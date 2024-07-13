@@ -54,6 +54,10 @@ gradlePlugin {
             id = "snutt.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
+        register("androidFeature") {
+            id = "snutt.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
         register("androidFlavors") {
             id = "snutt.android.application.flavors"
             implementationClass = "AndroidApplicationFlavorsConventionPlugin"
