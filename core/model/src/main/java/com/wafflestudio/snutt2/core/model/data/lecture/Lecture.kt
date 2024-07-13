@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.core.model.data.LectureColor
 import com.wafflestudio.snutt2.core.model.data.PlaceTime
 import com.wafflestudio.snutt2.core.model.data.Time
 import com.wafflestudio.snutt2.core.model.data.TimeTableTrimConfig
+import com.wafflestudio.snutt2.core.model.data.TimetableBlock
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -54,3 +55,5 @@ fun List<Lecture>.getFittingTrimParam(tableTrimParam: TimeTableTrimConfig): Time
         endTime = (flatMap { lecture -> lecture.placeTimes.map { it.timetableBlock.endTime } } + tableTrimParam.endTime).maxOf { it },
         forceFitLectures = true,
     )
+
+fun List<Lecture>.flatMapToTimeTableBlock(): List<TimetableBlock> = flatMap { it.placeTimes }.map { TimetableBlock(it.timetableBlock.day, it.timetableBlock.startTime, it.timetableBlock.endTime) }
