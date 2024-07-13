@@ -1,8 +1,5 @@
 package com.wafflestudio.snutt2.core.model.data
 
-import kotlin.math.max
-import kotlin.math.min
-
 data class PlaceTime(
     val timetableBlock: TimetableBlock,
     val placeName: String,
