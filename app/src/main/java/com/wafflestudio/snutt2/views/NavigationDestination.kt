@@ -28,4 +28,5 @@ object NavigationDestination {
     const val Friends = "friends"
     const val ThemeConfig = "theme_config"
     const val ThemeDetail = "theme_detail"
+    const val SocialLink = "social_link"
 }
