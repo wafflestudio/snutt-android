@@ -49,7 +49,7 @@ class ReactNativeBundleManager @Inject constructor(
     networkConnectivityManager: NetworkConnectivityManager,
 ) {
     private var myReactInstanceManager: ReactInstanceManager? = null
-    var reactRootView = mutableStateOf<ReactRootView?>(null)
+    var reactRootView = mutableStateOf<SNUTTReactRootView?>(null)
     private val reloadSignal = MutableSharedFlow<Unit>()
 
     init {
@@ -76,7 +76,7 @@ class ReactNativeBundleManager @Inject constructor(
                                 .build()
                         }
 
-                        reactRootView.value = ReactRootView(activityContext).apply {
+                        reactRootView.value = SNUTTReactRootView(activityContext, myReactInstanceManager!!).apply {
                             startReactApplication(
                                 myReactInstanceManager ?: return@apply,
                                 FRIENDS_MODULE_NAME,
