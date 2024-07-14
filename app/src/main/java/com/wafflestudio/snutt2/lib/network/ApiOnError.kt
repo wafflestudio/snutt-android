@@ -312,7 +312,7 @@ class ApiOnError @Inject constructor(
                             context,
                             context.getString(
                                 R.string.social_link_account_already_using,
-                                detailToString(error.errorDTO.detail?.socialProvider?:"")
+                                detailToString(error.errorDTO.detail?.socialProvider ?: ""),
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()
@@ -398,8 +398,8 @@ object ErrorCode {
     const val EMAIL_NOT_FOUND = 0x4006
 }
 
-private fun detailToString(detail: String?): String{
-    return when (detail){
+private fun detailToString(detail: String?): String {
+    return when (detail) {
         "LOCAL" -> "로컬"
         "FACEBOOK" -> "페이스북"
         "GOOGLE" -> "구글"
@@ -415,7 +415,7 @@ data class ErrorDTO(
     @Json(name = "displayMessage") val displayMessage: String? = null,
     @Json(name = "ext") val ext: Map<String, String>? = null,
     @Json(name = "detail") val detail: ErrorDetail? = null,
-){
+) {
     data class ErrorDetail(
         @Json(name = "socialProvider") val socialProvider: String? = null,
     )
