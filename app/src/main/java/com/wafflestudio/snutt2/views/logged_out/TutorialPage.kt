@@ -154,7 +154,7 @@ fun TutorialPage() {
         Spacer(modifier = Modifier.weight(13f))
 
         Column(
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             BorderButton(
                 modifier = Modifier
@@ -191,7 +191,7 @@ fun TutorialPage() {
             DividerWithText(
                 color = SNUTTColors.Gray200,
                 textStyle = SNUTTTypography.subtitle2,
-                text = stringResource(R.string.continue_with_sns_account)
+                text = stringResource(R.string.continue_with_sns_account),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -199,22 +199,24 @@ fun TutorialPage() {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally),
-            ){
+            ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = {}
+                    onClick = {},
                 )
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.google_login),
-                    onClick = { googleSignInClient.signOut().addOnCompleteListener {
-                        handleGoogleSignIn()
-                    } }
+                    onClick = {
+                        googleSignInClient.signOut().addOnCompleteListener {
+                            handleGoogleSignIn()
+                        }
+                    },
                 )
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.facebook_login),
-                    onClick = { handleFacebookSignIn() }
+                    onClick = { handleFacebookSignIn() },
                 )
             }
         }
