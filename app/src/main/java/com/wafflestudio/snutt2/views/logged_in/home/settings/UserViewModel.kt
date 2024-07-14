@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -28,10 +27,6 @@ class UserViewModel @Inject constructor(
     val compactMode: StateFlow<Boolean> = userRepository.compactMode
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
-
-    suspend fun fetchUserInfo() {
-        userRepository.fetchUserInfo()
-    }
 
     suspend fun setHourRange(from: Int, to: Int) {
         userRepository.setTableTrim(hourFrom = from, hourTo = to)
@@ -67,18 +62,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun changeNickname(nickname: String) {
         userRepository.patchUserInfo(nickname)
-    }
-
-    suspend fun fetchUserFacebook(): GetUserFacebookResults {
-        return userRepository.getUserFacebook()
-    }
-
-    suspend fun connectFacebook(id: String, token: String) {
-        userRepository.postUserFacebook(id, token)
-    }
-
-    suspend fun disconnectFacebook() {
-        userRepository.deleteUserFacebook()
     }
 
     suspend fun leave() {
