@@ -49,8 +49,8 @@ class UserViewModel @Inject constructor(
         userRepository.postSignIn(id, password)
     }
 
-    suspend fun loginFacebook(facebookId: String, facebookToken: String) {
-        userRepository.postLoginFacebook(facebookId, facebookToken)
+    suspend fun loginFacebook(facebookToken: String) {
+        userRepository.postLoginFacebook(facebookToken)
     }
 
     suspend fun loginGoogle(googleIdToken: String) {
@@ -103,13 +103,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun signUpLocal(idField: String, emailField: String, passwordField: String) {
         userRepository.postSignUp(id = idField, password = passwordField, email = emailField)
-    }
-
-    suspend fun signUpFacebook(id: String, token: String) {
-        userRepository.postLoginFacebook(
-            facebookId = id,
-            facebookToken = token,
-        )
     }
 
     suspend fun fetchPopup() {
