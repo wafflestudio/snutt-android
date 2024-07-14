@@ -1,11 +1,13 @@
 package com.wafflestudio.snutt2.react_native.event
 
+import android.content.Context
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.wafflestudio.snutt2.kakao.buildKakaoAddFriendTemplate
+import com.wafflestudio.snutt2.kakao.sendKakaoMessageWithTemplate
 
 @ReactModule(name = RNEventEmitterModule.MODULE_NAME)
 class RNEventEmitterModule(private val reactContext: ReactApplicationContext) :
@@ -41,7 +43,7 @@ class RNEventEmitterModule(private val reactContext: ReactApplicationContext) :
                     ),
                 )
                 if (reactContext.currentActivity != null) {
-                    // TODO: 카카오 SDK 호출
+                    sendKakaoMessageWithTemplate(reactContext.currentActivity as Context, feedTemplate)
                 }
             }
 
