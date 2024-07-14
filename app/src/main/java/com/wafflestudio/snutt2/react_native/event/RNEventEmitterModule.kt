@@ -1,11 +1,14 @@
 package com.wafflestudio.snutt2.react_native.event
 
 import android.content.Context
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.module.annotations.ReactModule
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wafflestudio.snutt2.kakao.buildKakaoAddFriendTemplate
 import com.wafflestudio.snutt2.kakao.sendKakaoMessageWithTemplate
 
@@ -56,5 +59,30 @@ class RNEventEmitterModule(private val reactContext: ReactApplicationContext) :
                 tasks[eventType]?.clear()
             }
         }
+    }
+
+    private fun sendEventToReactNative(name: String, parameters: WritableMap?) {
+        val isRegisteredEvent = registeredListeners.contains(name)
+
+        val task = {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                .emit(name, parameters)
+        }
+
+        // RN 쪽에서 이벤트 핸들러를 등록하고 register 이벤트를 쏴 주는데, 이걸 수신했으면 즉시 수행하고 아니면 tasks 에 추가해 뒀다가 나중에 수행한다.
+        if (isRegisteredEvent) {
+            task.invoke()
+        } else {
+            tasks.getOrPut(name) { mutableListOf() }.add(task)
+        }
+    }
+
+    fun sendAddKakaoFriendEvent(requestToken: String) {
+        sendEventToReactNative(
+            ADD_FRIEND_KAKAO,
+            Arguments.createMap().apply {
+                putString("requestToken", requestToken)
+            },
+        )
     }
 }
