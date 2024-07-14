@@ -75,6 +75,8 @@
     <string name="sign_up_email_input_hint">이메일 주소를 입력하세요</string>
     <string name="sign_up_email_form">\@snu.ac.kr</string>
     <string name="sign_up_sign_up_button">계정 만들기</string>
+
+    <!--social-login-->
     <string name="sign_up_sign_up_facebook_button">페이스북으로 시작하기</string>
     <string name="sign_in_app_bar_title">로그인</string>
     <string name="sign_in_logo_title">SNUTT</string>
@@ -84,6 +86,14 @@
     <string name="sign_in_sign_in_google_button">구글 계정으로 시작하기</string>
     <string name="sign_in_sign_in_google_cancelled">구글 로그인이 취소되었습니다.</string>
     <string name="sign_in_sign_in_google_failed_unknown">구글 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="social_link_title">SNS 계정 연동 및 해제</string>
+    <string name="social_link_kakao">카카오 계정 연동</string>
+    <string name="social_link_google">구글 계정 연동</string>
+    <string name="social_link_facebook">페이스북 계정 연동</string>
+    <string name="social_unlink_kakao">카카오 계정 연동 해제</string>
+    <string name="social_unlink_google">구글 계정 연동 해제</string>
+    <string name="social_unlink_facebook">페이스북 계정 연동 해제</string>
+
     <string name="sign_in_find_id_button">아이디 찾기</string>
     <string name="sign_in_find_password_button">비밀번호 재설정</string>
     <string name="sign_in_id_title">아이디</string>
