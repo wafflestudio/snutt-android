@@ -8,7 +8,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
+    api(project(":core:model"))
+    api(project(":core:designsystem"))
 
     implementation(libs.coil.kt.compose)
+    implementation(libs.androidx.paging.compose)
 }
