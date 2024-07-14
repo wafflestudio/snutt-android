@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
