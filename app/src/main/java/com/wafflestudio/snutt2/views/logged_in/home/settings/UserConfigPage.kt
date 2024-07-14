@@ -81,7 +81,7 @@ fun UserConfigPage() {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             viewModel.connectFacebook(id, token)
                             facebookConnected = true
-                            viewModel.fetchUserFacebook().name
+                            viewModel.fetchUserInfo()
                             // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
                             // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
                         }
@@ -365,6 +365,7 @@ fun UserConfigPage() {
                         LoginManager.getInstance().logOut()
                         facebookConnected = false
                         disconnectFacebookDialogState = false
+                        viewModel.fetchUserInfo()
                     }
                 }
             },
