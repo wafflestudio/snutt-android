@@ -1,2 +1,3 @@
 <resources>
+    <string name="notifications_app_bar_title">알림</string>
 </resources>
