@@ -58,7 +58,6 @@ fun TutorialPage() {
             ) {
                 val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
-                    loginResult.accessToken.userId,
                     loginResult.accessToken.token,
                 )
                 homeViewModel.refreshData()

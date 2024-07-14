@@ -23,7 +23,7 @@ interface UserRepository {
     suspend fun postSignIn(id: String, password: String)
 
     // login with facebook id
-    suspend fun postLoginFacebook(facebookId: String, facebookToken: String)
+    suspend fun postLoginFacebook(facebookToken: String)
 
     suspend fun postLoginGoogle(googleIdToken: String)
 
