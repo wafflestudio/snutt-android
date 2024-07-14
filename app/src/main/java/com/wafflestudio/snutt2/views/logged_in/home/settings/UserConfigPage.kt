@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.os.Build
 import android.os.Build.VERSION_CODES
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -81,7 +82,7 @@ fun UserConfigPage() {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             viewModel.connectFacebook(id, token)
                             facebookConnected = true
-                            viewModel.fetchUserFacebook().name
+                            viewModel.fetchUserInfo()
                             // fetchUserInfo 와는 다른 성격? connectFacebook 이 성공하면
                             // userInfo.fbName 항목은 따로 업데이트되지 않는건가?
                         }
@@ -365,6 +366,7 @@ fun UserConfigPage() {
                         LoginManager.getInstance().logOut()
                         facebookConnected = false
                         disconnectFacebookDialogState = false
+                        viewModel.fetchUserInfo()
                     }
                 }
             },
