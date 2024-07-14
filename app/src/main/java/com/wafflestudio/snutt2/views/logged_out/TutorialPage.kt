@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.components.compose.DividerWithText
+import com.wafflestudio.snutt2.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -126,13 +129,13 @@ fun TutorialPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(12.dp)
             .background(SNUTTColors.White900),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Spacer(modifier = Modifier.weight(25f))
+
         Column(
-            modifier = Modifier
-                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -148,26 +151,32 @@ fun TutorialPage() {
             )
         }
 
+        Spacer(modifier = Modifier.weight(13f))
+
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.Center
         ) {
             BorderButton(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                color = SNUTTColors.Gray200,
-                cornerRadius = 10.dp,
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                bgColor = colorResource(R.color.theme_snutt_5),
+                color = colorResource(R.color.theme_snutt_5),
+                cornerRadius = 6.dp,
                 onClick = { navController.navigate(NavigationDestination.SignIn) },
             ) {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
                     style = SNUTTTypography.button,
+                    color = SNUTTColors.White900,
                 )
             }
 
             BorderButton(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                color = SNUTTColors.Gray200,
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                color = SNUTTColors.White900,
                 cornerRadius = 10.dp,
                 onClick = { navController.navigate(NavigationDestination.SignUp) },
             ) {
@@ -177,56 +186,40 @@ fun TutorialPage() {
                 )
             }
 
-            BorderButton(
-                modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.FacebookBlue,
-                cornerRadius = 10.dp,
-                onClick = { handleFacebookSignIn() },
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.iconfacebook),
-                        contentDescription = stringResource(id = R.string.sign_in_sign_in_facebook_button),
-                        modifier = Modifier
-                            .height(18.dp)
-                            .padding(end = 12.dp),
-                    )
+            Spacer(modifier = Modifier.height(30.dp))
 
-                    Text(
-                        text = stringResource(R.string.sign_in_sign_in_facebook_button),
-                        color = SNUTTColors.FacebookBlue,
-                        style = SNUTTTypography.button,
-                    )
-                }
-            }
+            DividerWithText(
+                color = SNUTTColors.Gray200,
+                textStyle = SNUTTTypography.subtitle2,
+                text = stringResource(R.string.continue_with_sns_account)
+            )
 
-            BorderButton(
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                color = SNUTTColors.FacebookBlue,
-                cornerRadius = 10.dp,
-                onClick = {
-                    googleSignInClient.signOut().addOnCompleteListener {
+                horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally),
+            ){
+                SocialLoginButton(
+                    painter = painterResource(id = R.drawable.kakao_login),
+                    onClick = {}
+                )
+
+                SocialLoginButton(
+                    painter = painterResource(id = R.drawable.google_login),
+                    onClick = { googleSignInClient.signOut().addOnCompleteListener {
                         handleGoogleSignIn()
-                    }
-                },
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.iconfacebook),
-                        contentDescription = stringResource(id = R.string.sign_in_sign_in_google_button),
-                        modifier = Modifier
-                            .height(18.dp)
-                            .padding(end = 12.dp),
-                    )
+                    } }
+                )
 
-                    Text(
-                        text = stringResource(R.string.sign_in_sign_in_google_button),
-                        color = SNUTTColors.FacebookBlue,
-                        style = SNUTTTypography.button,
-                    )
-                }
+                SocialLoginButton(
+                    painter = painterResource(id = R.drawable.facebook_login),
+                    onClick = { handleFacebookSignIn() }
+                )
             }
         }
+
+        Spacer(modifier = Modifier.weight(11f))
     }
 }
 
