@@ -87,6 +87,7 @@
     <string name="sign_in_sign_in_google_cancelled">구글 로그인이 취소되었습니다.</string>
     <string name="sign_in_sign_in_google_failed_unknown">구글 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
     <string name="social_link_title">SNS 계정 연동 및 해제</string>
+    <string name="social_link_account_already_using">이미 사용 중인 이메일입니다.\n%s 계정으로 시도해 보세요.</string>
     <string name="social_link_kakao">카카오 계정 연동</string>
     <string name="social_link_google">구글 계정 연동</string>
     <string name="social_link_facebook">페이스북 계정 연동</string>
