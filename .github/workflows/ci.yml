@@ -26,7 +26,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 18
+          java-version: 17
           distribution: 'adopt'
       - name: Clean build
         run: ./gradlew clean
@@ -48,7 +48,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 18
+          java-version: 17
           distribution: 'adopt'
       - name: Clean build
         run: ./gradlew clean
