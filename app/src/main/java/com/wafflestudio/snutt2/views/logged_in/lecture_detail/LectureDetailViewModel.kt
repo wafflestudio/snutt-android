@@ -45,7 +45,7 @@ class LectureDetailViewModel @Inject constructor(
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
     val editingLectureReview = _editingLectureDetail.map { lecture ->
-        lecture.review ?: getLectureReview()
+        lecture.review?.rating?.let { lecture.review } ?: getLectureReview()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
 
     val editingLectureBuildings = editingLectureDetail.map { lecture ->
