@@ -165,35 +165,26 @@ fun TutorialPage() {
     }
 
     val handleKakaoSignin: () -> Unit = {
-        // 먼저 이전의 로그인 정보를 날림
-        UserApiClient.instance.unlink { logoutError ->
-            if (logoutError == null || (logoutError is ClientError && logoutError.reason == ClientErrorCause.TokenNotFound) ||
-                (logoutError is AuthError && logoutError.reason == AuthErrorCause.InvalidGrant)
-            ) {
-                if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                    UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
-                        if (loginError != null) {
-                            if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
-                                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                            } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
-                                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                            } else {
-                                // 카카오계정으로 로그인
-                                UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
-                            }
-                        } else if (token != null) {
-                            loginWithKaKaoAccessToken(token.accessToken)
-                        } else {
-                            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                        }
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+            UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
+                if (loginError != null) {
+                    if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else {
+                        // 카카오계정으로 로그인
+                        UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                     }
+                } else if (token != null) {
+                    loginWithKaKaoAccessToken(token.accessToken)
                 } else {
-                    // 카카오계정으로 로그인
-                    UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
-            } else {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
+        } else {
+            // 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
         }
     }
 
