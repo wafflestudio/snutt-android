@@ -1,21 +1,27 @@
 package com.wafflestudio.snutt2.views
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthError
+import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.android.toast
 
 class AuthCodeHandlerActivity : AppCompatActivity() {
     private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
-            // Log.d("aaaa", "로그인 실패 $error") TODO:
-            Log.d("plgafhdflow", "7")
-        } else if (token != null) {
-            // Log.d("aaaa", "로그인 성공 ${token.accessToken}") TODO:
-            Log.d("plgafhdflow", "8")
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+            }
+            else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+            }
+        } else if (token == null) {
+            this.toast(this.getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
 
@@ -23,33 +29,20 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            // 카카오톡 로그인
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                // 로그인 실패 부분
+            UserApiClient.instance.loginWithKakaoTalk(this) { _, error ->
                 if (error != null) {
-                    Log.d("plgafhdflow", "9")
-                    // Log.d("aaaa", "로그인 실패 $error") TODO:
-                    // 사용자가 취소
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
+                        this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                        this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else {
+                        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
+                        UserApiClient.instance.loginWithKakaoAccount(context = this, callback = callback) // 카카오 이메일 로그인
                     }
-                    // 다른 오류
-                    else {
-                        UserApiClient.instance.loginWithKakaoAccount(
-                            this,
-                            callback = callback,
-                        ) // 카카오 이메일 로그인
-                    }
-                }
-                // 로그인 성공 부분
-                else if (token != null) {
-                    Log.d("plgafhdflow", "10")
-                    // Log.d("aaaa", "로그인 성공 ${token.accessToken}") // TODO:
                 }
             }
         } else {
-            Log.d("plgafhdflow", "11")
-            UserApiClient.instance.loginWithKakaoAccount(this, callback = callback) // 카카오 이메일 로그인
+            UserApiClient.instance.loginWithKakaoAccount(context = this, callback = callback) // 카카오 이메일 로그인
         }
     }
 }

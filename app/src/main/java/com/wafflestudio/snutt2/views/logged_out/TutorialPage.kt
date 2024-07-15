@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -31,7 +30,6 @@ import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.naver.maps.map.NaverMapSdk.Client
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
@@ -181,7 +179,7 @@ fun TutorialPage() {
                                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                             } else {
                                 // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                                UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
+                                UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback)
                             }
                         } else if (token != null) {
                             loginWithKaKaoAccessToken(token.accessToken)
@@ -190,7 +188,7 @@ fun TutorialPage() {
                         }
                     }
                 } else {
-                    UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
+                    UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback)
                 }
             } else {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
