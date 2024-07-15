@@ -15,13 +15,13 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
     private val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
             }
             else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
-                this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
             }
         } else if (token == null) {
-            this.toast(this.getString(R.string.sign_in_kakao_failed_unknown))
+            this.toast(getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
 
@@ -32,15 +32,15 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
             UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                 if (error != null) {
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                        this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
                     } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
-                        this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
+                        this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
                     } else {
                         // 카카오계정으로 로그인
                         UserApiClient.instance.loginWithKakaoAccount(context = this, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token == null) {
-                    this.toast(this.getString(R.string.sign_in_kakao_failed_unknown))
+                    this.toast(getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         } else {
