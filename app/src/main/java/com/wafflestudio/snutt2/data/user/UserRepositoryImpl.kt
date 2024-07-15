@@ -55,8 +55,8 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun postLoginGoogle(googleAccessToken: String) {
-        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+    override suspend fun postLoginGoogle(googleIdToken: String) {
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleIdToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }

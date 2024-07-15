@@ -48,8 +48,8 @@ class UserViewModel @Inject constructor(
         userRepository.postLoginFacebook(facebookToken)
     }
 
-    suspend fun loginGoogle(googleAccessToken: String) {
-        userRepository.postLoginGoogle(googleAccessToken)
+    suspend fun loginGoogle(googleIdToken: String) {
+        userRepository.postLoginGoogle(googleIdToken)
     }
 
     suspend fun loginKakao(kakaoAccessToken: String) {
