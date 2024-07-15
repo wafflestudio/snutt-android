@@ -29,7 +29,7 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { _, error ->
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                 if (error != null) {
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                         this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
@@ -39,6 +39,8 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
                         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                         UserApiClient.instance.loginWithKakaoAccount(context = this, callback = callback) // 카카오 이메일 로그인
                     }
+                } else if (token == null) {
+                    this.toast(this.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         } else {
