@@ -30,7 +30,7 @@ class SNUTTApplication : Application(), ReactApplication {
 
     override fun onCreate() {
         super.onCreate()
-        KakaoSdk.init(this, R.string.kakao_native_app_key)
+        KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
