@@ -26,9 +26,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthError
+import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.naver.maps.map.NaverMapSdk.Client
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
@@ -154,6 +157,9 @@ fun TutorialPage() {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             }
+            else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            }
         } else if (token != null) {
             loginWithKaKaoAccessToken(token.accessToken)
         } else {
@@ -162,19 +168,21 @@ fun TutorialPage() {
     }
 
     val handleKakaoSignin: () -> Unit = {
-        UserApiClient.instance.unlink { error ->
-            if (error == null || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_authtoken_not_exist) ||
-                error.message.toString() == context.getString(R.string.sign_out_kakao_fail_invalid_auth_token)
+        UserApiClient.instance.unlink { logoutError ->
+            if (logoutError == null || (logoutError is ClientError && logoutError.reason == ClientErrorCause.TokenNotFound) ||
+                (logoutError is AuthError && logoutError.reason == AuthErrorCause.InvalidGrant)
             ) {
                 if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                    UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                        if (error != null) {
-                            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                    UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
+                        if (loginError != null) {
+                            if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
                                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                                return@loginWithKakaoTalk
+                            } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
+                                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                            } else {
+                                // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
+                                UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                             }
-                            // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                            UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                         } else if (token != null) {
                             loginWithKaKaoAccessToken(token.accessToken)
                         } else {
@@ -184,10 +192,7 @@ fun TutorialPage() {
                 } else {
                     UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                 }
-            } else if (error.message.toString() == context.getString(R.string.sign_in_kakao_fail_network1)) {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_network))
             } else {
-                Log.d("plgafhdlogout", error.message.toString())
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         }
