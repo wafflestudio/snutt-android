@@ -49,14 +49,14 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postLoginGoogle(googleIdToken: String) {
-        val response = api._postLoginGoogle(PostLoginGoogleParams(googleIdToken))
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleIdToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
