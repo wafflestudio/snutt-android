@@ -150,7 +150,7 @@ fun TutorialPage() {
         }
     }
 
-    val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+    val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
@@ -166,6 +166,7 @@ fun TutorialPage() {
     }
 
     val handleKakaoSignin: () -> Unit = {
+        // 먼저 이전의 로그인 정보를 날림
         UserApiClient.instance.unlink { logoutError ->
             if (logoutError == null || (logoutError is ClientError && logoutError.reason == ClientErrorCause.TokenNotFound) ||
                 (logoutError is AuthError && logoutError.reason == AuthErrorCause.InvalidGrant)
@@ -178,8 +179,8 @@ fun TutorialPage() {
                             } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
                                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                             } else {
-                                // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                                UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback)
+                                // 카카오계정으로 로그인
+                                UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                             }
                         } else if (token != null) {
                             loginWithKaKaoAccessToken(token.accessToken)
@@ -188,7 +189,8 @@ fun TutorialPage() {
                         }
                     }
                 } else {
-                    UserApiClient.instance.loginWithKakaoAccount(context = context, callback = kakaoCallback)
+                    // 카카오계정으로 로그인
+                    UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                 }
             } else {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))

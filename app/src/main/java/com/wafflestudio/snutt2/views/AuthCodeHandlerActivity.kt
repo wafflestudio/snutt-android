@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.toast
 
 class AuthCodeHandlerActivity : AppCompatActivity() {
-    private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+    private val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
@@ -36,15 +36,16 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
                     } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
                         this.toast(this.getString(R.string.sign_in_kakao_failed_cancelled))
                     } else {
-                        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                        UserApiClient.instance.loginWithKakaoAccount(context = this, callback = callback) // 카카오 이메일 로그인
+                        // 카카오계정으로 로그인
+                        UserApiClient.instance.loginWithKakaoAccount(context = this, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token == null) {
                     this.toast(this.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(context = this, callback = callback) // 카카오 이메일 로그인
+            // 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(context = this, callback = loginWithKakaoAccountCallback)
         }
     }
 }
