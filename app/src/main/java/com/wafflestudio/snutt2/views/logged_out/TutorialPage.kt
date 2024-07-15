@@ -143,6 +143,24 @@ fun TutorialPage() {
         }
     }
 
+    val loginWithKaKaoAccessToken: (String) -> Unit = { kakaoAccessToken ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                if (kakaoAccessToken.isNotEmpty()) {
+                    userViewModel.loginKakao(kakaoAccessToken)
+                    homeViewModel.refreshData()
+                    navController.navigateAsOrigin(NavigationDestination.Home)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+        }
+    }
+
     val handleKaKaoSignin: () -> Unit = {
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
@@ -162,6 +180,7 @@ fun TutorialPage() {
                 } else if (token != null) {
                     context.toast("성공2!")
                     Log.d("plgafhd2",token.accessToken.toString())
+                    loginWithKaKaoAccessToken(token.accessToken)
                     //GoMain() TODO:
                 }
             }
