@@ -12,10 +12,10 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
     private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             // Log.d("aaaa", "로그인 실패 $error") TODO:
-            Log.d("plgafhdflow","7")
+            Log.d("plgafhdflow", "7")
         } else if (token != null) {
             // Log.d("aaaa", "로그인 성공 ${token.accessToken}") TODO:
-            Log.d("plgafhdflow","8")
+            Log.d("plgafhdflow", "8")
         }
     }
 
@@ -27,7 +27,7 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
             UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                 // 로그인 실패 부분
                 if (error != null) {
-                    Log.d("plgafhdflow","9")
+                    Log.d("plgafhdflow", "9")
                     // Log.d("aaaa", "로그인 실패 $error") TODO:
                     // 사용자가 취소
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
@@ -37,19 +37,18 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
                     else {
                         UserApiClient.instance.loginWithKakaoAccount(
                             this,
-                            callback = callback
+                            callback = callback,
                         ) // 카카오 이메일 로그인
                     }
                 }
                 // 로그인 성공 부분
                 else if (token != null) {
-                    Log.d("plgafhdflow","10")
-                    //Log.d("aaaa", "로그인 성공 ${token.accessToken}") // TODO:
+                    Log.d("plgafhdflow", "10")
+                    // Log.d("aaaa", "로그인 성공 ${token.accessToken}") // TODO:
                 }
             }
-        }
-        else {
-            Log.d("plgafhdflow","11")
+        } else {
+            Log.d("plgafhdflow", "11")
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback) // 카카오 이메일 로그인
         }
     }

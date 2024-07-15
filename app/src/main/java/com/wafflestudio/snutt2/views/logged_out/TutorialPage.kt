@@ -156,16 +156,16 @@ fun TutorialPage() {
             }
         } else if (token != null) {
             loginWithKaKaoAccessToken(token.accessToken)
-        }
-        else {
+        } else {
             context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
 
     val handleKakaoSignin: () -> Unit = {
         UserApiClient.instance.unlink { error ->
-            if (error == null || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_authtoken_not_exist)
-                || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_invalid_auth_token)) {
+            if (error == null || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_authtoken_not_exist) ||
+                error.message.toString() == context.getString(R.string.sign_out_kakao_fail_invalid_auth_token)
+            ) {
                 if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                     UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                         if (error != null) {
@@ -177,18 +177,16 @@ fun TutorialPage() {
                             UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                         } else if (token != null) {
                             loginWithKaKaoAccessToken(token.accessToken)
-                        } else{
+                        } else {
                             context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                         }
                     }
                 } else {
                     UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                 }
-            }
-            else if (error.message.toString() == context.getString(R.string.sign_in_kakao_fail_network1)) {
+            } else if (error.message.toString() == context.getString(R.string.sign_in_kakao_fail_network1)) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_network))
-            }
-            else {
+            } else {
                 Log.d("plgafhdlogout", error.message.toString())
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
