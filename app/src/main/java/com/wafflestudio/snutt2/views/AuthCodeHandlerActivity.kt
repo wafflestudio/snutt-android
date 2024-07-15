@@ -16,8 +16,7 @@ class AuthCodeHandlerActivity : AppCompatActivity() {
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
-            }
-            else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+            } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
                 this.toast(getString(R.string.sign_in_kakao_failed_cancelled))
             }
         } else if (token == null) {

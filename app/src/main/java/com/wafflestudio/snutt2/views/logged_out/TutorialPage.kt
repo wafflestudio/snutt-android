@@ -154,8 +154,7 @@ fun TutorialPage() {
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-            }
-            else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+            } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             }
         } else if (token != null) {
@@ -274,9 +273,7 @@ fun TutorialPage() {
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = {
-                        handleKakaoSignin()
-                    },
+                    onClick = { handleKakaoSignin() },
                 )
 
                 SocialLoginButton(
