@@ -131,18 +131,6 @@ fun TutorialPage() {
         googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
-    val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            context.toast("실패1!")
-            Log.d("plgafhd1",error.message.toString())
-            // Log.e(TAG, "카카오계정으로 로그인 실패", error) TODO:
-        } else if (token != null) {
-            context.toast("성공1!")
-            // Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}") TODO:
-            // goMain() TODO:
-        }
-    }
-
     val loginWithKaKaoAccessToken: (String) -> Unit = { kakaoAccessToken ->
         coroutineScope.launch {
             launchSuspendApi(
@@ -155,45 +143,54 @@ fun TutorialPage() {
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
                 } else {
-                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         }
     }
 
-    val handleKaKaoSignin: () -> Unit = {
-        // 먼저 로그아웃을 시도하여 기존의 로그인 정보를 제거합니다.
+    val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            }
+        } else if (token != null) {
+            loginWithKaKaoAccessToken(token.accessToken)
+        }
+        else {
+            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+        }
+    }
+
+    val handleKakaoSignin: () -> Unit = {
         UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Log.d("plgafhdLogout", error.message.toString())
-                context.toast("로그아웃 실패!")
-            } else {
-                Log.d("plgafhdLogout", "로그아웃 성공!")
+            if (error == null || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_authtoken_not_exist)
+                || error.message.toString() == context.getString(R.string.sign_out_kakao_fail_invalid_auth_token)) {
                 if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                     UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                         if (error != null) {
-                            context.toast("실패2!")
-                            Log.d("plgafhd2", error.message.toString())
-                            //Log.e(TAG, "카카오톡으로 로그인 실패", error) // TODO:
-
-                            // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                            // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                                 return@loginWithKakaoTalk
                             }
-
                             // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                             UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                         } else if (token != null) {
-                            context.toast("성공2!")
-                            Log.d("plgafhd2", token.accessToken.toString())
                             loginWithKaKaoAccessToken(token.accessToken)
-                            //GoMain() TODO:
+                        } else{
+                            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                         }
                     }
                 } else {
                     UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                 }
+            }
+            else if (error.message.toString() == context.getString(R.string.sign_in_kakao_fail_network1)) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_network))
+            }
+            else {
+                Log.d("plgafhdlogout", error.message.toString())
+                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         }
     }
@@ -275,7 +272,7 @@ fun TutorialPage() {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
                     onClick = {
-                        handleKaKaoSignin()
+                        handleKakaoSignin()
                     },
                 )
 

@@ -94,6 +94,12 @@
     <string name="social_unlink_kakao">카카오 계정 연동 해제</string>
     <string name="social_unlink_google">구글 계정 연동 해제</string>
     <string name="social_unlink_facebook">페이스북 계정 연동 해제</string>
+    <string name="sign_out_kakao_fail_authtoken_not_exist">authentication tokens don\'t exist.</string>
+    <string name="sign_out_kakao_fail_invalid_auth_token">expired_or_invalid_refresh_token</string>
+    <string name="sign_in_kakao_fail_network1">Unable to resolve host \"kapi.kakao.com\": No address associated with hostname</string>
+    <string name="sign_in_kakao_failed_network">네트워크 연결을 확인해주세요.</string>
+    <string name="sign_in_kakao_failed_cancelled">카카오 로그인이 취소되었습니다.</string>
+    <string name="sign_in_kakao_failed_unknown">카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
 
     <string name="sign_in_find_id_button">아이디 찾기</string>
     <string name="sign_in_find_password_button">비밀번호 재설정</string>
