@@ -128,7 +128,6 @@ fun TimetableConfigPage() {
             }
             Row(
                 modifier = Modifier
-                    .height(40.dp)
                     .padding(horizontal = 20.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -139,7 +138,56 @@ fun TimetableConfigPage() {
                     )
                 }
             }
-            Margin(height = 10.dp)
+            SettingColumn(
+                title = stringResource(R.string.settings_timetable_lecture_custom),
+            ) {
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_title),
+                    hasNextPage = false,
+                    onClick = {
+                    },
+                ) {
+                    PoorSwitch(state = true)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_place),
+                    hasNextPage = false,
+                    onClick = {
+                    },
+                ) {
+                    PoorSwitch(state = true)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_lecture_number),
+                    hasNextPage = false,
+                    onClick = {
+                    },
+                ) {
+                    PoorSwitch(state = true)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_instructor),
+                    hasNextPage = false,
+                    onClick = {
+                    },
+                ) {
+                    PoorSwitch(state = true)
+                }
+            }
+            Text(
+                text = stringResource(R.string.settings_timetable_lecture_custom_warning),
+                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp),
+            )
+            Margin(height = 20.dp)
+            Text(
+                text = stringResource(R.string.settings_timetable_preview),
+                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                modifier = Modifier.padding(horizontal = 48.dp, vertical = 7.dp),
+            )
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5))
