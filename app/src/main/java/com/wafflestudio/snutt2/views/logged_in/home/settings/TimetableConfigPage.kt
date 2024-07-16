@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -54,12 +55,14 @@ fun TimetableConfigPage() {
     val viewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
+    val tableLectureCustomOptions by viewModel.tableLectureCustomOption.collectAsState()
     val compactMode by viewModel.compactMode.collectAsState()
 
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
+
     val tableState =
-        TableState(table ?: TableDto.Default, trimParam, previewTheme)
+        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions ,previewTheme)
 
     Column(
         modifier = Modifier
@@ -145,36 +148,48 @@ fun TimetableConfigPage() {
                     title = stringResource(R.string.settings_timetable_lecture_custom_title),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.TITLE, tableLectureCustomOptions.title.not())
+                        }
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOptions.title)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_place),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.PLACE, tableLectureCustomOptions.place.not())
+                        }
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOptions.place)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_lecture_number),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.LECTURENUMBER, tableLectureCustomOptions.lectureNumber.not())
+                        }
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOptions.lectureNumber)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_instructor),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.INSTRUCTOR, tableLectureCustomOptions.instructor.not())
+                        }
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOptions.instructor)
                 }
             }
             Text(

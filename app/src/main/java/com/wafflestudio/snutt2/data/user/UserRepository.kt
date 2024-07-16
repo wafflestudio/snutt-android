@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.TableLectureCustom
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +12,8 @@ interface UserRepository {
     val user: StateFlow<UserDto?>
 
     val tableTrimParam: StateFlow<TableTrimParam>
+
+    val tableLectureCustomOption: StateFlow<TableLectureCustom>
 
     val accessToken: StateFlow<String>
 
@@ -95,6 +99,8 @@ interface UserRepository {
     suspend fun verifyEmailCode(code: String)
 
     suspend fun setCompactMode(compact: Boolean)
+
+    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
 
