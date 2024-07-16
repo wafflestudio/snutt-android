@@ -147,6 +147,9 @@ fun TimetableConfigPage() {
                     title = stringResource(R.string.settings_timetable_lecture_custom_title),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption("title", tableLectureCustomOption.value.getOrDefault("title", false).not())
+                        }
                     },
                 ) {
                     PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("title" ,false))
@@ -156,6 +159,9 @@ fun TimetableConfigPage() {
                     title = stringResource(R.string.settings_timetable_lecture_custom_place),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption("place", tableLectureCustomOption.value.getOrDefault("place", false).not())
+                        }
                     },
                 ) {
                     PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("place" ,false))
@@ -165,6 +171,9 @@ fun TimetableConfigPage() {
                     title = stringResource(R.string.settings_timetable_lecture_custom_lecture_number),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption("lecture_number", tableLectureCustomOption.value.getOrDefault("lecture_number", false).not())
+                        }
                     },
                 ) {
                     PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("lecture_number" ,false))
@@ -174,6 +183,9 @@ fun TimetableConfigPage() {
                     title = stringResource(R.string.settings_timetable_lecture_custom_instructor),
                     hasNextPage = false,
                     onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption("instructor", tableLectureCustomOption.value.getOrDefault("instructor", false).not())
+                        }
                     },
                 ) {
                     PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("instructor" ,false))

@@ -96,6 +96,8 @@ interface UserRepository {
 
     suspend fun setCompactMode(compact: Boolean)
 
+    suspend fun setTableLectureCustomOption(key: String, value: Boolean)
+
     suspend fun setFirstBookmarkAlertShown()
 
     suspend fun getAccessTokenByAuthCode(

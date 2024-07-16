@@ -42,6 +42,10 @@ class UserViewModel @Inject constructor(
         userRepository.setTableTrim(isAuto = enable)
     }
 
+    suspend fun setTableLectureCustomOption(key: String, value: Boolean) {
+        userRepository.setTableLectureCustomOption(key, value)
+    }
+
     suspend fun loginLocal(id: String, password: String) {
         userRepository.postSignIn(id, password)
     }

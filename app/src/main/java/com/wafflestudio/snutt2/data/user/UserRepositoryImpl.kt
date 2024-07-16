@@ -272,6 +272,17 @@ class UserRepositoryImpl @Inject constructor(
         storage.compactMode.update(compact)
     }
 
+    override suspend fun setTableLectureCustomOption(key: String, value: Boolean) {
+        storage.tableLectureCustom.update(
+            if (storage.tableLectureCustom.get().containsKey(key)) {
+                storage.tableLectureCustom.get() + (key to value)
+            }
+            else {
+                storage.tableLectureCustom.get()
+            }
+        )
+    }
+
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
     }
