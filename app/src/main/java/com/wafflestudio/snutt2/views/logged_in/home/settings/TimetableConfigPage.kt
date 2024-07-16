@@ -54,10 +54,12 @@ fun TimetableConfigPage() {
     val viewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
+    val tableLectureCustomOption = viewModel.tableLectureCustomOption.collectAsState()
     val compactMode by viewModel.compactMode.collectAsState()
 
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
+
     val tableState =
         TableState(table ?: TableDto.Default, trimParam, previewTheme)
 
@@ -147,7 +149,7 @@ fun TimetableConfigPage() {
                     onClick = {
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("title" ,false))
                 }
 
                 SettingItem(
@@ -156,7 +158,7 @@ fun TimetableConfigPage() {
                     onClick = {
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("place" ,false))
                 }
 
                 SettingItem(
@@ -165,7 +167,7 @@ fun TimetableConfigPage() {
                     onClick = {
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("lecture_number" ,false))
                 }
 
                 SettingItem(
@@ -174,7 +176,7 @@ fun TimetableConfigPage() {
                     onClick = {
                     },
                 ) {
-                    PoorSwitch(state = true)
+                    PoorSwitch(state = tableLectureCustomOption.value.getOrDefault("instructor" ,false))
                 }
             }
             Text(

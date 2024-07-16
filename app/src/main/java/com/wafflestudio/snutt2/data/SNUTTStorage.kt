@@ -88,6 +88,17 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val tableLectureCustom = PrefValue<Map<String, Boolean>>(
+        prefContext,
+        PrefMapValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "table_lecture_custom",
+            String::class.java,
+            Boolean::class.javaObjectType,
+            mapOf("title" to true, "place" to true, "lecture_number" to false, "instructor" to false),
+        ),
+    )
+
     val themeMode = PrefValue<ThemeMode>(
         prefContext,
         PrefValueMetaData(

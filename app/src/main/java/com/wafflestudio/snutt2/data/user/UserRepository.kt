@@ -11,6 +11,8 @@ interface UserRepository {
 
     val tableTrimParam: StateFlow<TableTrimParam>
 
+    val tableLectureCustomOption: StateFlow<Map<String, Boolean>>
+
     val accessToken: StateFlow<String>
 
     val themeMode: StateFlow<ThemeMode>

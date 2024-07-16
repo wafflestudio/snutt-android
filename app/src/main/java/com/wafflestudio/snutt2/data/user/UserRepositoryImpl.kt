@@ -35,6 +35,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
 
+    override val tableLectureCustomOption: StateFlow<Map<String, Boolean>> =
+        storage.tableLectureCustom.asStateFlow()
+
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()

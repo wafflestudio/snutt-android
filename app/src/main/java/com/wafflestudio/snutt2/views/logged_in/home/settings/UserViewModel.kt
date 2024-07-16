@@ -18,6 +18,8 @@ class UserViewModel @Inject constructor(
 
     val trimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
 
+    val tableLectureCustomOption: StateFlow<Map<String, Boolean>> = userRepository.tableLectureCustomOption
+
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
     val accessToken: StateFlow<String> = userRepository.accessToken
