@@ -4,6 +4,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.graphics.Rect
+import android.util.Log
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.res.ResourcesCompat
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.rx.sp
 
 /**
  * Created by makesource on 2016. 1. 24..

@@ -73,6 +73,15 @@ object TimetableCanvasObjects {
                 },
             )
 
+    val lectureCellSubTextRectReduced
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8.8f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
     val lectureCellBorderPaint: Paint =
         Paint().apply {
             style = Paint.Style.STROKE
