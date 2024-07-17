@@ -57,7 +57,8 @@ fun HomePage() {
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
-    val tableState = TableState(table ?: TableDto.Default, trimParam, previewTheme)
+    val tableLectureCustomOptions by userViewModel.tableLectureCustomOption.collectAsState()
+    val tableState = TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var shouldShowPopup by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
