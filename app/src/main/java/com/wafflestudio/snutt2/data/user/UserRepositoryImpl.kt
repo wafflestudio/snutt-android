@@ -9,6 +9,8 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
+import com.wafflestudio.snutt2.model.TableLectureCustom
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
@@ -35,7 +37,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
 
-    override val tableLectureCustomOption: StateFlow<Map<String, Boolean>> =
+    override val tableLectureCustomOption: StateFlow<TableLectureCustom> =
         storage.tableLectureCustom.asStateFlow()
 
     override val accessToken = storage.accessToken.asStateFlow()
@@ -272,13 +274,13 @@ class UserRepositoryImpl @Inject constructor(
         storage.compactMode.update(compact)
     }
 
-    override suspend fun setTableLectureCustomOption(key: String, value: Boolean) {
+    override suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
         storage.tableLectureCustom.update(
-            if (storage.tableLectureCustom.get().containsKey(key)) {
-                storage.tableLectureCustom.get() + (key to value)
-            }
-            else {
-                storage.tableLectureCustom.get()
+            when (key){
+                TableLectureCustomOptions.TITLE -> storage.tableLectureCustom.get().copy(title = value)
+                TableLectureCustomOptions.PLACE -> storage.tableLectureCustom.get().copy(place = value)
+                TableLectureCustomOptions.LECTURENUMBER -> storage.tableLectureCustom.get().copy(lectureNumber = value)
+                TableLectureCustomOptions.INSTRUCTOR -> storage.tableLectureCustom.get().copy(instructor = value)
             }
         )
     }

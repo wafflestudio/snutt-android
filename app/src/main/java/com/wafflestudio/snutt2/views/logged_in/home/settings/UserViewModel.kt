@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.TableLectureCustom
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
@@ -18,7 +20,7 @@ class UserViewModel @Inject constructor(
 
     val trimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
 
-    val tableLectureCustomOption: StateFlow<Map<String, Boolean>> = userRepository.tableLectureCustomOption
+    val tableLectureCustomOption: StateFlow<TableLectureCustom> = userRepository.tableLectureCustomOption
 
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
@@ -42,7 +44,7 @@ class UserViewModel @Inject constructor(
         userRepository.setTableTrim(isAuto = enable)
     }
 
-    suspend fun setTableLectureCustomOption(key: String, value: Boolean) {
+    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
         userRepository.setTableLectureCustomOption(key, value)
     }
 
