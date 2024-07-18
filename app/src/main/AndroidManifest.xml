@@ -56,6 +56,19 @@
 
         </activity>
 
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+                <data android:host="oauth"
+                    android:scheme="@string/kakao_native_app_key_kakao" />
+            </intent-filter>
+        </activity>
 
         <!-- <service android:name="com.wafflestudio.snutt2.service.MyFirebaseMessagingService"> -->
         <!-- <intent-filter> -->
