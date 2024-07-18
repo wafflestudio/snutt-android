@@ -5,10 +5,8 @@ import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
 import com.wafflestudio.snutt2.core.database.util.map
 import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
-import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel

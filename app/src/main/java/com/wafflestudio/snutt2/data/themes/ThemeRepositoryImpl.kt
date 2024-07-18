@@ -1,19 +1,12 @@
 package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.core.database.model.Table
-import com.wafflestudio.snutt2.core.database.model.User
 import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
-import com.wafflestudio.snutt2.core.database.util.Optional
 import com.wafflestudio.snutt2.core.database.util.map
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
-import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
@@ -25,12 +18,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.wafflestudio.snutt2.core.network.model.PostThemeParams as PostThemeParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PatchThemeParams as PatchThemeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostThemeParams as PostThemeParamsNetwork
 
 @Singleton
 class ThemeRepositoryImpl @Inject constructor(

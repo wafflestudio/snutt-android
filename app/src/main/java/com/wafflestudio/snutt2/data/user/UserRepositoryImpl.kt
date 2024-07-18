@@ -9,14 +9,12 @@ import com.wafflestudio.snutt2.core.database.util.map
 import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
-import com.wafflestudio.snutt2.lib.unwrap
+import com.wafflestudio.snutt2.lib.network.dto.toExternalModel
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.toDatabaseModel
 import com.wafflestudio.snutt2.model.toExternalModel
@@ -32,25 +30,25 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookParams as PostLoginFacebookParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PatchUserInfoParams as PatchUserInfoParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PutUserPasswordParams as PutUserPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostUserPasswordParams as PostUserPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostFeedbackParams as PostFeedbackParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostForceLogoutParams as PostForceLogoutParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as RegisterFirebaseTokenParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostFindIdParams as PostFindIdParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostCheckEmailByIdParams as PostCheckEmailByIdParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as PostVerifyPwResetCodeParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
 import com.wafflestudio.snutt2.core.database.model.TableTrimParam as TableTrimParamDatabase
 import com.wafflestudio.snutt2.core.database.model.ThemeMode as ThemeModeDatabase
+import com.wafflestudio.snutt2.core.network.model.PatchUserInfoParams as PatchUserInfoParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostCheckEmailByIdParams as PostCheckEmailByIdParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostFeedbackParams as PostFeedbackParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostFindIdParams as PostFindIdParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostForceLogoutParams as PostForceLogoutParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookParams as PostLoginFacebookParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostUserPasswordParams as PostUserPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as PostVerifyPwResetCodeParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PutUserPasswordParams as PutUserPasswordParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as RegisterFirebaseTokenParamsNetwork
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(

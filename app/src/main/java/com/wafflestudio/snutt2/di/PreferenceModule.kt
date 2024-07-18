@@ -15,30 +15,3 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object PreferenceModule {
-    @Provides
-    @App
-    @Singleton
-    fun providePrefContext(@App prefStorage: PrefStorage, @App prefCache: PrefCache): PrefContext {
-        return PrefContext(prefStorage, prefCache)
-    }
-
-    @Provides
-    @App
-    @Singleton
-    fun providePrefStorage(
-        @ApplicationContext context: Context,
-        @App serializer: Serializer,
-    ): PrefStorage {
-        return PrefStorageImpl(context, serializer)
-    }
-
-    @Provides
-    @App
-    @Singleton
-    fun providePrefCache(): PrefCache {
-        return PrefCacheImpl(64)
-    }
-}
