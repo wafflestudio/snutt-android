@@ -302,7 +302,7 @@ class ApiOnError @Inject constructor(
                             context,
                             context.getString(
                                 R.string.social_link_account_already_using,
-                                detailToString(error.errorDTO.detail?.socialProvider ?: ""),
+                                detailToString(error.errorDTO?.detail?.socialProvider ?: ""),
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()

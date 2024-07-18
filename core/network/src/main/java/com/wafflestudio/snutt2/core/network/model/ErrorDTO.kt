@@ -9,4 +9,9 @@ data class ErrorDTO(
     @Json(name = "message") val message: String? = null,
     @Json(name = "displayMessage") val displayMessage: String? = null,
     @Json(name = "ext") val ext: Map<String, String>? = null,
-)
+    @Json(name = "detail") val detail: ErrorDetail? = null,
+) {
+    data class ErrorDetail(
+        @Json(name = "socialProvider") val socialProvider: String? = null,
+    )
+}
