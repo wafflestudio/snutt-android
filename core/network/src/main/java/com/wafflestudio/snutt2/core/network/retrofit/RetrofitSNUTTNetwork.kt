@@ -128,9 +128,17 @@ class RetrofitSNUTTNetwork @Inject constructor(
         networkApi._postSignIn(body = body)
 
     override suspend fun _postLoginFacebook(
-        body: PostLoginFacebookParams,
-    ): PostLoginFacebookResults =
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults =
         networkApi._postLoginFacebook(body = body)
+
+    override suspend fun _postLoginKakao(body: PostSocialLoginParams): PostSocialLoginResults =
+        networkApi._postLoginKakao(body = body)
+
+    override suspend fun _postLoginGoogle(
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults =
+        networkApi._postLoginGoogle(body = body)
 
     override suspend fun _postForceLogout(
         body: PostForceLogoutParams,

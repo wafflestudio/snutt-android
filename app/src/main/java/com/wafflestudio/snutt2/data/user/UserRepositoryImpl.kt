@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import android.webkit.CookieManager
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -10,6 +11,9 @@ import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
+import com.wafflestudio.snutt2.core.network.model.PostAccessTokenByAuthCodeParams
+import com.wafflestudio.snutt2.core.network.model.PostSocialLoginParams
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -34,7 +38,6 @@ import com.wafflestudio.snutt2.core.network.model.PostCheckEmailByIdParams as Po
 import com.wafflestudio.snutt2.core.network.model.PostFeedbackParams as PostFeedbackParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostFindIdParams as PostFindIdParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostForceLogoutParams as PostForceLogoutParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookParams as PostLoginFacebookParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
@@ -51,6 +54,7 @@ import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as
 class UserRepositoryImpl @Inject constructor(
     private val api: SNUTTNetworkDataSource,
     private val storage: SNUTTStorageTemp,
+    private val apiGoogle: SNUTTRestApiForGoogle,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
 ) : UserRepository {
@@ -75,9 +79,20 @@ class UserRepositoryImpl @Inject constructor(
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
 
-    override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParamsNetwork(facebookId, facebookToken))
+    override suspend fun postLoginGoogle(googleAccessToken: String) {
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginKakao(kakaoAccessToken: String) {
+        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -195,22 +210,21 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         storage.clearLoginScope()
+        CookieManager.getInstance().removeAllCookies(null)
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().popups.firstOrNull {
+        val popups = api._getPopup().popups.filter {
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
             (expireMillis == null || currentMillis >= expireMillis)
         }
-
-        popupState.popup = latestPopup
+        popupState.popup = popups
     }
 
     override suspend fun closePopupWithHiddenDays() {
-        val popup = popupState.popup
-
+        val popup = popupState.popup.firstOrNull()
         if (popup != null) {
             val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
@@ -224,12 +238,12 @@ class UserRepositoryImpl @Inject constructor(
                     },
             )
 
-            popupState.popup = null
+            popupState.popup = popupState.popup.drop(1)
         }
     }
 
     override suspend fun closePopup() {
-        popupState.popup = null
+        popupState.popup = popupState.popup.drop(1)
     }
 
     override suspend fun registerToken() {
@@ -292,6 +306,16 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return apiGoogle._getAccessTokenByAuthCode(
+            PostAccessTokenByAuthCodeParams(
+                authCode = authCode,
+                clientId = clientId,
+                clientSecret = clientSecret,
+            ),
+        ).accessToken
     }
 
     private suspend fun getFirebaseToken(): String {

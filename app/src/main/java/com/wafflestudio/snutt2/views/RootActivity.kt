@@ -24,7 +24,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NamedNavArgument
@@ -53,6 +55,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
@@ -124,6 +127,7 @@ class RootActivity : AppCompatActivity() {
             },
         )
         setUpSplashScreen(composeRoot)
+        setWindowAppearance()
         checkNotificationPermission()
         startUpdatingPushToken()
     }
@@ -394,6 +398,7 @@ class RootActivity : AppCompatActivity() {
         composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
         composable2(NavigationDestination.UserConfig) { UserConfigPage() }
         composable2(NavigationDestination.ChangeNickname) { ChangeNicknamePage() }
+        composable2(NavigationDestination.SocialLink) { SocialLinkPage() }
         composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
         composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
         composable2(NavigationDestination.VacancyNotification) {
@@ -447,6 +452,29 @@ class RootActivity : AppCompatActivity() {
         return when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
             NavigationDestination.Friends -> HomeItem.Friends
             else -> null
+        }
+    }
+
+    private fun setWindowAppearance() {
+        lifecycleScope.launch {
+            userViewModel.themeMode.collect { themeMode ->
+                /* <다크모드에서 내비게이션 시 흰색 깜빡이는 이슈 해결>
+                 * 내비게이션 시 액티비티 배경색인 흰색(styles.xml에서 android:windowBackground 로 지정된 색)이 잠깐 노출된다.
+                 * 원래는 values-night/styles.xml를 통해 다크모드의 색을 지정하지만, 우리는 시스템의 테마와 앱의 테마를
+                 * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
+                 */
+                val isDarkMode = isDarkMode(this@RootActivity, themeMode)
+                val primaryColor = ContextCompat.getColor(this@RootActivity, if (isDarkMode) R.color.black_dark else R.color.white)
+                window.apply {
+                    setBackgroundDrawableResource(if (isDarkMode) R.color.black_dark else R.color.white)
+                    statusBarColor = primaryColor
+                    navigationBarColor = primaryColor
+                }
+                WindowInsetsControllerCompat(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = isDarkMode.not()
+                    isAppearanceLightNavigationBars = isDarkMode.not()
+                }
+            }
         }
     }
 

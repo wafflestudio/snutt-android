@@ -29,10 +29,6 @@ class UserViewModel @Inject constructor(
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
 
-    suspend fun fetchUserInfo() {
-        userRepository.fetchUserInfo()
-    }
-
     suspend fun setHourRange(from: Int, to: Int) {
         userRepository.setTableTrim(hourFrom = from, hourTo = to)
     }
@@ -49,8 +45,16 @@ class UserViewModel @Inject constructor(
         userRepository.postSignIn(id, password)
     }
 
-    suspend fun loginFacebook(facebookId: String, facebookToken: String) {
-        userRepository.postLoginFacebook(facebookId, facebookToken)
+    suspend fun loginFacebook(facebookToken: String) {
+        userRepository.postLoginFacebook(facebookToken)
+    }
+
+    suspend fun loginGoogle(googleAccessToken: String) {
+        userRepository.postLoginGoogle(googleAccessToken)
+    }
+
+    suspend fun loginKakao(kakaoAccessToken: String) {
+        userRepository.postLoginKakao(kakaoAccessToken)
     }
 
     suspend fun addNewLocalId(id: String, password: String) {
@@ -63,18 +67,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun changeNickname(nickname: String) {
         userRepository.patchUserInfo(nickname)
-    }
-
-    suspend fun fetchUserFacebook(): GetUserFacebookResults {
-        return userRepository.getUserFacebook()
-    }
-
-    suspend fun connectFacebook(id: String, token: String) {
-        userRepository.postUserFacebook(id, token)
-    }
-
-    suspend fun disconnectFacebook() {
-        userRepository.deleteUserFacebook()
     }
 
     suspend fun leave() {
@@ -99,13 +91,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun signUpLocal(idField: String, emailField: String, passwordField: String) {
         userRepository.postSignUp(id = idField, password = passwordField, email = emailField)
-    }
-
-    suspend fun signUpFacebook(id: String, token: String) {
-        userRepository.postLoginFacebook(
-            facebookId = id,
-            facebookToken = token,
-        )
     }
 
     suspend fun fetchPopup() {
@@ -158,5 +143,9 @@ class UserViewModel @Inject constructor(
 
     suspend fun setFirstBookmarkAlertShown() {
         userRepository.setFirstBookmarkAlertShown()
+    }
+
+    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
     }
 }
