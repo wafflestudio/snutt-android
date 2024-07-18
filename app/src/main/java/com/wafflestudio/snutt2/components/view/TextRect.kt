@@ -223,7 +223,7 @@ class TextRect(paint: Paint) {
             t = if (wasCut && n == lines) {
                 text!!.substring(
                     starts[n],
-                    stops[n] - 3,
+                    if (stops[n] - 3 < starts[n]) starts[n] else stops[n] - 3,
                 ) + "..."
             } else {
                 text!!.substring(starts[n], stops[n])
