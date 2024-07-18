@@ -60,6 +60,7 @@ fun HomePage() {
     val tableState = TableState(table ?: TableDto.Default, trimParam, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var shouldShowPopup by remember { mutableStateOf(false) }
+    var popupUri by remember { mutableStateOf("") }
     val isDarkMode = isDarkMode()
     val reviewPageWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
@@ -97,7 +98,8 @@ fun HomePage() {
             launchSuspendApi(apiOnProgress, apiOnError) {
                 userViewModel.fetchPopup()
                 popupState.fetched = true
-                shouldShowPopup = (popupState.popup != null)
+                shouldShowPopup = (popupState.popup.isNotEmpty())
+                popupUri = popupState.popup.firstOrNull()?.uri ?: ""
             }
         }
     }
@@ -156,17 +158,19 @@ fun HomePage() {
 
     if (shouldShowPopup) {
         Popup(
-            uri = popupState.popup?.uri ?: "",
+            uri = popupUri,
             onClickFewDays = {
                 scope.launch {
                     userViewModel.closePopupWithHiddenDays()
-                    shouldShowPopup = false
+                    shouldShowPopup = popupState.popup.isNotEmpty()
+                    popupUri = popupState.popup.firstOrNull()?.uri ?: ""
                 }
             },
             onClickClose = {
                 scope.launch {
                     userViewModel.closePopup()
-                    shouldShowPopup = false
+                    shouldShowPopup = popupState.popup.isNotEmpty()
+                    popupUri = popupState.popup.firstOrNull()?.uri ?: ""
                 }
             },
         )

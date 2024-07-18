@@ -29,6 +29,8 @@ interface UserRepository {
 
     suspend fun postLoginKakao(kakaoAccessToken: String)
 
+    suspend fun postLoginKakao(kakaoAccessToken: String)
+
     suspend fun postSignUp(id: String, password: String, email: String)
 
     suspend fun fetchUserInfo()

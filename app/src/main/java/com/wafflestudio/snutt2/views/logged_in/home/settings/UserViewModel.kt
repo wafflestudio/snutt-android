@@ -56,6 +56,10 @@ class UserViewModel @Inject constructor(
         userRepository.postLoginKakao(kakaoAccessToken)
     }
 
+    suspend fun loginKakao(kakaoAccessToken: String) {
+        userRepository.postLoginKakao(kakaoAccessToken)
+    }
+
     suspend fun addNewLocalId(id: String, password: String) {
         userRepository.postUserPassword(id, password)
     }
