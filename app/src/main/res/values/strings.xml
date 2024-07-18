@@ -94,6 +94,8 @@
     <string name="social_unlink_kakao">카카오 계정 연동 해제</string>
     <string name="social_unlink_google">구글 계정 연동 해제</string>
     <string name="social_unlink_facebook">페이스북 계정 연동 해제</string>
+    <string name="sign_in_kakao_failed_cancelled">카카오 로그인이 취소되었습니다.</string>
+    <string name="sign_in_kakao_failed_unknown">카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
 
     <string name="sign_in_find_id_button">아이디 찾기</string>
     <string name="sign_in_find_password_button">비밀번호 재설정</string>
