@@ -41,7 +41,7 @@ class TextRect(paint: Paint) {
         val maximumInLine = maxWidth / bounds.width()
         val length = text.length
         if (length > 0) {
-            val lineHeight = -metrics!!.ascent + metrics!!.descent
+            val lineHeight = -metrics!!.ascent + metrics!!.descent + metrics!!.leading
             var start = 0
             var stop = if (maximumInLine > length) length else maximumInLine
             // stop = min(length,maximuminline);
@@ -96,7 +96,6 @@ class TextRect(paint: Paint) {
                     wasCut = true
                     break
                 }
-                if (textHeight > 0) textHeight += metrics!!.leading
                 textHeight += lineHeight
                 if (stop >= length) break
                 start = stop
@@ -118,7 +117,7 @@ class TextRect(paint: Paint) {
         paint!!.getTextBounds(text, 0, text.length, bounds)
         if (bounds.width() == 0) return 0
         if (bounds.width() <= maxWidth) {
-            val lineHeight = -metrics!!.ascent + metrics!!.descent
+            val lineHeight = -metrics!!.ascent + metrics!!.descent + metrics!!.leading
             if (lineHeight > maxHeight) {
                 wasCut = true
                 return 0
@@ -141,7 +140,7 @@ class TextRect(paint: Paint) {
         val maximumInLine = maxWidth / bounds.width()
         val length = text.length
         if (length > 0) {
-            val lineHeight = -metrics!!.ascent + metrics!!.descent
+            val lineHeight = -metrics!!.ascent + metrics!!.descent + metrics!!.leading
             var start = 0
             var stop = if (maximumInLine > length) length else maximumInLine
             // stop = min(length,maximuminline);
@@ -244,6 +243,10 @@ class TextRect(paint: Paint) {
     /** Returns true if text was cut to fit into the maximum height  */
     fun wasCut(): Boolean {
         return wasCut
+    }
+
+    fun getLeading(): Int {
+        return metrics?.leading?:0
     }
 
     companion object {

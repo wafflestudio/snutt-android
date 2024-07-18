@@ -386,12 +386,22 @@ private fun DrawClassTime(
             }
         }
 
+        val lastLeading = when {
+            tableLectureCustomOptions.instructor -> lectureCellInstructorTextRect.getLeading()
+            tableLectureCustomOptions.lectureNumber -> lectureCellLectureNumberTextRect.getLeading()
+            tableLectureCustomOptions.place -> lectureCellPlaceTextRect.getLeading()
+            tableLectureCustomOptions.title -> lectureCellTextRect.getLeading()
+            else -> 0
+        }
+
+        val totalTextHeight = courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight - lastLeading
+
         drawIntoCanvas { canvas ->
             if (courseTitleHeight > 0) {
                 lectureCellTextRect.draw(
                     canvas.nativeCanvas,
                     (left + cellPadding).toInt(),
-                    (top + (cellHeight - courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight) / 2).toInt(),
+                    (top + cellPadding + (cellHeight - courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                     cellWidth.toInt(),
                     fgColor,
                 )
@@ -401,7 +411,7 @@ private fun DrawClassTime(
                     lectureCellPlaceTextRect.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
@@ -409,7 +419,7 @@ private fun DrawClassTime(
                     lectureCellPlaceTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
@@ -420,7 +430,7 @@ private fun DrawClassTime(
                     lectureCellLectureNumberTextRect.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
@@ -428,7 +438,7 @@ private fun DrawClassTime(
                     lectureCellLectureNumberTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
@@ -439,7 +449,7 @@ private fun DrawClassTime(
                     lectureCellInstructorTextRect.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
@@ -447,7 +457,7 @@ private fun DrawClassTime(
                     lectureCellInstructorTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
-                        (top + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight) / 2).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
                         cellWidth.toInt(),
                         fgColor,
                     )
