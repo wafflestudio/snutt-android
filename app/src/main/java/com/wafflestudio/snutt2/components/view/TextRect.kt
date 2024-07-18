@@ -116,20 +116,20 @@ class TextRect(paint: Paint) {
      * @returns height of text in pixels
      */
     fun prepareSingleLine(text: String, maxWidth: Int, maxHeight: Int): Int {
-        Log.d("plgafhdtest",text)
-        Log.d("plgafhdtest",maxHeight.toString())
         paint!!.getTextBounds(text, 0, text.length, bounds)
+        if (bounds.width() == 0) return 0
         if (bounds.width() <= maxWidth) {
             val lineHeight = -metrics!!.ascent + metrics!!.descent
-//            if (lineHeight > maxHeight) {
-//                wasCut = true
-//                return 0
-//            }
+            if (lineHeight > maxHeight) {
+                wasCut = true
+                return 0
+            }
             wasCut = false
             lines = 1
             starts[0] = 0
             stops[0] = text.length
-            return lineHeight
+            textHeight = lineHeight
+            return textHeight
         }
 
         lines = 0
