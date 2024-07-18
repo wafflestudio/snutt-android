@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import android.webkit.CookieManager
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -34,7 +35,9 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookParams as PostLoginFacebookParamsNetwork
+import com.wafflestudio.snutt2.core.network.model.PostSocialLoginParams
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
+import javax.inject.Named
 import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PatchUserInfoParams as PatchUserInfoParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PutUserPasswordParams as PutUserPasswordParamsNetwork
@@ -55,6 +58,7 @@ import com.wafflestudio.snutt2.core.database.model.ThemeMode as ThemeModeDatabas
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     @CoreNetwork private val api: SNUTTNetworkDataSource,
+    private val apiGoogle: SNUTTRestApiForGoogle,
     @CoreDatabase private val storage: SNUTTStorageTemp,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
@@ -80,9 +84,20 @@ class UserRepositoryImpl @Inject constructor(
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
 
-    override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParamsNetwork(facebookId, facebookToken)).toExternalModel()
+    override suspend fun postLoginGoogle(googleAccessToken: String) {
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginKakao(kakaoAccessToken: String) {
+        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -200,22 +215,21 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         storage.clearLoginScope()
+        CookieManager.getInstance().removeAllCookies(null)
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().toExternalModel().popups.firstOrNull {
+        val popups = api._getPopup().toExternalModel().popups.filter {
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
             (expireMillis == null || currentMillis >= expireMillis)
         }
-
-        popupState.popup = latestPopup
+        popupState.popup = popups
     }
 
     override suspend fun closePopupWithHiddenDays() {
-        val popup = popupState.popup
-
+        val popup = popupState.popup.firstOrNull()
         if (popup != null) {
             val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
@@ -229,12 +243,12 @@ class UserRepositoryImpl @Inject constructor(
                     },
             )
 
-            popupState.popup = null
+            popupState.popup = popupState.popup.drop(1)
         }
     }
 
     override suspend fun closePopup() {
-        popupState.popup = null
+        popupState.popup = popupState.popup.drop(1)
     }
 
     override suspend fun registerToken() {
@@ -297,6 +311,16 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return apiGoogle._getAccessTokenByAuthCode(
+            PostAccessTokenByAuthCodeParams(
+                authCode = authCode,
+                clientId = clientId,
+                clientSecret = clientSecret,
+            ),
+        ).accessToken
     }
 
     private suspend fun getFirebaseToken(): String {

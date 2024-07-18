@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
+@Named("Default")
 class NetworkConnectivityManager @Inject constructor(
     @App connectivityManager: ConnectivityManager,
 ) {

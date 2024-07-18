@@ -298,6 +298,14 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_invalid_nickname),
                             Toast.LENGTH_SHORT,
                         ).show()
+                        ErrorCode.EMAIL_ALREADY_USING -> Toast.makeText(
+                            context,
+                            context.getString(
+                                R.string.social_link_account_already_using,
+                                detailToString(error.errorDTO.detail?.socialProvider ?: ""),
+                            ),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
@@ -325,6 +333,7 @@ object ErrorCode {
     const val INVALID_EMAIL = 0x300F
     const val VACANCY_PREV_SEMESTER = 0x9C45
     const val VACANCY_DUPLICATE = 0x9FC4
+    const val EMAIL_ALREADY_USING = 0x9FC5
     const val INVALID_NICKNAME = 0x9C48
 
     /* 401 - Request was invalid */
@@ -379,10 +388,25 @@ object ErrorCode {
     const val EMAIL_NOT_FOUND = 0x4006
 }
 
+private fun detailToString(detail: String?): String {
+    return when (detail) {
+        "LOCAL" -> "로컬"
+        "FACEBOOK" -> "페이스북"
+        "GOOGLE" -> "구글"
+        "KAKAO" -> "카카오"
+        else -> ""
+    }
+}
+
 @JsonClass(generateAdapter = true)
 data class ErrorDTO(
     @Json(name = "errcode") val code: Int? = null,
     @Json(name = "message") val message: String? = null,
     @Json(name = "displayMessage") val displayMessage: String? = null,
     @Json(name = "ext") val ext: Map<String, String>? = null,
-)
+    @Json(name = "detail") val detail: ErrorDetail? = null,
+) {
+    data class ErrorDetail(
+        @Json(name = "socialProvider") val socialProvider: String? = null,
+    )
+}

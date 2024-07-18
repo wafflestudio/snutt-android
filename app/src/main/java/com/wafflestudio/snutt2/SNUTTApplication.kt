@@ -10,6 +10,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.JavaScriptExecutorFactory
 import com.facebook.react.shell.MainReactPackage
 import com.horcrux.svg.SvgPackage
+import com.kakao.sdk.common.KakaoSdk
 import com.naver.maps.map.NaverMapSdk
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage
 import com.reactnativecommunity.picker.RNCPickerPackage
@@ -30,6 +31,7 @@ class SNUTTApplication : Application(), ReactApplication {
 
     override fun onCreate() {
         super.onCreate()
+        KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
