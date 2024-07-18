@@ -253,12 +253,12 @@ private fun DrawClassTime(
     val cellPadding = TimetableCanvasObjects.cellPadding
 
     val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
-    val lectureCellPlaceTextRect = TimetableCanvasObjects.lectureCellSubTextRect
-    val lectureCellPlaceTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReduced
+    val lectureCellPlaceTextRect = TimetableCanvasObjects.lectureCellSubTextRectBold
+    val lectureCellPlaceTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReducedBold
     val lectureCellLectureNumberTextRect = TimetableCanvasObjects.lectureCellSubTextRect
     val lectureCellLectureNumberTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReduced
-    val lectureCellInstructorTextRect = TimetableCanvasObjects.lectureCellSubTextRect
-    val lectureCellInstructorTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReduced
+    val lectureCellInstructorTextRect = TimetableCanvasObjects.lectureCellTextRect
+    val lectureCellInstructorTextRectReduced = TimetableCanvasObjects.lectureCellTextRectReduced
 
     val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
     val compactMode = LocalCompactState.current

@@ -64,12 +64,21 @@ object TimetableCanvasObjects {
                 },
             )
 
+    val lectureCellTextRectReduced
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
     val lectureCellSubTextRect
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
-                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
 
@@ -79,6 +88,24 @@ object TimetableCanvasObjects {
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 8.8f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
+    val lectureCellSubTextRectBold
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 11f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
+                },
+            )
+
+    val lectureCellSubTextRectReducedBold
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8.8f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
                 },
             )
 
