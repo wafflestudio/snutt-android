@@ -1,11 +1,9 @@
 package com.wafflestudio.snutt2
 
+import com.wafflestudio.snutt2.core.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.qualifiers.App
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import kotlinx.coroutines.CoroutineScope

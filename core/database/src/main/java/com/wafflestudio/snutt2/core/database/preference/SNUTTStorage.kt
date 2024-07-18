@@ -58,7 +58,7 @@ interface SNUTTStorageTemp {
 @CoreDatabase
 class SNUTTStorageTempImpl @Inject constructor(
     @CoreDatabase private val prefContext: PrefContext,
-): SNUTTStorageTemp {
+) : SNUTTStorageTemp {
 
     override val prefKeyUserId = PrefValue<Optional<String>>(
         prefContext,
