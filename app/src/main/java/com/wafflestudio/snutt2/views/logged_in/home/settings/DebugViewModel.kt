@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
 import com.wafflestudio.snutt2.core.database.util.map
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +12,7 @@ import com.wafflestudio.snutt2.lib.network.NetworkLog as TempDomainNetworkLog
 
 @HiltViewModel
 class DebugViewModel @Inject constructor(
-    @CoreDatabase private val snuttStorage: SNUTTStorageTemp,
+    private val snuttStorage: SNUTTStorageTemp,
     externalScope: CoroutineScope, // TODO : 임시로 필요
 ) : ViewModel() {
 

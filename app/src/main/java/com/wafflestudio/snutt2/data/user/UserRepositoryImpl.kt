@@ -10,8 +10,6 @@ import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
-import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -51,8 +49,8 @@ import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    @CoreNetwork private val api: SNUTTNetworkDataSource,
-    @CoreDatabase private val storage: SNUTTStorageTemp,
+    private val api: SNUTTNetworkDataSource,
+    private val storage: SNUTTStorageTemp,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
 ) : UserRepository {

@@ -14,7 +14,6 @@ import com.wafflestudio.snutt2.core.network.retrofit.RetrofitSNUTTNetworkApi
 import com.wafflestudio.snutt2.core.network.toDatabaseModel
 import com.wafflestudio.snutt2.core.network.util.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.core.network.util.Serializer
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import dagger.Module
 import dagger.Provides
@@ -30,19 +29,16 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Singleton
 
-// TODO : 아직은 이 NetworkModule이 아니라 원래 있던 NetworkModule을 쓰고 있다. (순환 종속 방지)
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @SuppressLint("HardwareIds")
-    @CoreNetwork
     @Provides
     @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        @CoreDatabase snuttStorage: SNUTTStorageTemp,
+        snuttStorage: SNUTTStorageTemp,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
@@ -116,10 +112,9 @@ object NetworkModule {
     }
 
     @Provides
-    @CoreNetwork
     fun provideRetrofit(
         @ApplicationContext context: Context,
-        @CoreNetwork okHttpClient: OkHttpClient,
+        okHttpClient: OkHttpClient,
         @CoreNetwork moshi: Moshi,
         @CoreNetwork serializer: Serializer,
     ): Retrofit {
@@ -137,9 +132,8 @@ object NetworkModule {
     }
 
     @Provides
-    @CoreNetwork
     @Singleton
-    fun provideSNUTTRestApi(@CoreNetwork retrofit: Retrofit): RetrofitSNUTTNetworkApi {
+    fun provideSNUTTRestApi(retrofit: Retrofit): RetrofitSNUTTNetworkApi {
         return retrofit.create(RetrofitSNUTTNetworkApi::class.java)
     }
 
@@ -148,7 +142,6 @@ object NetworkModule {
         ).toLong()
 
     @Provides
-    @CoreNetwork
     @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,

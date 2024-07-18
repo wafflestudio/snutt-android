@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.LectureBuildingDto
-import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -19,7 +18,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto as TempDo
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    @CoreNetwork private val api: SNUTTNetworkDataSource,
+    private val api: SNUTTNetworkDataSource,
     private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 

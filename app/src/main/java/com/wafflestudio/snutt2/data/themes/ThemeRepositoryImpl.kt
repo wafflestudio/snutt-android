@@ -5,8 +5,6 @@ import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
 import com.wafflestudio.snutt2.core.database.util.map
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
-import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
@@ -26,8 +24,8 @@ import com.wafflestudio.snutt2.core.network.model.PostThemeParams as PostThemePa
 
 @Singleton
 class ThemeRepositoryImpl @Inject constructor(
-    @CoreNetwork private val api: SNUTTNetworkDataSource,
-    @CoreDatabase private val storage: SNUTTStorageTemp,
+    private val api: SNUTTNetworkDataSource,
+    private val storage: SNUTTStorageTemp,
     externalScope: CoroutineScope,
 ) : ThemeRepository {
 

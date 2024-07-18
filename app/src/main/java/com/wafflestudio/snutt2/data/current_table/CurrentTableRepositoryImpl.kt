@@ -8,8 +8,6 @@ import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams
 import com.wafflestudio.snutt2.core.network.model.PutLectureParams
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
-import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
@@ -23,8 +21,8 @@ import com.wafflestudio.snutt2.core.network.model.PostLectureParams as PostLectu
 
 @Singleton
 class CurrentTableRepositoryImpl @Inject constructor(
-    @CoreNetwork private val api: SNUTTNetworkDataSource,
-    @CoreDatabase private val storage: SNUTTStorageTemp,
+    private val api: SNUTTNetworkDataSource,
+    private val storage: SNUTTStorageTemp,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {
 
