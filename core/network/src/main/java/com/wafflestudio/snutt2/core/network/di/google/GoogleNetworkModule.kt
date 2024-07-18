@@ -1,16 +1,15 @@
-package com.wafflestudio.snutt2.di
+package com.wafflestudio.snutt2.core.network.di.google
 
 import android.annotation.SuppressLint
 import android.content.Context
 import com.squareup.moshi.Moshi
-import com.wafflestudio.snutt2.BuildConfig
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
+import com.wafflestudio.snutt2.core.network.BuildConfig
+import com.wafflestudio.snutt2.core.network.R
 import com.wafflestudio.snutt2.core.network.createNewNetworkLog
+import com.wafflestudio.snutt2.core.network.retrofit.google.SNUTTRestAPIForGoogleApi
 import com.wafflestudio.snutt2.core.network.toDatabaseModel
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,22 +26,26 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModuleForGoogle {
-
+object GoogleNetworkModule {
     @SuppressLint("HardwareIds")
     @Provides
     @Named("google")
     @Singleton
     fun provideOkHttpClientForGoogle(
         @ApplicationContext context: Context,
-        @CoreDatabase snuttStorage: SNUTTStorageTemp,
+        snuttStorage: SNUTTStorageTemp,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response).toDatabaseModel())
+                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(
+                    chain.createNewNetworkLog(
+                        context,
+                        response
+                    ).toDatabaseModel()
+                )
                 response
             }
             .addInterceptor(
@@ -73,11 +76,11 @@ object NetworkModuleForGoogle {
 
     @Provides
     @Singleton
-    fun provideSNUTTRestApiForGoogle(@Named("google") retrofit: Retrofit): SNUTTRestApiForGoogle {
-        return retrofit.create(SNUTTRestApiForGoogle::class.java)
+    fun provideSNUTTRestApiForGoogle(@Named("google") retrofit: Retrofit): SNUTTRestAPIForGoogleApi {
+        return retrofit.create(SNUTTRestAPIForGoogleApi::class.java)
     }
 
     private const val SIZE_OF_CACHE = (
-        10 * 1024 * 1024 // 10 MB
-        ).toLong()
+            10 * 1024 * 1024 // 10 MB
+            ).toLong()
 }
