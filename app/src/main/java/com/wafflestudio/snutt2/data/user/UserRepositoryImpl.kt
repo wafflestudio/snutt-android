@@ -9,12 +9,11 @@ import com.wafflestudio.snutt2.core.database.util.map
 import com.wafflestudio.snutt2.core.database.util.toOptional
 import com.wafflestudio.snutt2.core.database.util.unwrap
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
-import com.wafflestudio.snutt2.lib.network.dto.toExternalModel
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.toDatabaseModel
 import com.wafflestudio.snutt2.model.toExternalModel
@@ -59,34 +58,34 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override val user = storage.user.asStateFlow()
-        .unwrap(externalScope).map(externalScope) {it:User? -> it?.toExternalModel()} // TODO : 이게 맞나..? 싶어서 이런 부분은 다 TODO 달아놓음
+        .unwrap(externalScope).map(externalScope) { it: User? -> it?.toExternalModel() } // TODO : 이게 맞나..? 싶어서 이런 부분은 다 TODO 달아놓음
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
-        .map(externalScope) {it:TableTrimParamDatabase -> it.toExternalModel()} // TODO : database 변환 사용 부분
+        .map(externalScope) { it: TableTrimParamDatabase -> it.toExternalModel() } // TODO : database 변환 사용 부분
 
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()
-        .map(externalScope) {it:ThemeModeDatabase -> it.toExternalModel()} // TODO : database 변환 사용 부분
+        .map(externalScope) { it: ThemeModeDatabase -> it.toExternalModel() } // TODO : database 변환 사용 부분
 
     override val compactMode = storage.compactMode.asStateFlow()
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
-        val response = api._postSignIn(PostSignInParamsNetwork(id, password)).toExternalModel()
+        val response = api._postSignIn(PostSignInParamsNetwork(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParamsNetwork(facebookId, facebookToken)).toExternalModel()
+        val response = api._postLoginFacebook(PostLoginFacebookParamsNetwork(facebookId, facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
-        val response = api._postSignUp(PostSignUpParamsNetwork(id, password, email)).toExternalModel()
+        val response = api._postSignUp(PostSignUpParamsNetwork(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -115,12 +114,12 @@ class UserRepositoryImpl @Inject constructor(
                 newPassword = newPassword,
                 oldPassword = oldPassword,
             ),
-        ).toExternalModel()
+        )
         storage.accessToken.update(response.token)
     }
 
     override suspend fun getUserFacebook(): GetUserFacebookResults {
-        return api._getUserFacebook().toExternalModel()
+        return api._getUserFacebook()
     }
 
     override suspend fun postUserPassword(id: String, password: String) {
@@ -129,12 +128,12 @@ class UserRepositoryImpl @Inject constructor(
                 id = id,
                 password = password,
             ),
-        ).toExternalModel()
+        )
         storage.accessToken.update(response.token)
     }
 
     override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook().toExternalModel()
+        val response = api._deleteUserFacebook()
         storage.accessToken.update(response.token)
     }
 
@@ -147,7 +146,7 @@ class UserRepositoryImpl @Inject constructor(
                 facebookId = facebookId,
                 facebookToken = facebookToken,
             ),
-        ).toExternalModel()
+        )
         storage.accessToken.update(response.token)
     }
 
@@ -201,7 +200,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().toExternalModel().popups.firstOrNull {
+        val latestPopup = api._getPopup().popups.firstOrNull {
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
@@ -256,7 +255,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun checkEmailById(id: String): String {
         return api._postCheckEmailById(
             PostCheckEmailByIdParamsNetwork(id),
-        ).toExternalModel().email
+        ).email
     }
 
     override suspend fun sendPwResetCodeToEmail(email: String) {
