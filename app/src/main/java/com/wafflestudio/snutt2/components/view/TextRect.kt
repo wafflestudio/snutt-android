@@ -246,7 +246,7 @@ class TextRect(paint: Paint) {
     }
 
     fun getLeading(): Int {
-        return metrics?.leading?:0
+        return metrics?.leading ?: 0
     }
 
     companion object {
