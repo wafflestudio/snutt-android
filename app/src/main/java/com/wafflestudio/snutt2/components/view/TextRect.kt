@@ -5,10 +5,6 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.graphics.Rect
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.res.ResourcesCompat
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.rx.sp
 
 /**
  * Created by makesource on 2016. 1. 24..
@@ -98,7 +94,6 @@ class TextRect(paint: Paint) {
                     break
                 }
                 if (textHeight + lineHeight > maxHeight) {
-                    Log.d("plgafhdtesttest","umm")
                     wasCut = true
                     break
                 }
@@ -109,10 +104,6 @@ class TextRect(paint: Paint) {
                 stop = length
             }
         }
-//        if(text == "001") Log.d("plgafhdtest",lines.toString())
-//        if(text == "001") Log.d("plgafhdtest",starts[0].toString())
-//        if(text == "001") Log.d("plgafhdtest",stops[0].toString())
-        //if(text == "인공지능 반도체 소자 설계 프로젝트") Log.d("plgafhdtest",textHeight.toString())
         return textHeight
     }
 
@@ -125,14 +116,20 @@ class TextRect(paint: Paint) {
      * @returns height of text in pixels
      */
     fun prepareSingleLine(text: String, maxWidth: Int, maxHeight: Int): Int {
+        Log.d("plgafhdtest",text)
+        Log.d("plgafhdtest",maxHeight.toString())
         paint!!.getTextBounds(text, 0, text.length, bounds)
         if (bounds.width() <= maxWidth) {
+            val lineHeight = -metrics!!.ascent + metrics!!.descent
+//            if (lineHeight > maxHeight) {
+//                wasCut = true
+//                return 0
+//            }
             wasCut = false
             lines = 1
             starts[0] = 0
             stops[0] = text.length
-            textHeight = -metrics!!.ascent + metrics!!.descent
-            return textHeight
+            return lineHeight
         }
 
         lines = 0
@@ -205,7 +202,6 @@ class TextRect(paint: Paint) {
                 break
             }
         }
-        //if(text == "인공지능 반도체 소자 설계 프로젝트") Log.d("plgafhdtest",textHeight.toString())
         return textHeight
     }
 
@@ -218,8 +214,6 @@ class TextRect(paint: Paint) {
      */
     fun draw(canvas: Canvas, left: Int, top: Int, bubbleWidth: Int, fgColor: Int) {
         if (textHeight == 0) return
-        Log.d("plgafhdtest2",text.toString())
-        Log.d("plgafhdtest2",textHeight.toString())
         val before = -metrics!!.ascent
         val after = metrics!!.descent + metrics!!.leading
         var y = top
