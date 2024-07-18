@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.core.network
 
 import com.wafflestudio.snutt2.core.network.model.*
 import retrofit2.http.Body
-import retrofit2.http.POST
 
 // TODO : 아직은 원래거를 쓰고 있고 얘는 그냥 시도
 

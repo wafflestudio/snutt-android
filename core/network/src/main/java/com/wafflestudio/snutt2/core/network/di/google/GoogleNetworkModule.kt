@@ -40,12 +40,14 @@ object GoogleNetworkModule {
             .cache(cache)
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(
-                    chain.createNewNetworkLog(
-                        context,
-                        response
-                    ).toDatabaseModel()
-                )
+                if (BuildConfig.DEBUG) {
+                    snuttStorage.addNetworkLog(
+                        chain.createNewNetworkLog(
+                            context,
+                            response,
+                        ).toDatabaseModel(),
+                    )
+                }
                 response
             }
             .addInterceptor(
@@ -81,6 +83,6 @@ object GoogleNetworkModule {
     }
 
     private const val SIZE_OF_CACHE = (
-            10 * 1024 * 1024 // 10 MB
-            ).toLong()
+        10 * 1024 * 1024 // 10 MB
+        ).toLong()
 }

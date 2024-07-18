@@ -12,5 +12,4 @@ class SNUTTRestApiForGoogle @Inject constructor(
 ) : SNUTTNetworkDataSourceForGoogle {
     override suspend fun _getAccessTokenByAuthCode(body: PostAccessTokenByAuthCodeParams): PostAccessTokenByAuthCodeResults =
         networkApi._getAccessTokenByAuthCode(body)
-
 }

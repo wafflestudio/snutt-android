@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.core.network.model.PostAccessTokenByAuthCodeResul
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface SNUTTRestAPIForGoogleApi  {
+interface SNUTTRestAPIForGoogleApi {
     @POST("/token")
     suspend fun _getAccessTokenByAuthCode(
         @Body body: PostAccessTokenByAuthCodeParams,
