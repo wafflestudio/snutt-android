@@ -33,7 +33,6 @@ data class ThemeDto(
     }
 }
 
-
 fun CustomThemeNetwork.toExternalModel() = CustomTheme(
     id = this.id,
     name = this.name,
