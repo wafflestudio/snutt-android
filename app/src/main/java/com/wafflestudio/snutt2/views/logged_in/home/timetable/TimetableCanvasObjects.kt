@@ -59,7 +59,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 10f.sp(LocalContext.current)
+                    textSize = 11f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
@@ -68,7 +68,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 8f.sp(LocalContext.current)
+                    textSize = 8.8f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
@@ -77,7 +77,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 11f.sp(LocalContext.current)
+                    textSize = 12f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
@@ -86,7 +86,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 8.8f.sp(LocalContext.current)
+                    textSize = 9.6f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
@@ -95,7 +95,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 11f.sp(LocalContext.current)
+                    textSize = 12f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
                 },
             )
@@ -104,7 +104,7 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 8.8f.sp(LocalContext.current)
+                    textSize = 9.6f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
                 },
             )
