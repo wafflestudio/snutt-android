@@ -68,12 +68,6 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun postLoginKakao(kakaoAccessToken: String) {
-        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
     override suspend fun postSignUp(id: String, password: String, email: String) {
         val response = api._postSignUp(PostSignUpParams(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
