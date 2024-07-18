@@ -107,6 +107,9 @@ fun ColorPicker(
                 hexCode = hsvToString(hsv)
                 onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
             },
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
         )
         HueBar(
             hue = hsv.first,
@@ -115,6 +118,9 @@ fun ColorPicker(
                 hexCode = hsvToString(hsv)
                 onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
             },
+            modifier = Modifier
+                .height(20.dp)
+                .fillMaxWidth(),
         )
         Row(
             modifier = Modifier.height(30.dp),
@@ -198,11 +204,10 @@ fun ColorPicker(
 fun HueBar(
     hue: Float,
     onHueChanged: (Float) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
-            .height(20.dp)
-            .fillMaxWidth()
+        modifier = modifier
             .clip(CircleShape),
     ) {
         HueBackground( // hue에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
@@ -287,11 +292,10 @@ fun SatValPanel(
     hue: Float,
     satVal: Pair<Float, Float>,
     onSatValChanged: (Float, Float) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp)),
     ) {
         SatValBackground( // sat, val에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
@@ -396,8 +400,7 @@ fun showColorPickerDialog(
     onColorPicked: (Color) -> Unit,
 ) {
     var currentColor = initialColor
-    modalState.setOkCancel(
-        context = context,
+    modalState.set(
         onDismiss = {
             modalState.hide()
         },
@@ -406,6 +409,8 @@ fun showColorPickerDialog(
             modalState.hide()
         },
         title = context.getString(R.string.color_picker_dialog_title),
+        positiveButton = context.getString(R.string.common_ok),
+        negativeButton = context.getString(R.string.common_cancel),
     ) {
         ColorPicker(
             initialColor = initialColor,

@@ -5,9 +5,10 @@ import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.core.network.model.PostLoginFacebookResults as PostLoginFacebookResultsNetwork
 
 @JsonClass(generateAdapter = true)
-data class PostLoginFacebookResults(
-    @Json(name = "token") val token: String,
+data class PostSocialLoginResults(
     @Json(name = "user_id") val userId: String,
+    @Json(name = "token") val token: String,
+    @Json(name = "message") val message: String,
 )
 
 fun PostLoginFacebookResultsNetwork.toExternalModel() = PostLoginFacebookResults(
