@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import android.webkit.CookieManager
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -174,6 +175,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         storage.clearLoginScope()
+        CookieManager.getInstance().removeAllCookies(null)
     }
 
     override suspend fun fetchAndSetPopup() {
