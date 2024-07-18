@@ -274,6 +274,8 @@ private fun DrawClassTime(
             ),
         )
 
+    val lectureNumberToDraw = if (lectureNumber.isNotEmpty()) ("($lectureNumber)") else ""
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
             (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
@@ -315,7 +317,7 @@ private fun DrawClassTime(
         }
         var lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
             lectureCellLectureNumberTextRect.prepare(
-                lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+                lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
             )
         } else {
             0
@@ -339,7 +341,7 @@ private fun DrawClassTime(
             }
             lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
                 lectureCellLectureNumberTextRectReduced.prepare(
-                    lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+                    lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
                 )
             } else {
                 0
@@ -370,7 +372,7 @@ private fun DrawClassTime(
             }
             lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
                 lectureCellLectureNumberTextRectReduced.prepareSingleLine(
-                    lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+                    lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
                 )
             } else {
                 0
