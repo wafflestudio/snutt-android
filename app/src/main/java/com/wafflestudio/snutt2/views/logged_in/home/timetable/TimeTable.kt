@@ -299,7 +299,7 @@ private fun DrawClassTime(
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
 
-        val courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepare(
+        var courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepare(
             courseTitle, cellWidth.toInt(), cellHeight.toInt(),
         ) else 0
         var locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRect.prepare(
@@ -312,7 +312,7 @@ private fun DrawClassTime(
             instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
         ) else 0
 
-        if (lectureCellPlaceTextRect.wasCut() || lectureCellLectureNumberTextRect.wasCut() || lectureCellInstructorTextRect.wasCut()) {
+        if (lectureCellInstructorTextRect.wasCut()) {
             reduced = true
             locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRectReduced.prepare(
                 classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
@@ -321,6 +321,21 @@ private fun DrawClassTime(
                 lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
             ) else 0
             instructorHeight = if (tableLectureCustomOptions.instructor) lectureCellInstructorTextRectReduced.prepare(
+                instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
+            ) else 0
+        }
+
+        if (lectureCellInstructorTextRectReduced.wasCut()) {
+            courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepareSingleLine(
+                courseTitle, cellWidth.toInt(), cellHeight.toInt(),
+            ) else 0
+            locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRectReduced.prepareSingleLine(
+                classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
+            ) else 0
+            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) lectureCellLectureNumberTextRectReduced.prepareSingleLine(
+                lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+            ) else 0
+            instructorHeight = if (tableLectureCustomOptions.instructor) lectureCellInstructorTextRectReduced.prepareSingleLine(
                 instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
             ) else 0
         }

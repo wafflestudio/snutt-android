@@ -91,13 +91,14 @@ class TextRect(paint: Paint) {
                         minus = 1
                     }
                 }
-                if (textHeight + lineHeight > maxHeight) {
-                    wasCut = true
-                    break
-                }
                 starts[lines] = start
                 stops[lines] = stop - minus
                 if (++lines > MAX_LINES) {
+                    wasCut = true
+                    break
+                }
+                if (textHeight + lineHeight > maxHeight) {
+                    Log.d("plgafhdtesttest","umm")
                     wasCut = true
                     break
                 }
@@ -108,6 +109,103 @@ class TextRect(paint: Paint) {
                 stop = length
             }
         }
+//        if(text == "001") Log.d("plgafhdtest",lines.toString())
+//        if(text == "001") Log.d("plgafhdtest",starts[0].toString())
+//        if(text == "001") Log.d("plgafhdtest",stops[0].toString())
+        //if(text == "인공지능 반도체 소자 설계 프로젝트") Log.d("plgafhdtest",textHeight.toString())
+        return textHeight
+    }
+
+    /**
+     * Calculate height of text block and prepare to draw it in a single line.
+     *
+     * @param text - text to draw
+     * @param maxWidth - maximum width in pixels
+     * @param maxHeight - maximum height in pixels
+     * @returns height of text in pixels
+     */
+    fun prepareSingleLine(text: String, maxWidth: Int, maxHeight: Int): Int {
+        paint!!.getTextBounds(text, 0, text.length, bounds)
+        if (bounds.width() <= maxWidth) {
+            wasCut = false
+            lines = 1
+            starts[0] = 0
+            stops[0] = text.length
+            textHeight = -metrics!!.ascent + metrics!!.descent
+            return textHeight
+        }
+
+        lines = 0
+        textHeight = 0
+        this.text = text
+        wasCut = true
+
+        // get maximum number of characters in one line
+        paint!!.getTextBounds("i", 0, 1, bounds)
+        val maximumInLine = maxWidth / bounds.width()
+        val length = text.length
+        if (length > 0) {
+            val lineHeight = -metrics!!.ascent + metrics!!.descent
+            var start = 0
+            var stop = if (maximumInLine > length) length else maximumInLine
+            // stop = min(length,maximuminline);
+            while (true) {
+                // skip LF and spaces
+                while (start < length) {
+                    val ch = text[start]
+                    if (ch != '\n' && ch != '\r' && ch != '\t' && ch != ' ') break
+                    ++start
+                }
+                var o = stop + 1
+                while (stop < o && stop > start) {
+                    o = stop
+                    var lowest = text.indexOf("\n", start)
+                    // 강의명만 생각
+                    paint!!.getTextBounds("$text...", start, stop + 3, bounds)
+                    if (start <= lowest && lowest < stop || bounds.width() > maxWidth) // start ~ stop 까지 한 줄에 넣으려고 하는데 한 줄에 넘치면
+                    {
+                        --stop
+                        if (lowest < start || lowest > stop) {
+                            val blank = text.lastIndexOf(" ", stop)
+                            if (blank > start) lowest = blank
+                        }
+                        if (start <= lowest && lowest <= stop) {
+                            val ch = text[stop]
+                            if (ch != '\n' && ch != ' ') ++lowest
+                            stop = lowest
+                        }
+                        continue
+                    }
+                    break
+                }
+                if (start >= stop) break
+                var minus = 0
+
+                // cut off lf or space
+                if (stop < length) {
+                    val ch = text[stop - 1]
+                    if (ch == '\n' ||
+                        ch == ' '
+                    ) {
+                        minus = 1
+                    }
+                }
+                if (textHeight + lineHeight > maxHeight) {
+                    wasCut = true
+                    break
+                }
+                starts[lines] = start
+                stops[lines] = stop - minus + 3
+                if (++lines > MAX_LINES) {
+                    wasCut = true
+                    break
+                }
+                textHeight += lineHeight
+                if (stop >= length) break
+                break
+            }
+        }
+        //if(text == "인공지능 반도체 소자 설계 프로젝트") Log.d("plgafhdtest",textHeight.toString())
         return textHeight
     }
 
@@ -120,6 +218,8 @@ class TextRect(paint: Paint) {
      */
     fun draw(canvas: Canvas, left: Int, top: Int, bubbleWidth: Int, fgColor: Int) {
         if (textHeight == 0) return
+        Log.d("plgafhdtest2",text.toString())
+        Log.d("plgafhdtest2",textHeight.toString())
         val before = -metrics!!.ascent
         val after = metrics!!.descent + metrics!!.leading
         var y = top
@@ -127,7 +227,7 @@ class TextRect(paint: Paint) {
         for (n in 0..lines) {
             var t: String
             y += before
-            t = if (wasCut && n == lines && stops[n] - starts[n] > 3) {
+            t = if (wasCut && n == lines) {
                 text!!.substring(
                     starts[n],
                     stops[n] - 3,
@@ -152,8 +252,6 @@ class TextRect(paint: Paint) {
     fun wasCut(): Boolean {
         return wasCut
     }
-
-    fun getLines(): Int = lines
 
     companion object {
         // maximum number of lines; this is a fixed number in order
