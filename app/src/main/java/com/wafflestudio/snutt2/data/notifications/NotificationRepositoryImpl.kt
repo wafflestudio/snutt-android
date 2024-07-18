@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class NotificationRepositoryImpl @Inject constructor(
-    @CoreNetwork private val api: SNUTTNetworkDataSource
+    @CoreNetwork private val api: SNUTTNetworkDataSource,
 ) : NotificationRepository {
     override suspend fun getNotificationResultStream(): Flow<PagingData<NotificationDto>> {
         return Pager(

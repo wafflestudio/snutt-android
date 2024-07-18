@@ -24,7 +24,8 @@ class DebugViewModel @Inject constructor(
                 list.map { networkLog ->
                     networkLog.toTempNetworkModel()
                 }
-            })
+            },
+        )
 
     fun clearNetworkLog() {
         snuttStorage.networkLog.clear()

@@ -37,9 +37,11 @@ class ThemeRepositoryImpl @Inject constructor(
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
     override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
-    override val currentTableTheme = combine(storage.lastViewedTable.asStateFlow()
-        .unwrap(externalScope).map(externalScope) {it: Table? -> it?.toExternalModel().toOptional()} // TODO : 변환 함수 사용, revisit 필요
-        ,_customThemes) { table, _ ->
+    override val currentTableTheme = combine(
+        storage.lastViewedTable.asStateFlow()
+            .unwrap(externalScope).map(externalScope) { it: Table? -> it?.toExternalModel().toOptional() }, // TODO : 변환 함수 사용, revisit 필요
+        _customThemes,
+    ) { table, _ ->
         table.value?.themeId?.let { themeId ->
             getTheme(themeId)
         } ?: table.value?.theme?.let {

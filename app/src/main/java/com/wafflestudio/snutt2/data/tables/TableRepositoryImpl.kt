@@ -28,7 +28,7 @@ class TableRepositoryImpl @Inject constructor(
 
     override val tableMap: StateFlow<Map<String, SimpleTableDto>> =
         snuttStorage.tableMap.asStateFlow()
-            .map(externalScope) { it: Map<String,SimpleTable> ->
+            .map(externalScope) { it: Map<String, SimpleTable> ->
                 it.mapValues { (_, value) -> value.toExternalModel() } // TODO : database 변환 사용 부분
             }
 

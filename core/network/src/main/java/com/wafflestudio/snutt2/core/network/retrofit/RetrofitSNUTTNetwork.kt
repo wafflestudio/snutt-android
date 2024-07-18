@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.core.network.retrofit
 
-import android.util.Log
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.*
 import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
