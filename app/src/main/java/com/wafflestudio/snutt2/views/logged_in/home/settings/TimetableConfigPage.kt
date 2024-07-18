@@ -62,7 +62,7 @@ fun TimetableConfigPage() {
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
 
     val tableState =
-        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions ,previewTheme)
+        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
 
     Column(
         modifier = Modifier

@@ -216,7 +216,7 @@ private fun DrawLecture(
         fittedTrimParam = fittedTrimParam,
         classTime = classTime,
         courseTitle = lecture.course_title,
-        lectureNumber = lecture.lecture_number?:"",
+        lectureNumber = lecture.lecture_number ?: "",
         instructor = lecture.instructor,
         bgColor =
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
@@ -299,49 +299,93 @@ private fun DrawClassTime(
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
 
-        var courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-        ) else 0
-        var locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-        ) else 0
-        var lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) lectureCellLectureNumberTextRect.prepare(
-            lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-        ) else 0
-        var instructorHeight = if (tableLectureCustomOptions.instructor) lectureCellInstructorTextRect.prepare(
-            instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-        ) else 0
+        var courseTitleHeight = if (tableLectureCustomOptions.title) {
+            lectureCellTextRect.prepare(
+                courseTitle, cellWidth.toInt(), cellHeight.toInt(),
+            )
+        } else {
+            0
+        }
+        var locationHeight = if (tableLectureCustomOptions.place) {
+            lectureCellPlaceTextRect.prepare(
+                classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
+            )
+        } else {
+            0
+        }
+        var lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
+            lectureCellLectureNumberTextRect.prepare(
+                lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+            )
+        } else {
+            0
+        }
+        var instructorHeight = if (tableLectureCustomOptions.instructor) {
+            lectureCellInstructorTextRect.prepare(
+                instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
+            )
+        } else {
+            0
+        }
 
         if (lectureCellPlaceTextRect.wasCut() || lectureCellLectureNumberTextRect.wasCut() || lectureCellInstructorTextRect.wasCut()) {
             reduced = true
-            locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRectReduced.prepare(
-                classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-            ) else 0
-            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) lectureCellLectureNumberTextRectReduced.prepare(
-                lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-            ) else 0
-            instructorHeight = if (tableLectureCustomOptions.instructor) lectureCellInstructorTextRectReduced.prepare(
-                instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-            ) else 0
+            locationHeight = if (tableLectureCustomOptions.place) {
+                lectureCellPlaceTextRectReduced.prepare(
+                    classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
+                )
+            } else {
+                0
+            }
+            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
+                lectureCellLectureNumberTextRectReduced.prepare(
+                    lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+                )
+            } else {
+                0
+            }
+            instructorHeight = if (tableLectureCustomOptions.instructor) {
+                lectureCellInstructorTextRectReduced.prepare(
+                    instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
+                )
+            } else {
+                0
+            }
         }
 
         if (lectureCellPlaceTextRectReduced.wasCut() || lectureCellLectureNumberTextRectReduced.wasCut() || lectureCellInstructorTextRectReduced.wasCut()) {
-            courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepareSingleLine(
-                courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-            ) else 0
-            locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRectReduced.prepareSingleLine(
-                classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-            ) else 0
-            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) lectureCellLectureNumberTextRectReduced.prepareSingleLine(
-                lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-            ) else 0
-            instructorHeight = if (tableLectureCustomOptions.instructor) lectureCellInstructorTextRectReduced.prepareSingleLine(
-                instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-            ) else 0
+            courseTitleHeight = if (tableLectureCustomOptions.title) {
+                lectureCellTextRect.prepareSingleLine(
+                    courseTitle, cellWidth.toInt(), cellHeight.toInt(),
+                )
+            } else {
+                0
+            }
+            locationHeight = if (tableLectureCustomOptions.place) {
+                lectureCellPlaceTextRectReduced.prepareSingleLine(
+                    classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
+                )
+            } else {
+                0
+            }
+            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
+                lectureCellLectureNumberTextRectReduced.prepareSingleLine(
+                    lectureNumber, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
+                )
+            } else {
+                0
+            }
+            instructorHeight = if (tableLectureCustomOptions.instructor) {
+                lectureCellInstructorTextRectReduced.prepareSingleLine(
+                    instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
+                )
+            } else {
+                0
+            }
         }
 
         drawIntoCanvas { canvas ->
-            if (courseTitleHeight > 0)
+            if (courseTitleHeight > 0) {
                 lectureCellTextRect.draw(
                     canvas.nativeCanvas,
                     (left + cellPadding).toInt(),
@@ -349,6 +393,7 @@ private fun DrawClassTime(
                     cellWidth.toInt(),
                     fgColor,
                 )
+            }
             if (locationHeight > 0) {
                 if (!reduced) {
                     lectureCellPlaceTextRect.draw(
@@ -358,8 +403,7 @@ private fun DrawClassTime(
                         cellWidth.toInt(),
                         fgColor,
                     )
-                }
-                else {
+                } else {
                     lectureCellPlaceTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
@@ -378,8 +422,7 @@ private fun DrawClassTime(
                         cellWidth.toInt(),
                         fgColor,
                     )
-                }
-                else {
+                } else {
                     lectureCellLectureNumberTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
@@ -398,8 +441,7 @@ private fun DrawClassTime(
                         cellWidth.toInt(),
                         fgColor,
                     )
-                }
-                else {
+                } else {
                     lectureCellInstructorTextRectReduced.draw(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
@@ -418,7 +460,7 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, lecture_number?:"", instructor,-0x1f1f20, -0xcccccd,
+                fittedTrimParam, classTime, course_title, lecture_number ?: "", instructor, -0x1f1f20, -0xcccccd,
             )
         }
     }

@@ -276,12 +276,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
         storage.tableLectureCustom.update(
-            when (key){
+            when (key) {
                 TableLectureCustomOptions.TITLE -> storage.tableLectureCustom.get().copy(title = value)
                 TableLectureCustomOptions.PLACE -> storage.tableLectureCustom.get().copy(place = value)
                 TableLectureCustomOptions.LECTURENUMBER -> storage.tableLectureCustom.get().copy(lectureNumber = value)
                 TableLectureCustomOptions.INSTRUCTOR -> storage.tableLectureCustom.get().copy(instructor = value)
-            }
+            },
         )
     }
 
