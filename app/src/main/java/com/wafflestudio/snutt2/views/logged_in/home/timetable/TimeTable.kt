@@ -312,7 +312,7 @@ private fun DrawClassTime(
             instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
         ) else 0
 
-        if (lectureCellInstructorTextRect.wasCut()) {
+        if (lectureCellPlaceTextRect.wasCut() || lectureCellLectureNumberTextRect.wasCut() || lectureCellInstructorTextRect.wasCut()) {
             reduced = true
             locationHeight = if (tableLectureCustomOptions.place) lectureCellPlaceTextRectReduced.prepare(
                 classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
@@ -325,7 +325,7 @@ private fun DrawClassTime(
             ) else 0
         }
 
-        if (lectureCellInstructorTextRectReduced.wasCut()) {
+        if (lectureCellPlaceTextRectReduced.wasCut() || lectureCellLectureNumberTextRectReduced.wasCut() || lectureCellInstructorTextRectReduced.wasCut()) {
             courseTitleHeight = if (tableLectureCustomOptions.title) lectureCellTextRect.prepareSingleLine(
                 courseTitle, cellWidth.toInt(), cellHeight.toInt(),
             ) else 0
