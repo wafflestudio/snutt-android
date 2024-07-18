@@ -153,6 +153,8 @@ class TextRect(paint: Paint) {
         return wasCut
     }
 
+    fun getLines(): Int = lines
+
     companion object {
         // maximum number of lines; this is a fixed number in order
         // to use a predefined array to avoid ArrayList (or something
