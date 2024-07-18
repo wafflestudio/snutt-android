@@ -16,5 +16,6 @@ object Deps {
         const val AndroidGradle = "8.1.1"
         const val KtLintGradle = "11.5.1"
         const val PagingCompose = "1.0.0-alpha14"
+        const val KakaoSDK = "2.20.1"
     }
 }

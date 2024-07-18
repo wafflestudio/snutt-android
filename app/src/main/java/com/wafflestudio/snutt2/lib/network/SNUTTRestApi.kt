@@ -131,6 +131,11 @@ interface SNUTTRestApi {
         @Body body: PostSocialLoginParams,
     ): PostSocialLoginResults
 
+    @POST("/v1/auth/login/kakao")
+    suspend fun _postLoginKakao(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(
         @Body body: PostForceLogoutParams,
