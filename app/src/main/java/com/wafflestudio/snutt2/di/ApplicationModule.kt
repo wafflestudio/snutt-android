@@ -18,15 +18,6 @@ import javax.inject.Singleton
 object ApplicationModule {
 
     @Provides
-    @App
-    @Singleton
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
-
-    @Provides
     @Singleton
     fun providePopupState(): PopupState {
         return PopupState()
