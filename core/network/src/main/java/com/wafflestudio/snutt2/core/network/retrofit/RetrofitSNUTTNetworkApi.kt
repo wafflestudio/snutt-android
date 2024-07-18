@@ -125,10 +125,20 @@ interface RetrofitSNUTTNetworkApi {
         @Body body: PostSignInParams,
     ): PostSignInResults
 
-    @POST("/v1/auth/login_fb")
+    @POST("/v1/auth/login/facebook")
     suspend fun _postLoginFacebook(
-        @Body body: PostLoginFacebookParams,
-    ): PostLoginFacebookResults
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    @POST("/v1/auth/login/google")
+    suspend fun _postLoginGoogle(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    @POST("/v1/auth/login/kakao")
+    suspend fun _postLoginKakao(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
 
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(

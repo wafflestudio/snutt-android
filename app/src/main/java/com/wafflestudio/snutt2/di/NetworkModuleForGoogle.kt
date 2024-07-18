@@ -5,10 +5,12 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.addNetworkLog
+import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
+import com.wafflestudio.snutt2.core.network.createNewNetworkLog
+import com.wafflestudio.snutt2.core.network.toDatabaseModel
+import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
+import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
-import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +22,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -28,17 +31,18 @@ object NetworkModuleForGoogle {
 
     @SuppressLint("HardwareIds")
     @Provides
+    @Named("google")
     @Singleton
     fun provideOkHttpClientForGoogle(
         @ApplicationContext context: Context,
-        snuttStorage: SNUTTStorage,
+        @CoreDatabase snuttStorage: SNUTTStorageTemp,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response))
+                if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response).toDatabaseModel())
                 response
             }
             .addInterceptor(
@@ -54,10 +58,11 @@ object NetworkModuleForGoogle {
     }
 
     @Provides
+    @Named("google")
     fun provideRetrofitForGoogle(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient,
-        moshi: Moshi,
+        @Named("google") okHttpClient: OkHttpClient,
+        @CoreNetwork moshi: Moshi,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -68,7 +73,7 @@ object NetworkModuleForGoogle {
 
     @Provides
     @Singleton
-    fun provideSNUTTRestApiForGoogle(retrofit: Retrofit): SNUTTRestApiForGoogle {
+    fun provideSNUTTRestApiForGoogle(@Named("google") retrofit: Retrofit): SNUTTRestApiForGoogle {
         return retrofit.create(SNUTTRestApiForGoogle::class.java)
     }
 

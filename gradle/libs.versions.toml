@@ -22,8 +22,11 @@ firebaseAppdistributionPlugin = "5.0.0"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
 gmsPlugin = "4.4.1"
+gmsAuth = "21.1.1"
+googleId = "1.1.0"
 gson = "2.10.1"
 hilt = "2.51.1"
+kakaoSDK = "2.20.1"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"
 licensesdialog = "2.1.0"
@@ -76,12 +79,15 @@ firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-mes
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+kakao-sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakaoSDK" }
 licensesdialog = { group = "de.psdev.licensesdialog", name = "licensesdialog", version.ref = "licensesdialog" }
 naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMap" }
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naverMapCompose" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "gmsAuth" }
 react-android = { group = "com.facebook.react", name = "react-android", version.ref = "reactNative" }
 hermes-android = { group = "com.facebook.react", name = "hermes-android", version.ref = "reactNative" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
