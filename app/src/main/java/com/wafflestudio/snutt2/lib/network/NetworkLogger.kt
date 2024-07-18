@@ -21,15 +21,6 @@ data class NetworkLog(
     val responseBody: String,
 )
 
-fun NetworkLogDatabase.toExternalModel() = NetworkLog(
-    requestMethod = this.requestMethod,
-    requestUrl = this.requestUrl,
-    requestHeader = this.requestHeader,
-    requestBody = this.requestBody,
-    responseCode = this.responseCode,
-    responseBody = this.responseBody,
-)
-
 fun Interceptor.Chain.createNewNetworkLog(
     context: Context,
     response: Response,
