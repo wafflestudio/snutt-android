@@ -50,14 +50,14 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun postLoginFacebook(facebookId: String, facebookToken: String) {
-        val response = api._postLoginFacebook(PostLoginFacebookParams(facebookId, facebookToken))
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun postLoginGoogle(googleIdToken: String) {
-        val response = api._postLoginGoogle(PostLoginGoogleParams(googleIdToken))
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleIdToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -179,19 +179,17 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchAndSetPopup() {
-        val latestPopup = api._getPopup().popups.firstOrNull {
+        val popups = api._getPopup().popups.filter {
             val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
             val currentMillis = System.currentTimeMillis()
 
             (expireMillis == null || currentMillis >= expireMillis)
         }
-
-        popupState.popup = latestPopup
+        popupState.popup = popups
     }
 
     override suspend fun closePopupWithHiddenDays() {
-        val popup = popupState.popup
-
+        val popup = popupState.popup.firstOrNull()
         if (popup != null) {
             val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
@@ -205,12 +203,12 @@ class UserRepositoryImpl @Inject constructor(
                     },
             )
 
-            popupState.popup = null
+            popupState.popup = popupState.popup.drop(1)
         }
     }
 
     override suspend fun closePopup() {
-        popupState.popup = null
+        popupState.popup = popupState.popup.drop(1)
     }
 
     override suspend fun registerToken() {

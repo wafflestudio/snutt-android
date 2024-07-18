@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -29,10 +28,6 @@ class UserViewModel @Inject constructor(
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
 
-    suspend fun fetchUserInfo() {
-        userRepository.fetchUserInfo()
-    }
-
     suspend fun setHourRange(from: Int, to: Int) {
         userRepository.setTableTrim(hourFrom = from, hourTo = to)
     }
@@ -49,8 +44,8 @@ class UserViewModel @Inject constructor(
         userRepository.postSignIn(id, password)
     }
 
-    suspend fun loginFacebook(facebookId: String, facebookToken: String) {
-        userRepository.postLoginFacebook(facebookId, facebookToken)
+    suspend fun loginFacebook(facebookToken: String) {
+        userRepository.postLoginFacebook(facebookToken)
     }
 
     suspend fun loginGoogle(googleIdToken: String) {
@@ -67,18 +62,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun changeNickname(nickname: String) {
         userRepository.patchUserInfo(nickname)
-    }
-
-    suspend fun fetchUserFacebook(): GetUserFacebookResults {
-        return userRepository.getUserFacebook()
-    }
-
-    suspend fun connectFacebook(id: String, token: String) {
-        userRepository.postUserFacebook(id, token)
-    }
-
-    suspend fun disconnectFacebook() {
-        userRepository.deleteUserFacebook()
     }
 
     suspend fun leave() {
@@ -103,13 +86,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun signUpLocal(idField: String, emailField: String, passwordField: String) {
         userRepository.postSignUp(id = idField, password = passwordField, email = emailField)
-    }
-
-    suspend fun signUpFacebook(id: String, token: String) {
-        userRepository.postLoginFacebook(
-            facebookId = id,
-            facebookToken = token,
-        )
     }
 
     suspend fun fetchPopup() {
