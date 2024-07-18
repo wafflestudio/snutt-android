@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.data.notifications
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import javax.inject.Inject

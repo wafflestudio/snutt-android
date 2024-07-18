@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.core.network.model.SimpleTableDto as SimpleTableDtoNetwork
 import com.wafflestudio.snutt2.core.database.model.SimpleTable
+import com.wafflestudio.snutt2.core.network.model.SimpleTableDto as SimpleTableDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class SimpleTableDto(

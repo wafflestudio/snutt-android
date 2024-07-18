@@ -19,14 +19,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class PreferenceModule {
     @Provides
-    @CoreDatabase
     @Singleton
-    fun providePrefContext(@CoreDatabase prefStorage: PrefStorage, @CoreDatabase prefCache: PrefCache): PrefContext {
+    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext {
         return PrefContext(prefStorage, prefCache)
     }
 
     @Provides
-    @CoreDatabase
     @Singleton
     fun providePrefStorage(
         @ApplicationContext context: Context,
@@ -36,7 +34,6 @@ class PreferenceModule {
     }
 
     @Provides
-    @CoreDatabase
     @Singleton
     fun providePrefCache(): PrefCache {
         return PrefCacheImpl(64)

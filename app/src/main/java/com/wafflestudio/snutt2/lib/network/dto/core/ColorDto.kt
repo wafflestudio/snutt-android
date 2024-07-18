@@ -3,8 +3,8 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 import android.graphics.Color
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.core.network.model.ColorDto as ColorDtoNetwork
 import com.wafflestudio.snutt2.core.database.model.Color as ColorDatabase
+import com.wafflestudio.snutt2.core.network.model.ColorDto as ColorDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class ColorDto(

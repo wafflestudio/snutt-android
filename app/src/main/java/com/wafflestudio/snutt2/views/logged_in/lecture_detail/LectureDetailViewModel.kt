@@ -2,13 +2,14 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams
+import com.wafflestudio.snutt2.core.network.model.PutLectureParams
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
-import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -112,14 +113,14 @@ class LectureDetailViewModel @Inject constructor(
             course_title = _editingLectureDetail.value.course_title,
             instructor = _editingLectureDetail.value.instructor,
             colorIndex = _editingLectureDetail.value.colorIndex,
-            color = _editingLectureDetail.value.color,
+            color = _editingLectureDetail.value.color.toNetworkModel(),
             department = _editingLectureDetail.value.department,
             academic_year = _editingLectureDetail.value.academic_year,
             credit = _editingLectureDetail.value.credit,
             classification = _editingLectureDetail.value.classification,
             category = _editingLectureDetail.value.category,
             remark = _editingLectureDetail.value.remark,
-            class_time_json = _editingLectureDetail.value.class_time_json,
+            class_time_json = _editingLectureDetail.value.class_time_json.map { it.toNetworkModel() },
         )
     }
 
@@ -128,10 +129,10 @@ class LectureDetailViewModel @Inject constructor(
             course_title = _editingLectureDetail.value.course_title,
             instructor = _editingLectureDetail.value.instructor,
             colorIndex = _editingLectureDetail.value.colorIndex,
-            color = _editingLectureDetail.value.color,
+            color = _editingLectureDetail.value.color.toNetworkModel(),
             credit = _editingLectureDetail.value.credit,
             remark = _editingLectureDetail.value.remark,
-            class_time_json = _editingLectureDetail.value.class_time_json,
+            class_time_json = _editingLectureDetail.value.class_time_json.map { it.toNetworkModel() },
         )
     }
 }

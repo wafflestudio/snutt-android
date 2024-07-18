@@ -2,12 +2,12 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
