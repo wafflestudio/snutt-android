@@ -388,13 +388,11 @@ private fun DrawClassTime(
 
         val lastLeading = when {
             tableLectureCustomOptions.instructor -> lectureCellInstructorTextRect.getLeading()
-            tableLectureCustomOptions.lectureNumber -> lectureCellLectureNumberTextRect.getLeading()
-            tableLectureCustomOptions.place -> lectureCellPlaceTextRect.getLeading()
-            tableLectureCustomOptions.title -> lectureCellTextRect.getLeading()
+            tableLectureCustomOptions.lectureNumber -> if (reduced) lectureCellLectureNumberTextRectReduced.getLeading() else lectureCellLectureNumberTextRect.getLeading()
+            tableLectureCustomOptions.place -> if (reduced) lectureCellPlaceTextRectReduced.getLeading() else lectureCellPlaceTextRect.getLeading()
+            tableLectureCustomOptions.title -> if (reduced) lectureCellPlaceTextRectReduced.getLeading() else lectureCellTextRect.getLeading()
             else -> 0
         }
-
-        val totalTextHeight = courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight - lastLeading
 
         drawIntoCanvas { canvas ->
             if (courseTitleHeight > 0) {
