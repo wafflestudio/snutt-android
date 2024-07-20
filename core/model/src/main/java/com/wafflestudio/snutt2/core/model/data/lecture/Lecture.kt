@@ -6,25 +6,24 @@ import com.wafflestudio.snutt2.core.model.data.PlaceTime
 import com.wafflestudio.snutt2.core.model.data.Time
 
 abstract class Lecture(
-    open val id: String,
-    open val lectureId: String?,
-    open val title: String,
-    open val instructor: String,
-    open val department: String?,
-    open val academicYear: String?,
-    open val credit: Long,
-    open val classification: String?,
-    open val category: String?,
-    open val courseNumber: String?,     // 강좌번호
-    open val lectureNumber: String?,    // 분반번호
-    open val quota: Long?,
-    open val freshmanQuota: Long?,
-    open val remark: String,
-    open val placeTimes: List<PlaceTime>,
-    open val colorIndex: Long?,
-    open val color: LectureColor?,
-    open val registrationCount: Long?,
-    open val wasFull: Boolean?,
+    val id: String,
+    val originalLectureId: String?,
+    val title: String,
+    val instructor: String,
+    val department: String?,
+    val academicYear: String?,
+    val credit: Long,
+    val classification: String?,
+    val category: String?,
+    val courseNumber: String?,
+    val lectureNumber: String?,
+    val quota: Long?,
+    val freshmanQuota: Long?,
+    val remark: String,
+    val placeTimes: List<PlaceTime>,
+    val color: LectureColor?,
+    val registrationCount: Long?,
+    val wasFull: Boolean?,
 ) {
     fun contains(day: Day, time: Time): Boolean = placeTimes.map {
         it.timetableBlock
