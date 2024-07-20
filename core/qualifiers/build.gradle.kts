@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.wafflestudio.snutt2.core.data"
+    namespace = "com.wafflestudio.snutt2.core.qualifiers"
 }
 
 dependencies {
