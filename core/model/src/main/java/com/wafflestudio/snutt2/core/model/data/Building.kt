@@ -7,8 +7,3 @@ data class Building(
     val buildingNameEng: String,
     val coordinate: GeoCoordinate
 )
-
-data class GeoCoordinate(
-    val latitude: Double,
-    val longitude: Double,
-)
