@@ -74,4 +74,3 @@ fun ClassTimeDto.toDatabaseModel() = ClassTime(
     startMinute = startMinute,
     endMinute = endMinute,
 )
-

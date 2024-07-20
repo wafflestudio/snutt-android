@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.core.network.model.UserDto as UserDtoNetwork
 import com.wafflestudio.snutt2.core.database.model.User
+import com.wafflestudio.snutt2.core.network.model.UserDto as UserDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class UserDto(

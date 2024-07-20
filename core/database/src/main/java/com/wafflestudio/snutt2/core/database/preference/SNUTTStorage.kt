@@ -15,11 +15,9 @@ import com.wafflestudio.snutt2.core.database.preference.context.PrefOptionalValu
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValue
 import com.wafflestudio.snutt2.core.database.preference.context.PrefValueMetaData
 import com.wafflestudio.snutt2.core.database.util.Optional
-import com.wafflestudio.snutt2.core.qualifiers.CoreDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@CoreDatabase
 interface SNUTTStorageTemp {
     val prefKeyUserId: PrefValue<Optional<String>>
 
@@ -55,10 +53,9 @@ interface SNUTTStorageTemp {
 }
 
 @Singleton
-@CoreDatabase
 class SNUTTStorageTempImpl @Inject constructor(
-    @CoreDatabase private val prefContext: PrefContext,
-): SNUTTStorageTemp {
+    private val prefContext: PrefContext,
+) : SNUTTStorageTemp {
 
     override val prefKeyUserId = PrefValue<Optional<String>>(
         prefContext,

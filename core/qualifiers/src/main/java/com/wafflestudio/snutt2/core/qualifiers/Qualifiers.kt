@@ -6,10 +6,4 @@ import javax.inject.Qualifier
 annotation class CoreNetwork
 
 @Qualifier
-annotation class CoreData
-
-@Qualifier
-annotation class App
-
-@Qualifier
 annotation class CoreDatabase

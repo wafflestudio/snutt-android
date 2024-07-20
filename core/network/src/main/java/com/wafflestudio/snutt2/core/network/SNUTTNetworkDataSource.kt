@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.core.network
 
 import com.wafflestudio.snutt2.core.network.model.*
+import retrofit2.http.Body
 
 // TODO : 아직은 원래거를 쓰고 있고 얘는 그냥 시도
 
@@ -97,8 +98,16 @@ interface SNUTTNetworkDataSource {
     ): PostSignInResults
 
     suspend fun _postLoginFacebook(
-        body: PostLoginFacebookParams,
-    ): PostLoginFacebookResults
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    suspend fun _postLoginGoogle(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    suspend fun _postLoginKakao(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
 
     suspend fun _postForceLogout(
         body: PostForceLogoutParams,

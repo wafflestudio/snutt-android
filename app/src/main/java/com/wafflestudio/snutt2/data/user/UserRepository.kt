@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
+import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -23,7 +23,11 @@ interface UserRepository {
     suspend fun postSignIn(id: String, password: String)
 
     // login with facebook id
-    suspend fun postLoginFacebook(facebookId: String, facebookToken: String)
+    suspend fun postLoginFacebook(facebookToken: String)
+
+    suspend fun postLoginGoogle(googleAccessToken: String)
+
+    suspend fun postLoginKakao(kakaoAccessToken: String)
 
     suspend fun postSignUp(id: String, password: String, email: String)
 
@@ -93,4 +97,10 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
+
+    suspend fun getAccessTokenByAuthCode(
+        authCode: String,
+        clientId: String,
+        clientSecret: String,
+    ): String?
 }

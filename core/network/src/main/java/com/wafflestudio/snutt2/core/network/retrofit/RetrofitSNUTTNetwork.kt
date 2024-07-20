@@ -1,15 +1,13 @@
 package com.wafflestudio.snutt2.core.network.retrofit
 
-import android.util.Log
 import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.*
-import com.wafflestudio.snutt2.core.qualifiers.CoreNetwork
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RetrofitSNUTTNetwork @Inject constructor(
-    @CoreNetwork private val networkApi: RetrofitSNUTTNetworkApi,
+    private val networkApi: RetrofitSNUTTNetworkApi,
 ) : SNUTTNetworkDataSource {
     override suspend fun _getNotification(
         limit: Int,
@@ -130,9 +128,17 @@ class RetrofitSNUTTNetwork @Inject constructor(
         networkApi._postSignIn(body = body)
 
     override suspend fun _postLoginFacebook(
-        body: PostLoginFacebookParams,
-    ): PostLoginFacebookResults =
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults =
         networkApi._postLoginFacebook(body = body)
+
+    override suspend fun _postLoginKakao(body: PostSocialLoginParams): PostSocialLoginResults =
+        networkApi._postLoginKakao(body = body)
+
+    override suspend fun _postLoginGoogle(
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults =
+        networkApi._postLoginGoogle(body = body)
 
     override suspend fun _postForceLogout(
         body: PostForceLogoutParams,

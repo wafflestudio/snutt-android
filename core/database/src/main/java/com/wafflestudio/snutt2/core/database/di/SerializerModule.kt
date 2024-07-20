@@ -24,7 +24,6 @@ abstract class SerializerModule {
     abstract fun bindSerializer(moshiSerializer: MoshiSerializer): Serializer
 
     @Binds
-    @CoreDatabase
     abstract fun bindStorage(impl: SNUTTStorageTempImpl): SNUTTStorageTemp
 
     companion object {

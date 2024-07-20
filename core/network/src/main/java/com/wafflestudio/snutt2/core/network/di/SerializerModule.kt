@@ -23,7 +23,6 @@ abstract class SerializerModule {
     abstract fun bindSerializer(moshiSerializer: MoshiSerializer): Serializer
 
     @Binds
-    @CoreNetwork
     abstract fun bindNetwork(impl: RetrofitSNUTTNetwork): SNUTTNetworkDataSource
 
     companion object {
