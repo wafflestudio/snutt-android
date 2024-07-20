@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.core.model.data
 import java.time.LocalDateTime
 
 data class Notification(
+    val id: String?,
     val title: String,
     val message: String,
     val createdAt: LocalDateTime,
