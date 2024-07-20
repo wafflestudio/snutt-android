@@ -8,12 +8,6 @@ data class Building(
     val coordinate: GeoCoordinate
 )
 
-enum class Campus {
-    GWANAK,
-    YEONGEON,
-    PYEONGCHANG,
-}
-
 data class GeoCoordinate(
     val latitude: Double,
     val longitude: Double,
