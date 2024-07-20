@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.core.model.data
 
-data class SimpleTimeTable(
+data class SimpleTimetable(
     val id: String,
     val courseBook: CourseBook,
     val title: String,
