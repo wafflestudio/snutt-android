@@ -15,6 +15,16 @@ data class LectureColor(
         darkForeGround = parseColor(fgString),
         darkBackGround = parseColor(bgString),
     )
+
+    constructor(
+        fg: Int,
+        bg: Int,
+    ) : this(
+        lightForeGround = fg,
+        lightBackGround = bg,
+        darkForeGround = fg,
+        darkBackGround = bg,
+    )
 }
 
 private fun parseColor(colorString: String): Int {  // from android.graphics.Color
