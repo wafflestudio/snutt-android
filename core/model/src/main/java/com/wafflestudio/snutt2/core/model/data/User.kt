@@ -5,5 +5,5 @@ data class User(
     val email: String?,
     val localId: String?,
     val facebookName: String?,
-    val nickname: Nickname
+    val nickname: Nickname?,
 )
