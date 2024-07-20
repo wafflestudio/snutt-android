@@ -8,7 +8,5 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
-
-    implementation(libs.coil.kt.compose)
+    api(project(":core:model"))
 }
