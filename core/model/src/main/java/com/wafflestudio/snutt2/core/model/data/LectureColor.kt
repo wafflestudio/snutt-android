@@ -1,15 +1,19 @@
 package com.wafflestudio.snutt2.core.model.data
 
 data class LectureColor(
-    val foreground: Int,
-    val background: Int,
+    val lightForeGround: Int,
+    val lightBackGround: Int,
+    val darkForeGround: Int,
+    val darkBackGround: Int,
 ) {
     constructor(
-        foregroundString: String,
-        backgroundString: String,
+        fgString: String,
+        bgString: String,
     ) : this(
-        parseColor(foregroundString),
-        parseColor(backgroundString)
+        lightForeGround = parseColor(fgString),
+        lightBackGround = parseColor(bgString),
+        darkForeGround = parseColor(fgString),
+        darkBackGround = parseColor(bgString),
     )
 }
 
