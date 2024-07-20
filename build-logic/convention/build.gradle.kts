@@ -70,5 +70,9 @@ gradlePlugin {
             id = "snutt.semantic.versioning"
             implementationClass = "SemanticVersioningConventionPlugin"
         }
+        register("jvmLibrary") {
+            id = "snutt.jvm.library"
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
     }
 }
