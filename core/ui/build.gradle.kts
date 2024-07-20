@@ -8,12 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:network"))
-    implementation(project(":core:database"))
-    implementation(project(":core:model"))
-}
-
-dependencies {
     implementation(project(":core:model"))
 
     implementation(libs.coil.kt.compose)
