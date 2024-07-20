@@ -11,18 +11,6 @@ data class TimetableBlock (
     val endTime: Time,
 )
 
-enum class Day {
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
-    SUNDAY
-}
-
-
-
 data class Place(
     val name: String,
     val building: Building
