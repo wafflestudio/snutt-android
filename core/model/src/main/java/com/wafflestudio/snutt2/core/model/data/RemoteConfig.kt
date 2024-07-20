@@ -5,5 +5,5 @@ data class RemoteConfig(
     val vacancyNotificationBannerEnabled: Boolean,
     val sugangSNUUrl: String?,
     val settingPageNewBadgeTitles: List<String>,
-    val disableMapFeature: Boolean
+    val disableMapFeature: Boolean,
 )

@@ -5,5 +5,5 @@ data class Building(
     val buildingNumber: String,
     val buildingNameKor: String,
     val buildingNameEng: String,
-    val coordinate: GeoCoordinate
+    val coordinate: GeoCoordinate,
 )

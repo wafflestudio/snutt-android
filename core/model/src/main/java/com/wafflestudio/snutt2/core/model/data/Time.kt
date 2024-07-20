@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.core.model.data
 
 data class Time(
-    val timeInMinutes: Int
+    val timeInMinutes: Int,
 ) : Comparable<Time> {
     val minute: Int get() = timeInMinutes % 60
     val hour: Int get() = timeInMinutes / 60
@@ -10,7 +10,7 @@ data class Time(
 
     companion object {
         fun fromHour(timeInHours: Int): Time = Time(
-            timeInHours * 60
+            timeInHours * 60,
         )
     }
 }

@@ -17,6 +17,6 @@ data class Notification(
         LectureDeleted,
         Vacancy,
         Friend,
-        Fallback
+        Fallback,
     }
 }

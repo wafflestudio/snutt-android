@@ -37,5 +37,5 @@ class OriginalLecture(
     placeTimes = placeTimes,
     color = null,
     registrationCount = registrationCount,
-    wasFull = wasFull
+    wasFull = wasFull,
 )

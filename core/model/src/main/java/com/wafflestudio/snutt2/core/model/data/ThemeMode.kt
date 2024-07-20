@@ -3,7 +3,8 @@ package com.wafflestudio.snutt2.core.model.data
 enum class ThemeMode {
     DARK,
     LIGHT,
-    AUTO;
+    AUTO,
+    ;
 
     override fun toString(): String {
         return when (this) {
