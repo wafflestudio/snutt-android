@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.core.model.data
 
-data class TimeTableTrimConfig(
+data class TimetableTrimConfig(
     val startDay: Day,
     val endDay: Day,
     val startTime: Time,
