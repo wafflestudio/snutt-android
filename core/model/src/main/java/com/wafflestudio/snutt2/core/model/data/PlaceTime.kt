@@ -5,12 +5,6 @@ data class PlaceTime(
     val place: Place,
 )
 
-data class TimetableBlock (
-    val day: Day,
-    val startTime: Time,
-    val endTime: Time,
-)
-
 data class Place(
     val name: String,
     val building: Building
