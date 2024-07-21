@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -32,6 +33,7 @@ class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val themeRepository: ThemeRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
@@ -45,7 +47,10 @@ class LectureDetailViewModel @Inject constructor(
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
     val editingLectureReview = _editingLectureDetail.map { lecture ->
-        lecture.review?.rating?.let { lecture.review } ?: getLectureReview()
+        lecture.review?.rating?.let { lecture.review }
+            ?: runCatching {
+                getLectureReview()
+            }.onFailure(apiOnError).getOrNull()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
 
     val editingLectureBuildings = editingLectureDetail.map { lecture ->
