@@ -47,6 +47,10 @@ class LectureDetailViewModel @Inject constructor(
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
     val editingLectureReview = _editingLectureDetail.map { lecture ->
+        /**
+         * 로컬 저장소에는 리뷰 정보를 저장하지 않으므로, 시간표탭에서 강의상세로 진입하면 editingLectureDetail.value.review가 null이다
+         * 따라서 getLectureReview()로 리뷰 정보만을 따로 불러온다
+         */
         lecture.review?.rating?.let { lecture.review }
             ?: runCatching {
                 getLectureReview()
