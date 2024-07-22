@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.view.TextRect
+import com.wafflestudio.snutt2.components.view.TextRectTemp
 import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -57,7 +58,7 @@ object TimetableCanvasObjects {
 
     val lectureCellTextRect
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
@@ -66,7 +67,7 @@ object TimetableCanvasObjects {
 
     val lectureCellTextRectReduced
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 8.8f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
@@ -75,7 +76,7 @@ object TimetableCanvasObjects {
 
     val lectureCellSubTextRect
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 12f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
@@ -84,7 +85,7 @@ object TimetableCanvasObjects {
 
     val lectureCellSubTextRectReduced
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 9.6f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
@@ -93,7 +94,7 @@ object TimetableCanvasObjects {
 
     val lectureCellSubTextRectBold
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 12f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
@@ -102,7 +103,7 @@ object TimetableCanvasObjects {
 
     val lectureCellSubTextRectReducedBold
         @Composable get() =
-            TextRect(
+            TextRectTemp(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 9.6f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)

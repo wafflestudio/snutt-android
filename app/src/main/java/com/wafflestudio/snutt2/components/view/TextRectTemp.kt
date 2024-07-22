@@ -12,6 +12,7 @@ class TextRectTemp(paint: Paint) {
     private var lineheight = 0
     private var maxWidth = 0
     private var lines = 0
+    private var maxlines = 0
     private val starts = mutableListOf<Int>()
     private val stops = mutableListOf<Int>()
     private var textHeights = mutableListOf<Int>()
@@ -24,10 +25,12 @@ class TextRectTemp(paint: Paint) {
         this.text = text
         this.maxWidth = maxWidth
         cutToLines()
+        maxlines = lines
     }
 
     private fun clear() {
         lines = 0
+        maxlines = 0
         starts.clear()
         stops.clear()
     }
@@ -67,6 +70,11 @@ class TextRectTemp(paint: Paint) {
     }
 
     fun getLines() = lines
+
+    fun getTextHeight(reduceLine: Boolean = false): Int {
+        if (reduceLine) maxlines-=1
+        return textHeights[maxlines-1]
+    }
 
     init {
         metrics = paint.fontMetricsInt
