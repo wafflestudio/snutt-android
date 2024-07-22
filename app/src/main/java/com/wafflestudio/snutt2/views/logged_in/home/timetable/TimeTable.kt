@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
@@ -286,7 +287,12 @@ private fun DrawClassTime(
         val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
         val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
         val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
+
         var reduced = false
+        var courseTitleHeight = 0
+        var locationHeight = 0
+        var lectureNumberHeight = 0
+        var instructorHeight = 0
 
         val rect = RectF(left, top, right, bottom)
 
@@ -301,88 +307,38 @@ private fun DrawClassTime(
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
 
-        var courseTitleHeight = if (tableLectureCustomOptions.title) {
-            lectureCellTextRect.prepare(
-                courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-            )
-        } else {
-            0
-        }
-        var locationHeight = if (tableLectureCustomOptions.place) {
-            lectureCellPlaceTextRect.prepare(
-                classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-            )
-        } else {
-            0
-        }
-        var lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
-            lectureCellLectureNumberTextRect.prepare(
-                lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-            )
-        } else {
-            0
-        }
-        var instructorHeight = if (tableLectureCustomOptions.instructor) {
-            lectureCellInstructorTextRect.prepare(
-                instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-            )
-        } else {
-            0
-        }
+        lectureCellTextRect.prepare(courseTitle, cellWidth.toInt(), tableLectureCustomOptions.title)
+        lectureCellPlaceTextRect.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+        lectureCellLectureNumberTextRect.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
+        lectureCellInstructorTextRect.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
 
-        if (lectureCellPlaceTextRect.wasCut() || lectureCellLectureNumberTextRect.wasCut() || lectureCellInstructorTextRect.wasCut()) {
+        courseTitleHeight = lectureCellTextRect.getTextHeight()
+        locationHeight = lectureCellPlaceTextRect.getTextHeight()
+        lectureNumberHeight = lectureCellLectureNumberTextRect.getTextHeight()
+        instructorHeight = lectureCellInstructorTextRect.getTextHeight()
+
+        if ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
+            lectureCellPlaceTextRectReduced.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+            lectureCellLectureNumberTextRectReduced.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
+            lectureCellInstructorTextRectReduced.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
             reduced = true
-            locationHeight = if (tableLectureCustomOptions.place) {
-                lectureCellPlaceTextRectReduced.prepare(
-                    classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-                )
-            } else {
-                0
-            }
-            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
-                lectureCellLectureNumberTextRectReduced.prepare(
-                    lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-                )
-            } else {
-                0
-            }
-            instructorHeight = if (tableLectureCustomOptions.instructor) {
-                lectureCellInstructorTextRectReduced.prepare(
-                    instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-                )
-            } else {
-                0
-            }
-        }
 
-        if (lectureCellPlaceTextRectReduced.wasCut() || lectureCellLectureNumberTextRectReduced.wasCut() || lectureCellInstructorTextRectReduced.wasCut()) {
-            courseTitleHeight = if (tableLectureCustomOptions.title) {
-                lectureCellTextRect.prepareSingleLine(
-                    courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-                )
-            } else {
-                0
-            }
-            locationHeight = if (tableLectureCustomOptions.place) {
-                lectureCellPlaceTextRectReduced.prepareSingleLine(
-                    classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-                )
-            } else {
-                0
-            }
-            lectureNumberHeight = if (tableLectureCustomOptions.lectureNumber) {
-                lectureCellLectureNumberTextRectReduced.prepareSingleLine(
-                    lectureNumberToDraw, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight,
-                )
-            } else {
-                0
-            }
-            instructorHeight = if (tableLectureCustomOptions.instructor) {
-                lectureCellInstructorTextRectReduced.prepareSingleLine(
-                    instructor, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight - locationHeight - lectureNumberHeight,
-                )
-            } else {
-                0
+            while ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
+                when {
+                    lectureCellInstructorTextRectReduced.getMaxLines() > 1 -> {
+                        instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(true)
+                    }
+                    lectureCellLectureNumberTextRectReduced.getMaxLines() > 1 -> {
+                        lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(true)
+                    }
+                    lectureCellPlaceTextRectReduced.getMaxLines() > 1 -> {
+                        locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(true)
+                    }
+                    lectureCellTextRect.getMaxLines() > 1 -> {
+                        courseTitleHeight = lectureCellTextRect.getTextHeight(true)
+                    }
+                    else -> break
+                }
             }
         }
 
