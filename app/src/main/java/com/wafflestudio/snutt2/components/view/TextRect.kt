@@ -50,7 +50,7 @@ class TextRect(paint: Paint) {
             val before = -metrics.ascent
             val after = metrics.descent + metrics.leading
             var y = top
-            for (n in 0..<maxlines) {
+            for (n in 0 until maxlines) {
                 y += before
                 val t = if (wasCut && n == maxlines - 1) {
                     text.substring(starts[n], stops[n]) + "..."
@@ -74,7 +74,7 @@ class TextRect(paint: Paint) {
     private fun attachEllipsis() {
         if (wasCut) {
             while (true) {
-                val lastLineText = text.substring(starts[maxlines - 1]..<stops[maxlines - 1])
+                val lastLineText = text.substring(starts[maxlines - 1] until stops[maxlines - 1])
                 paint.getTextBounds("$lastLineText...", 0, lastLineText.length + 3, bounds)
                 if (bounds.width() <= maxWidth) break
                 stops[maxlines - 1] -= 1
@@ -105,7 +105,7 @@ class TextRect(paint: Paint) {
 
     private fun cutToSingleLine(text: String): String {
         var result = ""
-        for (i in 0..<text.length) {
+        for (i in 0 until text.length) {
             val char = text[i]
             if (char == '\n' && result.isNotEmpty()) return result
             if (char == ' ' && result.isEmpty()) continue
@@ -113,7 +113,7 @@ class TextRect(paint: Paint) {
             result += char
             paint.getTextBounds(result, 0, result.length, bounds)
             if (bounds.width() > maxWidth) {
-                while (result.lastIndexOf(' ') in 0..<result.length - 1) {
+                while (result.lastIndexOf(' ') in 0 until result.length - 1) {
                     result = result.dropLast(1)
                 }
                 result = result.dropLast(1)
@@ -128,10 +128,4 @@ class TextRect(paint: Paint) {
         this.paint = paint
         this.lineheight = -metrics.ascent + metrics.descent + metrics.leading
     }
-}
-
-fun main() {
-    val a = "초급한문 1"
-    println(a.indexOf("초급한문"))
-    println(a.substring(0..<3))
 }
