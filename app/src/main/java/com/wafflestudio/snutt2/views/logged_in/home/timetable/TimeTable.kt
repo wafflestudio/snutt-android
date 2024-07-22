@@ -321,6 +321,11 @@ private fun DrawClassTime(
             lectureCellPlaceTextRectReduced.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
             lectureCellLectureNumberTextRectReduced.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
             lectureCellInstructorTextRectReduced.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
+
+            courseTitleHeight = lectureCellTextRect.getTextHeight()
+            locationHeight = lectureCellPlaceTextRectReduced.getTextHeight()
+            lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight()
+            instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight()
             reduced = true
 
             while ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
@@ -340,6 +345,11 @@ private fun DrawClassTime(
                     else -> break
                 }
             }
+
+            if ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) instructorHeight = 0
+            if ((courseTitleHeight + locationHeight + lectureNumberHeight) > cellHeight) lectureNumberHeight = 0
+            if ((courseTitleHeight + locationHeight) > cellHeight) locationHeight = 0
+            if ((courseTitleHeight) > cellHeight) courseTitleHeight = 0
         }
 
         val lastLeading = when {

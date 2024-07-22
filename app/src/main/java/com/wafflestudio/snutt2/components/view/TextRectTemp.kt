@@ -22,7 +22,6 @@ class TextRectTemp(paint: Paint) {
     private var toDraw = true
 
     fun prepare(text: String, maxWidth: Int, toDraw: Boolean) {
-        Log.d("plgafhdteststart",text)
         this.toDraw = toDraw
         clear()
         if (text.isEmpty()) this.toDraw = false
@@ -95,7 +94,6 @@ class TextRectTemp(paint: Paint) {
         var textToPrepare = text
         while (textToPrepare.isNotEmpty()) {
             val textToCut = cutToSingleLine(textToPrepare)
-            Log.d("plgafhdtest",textToCut)
             if (textToCut.isEmpty()) break // 끝이 공백으로 끝나는 예외적인 경우 처리
 
             starts.add(textToPrepare.indexOf(textToCut) + (if (lines==0) 0 else stops[lines-1]))
@@ -103,8 +101,6 @@ class TextRectTemp(paint: Paint) {
             textHeights.add((if (lines==0) 0 else textHeights[lines-1]) + lineheight)
             textToPrepare = text.substring(startIndex = stops[lines])
             lines+=1
-            Log.d("plgafhdtest",starts[lines-1].toString())
-            Log.d("plgafhdtest",stops[lines-1].toString())
         }
     }
 
