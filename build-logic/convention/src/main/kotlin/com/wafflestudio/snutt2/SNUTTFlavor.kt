@@ -1,4 +1,5 @@
 package com.wafflestudio.snutt2
+
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.CommonExtension
@@ -29,6 +30,9 @@ fun configureFlavors(
                     flavorConfigurationBlock(this, it)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
                         applicationIdSuffix = it.applicationIdSuffix
+                        if (it.name === "staging") {
+                            isDefault = true
+                        }
                     }
                 }
             }
