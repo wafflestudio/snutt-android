@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.graphics.Paint
 import android.graphics.RectF
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
@@ -289,10 +288,10 @@ private fun DrawClassTime(
         val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
 
         var reduced = false
-        var courseTitleHeight = 0
-        var locationHeight = 0
-        var lectureNumberHeight = 0
-        var instructorHeight = 0
+        var courseTitleHeight: Int
+        var locationHeight: Int
+        var lectureNumberHeight: Int
+        var instructorHeight: Int
 
         val rect = RectF(left, top, right, bottom)
 
@@ -333,15 +332,19 @@ private fun DrawClassTime(
                     lectureCellInstructorTextRectReduced.getMaxLines() > 1 -> {
                         instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(true)
                     }
+
                     lectureCellLectureNumberTextRectReduced.getMaxLines() > 1 -> {
                         lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(true)
                     }
+
                     lectureCellPlaceTextRectReduced.getMaxLines() > 1 -> {
                         locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(true)
                     }
+
                     lectureCellTextRect.getMaxLines() > 1 -> {
                         courseTitleHeight = lectureCellTextRect.getTextHeight(true)
                     }
+
                     else -> break
                 }
             }

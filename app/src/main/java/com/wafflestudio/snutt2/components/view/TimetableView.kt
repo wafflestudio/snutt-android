@@ -58,7 +58,7 @@ class TimetableView : View {
         }
 
     private val lectureCellTextRect =
-        TextRect(
+        TextRectForWidget(
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 10f.sp(context)
                 typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
@@ -66,7 +66,7 @@ class TimetableView : View {
         )
 
     private val lectureCellSubTextRect =
-        TextRect(
+        TextRectForWidget(
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 11f.sp(context)
                 typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
