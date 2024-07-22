@@ -31,19 +31,6 @@ class TextRect(paint: Paint) {
         maxlines = lines
     }
 
-    fun getMaxLines() = maxlines
-
-    fun getTextHeight(reduceLine: Boolean = false): Int {
-        if (!toDraw || maxlines == 0) return 0 // 항목이 공백으로만 되어있는 예외적인 경우 처리
-        if (reduceLine) {
-            maxlines -= 1
-            wasCut = true
-        }
-        return textHeights[maxlines - 1]
-    }
-
-    fun getLeading(): Int = metrics.leading
-
     fun draw(canvas: Canvas, left: Int, top: Int, bubbleWidth: Int, fgColor: Int) {
         if (toDraw && maxlines > 0) {
             attachEllipsis()
@@ -71,16 +58,18 @@ class TextRect(paint: Paint) {
         }
     }
 
-    private fun attachEllipsis() {
-        if (wasCut) {
-            while (true) {
-                val lastLineText = text.substring(starts[maxlines - 1] until stops[maxlines - 1])
-                paint.getTextBounds("$lastLineText...", 0, lastLineText.length + 3, bounds)
-                if (bounds.width() <= maxWidth) break
-                stops[maxlines - 1] -= 1
-            }
+    fun getMaxLines() = maxlines
+
+    fun getTextHeight(reduceLine: Boolean = false): Int {
+        if (!toDraw || maxlines == 0) return 0 // 항목이 공백으로만 되어있는 예외적인 경우 처리
+        if (reduceLine) {
+            maxlines -= 1
+            wasCut = true
         }
+        return textHeights[maxlines - 1]
     }
+
+    fun getLeading(): Int = metrics.leading
 
     private fun clear() {
         lines = 0
@@ -121,6 +110,17 @@ class TextRect(paint: Paint) {
             }
         }
         return result
+    }
+
+    private fun attachEllipsis() {
+        if (wasCut) {
+            while (true) {
+                val lastLineText = text.substring(starts[maxlines - 1] until stops[maxlines - 1])
+                paint.getTextBounds("$lastLineText...", 0, lastLineText.length + 3, bounds)
+                if (bounds.width() <= maxWidth) break
+                stops[maxlines - 1] -= 1
+            }
+        }
     }
 
     init {
