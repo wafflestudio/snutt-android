@@ -96,8 +96,12 @@ class TextRect(paint: Paint) {
         var result = ""
         for (i in 0 until text.length) {
             val char = text[i]
-            if (char == '\n' && result.isNotEmpty()) return result
-            if (char == ' ' && result.isEmpty()) continue
+
+            when {
+                (char == '\n' && result.isNotEmpty()) -> break
+                (char == '\n' && result.isEmpty()) -> continue
+                (char == ' ' && result.isEmpty()) -> continue
+            }
 
             result += char
             paint.getTextBounds(result, 0, result.length, bounds)
