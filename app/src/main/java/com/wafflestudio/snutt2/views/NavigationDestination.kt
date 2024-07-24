@@ -16,6 +16,7 @@ object NavigationDestination {
     const val Notification = "notifications"
     const val AppReport = "app_report"
     const val OpenLicenses = "open_licenses"
+    const val LicenseDetail = "license_detail"
     const val ServiceInfo = "service_info"
     const val TeamInfo = "team_info"
     const val TimeTableConfig = "timetable_config"

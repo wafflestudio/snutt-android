@@ -75,5 +75,10 @@ fun OpenSourceLicensePage() {
             title = stringResource(R.string.settings_licenses_title),
             onClickNavigateBack = { navController.popBackStack() },
         )
+
+        SettingItem(
+            title = stringResource(R.string.license_colorpicker_title),
+            onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_colorpicker_route)}") },
+        )
     }
 }

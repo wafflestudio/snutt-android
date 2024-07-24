@@ -97,6 +97,26 @@
     <string name="sign_in_kakao_failed_cancelled">카카오 로그인이 취소되었습니다.</string>
     <string name="sign_in_kakao_failed_unknown">카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
 
+    <!--licenses-->
+    <string name="settings_licenses_title">오픈소스 라이선스</string>
+    <string name="license_colorpicker_route">colorpicker</string>
+    <string name="license_colorpicker_title">Color Picker</string>
+    <string name="license_colorpicker_name">Apache License</string>
+    <string name="license_colorpicker_copyright">Copyright 2014–2017 QuadFlask</string>
+    <string name="license_colorpicker_content">Copyright 2014-2017 QuadFlask
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.</string>
+
     <string name="sign_in_find_id_button">아이디 찾기</string>
     <string name="sign_in_find_password_button">비밀번호 재설정</string>
     <string name="sign_in_id_title">아이디</string>
@@ -236,7 +256,6 @@
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
-    <string name="settings_licenses_title">오픈소스 라이선스</string>
     <string name="settings_logout_title">로그아웃</string>
     <string name="settings_logout_message">로그아웃 하시겠습니까?</string>
     <string name="settings_timetable_config_force_fit">시간표 자동 정렬</string>

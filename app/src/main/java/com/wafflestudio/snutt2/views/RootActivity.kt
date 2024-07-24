@@ -393,8 +393,19 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
         composable2(NavigationDestination.AppReport) { AppReportPage() }
-
         composable2(NavigationDestination.OpenLicenses) { OpenSourceLicensePage() }
+
+        composable2(
+            route = "${NavigationDestination.LicenseDetail}?licenseName={licenseName}",
+            arguments = listOf(
+                navArgument("licenseName") {
+                    type = NavType.StringType
+                    nullable = true
+                },
+            ),
+        ) { _ ->
+            LicenseDetailPage()
+        }
 
         composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
         composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
