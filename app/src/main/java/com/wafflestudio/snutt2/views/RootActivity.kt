@@ -393,6 +393,9 @@ class RootActivity : AppCompatActivity() {
 
     private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
         composable2(NavigationDestination.AppReport) { AppReportPage() }
+
+        composable2(NavigationDestination.OpenLicenses) { OpenSourceLicensePage() }
+
         composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
         composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
         composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }

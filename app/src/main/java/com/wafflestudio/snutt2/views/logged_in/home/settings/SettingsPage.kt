@@ -172,7 +172,9 @@ fun SettingsPage(
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
                     onClick = {
-                        showLicenseDialog(context)
+                        navController.navigate(
+                            NavigationDestination.OpenLicenses,
+                        )
                     },
                 )
                 SettingItem(
@@ -324,9 +326,4 @@ fun NewBadge(
                 ),
         )
     }
-}
-
-private fun showLicenseDialog(context: Context) {
-    LicensesDialog.Builder(context).setNotices(R.raw.notices).setIncludeOwnLicense(true).build()
-        .show()
 }
