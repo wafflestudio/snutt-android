@@ -16,6 +16,13 @@ private val SpoqaHanSans = FontFamily(
     Font(R.font.spoqa_han_sans_bold, FontWeight.Bold),
 )
 
+private  val SpoqaHanSansNeo = FontFamily(
+    Font(R.font.spoqa_han_sans_neo_thin, FontWeight.Thin),
+    Font(R.font.spoqa_han_sans_neo_light, FontWeight.Light),
+    Font(R.font.spoqa_han_sans_neo_regular, FontWeight.Medium),
+    Font(R.font.spoqa_han_sans_neo_bold, FontWeight.Bold),
+)
+
 private val Pretendard = FontFamily(
     Font(R.font.pretendard_thin, FontWeight.Thin),
     Font(R.font.pretendard_extralight, FontWeight.ExtraLight),
@@ -92,10 +99,10 @@ val SNUTTTypography @Composable get() = Typography(
 // val f = TextStyle(
 //    color = Color.Black,
 //    fontSize = 14.sp,
-//    fontFamily = SpoqaHanSans,
+//    fontFamily = Pretendard,
 // )
 // val g = TextStyle(
 //    color = Color.Black,
 //    fontSize = 13.sp,
-//    fontFamily = SpoqaHanSans,
+//    fontFamily = Pretendard,
 // )
