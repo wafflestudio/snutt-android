@@ -69,7 +69,7 @@ object TimetableCanvasObjects {
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
-                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_bold)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_semibold)
                 },
             )
 
