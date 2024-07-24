@@ -38,20 +38,17 @@ fun LicenseDetailPage() {
 
     val title: String
     val name: String
-    val copyright: String
     val content: String
 
     when (licenseName) {
         stringResource(R.string.license_colorpicker_route) -> {
             title = stringResource(R.string.license_colorpicker_title)
             name = stringResource(R.string.license_colorpicker_name)
-            copyright = stringResource(R.string.license_colorpicker_copyright)
             content = stringResource(R.string.license_colorpicker_content)
         }
         else -> {
             title = ""
             name = ""
-            copyright = ""
             content = ""
         }
     }
@@ -69,12 +66,6 @@ fun LicenseDetailPage() {
 
         Text(
             text = name,
-            style = SNUTTTypography.body2,
-            modifier = Modifier.padding(15.dp)
-        )
-
-        Text(
-            text = copyright,
             style = SNUTTTypography.body2,
             modifier = Modifier.padding(15.dp)
         )
