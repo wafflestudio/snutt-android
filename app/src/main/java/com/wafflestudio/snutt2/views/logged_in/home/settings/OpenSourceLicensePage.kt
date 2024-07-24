@@ -76,9 +76,26 @@ fun OpenSourceLicensePage() {
             onClickNavigateBack = { navController.popBackStack() },
         )
 
+        Margin(height = 10.dp)
+
         SettingItem(
             title = stringResource(R.string.license_colorpicker_title),
             onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_colorpicker_route)}") },
+        )
+
+        SettingItem(
+            title = stringResource(R.string.license_guava_title),
+            onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_guava_route)}") },
+        )
+
+        SettingItem(
+            title = stringResource(R.string.license_retrofit_title),
+            onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_retrofit_route)}") },
+        )
+
+        SettingItem(
+            title = stringResource(R.string.license_okhttp_title),
+            onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_okhttp_route)}") },
         )
     }
 }

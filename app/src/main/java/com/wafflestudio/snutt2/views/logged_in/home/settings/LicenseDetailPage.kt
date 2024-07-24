@@ -46,6 +46,21 @@ fun LicenseDetailPage() {
             name = stringResource(R.string.license_colorpicker_name)
             content = stringResource(R.string.license_colorpicker_content)
         }
+        stringResource(R.string.license_guava_route) -> {
+            title = stringResource(R.string.license_colorpicker_title)
+            name = stringResource(R.string.license_colorpicker_name)
+            content = stringResource(R.string.license_colorpicker_content)
+        }
+        stringResource(R.string.license_retrofit_route) -> {
+            title = stringResource(R.string.license_colorpicker_title)
+            name = stringResource(R.string.license_colorpicker_name)
+            content = stringResource(R.string.license_colorpicker_content)
+        }
+        stringResource(R.string.license_okhttp_route) -> {
+            title = stringResource(R.string.license_colorpicker_title)
+            name = stringResource(R.string.license_colorpicker_name)
+            content = stringResource(R.string.license_colorpicker_content)
+        }
         else -> {
             title = ""
             name = ""
