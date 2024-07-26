@@ -7,7 +7,7 @@ import android.graphics.Rect
 
 class TextRect(private var paint: Paint) {
     private var metrics: FontMetricsInt = paint.fontMetricsInt
-    private var lineheight = 0
+    private var singleLineHeight = 0
     private var maxWidth = 0
     private var lines = 0
     private var maxlines = 0
@@ -85,7 +85,7 @@ class TextRect(private var paint: Paint) {
 
             starts.add(textToPrepare.indexOf(textToCut) + (if (lines == 0) 0 else stops[lines - 1]))
             stops.add(starts[lines] + textToCut.length)
-            textHeights.add((if (lines == 0) 0 else textHeights[lines - 1]) + lineheight)
+            textHeights.add((if (lines == 0) 0 else textHeights[lines - 1]) + singleLineHeight)
             textToPrepare = text.substring(startIndex = stops[lines])
             lines += 1
         }
@@ -125,6 +125,6 @@ class TextRect(private var paint: Paint) {
     }
 
     init {
-        this.lineheight = -metrics.ascent + metrics.descent + metrics.leading
+        this.singleLineHeight = -metrics.ascent + metrics.descent + metrics.leading
     }
 }
