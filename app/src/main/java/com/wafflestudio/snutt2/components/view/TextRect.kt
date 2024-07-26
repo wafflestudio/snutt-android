@@ -10,7 +10,7 @@ class TextRect(private var paint: Paint) {
     private var singleLineHeight = 0
     private var cellWidth = 0
     private var lines = 0
-    private var maxlines = 0
+    private var availableLines = 0
     private val starts = mutableListOf<Int>()
     private val stops = mutableListOf<Int>()
     private var textHeights = mutableListOf<Int>()
@@ -27,18 +27,18 @@ class TextRect(private var paint: Paint) {
         this.text = text
         this.cellWidth = cellWidth
         cutToLines()
-        maxlines = lines
+        availableLines = lines
     }
 
     fun draw(canvas: Canvas, left: Int, top: Int, fgColor: Int) {
-        if (toDraw && maxlines > 0) {
+        if (toDraw && availableLines > 0) {
             attachEllipsis()
             val before = -metrics.ascent
             val after = metrics.descent + metrics.leading
             var y = top
-            for (n in 0 until maxlines) {
+            for (n in 0 until availableLines) {
                 y += before
-                val t = if (wasCut && n == maxlines - 1) {
+                val t = if (wasCut && n == availableLines - 1) {
                     text.substring(starts[n], stops[n]) + "..."
                 } else {
                     text.substring(starts[n], stops[n])
@@ -57,22 +57,22 @@ class TextRect(private var paint: Paint) {
         }
     }
 
-    fun getMaxLines() = maxlines
+    fun getAvailableLines() = availableLines
 
     fun getTextHeight(reduceLine: Boolean = false): Int {
-        if (!toDraw || maxlines == 0) return 0 // 항목이 공백으로만 되어있는 예외적인 경우 처리
+        if (!toDraw || availableLines == 0) return 0 // 항목이 공백으로만 되어있는 예외적인 경우 처리
         if (reduceLine) {
-            maxlines -= 1
+            availableLines -= 1
             wasCut = true
         }
-        return textHeights[maxlines - 1]
+        return textHeights[availableLines - 1]
     }
 
     fun getLeading(): Int = metrics.leading
 
     private fun clear() {
         lines = 0
-        maxlines = 0
+        availableLines = 0
         starts.clear()
         stops.clear()
     }
@@ -116,10 +116,10 @@ class TextRect(private var paint: Paint) {
     private fun attachEllipsis() {
         if (wasCut) {
             while (true) {
-                val lastLineText = text.substring(starts[maxlines - 1] until stops[maxlines - 1])
+                val lastLineText = text.substring(starts[availableLines - 1] until stops[availableLines - 1])
                 paint.getTextBounds("$lastLineText...", 0, lastLineText.length + 3, bounds)
                 if (bounds.width() <= cellWidth) break
-                stops[maxlines - 1] -= 1
+                stops[availableLines - 1] -= 1
             }
         }
     }

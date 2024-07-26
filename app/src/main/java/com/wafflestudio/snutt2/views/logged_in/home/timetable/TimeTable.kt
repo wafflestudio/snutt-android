@@ -329,19 +329,19 @@ private fun DrawClassTime(
 
             while ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
                 when {
-                    lectureCellInstructorTextRectReduced.getMaxLines() > 1 -> {
+                    lectureCellInstructorTextRectReduced.getAvailableLines() > 1 -> {
                         instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(true)
                     }
 
-                    lectureCellLectureNumberTextRectReduced.getMaxLines() > 1 -> {
+                    lectureCellLectureNumberTextRectReduced.getAvailableLines() > 1 -> {
                         lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(true)
                     }
 
-                    lectureCellPlaceTextRectReduced.getMaxLines() > 1 -> {
+                    lectureCellPlaceTextRectReduced.getAvailableLines() > 1 -> {
                         locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(true)
                     }
 
-                    lectureCellTextRect.getMaxLines() > 1 -> {
+                    lectureCellTextRect.getAvailableLines() > 1 -> {
                         courseTitleHeight = lectureCellTextRect.getTextHeight(true)
                     }
 
