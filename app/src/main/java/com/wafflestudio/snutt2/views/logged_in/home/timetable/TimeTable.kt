@@ -216,6 +216,8 @@ private fun DrawLecture(
         fittedTrimParam = fittedTrimParam,
         classTime = classTime,
         courseTitle = lecture.course_title,
+        lectureNumber = lecture.lecture_number ?: "",
+        instructor = lecture.instructor,
         bgColor =
         if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
             lecture.color.bgColor!!
@@ -240,6 +242,8 @@ private fun DrawClassTime(
     fittedTrimParam: TableTrimParam,
     classTime: ClassTimeDto,
     courseTitle: String,
+    lectureNumber: String,
+    instructor: String,
     bgColor: Int,
     fgColor: Int,
     isCustom: Boolean = false,
@@ -247,10 +251,18 @@ private fun DrawClassTime(
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
     val cellPadding = TimetableCanvasObjects.cellPadding
+
     val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
-    val lectureCellSubTextRect = TimetableCanvasObjects.lectureCellSubTextRect
+    val lectureCellPlaceTextRect = TimetableCanvasObjects.lectureCellSubTextRectBold
+    val lectureCellPlaceTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReducedBold
+    val lectureCellLectureNumberTextRect = TimetableCanvasObjects.lectureCellSubTextRect
+    val lectureCellLectureNumberTextRectReduced = TimetableCanvasObjects.lectureCellSubTextRectReduced
+    val lectureCellInstructorTextRect = TimetableCanvasObjects.lectureCellTextRect
+    val lectureCellInstructorTextRectReduced = TimetableCanvasObjects.lectureCellTextRectReduced
+
     val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
     val compactMode = LocalCompactState.current
+    val tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
@@ -262,6 +274,8 @@ private fun DrawClassTime(
             ),
         )
 
+    val lectureNumberToDraw = if (lectureNumber.isNotEmpty()) ("($lectureNumber)") else ""
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
             (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
@@ -272,6 +286,12 @@ private fun DrawClassTime(
         val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
         val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
         val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
+
+        var reduced = false
+        var courseTitleHeight: Int
+        var locationHeight: Int
+        var lectureNumberHeight: Int
+        var instructorHeight: Int
 
         val rect = RectF(left, top, right, bottom)
 
@@ -286,28 +306,124 @@ private fun DrawClassTime(
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
 
-        val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-        )
-        val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-        )
+        lectureCellTextRect.prepare(courseTitle, cellWidth.toInt(), tableLectureCustomOptions.title)
+        lectureCellPlaceTextRect.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+        lectureCellLectureNumberTextRect.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
+        lectureCellInstructorTextRect.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
+
+        courseTitleHeight = lectureCellTextRect.getTextHeight()
+        locationHeight = lectureCellPlaceTextRect.getTextHeight()
+        lectureNumberHeight = lectureCellLectureNumberTextRect.getTextHeight()
+        instructorHeight = lectureCellInstructorTextRect.getTextHeight()
+
+        if ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
+            lectureCellPlaceTextRectReduced.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+            lectureCellLectureNumberTextRectReduced.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
+            lectureCellInstructorTextRectReduced.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
+
+            courseTitleHeight = lectureCellTextRect.getTextHeight()
+            locationHeight = lectureCellPlaceTextRectReduced.getTextHeight()
+            lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight()
+            instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight()
+            reduced = true
+
+            while ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
+                when {
+                    lectureCellInstructorTextRectReduced.getAvailableLines() > 1 -> {
+                        instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(reduceLine = true)
+                    }
+
+                    lectureCellLectureNumberTextRectReduced.getAvailableLines() > 1 -> {
+                        lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(reduceLine = true)
+                    }
+
+                    lectureCellPlaceTextRectReduced.getAvailableLines() > 1 -> {
+                        locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(reduceLine = true)
+                    }
+
+                    lectureCellTextRect.getAvailableLines() > 1 -> {
+                        courseTitleHeight = lectureCellTextRect.getTextHeight(reduceLine = true)
+                    }
+
+                    else -> break
+                }
+            }
+
+            if ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) instructorHeight = 0
+            if ((courseTitleHeight + locationHeight + lectureNumberHeight) > cellHeight) lectureNumberHeight = 0
+            if ((courseTitleHeight + locationHeight) > cellHeight) locationHeight = 0
+            if ((courseTitleHeight) > cellHeight) courseTitleHeight = 0
+        }
+
+        // 텍스트 위아래 정렬을 위해, 마지막 줄의 Leading을 알아야 함
+        val lastLeading = when {
+            tableLectureCustomOptions.instructor -> lectureCellInstructorTextRect.getLeading()
+            tableLectureCustomOptions.lectureNumber -> if (reduced) lectureCellLectureNumberTextRectReduced.getLeading() else lectureCellLectureNumberTextRect.getLeading()
+            tableLectureCustomOptions.place -> if (reduced) lectureCellPlaceTextRectReduced.getLeading() else lectureCellPlaceTextRect.getLeading()
+            tableLectureCustomOptions.title -> if (reduced) lectureCellPlaceTextRectReduced.getLeading() else lectureCellTextRect.getLeading()
+            else -> 0
+        }
 
         drawIntoCanvas { canvas ->
-            lectureCellTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
-            )
-            lectureCellSubTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + courseTitleHeight + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
-            )
+            if (courseTitleHeight > 0) {
+                lectureCellTextRect.draw(
+                    canvas.nativeCanvas,
+                    (left + cellPadding).toInt(),
+                    (top + cellPadding + (cellHeight - courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                    fgColor,
+                )
+            }
+            if (locationHeight > 0) {
+                if (!reduced) {
+                    lectureCellPlaceTextRect.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                } else {
+                    lectureCellPlaceTextRectReduced.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                }
+            }
+            if (lectureNumberHeight > 0) {
+                if (!reduced) {
+                    lectureCellLectureNumberTextRect.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                } else {
+                    lectureCellLectureNumberTextRectReduced.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                }
+            }
+            if (instructorHeight > 0) {
+                if (!reduced) {
+                    lectureCellInstructorTextRect.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                } else {
+                    lectureCellInstructorTextRectReduced.draw(
+                        canvas.nativeCanvas,
+                        (left + cellPadding).toInt(),
+                        (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
+                        fgColor,
+                    )
+                }
+            }
         }
     }
 }
@@ -317,7 +433,7 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd,
+                fittedTrimParam, classTime, course_title, lecture_number ?: "", instructor, -0x1f1f20, -0xcccccd,
             )
         }
     }

@@ -59,7 +59,16 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 10f.sp(LocalContext.current)
+                    textSize = 11f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
+    val lectureCellTextRectReduced
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8.8f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
                 },
             )
@@ -68,7 +77,34 @@ object TimetableCanvasObjects {
         @Composable get() =
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    textSize = 11f.sp(LocalContext.current)
+                    textSize = 12f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
+    val lectureCellSubTextRectReduced
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 9.6f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                },
+            )
+
+    val lectureCellSubTextRectBold
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 12f.sp(LocalContext.current)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
+                },
+            )
+
+    val lectureCellSubTextRectReducedBold
+        @Composable get() =
+            TextRect(
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 9.6f.sp(LocalContext.current)
                     typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
                 },
             )

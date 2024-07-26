@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -54,12 +55,14 @@ fun TimetableConfigPage() {
     val viewModel = hiltViewModel<UserViewModel>()
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val trimParam by viewModel.trimParam.collectAsState()
+    val tableLectureCustomOptions by viewModel.tableLectureCustomOption.collectAsState()
     val compactMode by viewModel.compactMode.collectAsState()
 
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
+
     val tableState =
-        TableState(table ?: TableDto.Default, trimParam, previewTheme)
+        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
 
     Column(
         modifier = Modifier
@@ -128,7 +131,6 @@ fun TimetableConfigPage() {
             }
             Row(
                 modifier = Modifier
-                    .height(40.dp)
                     .padding(horizontal = 20.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -139,7 +141,68 @@ fun TimetableConfigPage() {
                     )
                 }
             }
-            Margin(height = 10.dp)
+            SettingColumn(
+                title = stringResource(R.string.settings_timetable_lecture_custom),
+            ) {
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_title),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.TITLE, tableLectureCustomOptions.title.not())
+                        }
+                    },
+                ) {
+                    PoorSwitch(state = tableLectureCustomOptions.title)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_place),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.PLACE, tableLectureCustomOptions.place.not())
+                        }
+                    },
+                ) {
+                    PoorSwitch(state = tableLectureCustomOptions.place)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_lecture_number),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.LECTURENUMBER, tableLectureCustomOptions.lectureNumber.not())
+                        }
+                    },
+                ) {
+                    PoorSwitch(state = tableLectureCustomOptions.lectureNumber)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_lecture_custom_instructor),
+                    hasNextPage = false,
+                    onClick = {
+                        scope.launch {
+                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.INSTRUCTOR, tableLectureCustomOptions.instructor.not())
+                        }
+                    },
+                ) {
+                    PoorSwitch(state = tableLectureCustomOptions.instructor)
+                }
+            }
+            Text(
+                text = stringResource(R.string.settings_timetable_lecture_custom_warning),
+                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp),
+            )
+            Margin(height = 20.dp)
+            Text(
+                text = stringResource(R.string.settings_timetable_preview),
+                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                modifier = Modifier.padding(horizontal = 48.dp, vertical = 7.dp),
+            )
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5))
