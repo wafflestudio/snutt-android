@@ -5,9 +5,8 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.graphics.Rect
 
-class TextRect(paint: Paint) {
-    private var metrics: FontMetricsInt
-    private var paint: Paint
+class TextRect(private var paint: Paint) {
+    private var metrics: FontMetricsInt = paint.fontMetricsInt
     private var lineheight = 0
     private var maxWidth = 0
     private var lines = 0
@@ -94,9 +93,7 @@ class TextRect(paint: Paint) {
 
     private fun cutToSingleLine(text: String): String {
         var result = ""
-        for (i in 0 until text.length) {
-            val char = text[i]
-
+        for (char in text) {
             when {
                 (char == '\n' && result.isNotEmpty()) -> break
                 (char == '\n' && result.isEmpty()) -> continue
@@ -128,8 +125,6 @@ class TextRect(paint: Paint) {
     }
 
     init {
-        metrics = paint.fontMetricsInt
-        this.paint = paint
         this.lineheight = -metrics.ascent + metrics.descent + metrics.leading
     }
 }
