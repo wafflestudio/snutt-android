@@ -330,19 +330,19 @@ private fun DrawClassTime(
             while ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
                 when {
                     lectureCellInstructorTextRectReduced.getAvailableLines() > 1 -> {
-                        instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(true)
+                        instructorHeight = lectureCellInstructorTextRectReduced.getTextHeight(reduceLine = true)
                     }
 
                     lectureCellLectureNumberTextRectReduced.getAvailableLines() > 1 -> {
-                        lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(true)
+                        lectureNumberHeight = lectureCellLectureNumberTextRectReduced.getTextHeight(reduceLine = true)
                     }
 
                     lectureCellPlaceTextRectReduced.getAvailableLines() > 1 -> {
-                        locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(true)
+                        locationHeight = lectureCellPlaceTextRectReduced.getTextHeight(reduceLine = true)
                     }
 
                     lectureCellTextRect.getAvailableLines() > 1 -> {
-                        courseTitleHeight = lectureCellTextRect.getTextHeight(true)
+                        courseTitleHeight = lectureCellTextRect.getTextHeight(reduceLine = true)
                     }
 
                     else -> break
@@ -355,6 +355,7 @@ private fun DrawClassTime(
             if ((courseTitleHeight) > cellHeight) courseTitleHeight = 0
         }
 
+        // 텍스트 위아래 정렬을 위해, 마지막 줄의 Leading을 알아야 함
         val lastLeading = when {
             tableLectureCustomOptions.instructor -> lectureCellInstructorTextRect.getLeading()
             tableLectureCustomOptions.lectureNumber -> if (reduced) lectureCellLectureNumberTextRectReduced.getLeading() else lectureCellLectureNumberTextRect.getLeading()
