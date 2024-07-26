@@ -369,7 +369,6 @@ private fun DrawClassTime(
                     canvas.nativeCanvas,
                     (left + cellPadding).toInt(),
                     (top + cellPadding + (cellHeight - courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                    cellWidth.toInt(),
                     fgColor,
                 )
             }
@@ -379,7 +378,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 } else {
@@ -387,7 +385,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight - locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 }
@@ -398,7 +395,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 } else {
@@ -406,7 +402,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight - lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 }
@@ -417,7 +412,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 } else {
@@ -425,7 +419,6 @@ private fun DrawClassTime(
                         canvas.nativeCanvas,
                         (left + cellPadding).toInt(),
                         (top + cellPadding + (cellHeight + courseTitleHeight + locationHeight + lectureNumberHeight - instructorHeight + lastLeading) / 2).toInt(),
-                        cellWidth.toInt(),
                         fgColor,
                     )
                 }

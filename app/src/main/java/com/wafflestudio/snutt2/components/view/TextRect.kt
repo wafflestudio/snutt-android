@@ -30,7 +30,7 @@ class TextRect(private var paint: Paint) {
         maxlines = lines
     }
 
-    fun draw(canvas: Canvas, left: Int, top: Int, bubbleWidth: Int, fgColor: Int) {
+    fun draw(canvas: Canvas, left: Int, top: Int, fgColor: Int) {
         if (toDraw && maxlines > 0) {
             attachEllipsis()
             val before = -metrics.ascent
@@ -47,7 +47,7 @@ class TextRect(private var paint: Paint) {
                 // 텍스트 가운데 정렬
                 var leftResult = left
                 paint.getTextBounds(t, 0, t.length, bounds)
-                leftResult += (bubbleWidth - (bounds.right - bounds.left)) / 2
+                leftResult += (cellWidth - (bounds.right - bounds.left)) / 2
 
                 //
                 paint.color = fgColor
