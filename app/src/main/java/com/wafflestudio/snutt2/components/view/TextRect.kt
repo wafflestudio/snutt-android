@@ -44,11 +44,10 @@ class TextRect(private var paint: Paint) {
                     text.substring(starts[n], stops[n])
                 }
 
-                // 텍스트 가운데 정렬
+                // 텍스트 좌우 가운데 정렬
                 paint.getTextBounds(textWithEllipsis, 0, textWithEllipsis.length, bounds)
                 val textLeft = cellLeft + (cellWidth - (bounds.right - bounds.left)) / 2
 
-                //
                 paint.color = fgColor
                 canvas.drawText(textWithEllipsis, textLeft.toFloat(), y.toFloat(), paint)
                 y += after
@@ -59,7 +58,7 @@ class TextRect(private var paint: Paint) {
     fun getAvailableLines() = availableLines
 
     fun getTextHeight(reduceLine: Boolean = false): Int {
-        if (!toDraw || availableLines == 0) return 0 // 항목이 공백으로만 되어있는 예외적인 경우 처리
+        if (!toDraw || availableLines == 0) return 0 // 항목이 공백으로만 되어있는 경우, 아예 그리지 않도록 처리
         if (reduceLine) {
             availableLines -= 1
             wasCut = true
@@ -80,7 +79,7 @@ class TextRect(private var paint: Paint) {
         var textToPrepare = text
         while (textToPrepare.isNotEmpty()) {
             val textToCut = cutToSingleLine(textToPrepare)
-            if (textToCut.isEmpty()) break // 끝이 공백으로 끝나는 예외적인 경우 처리
+            if (textToCut.isEmpty()) break // 항목의 끝이 공백으로 끝나는 경우, 잘라내도록 처리
 
             starts.add(textToPrepare.indexOf(textToCut) + (if (lines == 0) 0 else stops[lines - 1]))
             stops.add(starts[lines] + textToCut.length)
