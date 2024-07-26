@@ -30,12 +30,12 @@ class TextRect(private var paint: Paint) {
         availableLines = lines
     }
 
-    fun draw(canvas: Canvas, left: Int, top: Int, fgColor: Int) {
+    fun draw(canvas: Canvas, cellLeft: Int, cellTop: Int, fgColor: Int) {
         if (toDraw && availableLines > 0) {
             attachEllipsis()
             val before = -metrics.ascent
             val after = metrics.descent + metrics.leading
-            var y = top
+            var y = cellTop
             for (n in 0 until availableLines) {
                 y += before
                 val textWithEllipsis = if (wasCut && n == availableLines - 1) {
@@ -45,13 +45,12 @@ class TextRect(private var paint: Paint) {
                 }
 
                 // 텍스트 가운데 정렬
-                var leftResult = left
                 paint.getTextBounds(textWithEllipsis, 0, textWithEllipsis.length, bounds)
-                leftResult += (cellWidth - (bounds.right - bounds.left)) / 2
+                val textLeft = cellLeft + (cellWidth - (bounds.right - bounds.left)) / 2
 
                 //
                 paint.color = fgColor
-                canvas.drawText(textWithEllipsis, leftResult.toFloat(), y.toFloat(), paint)
+                canvas.drawText(textWithEllipsis, textLeft.toFloat(), y.toFloat(), paint)
                 y += after
             }
         }
