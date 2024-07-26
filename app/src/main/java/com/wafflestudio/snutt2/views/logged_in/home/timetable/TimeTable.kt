@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
+import android.content.Context
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.MotionEvent
@@ -212,9 +213,10 @@ private fun DrawLecture(
     val context = LocalContext.current
     val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
 
+    val rectCalculator = rectCalculator(fittedTrimParam, classTime, lecture.isCustom, LocalCompactState.current)
     DrawClassTime(
-        fittedTrimParam = fittedTrimParam,
-        classTime = classTime,
+        rectCalculator = rectCalculator,
+        place = classTime.place,
         courseTitle = lecture.course_title,
         lectureNumber = lecture.lecture_number ?: "",
         instructor = lecture.instructor,
@@ -233,23 +235,20 @@ private fun DrawLecture(
                 R.color.white,
             )
         },
-        isCustom = lecture.isCustom,
     )
 }
 
 @Composable
 private fun DrawClassTime(
-    fittedTrimParam: TableTrimParam,
-    classTime: ClassTimeDto,
+    rectCalculator: RectCalculator,
+    place: String,
     courseTitle: String,
     lectureNumber: String,
     instructor: String,
     bgColor: Int,
     fgColor: Int,
-    isCustom: Boolean = false,
 ) {
-    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
-    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
+    val context = LocalContext.current
     val cellPadding = TimetableCanvasObjects.cellPadding
 
     val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
@@ -261,39 +260,23 @@ private fun DrawClassTime(
     val lectureCellInstructorTextRectReduced = TimetableCanvasObjects.lectureCellTextRectReduced
 
     val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
-    val compactMode = LocalCompactState.current
     val tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions
-
-    val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
-    val hourRangeOffset =
-        Pair(
-            max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
-            min(
-                classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
-                fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1,
-            ),
-        )
 
     val lectureNumberToDraw = if (lectureNumber.isNotEmpty()) ("($lectureNumber)") else ""
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val unitWidth =
-            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
-        val unitHeight =
-            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
-
-        val left = hourLabelWidth + (dayOffset) * unitWidth
-        val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
-        val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
-        val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
-
         var reduced = false
         var courseTitleHeight: Int
         var locationHeight: Int
         var lectureNumberHeight: Int
         var instructorHeight: Int
 
-        val rect = RectF(left, top, right, bottom)
+        val rect = rectCalculator(size, context)
+
+        val left = rect.left
+        val right = rect.right
+        val top = rect.top
+        val bottom = rect.bottom
 
         drawIntoCanvas { canvas ->
             canvas.nativeCanvas.drawRect(rect, Paint().apply { color = bgColor })
@@ -307,7 +290,7 @@ private fun DrawClassTime(
         val cellWidth = right - left - cellPadding * 2
 
         lectureCellTextRect.prepare(courseTitle, cellWidth.toInt(), tableLectureCustomOptions.title)
-        lectureCellPlaceTextRect.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+        lectureCellPlaceTextRect.prepare(place, cellWidth.toInt(), tableLectureCustomOptions.place)
         lectureCellLectureNumberTextRect.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
         lectureCellInstructorTextRect.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
 
@@ -317,7 +300,7 @@ private fun DrawClassTime(
         instructorHeight = lectureCellInstructorTextRect.getTextHeight()
 
         if ((courseTitleHeight + locationHeight + lectureNumberHeight + instructorHeight) > cellHeight) {
-            lectureCellPlaceTextRectReduced.prepare(classTime.place, cellWidth.toInt(), tableLectureCustomOptions.place)
+            lectureCellPlaceTextRectReduced.prepare(place, cellWidth.toInt(), tableLectureCustomOptions.place)
             lectureCellLectureNumberTextRectReduced.prepare(lectureNumberToDraw, cellWidth.toInt(), tableLectureCustomOptions.lectureNumber)
             lectureCellInstructorTextRectReduced.prepare(instructor, cellWidth.toInt(), tableLectureCustomOptions.instructor)
 
@@ -432,9 +415,9 @@ private fun DrawClassTime(
 private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: TableTrimParam) {
     selectedLecture?.run {
         for (classTime in class_time_json) {
-            DrawClassTime(
-                fittedTrimParam, classTime, course_title, lecture_number ?: "", instructor, -0x1f1f20, -0xcccccd,
-            )
+//            DrawClassTime(
+//                fittedTrimParam, classTime, course_title, lecture_number ?: "", instructor, -0x1f1f20, -0xcccccd,
+//            )
         }
     }
 }
