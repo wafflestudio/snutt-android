@@ -38,7 +38,7 @@ class TextRect(private var paint: Paint) {
             var y = top
             for (n in 0 until availableLines) {
                 y += before
-                val t = if (wasCut && n == availableLines - 1) {
+                val textWithEllipsis = if (wasCut && n == availableLines - 1) {
                     text.substring(starts[n], stops[n]) + "..."
                 } else {
                     text.substring(starts[n], stops[n])
@@ -46,12 +46,12 @@ class TextRect(private var paint: Paint) {
 
                 // 텍스트 가운데 정렬
                 var leftResult = left
-                paint.getTextBounds(t, 0, t.length, bounds)
+                paint.getTextBounds(textWithEllipsis, 0, textWithEllipsis.length, bounds)
                 leftResult += (cellWidth - (bounds.right - bounds.left)) / 2
 
                 //
                 paint.color = fgColor
-                canvas.drawText(t, leftResult.toFloat(), y.toFloat(), paint)
+                canvas.drawText(textWithEllipsis, leftResult.toFloat(), y.toFloat(), paint)
                 y += after
             }
         }
