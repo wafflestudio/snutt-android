@@ -20,10 +20,10 @@ class TextRect(private var paint: Paint) {
     private var toDraw = true
 
     fun prepare(text: String, maxWidth: Int, toDraw: Boolean) {
-        this.toDraw = toDraw
         clear()
+        this.toDraw = toDraw
         if (text.isEmpty()) this.toDraw = false
-        if (!toDraw) return
+        if (!this.toDraw) return
         this.text = text
         this.maxWidth = maxWidth
         cutToLines()
@@ -47,8 +47,8 @@ class TextRect(private var paint: Paint) {
                 // 텍스트 가운데 정렬
                 var leftResult = left
                 paint.getTextBounds(t, 0, t.length, bounds)
-                val textWidth = bounds.right - bounds.left
-                leftResult += (bubbleWidth - textWidth) / 2
+                leftResult += (bubbleWidth - (bounds.right - bounds.left)) / 2
+
                 //
                 paint.color = fgColor
                 canvas.drawText(t, leftResult.toFloat(), y.toFloat(), paint)
