@@ -8,7 +8,7 @@ import android.graphics.Rect
 class TextRect(private var paint: Paint) {
     private var metrics: FontMetricsInt = paint.fontMetricsInt
     private var singleLineHeight = 0
-    private var maxWidth = 0
+    private var cellWidth = 0
     private var lines = 0
     private var maxlines = 0
     private val starts = mutableListOf<Int>()
@@ -19,13 +19,13 @@ class TextRect(private var paint: Paint) {
     private var wasCut = false
     private var toDraw = true
 
-    fun prepare(text: String, maxWidth: Int, toDraw: Boolean) {
+    fun prepare(text: String, cellWidth: Int, toDraw: Boolean) {
         clear()
         this.toDraw = toDraw
         if (text.isEmpty()) this.toDraw = false
         if (!this.toDraw) return
         this.text = text
-        this.maxWidth = maxWidth
+        this.cellWidth = cellWidth
         cutToLines()
         maxlines = lines
     }
@@ -102,7 +102,7 @@ class TextRect(private var paint: Paint) {
 
             result += char
             paint.getTextBounds(result, 0, result.length, bounds)
-            if (bounds.width() > maxWidth) {
+            if (bounds.width() > cellWidth) {
                 while (result.lastIndexOf(' ') in 0 until result.length - 1) {
                     result = result.dropLast(1)
                 }
@@ -118,7 +118,7 @@ class TextRect(private var paint: Paint) {
             while (true) {
                 val lastLineText = text.substring(starts[maxlines - 1] until stops[maxlines - 1])
                 paint.getTextBounds("$lastLineText...", 0, lastLineText.length + 3, bounds)
-                if (bounds.width() <= maxWidth) break
+                if (bounds.width() <= cellWidth) break
                 stops[maxlines - 1] -= 1
             }
         }
