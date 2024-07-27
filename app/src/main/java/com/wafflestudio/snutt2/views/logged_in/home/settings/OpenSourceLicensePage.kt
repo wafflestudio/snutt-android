@@ -66,5 +66,10 @@ fun OpenSourceLicensePage() {
             title = stringResource(R.string.license_okhttp_title),
             onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_okhttp_route)}") },
         )
+
+        SettingItem(
+            title = stringResource(R.string.license_pretendard_title),
+            onClick = { navController.navigate("${NavigationDestination.LicenseDetail}?licenseName=${context.getString(R.string.license_pretendard_route)}") },
+        )
     }
 }

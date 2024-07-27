@@ -50,6 +50,11 @@ fun LicenseDetailPage() {
             name = stringResource(R.string.license_okhttp_name)
             content = stringResource(R.string.license_okhttp_content)
         }
+        stringResource(R.string.license_pretendard_route) -> {
+            title = stringResource(R.string.license_pretendard_title)
+            name = stringResource(R.string.license_pretendard_name)
+            content = stringResource(R.string.license_pretendard_content)
+        }
         else -> {
             title = ""
             name = ""
