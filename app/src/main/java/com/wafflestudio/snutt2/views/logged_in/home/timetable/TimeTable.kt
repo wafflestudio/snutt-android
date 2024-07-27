@@ -278,14 +278,6 @@ private fun DrawClassTime(
         val top = rect.top
         val bottom = rect.bottom
 
-        drawIntoCanvas { canvas ->
-            canvas.nativeCanvas.drawRect(rect, Paint().apply { color = bgColor })
-            canvas.nativeCanvas.drawRect(
-                rect,
-                lectureCellBorderPaint,
-            )
-        }
-
         val cellHeight = bottom - top - cellPadding * 2
         val cellWidth = right - left - cellPadding * 2
 
@@ -407,6 +399,15 @@ private fun DrawClassTime(
                     )
                 }
             }
+        }
+
+        val rect2 = rectCalculator(size, context)
+        drawIntoCanvas { canvas ->
+            canvas.nativeCanvas.drawRect(rect2, Paint().apply { color = bgColor })
+            canvas.nativeCanvas.drawRect(
+                rect2,
+                lectureCellBorderPaint,
+            )
         }
     }
 }
