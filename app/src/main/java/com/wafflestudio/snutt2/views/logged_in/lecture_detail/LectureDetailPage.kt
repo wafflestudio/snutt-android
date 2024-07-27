@@ -249,7 +249,7 @@ fun LectureDetailPage(
                                                 apiOnProgress = apiOnProgress,
                                                 apiOnError = apiOnError,
                                                 loadingIndicatorTitle = "",
-                                            ){
+                                            ) {
                                                 if ((modeType as ModeType.Editing).adding) {
                                                     vm.createLecture()
                                                     scope.launch(Dispatchers.Main) { navController.popBackStack() }
