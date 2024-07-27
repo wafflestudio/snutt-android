@@ -90,7 +90,7 @@ fun checkLectureOverlap(
         } catch (e: Exception) {
             when (e) {
                 is ErrorParsedHttpException -> {
-                    if (e.errorDTO?.code == ErrorCode.LECTURE_TIME_OVERLAP) {
+                    if (e.errorDTO?.code == ErrorCode.INVALID_TIME) {
                         onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
                     } else {
                         apiOnError(e)
