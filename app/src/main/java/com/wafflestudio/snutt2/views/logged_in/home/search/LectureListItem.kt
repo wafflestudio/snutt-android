@@ -318,32 +318,20 @@ fun LazyItemScope.LectureListItem(
                                 }
                             }
                         } else {
-                            checkLectureOverlap(
-                                composableStates,
-                                api = {
+                            scope.launch {
+                                launchSuspendApi(
+                                    apiOnProgress = apiOnProgress,
+                                    apiOnError = apiOnError,
+                                    loadingIndicatorTitle = "",
+                                ) {
                                     timetableViewModel.addLecture(
                                         lecture = lectureDataWithState.item,
                                         is_force = false,
                                     )
                                     searchViewModel.toggleLectureSelection(lectureDataWithState.item)
                                     tableListViewModel.fetchTableMap()
-                                },
-                                onLectureOverlap = { message ->
-                                    showLectureOverlapDialog(
-                                        composableStates,
-                                        message,
-                                        forceAddApi = {
-                                            timetableViewModel.addLecture(
-                                                lecture = lectureDataWithState.item,
-                                                is_force = true,
-                                            )
-                                            searchViewModel.toggleLectureSelection(
-                                                lectureDataWithState.item,
-                                            )
-                                        },
-                                    )
-                                },
-                            )
+                                }
+                            }
                         }
                     },
                 ) {
