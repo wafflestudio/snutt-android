@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,7 +28,6 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
-import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.coroutines.launch
 
 @Composable
@@ -172,7 +170,9 @@ fun SettingsPage(
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
                     onClick = {
-                        showLicenseDialog(context)
+                        navController.navigate(
+                            NavigationDestination.OpenLicenses,
+                        )
                     },
                 )
                 SettingItem(
@@ -324,9 +324,4 @@ fun NewBadge(
                 ),
         )
     }
-}
-
-private fun showLicenseDialog(context: Context) {
-    LicensesDialog.Builder(context).setNotices(R.raw.notices).setIncludeOwnLicense(true).build()
-        .show()
 }
