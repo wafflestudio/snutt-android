@@ -156,6 +156,8 @@ fun TutorialPage() {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            } else {
+                throw error
             }
         } else if (token != null) {
             loginWithKaKaoAccessToken(token.accessToken)
