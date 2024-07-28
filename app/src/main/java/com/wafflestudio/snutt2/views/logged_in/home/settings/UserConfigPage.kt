@@ -46,6 +46,11 @@ fun UserConfigPage() {
 
     val viewModel = hiltViewModel<UserViewModel>()
     val user: UserDto? by viewModel.userInfo.collectAsState()
+    val userId by remember(user?.localId) {
+        mutableStateOf(
+            user?.localId?:"",
+        )
+    }
 
     var addIdPasswordDialogState by remember { mutableStateOf(false) }
     var passwordChangeDialogState by remember { mutableStateOf(false) }
@@ -97,13 +102,13 @@ fun UserConfigPage() {
             }
             Margin(height = 10.dp)
             SettingColumn {
-                if (user?.localId.isNullOrEmpty().not()) {
+                if (userId.isNotEmpty()) {
                     SettingItem(
                         title = stringResource(R.string.settings_user_config_id),
                         hasNextPage = false,
                     ) {
                         Text(
-                            text = user?.localId.toString(),
+                            text = userId,
                             style = SNUTTTypography.body1.copy(
                                 color = SNUTTColors.Black500,
                             ),
@@ -162,6 +167,8 @@ fun UserConfigPage() {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             viewModel.addNewLocalId(id, password)
                             context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
+                            viewModel.fetchUserInfo()
+                            addIdPasswordDialogState = false
                         }
                     }
                 }
