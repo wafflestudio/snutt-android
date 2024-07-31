@@ -51,12 +51,6 @@ fun UserConfigPage() {
     var passwordChangeDialogState by remember { mutableStateOf(false) }
     var leaveDialogState by remember { mutableStateOf(false) }
 
-    val facebookConnected by remember(user?.fbName) { // TODO: 페이스북 연동만 가능하기 때문에 임시로 필요, 나중에 삭제
-        mutableStateOf(
-            user?.fbName.isNullOrEmpty().not(),
-        )
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -119,7 +113,7 @@ fun UserConfigPage() {
                         title = stringResource(R.string.settings_user_config_change_password),
                         onClick = { passwordChangeDialogState = true },
                     )
-                } else if (facebookConnected) {
+                } else {
                     SettingItem(
                         title = stringResource(R.string.settings_user_config_add_local_id),
                         onClick = { addIdPasswordDialogState = true },
