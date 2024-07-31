@@ -115,7 +115,7 @@ fun TutorialPage() {
                 context.toast(e.message.toString())
             }
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+            context.toast(result.data.toString())
         } else {
             context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
         }
