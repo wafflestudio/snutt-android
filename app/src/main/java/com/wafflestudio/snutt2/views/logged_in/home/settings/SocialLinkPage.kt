@@ -109,21 +109,21 @@ fun SocialLinkPage() {
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-            Margin(height = 10.dp)
-
-            SettingItem(
-                title = stringResource(R.string.social_link_kakao),
-                hasNextPage = false,
-                onClick = {},
-            )
-
-            Margin(height = 10.dp)
-
-            SettingItem(
-                title = stringResource(R.string.social_link_google),
-                hasNextPage = false,
-                onClick = {},
-            )
+//            Margin(height = 10.dp)
+//
+//            SettingItem(
+//                title = stringResource(R.string.social_link_kakao),
+//                hasNextPage = false,
+//                onClick = {},
+//            )
+//
+//            Margin(height = 10.dp)
+//
+//            SettingItem(
+//                title = stringResource(R.string.social_link_google),
+//                hasNextPage = false,
+//                onClick = {},
+//            )
 
             Margin(height = 10.dp)
 
