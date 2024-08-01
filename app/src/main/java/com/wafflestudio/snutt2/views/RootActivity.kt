@@ -82,7 +82,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
@@ -137,7 +136,7 @@ class RootActivity : AppCompatActivity() {
             throw Exception("snutt 3.7.0 firebase test Exception")
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(
-                Throwable(cause = e, message = "worked well!")
+                Throwable(cause = e, message = "worked well!"),
             )
         }
     }
