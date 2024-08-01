@@ -112,10 +112,10 @@ fun TutorialPage() {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             } catch (e: ApiException) {
-                context.toast(e.message.toString())
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            context.toast(result.data.toString())
+            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
         } else {
             context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
         }
@@ -159,7 +159,7 @@ fun TutorialPage() {
             } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else {
-                context.toast(error.message.toString())
+                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         } else if (token != null) {
             loginWithKaKaoAccessToken(token.accessToken)
