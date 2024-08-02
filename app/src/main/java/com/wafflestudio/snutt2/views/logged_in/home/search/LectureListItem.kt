@@ -35,7 +35,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -133,11 +132,33 @@ fun LazyItemScope.LectureListItem(
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = tagText,
+                    modifier = Modifier.weight(1f),
                     color = SNUTTColors.AllWhite,
                     fontWeight = FontWeight.Light,
                     style = SNUTTTypography.body2,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                Spacer(modifier = Modifier.width(10.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    StarIcon(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .offset(y = 1.dp),
+                        filled = false,
+                        colorFilter = ColorFilter.tint(SNUTTColors.White),
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = lectureDataWithState.item.review?.displayText ?: "-- (0)", // TODO: dto대신 model 사용하고, review를 non-nullable로 만들기
+                        color = SNUTTColors.White,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 12.sp,
+                        style = SNUTTTypography.body2,
+                    )
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ClockIcon(
@@ -223,22 +244,10 @@ fun LazyItemScope.LectureListItem(
                     title = stringResource(R.string.search_result_item_review_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        verifyEmailBeforeApi(
-                            composableStates,
-                            api = {
-                                val url =
-                                    searchViewModel.getLectureReviewUrl(lectureDataWithState.item)
-                                openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
-                            },
-                            onUnverified = {
-                                if (isBookmarkPage) {
-                                    navController.navigateAsOrigin(
-                                        NavigationDestination.Home,
-                                    )
-                                }
-                                pageController.update(HomeItem.Review())
-                            },
-                        )
+                        scope.launch {
+                            val url = lectureDataWithState.item.review?.getReviewUrl(context)
+                            openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
+                        }
                     },
                 ) {
                     ThickReviewIcon(

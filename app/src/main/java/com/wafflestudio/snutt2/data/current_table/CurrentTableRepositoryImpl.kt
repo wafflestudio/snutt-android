@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -93,5 +94,9 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override suspend fun deleteBookmark(lecture: LectureDto) {
         api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+    }
+
+    override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
+        return api._getLectureReviewSummary(lectureId)
     }
 }
