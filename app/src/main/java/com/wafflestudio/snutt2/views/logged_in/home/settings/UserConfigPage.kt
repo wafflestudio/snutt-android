@@ -162,6 +162,8 @@ fun UserConfigPage() {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             viewModel.addNewLocalId(id, password)
                             context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
+                            viewModel.fetchUserInfo()
+                            addIdPasswordDialogState = false
                         }
                     }
                 }

@@ -40,6 +40,10 @@ class UserViewModel @Inject constructor(
         userRepository.setTableTrim(isAuto = enable)
     }
 
+    suspend fun fetchUserInfo() {
+        userRepository.fetchUserInfo()
+    }
+
     suspend fun loginLocal(id: String, password: String) {
         userRepository.postSignIn(id, password)
     }
