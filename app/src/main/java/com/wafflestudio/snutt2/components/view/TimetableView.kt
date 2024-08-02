@@ -46,7 +46,7 @@ class TimetableView : View {
             color = Color.argb(180, 0, 0, 0)
             textSize = 12.sp(context)
             textAlign = Paint.Align.RIGHT
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+            typeface = ResourcesCompat.getFont(context, R.font.pretendard_light)
         }
 
     private val dayLabelTextPaint: Paint =
@@ -54,14 +54,14 @@ class TimetableView : View {
             color = Color.argb(180, 0, 0, 0)
             textSize = 12.sp(context)
             textAlign = Paint.Align.CENTER
-            typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_light)
+            typeface = ResourcesCompat.getFont(context, R.font.pretendard_light)
         }
 
     private val lectureCellTextRect =
         TextRect(
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 10f.sp(context)
-                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_regular)
+                typeface = ResourcesCompat.getFont(context, R.font.pretendard_regular)
             },
         )
 
@@ -69,7 +69,7 @@ class TimetableView : View {
         TextRect(
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = 11f.sp(context)
-                typeface = ResourcesCompat.getFont(context, R.font.spoqa_han_sans_bold)
+                typeface = ResourcesCompat.getFont(context, R.font.pretendard_bold)
             },
         )
 
