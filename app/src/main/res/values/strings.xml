@@ -564,4 +564,6 @@
     <string name="deeplink_page_timetable_lecture_page_not_existing_lecture">시간표에서 삭제된 강의입니다</string>
     <string name="deeplink_page_timetable_lecture_page_not_existing_table">존재하지 않는 시간표입니다</string>
     <string name="deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture">관심강좌에서 삭제된 강의입니다</string>
+    <string name="friend_page_loading_title">친구 시간표 불러 오는 중</string>
+    <string name="friend_page_loading_subtitle">잠시만 기다려 주세요…</string>
 </resources>

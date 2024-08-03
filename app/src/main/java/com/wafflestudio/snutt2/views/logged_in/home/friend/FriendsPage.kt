@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -75,13 +76,13 @@ fun FriendsPagePlaceholder() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "친구기능 개발 중...",
+                        text = stringResource(R.string.friend_page_loading_title),
                         color = SNUTTColors.Black500,
                         style = SNUTTTypography.h3,
                     )
                     Spacer(modifier = Modifier.height(3.dp))
                     Text(
-                        text = "Coming Soon!",
+                        text = stringResource(R.string.friend_page_loading_subtitle),
                         color = SNUTTColors.Black500,
                         style = SNUTTTypography.body1,
                     )
