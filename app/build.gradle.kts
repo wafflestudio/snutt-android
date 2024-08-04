@@ -119,10 +119,9 @@ android {
     }
 }
 
-project.extensions.extraProperties.set("react", mapOf(
-    "entryFile" to "index.js",
-    "enableHermes" to true
-))
+project.extensions.extraProperties["react"] = mapOf(
+    "enableHermes" to true // Hermes를 활성화
+)
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
