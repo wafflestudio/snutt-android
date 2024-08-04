@@ -21,17 +21,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version Deps.Version.KtLintGradle
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven(url = "https://jitpack.io")
-        maven("https://naver.jfrog.io/artifactory/maven/")
-        maven("https://repository.map.naver.com/archive/maven")
-        maven("https://devrepo.kakao.com/nexus/content/groups/public/")
-    }
-}
-
 task("clean", Delete::class) {
     delete = setOf(rootProject.buildDir)
 }
