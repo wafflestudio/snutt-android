@@ -8,19 +8,29 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
@@ -46,7 +56,10 @@ import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.BottomSheet
+import com.wafflestudio.snutt2.components.compose.LoadingIndicator
+import com.wafflestudio.snutt2.components.compose.ShowModal
+import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
@@ -63,7 +76,19 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ChangeNicknamePage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ColorModeSelectPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.LicenseDetailPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.NetworkLogPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.OpenSourceLicensePage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.PersonalInformationPolicyPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.TimetableConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
@@ -76,7 +101,12 @@ import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
-import com.wafflestudio.snutt2.views.logged_out.*
+import com.wafflestudio.snutt2.views.logged_out.EmailVerificationPage
+import com.wafflestudio.snutt2.views.logged_out.FindIdPage
+import com.wafflestudio.snutt2.views.logged_out.FindPasswordPage
+import com.wafflestudio.snutt2.views.logged_out.SignInPage
+import com.wafflestudio.snutt2.views.logged_out.SignUpPage
+import com.wafflestudio.snutt2.views.logged_out.TutorialPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -102,14 +132,11 @@ class RootActivity : AppCompatActivity() {
 
     private var isInitialRefreshFinished = false
 
-    private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
         super.onCreate(null)
         FirebaseApp.initializeApp(this)
-        setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
         val token = userViewModel.accessToken.value
@@ -126,14 +153,14 @@ class RootActivity : AppCompatActivity() {
                 NavigationDestination.Home
             },
         )
-        setUpSplashScreen(composeRoot)
         setWindowAppearance()
         checkNotificationPermission()
         startUpdatingPushToken()
     }
 
     private fun setUpContents(startDestination: String) {
-        composeRoot.setContent {
+        setContent {
+            setUpSplashScreen(LocalView.current)
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {

@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt2.lib.preferences.context
 
 import com.wafflestudio.snutt2.lib.data.DataValue
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -18,23 +16,6 @@ class PrefValue<T : Any> constructor(
             asdf.value = ((value as? T) ?: metaData.defaultValue)
         }
         prefContext.addValueChangeListener(metaData.domain, metaData.key, listener)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun asObservable(): Observable<T> {
-        return Observable.defer<T> {
-            val subject = BehaviorSubject.createDefault(get())
-            subject.onNext(get())
-            val listener: (Any?) -> Unit = { value ->
-                subject.onNext((value ?: metaData.defaultValue) as T)
-            }
-            prefContext.addValueChangeListener(metaData.domain, metaData.key, listener)
-            subject
-                .doOnDispose {
-                    prefContext.removeValueChangeListener(metaData.domain, metaData.key, listener)
-                }
-        }
-            .distinctUntilChanged()
     }
 
     override fun get(): T {
