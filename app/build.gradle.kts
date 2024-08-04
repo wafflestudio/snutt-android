@@ -119,6 +119,11 @@ android {
     }
 }
 
+project.extensions.extraProperties.set("react", mapOf(
+    "entryFile" to "index.js",
+    "enableHermes" to true
+))
+
 dependencies {
     testImplementation("junit:junit:4.13.2")
 
