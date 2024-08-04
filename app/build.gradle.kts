@@ -120,7 +120,7 @@ android {
 }
 
 project.extensions.extraProperties["react"] = mapOf(
-    "enableHermes" to true // Hermes를 활성화
+    "hermesEnabled" to true // Hermes를 활성화
 )
 
 dependencies {
