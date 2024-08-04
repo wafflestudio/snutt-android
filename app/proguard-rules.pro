@@ -2,9 +2,8 @@
 -keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
 -keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
 
-# class stored to sharedPreference after serialization
--keep public enum com.wafflestudio.snutt2.** { *; }
--keep class com.wafflestudio.snutt2.lib.** { *; }
+# Retain essential classes
+-keep class com.wafflestudio.snutt2.lib.network.dto.** { *; }
 -keep class com.wafflestudio.snutt2.model.** { *; }
 
 # https://github.com/square/retrofit/issues/3751#issuecomment-1192043644
