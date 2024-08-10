@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -308,20 +309,22 @@ fun TutorialPagePreview() {
 }
 
 fun firebaseTest(errorName: String) {
+    Log.d("plgafhdtest","sdfsdfs")
     try {
         throw Exception("snutt 3.7.1 firebase test Exception - $errorName")
     } catch (e: Exception) {
         FirebaseCrashlytics.getInstance().recordException(
             Throwable(cause = e, message = errorName),
         )
+        FirebaseCrashlytics.getInstance().sendUnsentReports()
     }
 }
 
-fun firebaseTest(error: Throwable?) {
-    if (error != null) {
-        FirebaseCrashlytics.getInstance().recordException(
-            error,
-        )
-    }
+fun firebaseTest(error: Throwable) {
+    Log.d("plgafhdtest","sdfsdfs")
+    FirebaseCrashlytics.getInstance().recordException(
+        error,
+    )
+    FirebaseCrashlytics.getInstance().sendUnsentReports()
 }
 
