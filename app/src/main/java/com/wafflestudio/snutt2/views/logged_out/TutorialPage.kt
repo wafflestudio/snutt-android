@@ -321,7 +321,10 @@ fun firebaseTest(errorName: String) {
 }
 
 fun firebaseTest(error: Throwable) {
-    Log.d("plgafhdtest","sdfsdfs")
+    Log.d("plgafhdtest",error.cause.toString())
+    if (error is AuthError) {
+        Log.d("plgafhdtest",error.reason.toString())
+    }
     FirebaseCrashlytics.getInstance().recordException(
         error,
     )
