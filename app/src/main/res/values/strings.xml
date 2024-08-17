@@ -454,6 +454,8 @@
     <string name="lecture_detail_instructor">교수</string>
     <string name="lecture_detail_instructor_hint">예) 홍길동</string>
     <string name="lecture_detail_color">색상</string>
+    <string name="lecture_detail_review_rating">강의평점</string>
+    <string name="lecture_detail_review_count">(%d개)</string>
     <string name="lecture_detail_department">학과</string>
     <string name="lecture_detail_hint_nothing">(없음)</string>
     <string name="lecture_detail_academic_year">학년</string>
@@ -495,8 +497,6 @@
     <string name="afternoon">오후</string>
     <string name="lecture_detail_edit_class_time_sheet_start_time_label">시작</string>
     <string name="lecture_detail_edit_class_time_sheet_end_time_label">종료</string>
-    <string name="email_unverified_cta_title">인증 필요</string>
-    <string name="email_unverified_cta_message">강의평 확인을 위해 이메일 인증이 필요합니다.\n이메일 인증을 진행하시겠습니까?</string>
     <string name="bookmark_remove_toast">관심강좌 목록에서 제거하였습니다.</string>
     <string name="bookmark_remove_check_message">강의를 관심강좌 목록에서 제외하시겠습니까?</string>
     <string name="bookmark_first_alert_message">검색탭 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
@@ -564,4 +564,6 @@
     <string name="deeplink_page_timetable_lecture_page_not_existing_lecture">시간표에서 삭제된 강의입니다</string>
     <string name="deeplink_page_timetable_lecture_page_not_existing_table">존재하지 않는 시간표입니다</string>
     <string name="deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture">관심강좌에서 삭제된 강의입니다</string>
+    <string name="friend_page_loading_title">친구 시간표 불러 오는 중</string>
+    <string name="friend_page_loading_subtitle">잠시만 기다려 주세요…</string>
 </resources>

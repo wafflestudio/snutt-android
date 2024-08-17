@@ -906,3 +906,26 @@ fun ArrowLeftBold(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun StarIcon(
+    modifier: Modifier = Modifier,
+    filled: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    if (filled) {
+        Image(
+            modifier = modifier,
+            painter = painterResource(R.drawable.ic_star_filled),
+            contentDescription = "",
+            colorFilter = colorFilter,
+        )
+    } else {
+        Image(
+            modifier = modifier,
+            painter = painterResource(R.drawable.ic_star_outline),
+            contentDescription = "",
+            colorFilter = colorFilter,
+        )
+    }
+}
