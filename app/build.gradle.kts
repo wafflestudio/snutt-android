@@ -203,5 +203,4 @@ dependencies {
 
     // Kakao SDK
     implementation("com.kakao.sdk:v2-user:${Deps.Version.KakaoSDK}")
-    implementation("com.kakao.sdk:v2-common:${Deps.Version.KakaoSDK}")
 }
