@@ -8,18 +8,22 @@ import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.share.WebSharerClient
 import com.kakao.sdk.template.model.FeedTemplate
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.android.toast
 
 fun sendKakaoMessageWithTemplate(context: Context, feedTemplate: FeedTemplate) {
     if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
         ShareClient.instance.shareDefault(context, feedTemplate) { sharingResult, error ->
             if (error != null) {
-                Toast.makeText(context, "카카오톡 공유에 실패했습니다", Toast.LENGTH_SHORT).show()
+                context.toast(context.getString(R.string.kakao_friend_share_error))
             } else if (sharingResult != null) {
                 context.startActivity(
                     sharingResult.intent.apply {
                         setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     },
                 )
+            } else {
+                context.toast(context.getString(R.string.kakao_friend_share_unknown_error))
             }
         }
     } else {
@@ -27,12 +31,12 @@ fun sendKakaoMessageWithTemplate(context: Context, feedTemplate: FeedTemplate) {
         try {
             KakaoCustomTabsClient.openWithDefault(context, sharerUrl)
         } catch (e: UnsupportedOperationException) {
-            // CustomTabsServiceConnection 지원 브라우저가 없을 때 예외처리
+            context.toast(context.getString(R.string.kakao_friend_share_unsupported_browser))
         }
         try {
             KakaoCustomTabsClient.open(context, sharerUrl)
         } catch (e: ActivityNotFoundException) {
-            // 디바이스에 설치된 인터넷 브라우저가 없을 때 예외처리
+            context.toast(context.getString(R.string.kakao_friend_share_unsupported_browser))
         }
     }
 }

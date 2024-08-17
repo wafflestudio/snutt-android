@@ -40,6 +40,7 @@ class RNEventEmitterModule(private val reactContext: ReactApplicationContext) :
             ADD_FRIEND_KAKAO -> {
                 val requestToken = parameters?.getString(REQUEST_TOKEN) ?: return
                 val feedTemplate = buildKakaoAddFriendTemplate(
+                    reactContext,
                     mapOf(
                         REQUEST_TOKEN to requestToken,
                         TYPE to ADD_FRIEND_KAKAO,
