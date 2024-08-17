@@ -178,11 +178,6 @@ interface SNUTTNetworkDataSource {
         body: PostFeedbackParams,
     ): PostFeedbackResults
 
-    suspend fun _getLecturesId(
-        courseNumber: String,
-        instructor: String,
-    ): GetLecturesIdResults
-
     suspend fun _getPopup(): GetPopupResults
 
     suspend fun _getBookmarkList(
@@ -240,4 +235,8 @@ interface SNUTTNetworkDataSource {
     suspend fun _getBuildings(
         places: String,
     ): BuildingsResponse
+
+    suspend fun _getLectureReviewSummary(
+        lectureId: String,
+    ): GetLectureReviewSummaryResult
 }
