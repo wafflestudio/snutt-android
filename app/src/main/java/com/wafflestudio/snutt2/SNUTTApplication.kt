@@ -34,7 +34,7 @@ class SNUTTApplication : Application(), ReactApplication {
         super.onCreate()
         KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         val keyHash = Utility.getKeyHash(this)
-        Log.d("plgafhdtest",keyHash)
+        Log.d("plgafhdtest", keyHash)
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))

@@ -309,7 +309,7 @@ fun TutorialPagePreview() {
 }
 
 fun firebaseTest(errorName: String) {
-    Log.d("plgafhdtest","sdfsdfs")
+    Log.d("plgafhdtest", "sdfsdfs")
     try {
         throw Exception("snutt 3.7.1 firebase test Exception - $errorName")
     } catch (e: Exception) {
@@ -321,13 +321,12 @@ fun firebaseTest(errorName: String) {
 }
 
 fun firebaseTest(error: Throwable) {
-    Log.d("plgafhdtest",error.cause.toString())
+    Log.d("plgafhdtest", error.cause.toString())
     if (error is AuthError) {
-        Log.d("plgafhdtest",error.reason.toString())
+        Log.d("plgafhdtest", error.reason.toString())
     }
     FirebaseCrashlytics.getInstance().recordException(
         error,
     )
     FirebaseCrashlytics.getInstance().sendUnsentReports()
 }
-
