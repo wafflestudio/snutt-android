@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.current_table
 import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams
 import com.wafflestudio.snutt2.core.network.model.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
 
@@ -33,4 +34,9 @@ interface CurrentTableRepository {
     suspend fun addBookmark(lecture: LectureDto)
 
     suspend fun deleteBookmark(lecture: LectureDto)
+
+    // FIXME: do not expose network layer data class
+    suspend fun getLectureReviewSummary(
+        lectureId: String,
+    ): LectureReviewDto
 }

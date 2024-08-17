@@ -18,11 +18,6 @@ interface LectureSearchRepository {
         timesToExclude: List<SearchTimeDto>?,
     ): Flow<PagingData<LectureDto>>
 
-    suspend fun getLectureReviewUrl(
-        courseNumber: String,
-        instructor: String,
-    ): String
-
     suspend fun getSearchTags(year: Long, semester: Long): List<TagDto>
 
     suspend fun getBuildings(
