@@ -455,18 +455,31 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
+    // NOTE(@JuTaK): 푸시 알림에 담긴 딥링크 정보는 intent.extra 에 url_scheme 이라는 key 의 value 로 들어 있다.
+    // 이를 Jetpack Navigation 이 딥링크로 인식하고 navigate 할 수 있도록 intent.data 로 넣어준다.
     private fun parseDeeplinkExtra() {
         intent.extras?.getString(URL_SCHEME)?.let {
             intent.data = Uri.parse(it)
         }
     }
 
+    // NOTE(@JuTaK): intent 에 담긴 초기 정보로 최초 랜딩할 탭을 결정한다.
     private fun parseHomePageDeeplink(): HomeItem? {
+        // 예시: snutt://friends
         val regex = Regex("^${applicationContext.getString(R.string.scheme)}(.+)$")
-        return when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
-            NavigationDestination.Friends -> HomeItem.Friends
-            else -> null
+        when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
+            NavigationDestination.Friends -> return HomeItem.Friends
         }
+
+        // 예시: kakao12345://kakaolink?type=add-friend-kakao
+        val type = intent.data?.getQueryParameter("type")
+        when (type) {
+            "add-friend-kakao" -> {
+                return HomeItem.Friends
+            }
+        }
+
+        return null
     }
 
     private fun setWindowAppearance() {

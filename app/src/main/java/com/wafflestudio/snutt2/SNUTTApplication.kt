@@ -19,6 +19,7 @@ import com.swmansion.reanimated.ReanimatedPackage
 import com.swmansion.rnscreens.RNScreensPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
+import com.wafflestudio.snutt2.react_native.event.RNEventEmitterPackage
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -55,6 +56,7 @@ class SNUTTApplication : Application(), ReactApplication {
                 ReanimatedPackage(),
                 SvgPackage(),
                 AsyncStoragePackage(),
+                RNEventEmitterPackage(),
             )
 
             override fun getJSMainModuleName(): String = "friends"
