@@ -1,7 +1,12 @@
 package com.wafflestudio.snutt2
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Build
 import androidx.compose.animation.ExperimentalAnimationApi
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactApplication
@@ -64,6 +69,15 @@ class SNUTTApplication : Application(), ReactApplication {
             override fun getJavaScriptExecutorFactory(): JavaScriptExecutorFactory {
                 return HermesExecutorFactory()
             }
+        }
+    }
+
+    // targerSDK 34 대응 (https://github.com/joltup/rn-fetch-blob/issues/866#issuecomment-2227436658)
+    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?): Intent? {
+        return if (Build.VERSION.SDK_INT >= 34 && applicationInfo.targetSdkVersion >= 34) {
+            super.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+        } else {
+            super.registerReceiver(receiver, filter)
         }
     }
 
