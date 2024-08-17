@@ -35,7 +35,6 @@ class SNUTTApplication : Application(), ReactApplication {
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
-        KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
     }
 
     @OptIn(ExperimentalAnimationApi::class)
