@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.core.network.model.PutLectureParams
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto

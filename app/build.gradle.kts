@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.naver.map.compose)
     implementation(libs.google.id)
     implementation(libs.kakao.sdk)
+    implementation(libs.kakao.sdk.share)
     implementation(libs.play.services.auth)
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")

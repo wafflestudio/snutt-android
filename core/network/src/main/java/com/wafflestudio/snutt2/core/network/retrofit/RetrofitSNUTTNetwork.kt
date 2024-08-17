@@ -228,12 +228,6 @@ class RetrofitSNUTTNetwork @Inject constructor(
     ): PostFeedbackResults =
         networkApi._postFeedback(body = body)
 
-    override suspend fun _getLecturesId(
-        courseNumber: String,
-        instructor: String,
-    ): GetLecturesIdResults =
-        networkApi._getLecturesId(courseNumber = courseNumber, instructor = instructor)
-
     override suspend fun _getPopup(): GetPopupResults =
         networkApi._getPopup()
 
@@ -307,4 +301,9 @@ class RetrofitSNUTTNetwork @Inject constructor(
         places: String,
     ): BuildingsResponse =
         networkApi._getBuildings(places = places)
+
+    override suspend fun _getLectureReviewSummary(
+        lectureId: String,
+    ): GetLectureReviewSummaryResult =
+        networkApi._getLectureReviewSummary(lectureId)
 }

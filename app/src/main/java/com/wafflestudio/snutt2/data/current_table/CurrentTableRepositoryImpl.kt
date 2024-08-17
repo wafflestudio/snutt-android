@@ -105,6 +105,14 @@ class CurrentTableRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
-        return api._getLectureReviewSummary(lectureId)
+        return api._getLectureReviewSummary(lectureId).toTempDomainModel()
     }
 }
+
+private fun com.wafflestudio.snutt2.core.network.model.LectureReviewDto.toTempDomainModel(): LectureReviewDto =
+    LectureReviewDto(
+        id = id,
+        rating = rating,
+        reviewCount = reviewCount,
+
+    )

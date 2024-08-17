@@ -83,6 +83,7 @@ google-id = { group = "com.google.android.libraries.identity.googleid", name = "
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 kakao-sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakaoSDK" }
+kakao-sdk-share = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakaoSDK" }
 licensesdialog = { group = "de.psdev.licensesdialog", name = "licensesdialog", version.ref = "licensesdialog" }
 naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMap" }
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naverMapCompose" }
