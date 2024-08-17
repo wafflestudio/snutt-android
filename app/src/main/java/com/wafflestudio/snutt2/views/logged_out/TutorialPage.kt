@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -24,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.AuthErrorCause
@@ -155,15 +157,19 @@ fun TutorialPage() {
     val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                firebaseTest(error)
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                firebaseTest(error)
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else {
+                firebaseTest(error)
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         } else if (token != null) {
             loginWithKaKaoAccessToken(token.accessToken)
         } else {
+            firebaseTest("KakaoAccount Login Failed Unknown")
             context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
@@ -173,21 +179,26 @@ fun TutorialPage() {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
                 if (loginError != null) {
                     if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
+                        firebaseTest(loginError)
                         context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                     } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
+                        firebaseTest(loginError)
                         context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                     } else {
                         // 카카오계정으로 로그인
+                        firebaseTest(loginError)
                         UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token != null) {
                     loginWithKaKaoAccessToken(token.accessToken)
                 } else {
+                    firebaseTest("KakaoTalk Login Unknown")
                     context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         } else {
             // 카카오계정으로 로그인
+            firebaseTest("KakaoTalk Login Failed")
             UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
         }
     }
@@ -295,4 +306,27 @@ fun TutorialPage() {
 @Composable
 fun TutorialPagePreview() {
     TutorialPage()
+}
+
+fun firebaseTest(errorName: String) {
+    Log.d("plgafhdtest", "sdfsdfs")
+    try {
+        throw Exception("snutt 3.7.1 firebase test Exception - $errorName")
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(
+            Throwable(cause = e, message = errorName),
+        )
+        FirebaseCrashlytics.getInstance().sendUnsentReports()
+    }
+}
+
+fun firebaseTest(error: Throwable) {
+    Log.d("plgafhdtest", error.cause.toString())
+    if (error is AuthError) {
+        Log.d("plgafhdtest", error.reason.toString())
+    }
+    FirebaseCrashlytics.getInstance().recordException(
+        error,
+    )
+    FirebaseCrashlytics.getInstance().sendUnsentReports()
 }
