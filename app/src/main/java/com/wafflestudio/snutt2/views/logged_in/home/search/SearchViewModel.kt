@@ -225,13 +225,6 @@ class SearchViewModel @Inject constructor(
         _searchTitle.emit("")
     }
 
-    suspend fun getLectureReviewUrl(lecture: LectureDto): String? {
-        return lectureSearchRepository.getLectureReviewUrl(
-            courseNumber = lecture.course_number ?: return null,
-            instructor = lecture.instructor,
-        )
-    }
-
     suspend fun addBookmark(lecture: LectureDto) {
         currentTableRepository.addBookmark(lecture)
         getBookmarkList()

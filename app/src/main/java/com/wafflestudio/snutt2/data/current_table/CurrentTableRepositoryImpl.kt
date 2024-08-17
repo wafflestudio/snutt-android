@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams
 import com.wafflestudio.snutt2.core.network.model.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
@@ -101,5 +102,9 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override suspend fun deleteBookmark(lecture: LectureDto) {
         api._deleteBookmark(PostBookmarkParamsNetwork(lecture.lecture_id ?: lecture.id))
+    }
+
+    override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
+        return api._getLectureReviewSummary(lectureId)
     }
 }

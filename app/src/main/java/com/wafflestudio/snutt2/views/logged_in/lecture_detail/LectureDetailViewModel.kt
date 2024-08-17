@@ -8,14 +8,17 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toNetworkModel
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +33,7 @@ class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val themeRepository: ThemeRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
@@ -42,6 +46,16 @@ class LectureDetailViewModel @Inject constructor(
 
     private val _editingLectureDetail = MutableStateFlow(fixedLectureDetail)
     val editingLectureDetail = _editingLectureDetail.asStateFlow()
+    val editingLectureReview = _editingLectureDetail.map { lecture ->
+        /**
+         * 로컬 저장소에는 리뷰 정보를 저장하지 않으므로, 시간표탭에서 강의상세로 진입하면 editingLectureDetail.value.review가 null이다
+         * 따라서 getLectureReview()로 리뷰 정보만을 따로 불러온다
+         */
+        lecture.review?.rating?.let { lecture.review }
+            ?: runCatching {
+                getLectureReview()
+            }.onFailure(apiOnError).getOrNull()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, editingLectureDetail.value.review)
 
     val editingLectureBuildings = editingLectureDetail.map { lecture ->
         val places = lecture.class_time_json.map { it.place }.distinct().joinToString(",")
@@ -100,11 +114,16 @@ class LectureDetailViewModel @Inject constructor(
         return currentTableRepository.getLectureSyllabusUrl(courseNumber, lectureNumber)
     }
 
-    suspend fun getReviewContentsUrl(): String? {
-        return lectureSearchRepository.getLectureReviewUrl(
-            courseNumber = editingLectureDetail.value.course_number ?: return null,
-            instructor = editingLectureDetail.value.instructor,
-        )
+    private suspend fun getLectureReview(): LectureReviewDto? {
+        val originalLectureId =
+            if (modeType.value == ModeType.Viewing) {
+                editingLectureDetail.value.id
+            } else {
+                editingLectureDetail.value.lecture_id
+            }
+        return originalLectureId?.let { lectureId ->
+            currentTableRepository.getLectureReviewSummary(lectureId)
+        }
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

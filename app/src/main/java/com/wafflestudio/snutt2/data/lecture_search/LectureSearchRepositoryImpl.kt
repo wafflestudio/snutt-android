@@ -49,11 +49,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getLectureReviewUrl(courseNumber: String, instructor: String): String {
-        val response = api._getLecturesId(courseNumber, instructor)
-        return snuttUrls.getReviewDetail(response.id)
-    }
-
     override suspend fun getSearchTags(year: Long, semester: Long): List<TagDto> {
         val response = api._getTagList(year.toInt(), semester.toInt())
         val list = mutableListOf<TagDto>()

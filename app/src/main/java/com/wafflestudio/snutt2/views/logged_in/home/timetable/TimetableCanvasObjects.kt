@@ -31,7 +31,7 @@ object TimetableCanvasObjects {
                     }
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.CENTER
-                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
+                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_light)
             }
     val dayLabelTextHeight: Float
         @Composable get() {
@@ -52,7 +52,7 @@ object TimetableCanvasObjects {
                     }
                 textSize = 12.sp(LocalContext.current)
                 textAlign = Paint.Align.RIGHT
-                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_light)
+                typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_light)
             }
 
     val lectureCellTextRect
@@ -60,7 +60,7 @@ object TimetableCanvasObjects {
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 10f.sp(LocalContext.current)
-                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_regular)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_regular)
                 },
             )
 
@@ -69,7 +69,7 @@ object TimetableCanvasObjects {
             TextRect(
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 11f.sp(LocalContext.current)
-                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.spoqa_han_sans_bold)
+                    typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_semibold)
                 },
             )
 
