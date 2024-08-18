@@ -38,7 +38,7 @@ android {
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
     }
 
     compileOptions {
