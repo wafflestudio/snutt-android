@@ -159,6 +159,7 @@ fun LectureDetailPage(
         sheetState = bottomSheet.state,
         sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
         scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
+        sheetGesturesEnabled = false,
 //        onDismissScrim = {
 //            scope.launch { bottomSheet.hide() }
 //        }
