@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -29,7 +27,6 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BetaIcon
 import com.wafflestudio.snutt2.databinding.MapPinBinding
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -63,11 +60,6 @@ fun EmbedMap(
         modifier = modifier,
         contentAlignment = Alignment.TopEnd,
     ) {
-        BetaIcon(
-            modifier = Modifier
-                .size(59.5.dp, 44.5.dp)
-                .zIndex(5f),
-        )
         NaverMap(
             cameraPositionState = cameraPositionState,
             onMapClick = { _, _ ->
