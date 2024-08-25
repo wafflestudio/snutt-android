@@ -1,24 +1,38 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import android.graphics.Paint
-import android.graphics.RectF
 import android.view.MotionEvent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.contains
@@ -27,10 +41,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.rx.dp
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalCompactState
@@ -244,12 +258,9 @@ private fun DrawClassTime(
     fgColor: Int,
     isCustom: Boolean = false,
 ) {
-    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
-    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val cellPadding = TimetableCanvasObjects.cellPadding
-    val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
-    val lectureCellSubTextRect = TimetableCanvasObjects.lectureCellSubTextRect
-    val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
+    val hourLabelWidth = 24.5.dp
+    val dayLabelHeight = 28.5.dp
+    val cellPadding = 4.dp
     val compactMode = LocalCompactState.current
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
@@ -262,51 +273,38 @@ private fun DrawClassTime(
             ),
         )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
-            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+            (maxWidth - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
         val unitHeight =
-            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            (maxHeight - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
-        val left = hourLabelWidth + (dayOffset) * unitWidth
-        val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
-        val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
-        val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
+        val left = hourLabelWidth + unitWidth * dayOffset
+        val top = dayLabelHeight + unitHeight * hourRangeOffset.first
 
-        val rect = RectF(left, top, right, bottom)
-
-        drawIntoCanvas { canvas ->
-            canvas.nativeCanvas.drawRect(rect, Paint().apply { color = bgColor })
-            canvas.nativeCanvas.drawRect(
-                rect,
-                lectureCellBorderPaint,
+        Column(
+            modifier = Modifier
+                .size(width = unitWidth, height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first))
+                .offset(x = left, y = top)
+                .border(width = 1.dp, color = SNUTTColors.Black050)
+                .background(color = Color(bgColor))
+                .padding(horizontal = cellPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = courseTitle,
+                color = Color(fgColor),
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 10.sp,
             )
-        }
-
-        val cellHeight = bottom - top - cellPadding * 2
-        val cellWidth = right - left - cellPadding * 2
-
-        val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-        )
-        val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-        )
-
-        drawIntoCanvas { canvas ->
-            lectureCellTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
-            )
-            lectureCellSubTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + courseTitleHeight + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
+            Text(
+                text = classTime.place,
+                color = Color(fgColor),
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 11.sp,
             )
         }
     }
