@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import android.view.MotionEvent
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -225,41 +224,32 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                 it.trimByTrimParam(fittedTrimParam)
             }
             .forEach { classTime ->
-                DrawLecture(lecture, classTime, fittedTrimParam)
+                val context = LocalContext.current
+                val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
+
+                DrawClassTime(
+                    fittedTrimParam = fittedTrimParam,
+                    classTime = classTime,
+                    courseTitle = lecture.course_title,
+                    bgColor =
+                    if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                        lecture.color.bgColor!!
+                    } else {
+                        BuiltInTheme.fromCode(code).getColorByIndexComposable(
+                            lecture.colorIndex,
+                        ).toArgb()
+                    },
+                    fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
+                        lecture.color.fgColor!!
+                    } else {
+                        context.getColor(
+                            R.color.white,
+                        )
+                    },
+                    isCustom = lecture.isCustom,
+                )
             }
     }
-}
-
-@Composable
-private fun DrawLecture(
-    lecture: LectureDto,
-    classTime: ClassTimeDto,
-    fittedTrimParam: TableTrimParam,
-) {
-    val context = LocalContext.current
-    val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
-
-    DrawClassTime(
-        fittedTrimParam = fittedTrimParam,
-        classTime = classTime,
-        courseTitle = lecture.course_title,
-        bgColor =
-        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-            lecture.color.bgColor!!
-        } else {
-            BuiltInTheme.fromCode(code).getColorByIndexComposable(
-                lecture.colorIndex,
-            ).toArgb()
-        },
-        fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
-            lecture.color.fgColor!!
-        } else {
-            context.getColor(
-                R.color.white,
-            )
-        },
-        isCustom = lecture.isCustom,
-    )
 }
 
 @Composable
@@ -292,13 +282,10 @@ private fun DrawClassTime(
         val unitHeight =
             (maxHeight - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
-        val left = hourLabelWidth + unitWidth * dayOffset
-        val top = dayLabelHeight + unitHeight * hourRangeOffset.first
-
         Column(
             modifier = Modifier
                 .size(width = unitWidth, height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first))
-                .offset(x = left, y = top)
+                .offset(x = hourLabelWidth + unitWidth * dayOffset, y = dayLabelHeight + unitHeight * hourRangeOffset.first)
                 .border(width = 1.dp, color = SNUTTColors.Black050)
                 .background(color = Color(bgColor))
                 .padding(horizontal = cellPadding),
