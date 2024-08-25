@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,14 +22,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,13 +39,13 @@ import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
-import com.wafflestudio.snutt2.lib.rx.dp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
@@ -141,65 +140,79 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
 @Composable
 fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
-    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
-    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val dayLabelTextPaint = TimetableCanvasObjects.dayLabelTextPaint
-    val hourLabelTextPaint = TimetableCanvasObjects.hourLabelTextPaint
-    val textHeight = TimetableCanvasObjects.dayLabelTextHeight
-
     val gridColor = SNUTTColors.TableGrid
     val gridColor2 = SNUTTColors.TableGrid2
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    val hourLabelWidth = 24.5.dp
+    val dayLabelHeight = 28.5.dp
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
-            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+            (maxWidth - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
         val unitHeight =
-            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            (maxHeight - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
         val verticalLines = fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1
-        var startWidth = hourLabelWidth
         val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
-        var startHeight = dayLabelHeight
 
-        repeat(verticalLines) {
-            drawLine(
-                start = Offset(x = startWidth, y = 0f),
-                end = Offset(x = startWidth, y = size.height),
-                color = gridColor,
-                strokeWidth = (0.5f).dp(context),
+        repeat(verticalLines) { idx ->
+            Box(
+                modifier = Modifier
+                    .offset(x = hourLabelWidth + unitWidth * idx)
+                    .size(width = 0.5.dp, height = maxHeight)
+                    .background(gridColor),
             )
-            drawIntoCanvas { canvas ->
-                canvas.nativeCanvas.drawText(
-                    (fittedTrimParam.dayOfWeekFrom + it).toDayString(context),
-                    startWidth + unitWidth * 0.5f,
-                    (dayLabelHeight + textHeight) / 2f,
-                    dayLabelTextPaint,
+            Box(
+                modifier = Modifier
+                    .offset(x = hourLabelWidth + unitWidth * idx)
+                    .size(width = unitWidth, height = dayLabelHeight),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = (fittedTrimParam.dayOfWeekFrom + idx).toDayString(context),
+                    textAlign = TextAlign.Center,
+                    color = if (isDarkMode()) {
+                        Color(119, 119, 119, 180)
+                    } else {
+                        Color(0, 0, 0, 180)
+                    },
+                    fontWeight = FontWeight.Light,
+                    fontSize = 12.sp,
                 )
             }
-            startWidth += unitWidth
         }
-        repeat(horizontalLines) {
-            drawLine(
-                start = Offset(x = 0f, y = startHeight),
-                end = Offset(x = size.width, y = startHeight),
-                color = gridColor,
-                strokeWidth = (0.5f).dp(context),
+        repeat(horizontalLines) { idx ->
+            Box(
+                modifier = Modifier
+                    .offset(y = dayLabelHeight + unitHeight * idx)
+                    .size(width = maxWidth, height = 0.5.dp)
+                    .background(gridColor),
             )
-            drawLine(
-                start = Offset(x = hourLabelWidth, y = startHeight + (unitHeight * 0.5f)),
-                end = Offset(x = size.width, y = startHeight + (unitHeight * 0.5f)),
-                color = gridColor2,
-                strokeWidth = (0.5f).dp(context),
+            Box(
+                modifier = Modifier
+                    .offset(x = hourLabelWidth, y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f)
+                    .size(width = maxWidth, height = 0.5.dp)
+                    .background(gridColor2),
             )
-            drawIntoCanvas { canvas ->
-                canvas.nativeCanvas.drawText(
-                    (fittedTrimParam.hourFrom + it).toString(),
-                    hourLabelWidth - 4.dp(context),
-                    startHeight + textHeight + 6.dp(context),
-                    hourLabelTextPaint,
+            Box(
+                modifier = Modifier
+                    .offset(y = dayLabelHeight + unitHeight * idx)
+                    .size(width = hourLabelWidth, height = unitHeight)
+                    .padding(top = 4.dp, end = 4.dp),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Text(
+                    text = (fittedTrimParam.hourFrom + idx).toString(),
+                    textAlign = TextAlign.Right,
+                    color = if (isDarkMode()) {
+                        Color(119, 119, 119, 180)
+                    } else {
+                        Color(0, 0, 0, 180)
+                    },
+                    fontWeight = FontWeight.Light,
+                    fontSize = 12.sp,
                 )
             }
-            startHeight += unitHeight
         }
     }
 }
