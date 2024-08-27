@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -231,6 +232,8 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                     fittedTrimParam = fittedTrimParam,
                     classTime = classTime,
                     courseTitle = lecture.course_title,
+                    lectureNumber = lecture.lecture_number.orEmpty(),
+                    instructorName = lecture.instructor,
                     bgColor =
                     if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
                         lecture.color.bgColor!!
@@ -257,6 +260,8 @@ private fun DrawClassTime(
     fittedTrimParam: TableTrimParam,
     classTime: ClassTimeDto,
     courseTitle: String,
+    lectureNumber: String,
+    instructorName: String,
     bgColor: Int,
     fgColor: Int,
     isCustom: Boolean = false,
@@ -265,6 +270,7 @@ private fun DrawClassTime(
     val dayLabelHeight = 28.5.dp
     val cellPadding = 4.dp
     val compactMode = LocalCompactState.current
+    val textMeasurer = rememberTextMeasurer()
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
@@ -292,20 +298,37 @@ private fun DrawClassTime(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = courseTitle,
-                color = Color(fgColor),
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = 10.sp,
-            )
-            Text(
-                text = classTime.place,
-                color = Color(fgColor),
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = 11.sp,
-            )
+            BoxWithConstraints {
+                val constraints = constraints
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    val adjustedTextLayouts = remember(constraints, courseTitle, classTime.place, lectureNumber, instructorName, fittedTrimParam) {
+                        calculateAdjustedTextLayout(
+                            listOf(
+                                LectureCellInfo.titleTextLayout(courseTitle, true),
+                                LectureCellInfo.placeTextLayout(classTime.place, true),
+                                LectureCellInfo.lectureNumberTextLayout(lectureNumber, false),
+                                LectureCellInfo.instructorNameTextLayout(instructorName, false),
+                            ),
+                            textMeasurer,
+                            constraints,
+                        )
+                    }
+
+                    adjustedTextLayouts
+                        .forEach { textLayout ->
+                            Text(
+                                text = textLayout.text,
+                                style = textLayout.style.copy(color = Color(fgColor)),
+                                maxLines = textLayout.maxLines,
+                                textAlign = TextAlign.Center,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                }
+            }
         }
     }
 }
@@ -315,7 +338,7 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd,
+                fittedTrimParam, classTime, course_title, lecture_number.orEmpty(), instructor, -0x1f1f20, -0xcccccd,
             )
         }
     }
