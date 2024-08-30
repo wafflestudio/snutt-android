@@ -778,19 +778,6 @@ fun MagicIcon(
 }
 
 @Composable
-fun BetaIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.ic_beta_tag),
-        contentDescription = "",
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun AddIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
@@ -905,4 +892,27 @@ fun ArrowLeftBold(
         contentDescription = "",
         colorFilter = colorFilter,
     )
+}
+
+@Composable
+fun StarIcon(
+    modifier: Modifier = Modifier,
+    filled: Boolean = false,
+    colorFilter: ColorFilter? = null,
+) {
+    if (filled) {
+        Image(
+            modifier = modifier,
+            painter = painterResource(R.drawable.ic_star_filled),
+            contentDescription = "",
+            colorFilter = colorFilter,
+        )
+    } else {
+        Image(
+            modifier = modifier,
+            painter = painterResource(R.drawable.ic_star_outline),
+            contentDescription = "",
+            colorFilter = colorFilter,
+        )
+    }
 }

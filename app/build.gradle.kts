@@ -38,7 +38,7 @@ android {
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
     }
 
     compileOptions {
@@ -202,5 +202,6 @@ dependencies {
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
     // Kakao SDK
+    implementation("com.kakao.sdk:v2-share:${Deps.Version.KakaoSDK}")
     implementation("com.kakao.sdk:v2-user:${Deps.Version.KakaoSDK}")
 }
