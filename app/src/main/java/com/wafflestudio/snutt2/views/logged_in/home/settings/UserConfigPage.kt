@@ -202,7 +202,7 @@ fun UserConfigPage() {
                     onValueChange = { passwordConfirm = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onNext = {onConfirm()}),
+                    keyboardActions = KeyboardActions(onNext = { onConfirm() }),
                     visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.sign_up_password_confirm_hint),
                 )
