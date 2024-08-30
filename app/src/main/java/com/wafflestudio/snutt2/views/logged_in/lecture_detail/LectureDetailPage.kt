@@ -244,20 +244,27 @@ fun LectureDetailPage(
                                     if (modeType == ModeType.Normal) {
                                         vm.setEditMode()
                                     } else {
-                                        scope.launch {
-                                            launchSuspendApi(
-                                                apiOnProgress = apiOnProgress,
-                                                apiOnError = apiOnError,
-                                                loadingIndicatorTitle = "",
-                                            ) {
+                                        checkLectureOverlap(
+                                            composableStates,
+                                            api = {
                                                 if ((modeType as ModeType.Editing).adding) {
                                                     vm.createLecture()
                                                     scope.launch(Dispatchers.Main) { navController.popBackStack() }
                                                 } else {
                                                     vm.updateLecture()
                                                 }
-                                            }
-                                        }
+                                            },
+                                            onLectureOverlap = { message ->
+                                                showLectureOverlapDialog(composableStates, message, forceAddApi = {
+                                                    if ((modeType as ModeType.Editing).adding) {
+                                                        vm.createLecture(is_forced = true)
+                                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                                    } else {
+                                                        vm.updateLecture(is_forced = true)
+                                                    }
+                                                },)
+                                            },
+                                        )
                                     }
                                 },
                         )
