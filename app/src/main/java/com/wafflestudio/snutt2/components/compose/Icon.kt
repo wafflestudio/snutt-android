@@ -778,19 +778,6 @@ fun MagicIcon(
 }
 
 @Composable
-fun BetaIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.ic_beta_tag),
-        contentDescription = "",
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun AddIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
