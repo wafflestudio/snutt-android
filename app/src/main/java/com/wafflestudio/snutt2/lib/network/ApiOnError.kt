@@ -316,6 +316,13 @@ class ApiOnError @Inject constructor(
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()
+                        ErrorCode.INVALID_TIME -> Toast.makeText(
+                            context,
+                            context.getString(
+                                R.string.error_lecture_time_overlap_single_lecture,
+                            ),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
@@ -358,6 +365,7 @@ object ErrorCode {
     const val INVALID_TIMEMASK = 0x1009
     const val INVALID_COLOR = 0x100A
     const val NO_LECTURE_TITLE = 0x100B
+    const val INVALID_TIME = 0x100C
     const val EXPIRED_PASSWORD_RESET_CODE = 0x2010
     const val WRONG_PASSWORD_RESET_CODE = 0x2011
 
