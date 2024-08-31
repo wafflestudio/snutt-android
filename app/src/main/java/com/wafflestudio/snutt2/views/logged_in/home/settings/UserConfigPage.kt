@@ -183,7 +183,6 @@ fun UserConfigPage() {
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.sign_in_id_hint),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
