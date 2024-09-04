@@ -11,8 +11,6 @@ data class TagDto(
     companion object {
         val TIME_EMPTY: TagDto = TagDto(TagType.TIME, "빈 시간대로 검색")
         val TIME_SELECT: TagDto = TagDto(TagType.TIME, "시간대 직접 선택")
-        val REVIEW_COUNT_DESC: TagDto = TagDto(TagType.SORT_CRITERIA, "강의평 많은 순")
-        val REVIEW_RATING_DESC: TagDto = TagDto(TagType.SORT_CRITERIA, "평점 높은 순")
         val ETC_ENG: TagDto = TagDto(TagType.ETC, "영어진행 강의")
         val ETC_MILITARY: TagDto = TagDto(TagType.ETC, "군휴학 원격수업")
     }
