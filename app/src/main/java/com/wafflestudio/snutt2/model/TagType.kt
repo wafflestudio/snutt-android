@@ -4,12 +4,12 @@ package com.wafflestudio.snutt2.model
  * Created by makesource on 2017. 8. 26..
  */
 sealed class TagType(val isExclusive: Boolean) {
-    data object CLASSIFICATION : TagType(false)
-    data object DEPARTMENT : TagType(false)
-    data object ACADEMIC_YEAR : TagType(false)
-    data object CREDIT : TagType(false)
-    data object TIME : TagType(false)
-    data object CATEGORY : TagType(false)
-    data object SORT_CRITERIA : TagType(true)
-    data object ETC : TagType(false)
+    data object Classification : TagType(false)
+    data object Department : TagType(false)
+    data object AcademicYear : TagType(false)
+    data object Credit : TagType(false)
+    data object Time : TagType(false)
+    data object Category : TagType(false)
+    data object SortCriteria : TagType(true)
+    data object Etc : TagType(false)
 }

@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib
 
 import android.content.Context
-import android.graphics.Color
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -40,14 +39,14 @@ fun CourseBookDto.toFormattedString(context: Context): String {
 
 fun TagType.color(): androidx.compose.ui.graphics.Color {
     return when (this) {
-        TagType.SORT_CRITERIA -> SNUTTColors.Gray30
-        TagType.CLASSIFICATION -> SNUTTColors.Red
-        TagType.DEPARTMENT -> SNUTTColors.Orange
-        TagType.ACADEMIC_YEAR -> SNUTTColors.Grass
-        TagType.CREDIT -> SNUTTColors.Sky
-        TagType.TIME -> SNUTTColors.Blue
-        TagType.CATEGORY -> SNUTTColors.NavyBlue
-        TagType.ETC -> SNUTTColors.Violet
+        TagType.SortCriteria -> SNUTTColors.Gray30
+        TagType.Classification -> SNUTTColors.Red
+        TagType.Department -> SNUTTColors.Orange
+        TagType.AcademicYear -> SNUTTColors.Grass
+        TagType.Credit -> SNUTTColors.Sky
+        TagType.Time -> SNUTTColors.Blue
+        TagType.Category -> SNUTTColors.NavyBlue
+        TagType.Etc -> SNUTTColors.Violet
     }
 }
 
