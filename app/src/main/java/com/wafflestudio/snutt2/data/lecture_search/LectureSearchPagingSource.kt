@@ -40,7 +40,7 @@ class LectureSearchPagingSource(
         }.ifEmpty { null },
         offset = null,
         limit = null,
-        sortCriteria = tags.extractTagString(TagType.SORT_CRITERIA).lastOrNull()    // 중복 선택 불가능
+        sortCriteria = tags.extractTagString(TagType.SORT_CRITERIA).lastOrNull(), // 중복 선택 불가능
     )
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {
