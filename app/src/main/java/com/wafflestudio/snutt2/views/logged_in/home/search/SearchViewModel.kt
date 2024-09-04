@@ -104,12 +104,13 @@ class SearchViewModel @Inject constructor(
     }
 
     private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
+    private val sortCriteriaTags = listOf(TagDto.REVIEW_COUNT_DESC, TagDto.REVIEW_RATING_DESC)
     private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
         _searchTagList, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
-        (tags + etcTags + timeTags).filter { it.type == selectedTagType }
+        (tags + etcTags + sortCriteriaTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
