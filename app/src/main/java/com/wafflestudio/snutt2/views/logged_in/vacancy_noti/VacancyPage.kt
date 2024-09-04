@@ -256,7 +256,8 @@ fun VacancyPage(
         AnimatedVisibility(
             visible = !vacancyViewModel.isEditMode,
             modifier = Modifier
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .offset((-27).dp, (-22).dp),
             enter = slideInVertically {
                 with(density) { 10.dp.roundToPx() }
             } + fadeIn(),
@@ -270,9 +271,6 @@ fun VacancyPage(
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
                     }
                 },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset((-27).dp, (-22).dp)
             )
         }
         if (introDialogState) {
