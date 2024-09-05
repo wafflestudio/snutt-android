@@ -170,7 +170,10 @@ fun LazyItemScope.VacancyListItem(
                     )
                 }
             }
-            Divider(color = SNUTTColors.Black250)
+            Divider(
+                modifier = Modifier.height(0.5f.dp),
+                color = SNUTTColors.Black250,
+            )
         }
     }
 }
