@@ -77,7 +77,7 @@ fun LazyItemScope.VacancyListItem(
             Column(
                 modifier = Modifier
                     .padding(vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
