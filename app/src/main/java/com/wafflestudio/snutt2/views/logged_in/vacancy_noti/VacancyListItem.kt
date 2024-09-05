@@ -84,7 +84,7 @@ fun LazyItemScope.VacancyListItem(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f),
                     ) {
                         Text(
                             text = lectureTitle,
@@ -112,7 +112,7 @@ fun LazyItemScope.VacancyListItem(
                     modifier = Modifier
                         .padding(bottom = 6.dp, top = 2.dp)
                         .height(20.dp),
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.Top,
                 ) {
                     Row(
                         modifier = Modifier
@@ -130,7 +130,7 @@ fun LazyItemScope.VacancyListItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
-                                .alpha(0.8f)
+                                .alpha(0.8f),
                         )
                     }
                     Text(
@@ -142,7 +142,7 @@ fun LazyItemScope.VacancyListItem(
                 }
                 Row(
                     modifier = Modifier.padding(bottom = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ClockIcon(
                         modifier = Modifier.size(15.dp),
