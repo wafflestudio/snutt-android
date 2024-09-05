@@ -117,7 +117,8 @@ fun LazyItemScope.VacancyListItem(
                     Row(
                         modifier = Modifier
                             .padding(top = 4.dp)
-                            .weight(1f)
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TagIcon(
                             modifier = Modifier.size(15.dp),
