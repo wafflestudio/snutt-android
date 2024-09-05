@@ -62,7 +62,7 @@ fun LazyItemScope.VacancyListItem(
             )
             .background(backgroundColor)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 16.dp)
             .clicks { onClick() },
         verticalAlignment = Alignment.CenterVertically,
     ) {
