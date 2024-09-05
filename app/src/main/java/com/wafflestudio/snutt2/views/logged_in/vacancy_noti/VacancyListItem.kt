@@ -109,7 +109,9 @@ fun LazyItemScope.VacancyListItem(
                     )
                 }
                 Row(
-                    modifier = Modifier.height(20.dp),
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
+                        .height(20.dp),
                     verticalAlignment = Alignment.Top
                 ) {
                     Row(
@@ -137,7 +139,10 @@ fun LazyItemScope.VacancyListItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(bottom = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     ClockIcon(
                         modifier = Modifier.size(15.dp),
                     )
