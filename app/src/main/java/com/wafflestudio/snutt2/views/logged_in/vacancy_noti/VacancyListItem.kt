@@ -122,7 +122,7 @@ fun LazyItemScope.VacancyListItem(
                         TagIcon(
                             modifier = Modifier.size(15.dp),
                         )
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Spacer(modifier = Modifier.width(7.dp))
                         Text(
                             text = tagText,
                             style = SNUTTTypography.body2,
@@ -146,7 +146,7 @@ fun LazyItemScope.VacancyListItem(
                     ClockIcon(
                         modifier = Modifier.size(15.dp),
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = classTimeText,
                         style = SNUTTTypography.body2,
@@ -159,7 +159,7 @@ fun LazyItemScope.VacancyListItem(
                     LocationIcon(
                         modifier = Modifier.size(15.dp),
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
                         style = SNUTTTypography.body2,
