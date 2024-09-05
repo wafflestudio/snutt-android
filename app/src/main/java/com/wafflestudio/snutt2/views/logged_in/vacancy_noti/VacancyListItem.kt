@@ -76,7 +76,7 @@ fun LazyItemScope.VacancyListItem(
         Column {
             Column(
                 modifier = Modifier
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 14.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Row(
@@ -84,7 +84,8 @@ fun LazyItemScope.VacancyListItem(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
                     ) {
                         Text(
                             text = lectureTitle,
