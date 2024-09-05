@@ -110,7 +110,7 @@ fun LazyItemScope.VacancyListItem(
                 }
                 Row(
                     modifier = Modifier
-                        .padding(bottom = 6.dp)
+                        .padding(bottom = 6.dp, top = 2.dp)
                         .height(20.dp),
                     verticalAlignment = Alignment.Top
                 ) {
