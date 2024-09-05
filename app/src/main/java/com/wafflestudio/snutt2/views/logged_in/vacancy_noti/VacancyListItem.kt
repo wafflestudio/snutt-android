@@ -108,20 +108,28 @@ fun LazyItemScope.VacancyListItem(
                         textAlign = TextAlign.Right,
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    TagIcon(
-                        modifier = Modifier.size(15.dp),
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = tagText,
-                        style = SNUTTTypography.body2,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                Row(
+                    modifier = Modifier.height(20.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Row(
                         modifier = Modifier
-                            .alpha(0.8f)
-                            .weight(1f),
-                    )
+                            .padding(top = 4.dp)
+                            .weight(1f)
+                    ) {
+                        TagIcon(
+                            modifier = Modifier.size(15.dp),
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = tagText,
+                            style = SNUTTTypography.body2,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .alpha(0.8f)
+                        )
+                    }
                     Text(
                         text = quotaText,
                         style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue),
