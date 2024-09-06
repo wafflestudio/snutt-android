@@ -102,7 +102,7 @@ fun LazyItemScope.VacancyListItem(
                     }
                     Text(
                         text = instructorCreditText,
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Right,
@@ -126,7 +126,7 @@ fun LazyItemScope.VacancyListItem(
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
                             text = tagText,
-                            style = SNUTTTypography.body2,
+                            style = SNUTTTypography.body2.copy(fontSize = 13.sp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -135,7 +135,7 @@ fun LazyItemScope.VacancyListItem(
                     }
                     Text(
                         text = quotaText,
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue),
+                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue, fontSize = 13.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -150,7 +150,7 @@ fun LazyItemScope.VacancyListItem(
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = classTimeText,
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f),
@@ -163,7 +163,7 @@ fun LazyItemScope.VacancyListItem(
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f),
@@ -191,7 +191,7 @@ fun VacancyBadge(
             )
             .padding(horizontal = 3.dp, vertical = 1.dp),
         text = stringResource(R.string.vacancy_item_vacancy_sticker),
-        style = SNUTTTypography.body2
+        style = SNUTTTypography.body2.copy(fontSize = 13.sp)
             .copy(
                 color = SNUTTColors.VacancyRed,
                 fontSize = 9.sp,
