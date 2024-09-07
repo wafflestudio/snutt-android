@@ -96,7 +96,7 @@ fun LazyItemScope.VacancyListItem(
                         if (hasVacancy) {
                             VacancyBadge(
                                 modifier = Modifier
-                                    .padding(horizontal = 5.dp),
+                                    .padding(horizontal = 6.dp),
                             )
                         }
                     }
