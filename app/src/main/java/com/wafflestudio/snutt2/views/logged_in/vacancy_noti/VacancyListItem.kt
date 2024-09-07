@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -102,7 +103,7 @@ fun LazyItemScope.VacancyListItem(
                     }
                     Text(
                         text = instructorCreditText,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Right,
@@ -126,7 +127,7 @@ fun LazyItemScope.VacancyListItem(
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
                             text = tagText,
-                            style = SNUTTTypography.body2.copy(fontSize = 13.sp),
+                            style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -135,7 +136,7 @@ fun LazyItemScope.VacancyListItem(
                     }
                     Text(
                         text = quotaText,
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue, fontSize = 13.sp),
+                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue, fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -150,7 +151,7 @@ fun LazyItemScope.VacancyListItem(
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = classTimeText,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f),
@@ -163,7 +164,7 @@ fun LazyItemScope.VacancyListItem(
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp),
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.alpha(0.8f),
@@ -191,10 +192,10 @@ fun VacancyBadge(
             )
             .padding(horizontal = 3.dp, vertical = 1.dp),
         text = stringResource(R.string.vacancy_item_vacancy_sticker),
-        style = SNUTTTypography.body2.copy(fontSize = 13.sp)
+        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium)
             .copy(
                 color = SNUTTColors.VacancyRed,
-                fontSize = 9.sp,
+                fontSize = 11.sp,
             ),
     )
 }
