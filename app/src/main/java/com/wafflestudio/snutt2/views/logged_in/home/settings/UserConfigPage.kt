@@ -152,32 +152,37 @@ fun UserConfigPage() {
         var password by remember { mutableStateOf("") }
         var passwordConfirm by remember { mutableStateOf("") }
 
-        CustomDialog(
-            onDismiss = { addIdPasswordDialogState = false },
-            onConfirm = {
-                if (password != passwordConfirm) {
-                    context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
-                } else {
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.addNewLocalId(id, password)
-                            context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
-                            viewModel.fetchUserInfo()
-                            addIdPasswordDialogState = false
-                        }
+        val onConfirm: () -> Unit = {
+            if (password != passwordConfirm) {
+                context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
+            } else {
+                scope.launch {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        viewModel.addNewLocalId(id, password)
+                        context.toast(context.getString(R.string.settings_user_config_add_local_id_success))
+                        viewModel.fetchUserInfo()
+                        addIdPasswordDialogState = false
                     }
                 }
-            },
+            }
+        }
+
+        CustomDialog(
+            onDismiss = { addIdPasswordDialogState = false },
+            onConfirm = onConfirm,
             title = stringResource(R.string.settings_user_config_add_local_id),
             positiveButtonText = stringResource(
                 R.string.notifications_noti_add,
             ),
         ) {
+            val focusManager = LocalFocusManager.current
             Column {
                 EditText(
                     value = id,
                     onValueChange = { id = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                     hint = stringResource(R.string.sign_in_id_hint),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -185,6 +190,9 @@ fun UserConfigPage() {
                     value = password,
                     onValueChange = { password = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.sign_in_password_hint),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -192,6 +200,9 @@ fun UserConfigPage() {
                     value = passwordConfirm,
                     onValueChange = { passwordConfirm = it },
                     textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onNext = { onConfirm() }),
+                    visualTransformation = PasswordVisualTransformation(),
                     hint = stringResource(R.string.sign_up_password_confirm_hint),
                 )
             }
