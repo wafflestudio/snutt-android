@@ -122,7 +122,7 @@ fun LazyItemScope.VacancyListItem(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TagIcon(
-                            modifier = Modifier.size(15.dp),
+                            modifier = Modifier.size(13.dp),
                         )
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
@@ -146,7 +146,7 @@ fun LazyItemScope.VacancyListItem(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ClockIcon(
-                        modifier = Modifier.size(15.dp),
+                        modifier = Modifier.size(13.dp),
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
@@ -159,7 +159,7 @@ fun LazyItemScope.VacancyListItem(
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     LocationIcon(
-                        modifier = Modifier.size(15.dp),
+                        modifier = Modifier.size(13.dp),
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
