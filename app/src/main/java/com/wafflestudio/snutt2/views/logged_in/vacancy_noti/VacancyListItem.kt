@@ -109,7 +109,7 @@ fun LazyItemScope.VacancyListItem(
                         textAlign = TextAlign.Right,
                     )
                 }
-                Row(
+                Row( // 태그와 quota의 알 수 없는 수직 위치 때문에 쓴 꼼수
                     modifier = Modifier
                         .padding(bottom = 6.dp, top = 2.dp)
                         .height(20.dp),
@@ -122,7 +122,9 @@ fun LazyItemScope.VacancyListItem(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TagIcon(
-                            modifier = Modifier.size(13.dp),
+                            modifier = Modifier
+                                .padding(top = 2.dp) // 태그 텍스트의 알 수 없는 수직 위치 때문에 쓴 꼼수
+                                .size(13.dp),
                         )
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
