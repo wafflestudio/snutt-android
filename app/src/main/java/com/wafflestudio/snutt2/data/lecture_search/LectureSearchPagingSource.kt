@@ -24,11 +24,11 @@ class LectureSearchPagingSource(
         year = year,
         semester = semester,
         title = title,
-        classification = tags.extractTagString(TagType.Classification),
-        credit = tags.extractTagString(TagType.Credit).map { it.toCreditNumber() },
-        academic_year = tags.extractTagString(TagType.AcademicYear),
-        department = tags.extractTagString(TagType.Department),
-        category = tags.extractTagString(TagType.Category),
+        classification = tags.extractTagString(TagType.CLASSIFICATION),
+        credit = tags.extractTagString(TagType.CREDIT).map { it.toCreditNumber() },
+        academic_year = tags.extractTagString(TagType.ACADEMIC_YEAR),
+        department = tags.extractTagString(TagType.DEPARTMENT),
+        category = tags.extractTagString(TagType.CATEGORY),
         times = times,
         timesToExclude = timesToExclude,
         etc = tags.mapNotNull {
@@ -40,7 +40,7 @@ class LectureSearchPagingSource(
         }.ifEmpty { null },
         offset = null,
         limit = null,
-        sortCriteria = tags.extractTagString(TagType.SortCriteria).lastOrNull(), // 중복 선택 불가능
+        sortCriteria = tags.extractTagString(TagType.SORT_CRITERIA).lastOrNull(), // 중복 선택 불가능
     )
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {

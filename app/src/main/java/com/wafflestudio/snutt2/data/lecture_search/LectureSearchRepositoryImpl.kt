@@ -51,12 +51,12 @@ class LectureSearchRepositoryImpl @Inject constructor(
         val response = api._getTagList(year.toInt(), semester.toInt())
         val list = mutableListOf<TagDto>()
         list.apply {
-            addAll(response.department.map { TagDto(TagType.Department, it) })
-            addAll(response.classification.map { TagDto(TagType.Classification, it) })
-            addAll(response.academicYear.map { TagDto(TagType.AcademicYear, it) })
-            addAll(response.credit.map { TagDto(TagType.Credit, it) })
-            addAll(response.category.map { TagDto(TagType.Category, it) })
-            addAll(response.sortCriteria.map { TagDto(TagType.SortCriteria, it) })
+            addAll(response.department.map { TagDto(TagType.DEPARTMENT, it) })
+            addAll(response.classification.map { TagDto(TagType.CLASSIFICATION, it) })
+            addAll(response.academicYear.map { TagDto(TagType.ACADEMIC_YEAR, it) })
+            addAll(response.credit.map { TagDto(TagType.CREDIT, it) })
+            addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
+            addAll(response.sortCriteria.map { TagDto(TagType.SORT_CRITERIA, it) })
         }
         return list
     }

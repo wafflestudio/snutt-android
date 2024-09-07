@@ -56,7 +56,7 @@ class SearchViewModel @Inject constructor(
     private val _selectedLecture = MutableStateFlow<LectureDto?>(null)
     val selectedLecture = _selectedLecture.asStateFlow()
 
-    private val _selectedTagType = MutableStateFlow<TagType>(TagType.SortCriteria)
+    private val _selectedTagType = MutableStateFlow<TagType>(TagType.SORT_CRITERIA)
     val selectedTagType = _selectedTagType.asStateFlow()
 
     private val _selectedTags = MutableStateFlow(listOf<TagDto>())
