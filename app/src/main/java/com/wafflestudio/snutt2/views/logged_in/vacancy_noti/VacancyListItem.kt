@@ -132,8 +132,6 @@ fun LazyItemScope.VacancyListItem(
                             style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .alpha(0.8f),
                         )
                     }
                     Text(
@@ -156,7 +154,6 @@ fun LazyItemScope.VacancyListItem(
                         style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f),
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -169,7 +166,6 @@ fun LazyItemScope.VacancyListItem(
                         style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f),
                     )
                 }
             }
