@@ -56,7 +56,7 @@ class SearchViewModel @Inject constructor(
     private val _selectedLecture = MutableStateFlow<LectureDto?>(null)
     val selectedLecture = _selectedLecture.asStateFlow()
 
-    private val _selectedTagType = MutableStateFlow(TagType.ACADEMIC_YEAR)
+    private val _selectedTagType = MutableStateFlow<TagType>(TagType.SORT_CRITERIA)
     val selectedTagType = _selectedTagType.asStateFlow()
 
     private val _selectedTags = MutableStateFlow(listOf<TagDto>())
@@ -194,7 +194,12 @@ class SearchViewModel @Inject constructor(
                 _searchTimeList.emit(null)
             }
         } else {
-            _selectedTags.emit(concatenate(_selectedTags.value, listOf(tag)))
+            val selectedTags = if (tag.type.isExclusive) {
+                concatenate(_selectedTags.value.filter { it.type != tag.type }, listOf(tag))
+            } else {
+                concatenate(_selectedTags.value, listOf(tag))
+            }
+            _selectedTags.emit(selectedTags)
 
             if (tag == TagDto.TIME_SELECT) {
                 _draggedTimeBlock.value.clusterToTimeBlocks().let {

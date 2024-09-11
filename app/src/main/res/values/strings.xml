@@ -368,6 +368,7 @@
     <string name="search_option_tag_type_time">시간</string>
     <string name="search_option_tag_type_department">학과</string>
     <string name="search_option_tag_type_general_category">교양분류</string>
+    <string name="search_option_tag_type_sort_criteria">정렬 기준</string>
     <string name="search_option_tag_type_etc">기타</string>
     <string name="search_option_apply_button">필터 적용</string>
     <string name="search_option_select_empty_time_slots">빈시간대 선택하기</string>

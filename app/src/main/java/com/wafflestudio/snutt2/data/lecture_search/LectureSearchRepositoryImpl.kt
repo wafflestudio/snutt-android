@@ -56,6 +56,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
             addAll(response.academicYear.map { TagDto(TagType.ACADEMIC_YEAR, it) })
             addAll(response.credit.map { TagDto(TagType.CREDIT, it) })
             addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
+            addAll(response.sortCriteria.map { TagDto(TagType.SORT_CRITERIA, it) })
         }
         return list
     }

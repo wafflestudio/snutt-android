@@ -31,11 +31,12 @@ fun TagTypeColumn(
     val context = LocalContext.current
     val tagTypeList = remember {
         listOf(
-            context.getString(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
+            context.getString(R.string.search_option_tag_type_sort_criteria) to TagType.SORT_CRITERIA,
             context.getString(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
+            context.getString(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
+            context.getString(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
             context.getString(R.string.search_option_tag_type_credit) to TagType.CREDIT,
             context.getString(R.string.search_option_tag_type_time) to TagType.TIME,
-            context.getString(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
             context.getString(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
             context.getString(R.string.search_option_tag_type_etc) to TagType.ETC,
         )
