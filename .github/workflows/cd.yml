@@ -60,7 +60,7 @@ jobs:
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v3
+        uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: ${{ env.TITLE }}
@@ -111,7 +111,7 @@ jobs:
       - name: Upload artifact to Firebase App Distribution
         run: ./gradlew appDistributionUploadStagingRelease
       - name: Slack Upload APK
-        uses: MeilCli/slack-upload-file@v2
+        uses: MeilCli/slack-upload-file@v3
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
