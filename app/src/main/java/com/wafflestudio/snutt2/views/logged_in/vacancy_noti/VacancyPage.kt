@@ -8,11 +8,13 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -28,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -38,6 +41,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
@@ -251,7 +255,8 @@ fun VacancyPage(
         AnimatedVisibility(
             visible = !vacancyViewModel.isEditMode,
             modifier = Modifier
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .offset((-27).dp, (-22).dp),
             enter = slideInVertically {
                 with(density) { 10.dp.roundToPx() }
             } + fadeIn(),
@@ -259,24 +264,12 @@ fun VacancyPage(
                 with(density) { 10.dp.roundToPx() }
             } + fadeOut(),
         ) {
-            ExtendedFloatingActionButton(
-                modifier = Modifier
-                    .padding(end = 20.dp, bottom = 30.dp)
-                    .height(45.dp),
-                text = {
-                    Text(
-                        text = stringResource(R.string.vacancy_floating_button),
-                        style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite),
-                        maxLines = 1,
-                    )
-                },
-                contentColor = SNUTTColors.SNUTTVacancy,
+            SugangSnuFloatingActionButton(
                 onClick = {
                     sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
                     }
                 },
-                elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp),
             )
         }
         if (introDialogState) {
@@ -446,5 +439,39 @@ fun VacancyIntroDialog(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SugangSnuFloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    Surface(
+        modifier = modifier
+            .size(110.dp, 32.dp)
+            .clicks { onClick() },
+        shape = RoundedCornerShape(50),
+        color = SNUTTColors.SNUTTVacancy,
+        elevation = FloatingActionButtonDefaults.elevation(3.dp, 3.dp).elevation(interactionSource).value,
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.vacancy_floating_button),
+                style = SNUTTTypography.h5.copy(color = SNUTTColors.AllWhite),
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SugangSnuFloatingActionButtonPreview() {
+    SNUTTTheme {
+        SugangSnuFloatingActionButton({})
     }
 }
