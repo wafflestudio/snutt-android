@@ -152,7 +152,7 @@ fun LazyItemScope.VacancyListItem(
                         text = classTimeText,
                         style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
