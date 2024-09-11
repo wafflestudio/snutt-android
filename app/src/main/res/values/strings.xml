@@ -349,7 +349,7 @@
     <string name="home_drawer_create_table_bottom_sheet_hint">시간표 제목을 입력하세요</string>
     <string name="search_result_item_add_button">추가하기</string>
     <string name="search_result_item_remove_button">삭제하기</string>
-    <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
+    <string name="search_result_item_instructor_credit_text">%s / %s학점</string>
     <string name="search_result_item_detail_button">자세히</string>
     <string name="search_result_item_review_button">강의평</string>
     <string name="search_result_item_bookmark_button">관심강좌</string>
@@ -510,7 +510,7 @@
     <string name="time_minutes_ago">%d분 전</string>
     <string name="time_now">방금</string>
     <string name="vacancy_app_bar_title">빈자리 알림</string>
-    <string name="vacancy_item_quota_text">%d명/%d명</string>
+    <string name="vacancy_item_quota_text">%d명 / %d명</string>
     <string name="vacancy_item_detail_button">자세히</string>
     <string name="vacancy_item_goto_button">수강신청으로 이동</string>
     <string name="vacancy_item_vacancy_sticker">취소여석</string>

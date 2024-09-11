@@ -13,8 +13,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +62,7 @@ fun LazyItemScope.VacancyListItem(
             )
             .background(backgroundColor)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 16.dp)
             .clicks { onClick() },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -76,15 +76,15 @@ fun LazyItemScope.VacancyListItem(
         Column {
             Column(
                 modifier = Modifier
-                    .padding(vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
+                    .padding(vertical = 14.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f),
                     ) {
                         Text(
                             text = lectureTitle,
@@ -96,67 +96,82 @@ fun LazyItemScope.VacancyListItem(
                         if (hasVacancy) {
                             VacancyBadge(
                                 modifier = Modifier
-                                    .padding(horizontal = 5.dp),
+                                    .padding(horizontal = 6.dp),
                             )
                         }
                     }
                     Text(
                         text = instructorCreditText,
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Right,
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    TagIcon(
-                        modifier = Modifier.size(15.dp),
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = tagText,
-                        style = SNUTTTypography.body2,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                Row( // 태그와 quota의 알 수 없는 수직 위치 때문에 쓴 꼼수
+                    modifier = Modifier
+                        .padding(bottom = 6.dp, top = 2.dp)
+                        .height(20.dp),
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    Row(
                         modifier = Modifier
-                            .alpha(0.8f)
+                            .padding(top = 4.dp)
                             .weight(1f),
-                    )
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TagIcon(
+                            modifier = Modifier
+                                .padding(top = 2.dp) // 태그 텍스트의 알 수 없는 수직 위치 때문에 쓴 꼼수
+                                .size(13.dp),
+                        )
+                        Spacer(modifier = Modifier.width(7.dp))
+                        Text(
+                            text = tagText,
+                            style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                     Text(
                         text = quotaText,
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue),
+                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue, fontSize = 13.sp, fontWeight = FontWeight.Normal),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(bottom = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     ClockIcon(
-                        modifier = Modifier.size(15.dp),
+                        modifier = Modifier.size(13.dp),
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = classTimeText,
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f),
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     LocationIcon(
-                        modifier = Modifier.size(15.dp),
+                        modifier = Modifier.size(13.dp),
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
-                        style = SNUTTTypography.body2,
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(0.8f),
                     )
                 }
             }
-            Divider(color = SNUTTColors.Black250)
+            Divider(
+                modifier = Modifier.height(0.5f.dp),
+                color = SNUTTColors.Black250,
+            )
         }
     }
 }
@@ -174,10 +189,10 @@ fun VacancyBadge(
             )
             .padding(horizontal = 3.dp, vertical = 1.dp),
         text = stringResource(R.string.vacancy_item_vacancy_sticker),
-        style = SNUTTTypography.body2
+        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal)
             .copy(
                 color = SNUTTColors.VacancyRed,
-                fontSize = 9.sp,
+                fontSize = 11.sp,
             ),
     )
 }

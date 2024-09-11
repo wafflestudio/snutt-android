@@ -35,7 +35,8 @@ object SNUTTStringUtils {
         val texts = StringBuilder()
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
             texts.append(getClassTimeText(classTimeDto))
-            if (index != lectureDto.class_time_json.size - 1) texts.append("/")
+            texts.append(")")
+            if (index != lectureDto.class_time_json.size - 1) texts.append(", ")
         }
         if (texts.isEmpty()) texts.append("(없음)")
         return texts.toString()
@@ -106,7 +107,7 @@ object SNUTTStringUtils {
     fun getClassTimeText(classTime: ClassTimeDto): String {
         return StringBuilder()
             .append(SNUTTUtils.numberToWday(classTime.day))
-            .append(" ")
+            .append("(")
             .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
             .append("~")
             .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
