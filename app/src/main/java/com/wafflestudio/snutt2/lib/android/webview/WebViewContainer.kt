@@ -60,67 +60,48 @@ class WebViewContainer(
         this.settings.javaScriptEnabled = true
     }
 
-    suspend fun openPage(url: String?) {
+    suspend fun openPage(url: String) {
+        val host = URL(url).host
         val accessToken = accessToken.filterNotNull().first()
-        val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
-
-        CookieManager.getInstance().apply {
-            setCookie(
-                reviewUrlHost,
-                "x-access-apikey=${context.getString(R.string.api_key)}",
-            )
-            setCookie(
-                reviewUrlHost,
-                "x-access-token=$accessToken",
-            )
-            setCookie(
-                reviewUrlHost,
-                "x-os-type=android",
-            )
-            setCookie(
-                reviewUrlHost,
-                "x-os-version=${Build.VERSION.SDK_INT}",
-            )
-            setCookie(
-                reviewUrlHost,
-                "x-app-version=${BuildConfig.VERSION_NAME}",
-            )
-            setCookie(
-                reviewUrlHost,
-                "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}",
-            )
-            setCookie(
-                reviewUrlHost,
-                "theme=${
-                    if (isDarkMode) {
-                        "dark"
-                    } else {
-                        "light"
-                    }
-                }",
-            )
-        }.flush()
-        webView.loadUrl(url ?: context.getString(R.string.review_base_url))
+        setCookies(host, accessToken)
+        webView.loadUrl(url)
     }
 
     suspend fun reload() {
         val accessToken = accessToken.filterNotNull().first()
-        val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
+        val host = URL(webView.url).host
+        setCookies(host, accessToken)
+        webView.reload()
+    }
+
+    private fun setCookies(host: String, accessToken: String) {
         CookieManager.getInstance().apply {
             setCookie(
-                reviewUrlHost,
+                host,
                 "x-access-apikey=${context.getString(R.string.api_key)}",
             )
             setCookie(
-                reviewUrlHost,
+                host,
                 "x-access-token=$accessToken",
             )
             setCookie(
-                reviewUrlHost,
+                host,
                 "x-os-type=android",
             )
             setCookie(
-                reviewUrlHost,
+                host,
+                "x-os-version=${Build.VERSION.SDK_INT}",
+            )
+            setCookie(
+                host,
+                "x-app-version=${BuildConfig.VERSION_NAME}",
+            )
+            setCookie(
+                host,
+                "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}",
+            )
+            setCookie(
+                host,
                 "theme=${
                     if (isDarkMode) {
                         "dark"
@@ -130,7 +111,6 @@ class WebViewContainer(
                 }",
             )
         }.flush()
-        webView.reload()
     }
 }
 
