@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -89,8 +90,8 @@ fun HomePage() {
         }
     }
 
-    LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
-        reviewPageWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
+    LaunchedEffect(Unit) {
+        reviewPageWebViewContainer.openPage(context.getString(R.string.review_base_url))
     }
 
     LaunchedEffect(Unit) {

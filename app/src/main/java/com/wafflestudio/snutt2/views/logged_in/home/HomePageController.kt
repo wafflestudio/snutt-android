@@ -25,7 +25,7 @@ sealed class HomeItem {
 
     object Timetable : HomeItem()
     object Search : HomeItem()
-    data class Review(val landingPage: String? = null) : HomeItem()
+    object Review : HomeItem()
     object Friends : HomeItem()
     object Settings : HomeItem()
 }

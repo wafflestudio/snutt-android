@@ -58,7 +58,7 @@ internal fun BottomNavigation(
                 .weight(1f)
                 .fillMaxHeight(),
             onClick = {
-                onUpdatePageState(HomeItem.Review())
+                onUpdatePageState(HomeItem.Review)
             },
         ) {
             ReviewIcon(
