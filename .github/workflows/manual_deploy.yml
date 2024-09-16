@@ -60,19 +60,33 @@ jobs:
           cat << EOF > ./gcp-service-account-staging.json
           ${{ secrets.app_distribution_service_account_staging }}
           EOF
-      - name: Setup secrets.xml (Live)
+      - name: Setup secrets.xml for app module (Live)
         if: startsWith(github.event.inputs.variant, 'live')
         run: |
           mkdir -p ./app/src/live/res/values
           cat << EOF > ./app/src/live/res/values/secrets.xml
           ${{ secrets.secrets_xml_live }}
           EOF
-      - name: Setup secrets.xml (Staging)
+      - name: Setup secrets.xml for core:network module (Live)
+        if: startsWith(github.event.inputs.variant, 'live')
+        run: |
+          mkdir -p ./core/network/src/live/res/values
+          cat << EOF > ./core/network/src/live/res/values/secrets.xml
+          ${{ secrets.secrets_xml_live_core_network }}
+          EOF
+      - name: Setup secrets.xml for app module (Staging)
         if: startsWith(github.event.inputs.variant, 'staging')
         run: |
           mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
           ${{ secrets.secrets_xml_staging }}
+          EOF
+      - name: Setup secrets.xml for core:network module (Staging)
+        if: startsWith(github.event.inputs.variant, 'staging')
+        run: |
+          mkdir -p ./core/network/src/staging/res/values
+          cat << EOF > ./core/network/src/staging/res/values/secrets.xml
+          ${{ secrets.secrets_xml_staging_core_network }}
           EOF
       - name: Decode Keystore
         env:
