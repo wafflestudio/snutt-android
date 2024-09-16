@@ -2,8 +2,6 @@
 #Build Setting
 /app/src/live/
 /app/src/staging/
-/core/network/live/
-/core/network/staging/
 
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
