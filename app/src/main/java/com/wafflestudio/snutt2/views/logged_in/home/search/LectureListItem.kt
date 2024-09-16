@@ -247,6 +247,7 @@ fun LazyItemScope.LectureListItem(
                     onClick = {
                         scope.launch {
                             val url = lectureDataWithState.item.review?.getReviewUrl(context)
+                                ?: return@launch
                             openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
                         }
                     },

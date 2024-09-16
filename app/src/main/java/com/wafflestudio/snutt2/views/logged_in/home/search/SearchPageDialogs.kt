@@ -15,7 +15,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import kotlinx.coroutines.launch
 
 suspend fun openReviewBottomSheet(
-    url: String?,
+    url: String,
     reviewWebViewContainer: WebViewContainer,
     bottomSheet: BottomSheet,
 ) {

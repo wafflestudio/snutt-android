@@ -614,6 +614,7 @@ fun LectureDetailPage(
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                                     scope.launch {
                                         val url = editingLectureReview?.getReviewUrl(context)
+                                            ?: return@launch
                                         openReviewBottomSheet(
                                             url,
                                             reviewBottomSheetWebViewContainer,
