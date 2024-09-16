@@ -4,6 +4,7 @@ import android.content.Context
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.core.network.model.LectureReviewDto as LectureReviewDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class LectureReviewDto(
@@ -20,3 +21,9 @@ data class LectureReviewDto(
         }
     }
 }
+
+fun LectureReviewDtoNetwork.toExternalModel(): LectureReviewDto = LectureReviewDto(
+    id = id,
+    rating = rating,
+    reviewCount = reviewCount,
+)

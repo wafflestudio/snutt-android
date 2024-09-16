@@ -74,6 +74,7 @@ fun LectureDtoNetwork.toExternalModel() = LectureDto(
     color = color.toExternalModel(),
     registrationCount = registrationCount,
     wasFull = wasFull,
+    review = review?.toExternalModel(),
 )
 
 fun Lecture.toExternalModel() = LectureDto(

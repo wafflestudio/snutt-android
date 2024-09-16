@@ -24,4 +24,5 @@ data class LectureDto(
     @Json(name = "color") val color: ColorDto = ColorDto(),
     @Json(name = "registrationCount") val registrationCount: Long = 0,
     @Json(name = "wasFull") val wasFull: Boolean = false,
+    @Json(name = "snuttEvLecture") val review: LectureReviewDto? = null,
 )
