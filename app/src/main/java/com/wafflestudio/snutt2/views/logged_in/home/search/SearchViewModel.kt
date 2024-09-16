@@ -107,7 +107,9 @@ class SearchViewModel @Inject constructor(
     private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
-        _searchTagList, _selectedTagType, _selectedTags,
+        _searchTagList,
+        _selectedTagType,
+        _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
@@ -152,7 +154,8 @@ class SearchViewModel @Inject constructor(
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable.filterNotNull(),
+        _selectedLecture,
+        currentTable.filterNotNull(),
     ) { pagingData, selectedLecture, currentTable ->
         pagingData.map { searchedLecture ->
             searchedLecture.toDataWithState(
@@ -270,7 +273,8 @@ class SearchViewModel @Inject constructor(
         val currentTable = currentTable.filterNotNull().first()
         _searchTagList.emit(
             lectureSearchRepository.getSearchTags(
-                currentTable.year, currentTable.semester,
+                currentTable.year,
+                currentTable.semester,
             ),
         )
     }

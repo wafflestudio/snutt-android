@@ -91,7 +91,7 @@ fun FindIdPage() {
                     focusManager.moveFocus(
                         FocusDirection.Down,
                     )
-                },),
+                }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true,
                 modifier = Modifier

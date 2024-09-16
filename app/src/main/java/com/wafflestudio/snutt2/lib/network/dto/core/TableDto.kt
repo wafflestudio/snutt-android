@@ -2,7 +2,9 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.core.database.model.Table
 import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.core.network.model.TableDto as TableDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class TableDto(
@@ -45,3 +47,42 @@ data class TableDto(
         )
     }
 }
+
+fun TableDtoNetwork.toExternalModel() = TableDto(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    lectureList = this.lectureList.map { it.toExternalModel() },
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    theme = this.theme,
+    themeId = this.themeId,
+    isPrimary = this.isPrimary,
+)
+
+fun Table.toExternalModel() = TableDto(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    lectureList = this.lectureList.map { it.toExternalModel() },
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    theme = this.theme,
+    themeId = this.themeId,
+    isPrimary = this.isPrimary,
+)
+
+fun TableDto.toDatabaseModel() = Table(
+    id = this.id,
+    year = this.year,
+    semester = this.semester,
+    title = this.title,
+    lectureList = this.lectureList.map { it.toDatabaseModel() },
+    updatedAt = this.updatedAt,
+    totalCredit = this.totalCredit,
+    theme = this.theme,
+    themeId = this.themeId,
+    isPrimary = this.isPrimary,
+)

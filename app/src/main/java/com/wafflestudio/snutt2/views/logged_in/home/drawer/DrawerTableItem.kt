@@ -38,7 +38,8 @@ fun DrawerTableItem(
     val tableListViewModel: TableListViewModel = hiltViewModel()
 
     Row(
-        modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             modifier = Modifier
@@ -68,7 +69,8 @@ fun DrawerTableItem(
             )
             Text(
                 text = stringResource(
-                    R.string.home_drawer_table_credit, table.totalCredit ?: 0L,
+                    R.string.home_drawer_table_credit,
+                    table.totalCredit ?: 0L,
                 ),
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,

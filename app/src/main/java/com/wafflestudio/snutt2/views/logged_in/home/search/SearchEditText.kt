@@ -46,7 +46,7 @@ fun RowScope.SearchEditText(
                     searchViewModel.query()
                 }
             }
-        },),
+        }),
         value = searchKeyword,
         onValueChange = {
             scope.launch {

@@ -50,7 +50,7 @@ fun TeamInfoPage() {
                 this.webViewClient = webViewClient
                 loadUrl(url, headers)
             }
-        },)
+        })
     }
 }
 

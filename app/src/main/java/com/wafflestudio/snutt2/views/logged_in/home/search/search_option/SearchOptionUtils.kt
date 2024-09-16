@@ -103,9 +103,9 @@ private fun getTimeRangeString(startTime: Float, endTime: Float): String {
     val endMinute = (((endTime + 0.5f) - endHour) * 60).toInt()
 
     return "$startHour:${String.format("%02d", startMinute)}-$endHour:${
-    String.format(
-        "%02d",
-        endMinute,
-    )
+        String.format(
+            "%02d",
+            endMinute,
+        )
     }"
 }

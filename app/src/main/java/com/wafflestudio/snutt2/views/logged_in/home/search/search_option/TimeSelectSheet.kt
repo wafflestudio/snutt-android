@@ -125,7 +125,8 @@ fun TimeSelectSheet(
                 },
             )
             Text(
-                text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_complete),
+                style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     onConfirm(draggedTimeBlock.map { row -> row.map { it.value } })
                 },

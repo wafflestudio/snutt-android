@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.di
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.Module
 import dagger.Provides
@@ -15,14 +13,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
-
-    @Provides
-    @Singleton
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
 
     @Provides
     @Singleton
