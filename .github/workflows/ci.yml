@@ -52,11 +52,17 @@ jobs:
           cat << EOF > ./app/src/staging/google-services.json
           ${{ secrets.google_services_json_staging }}
           EOF
-      - name: Setup secrets.xml (Staging)
+      - name: Setup secrets.xml for app module (Staging)
         run: |
           mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
           ${{ secrets.secrets_xml_staging }}
+          EOF
+      - name: Setup secrets.xml for core:network module (Staging)
+        run: |
+          mkdir -p ./core/network/src/staging/res/values
+          cat << EOF > ./core/network/src/staging/res/values/secrets.xml
+          ${{ secrets.secrets_xml_staging_core_network }}
           EOF
       - name: Build debug APK
         run: ./gradlew assembleStagingDebug --stacktrace
