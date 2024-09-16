@@ -1,15 +1,18 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
+import com.wafflestudio.snutt2.components.compose.SnuttWebView
 import com.wafflestudio.snutt2.core.network.util.ErrorCode
 import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import kotlinx.coroutines.launch
 
 suspend fun openReviewBottomSheet(
@@ -19,9 +22,11 @@ suspend fun openReviewBottomSheet(
 ) {
     reviewWebViewContainer.openPage("$url&on_back=close")
     bottomSheet.setSheetContent {
-        ReviewWebView(
+        SnuttWebView(
             webViewContainer = reviewWebViewContainer,
-            height = 0.95f,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.95f),
         )
     }
     bottomSheet.show()

@@ -18,7 +18,7 @@ class WebViewContainer(
     private val accessToken: StateFlow<String?>,
     private val isDarkMode: Boolean,
 ) {
-    val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
+    val loadState: MutableState<WebViewLoadState> = mutableStateOf(WebViewLoadState.InitialLoading(0))
 
     val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
@@ -26,15 +26,15 @@ class WebViewContainer(
         }
         this.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                if (loadState.value != LoadState.Error) {
-                    loadState.value = LoadState.Success
+                if (loadState.value != WebViewLoadState.Error) {
+                    loadState.value = WebViewLoadState.Success
                 }
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 loadState.value = when (loadState.value) {
-                    is LoadState.InitialLoading -> LoadState.InitialLoading(0)
-                    else -> LoadState.Loading(0)
+                    is WebViewLoadState.InitialLoading -> WebViewLoadState.InitialLoading(0)
+                    else -> WebViewLoadState.Loading(0)
                 }
             }
 
@@ -43,14 +43,14 @@ class WebViewContainer(
                 request: WebResourceRequest?,
                 error: WebResourceError?,
             ) {
-                loadState.value = LoadState.Error
+                loadState.value = WebViewLoadState.Error
             }
         }
         this.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 when (loadState.value) {
-                    is LoadState.InitialLoading -> LoadState.InitialLoading(newProgress)
-                    is LoadState.Loading -> LoadState.Loading(newProgress)
+                    is WebViewLoadState.InitialLoading -> WebViewLoadState.InitialLoading(newProgress)
+                    is WebViewLoadState.Loading -> WebViewLoadState.Loading(newProgress)
                     else -> null
                 }?.let {
                     loadState.value = it
