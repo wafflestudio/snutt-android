@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.core.network.model.LectureReviewDto as LectureRev
 
 @JsonClass(generateAdapter = true)
 data class LectureReviewDto(
-    @Json(name = "evLectureId") val id: String,
+    @Json(name = "evLectureId") val id: String? = null,
     @Json(name = "avgRating") val rating: Double? = null,
     @Json(name = "evaluationCount") val reviewCount: Int? = null,
 ) {
@@ -16,7 +16,7 @@ data class LectureReviewDto(
     val displayText get() = "$ratingDisplayText (${reviewCount ?: 0})"
 
     fun getReviewUrl(context: Context): String? { // DTO와 ui model 분리 후 ui model으로 옮기기
-        return id.let {
+        return id?.let {
             context.getString(R.string.review_base_url) + "/detail?id=$it"
         }
     }
