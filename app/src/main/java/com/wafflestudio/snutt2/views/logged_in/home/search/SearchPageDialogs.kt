@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.compose.material.Text
-import androidx.compose.runtime.CompositionLocalProvider
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
@@ -9,7 +8,6 @@ import com.wafflestudio.snutt2.core.network.util.ErrorCode
 import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import kotlinx.coroutines.launch
@@ -21,9 +19,10 @@ suspend fun openReviewBottomSheet(
 ) {
     reviewWebViewContainer.openPage("$url&on_back=close")
     bottomSheet.setSheetContent {
-        CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-            ReviewWebView(0.95f)
-        }
+        ReviewWebView(
+            webViewContainer = reviewWebViewContainer,
+            height = 0.95f,
+        )
     }
     bottomSheet.show()
 }

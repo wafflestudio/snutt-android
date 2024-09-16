@@ -25,23 +25,23 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
+import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalHomePageController
-import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReviewPage() {
-    val webViewContainer = LocalReviewWebView.current
+fun ReviewPage(
+    webViewContainer: WebViewContainer,
+) {
     val homePageController = LocalHomePageController.current
 
     val onBackPressed: () -> Unit = {
@@ -56,12 +56,14 @@ fun ReviewPage() {
         onBackPressed()
     }
 
-    ReviewWebView()
+    ReviewWebView(webViewContainer)
 }
 
 @Composable
-fun ReviewWebView(height: Float = 1.0f) {
-    val webViewContainer = LocalReviewWebView.current
+fun ReviewWebView(
+    webViewContainer: WebViewContainer,
+    height: Float = 1.0f,
+) {
     val scope = rememberCoroutineScope()
 
     Column(
@@ -182,10 +184,4 @@ private fun WebViewLoading(modifier: Modifier, progress: Float) {
             color = SNUTTColors.Gray200,
         )
     }
-}
-
-@Preview
-@Composable
-fun ReviewPagePreview() {
-    ReviewPage()
 }

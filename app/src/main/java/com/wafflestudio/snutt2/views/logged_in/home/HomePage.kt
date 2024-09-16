@@ -127,11 +127,7 @@ fun HomePage() {
                 when (pageController.homePageState.value) {
                     HomeItem.Timetable -> TimetablePage(uncheckedNotification)
                     HomeItem.Search -> SearchPage(searchResultPagingItems)
-                    is HomeItem.Review -> {
-                        CompositionLocalProvider(LocalReviewWebView provides reviewPageWebViewContainer) {
-                            ReviewPage()
-                        }
-                    }
+                    HomeItem.Review -> ReviewPage(reviewPageWebViewContainer)
                     HomeItem.Friends -> FriendsPage()
                     HomeItem.Settings -> SettingsPage()
                 }
