@@ -62,7 +62,8 @@ fun NetworkLogPage() {
             },
             actions = {
                 Text(
-                    "지우기", style = SNUTTTypography.button,
+                    "지우기",
+                    style = SNUTTTypography.button,
                     modifier = Modifier.clicks {
                         vm.clearNetworkLog()
                     },

@@ -62,7 +62,8 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
 
 @OptIn(
-    ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalNaverMapApi::class,
     ExperimentalComposeUiApi::class,
 )
 @Composable
@@ -123,7 +124,7 @@ fun LectureDetailPage(
                     } else {
                         showExitEditModeDialog(composableStates, onConfirm = {
                             vm.abandonEditingLectureDetail()
-                        },)
+                        })
                     }
                 }
                 ModeType.Viewing -> {
@@ -266,7 +267,7 @@ fun LectureDetailPage(
                                                     } else {
                                                         vm.updateLecture(is_forced = true)
                                                     }
-                                                },)
+                                                })
                                             },
                                         )
                                     }
@@ -525,7 +526,7 @@ fun LectureDetailPage(
                                                 },
                                         ),
                                     )
-                                },)
+                                })
                             },
                             editMode = modeType is ModeType.Editing,
                             visible = if (idx == editingLectureDetail.class_time_json.lastIndex) {
@@ -595,7 +596,7 @@ fun LectureDetailPage(
                                         scope.launch(Dispatchers.Main) {
                                             navController.popBackStack()
                                         }
-                                    },)
+                                    })
                                 }
                             }
                         } else {
@@ -642,14 +643,14 @@ fun LectureDetailPage(
                             if (modeType is ModeType.Editing) {
                                 showResetLectureDialog(composableStates, onConfirm = {
                                     vm.resetLecture()
-                                },)
+                                })
                             } else {
                                 showDeleteLectureDialog(composableStates, onConfirm = {
                                     vm.removeLecture()
                                     scope.launch(Dispatchers.Main) {
                                         navController.popBackStack()
                                     }
-                                },)
+                                })
                             }
                         }
                     }
