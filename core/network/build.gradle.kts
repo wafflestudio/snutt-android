@@ -22,13 +22,13 @@ android {
         debug {
             isDefault = true
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"))
+            consumerProguardFiles(getDefaultProguardFile("proguard-android.txt"))
         }
 
         release {
             isMinifyEnabled = true
             signingConfig = signingConfigs.named("release").get()
-            proguardFiles(
+            consumerProguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
