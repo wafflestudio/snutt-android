@@ -22,8 +22,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private enum class OptionSheetMode {
-    Normal,
-    TimeSelect,
+    Normal, TimeSelect,
 }
 
 @Composable
@@ -133,7 +132,7 @@ fun SearchOptionSheet(
         if (normalSheetHeightPx == 0 && maxSheetHeightPx == 0) {
             normalSheetHeightPx =
                 tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
-                    .roundToInt() + confirmButtonPlaceable.height
+                .roundToInt() + confirmButtonPlaceable.height
             maxSheetHeightPx = dragSheetPlaceable.height
         }
 
