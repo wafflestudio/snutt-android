@@ -61,24 +61,25 @@ fun TimeTable(
     selectedLecture: LectureDto?,
 ) {
     val previewTheme = LocalTableState.current.previewTheme
-    val lectures = LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
-        previewTheme?.let { theme ->
-            if (previewTheme is CustomTheme) {
-                it.mapIndexed { idx, lecture ->
-                    lecture.copy(
-                        colorIndex = 0,
-                        color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
-                    )
+    val lectures =
+        LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+            previewTheme?.let { theme ->
+                if (previewTheme is CustomTheme) {
+                    it.mapIndexed { idx, lecture ->
+                        lecture.copy(
+                            colorIndex = 0,
+                            color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                        )
+                    }
+                } else {
+                    it.mapIndexed { idx, lecture ->
+                        lecture.copy(
+                            colorIndex = idx % 9L + 1,
+                        )
+                    }
                 }
-            } else {
-                it.mapIndexed { idx, lecture ->
-                    lecture.copy(
-                        colorIndex = idx % 9L + 1,
-                    )
-                }
-            }
-        } ?: it
-    }
+            } ?: it
+        }
 
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
@@ -122,7 +123,10 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
-                            lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
+                            lectureDetailViewModel.initializeEditingLectureDetail(
+                                lecture,
+                                ModeType.Normal
+                            )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
                             }
@@ -190,7 +194,10 @@ fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
             )
             Box(
                 modifier = Modifier
-                    .offset(x = hourLabelWidth, y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f)
+                    .offset(
+                        x = hourLabelWidth,
+                        y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f
+                    )
                     .size(width = maxWidth, height = 0.5.dp)
                     .background(gridColor2),
             )
@@ -226,7 +233,8 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
             }
             .forEach { classTime ->
                 val context = LocalContext.current
-                val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
+                val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code
+                    ?: LocalTableState.current.table.theme
 
                 DrawClassTime(
                     fittedTrimParam = fittedTrimParam,
@@ -290,8 +298,14 @@ private fun DrawClassTime(
 
         Column(
             modifier = Modifier
-                .size(width = unitWidth, height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first))
-                .offset(x = hourLabelWidth + unitWidth * dayOffset, y = dayLabelHeight + unitHeight * hourRangeOffset.first)
+                .size(
+                    width = unitWidth,
+                    height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first)
+                )
+                .offset(
+                    x = hourLabelWidth + unitWidth * dayOffset,
+                    y = dayLabelHeight + unitHeight * hourRangeOffset.first
+                )
                 .border(width = 1.dp, color = SNUTTColors.Black050)
                 .background(color = Color(bgColor))
                 .padding(horizontal = cellPadding),
@@ -304,7 +318,14 @@ private fun DrawClassTime(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    val adjustedTextLayouts = remember(constraints, courseTitle, classTime.place, lectureNumber, instructorName, fittedTrimParam) {
+                    val adjustedTextLayouts = remember(
+                        constraints,
+                        courseTitle,
+                        classTime.place,
+                        lectureNumber,
+                        instructorName,
+                        fittedTrimParam
+                    ) {
                         calculateAdjustedTextLayout(
                             listOf(
                                 LectureCellInfo.titleTextLayout(courseTitle, true),
@@ -338,7 +359,13 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, lecture_number.orEmpty(), instructor, -0x1f1f20, -0xcccccd,
+                fittedTrimParam,
+                classTime,
+                course_title,
+                lecture_number.orEmpty(),
+                instructor,
+                -0x1f1f20,
+                -0xcccccd,
             )
         }
     }
