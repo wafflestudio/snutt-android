@@ -29,14 +29,17 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
+import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -59,41 +62,23 @@ fun SocialLinkPage() {
         )
     }
 
-    val callbackManager = CallbackManager.Factory.create()
-    LoginManager.getInstance()
-        .registerCallback(
-            callbackManager,
-            object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult) {
-                    // App code
-                    val id = result.accessToken.userId
-                    val token = result.accessToken.token
-                    Timber.i("User ID: %s", result.accessToken.userId)
-                    Timber.i("Auth Token: %s", result.accessToken.token)
-                    // FIXME: staging 에서 테스트 불가
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.connectFacebook(id, token)
-                            facebookConnected = true
-                            viewModel.fetchUserFacebook().name
-                            viewModel.fetchUserInfo()
-                        }
-                    }
-                }
-
-                override fun onCancel() {
-                    // App code
-                    Timber.w("Cancel")
-                    context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
-                }
-
-                override fun onError(error: FacebookException) {
-                    // App code
-                    Timber.e(error)
-                    context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
-                }
-            },
-        )
+    val handleFacebookConnect = {
+        scope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                val loginResult = facebookLogin(context)
+                viewModel.connectFacebook(
+                    loginResult.accessToken.userId,
+                    loginResult.accessToken.token,
+                )
+                facebookConnected = true
+                viewModel.fetchUserInfo()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -138,13 +123,7 @@ fun SocialLinkPage() {
                 SettingItem(
                     title = stringResource(R.string.social_link_facebook),
                     hasNextPage = false,
-                    onClick = {
-                        LoginManager.getInstance().logInWithReadPermissions(
-                            context as ActivityResultRegistryOwner,
-                            callbackManager,
-                            emptyList(),
-                        )
-                    },
+                    onClick = { handleFacebookConnect() },
                 )
             }
         }
