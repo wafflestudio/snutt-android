@@ -72,7 +72,7 @@ fun calculateAdjustedTextLayout(
     if (textMeasurer.measure(allOneLineParagraph).multiParagraph.height > maxHeight) {
         return cellInfoList.fold(emptyList<LectureCellInfo>()) { acc, current ->
             val paragraph = buildAnnotatedString {
-                acc.forEach {
+                (acc + current).forEach {
                     pushStyle(it.minifiedStyle.toSpanStyle())
                     appendLine()
                 }
