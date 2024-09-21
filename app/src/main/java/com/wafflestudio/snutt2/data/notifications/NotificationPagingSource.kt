@@ -2,12 +2,13 @@ package com.wafflestudio.snutt2.data.notifications
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import javax.inject.Inject
 
 class NotificationPagingSource @Inject constructor(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
 ) : PagingSource<Int, NotificationDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NotificationDto> {
@@ -17,7 +18,7 @@ class NotificationPagingSource @Inject constructor(
                 limit = params.loadSize,
                 offset = offset,
                 explicit = 1,
-            )
+            ).map { it.toExternalModel() }
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == NOTIFICATION_STARTING_PAGE_INDEX) null else offset - params.loadSize,

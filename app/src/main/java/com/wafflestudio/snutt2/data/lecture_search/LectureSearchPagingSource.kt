@@ -2,16 +2,18 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.lib.toCreditNumber
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.model.toNetworkModel
+import com.wafflestudio.snutt2.core.network.model.PostSearchQueryParams as PostSearchQueryParamsNetwork
 
 class LectureSearchPagingSource(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
     year: Long,
     semester: Long,
     title: String,
@@ -20,7 +22,7 @@ class LectureSearchPagingSource(
     timesToExclude: List<SearchTimeDto>?,
 ) : PagingSource<Long, LectureDto>() {
 
-    private val queryParam: PostSearchQueryParams = PostSearchQueryParams(
+    private val queryParam: PostSearchQueryParamsNetwork = PostSearchQueryParamsNetwork(
         year = year,
         semester = semester,
         title = title,
@@ -29,8 +31,8 @@ class LectureSearchPagingSource(
         academic_year = tags.extractTagString(TagType.ACADEMIC_YEAR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
-        times = times,
-        timesToExclude = timesToExclude,
+        times = times?.map { it.toNetworkModel() },
+        timesToExclude = timesToExclude?.map { it.toNetworkModel() },
         etc = tags.mapNotNull {
             when (it) {
                 TagDto.ETC_ENG -> "E"
@@ -40,6 +42,7 @@ class LectureSearchPagingSource(
         }.ifEmpty { null },
         offset = null,
         limit = null,
+        sortCriteria = tags.extractTagString(TagType.SORT_CRITERIA).lastOrNull(), // 중복 선택 불가능
     )
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {
@@ -51,7 +54,7 @@ class LectureSearchPagingSource(
                     offset = offset,
                     limit = params.loadSize.toLong(),
                 ),
-            )
+            ).map { it.toExternalModel() }
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == LECTURE_SEARCH_STARTING_PAGE_INDEX) null else offset - params.loadSize,

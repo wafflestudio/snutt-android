@@ -1,8 +1,4 @@
 package com.wafflestudio.snutt2.layouts.bottomsheetnavigation
-
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-
 /*
  * Copyright 2021 The Android Open Source Project
  *
@@ -29,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 
 /**
  * Helper function to create a [ModalBottomSheetLayout] from a [BottomSheetNavigator].

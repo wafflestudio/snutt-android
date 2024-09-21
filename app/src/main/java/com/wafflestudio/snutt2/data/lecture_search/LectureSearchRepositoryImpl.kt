@@ -3,20 +3,22 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
+import com.wafflestudio.snutt2.core.network.model.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.model.toExternalModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto as TempDomainLectureBuilding
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
-    private val api: SNUTTRestApi,
+    private val api: SNUTTNetworkDataSource,
     private val snuttUrls: SnuttUrls,
 ) : LectureSearchRepository {
 
@@ -56,16 +58,27 @@ class LectureSearchRepositoryImpl @Inject constructor(
             addAll(response.academicYear.map { TagDto(TagType.ACADEMIC_YEAR, it) })
             addAll(response.credit.map { TagDto(TagType.CREDIT, it) })
             addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
+            addAll(response.sortCriteria.map { TagDto(TagType.SORT_CRITERIA, it) })
         }
         return list
     }
 
-    override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
+    override suspend fun getBuildings(places: String): List<TempDomainLectureBuilding> {
         val response = api._getBuildings(places)
-        return response.content
+        return response.content.map { it.toDomainModel() }
     }
 
     companion object {
         const val LECTURES_LOAD_PAGE_SIZE = 30
     }
 }
+
+fun LectureBuildingDto.toDomainModel() = TempDomainLectureBuilding(
+    id,
+    buildingNumber,
+    buildingNameKor,
+    buildingNameEng,
+    locationInDMS.toExternalModel(),
+    locationInDecimal.toExternalModel(),
+    campus.toExternalModel(),
+)

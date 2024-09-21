@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'adopt'
@@ -31,11 +31,17 @@ jobs:
           cat << EOF > ./gcp-service-account-live.json
           ${{ secrets.app_distribution_service_account_live }}
           EOF
-      - name: Setup secrets.xml (Live)
+      - name: Setup secrets.xml for app module (Live)
         run: |
           mkdir -p ./app/src/live/res/values
           cat << EOF > ./app/src/live/res/values/secrets.xml
           ${{ secrets.secrets_xml_live }}
+          EOF
+      - name: Setup secrets.xml for core:network module (Live)
+        run: |
+          mkdir -p ./core/network/src/live/res/values
+          cat << EOF > ./core/network/src/live/res/values/secrets.xml
+          ${{ secrets.secrets_xml_live_core_network }}
           EOF
       - name: Decode Keystore
         env:
@@ -71,9 +77,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'adopt'
@@ -90,11 +96,17 @@ jobs:
           cat << EOF > ./gcp-service-account-staging.json
           ${{ secrets.app_distribution_service_account_staging }}
           EOF
-      - name: Setup secrets.xml (Staging)
+      - name: Setup secrets.xml for app module (Staging)
         run: |
           mkdir -p ./app/src/staging/res/values
           cat << EOF > ./app/src/staging/res/values/secrets.xml
           ${{ secrets.secrets_xml_staging }}
+          EOF
+      - name: Setup secrets.xml for core:network module (Staging)
+        run: |
+          mkdir -p ./core/network/src/staging/res/values
+          cat << EOF > ./core/network/src/staging/res/values/secrets.xml
+          ${{ secrets.secrets_xml_staging_core_network }}
           EOF
       - name: Decode Keystore
         env:

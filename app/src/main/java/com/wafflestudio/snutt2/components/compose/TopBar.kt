@@ -105,7 +105,8 @@ fun CenteredTopBar(
                 onDrawWithContent {
                     drawLine(
                         color = if (isDarkMode) SNUTTColors.DarkerGray else SNUTTColors.Gray10,
-                        start = Offset(0f, this.size.height), end = Offset(this.size.width, this.size.height),
+                        start = Offset(0f, this.size.height),
+                        end = Offset(this.size.width, this.size.height),
                         strokeWidth = 1f,
                     )
                     drawContent()

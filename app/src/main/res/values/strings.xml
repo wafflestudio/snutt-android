@@ -3,8 +3,6 @@
     <string name="privacy" translatable="false">privacy_policy</string>
     <string name="member" translatable="false">member</string>
 
-    <string name="api_google_server">https://oauth2.googleapis.com</string>
-
     <!-- For sign up fragment -->
     <string name="sign_up_terms_1">회원가입을 누르시면</string>
     <string name="sign_up_terms_2">일반 이용 약관</string>
@@ -349,7 +347,7 @@
     <string name="home_drawer_create_table_bottom_sheet_hint">시간표 제목을 입력하세요</string>
     <string name="search_result_item_add_button">추가하기</string>
     <string name="search_result_item_remove_button">삭제하기</string>
-    <string name="search_result_item_instructor_credit_text">%s/%s학점</string>
+    <string name="search_result_item_instructor_credit_text">%s / %s학점</string>
     <string name="search_result_item_detail_button">자세히</string>
     <string name="search_result_item_review_button">강의평</string>
     <string name="search_result_item_bookmark_button">관심강좌</string>
@@ -368,6 +366,7 @@
     <string name="search_option_tag_type_time">시간</string>
     <string name="search_option_tag_type_department">학과</string>
     <string name="search_option_tag_type_general_category">교양분류</string>
+    <string name="search_option_tag_type_sort_criteria">정렬 기준</string>
     <string name="search_option_tag_type_etc">기타</string>
     <string name="search_option_apply_button">필터 적용</string>
     <string name="search_option_select_empty_time_slots">빈시간대 선택하기</string>
@@ -510,7 +509,7 @@
     <string name="time_minutes_ago">%d분 전</string>
     <string name="time_now">방금</string>
     <string name="vacancy_app_bar_title">빈자리 알림</string>
-    <string name="vacancy_item_quota_text">%d명/%d명</string>
+    <string name="vacancy_item_quota_text">%d명 / %d명</string>
     <string name="vacancy_item_detail_button">자세히</string>
     <string name="vacancy_item_goto_button">수강신청으로 이동</string>
     <string name="vacancy_item_vacancy_sticker">취소여석</string>

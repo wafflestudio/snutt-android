@@ -140,7 +140,9 @@ fun SocialLinkPage() {
                     hasNextPage = false,
                     onClick = {
                         LoginManager.getInstance().logInWithReadPermissions(
-                            context as ActivityResultRegistryOwner, callbackManager, emptyList(),
+                            context as ActivityResultRegistryOwner,
+                            callbackManager,
+                            emptyList(),
                         )
                     },
                 )

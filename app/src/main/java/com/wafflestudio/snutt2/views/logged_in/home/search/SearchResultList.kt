@@ -80,7 +80,8 @@ fun SearchResultList(
 
                 else -> {
                     LazyColumn(
-                        state = lazyListState, modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        modifier = Modifier.fillMaxSize(),
                     ) {
                         items(searchResultPagingItems) { lectureDataWithState ->
                             lectureDataWithState?.let {
