@@ -125,7 +125,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
                         if (lecture.contains(day, time)) {
                             lectureDetailViewModel.initializeEditingLectureDetail(
                                 lecture,
-                                ModeType.Normal
+                                ModeType.Normal,
                             )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
@@ -196,7 +196,7 @@ fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
                 modifier = Modifier
                     .offset(
                         x = hourLabelWidth,
-                        y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f
+                        y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f,
                     )
                     .size(width = maxWidth, height = 0.5.dp)
                     .background(gridColor2),
@@ -300,11 +300,11 @@ private fun DrawClassTime(
             modifier = Modifier
                 .size(
                     width = unitWidth,
-                    height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first)
+                    height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first),
                 )
                 .offset(
                     x = hourLabelWidth + unitWidth * dayOffset,
-                    y = dayLabelHeight + unitHeight * hourRangeOffset.first
+                    y = dayLabelHeight + unitHeight * hourRangeOffset.first,
                 )
                 .border(width = 1.dp, color = SNUTTColors.Black050)
                 .background(color = Color(bgColor))
@@ -324,7 +324,7 @@ private fun DrawClassTime(
                         classTime.place,
                         lectureNumber,
                         instructorName,
-                        fittedTrimParam
+                        fittedTrimParam,
                     ) {
                         calculateAdjustedTextLayout(
                             listOf(

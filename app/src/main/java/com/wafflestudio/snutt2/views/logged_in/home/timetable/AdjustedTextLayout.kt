@@ -36,7 +36,9 @@ fun calculateAdjustedTextLayout(
     if (textMeasurer.measure(fullRenderParagraph).multiParagraph.height <= maxHeight) {
         return cellInfoList.map {
             AdjustedTextLayout(
-                it.text, it.style, Int.MAX_VALUE,
+                it.text,
+                it.style,
+                Int.MAX_VALUE,
             )
         }
     }
@@ -57,7 +59,9 @@ fun calculateAdjustedTextLayout(
     if (textMeasurer.measure(minifiedRenderParagraph).multiParagraph.height <= maxHeight) {
         return cellInfoList.map {
             AdjustedTextLayout(
-                it.text, it.minifiedStyle, Int.MAX_VALUE,
+                it.text,
+                it.minifiedStyle,
+                Int.MAX_VALUE,
             )
         }
     }
@@ -84,7 +88,9 @@ fun calculateAdjustedTextLayout(
             }
         }.map {
             AdjustedTextLayout(
-                it.text, it.minifiedStyle, 1,
+                it.text,
+                it.minifiedStyle,
+                1,
             )
         }
     }
