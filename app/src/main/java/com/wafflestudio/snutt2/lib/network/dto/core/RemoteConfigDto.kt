@@ -62,7 +62,7 @@ fun RemoteConfigDtoNetwork.VacancyUrlConfig.toExternalModel() = RemoteConfigDto.
 )
 
 fun RemoteConfigDtoNetwork.NoticesConfig.toExternalModel() = RemoteConfigDto.NoticesConfig(
-    visible = visible?:false,
+    visible = visible ?: false,
     title = title,
     content = content,
 )

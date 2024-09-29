@@ -256,7 +256,8 @@ class RootActivity : AppCompatActivity() {
 
                     composableRoot(NavigationDestination.Home) { HomePage() }
 
-                    composable2("${NavigationDestination.ImportantNotice}?title={title}&content={content}",
+                    composable2(
+                        "${NavigationDestination.ImportantNotice}?title={title}&content={content}",
                         arguments = listOf(
                             navArgument("title") {
                                 type = NavType.StringType
@@ -266,13 +267,13 @@ class RootActivity : AppCompatActivity() {
                                 type = NavType.StringType
                                 defaultValue = ""
                             },
+                        ),
+                    ) { backStackEntry ->
+                        ImportantNoticePage(
+                            backStackEntry.arguments?.getString("title") ?: "",
+                            backStackEntry.arguments?.getString("content") ?: "",
                         )
-                        ) { backStackEntry ->
-                            ImportantNoticePage(
-                                backStackEntry.arguments?.getString("title")?:"",
-                                backStackEntry.arguments?.getString("content")?:"",
-                            )
-                        }
+                    }
 
                     composable2(NavigationDestination.Notification) { NotificationPage() }
 
