@@ -33,8 +33,7 @@ class RemoteConfig @Inject constructor(
                         runCatching {
                             api._getRemoteConfig()
                         }.onSuccess {
-                            val a = it.copy(noticeConfig = it.noticeConfig?.copy(visible = true) ?: com.wafflestudio.snutt2.core.network.model.RemoteConfigDto.NoticeConfig(visible = true))
-                            config.emit(a.toExternalModel())
+                            config.emit(it.toExternalModel())
                         }.onFailure {
                             // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 config를 받아오지 못한 경우 지도를 숨긴다.
                             // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
