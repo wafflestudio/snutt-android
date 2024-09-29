@@ -120,13 +120,11 @@ class RootActivity : AppCompatActivity() {
             isInitialRefreshFinished = true
         }
         setUpContents(
-            // TODO: 임시 조치
-//            if (token.isEmpty()) {
-//                NavigationDestination.Onboard
-//            } else {
-//                NavigationDestination.Home
-//            },
-            NavigationDestination.ImportantNotice,
+            if (token.isEmpty()) {
+                NavigationDestination.Onboard
+            } else {
+                NavigationDestination.Home
+            },
         )
         setUpSplashScreen(composeRoot)
         setWindowAppearance()
@@ -234,6 +232,14 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
+            LaunchedEffect(Unit) {
+                remoteConfig.noticeConfig.collect {
+                    if (it.visible) {
+                        navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
+                    }
+                }
+            }
+
             InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
