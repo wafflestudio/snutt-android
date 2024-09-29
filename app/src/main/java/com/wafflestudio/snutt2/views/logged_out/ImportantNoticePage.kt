@@ -33,38 +33,11 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ImportantNoticePage() {
+fun ImportantNoticePage(
+    title: String,
+    content: String,
+) {
     val navController = LocalNavController.current
-    val coroutineScope = rememberCoroutineScope()
-
-    val importantNoticeViewModel = hiltViewModel<ImportantNoticeViewModel>()
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val homeViewModel = hiltViewModel<HomeViewModel>()
-    val importantNotice = importantNoticeViewModel.importantNotice.collectAsState()
-
-    LaunchedEffect(Unit) {
-        try {
-            importantNoticeViewModel.getConfigs()
-        } catch (e: Exception) {
-            val token = userViewModel.accessToken.value
-            coroutineScope.launch {
-                if (token.isNotEmpty()) {
-                    homeViewModel.refreshData()
-                    navController.navigate(NavigationDestination.Home) {
-                        popUpTo(NavigationDestination.ImportantNotice) {
-                            inclusive = true
-                        }
-                    }
-                } else {
-                    navController.navigate(NavigationDestination.Tutorial) {
-                        popUpTo(NavigationDestination.ImportantNotice) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -83,7 +56,7 @@ fun ImportantNoticePage() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = importantNotice.value.title ?: "",
+            text = title,
             style = SNUTTTypography.h3.copy(
                 fontSize = 17.sp,
             ),
@@ -94,7 +67,7 @@ fun ImportantNoticePage() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = importantNotice.value.content ?: "",
+            text = content,
             style = SNUTTTypography.body1,
             textAlign = TextAlign.Center,
         )

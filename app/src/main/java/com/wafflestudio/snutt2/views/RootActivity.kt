@@ -79,6 +79,7 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -235,7 +236,7 @@ class RootActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 remoteConfig.noticeConfig.collect {
                     if (it.visible) {
-                        navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
+                        navController.navigateAsOrigin("${NavigationDestination.ImportantNotice}?title=${URLEncoder.encode(it.title, "UTF-8").replace("+", "%20")}&content=${URLEncoder.encode(it.content, "UTF-8").replace("+", "%20")}")
                     }
                 }
             }
@@ -255,7 +256,23 @@ class RootActivity : AppCompatActivity() {
 
                     composableRoot(NavigationDestination.Home) { HomePage() }
 
-                    composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
+                    composable2("${NavigationDestination.ImportantNotice}?title={title}&content={content}",
+                        arguments = listOf(
+                            navArgument("title") {
+                                type = NavType.StringType
+                                defaultValue = ""
+                            },
+                            navArgument("content") {
+                                type = NavType.StringType
+                                defaultValue = ""
+                            },
+                        )
+                        ) { backStackEntry ->
+                            ImportantNoticePage(
+                                backStackEntry.arguments?.getString("title")?:"",
+                                backStackEntry.arguments?.getString("content")?:"",
+                            )
+                        }
 
                     composable2(NavigationDestination.Notification) { NotificationPage() }
 
