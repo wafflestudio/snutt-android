@@ -4,8 +4,6 @@ import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
-import com.wafflestudio.snutt2.data.important_notice.ImportantNoticeRepository
-import com.wafflestudio.snutt2.data.important_notice.ImportantNoticeRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepositoryImpl
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
@@ -50,7 +48,4 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
-
-    @Binds
-    abstract fun bindsImportantNoticeRepository(impl: ImportantNoticeRepositoryImpl): ImportantNoticeRepository
 }
