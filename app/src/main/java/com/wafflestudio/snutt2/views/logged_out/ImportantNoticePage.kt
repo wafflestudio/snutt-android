@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,20 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.NavigationDestination
-import java.util.Base64
 
 @Composable
-fun ImportantNoticePage(
-    title: String,
-    content: String,
-) {
+fun ImportantNoticePage() {
     val navController = LocalNavController.current
-    val decodedTitle = String(Base64.getUrlDecoder().decode(title))
-    val decodedContent = String(Base64.getUrlDecoder().decode(content))
+    val remoteConfig = LocalRemoteConfig.current
+    val noticeConfig by remoteConfig.noticeConfig.collectAsState(RemoteConfigDto.NoticeConfig())
 
     Column(
         modifier = Modifier
@@ -57,7 +57,7 @@ fun ImportantNoticePage(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = decodedTitle,
+            text = noticeConfig.title ?: "",
             style = SNUTTTypography.h3.copy(
                 fontSize = 17.sp,
             ),
@@ -68,7 +68,7 @@ fun ImportantNoticePage(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = decodedContent,
+            text = noticeConfig.content ?: "",
             style = SNUTTTypography.body1,
             textAlign = TextAlign.Center,
         )
@@ -89,7 +89,10 @@ fun ImportantNoticePage(
             ) {
                 Text(
                     text = stringResource(R.string.send_report),
-                    style = SNUTTTypography.h4.copy(color = SNUTTColors.AllWhite, fontWeight = FontWeight.SemiBold),
+                    style = SNUTTTypography.h4.copy(
+                        color = SNUTTColors.AllWhite,
+                        fontWeight = FontWeight.SemiBold
+                    ),
                     maxLines = 1,
                 )
             }
