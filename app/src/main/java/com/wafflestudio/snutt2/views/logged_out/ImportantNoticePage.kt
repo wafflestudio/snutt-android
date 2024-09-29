@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
+import java.util.Base64
 
 @Composable
 fun ImportantNoticePage(
@@ -36,6 +37,8 @@ fun ImportantNoticePage(
     content: String,
 ) {
     val navController = LocalNavController.current
+    val decodedTitle = String(Base64.getUrlDecoder().decode(title))
+    val decodedContent = String(Base64.getUrlDecoder().decode(content))
 
     Column(
         modifier = Modifier
@@ -54,7 +57,7 @@ fun ImportantNoticePage(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = title,
+            text = decodedTitle,
             style = SNUTTTypography.h3.copy(
                 fontSize = 17.sp,
             ),
@@ -65,7 +68,7 @@ fun ImportantNoticePage(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = content,
+            text = decodedContent,
             style = SNUTTTypography.body1,
             textAlign = TextAlign.Center,
         )

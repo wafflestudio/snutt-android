@@ -79,7 +79,7 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
+import java.util.Base64
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -236,7 +236,9 @@ class RootActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 remoteConfig.noticeConfig.collect {
                     if (it.visible) {
-                        navController.navigateAsOrigin("${NavigationDestination.ImportantNotice}?title=${URLEncoder.encode(it.title, "UTF-8").replace("+", "%20")}&content=${URLEncoder.encode(it.content, "UTF-8").replace("+", "%20")}")
+                        val encodedTitle = Base64.getUrlEncoder().encodeToString(it.title?.toByteArray())
+                        val encodedContent = Base64.getUrlEncoder().encodeToString(it.content?.toByteArray())
+                        navController.navigateAsOrigin("${NavigationDestination.ImportantNotice}?title=$encodedTitle&content=$encodedContent")
                     }
                 }
             }
