@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -78,6 +79,8 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -120,11 +123,13 @@ class RootActivity : AppCompatActivity() {
             isInitialRefreshFinished = true
         }
         setUpContents(
-            if (token.isEmpty()) {
-                NavigationDestination.Onboard
-            } else {
-                NavigationDestination.Home
-            },
+            // TODO: 임시 조치
+//            if (token.isEmpty()) {
+//                NavigationDestination.Onboard
+//            } else {
+//                NavigationDestination.Home
+//            },
+            NavigationDestination.ImportantNotice
         )
         setUpSplashScreen(composeRoot)
         setWindowAppearance()
@@ -246,6 +251,8 @@ class RootActivity : AppCompatActivity() {
                     onboardGraph()
 
                     composableRoot(NavigationDestination.Home) { HomePage() }
+
+                    composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
                     composable2(NavigationDestination.Notification) { NotificationPage() }
 

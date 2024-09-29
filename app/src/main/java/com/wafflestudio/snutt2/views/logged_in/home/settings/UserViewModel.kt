@@ -151,4 +151,6 @@ class UserViewModel @Inject constructor(
     suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
         return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
     }
+
+    suspend fun config(): Boolean = false
 }
