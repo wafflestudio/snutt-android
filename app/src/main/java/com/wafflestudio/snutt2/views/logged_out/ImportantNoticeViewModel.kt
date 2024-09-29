@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImportantNoticeViewModel @Inject constructor(
-    private val importantNoticeRepository: ImportantNoticeRepository
+    private val importantNoticeRepository: ImportantNoticeRepository,
 ) : ViewModel() {
     private val _importantNotice = MutableStateFlow(ImportantNotice(null, null))
     val importantNotice = _importantNotice.asStateFlow()
