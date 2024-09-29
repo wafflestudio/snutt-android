@@ -91,7 +91,7 @@ fun ImportantNoticePage() {
                     text = stringResource(R.string.send_report),
                     style = SNUTTTypography.h4.copy(
                         color = SNUTTColors.AllWhite,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
                     ),
                     maxLines = 1,
                 )
