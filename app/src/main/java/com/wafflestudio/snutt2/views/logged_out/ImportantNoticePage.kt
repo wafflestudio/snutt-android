@@ -19,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -69,7 +69,7 @@ fun ImportantNoticePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp)
+            .padding(vertical = 12.dp, horizontal = 36.dp)
             .background(SNUTTColors.White900),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -88,6 +88,7 @@ fun ImportantNoticePage() {
                 fontSize = 17.sp,
             ),
             color = SNUTTColors.Black900,
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -95,6 +96,7 @@ fun ImportantNoticePage() {
         Text(
             text = importantNotice.value.content ?: "",
             style = SNUTTTypography.body1,
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -106,7 +108,7 @@ fun ImportantNoticePage() {
             },
         ) {
             Text(
-                text = "문의사항은 아래 메일로 부탁드립니다.",
+                text = "문의사항 접수",
                 style = SNUTTTypography.body1,
             )
 
@@ -114,7 +116,7 @@ fun ImportantNoticePage() {
 
             Text(
                 text = "snutt@wafflestudio.com",
-                style = SNUTTTypography.body1,
+                style = SNUTTTypography.body1.copy(color = SNUTTColors.Blue),
             )
         }
     }
