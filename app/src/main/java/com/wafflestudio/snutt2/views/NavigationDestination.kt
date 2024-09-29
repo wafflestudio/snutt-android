@@ -31,4 +31,5 @@ object NavigationDestination {
     const val ThemeConfig = "theme_config"
     const val ThemeDetail = "theme_detail"
     const val SocialLink = "social_link"
+    const val ImportantNotice = "important_notice"
 }

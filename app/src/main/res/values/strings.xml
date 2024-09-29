@@ -3,6 +3,8 @@
     <string name="privacy" translatable="false">privacy_policy</string>
     <string name="member" translatable="false">member</string>
 
+    <string name="send_report">문의사항 보내기</string>
+
     <!-- For sign up fragment -->
     <string name="sign_up_terms_1">회원가입을 누르시면</string>
     <string name="sign_up_terms_2">일반 이용 약관</string>
@@ -401,7 +403,7 @@
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
     <string name="settings_app_report_loading_indicator_title">피드백 전송</string>
-    <string name="settings_app_report_detail_hint">SNUTT 최고예요</string>
+    <string name="settings_app_report_detail_hint"> </string>
     <string name="settings_app_report_description">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
