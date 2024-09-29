@@ -11,7 +11,7 @@ data class RemoteConfigDto(
     @Json(name = "vacancySugangSnuUrl") val vacancyUrlConfig: VacancyUrlConfig = VacancyUrlConfig(),
     @Json(name = "settingsBadge") val settingsBadgeConfig: SettingsBadgeConfig = SettingsBadgeConfig(),
     @Json(name = "disableMapFeature") val disableMapFeature: Boolean? = null,
-    @Json(name = "noticesConfig") val noticesConfig: NoticesConfig? = null,
+    @Json(name = "notice") val noticeConfig: NoticeConfig? = null,
 ) {
     data class ReactNativeBundleSrc(
         @Json(name = "src") val src: Map<String, String>,
@@ -29,7 +29,7 @@ data class RemoteConfigDto(
         @Json(name = "url") val url: String? = null,
     )
 
-    data class NoticesConfig(
+    data class NoticeConfig(
         @Json(name = "visible") val visible: Boolean = false,
         @Json(name = "title") val title: String? = null,
         @Json(name = "content") val content: String? = null,
@@ -42,7 +42,7 @@ fun RemoteConfigDtoNetwork.toExternalModel() = RemoteConfigDto(
     vacancyUrlConfig = this.vacancyUrlConfig.toExternalModel(),
     settingsBadgeConfig = this.settingsBadgeConfig.toExternalModel(),
     disableMapFeature = this.disableMapFeature,
-    noticesConfig = this.noticesConfig?.toExternalModel(),
+    noticeConfig = this.noticeConfig?.toExternalModel(),
 )
 
 fun RemoteConfigDtoNetwork.ReactNativeBundleSrc.toExternalModel() = RemoteConfigDto.ReactNativeBundleSrc(
@@ -61,7 +61,7 @@ fun RemoteConfigDtoNetwork.VacancyUrlConfig.toExternalModel() = RemoteConfigDto.
     url = this.url,
 )
 
-fun RemoteConfigDtoNetwork.NoticesConfig.toExternalModel() = RemoteConfigDto.NoticesConfig(
+fun RemoteConfigDtoNetwork.NoticeConfig.toExternalModel() = RemoteConfigDto.NoticeConfig(
     visible = visible ?: false,
     title = title,
     content = content,

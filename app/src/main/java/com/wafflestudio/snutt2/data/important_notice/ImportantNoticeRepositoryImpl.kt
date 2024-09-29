@@ -10,7 +10,7 @@ class ImportantNoticeRepositoryImpl @Inject constructor(
     private val api: SNUTTNetworkDataSource,
 ) : ImportantNoticeRepository {
     override suspend fun getConfigs(): ImportantNotice {
-        val remoteConfig = api._getRemoteConfig().noticesConfig
+        val remoteConfig = api._getRemoteConfig().noticeConfig
         return if (remoteConfig?.visible == true) {
             ImportantNotice(title = remoteConfig.title ?: "", content = remoteConfig.content ?: "")
         } else {
