@@ -59,4 +59,6 @@ class RemoteConfig @Inject constructor(
         // NOTE: 평상시에는 필드가 null로 내려오고, 이는 로직상 false 취급이다. 지도를 급히 비활성화해야 할 경우 true가 내려온다.
         // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706542084934709?thread_ts=1706451688.745159&cid=C0PAVPS5T
         get() = config.map { it.disableMapFeature ?: false }
+    val noticeConfig: Flow<RemoteConfigDto.NoticeConfig>
+        get() = config.map { it.noticeConfig ?: RemoteConfigDto.NoticeConfig(false, null, null) }
 }
