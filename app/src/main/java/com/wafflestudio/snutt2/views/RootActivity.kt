@@ -232,14 +232,6 @@ class RootActivity : AppCompatActivity() {
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
-            LaunchedEffect(Unit) {
-                remoteConfig.noticeConfig.collect {
-                    if (it.visible) {
-                        navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
-                    }
-                }
-            }
-
             InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
@@ -254,8 +246,6 @@ class RootActivity : AppCompatActivity() {
                     onboardGraph()
 
                     composableRoot(NavigationDestination.Home) { HomePage() }
-
-                    composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
                     composable2(NavigationDestination.Notification) { NotificationPage() }
 
