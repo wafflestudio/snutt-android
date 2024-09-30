@@ -71,7 +71,7 @@ class DirectFirstHandleScheduler(private val async: Boolean) : Scheduler() {
 
         override fun dispose() {
             disposed = true
-            handler.removeCallbacksAndMessages(this)
+            handler.removeCallbacksAndMessages(this /* token */)
         }
 
         override fun isDisposed(): Boolean {

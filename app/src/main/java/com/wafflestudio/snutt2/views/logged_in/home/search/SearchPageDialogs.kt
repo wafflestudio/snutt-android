@@ -5,9 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
-import com.wafflestudio.snutt2.core.network.util.ErrorCode
-import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.network.ErrorCode
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.launchSuspendApi
@@ -45,7 +45,7 @@ fun checkLectureOverlap(
             when (e) {
                 is ErrorParsedHttpException -> {
                     if (e.errorDTO?.code == ErrorCode.LECTURE_TIME_OVERLAP) {
-                        onLectureOverlap(e.errorDTO?.ext?.get("confirm_message") ?: "")
+                        onLectureOverlap(e.errorDTO.ext?.get("confirm_message") ?: "")
                     } else {
                         apiOnError(e)
                     }
