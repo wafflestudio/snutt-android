@@ -29,9 +29,8 @@ class RemoteConfig @Inject constructor(
     init {
         CoroutineScope(Dispatchers.Main).launch {
             combine(
-                userRepository.accessToken.filter { it.isNotEmpty() },
                 networkConnectivityManager.networkConnectivity.filter { it },
-            ) { _, _ ->
+            ) { _ ->
                 withContext(Dispatchers.IO) {
                     runCatching {
                         api._getRemoteConfig()
