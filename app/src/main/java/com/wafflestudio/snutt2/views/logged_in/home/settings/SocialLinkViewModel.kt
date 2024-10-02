@@ -3,17 +3,14 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import dagger.hilt.android.lifecycle.HiltViewModel

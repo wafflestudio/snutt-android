@@ -27,12 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.AuthError
-import com.kakao.sdk.common.model.AuthErrorCause
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
