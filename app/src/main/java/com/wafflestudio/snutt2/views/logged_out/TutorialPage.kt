@@ -8,6 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -38,8 +41,10 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -54,6 +59,9 @@ fun TutorialPage() {
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
+    val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
+
+    val socialLoginState by socialLinkViewModel.socialLoginState.collectAsStateWithLifecycle()
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
@@ -152,43 +160,22 @@ fun TutorialPage() {
         }
     }
 
-    val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+    LaunchedEffect(socialLoginState) {
+        when (socialLoginState) {
+            is SocialLoginState.Initial -> {}
+            is SocialLoginState.InProgress -> {}
+            is SocialLoginState.Cancelled -> {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-            } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-            } else {
+                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Failed -> {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
             }
-        } else if (token != null) {
-            loginWithKaKaoAccessToken(token.accessToken)
-        } else {
-            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-        }
-    }
-
-    val handleKakaoSignin: () -> Unit = {
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
-                if (loginError != null) {
-                    if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
-                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                    } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
-                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                    } else {
-                        // 카카오계정으로 로그인
-                        UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
-                    }
-                } else if (token != null) {
-                    loginWithKaKaoAccessToken(token.accessToken)
-                } else {
-                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                }
+            is SocialLoginState.Success -> {
+                loginWithKaKaoAccessToken((socialLoginState as SocialLoginState.Success).token)
+                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
             }
-        } else {
-            // 카카오계정으로 로그인
-            UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
         }
     }
 
@@ -268,7 +255,7 @@ fun TutorialPage() {
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = { handleKakaoSignin() },
+                    onClick = { socialLinkViewModel.triggerKakaoSignin(context) },
                 )
 
                 SocialLoginButton(
