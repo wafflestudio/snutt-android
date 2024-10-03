@@ -23,11 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
@@ -57,6 +54,7 @@ fun TutorialPage() {
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
 
     val kakaoLoginState by socialLinkViewModel.kakaolLoginState.collectAsStateWithLifecycle()
+    val googleLoginState by socialLinkViewModel.googleLoginState.collectAsStateWithLifecycle()
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
@@ -78,7 +76,7 @@ fun TutorialPage() {
         }
     }
 
-    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
+    val loginWithGoogleAuthCode: (String) -> Unit = { authCode: String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
@@ -104,24 +102,7 @@ fun TutorialPage() {
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                val authCode = account?.serverAuthCode
-                if (authCode != null) {
-                    handleGoogleSignInCallback(authCode)
-                } else {
-                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                }
-            } catch (e: ApiException) {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-            }
-        } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-        } else {
-            context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-        }
+        socialLinkViewModel.handleGoogleLoginActivityResult(result)
     }
 
     val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -132,8 +113,9 @@ fun TutorialPage() {
         }
 
     // 구글 계정 선택 창 띄움
-    val handleGoogleSignIn = {
+    val startGoogleSignIn = {
         val signInIntent = googleSignInClient.signInIntent
+        socialLinkViewModel.updateGoogleLoginState(SocialLoginState.InProgress)
         googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
@@ -148,15 +130,16 @@ fun TutorialPage() {
                     userViewModel.loginKakao(kakaoAccessToken)
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
+                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
                 } else {
-                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Failed)
                 }
             }
         }
     }
 
     LaunchedEffect(kakaoLoginState) {
-        Log.d("plgafhdtest",kakaoLoginState.toString())
+        Log.d("plgafhdtest", kakaoLoginState.toString())
         when (kakaoLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
@@ -170,7 +153,25 @@ fun TutorialPage() {
             }
             is SocialLoginState.Success -> {
                 loginWithKaKaoAccessToken((kakaoLoginState as SocialLoginState.Success).token)
+            }
+        }
+    }
+
+    LaunchedEffect(googleLoginState) {
+        Log.d("plgafhdtest", googleLoginState.toString())
+        when (googleLoginState) {
+            is SocialLoginState.Initial -> {}
+            is SocialLoginState.InProgress -> {}
+            is SocialLoginState.Cancelled -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
                 socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Failed -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Success -> {
+                loginWithGoogleAuthCode((googleLoginState as SocialLoginState.Success).token)
             }
         }
     }
@@ -258,7 +259,7 @@ fun TutorialPage() {
                     painter = painterResource(id = R.drawable.google_login),
                     onClick = {
                         googleSignInClient.signOut().addOnCompleteListener {
-                            handleGoogleSignIn()
+                            startGoogleSignIn()
                         }
                     },
                 )

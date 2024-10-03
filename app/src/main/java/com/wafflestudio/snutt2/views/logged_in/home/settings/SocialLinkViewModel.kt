@@ -1,8 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.app.Activity
 import android.content.Context
+import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.AuthErrorCause
@@ -26,6 +32,7 @@ class SocialLinkViewModel @Inject constructor(
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
     val kakaolLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
+    val googleLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
 
     private val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -65,9 +72,13 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
-    fun triggerKakaoSignin(
-        context: Context,
-    ) {
+    fun updateGoogleLoginState(state: SocialLoginState) {
+        viewModelScope.launch {
+            googleLoginState.emit(state)
+        }
+    }
+
+    fun triggerKakaoSignin(context: Context) {
         updateKakaoLoginState(SocialLoginState.InProgress)
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
@@ -89,6 +100,27 @@ class SocialLinkViewModel @Inject constructor(
         } else {
             // 카카오계정으로 로그인
             UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
+        }
+    }
+
+    fun handleGoogleLoginActivityResult(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val authCode = account?.serverAuthCode
+                if (authCode != null) {
+                    updateGoogleLoginState(SocialLoginState.Success(authCode))
+                } else {
+                    updateGoogleLoginState(SocialLoginState.Failed)
+                }
+            } catch (e: ApiException) {
+                updateGoogleLoginState(SocialLoginState.Failed)
+            }
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            updateGoogleLoginState(SocialLoginState.Cancelled)
+        } else {
+            updateGoogleLoginState(SocialLoginState.Failed)
         }
     }
 }
