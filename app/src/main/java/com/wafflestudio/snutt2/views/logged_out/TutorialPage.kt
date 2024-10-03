@@ -164,11 +164,11 @@ fun TutorialPage() {
             is SocialLoginState.InProgress -> {}
             is SocialLoginState.Cancelled -> {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Failed -> {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
                 loginWithGoogleAuthCode((googleLoginState as SocialLoginState.Success).token)
