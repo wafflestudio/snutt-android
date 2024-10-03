@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -55,7 +56,7 @@ fun TutorialPage() {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
 
-    val socialLoginState by socialLinkViewModel.socialLoginState.collectAsStateWithLifecycle()
+    val kakaoLoginState by socialLinkViewModel.kakaolLoginState.collectAsStateWithLifecycle()
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
@@ -154,21 +155,22 @@ fun TutorialPage() {
         }
     }
 
-    LaunchedEffect(socialLoginState) {
-        when (socialLoginState) {
+    LaunchedEffect(kakaoLoginState) {
+        Log.d("plgafhdtest",kakaoLoginState.toString())
+        when (kakaoLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
             is SocialLoginState.Cancelled -> {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
+                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Failed -> {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
+                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithKaKaoAccessToken((socialLoginState as SocialLoginState.Success).token)
-                socialLinkViewModel.updateSocialLoginState(SocialLoginState.Initial)
+                loginWithKaKaoAccessToken((kakaoLoginState as SocialLoginState.Success).token)
+                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
             }
         }
     }

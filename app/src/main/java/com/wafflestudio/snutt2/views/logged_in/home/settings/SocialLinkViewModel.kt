@@ -25,21 +25,21 @@ class SocialLinkViewModel @Inject constructor(
 ) : ViewModel() {
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
-    val socialLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
+    val kakaolLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
 
     private val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                updateSocialLoginState(SocialLoginState.Cancelled)
+                updateKakaoLoginState(SocialLoginState.Cancelled)
             } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
-                updateSocialLoginState(SocialLoginState.Cancelled)
+                updateKakaoLoginState(SocialLoginState.Cancelled)
             } else {
-                updateSocialLoginState(SocialLoginState.Failed)
+                updateKakaoLoginState(SocialLoginState.Failed)
             }
         } else if (token != null) {
-            updateSocialLoginState(SocialLoginState.Success(token.accessToken))
+            updateKakaoLoginState(SocialLoginState.Success(token.accessToken))
         } else {
-            updateSocialLoginState(SocialLoginState.Failed)
+            updateKakaoLoginState(SocialLoginState.Failed)
         }
     }
 
@@ -59,31 +59,31 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.deleteUserFacebook()
     }
 
-    fun updateSocialLoginState(state: SocialLoginState) {
+    fun updateKakaoLoginState(state: SocialLoginState) {
         viewModelScope.launch {
-            socialLoginState.emit(state)
+            kakaolLoginState.emit(state)
         }
     }
 
     fun triggerKakaoSignin(
         context: Context,
     ) {
-        updateSocialLoginState(SocialLoginState.InProgress)
+        updateKakaoLoginState(SocialLoginState.InProgress)
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
                 if (loginError != null) {
                     if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
-                        updateSocialLoginState(SocialLoginState.Cancelled)
+                        updateKakaoLoginState(SocialLoginState.Cancelled)
                     } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
-                        updateSocialLoginState(SocialLoginState.Cancelled)
+                        updateKakaoLoginState(SocialLoginState.Cancelled)
                     } else {
                         // 카카오계정으로 로그인
                         UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token != null) {
-                    updateSocialLoginState(SocialLoginState.Success(token.accessToken))
+                    updateKakaoLoginState(SocialLoginState.Success(token.accessToken))
                 } else {
-                    updateSocialLoginState(SocialLoginState.Failed)
+                    updateKakaoLoginState(SocialLoginState.Failed)
                 }
             }
         } else {
