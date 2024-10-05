@@ -306,4 +306,7 @@ interface RetrofitSNUTTNetworkApi {
     suspend fun _getLectureReviewSummary(
         @Path("lectureId") lectureId: String,
     ): GetLectureReviewSummaryResult
+
+    @GET("/v1/users/me/social_providers")
+    suspend fun _getSocialProviders(): SocialProvidersCheck
 }

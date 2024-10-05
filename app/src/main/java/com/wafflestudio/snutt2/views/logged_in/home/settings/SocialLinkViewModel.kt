@@ -50,6 +50,10 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
+    suspend fun getSocialProviders() {
+        userRepository.getSocialProviders()
+    }
+
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }

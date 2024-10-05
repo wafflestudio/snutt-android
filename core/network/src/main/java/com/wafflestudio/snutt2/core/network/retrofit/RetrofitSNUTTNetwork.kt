@@ -306,4 +306,7 @@ class RetrofitSNUTTNetwork @Inject constructor(
         lectureId: String,
     ): GetLectureReviewSummaryResult =
         networkApi._getLectureReviewSummary(lectureId)
+
+    override suspend fun _getSocialProviders(): SocialProvidersCheck =
+        networkApi._getSocialProviders()
 }

@@ -239,4 +239,6 @@ interface SNUTTNetworkDataSource {
     suspend fun _getLectureReviewSummary(
         lectureId: String,
     ): GetLectureReviewSummaryResult
+
+    suspend fun _getSocialProviders(): SocialProvidersCheck
 }

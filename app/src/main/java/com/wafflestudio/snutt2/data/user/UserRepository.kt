@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
+import com.wafflestudio.snutt2.lib.network.dto.core.SocialProvidersCheckDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -103,4 +104,6 @@ interface UserRepository {
         clientId: String,
         clientSecret: String,
     ): String?
+
+    suspend fun getSocialProviders(): SocialProvidersCheckDto
 }

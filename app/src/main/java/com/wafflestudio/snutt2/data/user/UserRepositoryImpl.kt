@@ -14,6 +14,7 @@ import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.core.network.model.PostAccessTokenByAuthCodeParams
 import com.wafflestudio.snutt2.core.network.model.PostSocialLoginParams
 import com.wafflestudio.snutt2.core.network.retrofit.google.SNUTTRestApiForGoogle
+import com.wafflestudio.snutt2.lib.network.dto.core.SocialProvidersCheckDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
 import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import com.wafflestudio.snutt2.model.TableTrimParam
@@ -316,6 +317,10 @@ class UserRepositoryImpl @Inject constructor(
                 clientSecret = clientSecret,
             ),
         ).accessToken
+    }
+
+    override suspend fun getSocialProviders(): SocialProvidersCheckDto {
+        return api._getSocialProviders().toExternalModel()
     }
 
     private suspend fun getFirebaseToken(): String {
