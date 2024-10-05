@@ -75,8 +75,8 @@ class SocialLinkViewModel @Inject constructor(
         return userRepository.getUserFacebook()
     }
 
-    suspend fun connectFacebook(id: String, token: String) {
-        userRepository.postUserFacebook(id, token)
+    suspend fun connectFacebook(token: String) {
+        userRepository.postUserFacebook(token)
     }
 
     suspend fun disconnectFacebook() {

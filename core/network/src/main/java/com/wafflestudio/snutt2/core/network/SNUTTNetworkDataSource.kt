@@ -156,8 +156,8 @@ interface SNUTTNetworkDataSource {
     ): PostUserPasswordResults
 
     suspend fun _postUserFacebook(
-        body: PostUserFacebookParams,
-    ): PostUserFacebookResults
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults
 
     suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
 

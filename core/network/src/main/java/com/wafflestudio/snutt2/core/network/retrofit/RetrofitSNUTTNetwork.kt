@@ -199,8 +199,8 @@ class RetrofitSNUTTNetwork @Inject constructor(
         networkApi._postUserPassword(body = body)
 
     override suspend fun _postUserFacebook(
-        body: PostUserFacebookParams,
-    ): PostUserFacebookResults =
+        body: PostSocialLoginParams,
+    ): PostSocialLoginResults =
         networkApi._postUserFacebook(body = body)
 
     override suspend fun _deleteUserFacebook(): DeleteUserFacebookResults =

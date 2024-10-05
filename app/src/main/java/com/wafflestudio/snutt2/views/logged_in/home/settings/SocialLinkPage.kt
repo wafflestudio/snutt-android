@@ -58,7 +58,6 @@ fun SocialLinkPage() {
             ) {
                 val loginResult = facebookLogin(context)
                 viewModel.connectFacebook(
-                    loginResult.accessToken.userId,
                     loginResult.accessToken.token,
                 )
                 viewModel.getSocialProviders()

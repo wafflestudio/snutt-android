@@ -49,7 +49,6 @@ interface UserRepository {
 
     // facebook 계정 연동
     suspend fun postUserFacebook(
-        facebookId: String,
         facebookToken: String,
     )
 
