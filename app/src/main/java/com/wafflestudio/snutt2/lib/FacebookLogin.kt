@@ -7,6 +7,8 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.android.toast
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 suspend fun facebookLogin(
@@ -24,10 +26,12 @@ suspend fun facebookLogin(
             }
 
             override fun onCancel() {
+                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
                 continuation.cancel()
             }
 
             override fun onError(error: FacebookException) {
+                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
                 continuation.cancel(error)
             }
         }
