@@ -20,6 +20,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
@@ -44,15 +45,9 @@ fun SocialLinkPage() {
     val apiOnError = LocalApiOnError.current
 
     val viewModel = hiltViewModel<SocialLinkViewModel>()
-    val user: UserDto? by viewModel.userInfo.collectAsState()
+    val socialProviders by viewModel.socialProviders.collectAsStateWithLifecycle()
 
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
-
-    var facebookConnected by remember(user?.fbName) {
-        mutableStateOf(
-            user?.fbName.isNullOrEmpty().not(),
-        )
-    }
 
     val handleFacebookConnect = {
         scope.launch {
@@ -66,7 +61,7 @@ fun SocialLinkPage() {
                     loginResult.accessToken.userId,
                     loginResult.accessToken.token,
                 )
-                facebookConnected = true
+                viewModel.getSocialProviders()
                 viewModel.fetchUserInfo()
             }
         }
@@ -108,7 +103,7 @@ fun SocialLinkPage() {
 
             Margin(height = 10.dp)
 
-            if (facebookConnected) {
+            if (socialProviders.facebook) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
@@ -133,7 +128,7 @@ fun SocialLinkPage() {
                     launchSuspendApi(apiOnProgress, apiOnError) {
                         viewModel.disconnectFacebook()
                         LoginManager.getInstance().logOut()
-                        facebookConnected = false
+                        viewModel.getSocialProviders()
                         disconnectFacebookDialogState = false
                         viewModel.fetchUserInfo()
                     }

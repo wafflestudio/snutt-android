@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import android.app.Activity
 import android.content.Context
 import androidx.activity.result.ActivityResult
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,6 +18,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.dto.core.SocialProvidersCheckDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +32,15 @@ class SocialLinkViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
     val userInfo: StateFlow<UserDto?> = userRepository.user
+    val socialProviders = MutableStateFlow(
+        SocialProvidersCheckDto(
+            local = false,
+            facebook = false,
+            google = false,
+            kakao = false,
+            apple = false,
+        )
+    )
 
     val kakaolLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
     val googleLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
@@ -51,7 +62,9 @@ class SocialLinkViewModel @Inject constructor(
     }
 
     suspend fun getSocialProviders() {
-        userRepository.getSocialProviders()
+        viewModelScope.launch {
+            socialProviders.emit(userRepository.getSocialProviders())
+        }
     }
 
     suspend fun fetchUserInfo() {
