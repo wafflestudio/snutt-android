@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -139,7 +138,6 @@ fun TutorialPage() {
     }
 
     LaunchedEffect(kakaoLoginState) {
-        Log.d("plgafhdtest", kakaoLoginState.toString())
         when (kakaoLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
@@ -158,7 +156,6 @@ fun TutorialPage() {
     }
 
     LaunchedEffect(googleLoginState) {
-        Log.d("plgafhdtest", googleLoginState.toString())
         when (googleLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
