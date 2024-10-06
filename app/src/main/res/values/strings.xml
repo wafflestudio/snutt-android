@@ -97,6 +97,8 @@
     <string name="social_unlink_facebook">페이스북 계정 연동 해제</string>
     <string name="sign_in_kakao_failed_cancelled">카카오 로그인이 취소되었습니다.</string>
     <string name="sign_in_kakao_failed_unknown">카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="sign_in_facebook_failed_cancelled">페이스북 로그인이 취소되었습니다.</string>
+    <string name="sign_in_facebook_failed_unknown">페이스북 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.</string>
 
     <!--licenses-->
     <string name="settings_licenses_title">오픈소스 라이선스</string>

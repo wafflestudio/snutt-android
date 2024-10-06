@@ -6,6 +6,11 @@ import androidx.activity.result.ActivityResult
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -16,8 +21,10 @@ import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SocialProvidersCheckDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
@@ -31,7 +38,9 @@ import javax.inject.Inject
 class SocialLinkViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
-    val userInfo: StateFlow<UserDto?> = userRepository.user
+    val callbackManager = CallbackManager.Factory.create()
+    val loginManager = LoginManager.getInstance()
+
     val socialProviders = MutableStateFlow(
         SocialProvidersCheckDto(
             local = false,
@@ -44,6 +53,7 @@ class SocialLinkViewModel @Inject constructor(
 
     val kakaolLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
     val googleLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
+    val facebookLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)
 
     private val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -58,6 +68,20 @@ class SocialLinkViewModel @Inject constructor(
             updateKakaoLoginState(SocialLoginState.Success(token.accessToken))
         } else {
             updateKakaoLoginState(SocialLoginState.Failed)
+        }
+    }
+
+    private val getFacebookTokenCallback = object : FacebookCallback<LoginResult> {
+        override fun onSuccess(result: LoginResult) {
+            updateFacebookLoginState(SocialLoginState.Success(result.accessToken.token))
+        }
+
+        override fun onCancel() {
+            updateFacebookLoginState(SocialLoginState.Cancelled)
+        }
+
+        override fun onError(error: FacebookException) {
+            updateFacebookLoginState(SocialLoginState.Failed)
         }
     }
 
@@ -92,6 +116,12 @@ class SocialLinkViewModel @Inject constructor(
     fun updateGoogleLoginState(state: SocialLoginState) {
         viewModelScope.launch {
             googleLoginState.emit(state)
+        }
+    }
+
+    fun updateFacebookLoginState(state: SocialLoginState) {
+        viewModelScope.launch {
+            facebookLoginState.emit(state)
         }
     }
 
@@ -139,5 +169,10 @@ class SocialLinkViewModel @Inject constructor(
         } else {
             updateGoogleLoginState(SocialLoginState.Failed)
         }
+    }
+
+    fun prepareFacebookSignin() {
+        loginManager.registerCallback(callbackManager, getFacebookTokenCallback)
+        updateFacebookLoginState(SocialLoginState.InProgress)
     }
 }
