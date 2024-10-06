@@ -43,7 +43,7 @@ class SocialLinkViewModel @Inject constructor(
             google = false,
             kakao = false,
             apple = false,
-        )
+        ),
     )
 
     val kakaoLoginState = MutableStateFlow<SocialLoginState>(SocialLoginState.Initial)

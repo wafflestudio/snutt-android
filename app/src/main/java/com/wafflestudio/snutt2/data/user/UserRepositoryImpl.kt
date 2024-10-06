@@ -44,7 +44,6 @@ import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as P
 import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostUserPasswordParams as PostUserPasswordParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
 import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as PostVerifyPwResetCodeParamsNetwork

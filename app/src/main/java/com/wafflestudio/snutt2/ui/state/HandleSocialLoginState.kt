@@ -7,5 +7,4 @@ fun handleSocialLoginState(
     onFail: () -> Unit,
     onSuccess: () -> Unit,
 ) {
-
 }
