@@ -25,7 +25,6 @@ import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
@@ -133,7 +132,7 @@ fun SocialLinkPage() {
                     title = stringResource(R.string.social_link_facebook),
                     hasNextPage = false,
                     onClick = {
-                        socialLinkViewModel.prepareFacebookSignin()
+                        socialLinkViewModel.prepareFacebookSignIn()
                         socialLinkViewModel.loginManager.logInWithReadPermissions(
                             context as ActivityResultRegistryOwner,
                             socialLinkViewModel.callbackManager,
