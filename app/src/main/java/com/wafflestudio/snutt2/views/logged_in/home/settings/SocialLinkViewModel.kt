@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.SocialProvidersCheckDto
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
+import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -95,8 +96,9 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.fetchUserInfo()
     }
 
-    suspend fun fetchUserFacebook(): GetUserFacebookResults {
-        return userRepository.getUserFacebook()
+    fun prepareFacebookSignin() {
+        loginManager.registerCallback(callbackManager, getFacebookTokenCallback)
+        updateFacebookLoginState(SocialLoginState.InProgress)
     }
 
     suspend fun connectFacebook(token: String) {
@@ -122,6 +124,14 @@ class SocialLinkViewModel @Inject constructor(
     fun updateFacebookLoginState(state: SocialLoginState) {
         viewModelScope.launch {
             facebookLoginState.emit(state)
+        }
+    }
+
+    fun updateSocialLoginState(type: SocialLoginType, state: SocialLoginState) {
+        when (type) {
+            SocialLoginType.FACEBOOK -> updateFacebookLoginState(state)
+            SocialLoginType.KAKAO -> updateKakaoLoginState(state)
+            SocialLoginType.GOOGLE -> updateGoogleLoginState(state)
         }
     }
 
@@ -169,10 +179,5 @@ class SocialLinkViewModel @Inject constructor(
         } else {
             updateGoogleLoginState(SocialLoginState.Failed)
         }
-    }
-
-    fun prepareFacebookSignin() {
-        loginManager.registerCallback(callbackManager, getFacebookTokenCallback)
-        updateFacebookLoginState(SocialLoginState.InProgress)
     }
 }
