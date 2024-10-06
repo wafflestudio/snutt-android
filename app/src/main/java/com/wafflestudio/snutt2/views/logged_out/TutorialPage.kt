@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,6 +34,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
+import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkViewModel
@@ -59,36 +61,6 @@ fun TutorialPage() {
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
 
-    val loginWithFacebookAccessToken: (String) -> Unit = { facebookAccessToken ->
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                userViewModel.loginFacebook(
-                    facebookAccessToken,
-                )
-                homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
-            }
-        }
-    }
-
-    val loginWithGoogleAccessToken: (String) -> Unit = { googleAccessToken: String ->
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                userViewModel.loginGoogle(googleAccessToken)
-                homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
-            }
-        }
-    }
-
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
@@ -109,26 +81,25 @@ fun TutorialPage() {
         googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
-    val loginWithKaKaoAccessToken: (String) -> Unit = { kakaoAccessToken ->
+    val loginWithSocialAccessToken: (SocialLoginType, String) -> Unit = { type, token ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                if (kakaoAccessToken.isNotEmpty()) {
-                    userViewModel.loginKakao(kakaoAccessToken)
+                if (token.isNotEmpty()) {
+                    userViewModel.loginSocial(type, token)
                     homeViewModel.refreshData()
+                    socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
                     navController.navigateAsOrigin(NavigationDestination.Home)
-                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
-                } else {
-                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Failed)
                 }
             }
         }
     }
 
     LaunchedEffect(kakaoLoginState) {
+        Log.d("plgafhdtest",kakaoLoginState.toString())
         when (kakaoLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
@@ -141,12 +112,16 @@ fun TutorialPage() {
                 socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithKaKaoAccessToken((kakaoLoginState as SocialLoginState.Success).token)
+                loginWithSocialAccessToken(
+                    SocialLoginType.KAKAO,
+                    (kakaoLoginState as SocialLoginState.Success).token
+                )
             }
         }
     }
 
     LaunchedEffect(googleLoginState) {
+        Log.d("plgafhdtest",googleLoginState.toString())
         when (googleLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
@@ -159,12 +134,16 @@ fun TutorialPage() {
                 socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithGoogleAccessToken((googleLoginState as SocialLoginState.Success).token)
+                loginWithSocialAccessToken(
+                    SocialLoginType.GOOGLE,
+                    (googleLoginState as SocialLoginState.Success).token
+                )
             }
         }
     }
 
     LaunchedEffect(facebookLoginState) {
+        Log.d("plgafhdtest",facebookLoginState.toString())
         when (facebookLoginState) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
@@ -177,7 +156,10 @@ fun TutorialPage() {
                 socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithFacebookAccessToken((facebookLoginState as SocialLoginState.Success).token)
+                loginWithSocialAccessToken(
+                    SocialLoginType.FACEBOOK,
+                    (facebookLoginState as SocialLoginState.Success).token
+                )
             }
         }
     }

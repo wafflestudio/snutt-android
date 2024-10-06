@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -58,6 +59,14 @@ class UserViewModel @Inject constructor(
 
     suspend fun loginKakao(kakaoAccessToken: String) {
         userRepository.postLoginKakao(kakaoAccessToken)
+    }
+
+    suspend fun loginSocial(type: SocialLoginType, token: String) {
+        when (type) {
+            SocialLoginType.FACEBOOK -> loginFacebook(token)
+            SocialLoginType.KAKAO -> loginKakao(token)
+            SocialLoginType.GOOGLE -> loginGoogle(token)
+        }
     }
 
     suspend fun addNewLocalId(id: String, password: String) {
