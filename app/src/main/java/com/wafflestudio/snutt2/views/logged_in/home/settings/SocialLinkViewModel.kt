@@ -96,6 +96,10 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.fetchUserInfo()
     }
 
+    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
+    }
+
     fun prepareFacebookSignin() {
         loginManager.registerCallback(callbackManager, getFacebookTokenCallback)
         updateFacebookLoginState(SocialLoginState.InProgress)
@@ -160,14 +164,30 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
-    fun handleGoogleLoginActivityResult(result: ActivityResult) {
+    fun handleGoogleLoginActivityResult(
+        result: ActivityResult,
+        clientId: String,
+        clientSecret: String,
+    ) {
         if (result.resultCode == Activity.RESULT_OK) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
                 val authCode = account?.serverAuthCode
                 if (authCode != null) {
-                    updateGoogleLoginState(SocialLoginState.Success(authCode))
+                    viewModelScope.launch {
+                        val googleAccessToken = getAccessTokenByAuthCode(
+                            authCode = authCode,
+                            clientId = clientId,
+                            clientSecret = clientSecret,
+                        )
+                        if (googleAccessToken != null) {
+                            updateGoogleLoginState(SocialLoginState.Success(googleAccessToken))
+                        }
+                        else {
+                            updateGoogleLoginState(SocialLoginState.Failed)
+                        }
+                    }
                 } else {
                     updateGoogleLoginState(SocialLoginState.Failed)
                 }
