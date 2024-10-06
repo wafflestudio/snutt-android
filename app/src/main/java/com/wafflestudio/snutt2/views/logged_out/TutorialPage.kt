@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import com.wafflestudio.snutt2.ui.state.SocialLoginType
+import com.wafflestudio.snutt2.ui.state.getString
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkViewModel
@@ -98,70 +99,34 @@ fun TutorialPage() {
         }
     }
 
-    LaunchedEffect(kakaoLoginState) {
-        Log.d("plgafhdtest",kakaoLoginState.toString())
-        when (kakaoLoginState) {
+    val socialLoginStateEffect: (SocialLoginType, SocialLoginState) -> Unit = { type, state ->
+        when (state) {
             is SocialLoginState.Initial -> {}
             is SocialLoginState.InProgress -> {}
             is SocialLoginState.Cancelled -> {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+                context.toast(context.getString(R.string.social_signin_failed_cancelled, type.getString()))
+                socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
             }
             is SocialLoginState.Failed -> {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
+                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, type.getString()))
+                socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithSocialAccessToken(
-                    SocialLoginType.KAKAO,
-                    (kakaoLoginState as SocialLoginState.Success).token
-                )
-            }
-        }
-    }
-
-    LaunchedEffect(googleLoginState) {
-        Log.d("plgafhdtest",googleLoginState.toString())
-        when (googleLoginState) {
-            is SocialLoginState.Initial -> {}
-            is SocialLoginState.InProgress -> {}
-            is SocialLoginState.Cancelled -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Failed -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Success -> {
-                loginWithSocialAccessToken(
-                    SocialLoginType.GOOGLE,
-                    (googleLoginState as SocialLoginState.Success).token
-                )
+                loginWithSocialAccessToken(type, state.token)
             }
         }
     }
 
     LaunchedEffect(facebookLoginState) {
-        Log.d("plgafhdtest",facebookLoginState.toString())
-        when (facebookLoginState) {
-            is SocialLoginState.Initial -> {}
-            is SocialLoginState.InProgress -> {}
-            is SocialLoginState.Cancelled -> {
-                context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
-                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Failed -> {
-                context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
-                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Success -> {
-                loginWithSocialAccessToken(
-                    SocialLoginType.FACEBOOK,
-                    (facebookLoginState as SocialLoginState.Success).token
-                )
-            }
-        }
+        socialLoginStateEffect(SocialLoginType.FACEBOOK, facebookLoginState)
+    }
+
+    LaunchedEffect(kakaoLoginState) {
+        socialLoginStateEffect(SocialLoginType.KAKAO, kakaoLoginState)
+    }
+
+    LaunchedEffect(googleLoginState) {
+        socialLoginStateEffect(SocialLoginType.GOOGLE, googleLoginState)
     }
 
     Column(
