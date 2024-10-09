@@ -34,12 +34,30 @@ object SNUTTStringUtils {
     fun getSimplifiedClassTime(lectureDto: LectureDto): String {
         val texts = StringBuilder()
         lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            texts.append(getClassTimeText(classTimeDto))
-            texts.append(")")
+            texts.append(getClassTimeText(classTimeDto, isSingleClassTime = false))
             if (index != lectureDto.class_time_json.size - 1) texts.append(", ")
         }
         if (texts.isEmpty()) texts.append("(없음)")
         return texts.toString()
+    }
+
+    fun getClassTimeText(classTime: ClassTimeDto, isSingleClassTime: Boolean = true): String {
+        return when (isSingleClassTime) {
+            true -> StringBuilder()
+                .append(SNUTTUtils.numberToWday(classTime.day))
+                .append(" %02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+                .append("~")
+                .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+                .toString()
+            false -> StringBuilder()
+                .append(SNUTTUtils.numberToWday(classTime.day))
+                .append("(")
+                .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+                .append("~")
+                .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+                .append(")")
+                .toString()
+        }
     }
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
@@ -102,16 +120,6 @@ object SNUTTStringUtils {
 
     fun getInstructorAndCreditText(lecture: LectureDto): String {
         return lecture.instructor + " / " + lecture.credit + "학점"
-    }
-
-    fun getClassTimeText(classTime: ClassTimeDto): String {
-        return StringBuilder()
-            .append(SNUTTUtils.numberToWday(classTime.day))
-            .append("(")
-            .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-            .append("~")
-            .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-            .toString()
     }
 
     // 570 -> 오전 09:30
