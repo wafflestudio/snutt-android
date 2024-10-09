@@ -17,10 +17,10 @@ class ReviewWebViewContainer(
     private val context: Context,
     private val accessToken: StateFlow<String?>,
     private val isDarkMode: Boolean,
-) {
+) : WebViewContainer {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
 
-    val webView: WebView = WebView(context).apply {
+    override val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
@@ -60,7 +60,7 @@ class ReviewWebViewContainer(
         this.settings.javaScriptEnabled = true
     }
 
-    suspend fun openPage(url: String?) {
+    override suspend fun openPage(url: String?) {
         val accessToken = accessToken.filterNotNull().first()
         val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
 
