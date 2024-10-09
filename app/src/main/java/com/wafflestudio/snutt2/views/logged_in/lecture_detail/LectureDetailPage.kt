@@ -42,7 +42,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
@@ -147,9 +147,9 @@ fun LectureDetailPage(
 
     /* 웹뷰 관련 */
     val isDarkMode = isDarkMode()
-    val reviewBottomSheetWebViewContainer =
+    val reviewBottomSheetReviewWebViewContainer =
         remember {
-            WebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
+            ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
                 this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
             }
         }
@@ -615,7 +615,7 @@ fun LectureDetailPage(
                                         val url = editingLectureReview?.getReviewUrl(context)
                                         openReviewBottomSheet(
                                             url,
-                                            reviewBottomSheetWebViewContainer,
+                                            reviewBottomSheetReviewWebViewContainer,
                                             bottomSheet,
                                         )
                                     }

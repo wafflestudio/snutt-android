@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import java.net.URL
 
-class WebViewContainer(
+class ReviewWebViewContainer(
     private val context: Context,
     private val accessToken: StateFlow<String?>,
     private val isDarkMode: Boolean,
