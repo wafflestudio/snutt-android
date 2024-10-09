@@ -26,6 +26,6 @@ class SyllabusWebViewContainer(context: Context) : WebViewContainer {
             removeAllCookies(null)
             flush()
         }
-        webView.loadUrl(url ?: "https://https://sugang.snu.ac.kr/")
+        webView.loadUrl(url ?: "https://sugang.snu.ac.kr/")
     }
 }
