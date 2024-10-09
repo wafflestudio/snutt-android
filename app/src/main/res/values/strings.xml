@@ -5,6 +5,8 @@
 
     <string name="send_report">문의사항 보내기</string>
 
+    <string name="api_google_server">https://oauth2.googleapis.com</string>
+
     <!-- For sign up fragment -->
     <string name="sign_up_terms_1">회원가입을 누르시면</string>
     <string name="sign_up_terms_2">일반 이용 약관</string>

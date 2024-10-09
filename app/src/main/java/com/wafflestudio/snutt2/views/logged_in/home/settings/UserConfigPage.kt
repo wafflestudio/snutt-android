@@ -216,8 +216,7 @@ fun UserConfigPage() {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     viewModel.changePassword(
-                        currentPassword,
-                        newPassword,
+                        currentPassword, newPassword,
                     )
                     context.toast(context.getString(R.string.settings_user_config_change_password_success))
                     passwordChangeDialogState = false

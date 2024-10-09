@@ -17,8 +17,8 @@ import com.swmansion.reanimated.ReanimatedPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.core.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.react_native.event.RNEventEmitterPackage
 import com.wafflestudio.snutt2.ui.isDarkMode
 import dagger.hilt.android.qualifiers.ActivityContext

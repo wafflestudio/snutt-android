@@ -175,7 +175,7 @@ fun ColorPicker(
                     keyboardActions = KeyboardActions(onDone = {
                         setHsvWithHexCode()
                         focusManager.clearFocus()
-                    }),
+                    },),
                     textStyle = SNUTTTypography.body1.copy(
                         textAlign = TextAlign.Center,
                         letterSpacing = 1.sp,
@@ -328,22 +328,12 @@ fun SatValBackground(
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))
         val satShader = LinearGradient(
-            satValPanel.left,
-            satValPanel.top,
-            satValPanel.right,
-            satValPanel.top,
-            -0x1,
-            rgb,
-            Shader.TileMode.CLAMP,
+            satValPanel.left, satValPanel.top, satValPanel.right, satValPanel.top,
+            -0x1, rgb, Shader.TileMode.CLAMP,
         ) // 하얀색부터 HSV(hue, 1, 1)까지를 좌상단에서 우상단까지 gradient
         val valShader = LinearGradient(
-            satValPanel.left,
-            satValPanel.top,
-            satValPanel.left,
-            satValPanel.bottom,
-            -0x1,
-            -0x10000000,
-            Shader.TileMode.CLAMP,
+            satValPanel.left, satValPanel.top, satValPanel.left, satValPanel.bottom,
+            -0x1, -0x10000000, Shader.TileMode.CLAMP,
         ) // 하얀색부터 검정색까지를 좌상단에서 좌하단까지 gradient
         canvas.drawRoundRect(
             satValPanel,

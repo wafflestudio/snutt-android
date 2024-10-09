@@ -20,9 +20,7 @@ interface BottomSheet {
 
     val isVisible: Boolean get() = state.isVisible
 
-    fun setSheetContent(n: @Composable ColumnScope.() -> Unit) {
-        content = n
-    }
+    fun setSheetContent(n: @Composable ColumnScope.() -> Unit) { content = n }
 
     suspend fun show() = state.show()
 
@@ -41,7 +39,7 @@ fun BottomSheet(): BottomSheet {
         override var content by remember {
             mutableStateOf<@Composable ColumnScope.() -> Unit>({
                 Box(modifier = Modifier.size(1.dp))
-            })
+            },)
         }
 
         override suspend fun hide() {

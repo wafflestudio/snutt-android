@@ -50,7 +50,7 @@ fun ServiceInfoPage() {
                 this.webViewClient = webViewClient
                 loadUrl(url, headers)
             }
-        })
+        },)
     }
 }
 

@@ -62,8 +62,7 @@ fun HomeDrawer() {
             ExitIcon(modifier = Modifier.clicks { scope.launch { drawerState.close() } })
         }
         Divider(
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp),
-            color = SNUTTColors.Gray100,
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100,
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(

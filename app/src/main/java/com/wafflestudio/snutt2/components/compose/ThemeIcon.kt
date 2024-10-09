@@ -304,8 +304,7 @@ fun ThemeIconPreview() {
         (1..9).forEach {
             ThemeIcon(
                 theme = CustomTheme(
-                    id = "",
-                    name = "",
+                    id = "", name = "",
                     colors = List(it) {
                         ColorDto(
                             fgColor = SNUTTColors.White.toArgb(),

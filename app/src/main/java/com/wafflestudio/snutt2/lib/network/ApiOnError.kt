@@ -2,10 +2,14 @@ package com.wafflestudio.snutt2.lib.network
 
 import android.content.Context
 import android.widget.Toast
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.core.network.util.ErrorParsedHttpException
-import com.wafflestudio.snutt2.core.network.util.runOnUiThread
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.android.MessagingError
+import com.wafflestudio.snutt2.lib.android.runOnUiThread
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class ApiOnError @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val moshi: Moshi,
     private val userRepository: UserRepository,
 ) : (Throwable) -> Unit {
 
@@ -34,6 +39,13 @@ class ApiOnError @Inject constructor(
                     Toast.makeText(
                         context,
                         context.getString(R.string.error_no_network),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                is MessagingError -> {
+                    Toast.makeText(
+                        context,
+                        error.message,
                         Toast.LENGTH_SHORT,
                     ).show()
                 }
@@ -300,7 +312,7 @@ class ApiOnError @Inject constructor(
                             context,
                             context.getString(
                                 R.string.social_link_account_already_using,
-                                detailToString(error.errorDTO?.detail?.socialProvider ?: ""),
+                                detailToString(error.errorDTO.detail?.socialProvider ?: ""),
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()
@@ -402,4 +414,17 @@ private fun detailToString(detail: String?): String {
         "KAKAO" -> "카카오"
         else -> ""
     }
+}
+
+@JsonClass(generateAdapter = true)
+data class ErrorDTO(
+    @Json(name = "errcode") val code: Int? = null,
+    @Json(name = "message") val message: String? = null,
+    @Json(name = "displayMessage") val displayMessage: String? = null,
+    @Json(name = "ext") val ext: Map<String, String>? = null,
+    @Json(name = "detail") val detail: ErrorDetail? = null,
+) {
+    data class ErrorDetail(
+        @Json(name = "socialProvider") val socialProvider: String? = null,
+    )
 }

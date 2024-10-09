@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
-import com.wafflestudio.snutt2.core.network.model.PostCustomLectureParams
-import com.wafflestudio.snutt2.core.network.model.PutLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto

@@ -81,7 +81,7 @@ fun NotificationPage() {
                     it?.let {
                         NotificationItem(it, onClick = {
                             DeeplinkExecutor.execute(it.deeplink)
-                        })
+                        },)
                     }
                 }
             }
@@ -172,8 +172,7 @@ fun NotificationError() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         WarningIcon(
-            modifier = Modifier.size(40.dp),
-            colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
+            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(

@@ -10,7 +10,6 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.views.LocalThemeState
-import com.wafflestudio.snutt2.core.database.model.ThemeMode as ThemeModeDatabase
 
 private val LightThemeColors @Composable get() = lightColors(
     primary = SNUTTColors.White,
@@ -42,9 +41,7 @@ val Colors.onSurfaceVariant: Color
     get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
 enum class ThemeMode {
-    DARK,
-    LIGHT,
-    AUTO, ;
+    DARK, LIGHT, AUTO, ;
 
     override fun toString(): String {
         return when (this) {
@@ -52,22 +49,6 @@ enum class ThemeMode {
             LIGHT -> "라이트"
             AUTO -> "자동"
         }
-    }
-}
-
-fun ThemeModeDatabase.toExternalModel(): ThemeMode {
-    return when (this) {
-        ThemeModeDatabase.DARK -> ThemeMode.DARK
-        ThemeModeDatabase.LIGHT -> ThemeMode.LIGHT
-        ThemeModeDatabase.AUTO -> ThemeMode.AUTO
-    }
-}
-
-fun ThemeMode.toDatabaseModel(): ThemeModeDatabase {
-    return when (this) {
-        ThemeMode.DARK -> ThemeModeDatabase.DARK
-        ThemeMode.LIGHT -> ThemeModeDatabase.LIGHT
-        ThemeMode.AUTO -> ThemeModeDatabase.AUTO
     }
 }
 
