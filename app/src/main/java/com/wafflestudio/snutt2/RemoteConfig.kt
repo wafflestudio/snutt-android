@@ -28,22 +28,22 @@ class RemoteConfig @Inject constructor(
 
     init {
         CoroutineScope(Dispatchers.Main).launch {
-            combine(
-                userRepository.accessToken.filter { it.isNotEmpty() },
-                networkConnectivityManager.networkConnectivity.filter { it },
-            ) { _, _ ->
-                withContext(Dispatchers.IO) {
-                    runCatching {
-                        api._getRemoteConfig()
-                    }.onSuccess {
-                        config.emit(it)
-                    }.onFailure {
-                        // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 config를 받아오지 못한 경우 지도를 숨긴다.
-                        // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
-                        config.emit(RemoteConfigDto(disableMapFeature = true))
+            networkConnectivityManager.networkConnectivity
+                .filter { it }
+                .map {
+                    withContext(Dispatchers.IO) {
+                        runCatching {
+                            api._getRemoteConfig()
+                        }.onSuccess {
+                            config.emit(it)
+                        }.onFailure {
+                            // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 config를 받아오지 못한 경우 지도를 숨긴다.
+                            // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
+                            config.emit(RemoteConfigDto(disableMapFeature = true))
+                        }
                     }
                 }
-            }.collect()
+                .collect()
         }
     }
 
