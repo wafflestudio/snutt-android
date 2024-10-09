@@ -12,7 +12,7 @@ class SyllabusWebViewContainer(context: Context) : WebViewContainer {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 val url = request?.url.toString()
 
-                // NOTE: 수강스누에서 referer를 헤더를 검사해서, 레퍼러가 수강스누가 아니면 홈으로 리다이렉트 시켜 버린다.
+                // NOTE: 수강스누에서 Referer 헤더를 검사해서, 레퍼러가 수강스누가 아니면 홈으로 리다이렉트 시켜 버린다.
                 view?.loadUrl(url, mapOf("Referer" to "https://sugang.snu.ac.kr/sugang/cc/cc100InterfaceSrch.action"))
                 return true
             }
