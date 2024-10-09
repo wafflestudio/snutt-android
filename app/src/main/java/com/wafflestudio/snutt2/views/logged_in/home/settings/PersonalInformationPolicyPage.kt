@@ -49,6 +49,6 @@ fun PersonalInformationPolicyPage() {
                 this.webViewClient = WebViewClient()
                 loadUrl(url, headers)
             }
-        })
+        },)
     }
 }

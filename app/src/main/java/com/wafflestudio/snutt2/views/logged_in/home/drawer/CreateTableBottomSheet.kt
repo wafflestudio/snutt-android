@@ -62,8 +62,7 @@ fun CreateTableBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(R.string.common_cancel),
-                style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_cancel), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     scope.launch {
                         bottomSheet.hide()
@@ -72,8 +71,7 @@ fun CreateTableBottomSheet(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = stringResource(R.string.common_complete),
-                style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks { handleDoneClick() },
             )
         }
@@ -105,8 +103,7 @@ fun CreateTableBottomSheet(
                 },
                 PickerItemContent = {
                     Text(
-                        text = allCourseBook[it].toFormattedString(context),
-                        style = SNUTTTypography.button,
+                        text = allCourseBook[it].toFormattedString(context), style = SNUTTTypography.button,
                     )
                 },
             )

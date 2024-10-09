@@ -274,10 +274,7 @@ private fun RangeBar(
         )
     }
     Label(
-        offset = barStart,
-        widthPx = widthPx,
-        tickPx = tickPx,
-        labelText = labelArray[startTick],
+        offset = barStart, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[startTick],
     ) {
         onChange(min(startTick, endTick), max(startTick, endTick))
     }
