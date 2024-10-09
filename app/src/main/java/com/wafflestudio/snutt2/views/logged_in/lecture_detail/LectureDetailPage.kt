@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -43,6 +41,7 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.SyllabusWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
@@ -152,6 +151,10 @@ fun LectureDetailPage(
             ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
                 this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
             }
+        }
+    val syllabusBottomSheetWebViewContainer =
+        remember {
+            SyllabusWebViewContainer(context)
         }
 
     ModalBottomSheetLayout(
@@ -603,10 +606,11 @@ fun LectureDetailPage(
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                            vm.getCourseBookUrl().let { url ->
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                context.startActivity(intent)
-                                            }
+                                            openSyllabusBottomSheet(
+                                                vm.getCourseBookUrl(),
+                                                syllabusBottomSheetWebViewContainer,
+                                                bottomSheet,
+                                            )
                                         }
                                     }
                                 }
