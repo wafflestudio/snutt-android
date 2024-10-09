@@ -4,7 +4,6 @@ import android.content.Context
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.core.network.model.CourseBookDto as CourseBookDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class CourseBookDto(
@@ -40,8 +39,3 @@ fun CourseBookDto.toFullString(context: Context): String {
         )
         .toString()
 }
-
-fun CourseBookDtoNetwork.toExternalModel() = CourseBookDto(
-    semester = semester,
-    year = year,
-)

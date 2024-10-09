@@ -34,9 +34,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 private enum class FlowState {
-    CheckEmail,
-    SendCode,
-    ResetPassword,
+    CheckEmail, SendCode, ResetPassword,
 }
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
@@ -170,7 +168,7 @@ fun FindPasswordPage() {
                                 focusManager.moveFocus(
                                     FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier
@@ -198,10 +196,9 @@ fun FindPasswordPage() {
                                 focusManager.moveFocus(
                                     FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done,
-                                keyboardType = KeyboardType.Ascii,
+                                imeAction = ImeAction.Done, keyboardType = KeyboardType.Ascii,
                             ),
                             singleLine = true,
                             trailingIcon = {
@@ -261,7 +258,7 @@ fun FindPasswordPage() {
                                 focusManager.moveFocus(
                                     FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier
@@ -281,7 +278,7 @@ fun FindPasswordPage() {
                                 focusManager.moveFocus(
                                     FocusDirection.Down,
                                 )
-                            }),
+                            },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             singleLine = true,
                             modifier = Modifier

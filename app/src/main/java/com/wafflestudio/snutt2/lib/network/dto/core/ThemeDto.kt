@@ -4,9 +4,6 @@ import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
-import com.wafflestudio.snutt2.core.network.model.BuiltInTheme as BuiltInThemeNetwork
-import com.wafflestudio.snutt2.core.network.model.CustomTheme as CustomThemeNetwork
-import com.wafflestudio.snutt2.core.network.model.ThemeDto as ThemeDtoNetwork
 
 @JsonClass(generateAdapter = true)
 data class ThemeDto(
@@ -32,22 +29,3 @@ data class ThemeDto(
         }
     }
 }
-
-fun CustomThemeNetwork.toExternalModel() = CustomTheme(
-    id = this.id,
-    name = this.name,
-    colors = this.colors.map { it.toExternalModel() },
-)
-
-fun BuiltInThemeNetwork.toExternalModel() = BuiltInTheme(
-    code = this.code,
-    name = this.name,
-)
-
-fun ThemeDtoNetwork.toExternalModel() = ThemeDto(
-    id = this.id,
-    theme = this.theme,
-    name = this.name,
-    colors = this.colors.map { it.toExternalModel() },
-    isCustom = this.isCustom,
-)
