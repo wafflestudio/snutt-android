@@ -29,4 +29,6 @@ interface LectureSearchRepository {
     ): List<LectureBuildingDto>
 
     fun storeRecentSearchedDepartment(tag: TagDto)
+
+    fun removeRecentSearchedDepartment(tag: TagDto)
 }

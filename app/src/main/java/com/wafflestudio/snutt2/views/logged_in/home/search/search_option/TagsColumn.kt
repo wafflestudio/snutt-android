@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -38,6 +39,7 @@ fun TagsColumn(
     selectedTimes: State<List<List<Boolean>>>,
     baseAnimatedFloat: State<Float>,
     onToggleTag: (TagDto) -> Unit,
+    onRemoveRecent: (TagDto) -> Unit,
     openTimeSelectSheet: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
@@ -57,6 +59,7 @@ fun TagsColumn(
                 selectableTag = departmentTag,
                 selectedTimes = selectedTimes,
                 onToggleTag = onToggleTag,
+                onRemoveRecent = onRemoveRecent,
                 openTimeSelectSheet = openTimeSelectSheet,
             )
         }
@@ -76,26 +79,42 @@ fun SelectableTagItem(
     selectableTag: Selectable<TagDto>,
     selectedTimes: State<List<List<Boolean>>>,
     onToggleTag: (TagDto) -> Unit,
+    onRemoveRecent: ((TagDto) -> Unit)? = null,
     openTimeSelectSheet: () -> Unit,
 ){
     val context = LocalContext.current
 
     Column {
         Row(
-            modifier = Modifier
-                .clicks { onToggleTag(selectableTag.item) },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (selectableTag.state) {
-                VividCheckedIcon(modifier = Modifier.size(15.dp))
-            } else {
-                VividUncheckedIcon(modifier = Modifier.size(15.dp))
+            Row (
+                modifier = Modifier
+                    .clicks { onToggleTag(selectableTag.item) }
+                    .weight(.1f),
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                if (selectableTag.state) {
+                    VividCheckedIcon(modifier = Modifier.size(15.dp))
+                } else {
+                    VividUncheckedIcon(modifier = Modifier.size(15.dp))
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = selectableTag.item.name,
+                    style = SNUTTTypography.body1,
+                )
             }
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = selectableTag.item.name,
-                style = SNUTTTypography.body1,
-            )
+
+            if (onRemoveRecent != null) {
+                Row (
+                    modifier = Modifier
+                        .clicks { onRemoveRecent(selectableTag.item) },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ExitIcon(modifier = Modifier.size(15.dp))
+                }
+            }
         }
         if (selectableTag.item == TagDto.TIME_SELECT) {
             Spacer(modifier = Modifier.height(6.dp))

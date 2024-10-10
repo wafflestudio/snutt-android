@@ -81,6 +81,12 @@ class LectureSearchRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun removeRecentSearchedDepartment(tag: TagDto) {
+        stoarge.recentSearchedDepartments.update(
+            stoarge.recentSearchedDepartments.get().toMutableList().apply { remove(tag) }
+        )
+    }
+
     companion object {
         const val LECTURES_LOAD_PAGE_SIZE = 30
     }

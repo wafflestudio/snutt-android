@@ -101,6 +101,9 @@ fun SearchOptionSheet(
                         viewModel.toggleTag(it)
                     }
                 },
+                onRemoveRecent = {
+                    viewModel.removeRecentSearchedDepartment(it)
+                },
                 openTimeSelectSheet = {
                     optionSheetMode = OptionSheetMode.TimeSelect
                 },

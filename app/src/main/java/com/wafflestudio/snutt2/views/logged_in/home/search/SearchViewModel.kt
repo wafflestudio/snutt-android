@@ -276,6 +276,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun removeRecentSearchedDepartment(tag: TagDto) {
+        lectureSearchRepository.removeRecentSearchedDepartment(tag)
+    }
+
     private suspend fun clear() {
         _searchTitle.emit("")
         _selectedLecture.emit(null)
