@@ -175,6 +175,9 @@ fun SearchPage(
                                                         }
                                                         scope.launch { bottomSheet.hide() }
                                                     },
+                                                    hideBottomSheet = {
+                                                        scope.launch { bottomSheet.hide() }
+                                                    },
                                                     draggedTimeBlock = draggedTimeBlock,
                                                 )
                                             }

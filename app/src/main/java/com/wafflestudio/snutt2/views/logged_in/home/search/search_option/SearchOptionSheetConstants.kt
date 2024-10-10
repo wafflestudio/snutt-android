@@ -11,7 +11,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 object SearchOptionSheetConstants {
     const val TagColumnWidthDp = 120
     const val MaxHeightRatio = 0.85f
-    val TopMargin = 40.dp
+    val TopMargin = 50.dp
     val AnimationSpec = spring(
         visibilityThreshold = 1f,
         stiffness = 200f,

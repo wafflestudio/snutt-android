@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.components.compose.ExitIcon
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
@@ -30,6 +33,7 @@ private enum class OptionSheetMode {
 @Composable
 fun SearchOptionSheet(
     applyOption: () -> Unit,
+    hideBottomSheet: () -> Unit,
     draggedTimeBlock: State<List<List<Boolean>>>,
 ) {
     val viewModel = hiltViewModel<SearchViewModel>()
@@ -59,10 +63,6 @@ fun SearchOptionSheet(
             // 태그 선택 sheet의 높이 ~ 시간대 선택 sheet의 높이까지 baseAnimatedFloat에 따라 변하는 값
             (normalSheetHeightPx + baseAnimatedFloat.value * (maxSheetHeightPx - normalSheetHeightPx)).roundToInt()
         }
-    }
-
-    LaunchedEffect(recentSearchedDepartments) {
-        Log.d("plgafhdtest",recentSearchedDepartments.toString())
     }
 
     SubcomposeLayout(
@@ -140,6 +140,14 @@ fun SearchOptionSheet(
             SearchOptionConfirmButton(baseAnimatedFloat, applyOption)
         }.first().measure(constraints)
 
+        val closeBottomSheetPlaceable = subcompose(slotId = 5) {
+            Row(
+                modifier = Modifier.clicks { hideBottomSheet() }
+            ) {
+                ExitIcon()
+            }
+        }.first().measure(constraints)
+
         // 한번만 계산, 할당
         if (normalSheetHeightPx == 0 && maxSheetHeightPx == 0) {
             normalSheetHeightPx =
@@ -164,6 +172,10 @@ fun SearchOptionSheet(
                 0,
                 tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
                     .roundToInt(),
+            )
+            closeBottomSheetPlaceable.placeRelative(
+                tagTypePlaceable.width + tagListPlaceable.width - 52,
+                (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32) / 2,
             )
             if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
         }
