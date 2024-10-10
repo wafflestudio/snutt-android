@@ -1,9 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -33,6 +35,7 @@ fun SearchOptionSheet(
     val viewModel = hiltViewModel<SearchViewModel>()
     val tagsByTagType by viewModel.tagsByTagType.collectAsState()
     val selectedTagType by viewModel.selectedTagType.collectAsState()
+    val recentSearchedDepartments by viewModel.selectableRecentSearchedDepartments.collectAsState()
     val scope = rememberCoroutineScope()
 
     var optionSheetMode by remember {
@@ -56,6 +59,10 @@ fun SearchOptionSheet(
             // 태그 선택 sheet의 높이 ~ 시간대 선택 sheet의 높이까지 baseAnimatedFloat에 따라 변하는 값
             (normalSheetHeightPx + baseAnimatedFloat.value * (maxSheetHeightPx - normalSheetHeightPx)).roundToInt()
         }
+    }
+
+    LaunchedEffect(recentSearchedDepartments) {
+        Log.d("plgafhdtest",recentSearchedDepartments.toString())
     }
 
     SubcomposeLayout(

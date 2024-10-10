@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -114,6 +115,19 @@ class SearchViewModel @Inject constructor(
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    val selectableRecentSearchedDepartments = combine(
+        tagsByTagType,
+        recentSearchedDepartments,
+    ) { tags, recentDepartments ->
+        tags.filter { tag ->
+            tag.item.type == TagType.DEPARTMENT && recentDepartments.contains(tag.item) // 사실 후자를 만족하려면 전자를 만족할 수 밖에 없긴 하다.
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList(),
+    )
 
     val bookmarkList = combine(
         _getBookmarkListSignal.flatMapLatest {

@@ -99,10 +99,6 @@ fun SearchPage(
         }
     }
 
-    LaunchedEffect(recentSearchedDepartments) {
-        Log.d("plgafhdtest",recentSearchedDepartments.toString())
-    }
-
     BackHandler(pageMode == SearchPageMode.Bookmark) {
         searchViewModel.togglePageMode()
     }
