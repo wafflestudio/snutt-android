@@ -54,7 +54,7 @@ fun TutorialPage() {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
 
-    val kakaoLoginState by socialLinkViewModel.kakaolLoginState.collectAsStateWithLifecycle()
+    val kakaoLoginState by socialLinkViewModel.kakaoLoginState.collectAsStateWithLifecycle()
     val googleLoginState by socialLinkViewModel.googleLoginState.collectAsStateWithLifecycle()
     val facebookLoginState by socialLinkViewModel.facebookLoginState.collectAsStateWithLifecycle()
 
@@ -204,7 +204,7 @@ fun TutorialPage() {
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = { socialLinkViewModel.triggerKakaoSignin(context) },
+                    onClick = { socialLinkViewModel.triggerKakaoSignIn(context) },
                 )
 
                 SocialLoginButton(
@@ -219,7 +219,7 @@ fun TutorialPage() {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.facebook_login),
                     onClick = {
-                        socialLinkViewModel.prepareFacebookSignin()
+                        socialLinkViewModel.prepareFacebookSignIn()
                         socialLinkViewModel.loginManager.logInWithReadPermissions(
                             context as ActivityResultRegistryOwner,
                             socialLinkViewModel.callbackManager,
