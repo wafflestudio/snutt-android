@@ -116,13 +116,12 @@ class SearchViewModel @Inject constructor(
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    val selectableRecentSearchedDepartments = combine(
-        tagsByTagType,
-        recentSearchedDepartments,
-    ) { tags, recentDepartments ->
-        tags.filter { tag ->
-            tag.item.type == TagType.DEPARTMENT && recentDepartments.contains(tag.item) // 사실 후자를 만족하려면 전자를 만족할 수 밖에 없긴 하다.
-        }
+    val selectableRecentSearchedDepartments: StateFlow<List<Selectable<TagDto>>> = combine(
+        tagsByTagType, recentSearchedDepartments, _selectedTags
+    ) { tagsByTagType, recentDepartments, selectedTags ->
+        recentDepartments.filter { recentDepartment ->
+            tagsByTagType.map { tag -> tag.item }.contains(recentDepartment)
+        }.map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
