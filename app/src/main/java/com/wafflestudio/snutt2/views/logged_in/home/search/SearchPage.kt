@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -84,6 +86,7 @@ fun SearchPage(
     val pageMode by searchViewModel.pageMode.collectAsState()
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
     val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
+    val recentSearchedDepartments by searchViewModel.recentSearchedDepartments.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
@@ -94,6 +97,10 @@ fun SearchPage(
                 "Snutt",
             )
         }
+    }
+
+    LaunchedEffect(recentSearchedDepartments) {
+        Log.d("plgafhdtest",recentSearchedDepartments.toString())
     }
 
     BackHandler(pageMode == SearchPageMode.Bookmark) {
@@ -169,6 +176,7 @@ fun SearchPage(
                                                             launchSuspendApi(apiOnProgress, apiOnError) {
                                                                 searchViewModel.query()
                                                             }
+                                                            searchViewModel.storeRecentSearchedDepartments()
                                                         }
                                                         scope.launch { bottomSheet.hide() }
                                                     },

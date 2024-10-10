@@ -5,9 +5,13 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
+import com.wafflestudio.snutt2.model.TagType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface LectureSearchRepository {
+
+    val recentSearchedDepartments: StateFlow<List<TagDto>>
 
     fun getLectureSearchResultStream(
         year: Long,
@@ -23,4 +27,6 @@ interface LectureSearchRepository {
     suspend fun getBuildings(
         places: String,
     ): List<LectureBuildingDto>
+
+    fun storeRecentSearchedDepartment(tag: TagDto)
 }

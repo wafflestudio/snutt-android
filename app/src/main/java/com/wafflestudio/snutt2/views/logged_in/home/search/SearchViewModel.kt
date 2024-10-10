@@ -88,6 +88,8 @@ class SearchViewModel @Inject constructor(
     // 검색 쿼리에 들어가는 시간대 검색 시간대 목록
     private val _searchTimeList = MutableStateFlow<List<SearchTimeDto>?>(null)
 
+    val recentSearchedDepartments: StateFlow<List<TagDto>> = lectureSearchRepository.recentSearchedDepartments
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -251,6 +253,12 @@ class SearchViewModel @Inject constructor(
             } else {
                 _searchTimeList.emit(it)
             }
+        }
+    }
+
+    fun storeRecentSearchedDepartments() {
+        _selectedTags.value.filter { it.type == TagType.DEPARTMENT }.forEach { tag ->
+            lectureSearchRepository.storeRecentSearchedDepartment(tag)
         }
     }
 

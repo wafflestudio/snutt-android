@@ -1,8 +1,10 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -18,7 +20,10 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val snuttUrls: SnuttUrls,
+    private val stoarge: SNUTTStorage
 ) : LectureSearchRepository {
+
+    override val recentSearchedDepartments = stoarge.recentSearchedDepartments.asStateFlow()
 
     override fun getLectureSearchResultStream(
         year: Long,
@@ -64,6 +69,16 @@ class LectureSearchRepositoryImpl @Inject constructor(
     override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
         val response = api._getBuildings(places)
         return response.content
+    }
+
+    override fun storeRecentSearchedDepartment(tag: TagDto) {
+        stoarge.recentSearchedDepartments.update(
+            stoarge.recentSearchedDepartments.get().toMutableList().apply {
+                if (contains(tag)) remove(tag)
+                add(tag)
+                while (count() > 5) removeAt(0)
+            }
+        )
     }
 
     companion object {
