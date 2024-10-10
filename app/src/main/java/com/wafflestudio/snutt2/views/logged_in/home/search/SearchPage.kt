@@ -86,7 +86,6 @@ fun SearchPage(
     val pageMode by searchViewModel.pageMode.collectAsState()
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
     val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
-    val recentSearchedDepartments by searchViewModel.recentSearchedDepartments.collectAsState()
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
