@@ -30,7 +30,6 @@ import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
 import com.wafflestudio.snutt2.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
@@ -76,25 +75,16 @@ fun TutorialPage() {
         }
     }
 
-    val loginWithGoogleAuthCode: (String) -> Unit = { authCode: String ->
+    val loginWithGoogleAccessToken: (String) -> Unit = { googleAccessToken: String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                val googleAccessToken = userViewModel.getAccessTokenByAuthCode(
-                    authCode = authCode,
-                    clientId = clientId,
-                    clientSecret = clientSecret,
-                )
-                if (googleAccessToken != null) {
-                    userViewModel.loginGoogle(googleAccessToken)
-                    homeViewModel.refreshData()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
-                } else {
-                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                }
+                userViewModel.loginGoogle(googleAccessToken)
+                homeViewModel.refreshData()
+                navController.navigateAsOrigin(NavigationDestination.Home)
             }
         }
     }
@@ -102,7 +92,7 @@ fun TutorialPage() {
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        socialLinkViewModel.handleGoogleLoginActivityResult(result)
+        socialLinkViewModel.handleGoogleLoginActivityResult(result, clientId, clientSecret)
     }
 
     val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -169,7 +159,7 @@ fun TutorialPage() {
                 socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
             }
             is SocialLoginState.Success -> {
-                loginWithGoogleAuthCode((googleLoginState as SocialLoginState.Success).token)
+                loginWithGoogleAccessToken((googleLoginState as SocialLoginState.Success).token)
             }
         }
     }
