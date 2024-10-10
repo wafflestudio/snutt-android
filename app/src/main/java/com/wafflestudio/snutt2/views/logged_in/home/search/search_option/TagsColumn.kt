@@ -33,6 +33,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun TagsColumn(
     modifier: Modifier,
+    recentSearchedDepartments: List<Selectable<TagDto>>,
     tagsByTagType: List<Selectable<TagDto>>,
     selectedTimes: State<List<List<Boolean>>>,
     baseAnimatedFloat: State<Float>,
@@ -40,7 +41,6 @@ fun TagsColumn(
     openTimeSelectSheet: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    val context = LocalContext.current
     val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
     val offsetXAnimatedDp = (configuration.screenWidthDp - SearchOptionSheetConstants.TagColumnWidthDp).dp * baseAnimatedFloat.value
 
@@ -52,42 +52,67 @@ fun TagsColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         // FIXME: rememberLazyListState() 넣으면 오류
     ) {
-        items(tagsByTagType) {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .clicks { onToggleTag(it.item) },
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (it.state) {
-                        VividCheckedIcon(modifier = Modifier.size(15.dp))
-                    } else {
-                        VividUncheckedIcon(modifier = Modifier.size(15.dp))
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
+        items(recentSearchedDepartments.reversed()) { departmentTag ->
+            SelectableTagItem(
+                selectableTag = departmentTag,
+                selectedTimes = selectedTimes,
+                onToggleTag = onToggleTag,
+                openTimeSelectSheet = openTimeSelectSheet,
+            )
+        }
+        items(tagsByTagType) { tag ->
+            SelectableTagItem(
+                selectableTag = tag,
+                selectedTimes = selectedTimes,
+                onToggleTag = onToggleTag,
+                openTimeSelectSheet = openTimeSelectSheet,
+            )
+        }
+    }
+}
+
+@Composable
+fun SelectableTagItem(
+    selectableTag: Selectable<TagDto>,
+    selectedTimes: State<List<List<Boolean>>>,
+    onToggleTag: (TagDto) -> Unit,
+    openTimeSelectSheet: () -> Unit,
+){
+    val context = LocalContext.current
+
+    Column {
+        Row(
+            modifier = Modifier
+                .clicks { onToggleTag(selectableTag.item) },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (selectableTag.state) {
+                VividCheckedIcon(modifier = Modifier.size(15.dp))
+            } else {
+                VividUncheckedIcon(modifier = Modifier.size(15.dp))
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = selectableTag.item.name,
+                style = SNUTTTypography.body1,
+            )
+        }
+        if (selectableTag.item == TagDto.TIME_SELECT) {
+            Spacer(modifier = Modifier.height(6.dp))
+            timeSlotsToFormattedString(context, selectedTimes.value).let {
+                if (it.isNotEmpty()) {
                     Text(
-                        text = it.item.name,
-                        style = SNUTTTypography.body1,
+                        text = it,
+                        modifier = Modifier
+                            .padding(start = 25.dp)
+                            .clicks {
+                                openTimeSelectSheet()
+                            },
+                        style = SNUTTTypography.body2.copy(
+                            color = SNUTTColors.Gray600,
+                            textDecoration = TextDecoration.Underline,
+                        ),
                     )
-                }
-                if (it.item == TagDto.TIME_SELECT) {
-                    Spacer(modifier = Modifier.height(6.dp))
-                    timeSlotsToFormattedString(context, selectedTimes.value).let {
-                        if (it.isNotEmpty()) {
-                            Text(
-                                text = it,
-                                modifier = Modifier
-                                    .padding(start = 25.dp)
-                                    .clicks {
-                                        openTimeSelectSheet()
-                                    },
-                                style = SNUTTTypography.body2.copy(
-                                    color = SNUTTColors.Gray600,
-                                    textDecoration = TextDecoration.Underline,
-                                ),
-                            )
-                        }
-                    }
                 }
             }
         }

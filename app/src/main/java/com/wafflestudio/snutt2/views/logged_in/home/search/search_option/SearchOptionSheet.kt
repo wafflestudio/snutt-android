@@ -79,6 +79,7 @@ fun SearchOptionSheet(
             }
         }.first().measure(constraints)
 
+
         val tagListPlaceable = subcompose(slotId = 2) {
             TagsColumn(
                 modifier = Modifier.size(
@@ -86,6 +87,7 @@ fun SearchOptionSheet(
                     // tag column의 높이를 tagType column의 높이로 설정
                     height = tagTypePlaceable.height.toDp(),
                 ),
+                recentSearchedDepartments = recentSearchedDepartments,
                 tagsByTagType = tagsByTagType,
                 selectedTimes = draggedTimeBlock,
                 baseAnimatedFloat = baseAnimatedFloat,
