@@ -1,12 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -79,7 +77,6 @@ fun SearchOptionSheet(
             }
         }.first().measure(constraints)
 
-
         val tagListPlaceable = subcompose(slotId = 2) {
             TagsColumn(
                 modifier = Modifier.size(
@@ -142,7 +139,7 @@ fun SearchOptionSheet(
 
         val closeBottomSheetPlaceable = subcompose(slotId = 5) {
             Row(
-                modifier = Modifier.clicks { hideBottomSheet() }
+                modifier = Modifier.clicks { hideBottomSheet() },
             ) {
                 ExitIcon()
             }

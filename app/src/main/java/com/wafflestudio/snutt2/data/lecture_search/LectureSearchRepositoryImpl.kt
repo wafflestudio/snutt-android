@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -20,7 +19,7 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val snuttUrls: SnuttUrls,
-    private val stoarge: SNUTTStorage
+    private val stoarge: SNUTTStorage,
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartments = stoarge.recentSearchedDepartments.asStateFlow()
@@ -77,13 +76,13 @@ class LectureSearchRepositoryImpl @Inject constructor(
                 if (contains(tag)) remove(tag)
                 add(tag)
                 while (count() > 5) removeAt(0)
-            }
+            },
         )
     }
 
     override fun removeRecentSearchedDepartment(tag: TagDto) {
         stoarge.recentSearchedDepartments.update(
-            stoarge.recentSearchedDepartments.get().toMutableList().apply { remove(tag) }
+            stoarge.recentSearchedDepartments.get().toMutableList().apply { remove(tag) },
         )
     }
 

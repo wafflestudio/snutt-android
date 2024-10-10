@@ -63,7 +63,7 @@ fun TagsColumn(
                     style = SNUTTTypography.body1.copy(
                         fontSize = 13.sp,
                         color = SNUTTColors.Gray600,
-                    )
+                    ),
                 )
             }
 
@@ -105,21 +105,21 @@ fun SelectableTagItem(
     onToggleTag: (TagDto) -> Unit,
     onRemoveRecent: ((TagDto) -> Unit)? = null,
     openTimeSelectSheet: () -> Unit,
-){
+) {
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier.padding(bottom = 6.dp)
+        modifier = Modifier.padding(bottom = 6.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row (
+            Row(
                 modifier = Modifier
                     .clicks { onToggleTag(selectableTag.item) }
                     .weight(.1f),
                 verticalAlignment = Alignment.CenterVertically,
-            ){
+            ) {
                 if (selectableTag.state) {
                     VividCheckedIcon(modifier = Modifier.size(15.dp))
                 } else {
@@ -133,7 +133,7 @@ fun SelectableTagItem(
             }
 
             if (onRemoveRecent != null) {
-                Row (
+                Row(
                     modifier = Modifier
                         .clicks { onRemoveRecent(selectableTag.item) },
                     verticalAlignment = Alignment.CenterVertically,
