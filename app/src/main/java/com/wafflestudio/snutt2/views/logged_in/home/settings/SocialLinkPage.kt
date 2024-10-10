@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,14 +21,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -42,8 +47,8 @@ fun SocialLinkPage() {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
 
-    val viewModel = hiltViewModel<SocialLinkViewModel>()
-    val user: UserDto? by viewModel.userInfo.collectAsState()
+    val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
+    val user: UserDto? by socialLinkViewModel.userInfo.collectAsState()
 
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
 
@@ -53,20 +58,38 @@ fun SocialLinkPage() {
         )
     }
 
-    val handleFacebookConnect = {
+    val facebookLoginState by socialLinkViewModel.facebookLoginState.collectAsStateWithLifecycle()
+
+    val connectWithFacebookAccessToken: (String) -> Unit = { facebookAccessToken ->
         scope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                val loginResult = facebookLogin(context)
-                viewModel.connectFacebook(
-                    loginResult.accessToken.userId,
-                    loginResult.accessToken.token,
+                socialLinkViewModel.connectFacebook(
+                    facebookAccessToken,
                 )
                 facebookConnected = true
-                viewModel.fetchUserInfo()
+                socialLinkViewModel.fetchUserInfo()
+            }
+        }
+    }
+
+    LaunchedEffect(facebookLoginState) {
+        when (facebookLoginState) {
+            is SocialLoginState.Initial -> {}
+            is SocialLoginState.InProgress -> {}
+            is SocialLoginState.Cancelled -> {
+                context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
+                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Failed -> {
+                context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
+                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Success -> {
+                connectWithFacebookAccessToken((facebookLoginState as SocialLoginState.Success).token)
             }
         }
     }
@@ -114,7 +137,14 @@ fun SocialLinkPage() {
                 SettingItem(
                     title = stringResource(R.string.social_link_facebook),
                     hasNextPage = false,
-                    onClick = { handleFacebookConnect() },
+                    onClick = {
+                        socialLinkViewModel.prepareFacebookSignin()
+                        socialLinkViewModel.loginManager.logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner,
+                            socialLinkViewModel.callbackManager,
+                            emptyList(),
+                        )
+                    },
                 )
             }
         }
@@ -126,11 +156,11 @@ fun SocialLinkPage() {
             onConfirm = {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        viewModel.disconnectFacebook()
+                        socialLinkViewModel.disconnectFacebook()
                         LoginManager.getInstance().logOut()
                         facebookConnected = false
                         disconnectFacebookDialogState = false
-                        viewModel.fetchUserInfo()
+                        socialLinkViewModel.fetchUserInfo()
                     }
                 }
             },

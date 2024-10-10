@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_out
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,20 +55,20 @@ fun TutorialPage() {
 
     val kakaoLoginState by socialLinkViewModel.kakaolLoginState.collectAsStateWithLifecycle()
     val googleLoginState by socialLinkViewModel.googleLoginState.collectAsStateWithLifecycle()
+    val facebookLoginState by socialLinkViewModel.facebookLoginState.collectAsStateWithLifecycle()
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
 
-    val handleFacebookSignIn = {
+    val loginWithFacebookAccessToken: (String) -> Unit = { facebookAccessToken ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
-                    loginResult.accessToken.token,
+                    facebookAccessToken,
                 )
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
@@ -173,6 +174,24 @@ fun TutorialPage() {
         }
     }
 
+    LaunchedEffect(facebookLoginState) {
+        when (facebookLoginState) {
+            is SocialLoginState.Initial -> {}
+            is SocialLoginState.InProgress -> {}
+            is SocialLoginState.Cancelled -> {
+                context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
+                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Failed -> {
+                context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
+                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
+            }
+            is SocialLoginState.Success -> {
+                loginWithFacebookAccessToken((facebookLoginState as SocialLoginState.Success).token)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -263,7 +282,14 @@ fun TutorialPage() {
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.facebook_login),
-                    onClick = { handleFacebookSignIn() },
+                    onClick = {
+                        socialLinkViewModel.prepareFacebookSignin()
+                        socialLinkViewModel.loginManager.logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner,
+                            socialLinkViewModel.callbackManager,
+                            emptyList(),
+                        )
+                    },
                 )
             }
         }
