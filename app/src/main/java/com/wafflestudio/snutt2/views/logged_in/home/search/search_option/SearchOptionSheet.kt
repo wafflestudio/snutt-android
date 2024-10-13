@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -171,8 +172,8 @@ fun SearchOptionSheet(
                     .roundToInt(),
             )
             closeBottomSheetPlaceable.placeRelative(
-                tagTypePlaceable.width + tagListPlaceable.width - 52,
-                (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32) / 2,
+                tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
+                (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
             )
             if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
         }
