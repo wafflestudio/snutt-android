@@ -19,10 +19,10 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val snuttUrls: SnuttUrls,
-    private val stoarge: SNUTTStorage,
+    private val storage: SNUTTStorage,
 ) : LectureSearchRepository {
 
-    override val recentSearchedDepartments = stoarge.recentSearchedDepartments.asStateFlow()
+    override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
 
     override fun getLectureSearchResultStream(
         year: Long,
@@ -71,8 +71,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override fun storeRecentSearchedDepartment(tag: TagDto) {
-        stoarge.recentSearchedDepartments.update(
-            stoarge.recentSearchedDepartments.get().toMutableList().apply {
+        storage.recentSearchedDepartments.update(
+            storage.recentSearchedDepartments.get().toMutableList().apply {
                 if (contains(tag)) remove(tag)
                 add(tag)
                 while (count() > 5) removeAt(0)
@@ -81,8 +81,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override fun removeRecentSearchedDepartment(tag: TagDto) {
-        stoarge.recentSearchedDepartments.update(
-            stoarge.recentSearchedDepartments.get().toMutableList().apply { remove(tag) },
+        storage.recentSearchedDepartments.update(
+            storage.recentSearchedDepartments.get().toMutableList().apply { remove(tag) },
         )
     }
 
