@@ -1,38 +1,52 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import android.graphics.Paint
-import android.graphics.RectF
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
-import com.wafflestudio.snutt2.lib.rx.dp
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
@@ -48,24 +62,25 @@ fun TimeTable(
     selectedLecture: LectureDto?,
 ) {
     val previewTheme = LocalTableState.current.previewTheme
-    val lectures = LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
-        previewTheme?.let { theme ->
-            if (previewTheme is CustomTheme) {
-                it.mapIndexed { idx, lecture ->
-                    lecture.copy(
-                        colorIndex = 0,
-                        color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
-                    )
+    val lectures =
+        LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+            previewTheme?.let { theme ->
+                if (previewTheme is CustomTheme) {
+                    it.mapIndexed { idx, lecture ->
+                        lecture.copy(
+                            colorIndex = 0,
+                            color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                        )
+                    }
+                } else {
+                    it.mapIndexed { idx, lecture ->
+                        lecture.copy(
+                            colorIndex = idx % 9L + 1,
+                        )
+                    }
                 }
-            } else {
-                it.mapIndexed { idx, lecture ->
-                    lecture.copy(
-                        colorIndex = idx % 9L + 1,
-                    )
-                }
-            }
-        } ?: it
-    }
+            } ?: it
+        }
 
     val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
@@ -109,7 +124,10 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
 
                     for (lecture in lectures) {
                         if (lecture.contains(day, time)) {
-                            lectureDetailViewModel.initializeEditingLectureDetail(lecture, ModeType.Normal)
+                            lectureDetailViewModel.initializeEditingLectureDetail(
+                                lecture,
+                                ModeType.Normal,
+                            )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
                             }
@@ -127,65 +145,82 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
 @Composable
 fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
-    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
-    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val dayLabelTextPaint = TimetableCanvasObjects.dayLabelTextPaint
-    val hourLabelTextPaint = TimetableCanvasObjects.hourLabelTextPaint
-    val textHeight = TimetableCanvasObjects.dayLabelTextHeight
-
     val gridColor = SNUTTColors.TableGrid
     val gridColor2 = SNUTTColors.TableGrid2
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    val hourLabelWidth = 24.5.dp
+    val dayLabelHeight = 28.5.dp
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
-            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+            (maxWidth - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
         val unitHeight =
-            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            (maxHeight - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
         val verticalLines = fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1
-        var startWidth = hourLabelWidth
         val horizontalLines = fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1
-        var startHeight = dayLabelHeight
 
-        repeat(verticalLines) {
-            drawLine(
-                start = Offset(x = startWidth, y = 0f),
-                end = Offset(x = startWidth, y = size.height),
-                color = gridColor,
-                strokeWidth = (0.5f).dp(context),
+        repeat(verticalLines) { idx ->
+            Box(
+                modifier = Modifier
+                    .offset(x = hourLabelWidth + unitWidth * idx)
+                    .size(width = 0.5.dp, height = maxHeight)
+                    .background(gridColor),
             )
-            drawIntoCanvas { canvas ->
-                canvas.nativeCanvas.drawText(
-                    (fittedTrimParam.dayOfWeekFrom + it).toDayString(context),
-                    startWidth + unitWidth * 0.5f,
-                    (dayLabelHeight + textHeight) / 2f,
-                    dayLabelTextPaint,
+            Box(
+                modifier = Modifier
+                    .offset(x = hourLabelWidth + unitWidth * idx)
+                    .size(width = unitWidth, height = dayLabelHeight),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = (fittedTrimParam.dayOfWeekFrom + idx).toDayString(context),
+                    textAlign = TextAlign.Center,
+                    color = if (isDarkMode()) {
+                        Color(119, 119, 119, 180)
+                    } else {
+                        Color(0, 0, 0, 180)
+                    },
+                    fontWeight = FontWeight.Light,
+                    fontSize = 12.sp,
                 )
             }
-            startWidth += unitWidth
         }
-        repeat(horizontalLines) {
-            drawLine(
-                start = Offset(x = 0f, y = startHeight),
-                end = Offset(x = size.width, y = startHeight),
-                color = gridColor,
-                strokeWidth = (0.5f).dp(context),
+        repeat(horizontalLines) { idx ->
+            Box(
+                modifier = Modifier
+                    .offset(y = dayLabelHeight + unitHeight * idx)
+                    .size(width = maxWidth, height = 0.5.dp)
+                    .background(gridColor),
             )
-            drawLine(
-                start = Offset(x = hourLabelWidth, y = startHeight + (unitHeight * 0.5f)),
-                end = Offset(x = size.width, y = startHeight + (unitHeight * 0.5f)),
-                color = gridColor2,
-                strokeWidth = (0.5f).dp(context),
+            Box(
+                modifier = Modifier
+                    .offset(
+                        x = hourLabelWidth,
+                        y = dayLabelHeight + unitHeight * idx + unitHeight * 0.5f,
+                    )
+                    .size(width = maxWidth, height = 0.5.dp)
+                    .background(gridColor2),
             )
-            drawIntoCanvas { canvas ->
-                canvas.nativeCanvas.drawText(
-                    (fittedTrimParam.hourFrom + it).toString(),
-                    hourLabelWidth - 4.dp(context),
-                    startHeight + textHeight + 6.dp(context),
-                    hourLabelTextPaint,
+            Box(
+                modifier = Modifier
+                    .offset(y = dayLabelHeight + unitHeight * idx)
+                    .size(width = hourLabelWidth, height = unitHeight)
+                    .padding(top = 4.dp, end = 4.dp),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Text(
+                    text = (fittedTrimParam.hourFrom + idx).toString(),
+                    textAlign = TextAlign.Right,
+                    color = if (isDarkMode()) {
+                        Color(119, 119, 119, 180)
+                    } else {
+                        Color(0, 0, 0, 180)
+                    },
+                    fontWeight = FontWeight.Light,
+                    fontSize = 12.sp,
                 )
             }
-            startHeight += unitHeight
         }
     }
 }
@@ -198,41 +233,35 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                 it.trimByTrimParam(fittedTrimParam)
             }
             .forEach { classTime ->
-                DrawLecture(lecture, classTime, fittedTrimParam)
+                val context = LocalContext.current
+                val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code
+                    ?: LocalTableState.current.table.theme
+
+                DrawClassTime(
+                    fittedTrimParam = fittedTrimParam,
+                    classTime = classTime,
+                    courseTitle = lecture.course_title,
+                    lectureNumber = lecture.lecture_number.orEmpty(),
+                    instructorName = lecture.instructor,
+                    bgColor =
+                    if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                        lecture.color.bgColor!!
+                    } else {
+                        BuiltInTheme.fromCode(code).getColorByIndexComposable(
+                            lecture.colorIndex,
+                        ).toArgb()
+                    },
+                    fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
+                        lecture.color.fgColor!!
+                    } else {
+                        context.getColor(
+                            R.color.white,
+                        )
+                    },
+                    isCustom = lecture.isCustom,
+                )
             }
     }
-}
-
-@Composable
-private fun DrawLecture(
-    lecture: LectureDto,
-    classTime: ClassTimeDto,
-    fittedTrimParam: TableTrimParam,
-) {
-    val context = LocalContext.current
-    val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code ?: LocalTableState.current.table.theme
-
-    DrawClassTime(
-        fittedTrimParam = fittedTrimParam,
-        classTime = classTime,
-        courseTitle = lecture.course_title,
-        bgColor =
-        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-            lecture.color.bgColor!!
-        } else {
-            BuiltInTheme.fromCode(code).getColorByIndexComposable(
-                lecture.colorIndex,
-            ).toArgb()
-        },
-        fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
-            lecture.color.fgColor!!
-        } else {
-            context.getColor(
-                R.color.white,
-            )
-        },
-        isCustom = lecture.isCustom,
-    )
 }
 
 @Composable
@@ -240,17 +269,17 @@ private fun DrawClassTime(
     fittedTrimParam: TableTrimParam,
     classTime: ClassTimeDto,
     courseTitle: String,
+    lectureNumber: String,
+    instructorName: String,
     bgColor: Int,
     fgColor: Int,
     isCustom: Boolean = false,
 ) {
-    val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
-    val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val cellPadding = TimetableCanvasObjects.cellPadding
-    val lectureCellTextRect = TimetableCanvasObjects.lectureCellTextRect
-    val lectureCellSubTextRect = TimetableCanvasObjects.lectureCellSubTextRect
-    val lectureCellBorderPaint = TimetableCanvasObjects.lectureCellBorderPaint
+    val hourLabelWidth = 24.5.dp
+    val dayLabelHeight = 28.5.dp
+    val cellPadding = 4.dp
     val compactMode = LocalCompactState.current
+    val textMeasurer = rememberTextMeasurer()
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
@@ -262,52 +291,87 @@ private fun DrawClassTime(
             ),
         )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val unitWidth =
-            (size.width - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
+            (maxWidth - hourLabelWidth) / (fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom + 1)
         val unitHeight =
-            (size.height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
+            (maxHeight - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
-        val left = hourLabelWidth + (dayOffset) * unitWidth
-        val right = hourLabelWidth + (dayOffset) * unitWidth + unitWidth
-        val top = dayLabelHeight + (hourRangeOffset.first) * unitHeight
-        val bottom = dayLabelHeight + (hourRangeOffset.second) * unitHeight
+        Column(
+            modifier = Modifier
+                .size(
+                    width = unitWidth,
+                    height = unitHeight * (hourRangeOffset.second - hourRangeOffset.first),
+                )
+                .offset(
+                    x = hourLabelWidth + unitWidth * dayOffset,
+                    y = dayLabelHeight + unitHeight * hourRangeOffset.first,
+                )
+                .border(width = 1.dp, color = SNUTTColors.Black050)
+                .background(color = Color(bgColor))
+                .padding(horizontal = cellPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            BoxWithConstraints {
+                val constraints = constraints
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    val adjustedTextLayouts = remember(
+                        constraints,
+                        courseTitle,
+                        classTime.place,
+                        lectureNumber,
+                        instructorName,
+                        fittedTrimParam,
+                    ) {
+                        try {
+                            calculateAdjustedTextLayout(
+                                listOf(
+                                    LectureCellInfo.titleTextLayout(courseTitle, true),
+                                    LectureCellInfo.placeTextLayout(classTime.place, true),
+                                    LectureCellInfo.lectureNumberTextLayout(lectureNumber, false),
+                                    LectureCellInfo.instructorNameTextLayout(instructorName, false),
+                                ),
+                                textMeasurer,
+                                constraints,
+                            )
+                        } catch (e: Exception) {
+                            // NOTE(@JuTaK): 혹시 모를 크래시를 대비하여 try-catch를 추가하고 로그를 심는다.
+                            FirebaseCrashlytics.getInstance().recordException(
+                                Throwable(
+                                    cause = e,
+                                    message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                ),
+                            )
+                            emptyList()
+                        }
+                    }
 
-        val rect = RectF(left, top, right, bottom)
-
-        drawIntoCanvas { canvas ->
-            canvas.nativeCanvas.drawRect(rect, Paint().apply { color = bgColor })
-            canvas.nativeCanvas.drawRect(
-                rect,
-                lectureCellBorderPaint,
-            )
-        }
-
-        val cellHeight = bottom - top - cellPadding * 2
-        val cellWidth = right - left - cellPadding * 2
-
-        val courseTitleHeight = lectureCellTextRect.prepare(
-            courseTitle, cellWidth.toInt(), cellHeight.toInt(),
-        )
-        val locationHeight = lectureCellSubTextRect.prepare(
-            classTime.place, cellWidth.toInt(), cellHeight.toInt() - courseTitleHeight,
-        )
-
-        drawIntoCanvas { canvas ->
-            lectureCellTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
-            )
-            lectureCellSubTextRect.draw(
-                canvas.nativeCanvas,
-                (left + cellPadding).toInt(),
-                (top + courseTitleHeight + (cellHeight - courseTitleHeight - locationHeight) / 2).toInt(),
-                cellWidth.toInt(),
-                fgColor,
-            )
+                    adjustedTextLayouts
+                        .forEach { textLayout ->
+                            if (textLayout.maxLines > 0) {
+                                Text(
+                                    text = textLayout.text,
+                                    style = textLayout.style.copy(color = Color(fgColor)),
+                                    maxLines = textLayout.maxLines,
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            } else {
+                                // NOTE(@JuTaK): 혹시 모를 크래시를 대비하여 try-catch를 추가하고 로그를 심는다.
+                                FirebaseCrashlytics.getInstance().recordException(
+                                    Throwable(
+                                        cause = IllegalStateException(),
+                                        message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                    ),
+                                )
+                            }
+                        }
+                }
+            }
         }
     }
 }
@@ -317,7 +381,13 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
-                fittedTrimParam, classTime, course_title, -0x1f1f20, -0xcccccd,
+                fittedTrimParam,
+                classTime,
+                course_title,
+                lecture_number.orEmpty(),
+                instructor,
+                -0x1f1f20,
+                -0xcccccd,
             )
         }
     }
