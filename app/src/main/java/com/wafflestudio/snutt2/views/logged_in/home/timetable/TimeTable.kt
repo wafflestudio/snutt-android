@@ -44,8 +44,6 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -345,12 +343,11 @@ private fun DrawClassTime(
                             FirebaseCrashlytics.getInstance().recordException(
                                 Throwable(
                                     cause = e,
-                                    message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam"
-                                )
+                                    message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                ),
                             )
                             emptyList()
                         }
-
                     }
 
                     adjustedTextLayouts
@@ -368,8 +365,8 @@ private fun DrawClassTime(
                                 FirebaseCrashlytics.getInstance().recordException(
                                     Throwable(
                                         cause = IllegalStateException(),
-                                        message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam"
-                                    )
+                                        message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                    ),
                                 )
                             }
                         }
