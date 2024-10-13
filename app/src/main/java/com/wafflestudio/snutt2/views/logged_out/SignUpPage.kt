@@ -118,7 +118,7 @@ fun SignUpPage() {
                             focusManager.moveFocus(
                                 FocusDirection.Down,
                             )
-                        }),
+                        },),
                         singleLine = true,
                     )
                 }
@@ -143,7 +143,7 @@ fun SignUpPage() {
                             focusManager.moveFocus(
                                 FocusDirection.Down,
                             )
-                        }),
+                        },),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )
@@ -169,7 +169,7 @@ fun SignUpPage() {
                             focusManager.moveFocus(
                                 FocusDirection.Down,
                             )
-                        }),
+                        },),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )

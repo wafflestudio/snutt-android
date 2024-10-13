@@ -220,8 +220,7 @@ fun LazyItemScope.LectureListItem(
                     modifier = Modifier.weight(1f),
                     onClick = {
                         lectureDetailViewModel.initializeEditingLectureDetail(
-                            lectureDataWithState.item,
-                            ModeType.Viewing,
+                            lectureDataWithState.item, ModeType.Viewing,
                         )
                         bottomSheet.setSheetContent {
                             LectureDetailPage(
@@ -269,7 +268,7 @@ fun LazyItemScope.LectureListItem(
                                         searchViewModel.toggleLectureSelection(
                                             lectureDataWithState.item,
                                         )
-                                    })
+                                    },)
                                 } else {
                                     if (bookmarked) {
                                         searchViewModel.deleteBookmark(lectureDataWithState.item)

@@ -27,14 +27,14 @@ class ModalState {
     }
 
     /*
-     * onDismiss: 모달이 닫힐 때 & negative 버튼을 누를 때 수행할 동작
-     * onConfirm: positive 버튼을 누를 때 수행할 동작
-     * title: 다이얼로그의 제목 (null이면 제목 없는 모달)
-     * positiveButton: onConfirm을 수행하는 버튼 텍스트
-     * negativeButton: onDismiss를 수행하는 버튼 텍스트
-     * width: 다이얼로그의 너비 dp (null이면 기본값: 화면 넓이에서 좌우 패딩 50.dp)
-     * content: 다이얼로그 내부 컴포저블
-     */
+    * onDismiss: 모달이 닫힐 때 & negative 버튼을 누를 때 수행할 동작
+    * onConfirm: positive 버튼을 누를 때 수행할 동작
+    * title: 다이얼로그의 제목 (null이면 제목 없는 모달)
+    * positiveButton: onConfirm을 수행하는 버튼 텍스트
+    * negativeButton: onDismiss를 수행하는 버튼 텍스트
+    * width: 다이얼로그의 너비 dp (null이면 기본값: 화면 넓이에서 좌우 패딩 50.dp)
+    * content: 다이얼로그 내부 컴포저블
+    */
     fun set(
         onDismiss: () -> Unit,
         onConfirm: () -> Unit = {},

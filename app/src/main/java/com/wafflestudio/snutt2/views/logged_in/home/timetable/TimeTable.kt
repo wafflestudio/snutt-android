@@ -44,6 +44,8 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.lib.toDayString
+import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode

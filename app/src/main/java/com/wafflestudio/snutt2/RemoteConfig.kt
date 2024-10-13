@@ -1,16 +1,14 @@
 package com.wafflestudio.snutt2
 
-import com.wafflestudio.snutt2.core.network.NetworkConnectivityManager
-import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
-import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -21,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RemoteConfig @Inject constructor(
-    api: SNUTTNetworkDataSource,
+    api: SNUTTRestApi,
     userRepository: UserRepository,
     networkConnectivityManager: NetworkConnectivityManager,
 ) {
@@ -29,22 +27,22 @@ class RemoteConfig @Inject constructor(
 
     init {
         CoroutineScope(Dispatchers.Main).launch {
-            combine(
-                userRepository.accessToken.filter { it.isNotEmpty() },
-                networkConnectivityManager.networkConnectivity.filter { it },
-            ) { _, _ ->
-                withContext(Dispatchers.IO) {
-                    runCatching {
-                        api._getRemoteConfig()
-                    }.onSuccess {
-                        config.emit(it.toExternalModel())
-                    }.onFailure {
-                        // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 config를 받아오지 못한 경우 지도를 숨긴다.
-                        // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
-                        config.emit(RemoteConfigDto(disableMapFeature = true))
+            networkConnectivityManager.networkConnectivity
+                .filter { it }
+                .map {
+                    withContext(Dispatchers.IO) {
+                        runCatching {
+                            api._getRemoteConfig()
+                        }.onSuccess {
+                            config.emit(it)
+                        }.onFailure {
+                            // NOTE: 서버 장애나 네트워크 오프라인 등의 이유로 config를 받아오지 못한 경우 지도를 숨긴다.
+                            // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706504661308259?thread_ts=1706451688.745159&cid=C0PAVPS5T
+                            config.emit(RemoteConfigDto(disableMapFeature = true))
+                        }
                     }
                 }
-            }.collect()
+                .collect()
         }
     }
 
@@ -60,4 +58,6 @@ class RemoteConfig @Inject constructor(
         // NOTE: 평상시에는 필드가 null로 내려오고, 이는 로직상 false 취급이다. 지도를 급히 비활성화해야 할 경우 true가 내려온다.
         // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706542084934709?thread_ts=1706451688.745159&cid=C0PAVPS5T
         get() = config.map { it.disableMapFeature ?: false }
+    val noticeConfig: Flow<RemoteConfigDto.NoticeConfig>
+        get() = config.map { it.noticeConfig ?: RemoteConfigDto.NoticeConfig(false, null, null) }
 }

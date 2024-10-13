@@ -4,24 +4,14 @@ import android.webkit.CookieManager
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.wafflestudio.snutt2.core.database.model.User
-import com.wafflestudio.snutt2.core.database.preference.SNUTTStorageTemp
-import com.wafflestudio.snutt2.core.database.util.map
-import com.wafflestudio.snutt2.core.database.util.toOptional
-import com.wafflestudio.snutt2.core.database.util.unwrap
-import com.wafflestudio.snutt2.core.network.SNUTTNetworkDataSource
-import com.wafflestudio.snutt2.core.network.model.GetUserFacebookResults
-import com.wafflestudio.snutt2.core.network.model.PostAccessTokenByAuthCodeParams
-import com.wafflestudio.snutt2.core.network.model.PostSocialLoginParams
-import com.wafflestudio.snutt2.core.network.retrofit.google.SNUTTRestApiForGoogle
-import com.wafflestudio.snutt2.lib.network.dto.core.toDatabaseModel
-import com.wafflestudio.snutt2.lib.network.dto.core.toExternalModel
+import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
+import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableTrimParam
-import com.wafflestudio.snutt2.model.toDatabaseModel
-import com.wafflestudio.snutt2.model.toExternalModel
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.ui.toDatabaseModel
-import com.wafflestudio.snutt2.ui.toExternalModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -31,54 +21,35 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import com.wafflestudio.snutt2.core.database.model.TableTrimParam as TableTrimParamDatabase
-import com.wafflestudio.snutt2.core.database.model.ThemeMode as ThemeModeDatabase
-import com.wafflestudio.snutt2.core.network.model.PatchUserInfoParams as PatchUserInfoParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostCheckEmailByIdParams as PostCheckEmailByIdParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostFeedbackParams as PostFeedbackParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostFindIdParams as PostFindIdParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostForceLogoutParams as PostForceLogoutParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostResetPasswordParams as PostResetPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSendCodeToEmailParams as PostSendCodeToEmailParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSendPwResetCodeParams as PostSendPwResetCodeParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSignInParams as PostSignInParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostSignUpParams as PostSignUpParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostUserFacebookParams as PostUserFacebookParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostUserPasswordParams as PostUserPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostVerifyEmailCodeParams as PostVerifyEmailCodeParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PostVerifyPwResetCodeParams as PostVerifyPwResetCodeParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.PutUserPasswordParams as PutUserPasswordParamsNetwork
-import com.wafflestudio.snutt2.core.network.model.RegisterFirebaseTokenParams as RegisterFirebaseTokenParamsNetwork
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val api: SNUTTNetworkDataSource,
-    private val storage: SNUTTStorageTemp,
+    private val api: SNUTTRestApi,
     private val apiGoogle: SNUTTRestApiForGoogle,
+    private val storage: SNUTTStorage,
     private val popupState: PopupState,
     externalScope: CoroutineScope,
 ) : UserRepository {
 
     override val user = storage.user.asStateFlow()
-        .unwrap(externalScope).map(externalScope) { it: User? -> it?.toExternalModel() } // TODO : 이게 맞나..? 싶어서 이런 부분은 다 TODO 달아놓음
+        .unwrap(externalScope)
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
-        .map(externalScope) { it: TableTrimParamDatabase -> it.toExternalModel() } // TODO : database 변환 사용 부분
 
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()
-        .map(externalScope) { it: ThemeModeDatabase -> it.toExternalModel() } // TODO : database 변환 사용 부분
 
     override val compactMode = storage.compactMode.asStateFlow()
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String) {
-        val response = api._postSignIn(PostSignInParamsNetwork(id, password))
+        val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
+
     override suspend fun postLoginFacebook(facebookToken: String) {
         val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
@@ -98,19 +69,19 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postSignUp(id: String, password: String, email: String) {
-        val response = api._postSignUp(PostSignUpParamsNetwork(id, password, email))
+        val response = api._postSignUp(PostSignUpParams(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
 
     override suspend fun fetchUserInfo() {
-        val response = api._getUserInfo().toExternalModel()
-        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
+        val response = api._getUserInfo()
+        storage.user.update(response.toOptional())
     }
 
     override suspend fun patchUserInfo(nickname: String) {
-        val response = api._patchUserInfo(PatchUserInfoParamsNetwork(nickname)).toExternalModel()
-        storage.user.update(response.toDatabaseModel().toOptional()) // TODO : database 변환 사용 부분
+        val response = api._patchUserInfo(PatchUserInfoParams(nickname))
+        storage.user.update(response.toOptional())
     }
 
     override suspend fun deleteUserAccount() {
@@ -123,7 +94,7 @@ class UserRepositoryImpl @Inject constructor(
         newPassword: String,
     ) {
         val response = api._putUserPassword(
-            PutUserPasswordParamsNetwork(
+            PutUserPasswordParams(
                 newPassword = newPassword,
                 oldPassword = oldPassword,
             ),
@@ -137,7 +108,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postUserPassword(id: String, password: String) {
         val response = api._postUserPassword(
-            PostUserPasswordParamsNetwork(
+            PostUserPasswordParams(
                 id = id,
                 password = password,
             ),
@@ -155,7 +126,7 @@ class UserRepositoryImpl @Inject constructor(
         facebookToken: String,
     ) {
         val response = api._postUserFacebook(
-            PostUserFacebookParamsNetwork(
+            PostUserFacebookParams(
                 facebookId = facebookId,
                 facebookToken = facebookToken,
             ),
@@ -164,7 +135,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postFeedback(email: String, detail: String) {
-        api._postFeedback(PostFeedbackParamsNetwork(email = email, message = detail))
+        api._postFeedback(PostFeedbackParams(email = email, message = detail))
     }
 
     override suspend fun deleteFirebaseToken() {
@@ -176,7 +147,7 @@ class UserRepositoryImpl @Inject constructor(
         val firebaseToken = getFirebaseToken()
         val userId = storage.prefKeyUserId.get().value ?: return
         api._postForceLogout(
-            PostForceLogoutParamsNetwork(
+            PostForceLogoutParams(
                 userId = userId,
                 registrationId = firebaseToken,
             ),
@@ -195,7 +166,7 @@ class UserRepositoryImpl @Inject constructor(
         hourTo: Int?,
         isAuto: Boolean?,
     ) {
-        val prevTrimParam = storage.tableTrimParam.get().toExternalModel()
+        val prevTrimParam = storage.tableTrimParam.get()
         storage.tableTrimParam.update(
             TableTrimParam(
                 dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
@@ -203,7 +174,7 @@ class UserRepositoryImpl @Inject constructor(
                 hourFrom = hourFrom ?: prevTrimParam.hourFrom,
                 hourTo = hourTo ?: prevTrimParam.hourTo,
                 forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ).toDatabaseModel(), // TODO : database 변환 사용 부분
+            ),
         )
     }
 
@@ -250,53 +221,53 @@ class UserRepositoryImpl @Inject constructor(
         val token = getFirebaseToken()
         api._registerFirebaseToken(
             token,
-            RegisterFirebaseTokenParamsNetwork(),
+            RegisterFirebaseTokenParams(),
         )
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {
-        storage.themeMode.update(mode.toDatabaseModel()) // TODO : database 변환 사용 부분
+        storage.themeMode.update(mode)
     }
 
     override suspend fun findIdByEmail(email: String) {
         api._postFindId(
-            PostFindIdParamsNetwork(email),
+            PostFindIdParams(email),
         )
     }
 
     override suspend fun checkEmailById(id: String): String {
         return api._postCheckEmailById(
-            PostCheckEmailByIdParamsNetwork(id),
+            PostCheckEmailByIdParams(id),
         ).email
     }
 
     override suspend fun sendPwResetCodeToEmail(email: String) {
         api._postSendPwResetCodeToEmailById(
-            PostSendPwResetCodeParamsNetwork(email),
+            PostSendPwResetCodeParams(email),
         )
     }
 
     override suspend fun verifyPwResetCode(id: String, code: String) {
         api._postVerifyCodeToResetPassword(
-            PostVerifyPwResetCodeParamsNetwork(id, code),
+            PostVerifyPwResetCodeParams(id, code),
         )
     }
 
     override suspend fun resetPassword(id: String, password: String) {
         api._postResetPassword(
-            PostResetPasswordParamsNetwork(id, password),
+            PostResetPasswordParams(id, password),
         )
     }
 
     override suspend fun sendCodeToEmail(email: String) {
         api._postSendCodeToEmail(
-            PostSendCodeToEmailParamsNetwork(email),
+            PostSendCodeToEmailParams(email),
         )
     }
 
     override suspend fun verifyEmailCode(code: String) {
         api._postVerifyEmailCode(
-            PostVerifyEmailCodeParamsNetwork(code),
+            PostVerifyEmailCodeParams(code),
         )
     }
 

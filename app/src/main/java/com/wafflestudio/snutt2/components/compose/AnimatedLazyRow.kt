@@ -22,8 +22,7 @@ fun <T> AnimatedLazyRow(
 ) {
     AnimatedVisibility(visible = itemList.isNotEmpty()) {
         LazyRow(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier, verticalAlignment = Alignment.CenterVertically,
         ) {
             items(items = itemList, key = itemKey) {
                 itemContent(it)
