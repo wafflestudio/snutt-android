@@ -49,7 +49,7 @@ fun LazyItemScope.VacancyListItem(
         lectureDto.quota,
     )
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDto)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDto)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDto)
     val backgroundColor = if (hasVacancy) SNUTTColors.VacancyRedBg else SNUTTColors.White900
 
     Row(
