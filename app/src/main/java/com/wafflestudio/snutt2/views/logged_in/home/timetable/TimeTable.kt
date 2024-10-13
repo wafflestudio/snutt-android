@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
@@ -326,27 +327,49 @@ private fun DrawClassTime(
                         instructorName,
                         fittedTrimParam,
                     ) {
-                        calculateAdjustedTextLayout(
-                            listOf(
-                                LectureCellInfo.titleTextLayout(courseTitle, true),
-                                LectureCellInfo.placeTextLayout(classTime.place, true),
-                                LectureCellInfo.lectureNumberTextLayout(lectureNumber, false),
-                                LectureCellInfo.instructorNameTextLayout(instructorName, false),
-                            ),
-                            textMeasurer,
-                            constraints,
-                        )
+                        try {
+                            calculateAdjustedTextLayout(
+                                listOf(
+                                    LectureCellInfo.titleTextLayout(courseTitle, true),
+                                    LectureCellInfo.placeTextLayout(classTime.place, true),
+                                    LectureCellInfo.lectureNumberTextLayout(lectureNumber, false),
+                                    LectureCellInfo.instructorNameTextLayout(instructorName, false),
+                                ),
+                                textMeasurer,
+                                constraints,
+                            )
+                        } catch (e: Exception) {
+                            // NOTE(@JuTaK): 혹시 모를 크래시를 대비하여 try-catch를 추가하고 로그를 심는다.
+                            FirebaseCrashlytics.getInstance().recordException(
+                                Throwable(
+                                    cause = e,
+                                    message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam"
+                                )
+                            )
+                            emptyList()
+                        }
+
                     }
 
                     adjustedTextLayouts
                         .forEach { textLayout ->
-                            Text(
-                                text = textLayout.text,
-                                style = textLayout.style.copy(color = Color(fgColor)),
-                                maxLines = textLayout.maxLines,
-                                textAlign = TextAlign.Center,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                            if (textLayout.maxLines > 0) {
+                                Text(
+                                    text = textLayout.text,
+                                    style = textLayout.style.copy(color = Color(fgColor)),
+                                    maxLines = textLayout.maxLines,
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            } else {
+                                // NOTE(@JuTaK): 혹시 모를 크래시를 대비하여 try-catch를 추가하고 로그를 심는다.
+                                FirebaseCrashlytics.getInstance().recordException(
+                                    Throwable(
+                                        cause = IllegalStateException(),
+                                        message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam"
+                                    )
+                                )
+                            }
                         }
                 }
             }
