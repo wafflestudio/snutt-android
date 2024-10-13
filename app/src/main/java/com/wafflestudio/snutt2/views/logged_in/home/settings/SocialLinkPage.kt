@@ -80,7 +80,7 @@ fun SocialLinkPage() {
             is SocialLoginState.InProgress -> {}
             is SocialLoginState.Cancelled -> {
                 // context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
-                socialLinkViewModel.updateFacebookLoginState(SocialLoginState.Initial)
+                socialLinkViewModel.upda(SocialLoginState.Initial(null))
             }
             is SocialLoginState.Failed -> {
                 // context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
@@ -137,7 +137,7 @@ fun SocialLinkPage() {
                     hasNextPage = false,
                     onClick = {
                         socialLinkViewModel.prepareFacebookSignIn()
-                        socialLinkViewModel.loginManager.logInWithReadPermissions(
+                        socialLinkViewModel.facebookLoginManager.logInWithReadPermissions(
                             context as ActivityResultRegistryOwner,
                             socialLinkViewModel.callbackManager,
                             emptyList(),

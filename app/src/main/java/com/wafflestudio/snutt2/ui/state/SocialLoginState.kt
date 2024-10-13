@@ -1,11 +1,15 @@
 package com.wafflestudio.snutt2.ui.state
 
-sealed interface SocialLoginState {
-    data object Initial : SocialLoginState
-    data object InProgress : SocialLoginState
-    data object Cancelled : SocialLoginState
-    data object Failed : SocialLoginState
+sealed class SocialLoginState(open val type: SocialLoginType?) {
+    data class Initial(override val type: SocialLoginType?) : SocialLoginState(null)
+    data class InProgress(override val type: SocialLoginType) : SocialLoginState(type)
+    data class Cancelled(override val type: SocialLoginType) : SocialLoginState(type)
+    data class Failed(override val type: SocialLoginType) : SocialLoginState(type)
     data class Success(
+        override val type: SocialLoginType,
         val token: String,
-    ) : SocialLoginState
+    ) : SocialLoginState(type)
 }
+
+
+fun SocialLoginState.isProcessing(): Boolean = this is SocialLoginState.InProgress

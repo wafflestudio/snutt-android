@@ -1,12 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_out
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,9 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
@@ -35,10 +35,15 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import com.wafflestudio.snutt2.ui.state.getString
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalApiOnError
+import com.wafflestudio.snutt2.views.LocalApiOnProgress
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,84 +53,40 @@ fun TutorialPage() {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
-    val activityContext = LocalContext.current as Activity
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
+    val socialLoginProgress by socialLinkViewModel.socialLoginProgress.collectAsStateWithLifecycle()
 
-    val kakaoLoginState by socialLinkViewModel.kakaoLoginState.collectAsStateWithLifecycle()
-    val googleLoginState by socialLinkViewModel.googleLoginState.collectAsStateWithLifecycle()
-    val facebookLoginState by socialLinkViewModel.facebookLoginState.collectAsStateWithLifecycle()
+    LaunchedEffect(socialLoginProgress) {
+        when (val state = socialLoginProgress) {
+            is SocialLoginState.Cancelled -> {
+                context.toast(context.getString(R.string.social_signin_failed_cancelled, state.type.getString()))
+            }
 
-    val clientId = context.getString(R.string.web_client_id)
-    val clientSecret = context.getString(R.string.web_client_secret)
+            is SocialLoginState.Failed -> {
+                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, state.type.getString()))
+            }
 
-    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        socialLinkViewModel.handleGoogleLoginActivityResult(result, clientId, clientSecret)
-    }
-
-    val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .requestServerAuthCode(clientId)
-        .build().let {
-            GoogleSignIn.getClient(activityContext, it)
-        }
-
-    // 구글 계정 선택 창 띄움
-    val startGoogleSignIn = {
-        val signInIntent = googleSignInClient.signInIntent
-        socialLinkViewModel.updateGoogleLoginState(SocialLoginState.InProgress)
-        googleLoginActivityResultLauncher.launch(signInIntent)
-    }
-
-    val loginWithSocialAccessToken: (SocialLoginType, String) -> Unit = { type, token ->
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                if (token.isNotEmpty()) {
-                    userViewModel.loginSocial(type, token)
-                    homeViewModel.refreshData()
-                    socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+            is SocialLoginState.Success -> {
+                coroutineScope.launch {
+                    launchSuspendApi(
+                        apiOnProgress = apiOnProgress,
+                        apiOnError = apiOnError,
+                        loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+                    ) {
+                        if (state.token.isNotEmpty()) {
+                            userViewModel.loginSocial(state.type, state.token)
+                            homeViewModel.refreshData()
+                            navController.navigateAsOrigin(NavigationDestination.Home)
+                        }
+                    }
                 }
             }
+
+            else -> {}
         }
-    }
-
-    val socialLoginStateEffect: (SocialLoginType, SocialLoginState) -> Unit = { type, state ->
-        when (state) {
-            is SocialLoginState.Initial -> {}
-            is SocialLoginState.InProgress -> {}
-            is SocialLoginState.Cancelled -> {
-                context.toast(context.getString(R.string.social_signin_failed_cancelled, type.getString()))
-                socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
-            }
-            is SocialLoginState.Failed -> {
-                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, type.getString()))
-                socialLinkViewModel.updateSocialLoginState(type, SocialLoginState.Initial)
-            }
-            is SocialLoginState.Success -> {
-                loginWithSocialAccessToken(type, state.token)
-            }
-        }
-    }
-
-    LaunchedEffect(facebookLoginState) {
-        socialLoginStateEffect(SocialLoginType.FACEBOOK, facebookLoginState)
-    }
-
-    LaunchedEffect(kakaoLoginState) {
-        socialLoginStateEffect(SocialLoginType.KAKAO, kakaoLoginState)
-    }
-
-    LaunchedEffect(googleLoginState) {
-        socialLoginStateEffect(SocialLoginType.GOOGLE, googleLoginState)
     }
 
     Column(
@@ -204,27 +165,22 @@ fun TutorialPage() {
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = { socialLinkViewModel.triggerKakaoSignIn(context) },
+                    onClick = {
+                        socialLinkViewModel.startSocialLogin(SocialLoginType.KAKAO, context)
+                    },
                 )
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.google_login),
                     onClick = {
-                        googleSignInClient.signOut().addOnCompleteListener {
-                            startGoogleSignIn()
-                        }
+                        socialLinkViewModel.startSocialLogin(SocialLoginType.GOOGLE, context)
                     },
                 )
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.facebook_login),
                     onClick = {
-                        socialLinkViewModel.prepareFacebookSignIn()
-                        socialLinkViewModel.loginManager.logInWithReadPermissions(
-                            context as ActivityResultRegistryOwner,
-                            socialLinkViewModel.callbackManager,
-                            emptyList(),
-                        )
+                        socialLinkViewModel.startSocialLogin(SocialLoginType.FACEBOOK, context)
                     },
                 )
             }
