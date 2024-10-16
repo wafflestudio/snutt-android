@@ -208,7 +208,7 @@ fun TutorialPage() {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
                     style = SNUTTTypography.button,
-                    color = SNUTTColors.White900,
+                    color = SNUTTColors.AllWhite,
                 )
             }
 
