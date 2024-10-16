@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ModalState
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -38,7 +38,7 @@ val LocalNavController = compositionLocalOf<NavController> {
     throw RuntimeException("")
 }
 
-val LocalReviewWebView = compositionLocalOf<WebViewContainer> {
+val LocalReviewWebView = compositionLocalOf<ReviewWebViewContainer> {
     throw RuntimeException("")
 }
 

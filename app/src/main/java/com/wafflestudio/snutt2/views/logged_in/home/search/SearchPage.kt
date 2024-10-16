@@ -44,7 +44,7 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -87,8 +87,8 @@ fun SearchPage(
 
     var searchEditTextFocused by remember { mutableStateOf(false) }
     val isDarkMode = isDarkMode()
-    val reviewBottomSheetWebViewContainer = remember {
-        WebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
+    val reviewBottomSheetReviewWebViewContainer = remember {
+        ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
             this.webView.addJavascriptInterface(
                 CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }),
                 "Snutt",
@@ -246,7 +246,7 @@ fun SearchPage(
                         lectureDetailViewModel,
                         userViewModel,
                         vacancyViewModel,
-                        reviewBottomSheetWebViewContainer,
+                        reviewBottomSheetReviewWebViewContainer,
                     )
                     SearchPageMode.Bookmark -> BookmarkList(
                         searchViewModel,
@@ -255,7 +255,7 @@ fun SearchPage(
                         lectureDetailViewModel,
                         userViewModel,
                         vacancyViewModel,
-                        reviewBottomSheetWebViewContainer,
+                        reviewBottomSheetReviewWebViewContainer,
                     )
                 }
             }

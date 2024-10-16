@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import com.wafflestudio.snutt2.lib.network.ErrorCode
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
@@ -12,11 +13,12 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.syllabus.SyllabusWebView
 import kotlinx.coroutines.launch
 
 suspend fun openReviewBottomSheet(
     url: String?,
-    reviewWebViewContainer: WebViewContainer,
+    reviewWebViewContainer: ReviewWebViewContainer,
     bottomSheet: BottomSheet,
 ) {
     reviewWebViewContainer.openPage("$url&on_back=close")
@@ -24,6 +26,18 @@ suspend fun openReviewBottomSheet(
         CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
             ReviewWebView(0.95f)
         }
+    }
+    bottomSheet.show()
+}
+
+suspend fun openSyllabusBottomSheet(
+    url: String?,
+    syllabusWebViewContainer: WebViewContainer,
+    bottomSheet: BottomSheet,
+) {
+    syllabusWebViewContainer.openPage(url)
+    bottomSheet.setSheetContent {
+        SyllabusWebView(syllabusWebViewContainer)
     }
     bottomSheet.show()
 }
