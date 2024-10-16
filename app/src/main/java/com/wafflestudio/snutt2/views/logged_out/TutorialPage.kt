@@ -266,6 +266,9 @@ fun TutorialPage() {
                 color = SNUTTColors.Gray200,
                 style = SNUTTTypography.subtitle2,
                 text = stringResource(R.string.tutorial_help_button),
+                modifier = Modifier.clicks {
+                    navController.navigate(NavigationDestination.AppReport)
+                }
             )
 
             Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.05f))
