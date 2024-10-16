@@ -32,7 +32,7 @@ object SNUTTStringUtils {
 
     /**
      * 강의의 모든 classTime을 text로 변환
-     * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30 ~ 10:45), 수(09:30 ~ 10:45)"
+     * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
      */
     fun getSimplifiedClassTimeForLecture(lectureDto: LectureDto): String {
         val texts = StringBuilder()
@@ -46,7 +46,7 @@ object SNUTTStringUtils {
 
     /**
      * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
-     * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30 ~ 10:45)"
+     * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
      */
     private fun getClassTimeTextForLecture(classTime: ClassTimeDto): String = StringBuilder()
         .append(SNUTTUtils.numberToWday(classTime.day))
