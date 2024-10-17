@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
 import com.wafflestudio.snutt2.components.compose.SocialLoginButton
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -173,40 +173,33 @@ fun TutorialPage() {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-            .background(SNUTTColors.White900),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.weight(25f))
-
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-            )
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.3f))
 
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h1,
-            )
-        }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = stringResource(R.string.sign_in_logo_title),
+                )
+                Text(
+                    text = stringResource(R.string.sign_in_logo_title),
+                    style = SNUTTTypography.h1,
+                )
+            }
 
-        Spacer(modifier = Modifier.weight(13f))
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.16f))
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-        ) {
             BorderButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 32.dp),
                 bgColor = colorResource(R.color.theme_snutt_5),
                 color = colorResource(R.color.theme_snutt_5),
                 cornerRadius = 6.dp,
@@ -215,37 +208,35 @@ fun TutorialPage() {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
                     style = SNUTTTypography.button,
-                    color = SNUTTColors.White900,
+                    color = SNUTTColors.AllWhite,
                 )
             }
 
-            BorderButton(
+            Text(
+                text = stringResource(R.string.tutorial_sign_up_button),
+                style = SNUTTTypography.button,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                color = SNUTTColors.White900,
-                cornerRadius = 10.dp,
-                onClick = { navController.navigate(NavigationDestination.SignUp) },
-            ) {
-                Text(
-                    text = stringResource(R.string.tutorial_sign_up_button),
-                    style = SNUTTTypography.button,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            DividerWithText(
-                color = SNUTTColors.Gray200,
-                textStyle = SNUTTTypography.subtitle2,
-                text = stringResource(R.string.continue_with_sns_account),
+                    .padding(top = 14.dp)
+                    .clicks {
+                        navController.navigate(NavigationDestination.SignUp)
+                    },
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.weight(1f))
+
+            DividerWithText(
+                color = SNUTTColors.VacancyGray,
+                textStyle = SNUTTTypography.subtitle2,
+                text = stringResource(R.string.continue_with_sns_account),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
@@ -266,9 +257,20 @@ fun TutorialPage() {
                     onClick = { handleFacebookSignIn() },
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.weight(11f))
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.06f))
+
+            Text(
+                color = SNUTTColors.Gray200,
+                style = SNUTTTypography.subtitle2,
+                text = stringResource(R.string.tutorial_help_button),
+                modifier = Modifier.clicks {
+                    navController.navigate(NavigationDestination.AppReport)
+                },
+            )
+
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.05f))
+        }
     }
 }
 
