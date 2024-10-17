@@ -158,6 +158,16 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val recentSearchedDepartments = PrefValue<List<TagDto>>(
+        prefContext,
+        PrefListValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "recent_searched_departments",
+            type = TagDto::class.java,
+            defaultValue = listOf(),
+        ),
+    )
+
     fun clearLoginScope() {
         prefContext.clear(DOMAIN_SCOPE_LOGIN)
         prefContext.clear(DOMAIN_SCOPE_CURRENT_VERSION)
