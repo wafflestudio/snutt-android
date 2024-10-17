@@ -122,14 +122,10 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postUserFacebook(
-        facebookId: String,
         facebookToken: String,
     ) {
         val response = api._postUserFacebook(
-            PostUserFacebookParams(
-                facebookId = facebookId,
-                facebookToken = facebookToken,
-            ),
+            PostSocialLoginParams(facebookToken),
         )
         storage.accessToken.update(response.token)
     }
