@@ -82,7 +82,7 @@ fun LazyItemScope.LectureListItem(
     )
     val remarkText = lectureDataWithState.item.remark
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithState.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithState.item)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(
