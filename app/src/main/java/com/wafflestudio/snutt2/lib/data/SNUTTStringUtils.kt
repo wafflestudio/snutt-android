@@ -46,25 +46,25 @@ object SNUTTStringUtils {
      * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
      * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
      */
-    private fun getClassTimeTextForLecture(classTime: ClassTimeDto): String = StringBuilder()
-        .append(SNUTTUtils.numberToWday(classTime.day))
-        .append("(")
-        .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-        .append("~")
-        .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-        .append(")")
-        .toString()
+    private fun getClassTimeTextForLecture(classTime: ClassTimeDto): String = buildString {
+        append(SNUTTUtils.numberToWday(classTime.day))
+        append("(")
+        append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+        append("~")
+        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+        append(")")
+    }
 
     /**
      * 하나의 classTime을 텍스트로 변환, 하나의 classTime에 대해 필요할 때
      * ex) 월 09:30 ~ 10:45 이면 -> "월 09:30~10:45"
      */
-    fun getSingleClassTimeText(classTime: ClassTimeDto): String = StringBuilder()
-        .append(SNUTTUtils.numberToWday(classTime.day))
-        .append(" %02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-        .append("~")
-        .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-        .toString()
+    fun getSingleClassTimeText(classTime: ClassTimeDto): String = buildString {
+        append(SNUTTUtils.numberToWday(classTime.day))
+        append(" %02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+        append("~")
+        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+    }
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
         val text = StringBuilder()
