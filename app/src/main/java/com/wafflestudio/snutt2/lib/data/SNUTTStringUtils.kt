@@ -35,13 +35,11 @@ object SNUTTStringUtils {
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
      */
     fun getSimplifiedClassTimeForLecture(lectureDto: LectureDto): String {
-        val texts = StringBuilder()
-        lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            texts.append(getClassTimeTextForLecture(classTimeDto))
-            if (index != lectureDto.class_time_json.size - 1) texts.append(", ")
+        if (lectureDto.class_time_json.isEmpty()) {
+            return "(없음)"
         }
-        if (texts.isEmpty()) texts.append("(없음)")
-        return texts.toString()
+
+        return lectureDto.class_time_json.joinToString(", ", transform = ::getClassTimeTextForLecture)
     }
 
     /**
