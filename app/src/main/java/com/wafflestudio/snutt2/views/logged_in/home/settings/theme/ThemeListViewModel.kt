@@ -30,7 +30,7 @@ class ThemeListViewModel @Inject constructor(
         themeRepository.deleteTheme(themeId)
 
         val currentTable = currentTable.value ?: return
-        if (currentTable.themeId != null && currentTable.themeId == themeId) {
+        if (currentTable.themeId == themeId) {
             tableRepository.fetchTableById(currentTable.id)
         }
     }

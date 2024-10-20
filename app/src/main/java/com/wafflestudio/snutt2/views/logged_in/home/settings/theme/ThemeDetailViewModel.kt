@@ -149,7 +149,8 @@ class ThemeDetailViewModel @Inject constructor(
 
     suspend fun refreshCurrentTableIfNeeded() { // 현재 선택된 시간표의 테마라면 새로고침
         val currentTable = currentTable.value ?: return
-        if (currentTable.themeId != null && currentTable.themeId == (_editingTheme.value as? CustomTheme)?.id) {
+        val editingCustomTheme = _editingTheme.value as? CustomTheme ?: return
+        if (currentTable.themeId == editingCustomTheme.id) {
             tableRepository.fetchTableById(currentTable.id)
         }
     }
