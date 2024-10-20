@@ -28,10 +28,10 @@ class ThemeListViewModel @Inject constructor(
 
     suspend fun deleteThemeAndRefreshTableIfNeeded(themeId: String) { // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
         themeRepository.deleteTheme(themeId)
-        currentTable.value?.let {
-            if (it.themeId != null && it.themeId == themeId) {
-                tableRepository.fetchTableById(it.id)
-            }
+
+        val currentTable = currentTable.value ?: return
+        if (currentTable.themeId != null && currentTable.themeId == themeId) {
+            tableRepository.fetchTableById(currentTable.id)
         }
     }
 

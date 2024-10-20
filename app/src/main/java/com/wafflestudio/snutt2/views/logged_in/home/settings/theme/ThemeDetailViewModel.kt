@@ -67,7 +67,6 @@ class ThemeDetailViewModel @Inject constructor(
 
     private fun initCustomTheme(themeId: String) {
         _editingTheme.value = if (themeId.isEmpty()) { // 새로 생성한 커스텀 테마
-            isNewTheme = true
             CustomTheme.Default
         } else { // 이미 존재하는 커스텀 테마
             try {
@@ -119,42 +118,39 @@ class ThemeDetailViewModel @Inject constructor(
     }
 
     suspend fun saveTheme(name: String) {
-        if (_editingTheme.value is CustomTheme) {
-            _editingTheme.value = (_editingTheme.value as CustomTheme).id.let { id ->
-                if (id.isEmpty()) {
-                    themeRepository.createTheme(name, _editingColors.value.map { it.item })
-                } else {
-                    themeRepository.updateTheme(id, name, _editingColors.value.map { it.item })
-                }
+        val customTheme = _editingTheme.value as? CustomTheme ?: return
+        _editingTheme.value = customTheme.id.let { id ->
+            if (id.isEmpty()) {
+                themeRepository.createTheme(name, _editingColors.value.map { it.item })
+            } else {
+                themeRepository.updateTheme(id, name, _editingColors.value.map { it.item })
             }
         }
     }
 
     suspend fun applyThemeToCurrentTable() {
-        currentTable.value?.let { table ->
-            when (_editingTheme.value) {
-                is CustomTheme -> {
-                    tableRepository.updateTableTheme(
-                        table.id,
-                        (_editingTheme.value as CustomTheme).id,
-                    )
-                }
+        val currentTable = currentTable.value ?: return
+        when (_editingTheme.value) {
+            is CustomTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    (_editingTheme.value as CustomTheme).id,
+                )
+            }
 
-                is BuiltInTheme -> {
-                    tableRepository.updateTableTheme(
-                        table.id,
-                        (_editingTheme.value as BuiltInTheme).code,
-                    )
-                }
+            is BuiltInTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    (_editingTheme.value as BuiltInTheme).code,
+                )
             }
         }
     }
 
     suspend fun refreshCurrentTableIfNeeded() { // 현재 선택된 시간표의 테마라면 새로고침
-        currentTable.value?.let {
-            if (it.themeId != null && it.themeId == (_editingTheme.value as? CustomTheme)?.id) {
-                tableRepository.fetchTableById(it.id)
-            }
+        val currentTable = currentTable.value ?: return
+        if (currentTable.themeId != null && currentTable.themeId == (_editingTheme.value as? CustomTheme)?.id) {
+            tableRepository.fetchTableById(currentTable.id)
         }
     }
 }
