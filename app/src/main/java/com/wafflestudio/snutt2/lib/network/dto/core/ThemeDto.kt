@@ -7,24 +7,24 @@ import com.wafflestudio.snutt2.model.TableTheme
 
 @JsonClass(generateAdapter = true)
 data class ThemeDto(
-    val id: String? = null,
-    val theme: Int = 0,
-    val name: String = "",
-    val colors: List<ColorDto> = emptyList(),
-    val isCustom: Boolean = false,
+    val id: String?,
+    val theme: Int?,
+    val name: String?,
+    val colors: List<ColorDto>?,
+    val isCustom: Boolean?,
 ) {
 
     fun toTableTheme(): TableTheme {
-        return if (isCustom) {
+        return if (isCustom != false) {
             CustomTheme(
                 id = id!!,
-                name = name,
-                colors = colors,
+                name = name ?: "",
+                colors = colors ?: emptyList(),
             )
         } else {
             BuiltInTheme(
-                code = theme,
-                name = name,
+                code = theme ?: 0,
+                name = name ?: "",
             )
         }
     }

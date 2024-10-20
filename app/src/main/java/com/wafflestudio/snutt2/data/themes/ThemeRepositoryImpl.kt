@@ -39,7 +39,7 @@ class ThemeRepositoryImpl @Inject constructor(
 
     override suspend fun fetchThemes() {
         api._getThemes().let { themes ->
-            _customThemes.value = themes.filter { it.isCustom }.map { it.toTableTheme() as CustomTheme }
+            _customThemes.value = themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
             _builtInThemes.value = (0..5).map { code ->
                 BuiltInTheme.fromCode(code)
             }
