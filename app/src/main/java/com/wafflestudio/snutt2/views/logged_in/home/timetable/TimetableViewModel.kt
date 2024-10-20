@@ -1,9 +1,10 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -12,21 +13,24 @@ import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class TimetableViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val tableRepository: TableRepository,
-    private val themeRepository: ThemeRepository,
+    getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
     private val _previewTheme = MutableStateFlow<TableTheme?>(null)
     val previewTheme: StateFlow<TableTheme?> = _previewTheme
 
-    val tableTheme: StateFlow<TableTheme> = themeRepository.currentTableTheme
+    val tableTheme: StateFlow<TableTheme> = getCurrentTableThemeUseCase()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT)
 
     suspend fun addLecture(lecture: LectureDto, is_force: Boolean) {
         currentTableRepository
