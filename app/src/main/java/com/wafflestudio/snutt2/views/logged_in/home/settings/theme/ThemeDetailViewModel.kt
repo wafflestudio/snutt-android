@@ -35,7 +35,10 @@ class ThemeDetailViewModel @Inject constructor(
 
     val currentTable = currentTableRepository.currentTable
 
-    var isNewTheme = false
+    val isNewTheme: Boolean get() {
+        val customTheme = _editingTheme.value as? CustomTheme ?: return false
+        return customTheme.id.isEmpty()
+    }
 
     init {
         initEditingTheme()
