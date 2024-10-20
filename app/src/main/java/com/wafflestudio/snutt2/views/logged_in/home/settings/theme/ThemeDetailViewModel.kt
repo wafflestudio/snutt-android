@@ -19,11 +19,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
-    apiOnError: ApiOnError,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
     private val _editingTheme = MutableStateFlow<TableTheme>(CustomTheme.Default)
@@ -38,33 +38,46 @@ class ThemeDetailViewModel @Inject constructor(
     var isNewTheme = false
 
     init {
+        initEditingTheme()
+    }
+
+    private fun initEditingTheme() {
         val themeId = savedStateHandle.get<String>("themeId")
         val theme = savedStateHandle.get<Int>("theme")
-        if (theme != null && themeId != null) {
-            if (theme != -1) {
-                try {
-                    _editingTheme.value = BuiltInTheme.fromCode(theme)
-                } catch (e: Exception) {
-                    apiOnError(e)
-                }
-            } else {
-                _editingTheme.value = if (themeId.isEmpty()) {
-                    isNewTheme = true
-                    CustomTheme.Default
-                } else {
-                    try {
-                        themeRepository.getTheme(themeId)
-                    } catch (e: Exception) {
-                        apiOnError(e)
-                        CustomTheme.Default
-                    }
-                }
-                _editingColors.value =
-                    (_editingTheme.value as CustomTheme).colors.mapIndexed { idx, color ->
-                        color.toDataWithState(idx == 0)
-                    }
+
+        if (theme == null || themeId == null) return
+
+        if (theme != -1) { // 기본 제공 테마
+            initBuiltInTheme(theme)
+        } else { // 커스텀 테마
+            initCustomTheme(themeId)
+        }
+    }
+
+    private fun initBuiltInTheme(theme: Int) {
+        try {
+            _editingTheme.value = BuiltInTheme.fromCode(theme)
+        } catch (e: Exception) {
+            apiOnError(e)
+        }
+    }
+
+    private fun initCustomTheme(themeId: String) {
+        _editingTheme.value = if (themeId.isEmpty()) { // 새로 생성한 커스텀 테마
+            isNewTheme = true
+            CustomTheme.Default
+        } else { // 이미 존재하는 커스텀 테마
+            try {
+                themeRepository.getTheme(themeId)
+            } catch (e: Exception) {
+                apiOnError(e)
+                CustomTheme.Default
             }
         }
+        _editingColors.value =
+            (_editingTheme.value as CustomTheme).colors.mapIndexed { idx, color ->
+                color.toDataWithState(idx == 0)
+            }
     }
 
     fun addColor() {
