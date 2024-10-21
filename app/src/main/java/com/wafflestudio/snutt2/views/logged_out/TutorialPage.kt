@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +32,7 @@ import com.wafflestudio.snutt2.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.state.SocialLoginState
+import com.wafflestudio.snutt2.ui.state.SocialLoginProgress
 import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import com.wafflestudio.snutt2.ui.state.getString
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -44,20 +45,21 @@ import com.wafflestudio.snutt2.views.navigateAsOrigin
 fun TutorialPage() {
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val activityContext = LocalContext.current as Activity
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
     val socialLoginProgress by socialLinkViewModel.socialLoginProgress.collectAsStateWithLifecycle()
 
     LaunchedEffect(socialLoginProgress) {
         when (val state = socialLoginProgress) {
-            SocialLoginState.Cancelled -> {
+            is SocialLoginProgress.Cancelled -> {
                 context.toast(context.getString(R.string.social_signin_failed_cancelled, state.type.getString()))
             }
 
-            SocialLoginState.Failed -> {
+            is SocialLoginProgress.Failed -> {
                 context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, state.type.getString()))
             }
 
-            SocialLoginState.Success -> {
+            is SocialLoginProgress.Success -> {
                 navController.navigateAsOrigin(NavigationDestination.Home)
             }
 
@@ -147,10 +149,10 @@ fun TutorialPage() {
                                 socialLinkViewModel.loginKakao(token)
                             },
                             onFail = {
-                                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, state.type.getString()))
+                                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, SocialLoginType.KAKAO.getString()))
                             },
                             onCancel = {
-                                context.toast(context.getString(R.string.social_signin_failed_cancelled, state.type.getString()))
+                                context.toast(context.getString(R.string.social_signin_failed_cancelled, SocialLoginType.KAKAO.getString()))
                             }
                         )
                     },
@@ -159,7 +161,7 @@ fun TutorialPage() {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.google_login),
                     onClick = {
-                        SocialLoginSDK.getSDK(SocialLoginType.GOOGLE).request(context,
+                        SocialLoginSDK.getSDK(SocialLoginType.GOOGLE).request(activityContext,
                             onSuccess = { token ->
                                 socialLinkViewModel.loginGoogle(token, context.getString(R.string.web_client_id), context.getString(R.string.web_client_secret))
                             },
@@ -181,10 +183,10 @@ fun TutorialPage() {
                                 socialLinkViewModel.loginFacebook(token)
                             },
                             onFail = {
-                                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, state.type.getString()))
+                                context.toast(context.getString(R.string.social_signin_kakao_failed_unknown, SocialLoginType.FACEBOOK.getString()))
                             },
                             onCancel = {
-                                context.toast(context.getString(R.string.social_signin_failed_cancelled, state.type.getString()))
+                                context.toast(context.getString(R.string.social_signin_failed_cancelled, SocialLoginType.FACEBOOK.getString()))
                             }
                         )
                     },

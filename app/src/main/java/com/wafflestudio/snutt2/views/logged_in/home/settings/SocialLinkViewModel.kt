@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
-import com.wafflestudio.snutt2.ui.state.SocialLoginState
+import com.wafflestudio.snutt2.ui.state.SocialLoginProgress
+import com.wafflestudio.snutt2.ui.state.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ class SocialLinkViewModel @Inject constructor(
 
     val userInfo: StateFlow<UserDto?> = userRepository.user
 
-    val socialLoginProgress = MutableStateFlow(SocialLoginState.Initial)
+    val socialLoginProgress: MutableStateFlow<SocialLoginProgress> = MutableStateFlow(SocialLoginProgress.Initial(null))
 
     fun loginKakao(token: String) {
         viewModelScope.launch {
@@ -34,7 +35,7 @@ class SocialLinkViewModel @Inject constructor(
                 clientSecret = clientSecret,
             )
             if (googleAccessToken == null) {
-                updateSocialLoginState(SocialLoginState.Failed)
+                updateSocialLoginState(SocialLoginProgress.Failed(SocialLoginType.GOOGLE))
                 return@launch
             }
             userRepository.postLoginGoogle(googleAccessToken)
@@ -63,7 +64,7 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.deleteUserFacebook()
     }
 
-    private suspend fun updateSocialLoginState(state: SocialLoginState) {
+    suspend fun updateSocialLoginState(state: SocialLoginProgress) {
         socialLoginProgress.emit(state)
     }
 }
