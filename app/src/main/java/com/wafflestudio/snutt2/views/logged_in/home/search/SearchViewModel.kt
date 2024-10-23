@@ -119,8 +119,9 @@ class SearchViewModel @Inject constructor(
     val selectableRecentSearchedDepartments: StateFlow<List<Selectable<TagDto>>> = combine(
         tagsByTagType, recentSearchedDepartments, _selectedTags,
     ) { tagsByTagType, recentDepartments, selectedTags ->
+        val tagItemsByTagType = tagsByTagType.map { tag -> tag.item }
         recentDepartments.filter { recentDepartment ->
-            tagsByTagType.map { tag -> tag.item }.contains(recentDepartment)
+            tagItemsByTagType.contains(recentDepartment)
         }.map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(
         viewModelScope,
