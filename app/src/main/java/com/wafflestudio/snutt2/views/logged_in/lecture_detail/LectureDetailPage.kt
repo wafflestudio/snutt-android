@@ -481,7 +481,7 @@ fun LectureDetailPage(
                     )
                     editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
                         LectureDetailTimeAndLocation(
-                            timeText = SNUTTStringUtils.getClassTimeText(classTime),
+                            timeText = SNUTTStringUtils.getSingleClassTimeText(classTime),
                             locationText = classTime.place,
                             editTime = {
                                 bottomSheet.setSheetContent {
