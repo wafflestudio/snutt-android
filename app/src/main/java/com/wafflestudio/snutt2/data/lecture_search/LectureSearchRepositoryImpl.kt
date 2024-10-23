@@ -71,19 +71,16 @@ class LectureSearchRepositoryImpl @Inject constructor(
     }
 
     override fun storeRecentSearchedDepartment(tag: TagDto) {
+        val previousStoredTags = storage.recentSearchedDepartments.get()
+
         storage.recentSearchedDepartments.update(
-            storage.recentSearchedDepartments.get().toMutableList().apply {
-                if (contains(tag)) remove(tag)
-                add(tag)
-                while (count() > 5) removeAt(0)
-            },
+            (previousStoredTags.filter { it != tag } + tag).takeLast(5),
         )
     }
 
     override fun removeRecentSearchedDepartment(tag: TagDto) {
-        storage.recentSearchedDepartments.update(
-            storage.recentSearchedDepartments.get().toMutableList().apply { remove(tag) },
-        )
+        val previousStoredTags = storage.recentSearchedDepartments.get()
+        storage.recentSearchedDepartments.update(previousStoredTags - tag)
     }
 
     companion object {
