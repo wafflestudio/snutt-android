@@ -19,9 +19,11 @@ fun DividerWithText(
     color: Color,
     text: String = "",
     textStyle: TextStyle,
+    modifier: Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier,
     ) {
         Divider(
             modifier = Modifier.weight(1f),
