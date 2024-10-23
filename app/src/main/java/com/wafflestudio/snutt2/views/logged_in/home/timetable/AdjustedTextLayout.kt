@@ -33,7 +33,7 @@ fun calculateAdjustedTextLayout(
             repeat(idealMaxLines) { appendLine() }
         }
     }
-    if (textMeasurer.measure(fullRenderParagraph).multiParagraph.height < maxHeight) {
+    if (textMeasurer.measure(fullRenderParagraph).multiParagraph.height <= maxHeight) {
         return cellInfoList.map {
             AdjustedTextLayout(
                 it.text,
@@ -56,7 +56,7 @@ fun calculateAdjustedTextLayout(
             repeat(idealMaxLines) { appendLine() }
         }
     }
-    if (textMeasurer.measure(minifiedRenderParagraph).multiParagraph.height < maxHeight) {
+    if (textMeasurer.measure(minifiedRenderParagraph).multiParagraph.height <= maxHeight) {
         return cellInfoList.map {
             AdjustedTextLayout(
                 it.text,
@@ -83,7 +83,7 @@ fun calculateAdjustedTextLayout(
                     }
                 }
             }
-            if (textMeasurer.measure(paragraph).multiParagraph.height < maxHeight) {
+            if (textMeasurer.measure(paragraph).multiParagraph.height <= maxHeight) {
                 acc + current
             } else {
                 acc
@@ -127,7 +127,7 @@ fun calculateAdjustedTextLayout(
                         appendLine()
                     }
                 },
-            ).multiParagraph.height < maxHeight
+            ).multiParagraph.height <= maxHeight
         ) {
             currentMaxLines++
             // 높이 제약이 없을 때의 라인 수에 도달하면, 더 라인 수를 늘려서 계산해 볼 필요가 없으니 break

@@ -343,7 +343,7 @@ private fun DrawClassTime(
                             FirebaseCrashlytics.getInstance().recordException(
                                 Throwable(
                                     cause = e,
-                                    message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                    message = "$courseTitle $classTime $lectureNumber $instructorName $constraints $fittedTrimParam",
                                 ),
                             )
                             emptyList()
@@ -365,7 +365,7 @@ private fun DrawClassTime(
                                 FirebaseCrashlytics.getInstance().recordException(
                                     Throwable(
                                         cause = IllegalStateException(),
-                                        message = "$courseTitle ${classTime.place} $lectureNumber $instructorName $constraints $fittedTrimParam",
+                                        message = "$courseTitle $classTime $lectureNumber $instructorName $constraints $fittedTrimParam",
                                     ),
                                 )
                             }
