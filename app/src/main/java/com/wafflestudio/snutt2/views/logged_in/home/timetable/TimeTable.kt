@@ -280,6 +280,7 @@ private fun DrawClassTime(
     val cellPadding = 4.dp
     val compactMode = LocalCompactState.current
     val textMeasurer = rememberTextMeasurer()
+    val tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
@@ -326,14 +327,15 @@ private fun DrawClassTime(
                         lectureNumber,
                         instructorName,
                         fittedTrimParam,
+                        tableLectureCustomOptions,
                     ) {
                         try {
                             calculateAdjustedTextLayout(
                                 listOf(
-                                    LectureCellInfo.titleTextLayout(courseTitle, true),
-                                    LectureCellInfo.placeTextLayout(classTime.place, true),
-                                    LectureCellInfo.lectureNumberTextLayout(lectureNumber, false),
-                                    LectureCellInfo.instructorNameTextLayout(instructorName, false),
+                                    LectureCellInfo.titleTextLayout(courseTitle, tableLectureCustomOptions.title),
+                                    LectureCellInfo.placeTextLayout(classTime.place, tableLectureCustomOptions.place),
+                                    LectureCellInfo.lectureNumberTextLayout(lectureNumber, tableLectureCustomOptions.lectureNumber),
+                                    LectureCellInfo.instructorNameTextLayout(instructorName, tableLectureCustomOptions.instructor),
                                 ),
                                 textMeasurer,
                                 constraints,
