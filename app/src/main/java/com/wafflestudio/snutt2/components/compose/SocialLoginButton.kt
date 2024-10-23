@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SocialLoginButton(
     painter: Painter,
-    size: Dp = 45.dp,
+    size: Dp = 44.dp,
     onClick: () -> Unit,
 ) {
     Image(
