@@ -18,6 +18,7 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.CheckId
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.EnterFullEmail
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -50,6 +51,19 @@ fun ResetPasswordPage() {
                     scope.launch {
                         launchSuspendApi(apiOnProgress, apiOnError) {
                             viewModel.checkEmailById(userId)
+                            keyboardManager?.hide()
+                        }
+                    }
+                },
+            )
+            is EnterFullEmail -> EnterFullEmailStep(
+                userId = (uiState as EnterFullEmail).userId,
+                maskedEmail = (uiState as EnterFullEmail).maskedEmail,
+                notMyEmail = viewModel::goToPreviousStep,
+                onSubmitFullEmail = { fullEmail ->
+                    scope.launch {
+                        launchSuspendApi(apiOnProgress, apiOnError) {
+                            viewModel.sendFullEmailAndRequestCode(fullEmail)
                             keyboardManager?.hide()
                         }
                     }

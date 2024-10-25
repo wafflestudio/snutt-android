@@ -285,10 +285,15 @@
     <string name="find_id_send_email_success_message">\"%s\"로 아이디가 전송되었습니다.</string>
     <string name="find_password_title">비밀번호 재설정</string>
     <string name="find_password_check_email_content">비밀번호 재설정을 위해\n연동된 아이디가 필요합니다.</string>
+    <string name="find_password_check_email_enter_full_email">해당 아이디로 연동된 이메일입니다.\n전체 주소를 입력하여 인증코드를 받으세요.</string>
+    <string name="find_password_check_email_enter_full_email_label">이메일</string>
+    <string name="find_password_check_email_enter_full_email_hint">전체 주소를 입력하세요</string>
+    <string name="find_password_check_email_enter_full_email_enter">인증코드 받기</string>
+    <string name="find_password_check_email_enter_full_email_not_mine">나의 이메일 주소가 아닌가요?</string>
     <string name="find_password_check_email_dialog_title">이메일 확인</string>
     <string name="find_password_check_email_dialog_content">연동된 이메일은 %s입니다. 해당 이메일로 인증 코드를 발송하시겠습니까?</string>
     <string name="find_password_check_email_dialog_negative">다른 아이디 확인하기</string>
-    <string name="find_password_enter_id_hint">아이디를 입력해주세요.</string>
+    <string name="find_password_enter_id_hint">아이디를 입력하세요.</string>
     <string name="find_password_send_code_hint">인증 코드 입력</string>
     <string name="find_password_send_code_label">인증 번호</string>
     <string name="find_password_send_code_resend">다시 요청</string>

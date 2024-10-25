@@ -22,7 +22,10 @@ class FindPasswordViewModel @Inject constructor(
             val userId: String,
         ) : UIState()
 
-        data object EnterFullEmail : UIState()
+        data class EnterFullEmail(
+            val userId: String,
+            val maskedEmail: String,
+        ) : UIState()
 
         data object VerifyCode : UIState()
 
@@ -32,8 +35,19 @@ class FindPasswordViewModel @Inject constructor(
     fun goToPreviousStep() {
         when (_uiState.value) {
             is UIState.CheckId -> {}
+            is UIState.EnterFullEmail -> {
+                val savedUserId = savedStateHandle["userId"] ?: ""
+                _uiState.value = UIState.CheckId(savedUserId)
+            }
         }
     }
 
-    suspend fun checkEmailById(userId: String) {}
+    suspend fun checkEmailById(userId: String) {
+        savedStateHandle["userId"] = userId
+        val maskedEmail = userRepository.checkEmailById(userId)
+        savedStateHandle["maskedEmail"] = maskedEmail
+        _uiState.value = UIState.EnterFullEmail(userId, maskedEmail)
+    }
+
+    suspend fun sendFullEmailAndRequestCode(fullEmail: String) {}
 }
