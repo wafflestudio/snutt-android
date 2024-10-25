@@ -39,13 +39,14 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 fun EnterFullEmailStep(
     userId: String,
     maskedEmail: String,
+    fullEmail: String,
     notMyEmail: () -> Unit,
     onSubmitFullEmail: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
-    var emailField by remember { mutableStateOf("") }
+    var emailField by remember { mutableStateOf(fullEmail) }
     val buttonEnabled by remember {
         derivedStateOf {
             !emailField.isEmailInvalid()
