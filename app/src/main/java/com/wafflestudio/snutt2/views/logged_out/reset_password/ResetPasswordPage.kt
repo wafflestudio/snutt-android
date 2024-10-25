@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out.reset_password
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -44,31 +45,34 @@ fun ResetPasswordPage() {
             },
         )
 
-        when (uiState) {
-            is CheckId -> CheckIdStep(
-                userId = (uiState as CheckId).userId,
-                onSubmit = { userId ->
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.checkEmailById(userId)
-                            keyboardManager?.hide()
+        AnimatedContent(targetState = uiState, label = "") { state ->
+            when (state) {
+                is CheckId -> CheckIdStep(
+                    userId = state.userId,
+                    onSubmit = { userId ->
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                viewModel.checkEmailById(userId)
+                                keyboardManager?.hide()
+                            }
                         }
-                    }
-                },
-            )
-            is EnterFullEmail -> EnterFullEmailStep(
-                userId = (uiState as EnterFullEmail).userId,
-                maskedEmail = (uiState as EnterFullEmail).maskedEmail,
-                notMyEmail = viewModel::goToPreviousStep,
-                onSubmitFullEmail = { fullEmail ->
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            viewModel.sendFullEmailAndRequestCode(fullEmail)
-                            keyboardManager?.hide()
+                    },
+                )
+
+                is EnterFullEmail -> EnterFullEmailStep(
+                    userId = state.userId,
+                    maskedEmail = state.maskedEmail,
+                    notMyEmail = viewModel::goToPreviousStep,
+                    onSubmitFullEmail = { fullEmail ->
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                viewModel.sendFullEmailAndRequestCode(fullEmail)
+                                keyboardManager?.hide()
+                            }
                         }
-                    }
-                },
-            )
+                    },
+                )
+            }
         }
     }
 }
