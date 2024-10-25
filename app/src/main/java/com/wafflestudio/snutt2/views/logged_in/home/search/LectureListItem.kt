@@ -28,7 +28,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LazyItemScope.LectureListItem(
     lectureDataWithState: DataWithState<LectureDto, LectureState>,
-    reviewWebViewContainer: WebViewContainer,
+    reviewWebViewContainer: ReviewWebViewContainer,
     isBookmarkPage: Boolean = false,
     searchViewModel: SearchViewModel,
     timetableViewModel: TimetableViewModel,
@@ -82,7 +82,7 @@ fun LazyItemScope.LectureListItem(
     )
     val remarkText = lectureDataWithState.item.remark
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithState.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lectureDataWithState.item)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(

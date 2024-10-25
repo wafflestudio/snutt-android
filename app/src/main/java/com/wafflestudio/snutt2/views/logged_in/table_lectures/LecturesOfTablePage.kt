@@ -98,7 +98,7 @@ private fun TableLectureItem(
     onClickLecture: (lecture: LectureDto) -> Unit,
 ) {
     val tagText = SNUTTStringUtils.getLectureTagText(lecture)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTime(lecture)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lecture)
     val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
 
     Column(

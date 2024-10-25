@@ -95,9 +95,10 @@ fun ThemeDetailPage(
 
     val table by timetableViewModel.currentTable.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
+    val tableLectureCustomOptions by userViewModel.tableLectureCustomOption.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val tableState =
-        TableState(table ?: TableDto.Default, trimParam, previewTheme)
+        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
 
     val editingTheme by themeDetailViewModel.editingTheme.collectAsState()
     val editingColors by themeDetailViewModel.editingColors.collectAsState()

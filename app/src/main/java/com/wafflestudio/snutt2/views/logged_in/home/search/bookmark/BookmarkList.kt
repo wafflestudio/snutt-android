@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
@@ -27,7 +27,7 @@ fun BookmarkList(
     lectureDetailViewModel: LectureDetailViewModel,
     userViewModel: UserViewModel,
     vacancyViewModel: VacancyViewModel,
-    reviewWebViewContainer: WebViewContainer,
+    reviewWebViewContainer: ReviewWebViewContainer,
 ) {
     val bookmarks by searchViewModel.bookmarkList.collectAsState()
     if (bookmarks.isEmpty()) {

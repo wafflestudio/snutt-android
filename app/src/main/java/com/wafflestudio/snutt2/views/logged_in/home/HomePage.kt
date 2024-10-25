@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -57,12 +57,13 @@ fun HomePage() {
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
-    val tableState = TableState(table ?: TableDto.Default, trimParam, previewTheme)
+    val tableLectureCustomOptions by userViewModel.tableLectureCustomOption.collectAsState()
+    val tableState = TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var shouldShowPopup by remember { mutableStateOf(false) }
     var popupUri by remember { mutableStateOf("") }
     val isDarkMode = isDarkMode()
-    val reviewPageWebViewContainer = remember { WebViewContainer(context, userViewModel.accessToken, isDarkMode) }
+    val reviewPageReviewWebViewContainer = remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
 
@@ -90,7 +91,7 @@ fun HomePage() {
     }
 
     LaunchedEffect((pageController.homePageState.value as? HomeItem.Review)?.landingPage) {
-        reviewPageWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
+        reviewPageReviewWebViewContainer.openPage((pageController.homePageState.value as? HomeItem.Review)?.landingPage)
     }
 
     LaunchedEffect(Unit) {
@@ -127,7 +128,7 @@ fun HomePage() {
                     HomeItem.Timetable -> TimetablePage(uncheckedNotification)
                     HomeItem.Search -> SearchPage(searchResultPagingItems)
                     is HomeItem.Review -> {
-                        CompositionLocalProvider(LocalReviewWebView provides reviewPageWebViewContainer) {
+                        CompositionLocalProvider(LocalReviewWebView provides reviewPageReviewWebViewContainer) {
                             ReviewPage()
                         }
                     }

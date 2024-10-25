@@ -14,7 +14,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
@@ -38,7 +38,7 @@ fun SearchResultList(
     lectureDetailViewModel: LectureDetailViewModel,
     userViewModel: UserViewModel,
     vacancyViewModel: VacancyViewModel,
-    reviewBottomSheetWebViewContainer: WebViewContainer,
+    reviewBottomSheetReviewWebViewContainer: ReviewWebViewContainer,
 ) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -86,7 +86,7 @@ fun SearchResultList(
                             lectureDataWithState?.let {
                                 LectureListItem(
                                     lectureDataWithState,
-                                    reviewBottomSheetWebViewContainer,
+                                    reviewBottomSheetReviewWebViewContainer,
                                     false,
                                     searchViewModel,
                                     timetableViewModel,

@@ -400,7 +400,8 @@
     <string name="home_timetable_drawer">서랍 메뉴</string>
     <string name="search_hint">검색어를 입력하세요.</string>
     <string name="tutorial_sign_in_button">로그인</string>
-    <string name="tutorial_sign_up_button">가입하기</string>
+    <string name="tutorial_sign_up_button">회원가입</string>
+    <string name="tutorial_help_button">로그인/회원가입에 문제가 생겼나요?</string>
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
@@ -417,6 +418,13 @@
     <string name="settings_timetable_config_force_fit">시간표 자동 정렬</string>
     <string name="settings_timetable_config_week_day">요일</string>
     <string name="settings_timetable_config_time">시간</string>
+    <string name="settings_timetable_lecture_custom">강의 정보</string>
+    <string name="settings_timetable_lecture_custom_title">강의명</string>
+    <string name="settings_timetable_lecture_custom_place">장소</string>
+    <string name="settings_timetable_lecture_custom_lecture_number">분반번호</string>
+    <string name="settings_timetable_lecture_custom_instructor">교수</string>
+    <string name="settings_timetable_lecture_custom_warning">정보가 많을 경우 일부 텍스트가 잘릴 수 있습니다.</string>
+    <string name="settings_timetable_preview">시간표 미리보기</string>
     <string name="settings_user_config_change_nickname">닉네임 변경</string>
     <string name="settings_user_config_copy_nickname">닉네임 복사하기</string>
     <string name="settings_user_config_id">아이디</string>
