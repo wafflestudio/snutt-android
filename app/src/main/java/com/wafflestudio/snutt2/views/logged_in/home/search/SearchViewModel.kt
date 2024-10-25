@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -88,6 +89,8 @@ class SearchViewModel @Inject constructor(
     // 검색 쿼리에 들어가는 시간대 검색 시간대 목록
     private val _searchTimeList = MutableStateFlow<List<SearchTimeDto>?>(null)
 
+    val recentSearchedDepartments: StateFlow<List<TagDto>> = lectureSearchRepository.recentSearchedDepartments
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -112,6 +115,19 @@ class SearchViewModel @Inject constructor(
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    val selectableRecentSearchedDepartments: StateFlow<List<Selectable<TagDto>>> = combine(
+        tagsByTagType, recentSearchedDepartments, _selectedTags,
+    ) { tagsByTagType, recentDepartments, selectedTags ->
+        val tagItemsByTagType = tagsByTagType.map { tag -> tag.item }
+        recentDepartments.filter { recentDepartment ->
+            tagItemsByTagType.contains(recentDepartment)
+        }.map { it.toDataWithState(selectedTags.contains(it)) }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList(),
+    )
 
     val bookmarkList = combine(
         _getBookmarkListSignal.flatMapLatest {
@@ -252,6 +268,16 @@ class SearchViewModel @Inject constructor(
                 _searchTimeList.emit(it)
             }
         }
+    }
+
+    fun storeRecentSearchedDepartments() {
+        _selectedTags.value.filter { it.type == TagType.DEPARTMENT }.forEach { tag ->
+            lectureSearchRepository.storeRecentSearchedDepartment(tag)
+        }
+    }
+
+    fun removeRecentSearchedDepartment(tag: TagDto) {
+        lectureSearchRepository.removeRecentSearchedDepartment(tag)
     }
 
     private suspend fun clear() {
