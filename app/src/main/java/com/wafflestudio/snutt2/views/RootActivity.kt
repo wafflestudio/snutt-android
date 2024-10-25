@@ -77,6 +77,7 @@ import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePag
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
