@@ -14,11 +14,13 @@ class FindPasswordViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UIState>(UIState.CheckId)
+    private val _uiState = MutableStateFlow<UIState>(UIState.CheckId(""))
     val uiState: StateFlow<UIState> = _uiState
 
     sealed class UIState {
-        data object CheckId : UIState()
+        data class CheckId(
+            val userId: String,
+        ) : UIState()
 
         data object EnterFullEmail : UIState()
 
@@ -27,5 +29,11 @@ class FindPasswordViewModel @Inject constructor(
         data object EnterNewPassword : UIState()
     }
 
-    fun goToPreviousStep() {}
+    fun goToPreviousStep() {
+        when (_uiState.value) {
+            is UIState.CheckId -> {}
+        }
+    }
+
+    suspend fun checkEmailById(userId: String) {}
 }

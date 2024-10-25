@@ -58,6 +58,8 @@ object SNUTTColors {
 
     val VacancyRed = Color(0xffed6c58)
 
+    val EditTextLabel = Color(0xff8a898e)
+
     val Colors.VacancyBlue @Composable get() = if (isLight) Color(0xff446cc2) else Color(0xff7aaaf3)
     val VacancyBlue @Composable get() = MaterialTheme.colors.VacancyBlue
 
