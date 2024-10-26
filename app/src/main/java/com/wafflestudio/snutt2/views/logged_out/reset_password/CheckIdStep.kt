@@ -105,6 +105,7 @@ fun CheckIdStep(
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
+            underlineColorFocused = if (buttonEnabled) SNUTTColors.SNUTTTheme else SNUTTColors.EditTextUnderline,
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -116,7 +117,7 @@ fun CheckIdStep(
         ) {
             Text(
                 text = stringResource(R.string.common_ok),
-                style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
+                style = SNUTTTypography.h3.copy(color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.VacancyGray),
             )
         }
     }

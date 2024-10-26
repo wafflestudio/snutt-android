@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -46,6 +47,8 @@ fun EditTextFieldValue(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     hint: String? = null,
+    hintTextColor: Color = SNUTTColors.EditTextHint,
+    hintTextStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
     underlineEnabled: Boolean = true,
     underlineColor: Color = SNUTTColors.Gray200,
     underlineColorFocused: Color = SNUTTColors.Black900,
@@ -90,7 +93,7 @@ fun EditTextFieldValue(
                                 hint?.let {
                                     Text(
                                         text = it,
-                                        style = textStyle.copy(color = SNUTTColors.Gray200),
+                                        style = hintTextStyle.copy(color = hintTextColor),
                                     )
                                 }
                             }

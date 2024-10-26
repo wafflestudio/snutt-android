@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -132,6 +131,7 @@ fun EnterFullEmailStep(
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
+            underlineColorFocused = if (emailField.text.isBlank()) SNUTTColors.EditTextUnderline else SNUTTColors.SNUTTTheme,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -150,7 +150,7 @@ fun EnterFullEmailStep(
         ) {
             Text(
                 text = stringResource(R.string.find_password_check_email_enter_full_email_enter),
-                style = SNUTTTypography.h3.copy(color = SNUTTColors.VacancyGray),
+                style = SNUTTTypography.h3.copy(color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.VacancyGray),
             )
         }
 

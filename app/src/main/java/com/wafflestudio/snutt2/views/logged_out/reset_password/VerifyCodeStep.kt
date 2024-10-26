@@ -110,6 +110,7 @@ fun VerifyCodeStep(
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
+            underlineColorFocused = if (codeField.isBlank()) SNUTTColors.EditTextUnderline else SNUTTColors.SNUTTTheme,
             trailingIcon = {
                 Row(
                     modifier = Modifier.padding(start = 10.dp),
@@ -163,7 +164,7 @@ fun VerifyCodeStep(
         ) {
             Text(
                 text = stringResource(R.string.common_ok),
-                style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
+                style = SNUTTTypography.h3.copy(color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.VacancyGray),
             )
         }
 
