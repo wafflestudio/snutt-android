@@ -68,7 +68,6 @@ fun IOSStyleTopBar(
     }
 }
 
-
 @Preview
 @Composable
 fun IOSStyleTopBarPreview() {
@@ -77,4 +76,3 @@ fun IOSStyleTopBarPreview() {
         backButtonText = "로그인",
     ) { }
 }
-

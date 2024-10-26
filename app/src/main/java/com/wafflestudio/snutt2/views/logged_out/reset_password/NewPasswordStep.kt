@@ -91,7 +91,6 @@ fun NewPasswordStep(
             if (newPasswordField != newPasswordConfirmField) {
                 errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
                 showErrorDialog = true
-
             } else if (newPasswordField.isValidPassword().not()) {
                 errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_validation_fail_alert)
                 showErrorDialog = true
