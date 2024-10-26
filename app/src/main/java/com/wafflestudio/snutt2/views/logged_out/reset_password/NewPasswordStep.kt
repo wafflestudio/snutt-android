@@ -128,6 +128,7 @@ fun NewPasswordStep(
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             singleLine = true,
+            underlineColor = SNUTTColors.EditTextUnderline,
             underlineColorFocused = if (newPasswordField.isBlank()) SNUTTColors.EditTextUnderline else SNUTTColors.SNUTTTheme,
             trailingIcon = {
                 Row(
@@ -170,6 +171,7 @@ fun NewPasswordStep(
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
+            underlineColor = SNUTTColors.EditTextUnderline,
             underlineColorFocused = if (newPasswordConfirmField.isBlank()) SNUTTColors.EditTextUnderline else SNUTTColors.SNUTTTheme,
         )
 
