@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -48,6 +53,7 @@ fun NewPasswordStep(
     onComplete: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
 
@@ -61,33 +67,44 @@ fun NewPasswordStep(
         initialValue = TimerValue.Initial,
         durationInSecond = 180,
     )
-    LaunchedEffect(Unit) {
-        timerState.start()
-    }
-
     val buttonEnabled by remember {
         derivedStateOf {
             timerState.isRunning && newPasswordField.isNotBlank() && newPasswordConfirmField.isNotBlank()
         }
     }
 
-    val validateNewPasswordAndSubmit = {
-        if (newPasswordField != newPasswordConfirmField) {
-            errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        timerState.start()
+    }
+    LaunchedEffect(timerState.currentValue) {
+        if (timerState.isEnded) {
+            errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_expired_alert)
             showErrorDialog = true
+        }
+    }
 
-        } else if (newPasswordField.isValidPassword().not()) {
-            errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_validation_fail_alert)
-            showErrorDialog = true
-        } else {
-            keyboardManager?.hide()
-            onSubmit(newPasswordField)
+    val validateNewPasswordAndSubmit = {
+        if (timerState.isRunning) {
+            if (newPasswordField != newPasswordConfirmField) {
+                errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
+                showErrorDialog = true
+
+            } else if (newPasswordField.isValidPassword().not()) {
+                errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_validation_fail_alert)
+                showErrorDialog = true
+            } else {
+                keyboardManager?.hide()
+                onSubmit(newPasswordField)
+            }
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .imePadding()
             .padding(vertical = 44.dp, horizontal = 20.dp),
     ) {
         Text(
@@ -98,7 +115,9 @@ fun NewPasswordStep(
         Spacer(modifier = Modifier.height(40.dp))
 
         EditText(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             value = newPasswordField,
             onValueChange = { newPasswordField = it },
             hint = stringResource(R.string.find_password_enter_password_hint),
@@ -116,7 +135,7 @@ fun NewPasswordStep(
                 ) {
                     Timer(
                         state = timerState,
-                        endMessage = stringResource(R.string.find_password_send_code_resend),
+                        endMessage = stringResource(R.string.find_password_enter_password_confirm_expired),
                     ) { timerText ->
                         Text(
                             text = timerText,
@@ -174,6 +193,7 @@ fun NewPasswordStep(
             title = errorDialogTitle,
             onConfirm = {
                 showErrorDialog = false
+                focusRequester.requestFocus()
             },
             onDismiss = {},
             positiveButtonText = stringResource(R.string.common_ok),
