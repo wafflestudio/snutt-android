@@ -18,7 +18,9 @@ import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.*
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.CheckId
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.EnterFullEmail
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.VerifyCode
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -68,6 +70,24 @@ fun ResetPasswordPage() {
                             launchSuspendApi(apiOnProgress, apiOnError) {
                                 viewModel.sendFullEmailAndRequestCode(fullEmail)
                                 keyboardManager?.hide()
+                            }
+                        }
+                    },
+                )
+
+                is VerifyCode -> VerifyCodeStep(
+                    fullEmail = state.fullEmail,
+                    onRequestResend = {
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                viewModel.sendFullEmailAndRequestCode(state.fullEmail)
+                            }
+                        }
+                    },
+                    onSubmit = { code ->
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                viewModel.verifyCode(code)
                             }
                         }
                     },
