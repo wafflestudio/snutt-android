@@ -306,6 +306,8 @@
     <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
     <string name="find_password_enter_password_confirm_fail_alert">비밀번호가 일치하지 않습니다.\n다시 시도해주세요.</string>
     <string name="find_password_enter_password_confirm_validation_fail_alert">조건에 맞지 않는 비밀번호입니다.\n영문, 숫자 포함 6-20자 이내로\n입력해주세요.</string>
+    <string name="find_password_enter_password_confirm_expired_alert">시간이 초과되어\n인증코드 재입력이 필요합니다.</string>
+    <string name="find_password_enter_password_confirm_expired">만료</string>
     <string name="find_password_enter_password_success_alert">비밀번호가 변경되었습니다.</string>
     <string name="verify_email_app_bar_title">이메일 인증</string>
     <string name="verify_email_question_text">강의평 서비스를 이용하기 위해\n이메일 인증이 필요합니다.\n%s에 대한 이메일 인증을\n진행하시겠습니까?</string>

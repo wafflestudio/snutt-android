@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -43,24 +49,35 @@ fun VerifyCodeStep(
     onRequestResend: () -> Unit,
     onSubmit: (String) -> Unit,
 ) {
+    val keyboardManager = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
     var codeField by remember { mutableStateOf("") }
-    val buttonEnabled by remember {
-        derivedStateOf {
-            codeField.length == 8
-        }
-    }
     var showWhyNotCodeComingDialog by remember { mutableStateOf(false) }
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
         durationInSecond = 180,
     )
+    val buttonEnabled by remember {
+        derivedStateOf {
+            codeField.length == 8 && timerState.isRunning
+        }
+    }
+
     LaunchedEffect(Unit) {
         timerState.start()
+    }
+    LaunchedEffect(showWhyNotCodeComingDialog) {
+        if (showWhyNotCodeComingDialog.not()) {
+            focusRequester.requestFocus()
+            keyboardManager?.show()
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .imePadding()
             .padding(vertical = 44.dp, horizontal = 20.dp),
     ) {
         Text(
@@ -78,7 +95,9 @@ fun VerifyCodeStep(
         Spacer(modifier = Modifier.height(12.dp))
 
         EditText(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             value = codeField,
             onValueChange = { codeField = it },
             hint = stringResource(R.string.find_password_send_code_hint),
