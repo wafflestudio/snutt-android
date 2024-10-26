@@ -106,7 +106,7 @@ fun ResetPasswordPage() {
                     fullEmail = state.fullEmail,
                     onRequestResend = {
                         scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError, loadingIndicatorTitle = context.getString(R.string.loading_indicator_message)) {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
                                 viewModel.sendFullEmailAndRequestCode(state.fullEmail)
                             }
                         }
