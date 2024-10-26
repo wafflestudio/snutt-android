@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,42 +18,55 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.EditTextFieldValue
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CheckIdStep(
     userId: String,
     onSubmit: (String) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 
-    var idField by remember { mutableStateOf(userId) }
+    var idField by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = userId,
+                selection = TextRange(userId.length), // 초기 커서를 텍스트 끝으로 설정
+            ),
+        )
+    }
     val buttonEnabled by remember {
         derivedStateOf {
-            idField.isNotEmpty()
+            idField.text.isNotEmpty()
         }
     }
 
     val sendIdAndRequestMaskedEmail = {
-        if (idField.isEmpty()) {
+        if (idField.text.isEmpty()) {
             context.toast(context.getString(R.string.find_password_enter_id_hint))
         } else {
-            onSubmit(idField)
+            onSubmit(idField.text)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 
     Column(
@@ -74,16 +88,19 @@ fun CheckIdStep(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        EditText(
-            modifier = Modifier.fillMaxWidth(),
+        EditTextFieldValue(
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    idField = idField.copy(selection = TextRange(idField.text.length))
+                },
             value = idField,
             onValueChange = { idField = it },
             hint = stringResource(R.string.find_password_enter_id_hint),
             keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(
-                        FocusDirection.Enter,
-                    )
+                onDone = {
+                    onSubmit(idField.text)
                 },
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
