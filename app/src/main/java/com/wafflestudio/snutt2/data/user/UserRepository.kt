@@ -92,7 +92,7 @@ interface UserRepository {
 
     suspend fun verifyPwResetCode(id: String, code: String)
 
-    suspend fun resetPassword(id: String, password: String)
+    suspend fun resetPassword(id: String, password: String, code: String)
 
     suspend fun sendCodeToEmail(email: String)
 

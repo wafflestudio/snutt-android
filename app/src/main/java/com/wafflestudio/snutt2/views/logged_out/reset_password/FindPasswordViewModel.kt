@@ -70,12 +70,15 @@ class FindPasswordViewModel @Inject constructor(
     }
 
     suspend fun verifyCode(code: String) {
-        userRepository.verifyEmailCode(code)
+        val savedUserId = savedStateHandle["userId"] ?: ""
+        userRepository.verifyPwResetCode(savedUserId, code)
+        savedStateHandle["code"] = code
         _uiState.value = UIState.EnterNewPassword
     }
 
     suspend fun resetPassword(password: String) {
         val savedUserId = savedStateHandle["userId"] ?: ""
-        userRepository.resetPassword(savedUserId, password)
+        val savedCode = savedStateHandle["code"] ?: ""
+        userRepository.resetPassword(savedUserId, password, savedCode)
     }
 }

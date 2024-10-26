@@ -136,8 +136,8 @@ class UserViewModel @Inject constructor(
         userRepository.verifyPwResetCode(id, code)
     }
 
-    suspend fun resetPassword(id: String, password: String) {
-        userRepository.resetPassword(id, password)
+    suspend fun resetPassword(id: String, password: String, code: String) {
+        userRepository.resetPassword(id, password, code)
     }
 
     suspend fun sendCodeToEmail(email: String) {
