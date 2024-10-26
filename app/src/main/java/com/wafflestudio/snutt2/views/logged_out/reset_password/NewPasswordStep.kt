@@ -18,14 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,7 +40,6 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isValidPassword
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NewPasswordStep(
     onSubmit: (String) -> Unit,
@@ -52,7 +49,6 @@ fun NewPasswordStep(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
-    val keyboardManager = LocalSoftwareKeyboardController.current
 
     var newPasswordField by remember { mutableStateOf("") }
     var newPasswordConfirmField by remember { mutableStateOf("") }
@@ -95,7 +91,6 @@ fun NewPasswordStep(
                 errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_validation_fail_alert)
                 showErrorDialog = true
             } else {
-                keyboardManager?.hide()
                 onSubmit(newPasswordField)
             }
         }
