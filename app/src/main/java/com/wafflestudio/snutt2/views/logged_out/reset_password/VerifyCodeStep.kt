@@ -42,7 +42,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VerifyCodeStep(
-    fullEmail: String,
+    uiState: FindPasswordViewModel.UIState.VerifyCode,
     onRequestResend: () -> Unit,
     onSubmit: (String) -> Unit,
 ) {
@@ -76,7 +76,7 @@ fun VerifyCodeStep(
             .padding(vertical = 44.dp, horizontal = 20.dp),
     ) {
         Text(
-            text = stringResource(R.string.find_password_verification_code_content, fullEmail),
+            text = stringResource(R.string.find_password_verification_code_content, uiState.fullEmail),
             style = SNUTTTypography.h2.copy(fontSize = 17.sp),
         )
 

@@ -36,7 +36,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun CheckIdStep(
-    userId: String,
+    uiState: FindPasswordViewModel.UIState.CheckId,
     onSubmit: (String) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -45,8 +45,8 @@ fun CheckIdStep(
     var idField by remember {
         mutableStateOf(
             TextFieldValue(
-                text = userId,
-                selection = TextRange(userId.length), // 초기 커서를 텍스트 끝으로 설정
+                text = uiState.userId,
+                selection = TextRange(uiState.userId.length), // 초기 커서를 텍스트 끝으로 설정
             ),
         )
     }

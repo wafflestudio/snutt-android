@@ -70,7 +70,7 @@ fun ResetPasswordPage() {
         AnimatedContent(targetState = uiState, label = "") { state ->
             when (state) {
                 is CheckId -> CheckIdStep(
-                    userId = state.userId,
+                    uiState = state,
                     onSubmit = { userId ->
                         scope.launch {
                             launchSuspendApi(apiOnProgress, apiOnError) {
@@ -81,9 +81,7 @@ fun ResetPasswordPage() {
                 )
 
                 is EnterFullEmail -> EnterFullEmailStep(
-                    userId = state.userId,
-                    maskedEmail = state.maskedEmail,
-                    fullEmail = state.fullEmail,
+                    uiState = state,
                     notMyEmail = viewModel::goToPreviousStep,
                     onSubmitFullEmail = { fullEmail ->
                         scope.launch {
@@ -95,7 +93,7 @@ fun ResetPasswordPage() {
                 )
 
                 is VerifyCode -> VerifyCodeStep(
-                    fullEmail = state.fullEmail,
+                    uiState = state,
                     onRequestResend = {
                         scope.launch {
                             launchSuspendApi(apiOnProgress, apiOnError) {

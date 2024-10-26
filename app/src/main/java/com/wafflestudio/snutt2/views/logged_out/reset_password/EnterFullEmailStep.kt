@@ -39,9 +39,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun EnterFullEmailStep(
-    userId: String,
-    maskedEmail: String,
-    fullEmail: String,
+    uiState: FindPasswordViewModel.UIState.EnterFullEmail,
     notMyEmail: () -> Unit,
     onSubmitFullEmail: (String) -> Unit,
 ) {
@@ -51,8 +49,8 @@ fun EnterFullEmailStep(
     var emailField by remember {
         mutableStateOf(
             TextFieldValue(
-                text = fullEmail,
-                selection = TextRange(fullEmail.length), // 초기 커서를 텍스트 끝으로 설정
+                text = uiState.fullEmail,
+                selection = TextRange(uiState.fullEmail.length), // 초기 커서를 텍스트 끝으로 설정
             ),
         )
     }
@@ -99,7 +97,7 @@ fun EnterFullEmailStep(
             modifier = Modifier.fillMaxWidth(),
             value = "",
             onValueChange = {},
-            hint = userId,
+            hint = uiState.userId,
             enabled = false,
         )
 
@@ -132,7 +130,7 @@ fun EnterFullEmailStep(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = maskedEmail,
+            text = uiState.maskedEmail,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
         )
 
