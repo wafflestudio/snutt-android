@@ -48,7 +48,10 @@ class FindPasswordViewModel @Inject constructor(
                 val savedFullEmail = savedStateHandle["fullEmail"] ?: ""
                 _uiState.value = UIState.EnterFullEmail(savedUserId, savedMaskedEmail, savedFullEmail)
             }
-            else -> {}
+            is UIState.EnterNewPassword -> {
+                val savedUserId = savedStateHandle["userId"] ?: ""
+                _uiState.value = UIState.CheckId(savedUserId)
+            }
         }
     }
 
@@ -66,5 +69,13 @@ class FindPasswordViewModel @Inject constructor(
         _uiState.value = UIState.VerifyCode(fullEmail)
     }
 
-    suspend fun verifyCode(code: String) {}
+    suspend fun verifyCode(code: String) {
+        userRepository.verifyEmailCode(code)
+        _uiState.value = UIState.EnterNewPassword
+    }
+
+    suspend fun resetPassword(password: String) {
+        val savedUserId = savedStateHandle["userId"] ?: ""
+        userRepository.resetPassword(savedUserId, password)
+    }
 }

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.CheckId
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.EnterFullEmail
+import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.EnterNewPassword
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.VerifyCode
 import kotlinx.coroutines.launch
 
@@ -92,6 +95,24 @@ fun ResetPasswordPage() {
                         }
                     },
                 )
+                is EnterNewPassword -> {
+                    val showCompleteDialog = remember { mutableStateOf(false) }
+                    NewPasswordStep(
+                        onSubmit = { newPassword ->
+                            scope.launch {
+                                launchSuspendApi(apiOnProgress, apiOnError) {
+                                    viewModel.resetPassword(newPassword)
+                                    showCompleteDialog.value = true
+                                }
+                            }
+                        },
+                        showCompleteDialog = showCompleteDialog,
+                        onComplete = {
+                            showCompleteDialog.value = false
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }
