@@ -284,6 +284,10 @@
     <string name="find_id_wrong_email_format">올바른 형식의 이메일을 입력해주세요.</string>
     <string name="find_id_send_email_success_message">\"%s\"로 아이디가 전송되었습니다.</string>
     <string name="find_password_title">비밀번호 재설정</string>
+    <string name="find_password_back_login">로그인</string>
+    <string name="find_password_back_check_id">아이디 입력</string>
+    <string name="find_password_back_check_email">이메일 입력</string>
+    <string name="find_password_back_initial">처음으로</string>
     <string name="find_password_check_email_content">비밀번호 재설정을 위해\n연동된 아이디가 필요합니다.</string>
     <string name="find_password_check_email_enter_full_email">해당 아이디로 연동된 이메일입니다.\n전체 주소를 입력하여 인증코드를 받으세요.</string>
     <string name="find_password_check_email_enter_full_email_label">이메일</string>

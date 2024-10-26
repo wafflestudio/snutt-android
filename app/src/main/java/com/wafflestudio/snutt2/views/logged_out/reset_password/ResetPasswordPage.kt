@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.components.compose.IOSStyleTopBar
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -49,16 +49,21 @@ fun ResetPasswordPage() {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SimpleTopBar(
+        IOSStyleTopBar(
             title = stringResource(R.string.find_password_title),
-            onClickNavigateBack = {
-                if (uiState is CheckId) {
-                    navController.popBackStack()
-                } else {
-                    viewModel.goToPreviousStep()
-                }
+            backButtonText = when (uiState) {
+                is CheckId -> stringResource(R.string.find_password_back_login)
+                is EnterFullEmail -> stringResource(R.string.find_password_back_check_id)
+                is VerifyCode -> stringResource(R.string.find_password_back_check_email)
+                is EnterNewPassword -> stringResource(R.string.find_password_back_initial)
             },
-        )
+        ) {
+            if (uiState is CheckId) {
+                navController.popBackStack()
+            } else {
+                viewModel.goToPreviousStep()
+            }
+        }
 
         AnimatedContent(targetState = uiState, label = "") { state ->
             when (state) {
