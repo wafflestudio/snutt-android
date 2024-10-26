@@ -86,7 +86,7 @@ fun EditText(
                             modifier = Modifier.weight(1f),
                         ) {
                             it()
-                            if (value.isEmpty() && isFocused.not()) { // FIXME: lectureDetail 에서는 focus 되어 있어도 empty이면 hint 가 나와야 한다.
+                            if (value.isEmpty()) {
                                 hint?.let {
                                     Text(
                                         text = it,
