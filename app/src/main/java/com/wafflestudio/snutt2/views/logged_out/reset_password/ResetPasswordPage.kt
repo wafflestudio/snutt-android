@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out.reset_password
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,12 +32,21 @@ import kotlinx.coroutines.launch
 @Composable
 fun ResetPasswordPage() {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val keyboardManager = LocalSoftwareKeyboardController.current
     val navController = LocalNavController.current
     val viewModel = hiltViewModel<FindPasswordViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    BackHandler {
+        if (uiState is CheckId) {
+            navController.popBackStack()
+        } else {
+            viewModel.goToPreviousStep()
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
@@ -82,7 +93,7 @@ fun ResetPasswordPage() {
                     fullEmail = state.fullEmail,
                     onRequestResend = {
                         scope.launch {
-                            launchSuspendApi(apiOnProgress, apiOnError) {
+                            launchSuspendApi(apiOnProgress, apiOnError, loadingIndicatorTitle = context.getString(R.string.loading_indicator_message)) {
                                 viewModel.sendFullEmailAndRequestCode(state.fullEmail)
                             }
                         }
@@ -95,6 +106,7 @@ fun ResetPasswordPage() {
                         }
                     },
                 )
+
                 is EnterNewPassword -> {
                     val showCompleteDialog = remember { mutableStateOf(false) }
                     NewPasswordStep(
@@ -110,7 +122,7 @@ fun ResetPasswordPage() {
                         onComplete = {
                             showCompleteDialog.value = false
                             navController.popBackStack()
-                        }
+                        },
                     )
                 }
             }

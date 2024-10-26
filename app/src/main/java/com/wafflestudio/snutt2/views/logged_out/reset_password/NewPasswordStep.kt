@@ -83,6 +83,11 @@ fun NewPasswordStep(
             showErrorDialog = true
         }
     }
+    LaunchedEffect(showCompleteDialog.value) {
+        if (showCompleteDialog.value) {
+            timerState.pause()
+        }
+    }
 
     val validateNewPasswordAndSubmit = {
         if (timerState.isRunning) {
