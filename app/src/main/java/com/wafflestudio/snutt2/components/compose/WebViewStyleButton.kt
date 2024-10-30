@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +23,8 @@ fun WebViewStyleButton(
     Box(
         modifier = modifier
             .clicks { if (enabled) onClick() }
-            .background(if (enabled) enabledColor else disabledColor)
-            .height(60.dp),
+            .background(shape = RoundedCornerShape(6.dp), color = if (enabled) enabledColor else disabledColor)
+            .height(47.dp),
         contentAlignment = Alignment.Center,
     ) {
         content()
