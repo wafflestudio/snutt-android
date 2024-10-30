@@ -173,4 +173,6 @@ object SNUTTStringUtils {
             append("(${quota - freshmanQuota})")
         }
     }.toString()
+
+    fun String.isValidPassword(): Boolean = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,20}$").matches(this)
 }
