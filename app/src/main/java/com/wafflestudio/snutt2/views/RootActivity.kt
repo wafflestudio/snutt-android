@@ -77,6 +77,7 @@ import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePag
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
+import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -348,7 +349,7 @@ class RootActivity : AppCompatActivity() {
             }
 
             composable2(NavigationDestination.FindPassword) {
-                FindPasswordPage()
+                ResetPasswordPage()
             }
 
             composable2(NavigationDestination.EmailVerification) {

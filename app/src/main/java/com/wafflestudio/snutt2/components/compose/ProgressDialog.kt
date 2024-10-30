@@ -108,6 +108,13 @@ fun CustomDialog(
                             }
                         }
                     }
+                } ?: positiveButtonText?.let {
+                    Row(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
+                        Box(modifier = Modifier.weight(1f))
+                        Box(modifier = Modifier.clicks { onConfirm() }) {
+                            Text(text = positiveButtonText, style = SNUTTTypography.body1)
+                        }
+                    }
                 }
             }
         }

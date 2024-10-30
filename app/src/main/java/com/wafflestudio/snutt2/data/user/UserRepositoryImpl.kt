@@ -258,9 +258,9 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun resetPassword(id: String, password: String) {
+    override suspend fun resetPassword(id: String, password: String, code: String) {
         api._postResetPassword(
-            PostResetPasswordParams(id, password),
+            PostResetPasswordParams(id, password, code),
         )
     }
 
