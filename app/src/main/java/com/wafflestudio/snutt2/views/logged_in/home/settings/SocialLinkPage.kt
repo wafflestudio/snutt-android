@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
@@ -43,14 +45,12 @@ fun SocialLinkPage() {
     val apiOnError = LocalApiOnError.current
 
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
-    val user: UserDto? by socialLinkViewModel.userInfo.collectAsState()
+    val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
 
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
 
-    var facebookConnected by remember(user?.fbName) {
-        mutableStateOf(
-            user?.fbName.isNullOrEmpty().not(),
-        )
+    LaunchedEffect(Unit) {
+        socialLinkViewModel.fetchSocialProviders()
     }
 
     val handleFacebookConnect = {
@@ -64,8 +64,8 @@ fun SocialLinkPage() {
                 socialLinkViewModel.connectFacebook(
                     loginResult.accessToken.token,
                 )
-                facebookConnected = true
                 socialLinkViewModel.fetchUserInfo()
+                socialLinkViewModel.fetchSocialProviders()
             }
         }
     }
@@ -102,7 +102,7 @@ fun SocialLinkPage() {
 
             Margin(height = 10.dp)
 
-            if (facebookConnected) {
+            if (socialProviders.facebook) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
@@ -125,11 +125,11 @@ fun SocialLinkPage() {
             onConfirm = {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        socialLinkViewModel.disconnectFacebook()
                         LoginManager.getInstance().logOut()
-                        facebookConnected = false
-                        disconnectFacebookDialogState = false
+                        socialLinkViewModel.disconnectFacebook()
                         socialLinkViewModel.fetchUserInfo()
+                        socialLinkViewModel.fetchSocialProviders()
+                        disconnectFacebookDialogState = false
                     }
                 }
             },

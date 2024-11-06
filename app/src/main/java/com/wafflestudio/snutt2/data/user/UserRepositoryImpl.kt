@@ -55,24 +55,6 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun postLoginFacebook(facebookToken: String) {
-        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginGoogle(googleAccessToken: String) {
-        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginKakao(kakaoAccessToken: String) {
-        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
     override suspend fun postSignUp(id: String, password: String, email: String) {
         val response = api._postSignUp(PostSignUpParams(id, password, email))
         storage.prefKeyUserId.update(response.userId.toOptional())
@@ -114,18 +96,6 @@ class UserRepositoryImpl @Inject constructor(
                 password = password,
             ),
         )
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook()
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postUserFacebook(
-        facebookToken: String,
-    ) {
-        val response = api._postUserFacebook(PostSocialLoginParams(facebookToken))
         storage.accessToken.update(response.token)
     }
 
@@ -293,6 +263,49 @@ class UserRepositoryImpl @Inject constructor(
                 clientSecret = clientSecret,
             ),
         ).accessToken
+    }
+
+    /**
+     * 소셜 로그인 관련.
+     *
+     * postLogin: 로그인
+     *
+     * postUser: 연동
+     *
+     * deleteUser: 연동 해제
+     */
+    override suspend fun getSocialProviders(): GetSocialProvidersResults {
+        return api._getSocialProviders()
+    }
+
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postUserFacebook(
+        facebookToken: String,
+    ) {
+        val response = api._postUserFacebook(PostSocialLoginParams(facebookToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserFacebook() {
+        val response = api._deleteUserFacebook()
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginGoogle(googleAccessToken: String) {
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginKakao(kakaoAccessToken: String) {
+        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
     }
 
     private suspend fun getFirebaseToken(): String {

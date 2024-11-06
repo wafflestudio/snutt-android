@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
+import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
@@ -26,13 +27,6 @@ interface UserRepository {
     // login with local id
     suspend fun postSignIn(id: String, password: String)
 
-    // login with facebook id
-    suspend fun postLoginFacebook(facebookToken: String)
-
-    suspend fun postLoginGoogle(googleAccessToken: String)
-
-    suspend fun postLoginKakao(kakaoAccessToken: String)
-
     suspend fun postSignUp(id: String, password: String, email: String)
 
     suspend fun fetchUserInfo()
@@ -45,11 +39,6 @@ interface UserRepository {
 
     // 새로운 local_id 추가
     suspend fun postUserPassword(id: String, password: String)
-
-    suspend fun deleteUserFacebook()
-
-    // facebook 계정 연동
-    suspend fun postUserFacebook(facebookToken: String)
 
     suspend fun postFeedback(email: String, detail: String)
 
@@ -104,4 +93,25 @@ interface UserRepository {
         clientId: String,
         clientSecret: String,
     ): String?
+
+    /**
+     * 소셜 로그인 관련.
+     *
+     * postLogin: 로그인
+     *
+     * postUser: 연동
+     *
+     * deleteUser: 연동 해제
+     */
+    suspend fun getSocialProviders(): GetSocialProvidersResults
+
+    suspend fun postLoginFacebook(facebookToken: String)
+
+    suspend fun postUserFacebook(facebookToken: String)
+
+    suspend fun deleteUserFacebook()
+
+    suspend fun postLoginGoogle(googleAccessToken: String)
+
+    suspend fun postLoginKakao(kakaoAccessToken: String)
 }

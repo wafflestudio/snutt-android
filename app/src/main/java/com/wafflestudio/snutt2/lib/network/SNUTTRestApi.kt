@@ -121,21 +121,6 @@ interface SNUTTRestApi {
         @Body body: PostSignInParams,
     ): PostSignInResults
 
-    @POST("/v1/auth/login/facebook")
-    suspend fun _postLoginFacebook(
-        @Body body: PostSocialLoginParams,
-    ): PostSocialLoginResults
-
-    @POST("/v1/auth/login/google")
-    suspend fun _postLoginGoogle(
-        @Body body: PostSocialLoginParams,
-    ): PostSocialLoginResults
-
-    @POST("/v1/auth/login/kakao")
-    suspend fun _postLoginKakao(
-        @Body body: PostSocialLoginParams,
-    ): PostSocialLoginResults
-
     @POST("/v1/auth/logout")
     suspend fun _postForceLogout(
         @Body body: PostForceLogoutParams,
@@ -193,14 +178,6 @@ interface SNUTTRestApi {
     suspend fun _postUserPassword(
         @Body body: PostUserPasswordParams,
     ): PostUserPasswordResults
-
-    @POST("/v1/user/facebook")
-    suspend fun _postUserFacebook(
-        @Body body: PostSocialLoginParams,
-    ): PostUserFacebookResults
-
-    @DELETE("/v1/user/facebook")
-    suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
 
     @POST("/v1/user/device/{registration_id}")
     suspend fun _registerFirebaseToken(
@@ -299,4 +276,39 @@ interface SNUTTRestApi {
     suspend fun _getLectureReviewSummary(
         @Path("lectureId") lectureId: String,
     ): GetLectureReviewSummaryResult
+
+    /**
+     * 소셜 로그인 관련.
+     *
+     * POST /auth/login: 로그인
+     *
+     * POST /user: 연동
+     *
+     * DELETE /user: 연동 해제
+     */
+    @GET("/v1/users/me/social_providers")
+    suspend fun _getSocialProviders(): GetSocialProvidersResults
+
+    @POST("/v1/user/facebook")
+    suspend fun _postUserFacebook(
+        @Body body: PostSocialLoginParams,
+    ): PostUserFacebookResults
+
+    @DELETE("/v1/user/facebook")
+    suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
+
+    @POST("/v1/auth/login/facebook")
+    suspend fun _postLoginFacebook(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    @POST("/v1/auth/login/google")
+    suspend fun _postLoginGoogle(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
+
+    @POST("/v1/auth/login/kakao")
+    suspend fun _postLoginKakao(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLoginResults
 }
