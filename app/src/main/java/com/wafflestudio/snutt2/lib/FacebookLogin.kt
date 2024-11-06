@@ -26,12 +26,12 @@ suspend fun facebookLogin(
             }
 
             override fun onCancel() {
-                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
+                context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
                 continuation.cancel()
             }
 
             override fun onError(error: FacebookException) {
-                context.toast(context.getString(R.string.sign_up_facebook_login_failed_toast))
+                context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
                 continuation.cancel(error)
             }
         }

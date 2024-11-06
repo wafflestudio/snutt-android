@@ -42,8 +42,8 @@ fun SocialLinkPage() {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
 
-    val viewModel = hiltViewModel<SocialLinkViewModel>()
-    val user: UserDto? by viewModel.userInfo.collectAsState()
+    val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
+    val user: UserDto? by socialLinkViewModel.userInfo.collectAsState()
 
     var disconnectFacebookDialogState by remember { mutableStateOf(false) }
 
@@ -61,12 +61,11 @@ fun SocialLinkPage() {
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
                 val loginResult = facebookLogin(context)
-                viewModel.connectFacebook(
-                    loginResult.accessToken.userId,
+                socialLinkViewModel.connectFacebook(
                     loginResult.accessToken.token,
                 )
                 facebookConnected = true
-                viewModel.fetchUserInfo()
+                socialLinkViewModel.fetchUserInfo()
             }
         }
     }
@@ -126,11 +125,11 @@ fun SocialLinkPage() {
             onConfirm = {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        viewModel.disconnectFacebook()
+                        socialLinkViewModel.disconnectFacebook()
                         LoginManager.getInstance().logOut()
                         facebookConnected = false
                         disconnectFacebookDialogState = false
-                        viewModel.fetchUserInfo()
+                        socialLinkViewModel.fetchUserInfo()
                     }
                 }
             },

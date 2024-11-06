@@ -51,10 +51,7 @@ interface UserRepository {
     suspend fun deleteUserFacebook()
 
     // facebook 계정 연동
-    suspend fun postUserFacebook(
-        facebookId: String,
-        facebookToken: String,
-    )
+    suspend fun postUserFacebook(facebookToken: String)
 
     suspend fun postFeedback(email: String, detail: String)
 

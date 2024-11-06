@@ -196,7 +196,7 @@ interface SNUTTRestApi {
 
     @POST("/v1/user/facebook")
     suspend fun _postUserFacebook(
-        @Body body: PostUserFacebookParams,
+        @Body body: PostSocialLoginParams,
     ): PostUserFacebookResults
 
     @DELETE("/v1/user/facebook")
