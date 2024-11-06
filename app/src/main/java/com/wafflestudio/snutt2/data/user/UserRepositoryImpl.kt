@@ -302,6 +302,18 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
+    override suspend fun postUserGoogle(
+        googleAccessToken: String,
+    ) {
+        val response = api._postUserGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserGoogle() {
+        val response = api._deleteUserGoogle()
+        storage.accessToken.update(response.token)
+    }
+
     override suspend fun postLoginKakao(kakaoAccessToken: String) {
         val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
         storage.prefKeyUserId.update(response.userId.toOptional())

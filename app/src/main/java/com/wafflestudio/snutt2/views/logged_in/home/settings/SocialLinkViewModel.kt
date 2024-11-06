@@ -34,10 +34,19 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.postUserKakao(token)
     }
 
+    suspend fun connectGoogle(token: String) {
+        userRepository.postUserGoogle(token)
+    }
+
+    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
+        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
+    }
+
     suspend fun disconnectSocialLogin(type: SocialLoginType) {
         when (type) {
             SocialLoginType.FACEBOOK -> disconnectFacebook()
             SocialLoginType.KAKAO -> disconnectKakao()
+            SocialLoginType.GOOGLE -> disconnectGoogle()
             else -> {}
         }
     }
@@ -48,5 +57,9 @@ class SocialLinkViewModel @Inject constructor(
 
     private suspend fun disconnectKakao() {
         userRepository.deleteUserKakao()
+    }
+
+    private suspend fun disconnectGoogle() {
+        userRepository.deleteUserGoogle()
     }
 }

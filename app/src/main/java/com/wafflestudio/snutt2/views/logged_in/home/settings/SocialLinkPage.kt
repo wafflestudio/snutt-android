@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.AuthErrorCause
@@ -52,6 +61,10 @@ fun SocialLinkPage() {
     val coroutineScope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val activityContext = LocalContext.current as Activity
+
+    val clientId = context.getString(R.string.web_client_id)
+    val clientSecret = context.getString(R.string.web_client_secret)
 
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
     val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
@@ -139,6 +152,67 @@ fun SocialLinkPage() {
         }
     }
 
+    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                val googleAccessToken = socialLinkViewModel.getAccessTokenByAuthCode(
+                    authCode = authCode,
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                )
+                if (googleAccessToken != null) {
+                    socialLinkViewModel.connectGoogle(
+                        googleAccessToken,
+                    )
+                    socialLinkViewModel.fetchUserInfo()
+                    socialLinkViewModel.fetchSocialProviders()
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+        }
+    }
+
+    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val authCode = account?.serverAuthCode
+                if (authCode != null) {
+                    handleGoogleSignInCallback(authCode)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            } catch (e: ApiException) {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+            }
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+        } else {
+            context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+        }
+    }
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .requestServerAuthCode(clientId)
+        .build().let {
+            GoogleSignIn.getClient(activityContext, it)
+        }
+
+    // 구글 계정 선택 창 띄움
+    val handleGoogleConnect = {
+        val signInIntent = googleSignInClient.signInIntent
+        googleLoginActivityResultLauncher.launch(signInIntent)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -169,14 +243,27 @@ fun SocialLinkPage() {
                     onClick = { handleKakaoConnect() },
                 )
             }
-//
-//            Margin(height = 10.dp)
-//
-//            SettingItem(
-//                title = stringResource(R.string.social_link_google),
-//                hasNextPage = false,
-//                onClick = {},
-//            )
+
+            Margin(height = 10.dp)
+
+            if (socialProviders.google) {
+                SettingItem(
+                    title = stringResource(R.string.social_unlink_google),
+                    titleColor = colorResource(R.color.theme_snutt_0),
+                    hasNextPage = false,
+                    onClick = { disconnectSocialDialogState = SocialLoginType.GOOGLE },
+                )
+            } else {
+                SettingItem(
+                    title = stringResource(R.string.social_link_google),
+                    hasNextPage = false,
+                    onClick = {
+                        googleSignInClient.signOut().addOnCompleteListener {
+                            handleGoogleConnect()
+                        }
+                    },
+                )
+            }
 
             Margin(height = 10.dp)
 

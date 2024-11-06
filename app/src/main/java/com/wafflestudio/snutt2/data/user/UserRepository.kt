@@ -113,6 +113,10 @@ interface UserRepository {
 
     suspend fun postLoginGoogle(googleAccessToken: String)
 
+    suspend fun postUserGoogle(googleAccessToken: String)
+
+    suspend fun deleteUserGoogle()
+
     suspend fun postLoginKakao(kakaoAccessToken: String)
 
     suspend fun postUserKakao(kakaoAccessToken: String)

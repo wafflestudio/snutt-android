@@ -307,6 +307,14 @@ interface SNUTTRestApi {
         @Body body: PostSocialLoginParams,
     ): PostSocialLoginResults
 
+    @POST("/v1/user/google")
+    suspend fun _postUserGoogle(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLinkResults
+
+    @DELETE("/v1/user/google")
+    suspend fun _deleteUserGoogle(): DeleteSocialLinkResults
+
     @POST("/v1/auth/login/kakao")
     suspend fun _postLoginKakao(
         @Body body: PostSocialLoginParams,
