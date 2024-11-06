@@ -107,10 +107,6 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun getUserFacebook(): GetUserFacebookResults {
-        return api._getUserFacebook()
-    }
-
     override suspend fun postUserPassword(id: String, password: String) {
         val response = api._postUserPassword(
             PostUserPasswordParams(

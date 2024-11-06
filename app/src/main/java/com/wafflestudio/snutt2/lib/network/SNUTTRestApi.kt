@@ -202,9 +202,6 @@ interface SNUTTRestApi {
     @DELETE("/v1/user/facebook")
     suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
 
-    @GET("/v1/user/facebook")
-    suspend fun _getUserFacebook(): GetUserFacebookResults
-
     @POST("/v1/user/device/{registration_id}")
     suspend fun _registerFirebaseToken(
         @Path("registration_id") id: String,

@@ -43,8 +43,6 @@ interface UserRepository {
 
     suspend fun putUserPassword(oldPassword: String, newPassword: String)
 
-    suspend fun getUserFacebook(): GetUserFacebookResults
-
     // 새로운 local_id 추가
     suspend fun postUserPassword(id: String, password: String)
 

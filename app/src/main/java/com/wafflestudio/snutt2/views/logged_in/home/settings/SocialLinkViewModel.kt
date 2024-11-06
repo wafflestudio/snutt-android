@@ -34,10 +34,6 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.fetchUserInfo()
     }
 
-    suspend fun fetchUserFacebook(): GetUserFacebookResults {
-        return userRepository.getUserFacebook()
-    }
-
     suspend fun connectFacebook(token: String) {
         userRepository.postUserFacebook(token)
     }
