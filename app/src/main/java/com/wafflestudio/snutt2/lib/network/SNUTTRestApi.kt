@@ -289,18 +289,18 @@ interface SNUTTRestApi {
     @GET("/v1/users/me/social_providers")
     suspend fun _getSocialProviders(): GetSocialProvidersResults
 
-    @POST("/v1/user/facebook")
-    suspend fun _postUserFacebook(
-        @Body body: PostSocialLoginParams,
-    ): PostUserFacebookResults
-
-    @DELETE("/v1/user/facebook")
-    suspend fun _deleteUserFacebook(): DeleteUserFacebookResults
-
     @POST("/v1/auth/login/facebook")
     suspend fun _postLoginFacebook(
         @Body body: PostSocialLoginParams,
     ): PostSocialLoginResults
+
+    @POST("/v1/user/facebook")
+    suspend fun _postUserFacebook(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLinkResults
+
+    @DELETE("/v1/user/facebook")
+    suspend fun _deleteUserFacebook(): DeleteSocialLinkResults
 
     @POST("/v1/auth/login/google")
     suspend fun _postLoginGoogle(
@@ -311,4 +311,12 @@ interface SNUTTRestApi {
     suspend fun _postLoginKakao(
         @Body body: PostSocialLoginParams,
     ): PostSocialLoginResults
+
+    @POST("/v1/user/kakao")
+    suspend fun _postUserKakao(
+        @Body body: PostSocialLoginParams,
+    ): PostSocialLinkResults
+
+    @DELETE("/v1/user/kakao")
+    suspend fun _deleteUserKakao(): DeleteSocialLinkResults
 }

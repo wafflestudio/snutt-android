@@ -308,6 +308,18 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
+    override suspend fun postUserKakao(
+        kakaoAccessToken: String,
+    ) {
+        val response = api._postUserKakao(PostSocialLoginParams(kakaoAccessToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserKakao() {
+        val response = api._deleteUserKakao()
+        storage.accessToken.update(response.token)
+    }
+
     private suspend fun getFirebaseToken(): String {
         return suspendCoroutine { cont ->
             FirebaseMessaging.getInstance().token.addOnCompleteListener(

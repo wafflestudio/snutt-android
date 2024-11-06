@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,23 @@ class SocialLinkViewModel @Inject constructor(
         userRepository.postUserFacebook(token)
     }
 
-    suspend fun disconnectFacebook() {
+    suspend fun connectKakao(token: String) {
+        userRepository.postUserKakao(token)
+    }
+
+    suspend fun disconnectSocialLogin(type: SocialLoginType) {
+        when (type) {
+            SocialLoginType.FACEBOOK -> disconnectFacebook()
+            SocialLoginType.KAKAO -> disconnectKakao()
+            else -> {}
+        }
+    }
+
+    private suspend fun disconnectFacebook() {
         userRepository.deleteUserFacebook()
+    }
+
+    private suspend fun disconnectKakao() {
+        userRepository.deleteUserKakao()
     }
 }
