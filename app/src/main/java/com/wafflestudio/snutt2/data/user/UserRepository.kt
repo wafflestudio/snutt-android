@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TableLectureCustomOptions
