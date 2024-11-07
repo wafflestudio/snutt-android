@@ -101,23 +101,27 @@ fun TutorialPage() {
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                val authCode = account?.serverAuthCode
-                if (authCode != null) {
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    val authCode = account?.serverAuthCode
+                    if (authCode == null) {
+                        context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                        return@rememberLauncherForActivityResult
+                    }
                     handleGoogleSignInCallback(authCode)
-                } else {
+                } catch (e: ApiException) {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
-            } catch (e: ApiException) {
+            }
+            Activity.RESULT_CANCELED -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+            }
+            else -> {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
-        } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-        } else {
-            context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
         }
     }
 
