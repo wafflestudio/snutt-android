@@ -1,13 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,14 +21,28 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthError
+import com.kakao.sdk.common.model.AuthErrorCause
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.SocialLoginType
+import com.wafflestudio.snutt2.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -38,37 +54,163 @@ import kotlinx.coroutines.launch
 fun SocialLinkPage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val activityContext = LocalContext.current as Activity
 
-    val viewModel = hiltViewModel<SocialLinkViewModel>()
-    val user: UserDto? by viewModel.userInfo.collectAsState()
+    val clientId = context.getString(R.string.web_client_id)
+    val clientSecret = context.getString(R.string.web_client_secret)
 
-    var disconnectFacebookDialogState by remember { mutableStateOf(false) }
+    val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
+    val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
 
-    var facebookConnected by remember(user?.fbName) {
-        mutableStateOf(
-            user?.fbName.isNullOrEmpty().not(),
-        )
+    var disconnectSocialDialogState by remember { mutableStateOf(SocialLoginType.NONE) }
+
+    LaunchedEffect(Unit) {
+        socialLinkViewModel.fetchSocialProviders()
     }
 
     val handleFacebookConnect = {
-        scope.launch {
+        coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
                 val loginResult = facebookLogin(context)
-                viewModel.connectFacebook(
-                    loginResult.accessToken.userId,
+                socialLinkViewModel.connectFacebook(
                     loginResult.accessToken.token,
                 )
-                facebookConnected = true
-                viewModel.fetchUserInfo()
+                socialLinkViewModel.fetchUserInfo()
+                socialLinkViewModel.fetchSocialProviders()
             }
         }
+    }
+
+    val connectWithKaKaoAccessToken: (String) -> Unit = { kakaoAccessToken ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                if (kakaoAccessToken.isNotEmpty()) {
+                    socialLinkViewModel.connectKakao(
+                        kakaoAccessToken,
+                    )
+                    socialLinkViewModel.fetchUserInfo()
+                    socialLinkViewModel.fetchSocialProviders()
+                } else {
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                }
+            }
+        }
+    }
+
+    val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            } else {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+            }
+        } else if (token != null) {
+            connectWithKaKaoAccessToken(token.accessToken)
+        } else {
+            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+        }
+    }
+
+    val handleKakaoConnect: () -> Unit = {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+            UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
+                if (loginError != null) {
+                    if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else {
+                        // 카카오계정으로 로그인
+                        UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
+                    }
+                } else if (token != null) {
+                    connectWithKaKaoAccessToken(token.accessToken)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                }
+            }
+        } else {
+            // 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
+        }
+    }
+
+    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
+        coroutineScope.launch {
+            launchSuspendApi(
+                apiOnProgress = apiOnProgress,
+                apiOnError = apiOnError,
+                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
+            ) {
+                val googleAccessToken = socialLinkViewModel.getAccessTokenByAuthCode(
+                    authCode = authCode,
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                )
+                if (googleAccessToken != null) {
+                    socialLinkViewModel.connectGoogle(
+                        googleAccessToken,
+                    )
+                    socialLinkViewModel.fetchUserInfo()
+                    socialLinkViewModel.fetchSocialProviders()
+                } else {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+        }
+    }
+
+    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    val authCode = account?.serverAuthCode
+                    if (authCode == null) {
+                        context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                        return@rememberLauncherForActivityResult
+                    }
+                    handleGoogleSignInCallback(authCode)
+                } catch (e: ApiException) {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+            Activity.RESULT_CANCELED -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+            }
+            else -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+            }
+        }
+    }
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .requestServerAuthCode(clientId)
+        .build().let {
+            GoogleSignIn.getClient(activityContext, it)
+        }
+
+    // 구글 계정 선택 창 띄움
+    val handleGoogleConnect = {
+        val signInIntent = googleSignInClient.signInIntent
+        googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
     Column(
@@ -85,30 +227,52 @@ fun SocialLinkPage() {
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-//            Margin(height = 10.dp)
-//
-//            SettingItem(
-//                title = stringResource(R.string.social_link_kakao),
-//                hasNextPage = false,
-//                onClick = {},
-//            )
-//
-//            Margin(height = 10.dp)
-//
-//            SettingItem(
-//                title = stringResource(R.string.social_link_google),
-//                hasNextPage = false,
-//                onClick = {},
-//            )
+            Margin(height = 10.dp)
+
+            if (socialProviders.kakao) {
+                SettingItem(
+                    title = stringResource(R.string.social_unlink_kakao),
+                    titleColor = colorResource(R.color.theme_snutt_0),
+                    hasNextPage = false,
+                    onClick = { disconnectSocialDialogState = SocialLoginType.KAKAO },
+                )
+            } else {
+                SettingItem(
+                    title = stringResource(R.string.social_link_kakao),
+                    hasNextPage = false,
+                    onClick = { handleKakaoConnect() },
+                )
+            }
 
             Margin(height = 10.dp)
 
-            if (facebookConnected) {
+            if (socialProviders.google) {
+                SettingItem(
+                    title = stringResource(R.string.social_unlink_google),
+                    titleColor = colorResource(R.color.theme_snutt_0),
+                    hasNextPage = false,
+                    onClick = { disconnectSocialDialogState = SocialLoginType.GOOGLE },
+                )
+            } else {
+                SettingItem(
+                    title = stringResource(R.string.social_link_google),
+                    hasNextPage = false,
+                    onClick = {
+                        googleSignInClient.signOut().addOnCompleteListener {
+                            handleGoogleConnect()
+                        }
+                    },
+                )
+            }
+
+            Margin(height = 10.dp)
+
+            if (socialProviders.facebook) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { disconnectFacebookDialogState = true },
+                    onClick = { disconnectSocialDialogState = SocialLoginType.FACEBOOK },
                 )
             } else {
                 SettingItem(
@@ -120,23 +284,23 @@ fun SocialLinkPage() {
         }
     }
 
-    if (disconnectFacebookDialogState) {
+    if (disconnectSocialDialogState != SocialLoginType.NONE) {
         CustomDialog(
-            onDismiss = { disconnectFacebookDialogState = false },
+            onDismiss = { disconnectSocialDialogState = SocialLoginType.NONE },
             onConfirm = {
-                scope.launch {
+                coroutineScope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
-                        viewModel.disconnectFacebook()
                         LoginManager.getInstance().logOut()
-                        facebookConnected = false
-                        disconnectFacebookDialogState = false
-                        viewModel.fetchUserInfo()
+                        socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
+                        socialLinkViewModel.fetchUserInfo()
+                        socialLinkViewModel.fetchSocialProviders()
+                        disconnectSocialDialogState = SocialLoginType.NONE
                     }
                 }
             },
-            title = stringResource(R.string.settings_user_config_facebook_disconnect),
-        ) {
-            Text(text = stringResource(R.string.settings_user_config_disconnect_facebook_message), style = SNUTTTypography.body2)
-        }
+            title = context.getString(R.string.settings_user_config_social_disconnect_message, disconnectSocialDialogState.getString()),
+            content = {},
+            positiveButtonText = stringResource(R.string.social_disconnect),
+        )
     }
 }
