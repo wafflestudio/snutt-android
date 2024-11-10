@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +43,6 @@ import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.model.SocialLoginType
 import com.wafflestudio.snutt2.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -300,9 +298,9 @@ fun SocialLinkPage() {
                     }
                 }
             },
-            title = context.getString(R.string.settings_user_config_social_disconnect, disconnectSocialDialogState.getString()),
-        ) {
-            Text(text = context.getString(R.string.settings_user_config_social_disconnect_message, disconnectSocialDialogState.getString()), style = SNUTTTypography.body2)
-        }
+            title = context.getString(R.string.settings_user_config_social_disconnect_message, disconnectSocialDialogState.getString()),
+            content = {},
+            positiveButtonText = stringResource(R.string.social_disconnect),
+        )
     }
 }
