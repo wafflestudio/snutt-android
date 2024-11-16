@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.wafflestudio.snutt2.ui.SNUTTAppState
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.Module
 import dagger.Provides
@@ -34,5 +35,11 @@ object ApplicationModule {
     @Singleton
     fun provideCoroutineScope(): CoroutineScope {
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSNUTTAppState(): SNUTTAppState {
+        return SNUTTAppState.REFACTOR
     }
 }
