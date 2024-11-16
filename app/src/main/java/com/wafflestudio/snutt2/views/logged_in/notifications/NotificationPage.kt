@@ -51,7 +51,27 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
-fun NotificationPage() {
+fun NotificationRoute(
+    modifier: Modifier = Modifier,
+    viewModel: NotificationsViewModel = hiltViewModel()
+) {
+    val navController = LocalNavController.current
+    if (viewModel.isRefactoring()) {
+        NotificationPage(
+            onBackClick = {
+                if (navController.currentDestination?.route == NavigationDestination.Notification) {
+                    navController.popBackStack()
+                }
+            },
+            modifier = modifier,
+        )
+    } else {
+        NotificationPage()
+    }
+}
+
+@Composable
+private fun NotificationPage() {
     val navController = LocalNavController.current
     val vm = hiltViewModel<NotificationsViewModel>()
 
@@ -220,3 +240,12 @@ fun NotificationItemPreview() {
 fun NotificationPagePreview() {
     NotificationPage()
 }
+
+@Composable
+fun NotificationPage(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+) {
+
+}
+

@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.ui.SNUTTAppState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
+    private val snuttAppState: SNUTTAppState,
 ) : ViewModel() {
 
     private val _notificationList =
@@ -30,4 +32,6 @@ class NotificationsViewModel @Inject constructor(
                 }
         }
     }
+
+    fun isRefactoring() = snuttAppState == SNUTTAppState.REFACTOR
 }
