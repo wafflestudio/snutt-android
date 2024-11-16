@@ -1,9 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
@@ -18,7 +20,13 @@ class ThemeConfigViewModel @Inject constructor(
     currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
-    val customThemes: StateFlow<List<CustomTheme>> = themeRepository.customThemes
+    val customThemes = themeRepository.customThemes
+    val myCustomThemes = themeRepository.customThemes.map(viewModelScope) { customThemes ->
+        customThemes.filter { it.isFromMarket.not() }
+    }
+    val marketCustomThemes = themeRepository.customThemes.map(viewModelScope) { customThemes ->
+        customThemes.filter { it.isFromMarket }
+    }
     val builtInThemes: StateFlow<List<BuiltInTheme>> = themeRepository.builtInThemes
 
     val currentTable = currentTableRepository.currentTable

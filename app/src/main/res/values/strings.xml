@@ -527,6 +527,7 @@
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
     <string name="theme_config_app_bar_title">시간표 테마</string>
     <string name="theme_config_custom_theme">커스텀 테마</string>
+    <string name="theme_config_market_custom_theme">담은 테마</string>
     <string name="theme_config_builtin_theme">제공 테마</string>
     <string name="theme_config_guide_title">테마는 어떻게 적용하나요?</string>
     <string name="theme_config_guide_0">시간표 목록 > 더보기 버튼 > 테마 설정</string>
