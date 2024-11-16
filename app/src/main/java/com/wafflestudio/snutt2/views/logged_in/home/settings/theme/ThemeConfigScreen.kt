@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +58,7 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
@@ -400,5 +402,31 @@ private fun ThemeGuideTexts(
             text = stringResource(R.string.theme_config_guide_2),
             style = SNUTTTypography.body2.copy(color = if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
         )
+    }
+}
+
+@Preview
+@Composable
+private fun ThemesRowPreview() {
+    SNUTTTheme {
+        ThemesRow(
+            title = "title",
+            themes = List(5) { BuiltInTheme.fromCode(it) },
+            onClickItem = {},
+            onClickMore = {},
+            leadingItem = {
+                AddThemeItem(
+                    onClick = {}
+                )
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ThemeGuideTextsPreview() {
+    SNUTTTheme {
+        ThemeGuideTexts()
     }
 }
