@@ -2,8 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,6 +53,8 @@ import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -63,33 +63,69 @@ import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalModalState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ThemeConfigPage(
+fun ThemeConfigRoute(
+    onNavigateBack: () -> Unit,
+    onNavigateToThemeDetail: (TableTheme) -> Unit,
+    onClickAddTheme: () -> Unit,
     themeListViewModel: ThemeListViewModel = hiltViewModel(),
 ) {
-    val navController = LocalNavController.current
-    val modalState = LocalModalState.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
-    val bottomSheet = BottomSheet()
-    val scope = rememberCoroutineScope()
-    val composableStates = ComposableStatesWithScope(scope)
 
     val customThemes by themeListViewModel.customThemes.collectAsState()
     val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
+
+    ThemeConfigScreen(
+        customThemes = customThemes,
+        builtInThemes = builtInThemes,
+        onNavigateBack = onNavigateBack,
+        onFetchThemes = {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                themeListViewModel.fetchThemes()
+            }
+        },
+        onNavigateToDetail = onNavigateToThemeDetail,
+        onClickAddTheme = onClickAddTheme,
+        onDuplicateTheme = {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                themeListViewModel.copyTheme(it)
+            }
+        },
+        onDeleteTheme = {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                themeListViewModel.deleteThemeAndRefreshTableIfNeeded(it)
+            }
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ThemeConfigScreen(
+    customThemes: List<CustomTheme>,
+    builtInThemes: List<BuiltInTheme>,
+    onNavigateBack: () -> Unit,
+    onFetchThemes: suspend () -> Unit,
+    onNavigateToDetail: (TableTheme) -> Unit,
+    onClickAddTheme: () -> Unit,
+    onDuplicateTheme: suspend (TableTheme) -> Unit,
+    onDeleteTheme: suspend (TableTheme) -> Unit,
+) {
+    val modalState = LocalModalState.current
+    val bottomSheet = BottomSheet()
+    val scope = rememberCoroutineScope()
+    val composableStates = ComposableStatesWithScope(scope)
 
     val onBackPressed: () -> Unit = {
         if (bottomSheet.isVisible) {
             scope.launch { bottomSheet.hide() }
         } else {
-            navController.popBackStack()
+            onNavigateBack()
         }
     }
 
@@ -98,9 +134,7 @@ fun ThemeConfigPage(
     }
 
     LaunchedEffect(Unit) {
-        runCatching {
-            themeListViewModel.fetchThemes()
-        }.onFailure(apiOnError)
+        onFetchThemes()
     }
 
     ModalBottomSheetLayout(
@@ -124,113 +158,53 @@ fun ThemeConfigPage(
                     .background(MaterialTheme.colors.background)
                     .verticalScroll(rememberScrollState()),
             ) {
-                SettingColumn(
+                ThemesRow(
                     title = stringResource(R.string.theme_config_custom_theme),
-                    titleStyle = SNUTTTypography.body2.copy(
-                        color = MaterialTheme.colors.onSurfaceVariant,
-                        fontSize = 13.sp,
-                    ),
-                ) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.surface)
-                            .padding(top = 20.dp, bottom = 12.dp),
-                        horizontalArrangement = Arrangement.Start,
-                    ) {
-                        item {
-                            Spacer(modifier = Modifier.width(20.dp))
-                            AddThemeItem(
-                                onClick = {
-                                    navController.navigate(NavigationDestination.ThemeDetail)
-                                },
-                            )
-                            Spacer(modifier = Modifier.width(20.dp))
-                        }
-                        items(
-                            items = customThemes,
-                        ) { theme ->
-                            ThemeItem(
-                                theme = theme,
-                                onClick = {
-                                    scope.launch {
-                                        navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
-                                        bottomSheet.hide()
-                                    }
-                                },
-                                onClickMore = {
-                                    scope.launch {
-                                        bottomSheet.setSheetContent {
-                                            CustomThemeMoreActionBottomSheet(
-                                                onClickDetail = {
-                                                    scope.launch {
-                                                        navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
-                                                        bottomSheet.hide()
-                                                    }
-                                                },
-                                                onClickDuplicate = {
-                                                    scope.launch {
-                                                        launchSuspendApi(
-                                                            apiOnProgress,
-                                                            apiOnError,
-                                                        ) {
-                                                            themeListViewModel.copyTheme(theme.id)
-                                                            bottomSheet.hide()
-                                                        }
-                                                    }
-                                                },
-                                                onClickDelete = {
-                                                    showDeleteThemeDialog(
-                                                        composableStates = composableStates,
-                                                        onConfirm = {
-                                                            themeListViewModel.deleteThemeAndRefreshTableIfNeeded(
-                                                                theme.id,
-                                                            )
-                                                            modalState.hide()
-                                                            bottomSheet.hide()
-                                                        },
-                                                    )
-                                                },
-                                            )
+                    themes = customThemes,
+                    onClickItem = onNavigateToDetail,
+                    onClickMore = { theme ->
+                        scope.launch {
+                            bottomSheet.setSheetContent {
+                                CustomThemeMoreActionBottomSheet(
+                                    onClickDetail = {
+                                        scope.launch {
+                                            onNavigateToDetail(theme)
+                                            bottomSheet.hide()
                                         }
-                                        bottomSheet.show()
-                                    }
-                                },
-                            )
-                            Spacer(modifier = Modifier.width(20.dp))
+                                    },
+                                    onClickDuplicate = {
+                                        scope.launch {
+                                            onDuplicateTheme(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                    onClickDelete = {
+                                        showDeleteThemeDialog(
+                                            composableStates = composableStates,
+                                            onConfirm = {
+                                                onDeleteTheme(theme)
+                                                modalState.hide()
+                                                bottomSheet.hide()
+                                            },
+                                        )
+                                    },
+                                )
+                            }
+                            bottomSheet.show()
                         }
-                    }
-                }
+                    },
+                    leadingItem = {
+                        AddThemeItem(
+                            onClick = onClickAddTheme,
+                        )
+                    },
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                SettingColumn(
+                ThemesRow(
                     title = stringResource(R.string.theme_config_builtin_theme),
-                    titleStyle = SNUTTTypography.body2.copy(
-                        color = MaterialTheme.colors.onSurfaceVariant,
-                        fontSize = 13.sp,
-                    ),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.surface)
-                            .padding(top = 20.dp, bottom = 12.dp)
-                            .horizontalScroll(rememberScrollState()),
-                    ) {
-                        Spacer(modifier = Modifier.width(20.dp))
-                        builtInThemes.forEach { theme ->
-                            ThemeItem(
-                                theme = theme,
-                                onClick = {
-                                    scope.launch {
-                                        navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
-                                        bottomSheet.hide()
-                                    }
-                                },
-                            )
-                            Spacer(modifier = Modifier.width(20.dp))
-                        }
-                    }
-                }
+                    themes = builtInThemes,
+                    onClickItem = onNavigateToDetail,
+                )
                 Spacer(modifier = Modifier.height(25.dp))
                 ThemeGuideTexts(
                     modifier = Modifier
@@ -238,6 +212,55 @@ fun ThemeConfigPage(
                         .padding(horizontal = 26.dp),
                 )
                 Spacer(modifier = Modifier.height(25.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ThemesRow(
+    title: String,
+    themes: List<TableTheme>,
+    onClickItem: (TableTheme) -> Unit,
+    modifier: Modifier = Modifier,
+    onClickMore: ((TableTheme) -> Unit)? = null,
+    leadingItem: (@Composable () -> Unit)? = null,
+) {
+    SettingColumn(
+        title = title,
+        titleStyle = SNUTTTypography.body2.copy(
+            color = MaterialTheme.colors.onSurfaceVariant,
+            fontSize = 13.sp,
+        ),
+        modifier = modifier,
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.surface)
+                .padding(top = 20.dp, bottom = 12.dp),
+        ) {
+            item {
+                Spacer(modifier = Modifier.width(20.dp))
+                leadingItem?.let {
+                    it()
+                    Spacer(modifier = Modifier.width(20.dp))
+                }
+            }
+
+            items(
+                items = themes,
+            ) { theme ->
+                ThemeItem(
+                    theme = theme,
+                    onClick = {
+                        onClickItem(theme)
+                    },
+                    onClickMore = onClickMore?.let {
+                        { it(theme) }
+                    },
+                )
+                Spacer(modifier = Modifier.width(20.dp))
             }
         }
     }
@@ -274,7 +297,7 @@ fun AddThemeItem(
 }
 
 @Composable
-private fun ThemeItem(
+fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
