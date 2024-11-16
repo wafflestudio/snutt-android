@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ThemeListViewModel @Inject constructor(
+class ThemeConfigViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,

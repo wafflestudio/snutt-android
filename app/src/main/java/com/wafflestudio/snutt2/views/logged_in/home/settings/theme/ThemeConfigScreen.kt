@@ -72,13 +72,13 @@ fun ThemeConfigRoute(
     onNavigateBack: () -> Unit,
     onNavigateToThemeDetail: (TableTheme) -> Unit,
     onClickAddTheme: () -> Unit,
-    themeListViewModel: ThemeListViewModel = hiltViewModel(),
+    themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
 ) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
 
-    val customThemes by themeListViewModel.customThemes.collectAsState()
-    val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
+    val customThemes by themeConfigViewModel.customThemes.collectAsState()
+    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
 
     ThemeConfigScreen(
         customThemes = customThemes,
@@ -86,19 +86,19 @@ fun ThemeConfigRoute(
         onNavigateBack = onNavigateBack,
         onFetchThemes = {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                themeListViewModel.fetchThemes()
+                themeConfigViewModel.fetchThemes()
             }
         },
         onNavigateToDetail = onNavigateToThemeDetail,
         onClickAddTheme = onClickAddTheme,
         onDuplicateTheme = {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                themeListViewModel.copyTheme(it)
+                themeConfigViewModel.copyTheme(it)
             }
         },
         onDeleteTheme = {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                themeListViewModel.deleteThemeAndRefreshTableIfNeeded(it)
+                themeConfigViewModel.deleteThemeAndRefreshTableIfNeeded(it)
             }
         },
     )
