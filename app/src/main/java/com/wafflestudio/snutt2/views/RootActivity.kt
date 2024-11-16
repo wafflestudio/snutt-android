@@ -65,8 +65,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
@@ -314,11 +313,9 @@ class RootActivity : AppCompatActivity() {
                                 defaultValue = -1
                             },
                         ),
-                    ) { backStackEntry ->
-                        val themeDetailViewModel =
-                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
-                        ThemeDetailPage(
-                            themeDetailViewModel = themeDetailViewModel,
+                    ) {
+                        ThemeDetailRoute(
+                            onNavigateBack = { navController.popBackStack() },
                         )
                     }
 
