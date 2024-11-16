@@ -297,7 +297,7 @@ fun AddThemeItem(
 }
 
 @Composable
-fun ThemeItem(
+private fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -351,7 +351,7 @@ fun ThemeItem(
 }
 
 @Composable
-fun ThemeGuideTexts(
+private fun ThemeGuideTexts(
     modifier: Modifier = Modifier,
 ) {
     val texts = listOf(
