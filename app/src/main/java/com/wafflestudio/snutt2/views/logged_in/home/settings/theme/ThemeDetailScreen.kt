@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -51,6 +52,7 @@ import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.components.compose.LoadingIndicator
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -263,11 +265,30 @@ fun ThemeDetailScreen(
         }
 
         is ThemeDetailUiState.Error -> {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.95f)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.background),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.error_unknown),
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
         }
 
         is ThemeDetailUiState.Loading -> {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.95f)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.background),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
