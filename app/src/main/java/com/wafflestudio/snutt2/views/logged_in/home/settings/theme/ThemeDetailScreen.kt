@@ -294,7 +294,7 @@ fun ThemeDetailScreen(
 }
 
 @Composable
-fun ThemeDetailItem(
+private fun ThemeDetailItem(
     title: String,
     modifier: Modifier = Modifier,
     titleColor: Color = MaterialTheme.colors.onSurfaceVariant,
@@ -422,7 +422,7 @@ private fun ThemeColorRow(
 }
 
 @Composable
-fun ColorEditItem(
+private fun ColorEditItem(
     fgColor: Color,
     bgColor: Color,
     onFgColorPicked: (Color) -> Unit,
