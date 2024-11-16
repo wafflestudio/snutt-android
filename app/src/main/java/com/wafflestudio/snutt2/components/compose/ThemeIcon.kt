@@ -312,7 +312,7 @@ fun ThemeIconPreview() {
                             bgColor = Random.nextInt(0x0, 0xffffff),
                         )
                     },
-                    isFromMarket = false
+                    isFromMarket = false,
                 ),
                 modifier = Modifier.size(80.dp),
             )

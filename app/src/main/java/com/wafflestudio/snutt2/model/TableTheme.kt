@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.model
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.colorResource
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto

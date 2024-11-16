@@ -128,7 +128,7 @@ fun ThemeDetailRoute(
                                 avoid = {
                                     modalState.hide()
                                     onNavigateBack()
-                                }
+                                },
                             )
                         }
 
@@ -168,7 +168,7 @@ fun ThemeDetailScreen(
                         cancelEdit = {
                             modalState.hide()
                             onNavigateBack()
-                        }
+                        },
                     )
                 } else {
                     onNavigateBack()
@@ -189,7 +189,7 @@ fun ThemeDetailScreen(
                     onClickBack = onBackPressed,
                     onClickSave = {
                         onSaveTheme(editingTheme.isNew)
-                    }
+                    },
                 )
                 Column(
                     modifier = Modifier
@@ -233,12 +233,12 @@ fun ThemeDetailScreen(
                                 onToggleColorExpanded = onToggleColorExpanded,
                                 onDuplicateColor = onDuplicateColor,
                                 onRemoveColor = onRemoveColor,
-                                onUpdateColor = onUpdateColor
+                                onUpdateColor = onUpdateColor,
                             )
                         }
                         AnimatedVisibility(editingTheme.isEditable && editingTheme.colors.size < 9) {
                             ThemeColorAddRow(
-                                onClick = onAddColor
+                                onClick = onAddColor,
                             )
                         }
                     }
@@ -273,11 +273,11 @@ fun ThemeDetailScreen(
                     .fillMaxHeight(0.95f)
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.background),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = stringResource(R.string.error_unknown),
-                    color = MaterialTheme.colors.onBackground
+                    color = MaterialTheme.colors.onBackground,
                 )
             }
         }
@@ -288,7 +288,7 @@ fun ThemeDetailScreen(
                     .fillMaxHeight(0.95f)
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.background),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -348,7 +348,7 @@ private fun ThemeColorRow(
     AnimatedVisibility(
         visibleState = state,
         enter = expandVertically(),
-        exit = shrinkVertically()
+        exit = shrinkVertically(),
     ) {
         Column {
             ThemeDetailItem(
@@ -582,7 +582,7 @@ private fun ThemeColorRowPreview() {
                 onToggleColorExpanded = {},
                 onDuplicateColor = {},
                 onRemoveColor = {},
-                onUpdateColor = { _, _, _ -> }
+                onUpdateColor = { _, _, _ -> },
             )
         }
     }
@@ -593,7 +593,7 @@ private fun ThemeColorRowPreview() {
 private fun ThemeColorAddRowPreview() {
     SNUTTTheme {
         ThemeColorAddRow(
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -605,7 +605,7 @@ private fun ThemeDetailTopBarPreview() {
         ThemeDetailTopBar(
             isCustomTheme = true,
             onClickBack = {},
-            onClickSave = {}
+            onClickSave = {},
         )
     }
 }

@@ -447,7 +447,7 @@ class RootActivity : AppCompatActivity() {
                 },
                 onClickAddTheme = {
                     navController.navigate(NavigationDestination.ThemeDetail)
-                }
+                },
             )
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }

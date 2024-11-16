@@ -416,9 +416,9 @@ private fun ThemesRowPreview() {
             onClickMore = {},
             leadingItem = {
                 AddThemeItem(
-                    onClick = {}
+                    onClick = {},
                 )
-            }
+            },
         )
     }
 }

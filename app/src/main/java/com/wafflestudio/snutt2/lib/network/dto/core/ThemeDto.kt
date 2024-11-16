@@ -20,7 +20,7 @@ data class ThemeDto(
                 id = id!!,
                 name = name ?: "",
                 colors = colors ?: emptyList(),
-                isFromMarket = false        // FIXME: 서버 응답에 맞게 수정
+                isFromMarket = false, // FIXME: 서버 응답에 맞게 수정
             )
         } else {
             BuiltInTheme.fromCode(theme ?: 0)
