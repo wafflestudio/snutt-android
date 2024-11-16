@@ -25,6 +25,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -52,11 +54,12 @@ import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.EditText
-import com.wafflestudio.snutt2.components.compose.LoadingIndicator
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
@@ -553,4 +556,56 @@ private fun ThemeDetailTopBar(
             )
         },
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview
+@Composable
+private fun ThemeColorRowPreview() {
+    SNUTTTheme {
+        val modalBottomSheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true,
+        )
+        val modalState = rememberModalState()
+        CompositionLocalProvider(
+            LocalNavBottomSheetState provides modalBottomSheetState,
+            LocalModalState provides modalState,
+        ) {
+            ThemeColorRow(
+                index = 0,
+                isEditable = true,
+                color = ColorDto("#ffffff", "#1BD0C8"),
+                isExpanded = true,
+                isDuplicateEnabled = true,
+                isRemoveEnabled = true,
+                onToggleColorExpanded = {},
+                onDuplicateColor = {},
+                onRemoveColor = {},
+                onUpdateColor = { _, _, _ -> }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ThemeColorAddRowPreview() {
+    SNUTTTheme {
+        ThemeColorAddRow(
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ThemeDetailTopBarPreview() {
+    SNUTTTheme {
+        ThemeDetailTopBar(
+            isCustomTheme = true,
+            onClickBack = {},
+            onClickSave = {}
+        )
+    }
 }
