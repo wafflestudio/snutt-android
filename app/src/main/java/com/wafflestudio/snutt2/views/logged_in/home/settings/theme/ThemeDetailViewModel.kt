@@ -2,22 +2,23 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
-import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.BuiltInTheme1
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.CustomTheme1
 import com.wafflestudio.snutt2.model.EditingTheme
-import com.wafflestudio.snutt2.model.TableTheme1
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,23 +27,42 @@ class ThemeDetailViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
+    userRepository: UserRepository,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
-    private val _editingTheme = MutableStateFlow<EditingTheme>()
-    val editingTheme: StateFlow<EditingTheme> get() = _editingTheme
+    private val editingTheme = MutableStateFlow<EditingTheme?>(null)
+    private var isDarkMode = false
 
-    // 색상별 id가 없어 expanded 여부를 설정할 수 없으므로 List<Selectable<ColorDto>>로 따로 관리한다
-    private val _editingColors = MutableStateFlow<List<Selectable<ColorDto>>>(emptyList())
-    val editingColors: StateFlow<List<Selectable<ColorDto>>> get() = _editingColors
+    val themeDetailUiState = combine(
+        currentTableRepository.currentTable,
+        userRepository.tableTrimParam,
+        editingTheme,
+    ) { table, trimParam, editingTheme ->
+        if (editingTheme == null) {
+            return@combine ThemeDetailUiState.Loading
+        }
+        if (table == null) {
+            return@combine ThemeDetailUiState.Error
+        }
+
+        val tableState = TableState(
+            table,
+            trimParam,
+            editingTheme.toTableTheme(),
+        )
+        ThemeDetailUiState.Success(
+            editingTheme = editingTheme,
+            tableState = tableState,
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, ThemeDetailUiState.Loading)
 
     val currentTable = currentTableRepository.currentTable
-
-    private lateinit var originalTheme: TableTheme1
 
     fun initEditingTheme(isDarkMode: Boolean) {
         val themeId = savedStateHandle.get<String>("themeId")
         val theme = savedStateHandle.get<Int>("theme")
+        this.isDarkMode = isDarkMode
 
         if (theme == null || themeId == null) return
 
@@ -55,15 +75,15 @@ class ThemeDetailViewModel @Inject constructor(
 
     private fun initBuiltInTheme(theme: Int, isDarkMode: Boolean) {
         try {
-            originalTheme = BuiltInTheme1.fromCode(theme)
-            _editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
+            val originalTheme = BuiltInTheme1.fromCode(theme)
+            editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
         } catch (e: Exception) {
             apiOnError(e)
         }
     }
 
     private fun initCustomTheme(themeId: String, isDarkMode: Boolean) {
-        originalTheme = if (themeId.isEmpty()) { // 새로 생성한 커스텀 테마
+        val originalTheme = if (themeId.isEmpty()) { // 새로 생성한 커스텀 테마
             CustomTheme1.Default
         } else { // 이미 존재하는 커스텀 테마
             try {
@@ -73,104 +93,117 @@ class ThemeDetailViewModel @Inject constructor(
                 CustomTheme1.Default
             }
         }
-        _editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
+        editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
     }
 
     fun addColor() {
-        if (editingTheme.value.isEditable.not()) return
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
 
-        val newColors = _editingTheme.value.colors.toMutableList().apply {
+        val newColors = theme.colors.toMutableList().apply {
             add(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8).toDataWithState(true))
         }
-        _editingTheme.value = editingTheme.value.copy(
-            colors = newColors
+        editingTheme.value = theme.copy(
+            colors = newColors,
         )
     }
 
     fun removeColor(index: Int) {
-        if (editingTheme.value.isEditable.not()) return
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
 
-        val newColors = editingTheme.value.colors.toMutableList().apply {
+        val newColors = theme.colors.toMutableList().apply {
             removeAt(index)
         }
-        _editingTheme.value = editingTheme.value.copy(
-            colors = newColors
+        editingTheme.value = theme.copy(
+            colors = newColors,
         )
     }
 
     fun updateColor(index: Int, fgColor: Int, bgColor: Int) {
-        if (editingTheme.value.isEditable.not()) return
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
 
-        val newColors = editingTheme.value.colors.toMutableList().apply {
+        val newColors = theme.colors.toMutableList().apply {
             set(index, ColorDto(fgColor, bgColor).toDataWithState(get(index).state))
         }
-        _editingTheme.value = editingTheme.value.copy(
-            colors = newColors
+        editingTheme.value = theme.copy(
+            colors = newColors,
         )
     }
 
     fun duplicateColor(index: Int) {
-        if (editingTheme.value.isEditable.not()) return
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
 
-        val newColors = editingTheme.value.colors.toMutableList().apply {
+        val newColors = theme.colors.toMutableList().apply {
             add(index + 1, get(index).copy(state = false))
         }
-        _editingTheme.value = editingTheme.value.copy(
-            colors = newColors
+        editingTheme.value = theme.copy(
+            colors = newColors,
         )
     }
 
     fun toggleColorExpanded(index: Int) {
-        if (editingTheme.value.isEditable.not()) return
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
 
-        val newColors = editingTheme.value.colors.toMutableList().apply {
+        val newColors = theme.colors.toMutableList().apply {
             set(index, get(index).run { copy(state = !state) })
         }
-        _editingTheme.value = editingTheme.value.copy(
-            colors = newColors
+        editingTheme.value = theme.copy(
+            colors = newColors,
         )
     }
 
-    fun hasChange(): Boolean {
-        return if (originalTheme.isEditable) {
-            val originalCustomTheme = originalTheme as? CustomTheme1 ?: return false
-            val editedCustomTheme = editingTheme.value.toCustomTheme(originalCustomTheme.id)
-
-            return originalTheme.name != editedCustomTheme.name ||
-                originalTheme.getColors(false) != editedCustomTheme.getColors(false)
-        } else {
-            false
-        }
-    }
-
     suspend fun saveTheme() {
-        if (editingTheme.value.isEditable.not()) return
-        val originalCustomTheme = originalTheme as? CustomTheme1 ?: return
-        val editedCustomTheme = editingTheme.value.toCustomTheme(originalCustomTheme.id)
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
+        if (theme.isEditable.not()) return
 
-        originalTheme = if (originalCustomTheme.isNew) {
-            themeRepository.createTheme(editedCustomTheme.name, editedCustomTheme.getColors(false))
+        val newTheme = if (theme.isNew) {
+            themeRepository.createTheme(theme.name, theme.getColors(isDarkMode))
         } else {
-            themeRepository.updateTheme(editedCustomTheme.id, editedCustomTheme.name, editedCustomTheme.getColors(false))
+            themeRepository.updateTheme(theme.id, theme.name, theme.getColors(isDarkMode))
         }
+
+        editingTheme.value = EditingTheme.fromTableTheme(newTheme, isDarkMode)
     }
 
     suspend fun applyThemeToCurrentTable() {
         val currentTable = currentTable.value ?: return
-        val originalCustomTheme = originalTheme as? CustomTheme1 ?: return
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
 
         tableRepository.updateTableTheme(
             currentTable.id,
-            originalCustomTheme.id
+            theme.id,
         )
     }
 
     suspend fun refreshCurrentTableIfNeeded() { // 현재 선택된 시간표의 테마라면 새로고침
         val currentTable = currentTable.value ?: return
-        val originalCustomTheme = originalTheme as? CustomTheme1 ?: return
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
 
-        if (currentTable.themeId == originalCustomTheme.id) {
+        if (theme.isAppliedToTable(currentTable)) {
             tableRepository.fetchTableById(currentTable.id)
         }
     }
+
+    fun updateName(name: String) {
+        val theme = editingTheme.value ?: return
+        if (theme.isEditable.not()) return
+
+        editingTheme.value = theme.copy(
+            name = name,
+        )
+    }
+}
+
+sealed interface ThemeDetailUiState {
+    class Success(
+        val editingTheme: EditingTheme,
+        val tableState: TableState,
+    ) : ThemeDetailUiState
+
+    data object Error : ThemeDetailUiState
+    data object Loading : ThemeDetailUiState
 }

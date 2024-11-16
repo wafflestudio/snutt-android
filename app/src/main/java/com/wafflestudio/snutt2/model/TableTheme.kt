@@ -6,6 +6,7 @@ import androidx.compose.ui.res.colorResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.isDarkMode
 
 sealed class TableTheme1(
@@ -19,19 +20,21 @@ sealed class TableTheme1(
         lightColors
     }
 
-    val isEditable: Boolean get() {
-        return when(this) {
-            is CustomTheme1 -> isFromMarket
-            is BuiltInTheme1 -> true
+    val isEditable: Boolean
+        get() {
+            return when (this) {
+                is CustomTheme1 -> isFromMarket
+                is BuiltInTheme1 -> true
+            }
         }
-    }
 
-    val isNew: Boolean get() {
-        return when(this) {
-            is CustomTheme1 -> id.isEmpty()
-            is BuiltInTheme1 -> false
+    val isNew: Boolean
+        get() {
+            return when (this) {
+                is CustomTheme1 -> id.isEmpty()
+                is BuiltInTheme1 -> false
+            }
         }
-    }
 }
 
 class CustomTheme1(
@@ -39,17 +42,19 @@ class CustomTheme1(
     override val name: String,
     val isFromMarket: Boolean,
     colors: List<ColorDto>,
-): TableTheme1(
+) : TableTheme1(
     name = name,
     lightColors = colors,
     darkColors = colors,
 ) {
+    fun isAppliedToTable(table: TableDto): Boolean = table.themeId == this.id
+
     companion object {
         val Default = CustomTheme1(
             id = "",
             name = "새 커스텀 테마",
             isFromMarket = false,
-            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8))
+            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
         )
     }
 }
@@ -59,7 +64,7 @@ class BuiltInTheme1(
     override val name: String,
     lightColors: List<ColorDto>,
     darkColors: List<ColorDto>,
-): TableTheme1(
+) : TableTheme1(
     name = name,
     lightColors = lightColors,
     darkColors = darkColors,
@@ -89,7 +94,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
         val MODERN = BuiltInTheme1(
             code = 1,
@@ -115,7 +120,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
         val AUTUMN = BuiltInTheme1(
             code = 2,
@@ -141,7 +146,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
         val CHERRY = BuiltInTheme1(
             code = 3,
@@ -167,7 +172,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
         val ICE = BuiltInTheme1(
             code = 4,
@@ -193,7 +198,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
         val GRASS = BuiltInTheme1(
             code = 5,
@@ -219,7 +224,7 @@ class BuiltInTheme1(
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
                 ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
-            )
+            ),
         )
 
         fun fromCode(code: Int): BuiltInTheme1 {
@@ -239,19 +244,35 @@ class BuiltInTheme1(
 data class EditingTheme(
     val name: String,
     val colors: List<Selectable<ColorDto>>,
-    val isEditable: Boolean,
-    val isNew: Boolean,
+    private val originalTheme: TableTheme1,
+    private val isDarkMode: Boolean,
 ) {
-    fun toCustomTheme(id: String): CustomTheme1 {
-        if (isEditable.not()) {
-            throw RuntimeException("Attempting to edit a theme that cannot be edited.")
+    val isEditable get() = originalTheme.isEditable
+    val isNew get() = originalTheme.isNew
+    val isCustomTheme get() = originalTheme is CustomTheme1
+
+    fun hasChange(): Boolean {
+        return if (originalTheme.isEditable) {
+            name != originalTheme.name ||
+                colors.map { it.item } != originalTheme.getColors(isDarkMode)
+        } else {
+            false
         }
-        return CustomTheme1(
-            id = id,
-            name = name,
-            isFromMarket = false,
-            colors = colors.map { it.item },
-        )
+    }
+
+    fun toTableTheme(): TableTheme1 {
+        return when (originalTheme) {
+            is CustomTheme1 -> {
+                CustomTheme1(
+                    id = originalTheme.id,
+                    name = name,
+                    isFromMarket = originalTheme.isFromMarket,
+                    colors = colors.map { it.item },
+                )
+            }
+
+            is BuiltInTheme1 -> originalTheme
+        }
     }
 
     companion object {
@@ -261,8 +282,8 @@ data class EditingTheme(
                 colors = tableTheme.getColors(isDarkMode).mapIndexed { index, colorDto ->
                     Selectable(colorDto, tableTheme.isEditable && index == 0)
                 },
-                isEditable = tableTheme.isEditable,
-                isNew = tableTheme.isNew
+                originalTheme = tableTheme,
+                isDarkMode = isDarkMode,
             )
         }
     }
