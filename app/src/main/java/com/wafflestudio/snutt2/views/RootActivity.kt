@@ -439,7 +439,7 @@ class RootActivity : AppCompatActivity() {
             ThemeConfigRoute(
                 themeConfigViewModel = themeConfigViewModel,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToThemeDetail = { theme ->
+                onNavigateToDetail = { theme ->
                     when (theme) {
                         is CustomTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
                         is BuiltInTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")

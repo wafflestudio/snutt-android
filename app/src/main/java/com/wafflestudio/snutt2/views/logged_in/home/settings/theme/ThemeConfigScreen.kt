@@ -72,7 +72,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ThemeConfigRoute(
     onNavigateBack: () -> Unit,
-    onNavigateToThemeDetail: (TableTheme) -> Unit,
+    onNavigateToDetail: (TableTheme) -> Unit,
     onClickAddTheme: () -> Unit,
     themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
 ) {
@@ -91,7 +91,7 @@ fun ThemeConfigRoute(
                 themeConfigViewModel.fetchThemes()
             }
         },
-        onNavigateToDetail = onNavigateToThemeDetail,
+        onNavigateToDetail = onNavigateToDetail,
         onClickAddTheme = onClickAddTheme,
         onDuplicateTheme = {
             launchSuspendApi(apiOnProgress, apiOnError) {
