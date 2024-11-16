@@ -342,7 +342,11 @@ private fun ThemeColorRow(
             navBottomSheetState.currentValue == ModalBottomSheetValue.Hidden, // 바텀시트 올라올 때에는 애니메이션 적용 안하기 위함
         ).apply { targetState = true }
     }
-    AnimatedVisibility(state) {
+    AnimatedVisibility(
+        visibleState = state,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
         Column {
             ThemeDetailItem(
                 title = stringResource(R.string.theme_detail_color_item, index + 1),
