@@ -52,6 +52,8 @@ import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLay
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -64,7 +66,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -434,8 +436,18 @@ class RootActivity : AppCompatActivity() {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
-            ThemeConfigPage(
+            ThemeConfigRoute(
                 themeListViewModel = themeListViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToThemeDetail = { theme ->
+                    when (theme) {
+                        is CustomTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                        is BuiltInTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                    }
+                },
+                onClickAddTheme = {
+                    navController.navigate(NavigationDestination.ThemeDetail)
+                }
             )
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
