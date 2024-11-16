@@ -18,8 +18,8 @@ class ThemeConfigViewModel @Inject constructor(
     currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
-    val customThemes: StateFlow<List<CustomTheme>> get() = themeRepository.customThemes
-    val builtInThemes: StateFlow<List<BuiltInTheme>> get() = themeRepository.builtInThemes
+    val customThemes: StateFlow<List<CustomTheme>> = themeRepository.customThemes
+    val builtInThemes: StateFlow<List<BuiltInTheme>> = themeRepository.builtInThemes
 
     val currentTable = currentTableRepository.currentTable
 
