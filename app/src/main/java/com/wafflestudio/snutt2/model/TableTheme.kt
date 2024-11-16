@@ -22,7 +22,7 @@ sealed class TableTheme(
         get() {
             return when (this) {
                 is CustomTheme -> isFromMarket.not()
-                is BuiltInTheme -> true
+                is BuiltInTheme -> false
             }
         }
 
