@@ -20,12 +20,10 @@ data class ThemeDto(
                 id = id!!,
                 name = name ?: "",
                 colors = colors ?: emptyList(),
+                isFromMarket = false        // FIXME: 서버 응답에 맞게 수정
             )
         } else {
-            BuiltInTheme(
-                code = theme ?: 0,
-                name = name ?: "",
-            )
+            BuiltInTheme.fromCode(theme ?: 0)
         }
     }
 }

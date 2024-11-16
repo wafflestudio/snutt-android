@@ -10,8 +10,8 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.model.BuiltInTheme1
-import com.wafflestudio.snutt2.model.CustomTheme1
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.EditingTheme
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,7 +75,7 @@ class ThemeDetailViewModel @Inject constructor(
 
     private fun initBuiltInTheme(theme: Int, isDarkMode: Boolean) {
         try {
-            val originalTheme = BuiltInTheme1.fromCode(theme)
+            val originalTheme = BuiltInTheme.fromCode(theme)
             editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
         } catch (e: Exception) {
             apiOnError(e)
@@ -84,13 +84,13 @@ class ThemeDetailViewModel @Inject constructor(
 
     private fun initCustomTheme(themeId: String, isDarkMode: Boolean) {
         val originalTheme = if (themeId.isEmpty()) { // 새로 생성한 커스텀 테마
-            CustomTheme1.Default
+            CustomTheme.Default
         } else { // 이미 존재하는 커스텀 테마
             try {
                 themeRepository.getTheme(themeId)
             } catch (e: Exception) {
                 apiOnError(e)
-                CustomTheme1.Default
+                CustomTheme.Default
             }
         }
         editingTheme.value = EditingTheme.fromTableTheme(originalTheme, isDarkMode)
@@ -157,7 +157,7 @@ class ThemeDetailViewModel @Inject constructor(
     }
 
     suspend fun saveTheme() {
-        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme ?: return
         if (theme.isEditable.not()) return
 
         val newTheme = if (theme.isNew) {
@@ -171,7 +171,7 @@ class ThemeDetailViewModel @Inject constructor(
 
     suspend fun applyThemeToCurrentTable() {
         val currentTable = currentTable.value ?: return
-        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme ?: return
 
         tableRepository.updateTableTheme(
             currentTable.id,
@@ -181,7 +181,7 @@ class ThemeDetailViewModel @Inject constructor(
 
     suspend fun refreshCurrentTableIfNeeded() { // 현재 선택된 시간표의 테마라면 새로고침
         val currentTable = currentTable.value ?: return
-        val theme = editingTheme.value?.toTableTheme() as? CustomTheme1 ?: return
+        val theme = editingTheme.value?.toTableTheme() as? CustomTheme ?: return
 
         if (theme.isAppliedToTable(currentTable)) {
             tableRepository.fetchTableById(currentTable.id)

@@ -229,7 +229,6 @@ class TimetableView : View {
                     lecture.color.bgColor!!
                 } else {
                     BuiltInTheme.fromCode(theme).getColorByIndex(
-                        context,
                         lecture.colorIndex,
                     )
                 },
