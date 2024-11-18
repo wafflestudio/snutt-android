@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
@@ -56,6 +57,9 @@ fun NotificationRoute(
     viewModel: NotificationsViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
+    val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
+    val notificationUiState = notificationList.notificationUiState()
+
     if (viewModel.isRefactoring()) {
         NotificationPage(
             onBackClick = {
@@ -63,6 +67,7 @@ fun NotificationRoute(
                     navController.popBackStack()
                 }
             },
+            uiState = notificationUiState,
             modifier = modifier,
         )
     } else {
@@ -244,8 +249,51 @@ fun NotificationPagePreview() {
 @Composable
 fun NotificationPage(
     modifier: Modifier = Modifier,
+    uiState: NotificationUiState,
     onBackClick: () -> Unit,
 ) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize(),
+    ) {
+        SimpleTopBar(
+            title = stringResource(R.string.notifications_app_bar_title),
+            onClickNavigateBack = onBackClick,
+        )
 
+        when (uiState) {
+            NotificationUiState.Empty -> NotificationPlaceholder()
+            NotificationUiState.Error -> NotificationError()
+            NotificationUiState.Loading -> {}
+            is NotificationUiState.Success -> LazyColumn {
+                items(uiState.notificationList) { notification ->
+                    notification?.let {
+                        NotificationItem(notification) {
+                            DeeplinkExecutor.execute(it.deeplink)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
+sealed interface NotificationUiState {
+    data class Success(val notificationList: LazyPagingItems<NotificationDto>) : NotificationUiState
+    data object Error: NotificationUiState
+    data object Loading: NotificationUiState
+    data object Empty: NotificationUiState
+}
+
+private fun LazyPagingItems<NotificationDto>.notificationUiState(): NotificationUiState {
+    val refreshState = loadState.refresh
+    val appendState = loadState.append
+
+    return when {
+        refreshState is LoadState.Loading -> NotificationUiState.Loading
+        refreshState is LoadState.Error -> NotificationUiState.Error
+        appendState.endOfPaginationReached && itemCount < 1 -> NotificationUiState.Empty
+        else -> NotificationUiState.Success(this)
+    }
+}
