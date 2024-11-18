@@ -56,7 +56,7 @@ import com.wafflestudio.snutt2.views.NavigationDestination
 @Composable
 fun NotificationRoute(
     modifier: Modifier = Modifier,
-    viewModel: NotificationsViewModel = hiltViewModel()
+    viewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
@@ -363,9 +363,9 @@ fun NotificationIcon(type: NotificationType) {
 
 sealed interface NotificationUiState {
     data class Success(val notificationList: LazyPagingItems<Notification>) : NotificationUiState
-    data object Error: NotificationUiState
-    data object Loading: NotificationUiState
-    data object Empty: NotificationUiState
+    data object Error : NotificationUiState
+    data object Loading : NotificationUiState
+    data object Empty : NotificationUiState
 }
 
 private fun LazyPagingItems<Notification>.notificationUiState(): NotificationUiState {

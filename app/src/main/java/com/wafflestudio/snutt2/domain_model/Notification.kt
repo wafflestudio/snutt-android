@@ -24,7 +24,7 @@ fun NotificationDto.domainModel() = Notification(
     title = title,
     message = message,
     createdAt = createdAt,
-    type = when(type) {
+    type = when (type) {
         0 -> NotificationType.Warning
         1 -> NotificationType.Calendar
         2 -> NotificationType.RefreshTime
