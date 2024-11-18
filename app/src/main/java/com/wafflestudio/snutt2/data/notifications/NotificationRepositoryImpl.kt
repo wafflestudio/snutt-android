@@ -3,9 +3,13 @@ package com.wafflestudio.snutt2.data.notifications
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
+import com.wafflestudio.snutt2.domain_model.Notification
+import com.wafflestudio.snutt2.domain_model.domainModel
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +24,20 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
             ),
             pagingSourceFactory = { NotificationPagingSource(api) },
         ).flow
+    }
+
+    override suspend fun getNotificationListStream(): Flow<PagingData<Notification>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = { NotificationPagingSource(api) },
+        ).flow.map { pagingData ->
+            pagingData.map { notification ->
+                notification.domainModel()
+            }
+        }
     }
 
     override suspend fun getNotificationCount(): Long {

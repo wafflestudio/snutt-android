@@ -43,6 +43,8 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
+import com.wafflestudio.snutt2.domain_model.Notification
+import com.wafflestudio.snutt2.domain_model.NotificationType
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -80,7 +82,7 @@ private fun NotificationPage() {
     val navController = LocalNavController.current
     val vm = hiltViewModel<NotificationsViewModel>()
 
-    val notificationList = vm.notificationList.collectAsLazyPagingItems()
+    val notificationList = vm.notificationResult.collectAsLazyPagingItems()
     val refreshState = notificationList.loadState.refresh
     val appendState = notificationList.loadState.append
 
@@ -279,14 +281,94 @@ fun NotificationPage(
     }
 }
 
+@Composable
+fun NotificationItem(notification: Notification, onClick: () -> Unit) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .clicks {
+                onClick()
+            }
+            .padding(horizontal = 16.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
+        ) {
+            NotificationIcon(notification.type)
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
+            ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = notification.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = getNotificationTime(context, notification),
+                        style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = notification.message,
+                    style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
+                )
+            }
+        }
+        Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)
+    }
+}
+
+@Composable
+fun NotificationIcon(type: NotificationType) {
+    when (type) {
+        NotificationType.Warning -> WarningIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Calendar -> CalendarIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.RefreshTime -> RefreshTimeIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Trash -> NotificationTrashIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Vacancy -> NotificationVacancyIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Friend -> NotificationFriendIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Megaphone -> MegaphoneIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+    }
+}
+
 sealed interface NotificationUiState {
-    data class Success(val notificationList: LazyPagingItems<NotificationDto>) : NotificationUiState
+    data class Success(val notificationList: LazyPagingItems<Notification>) : NotificationUiState
     data object Error: NotificationUiState
     data object Loading: NotificationUiState
     data object Empty: NotificationUiState
 }
 
-private fun LazyPagingItems<NotificationDto>.notificationUiState(): NotificationUiState {
+private fun LazyPagingItems<Notification>.notificationUiState(): NotificationUiState {
     val refreshState = loadState.refresh
     val appendState = loadState.append
 

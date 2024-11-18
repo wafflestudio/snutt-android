@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.lib.data
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.domain_model.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
@@ -78,6 +79,37 @@ object SNUTTStringUtils {
     }
 
     fun getNotificationTime(context: Context, info: NotificationDto): String {
+        try {
+            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            format.timeZone = TimeZone.getTimeZone("UTC")
+            val date1 = format.parse(info.createdAt) ?: Date()
+            val date2 = Date()
+
+            val diff = date2.time - date1.time
+            val hours = diff / (1000 * 60 * 60)
+            val minutes = diff / (1000 * 60)
+            val days = hours / 24
+            return when {
+                days > 0 -> {
+                    SimpleDateFormat("yyyy/MM/dd").format(date1)
+                }
+                hours > 0 -> {
+                    context.getString(R.string.time_hours_ago, hours)
+                }
+                minutes > 0 -> {
+                    context.getString(R.string.time_minutes_ago, minutes)
+                }
+                else -> {
+                    context.getString(R.string.time_now)
+                }
+            }
+        } catch (e: ParseException) {
+            Timber.e("notification created time parse error!")
+            return ""
+        }
+    }
+
+    fun getNotificationTime(context: Context, info: Notification): String {
         try {
             val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             format.timeZone = TimeZone.getTimeZone("UTC")

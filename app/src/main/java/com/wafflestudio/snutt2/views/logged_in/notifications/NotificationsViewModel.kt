@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
+import com.wafflestudio.snutt2.domain_model.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTAppState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,17 +20,32 @@ class NotificationsViewModel @Inject constructor(
     private val snuttAppState: SNUTTAppState,
 ) : ViewModel() {
 
-    private val _notificationList =
+    private val _notificationResult =
         MutableStateFlow<PagingData<NotificationDto>>(PagingData.empty())
-    val notificationList: StateFlow<PagingData<NotificationDto>> = _notificationList
+    val notificationResult: StateFlow<PagingData<NotificationDto>> = _notificationResult
+
+    private val _notificationList =
+        MutableStateFlow<PagingData<Notification>>(PagingData.empty())
+    val notificationList: StateFlow<PagingData<Notification>> = _notificationList
 
     init {
         viewModelScope.launch {
-            notificationRepository.getNotificationResultStream()
-                .cachedIn(viewModelScope)
-                .collect {
-                    _notificationList.emit(it)
+            when (snuttAppState) {
+                SNUTTAppState.NORMAL -> {
+                    notificationRepository.getNotificationResultStream()
+                        .cachedIn(viewModelScope)
+                        .collect {
+                            _notificationResult.emit(it)
+                        }
                 }
+                SNUTTAppState.REFACTOR -> {
+                    notificationRepository.getNotificationListStream()
+                        .cachedIn(viewModelScope)
+                        .collect {
+                            _notificationList.emit(it)
+                        }
+                }
+            }
         }
     }
 
