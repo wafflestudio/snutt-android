@@ -27,8 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
@@ -46,12 +45,12 @@ import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.domain_model.Notification
 import com.wafflestudio.snutt2.domain_model.NotificationType
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun NotificationRoute(
@@ -62,190 +61,15 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-    if (viewModel.isRefactoring()) {
-        NotificationPage(
-            onBackClick = {
-                if (navController.currentDestination?.route == NavigationDestination.Notification) {
-                    navController.popBackStack()
-                }
-            },
-            uiState = notificationUiState,
-            modifier = modifier,
-        )
-    } else {
-        NotificationPage()
-    }
-}
-
-@Composable
-private fun NotificationPage() {
-    val navController = LocalNavController.current
-    val vm = hiltViewModel<NotificationsViewModel>()
-
-    val notificationList = vm.notificationResult.collectAsLazyPagingItems()
-    val refreshState = notificationList.loadState.refresh
-    val appendState = notificationList.loadState.append
-
-    Column(
-        modifier = Modifier
-            .background(SNUTTColors.White900)
-            .fillMaxSize(),
-    ) {
-        SimpleTopBar(
-            title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = {
-                if (navController.currentDestination?.route == NavigationDestination.Notification) {
-                    navController.popBackStack()
-                }
-            },
-        )
-
-        when {
-            refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()
-            refreshState is LoadState.Error -> NotificationError()
-            else -> LazyColumn {
-                items(notificationList) {
-                    it?.let {
-                        NotificationItem(it, onClick = {
-                            DeeplinkExecutor.execute(it.deeplink)
-                        },)
-                    }
-                }
+    NotificationPage(
+        onBackClick = {
+            if (navController.currentDestination?.route == NavigationDestination.Notification) {
+                navController.popBackStack()
             }
-        }
-    }
-}
-
-@Composable
-fun NotificationItem(info: NotificationDto, onClick: () -> Unit) {
-    val context = LocalContext.current
-    Column(
-        modifier = Modifier
-            .clicks {
-                onClick()
-            }
-            .padding(horizontal = 16.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
-        ) {
-            when (info.type) {
-                0 -> WarningIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                1 -> CalendarIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                2 -> RefreshTimeIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                3 -> NotificationTrashIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                4 -> NotificationVacancyIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                5 -> NotificationFriendIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                else -> MegaphoneIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Column(
-                modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = getNotificationTime(context, info),
-                        style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = info.message,
-                    style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
-                )
-            }
-        }
-        Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)
-    }
-}
-
-@Composable
-fun NotificationError() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.common_network_failure),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
-        )
-    }
-}
-
-@Composable
-fun NotificationPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 30.dp, end = 30.dp, bottom = 40.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AlarmOnIcon(
-            modifier = Modifier.size(40.dp),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.notifications_placeholder_title),
-            style = SNUTTTypography.h2.copy(color = SNUTTColors.Gray200),
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.notifications_placeholder_description),
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NotificationItemPreview() {
-    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null, deeplink = ""), onClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NotificationPagePreview() {
-    NotificationPage()
+        },
+        uiState = notificationUiState,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -255,7 +79,7 @@ fun NotificationPage(
     onBackClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(SNUTTColors.White900)
             .fillMaxSize(),
     ) {
@@ -361,21 +185,57 @@ fun NotificationIcon(type: NotificationType) {
     }
 }
 
-sealed interface NotificationUiState {
-    data class Success(val notificationList: LazyPagingItems<Notification>) : NotificationUiState
-    data object Error : NotificationUiState
-    data object Loading : NotificationUiState
-    data object Empty : NotificationUiState
+@Composable
+fun NotificationError() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        WarningIcon(
+            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.common_network_failure),
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
+        )
+    }
 }
 
-private fun LazyPagingItems<Notification>.notificationUiState(): NotificationUiState {
-    val refreshState = loadState.refresh
-    val appendState = loadState.append
-
-    return when {
-        refreshState is LoadState.Loading -> NotificationUiState.Loading
-        refreshState is LoadState.Error -> NotificationUiState.Error
-        appendState.endOfPaginationReached && itemCount < 1 -> NotificationUiState.Empty
-        else -> NotificationUiState.Success(this)
+@Composable
+fun NotificationPlaceholder() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 30.dp, end = 30.dp, bottom = 40.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        AlarmOnIcon(
+            modifier = Modifier.size(40.dp),
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.notifications_placeholder_title),
+            style = SNUTTTypography.h2.copy(color = SNUTTColors.Gray200),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.notifications_placeholder_description),
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
+            textAlign = TextAlign.Center,
+        )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationPagePreview() {
+    val data =
+        PagingData.from(listOf(Notification("테스트 알림", "테스트 문구", "", NotificationType.Trash, "")))
+    val flow = flowOf(data)
+    val a = flow.collectAsLazyPagingItems()
+    NotificationPage(uiState = NotificationUiState.Success(a), onBackClick = {})
 }
