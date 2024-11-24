@@ -79,6 +79,7 @@ android {
         create("staging") {
             isDefault = true
             applicationIdSuffix = ".staging"
+            dimension = "mode"
 
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
@@ -92,6 +93,7 @@ android {
 
         create("live") {
             applicationIdSuffix = ".live"
+            dimension = "mode"
 
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
@@ -103,6 +105,18 @@ android {
         }
     }
 
+    flavorDimensions.add("implementation")
+    productFlavors {
+        create("refactor") {
+            dimension = "implementation"
+            buildConfigField("boolean", "REFACTOR", "true")
+        }
+        create("normal") {
+            isDefault = true
+            dimension = "implementation"
+            buildConfigField("boolean", "REFACTOR", "false")
+        }
+    }
     kotlinOptions {
         jvmTarget = "17"
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
