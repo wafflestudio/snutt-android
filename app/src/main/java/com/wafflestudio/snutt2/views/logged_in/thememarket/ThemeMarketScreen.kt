@@ -12,8 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.components.compose.SnuttWebView
-import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
+import com.wafflestudio.snutt2.lib.android.webview.ThemeMarketWebViewContainer
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +38,7 @@ fun ThemeMarketScreen(
     val context = LocalContext.current
     val isDarkMode = isDarkMode()
     val webViewContainer = remember {
-        WebViewContainer(
+        ThemeMarketWebViewContainer(
             context = context,
             accessToken = accessToken,
             isDarkMode = isDarkMode,
@@ -55,7 +54,7 @@ fun ThemeMarketScreen(
     }
 
     LaunchedEffect(Unit) {
-        webViewContainer.openPage("https://snutt-theme-market-dev.wafflestudio.com/download")
+        webViewContainer.openPage()
     }
 
     Column(
@@ -65,8 +64,8 @@ fun ThemeMarketScreen(
             title = stringResource(R.string.theme_market_app_bar_title),
             onClickNavigateBack = onBackClick,
         )
-        SnuttWebView(
-            webViewContainer = webViewContainer,
+        ThemeMarketWebView(
+            themeMarketWebViewContainer = webViewContainer,
         )
     }
 }
