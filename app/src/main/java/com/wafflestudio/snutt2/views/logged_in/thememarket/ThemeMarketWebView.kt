@@ -71,7 +71,7 @@ private fun ThemeMarketWebViewError(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = stringResource(R.string.reviews_error_message),
+            text = stringResource(R.string.theme_market_webview_error),
             style = SNUTTTypography.subtitle1,
             color = SNUTTColors.Black900,
         )
@@ -83,7 +83,7 @@ private fun ThemeMarketWebViewError(
             colors = ButtonDefaults.buttonColors(backgroundColor = SNUTTColors.Sky),
         ) {
             Text(
-                text = stringResource(id = R.string.reviews_error_retry),
+                text = stringResource(id = R.string.theme_market_webview_error_retry),
                 style = SNUTTTypography.h3,
                 color = SNUTTColors.White900,
             )
