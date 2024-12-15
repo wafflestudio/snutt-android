@@ -103,11 +103,11 @@ class ThemeMarketWebViewContainer(
             setCookie(
                 host,
                 "theme=${
-                    if (isDarkMode) {
-                        "dark"
-                    } else {
-                        "light"
-                    }
+                if (isDarkMode) {
+                    "dark"
+                } else {
+                    "light"
+                }
                 }",
             )
         }.flush()
