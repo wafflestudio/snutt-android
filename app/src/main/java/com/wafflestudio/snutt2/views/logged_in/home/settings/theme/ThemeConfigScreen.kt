@@ -204,12 +204,14 @@ fun ThemeConfigScreen(
                         )
                     },
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                ThemesRow(
-                    title = stringResource(R.string.theme_config_market_custom_theme),
-                    themes = marketCustomThemes,
-                    onClickItem = onNavigateToDetail,
-                )
+                if (marketCustomThemes.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    ThemesRow(
+                        title = stringResource(R.string.theme_config_market_custom_theme),
+                        themes = marketCustomThemes,
+                        onClickItem = onNavigateToDetail,
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 ThemesRow(
                     title = stringResource(R.string.theme_config_builtin_theme),
