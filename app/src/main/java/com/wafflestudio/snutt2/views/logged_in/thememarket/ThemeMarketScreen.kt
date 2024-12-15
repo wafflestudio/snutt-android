@@ -66,6 +66,7 @@ fun ThemeMarketScreen(
         )
         ThemeMarketWebView(
             themeMarketWebViewContainer = webViewContainer,
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
