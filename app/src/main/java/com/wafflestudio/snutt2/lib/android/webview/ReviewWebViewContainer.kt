@@ -18,7 +18,7 @@ class ReviewWebViewContainer(
     private val accessToken: StateFlow<String?>,
     private val isDarkMode: Boolean,
 ) : WebViewContainer {
-    val loadState: MutableState<LoadState> = mutableStateOf(LoadState.InitialLoading(0))
+    val loadState: MutableState<LoadState> = mutableStateOf(LoadState.Loading(0))
 
     override val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
@@ -32,10 +32,7 @@ class ReviewWebViewContainer(
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                loadState.value = when (loadState.value) {
-                    is LoadState.InitialLoading -> LoadState.InitialLoading(0)
-                    else -> LoadState.Loading(0)
-                }
+                loadState.value = LoadState.Loading(0)
             }
 
             override fun onReceivedError(
@@ -49,7 +46,6 @@ class ReviewWebViewContainer(
         this.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 when (loadState.value) {
-                    is LoadState.InitialLoading -> LoadState.InitialLoading(newProgress)
                     is LoadState.Loading -> LoadState.Loading(newProgress)
                     else -> null
                 }?.let {
