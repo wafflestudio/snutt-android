@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.lib.data
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.domain_model.Notification
+import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto

@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.domain_model.Notification
-import com.wafflestudio.snutt2.domain_model.domainModel
+import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

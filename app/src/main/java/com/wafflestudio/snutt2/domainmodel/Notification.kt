@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.domain_model
+package com.wafflestudio.snutt2.domainmodel
 
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 

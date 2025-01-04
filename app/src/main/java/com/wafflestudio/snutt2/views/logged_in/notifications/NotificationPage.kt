@@ -42,8 +42,8 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
-import com.wafflestudio.snutt2.domain_model.Notification
-import com.wafflestudio.snutt2.domain_model.NotificationType
+import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domainmodel.NotificationType
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography

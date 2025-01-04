@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.notifications
 
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.wafflestudio.snutt2.domain_model.Notification
+import com.wafflestudio.snutt2.domainmodel.Notification
 
 sealed interface NotificationUiState {
     data class Success(val notificationList: LazyPagingItems<Notification>) : NotificationUiState
