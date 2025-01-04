@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
     NotificationRepository {
-    override suspend fun getNotificationListStream(): Flow<PagingData<Notification>> {
+    override fun getNotificationListStream(): Flow<PagingData<Notification>> {
         return Pager(
             config = PagingConfig(
                 pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,

@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.domainmodel.Notification
 import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
-    suspend fun getNotificationListStream(): Flow<PagingData<Notification>>
+    fun getNotificationListStream(): Flow<PagingData<Notification>>
 
     suspend fun getNotificationCount(): Long
 }
