@@ -1,19 +1,26 @@
 package com.wafflestudio.snutt2.lib.data
 
 import android.content.Context
+import android.os.Build
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.DateTimeParseException
+import java.time.format.ResolverStyle
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object SNUTTStringUtils {
     fun getFullSemester(tableDto: TableDto): String {
@@ -78,67 +85,39 @@ object SNUTTStringUtils {
         return text.toString()
     }
 
-    fun getNotificationTime(context: Context, info: NotificationDto): String {
+    fun getDateFromString(data: String): Date {
         try {
-            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            format.timeZone = TimeZone.getTimeZone("UTC")
-            val date1 = format.parse(info.createdAt) ?: Date()
-            val date2 = Date()
-
-            val diff = date2.time - date1.time
-            val hours = diff / (1000 * 60 * 60)
-            val minutes = diff / (1000 * 60)
-            val days = hours / 24
-            return when {
-                days > 0 -> {
-                    SimpleDateFormat("yyyy/MM/dd").format(date1)
-                }
-                hours > 0 -> {
-                    context.getString(R.string.time_hours_ago, hours)
-                }
-                minutes > 0 -> {
-                    context.getString(R.string.time_minutes_ago, minutes)
-                }
-                else -> {
-                    context.getString(R.string.time_now)
-                }
-            }
+            return DateFormatter.parseFull(data)
         } catch (e: ParseException) {
             Timber.e("notification created time parse error!")
-            return ""
+            return Date()
         }
     }
 
-    fun getNotificationTime(context: Context, info: Notification): String {
-        try {
-            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            format.timeZone = TimeZone.getTimeZone("UTC")
-            val date1 = format.parse(info.createdAt) ?: Date()
-            val date2 = Date()
+    fun getNotificationTimeFromDate(context: Context, date: Date): String {
+        val now = Date()
 
-            val diff = date2.time - date1.time
-            val hours = diff / (1000 * 60 * 60)
-            val minutes = diff / (1000 * 60)
-            val days = hours / 24
-            return when {
-                days > 0 -> {
-                    SimpleDateFormat("yyyy/MM/dd").format(date1)
-                }
-                hours > 0 -> {
-                    context.getString(R.string.time_hours_ago, hours)
-                }
-                minutes > 0 -> {
-                    context.getString(R.string.time_minutes_ago, minutes)
-                }
-                else -> {
-                    context.getString(R.string.time_now)
-                }
+        val diffInMillis = now.time - date.time
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
+        val hours = TimeUnit.MILLISECONDS.toHours(diffInMillis)
+        val days = TimeUnit.MILLISECONDS.toDays(diffInMillis)
+
+        return when {
+            days > 0 -> {
+                DateFormatter.formatDate(date)
             }
-        } catch (e: ParseException) {
-            Timber.e("notification created time parse error!")
-            return ""
+            hours > 0 -> {
+                context.getString(R.string.time_hours_ago, hours)
+            }
+            minutes > 0 -> {
+                context.getString(R.string.time_minutes_ago, minutes)
+            }
+            else -> {
+                context.getString(R.string.time_now)
+            }
         }
     }
+
 
     fun getLectureTagText(lecture: LectureDto): String {
         return listOf(
