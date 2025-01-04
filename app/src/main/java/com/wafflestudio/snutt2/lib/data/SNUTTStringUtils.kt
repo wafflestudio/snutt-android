@@ -1,24 +1,14 @@
 package com.wafflestudio.snutt2.lib.data
 
 import android.content.Context
-import android.os.Build
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
-import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.DateTimeParseException
-import java.time.format.ResolverStyle
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -117,7 +107,6 @@ object SNUTTStringUtils {
             }
         }
     }
-
 
     fun getLectureTagText(lecture: LectureDto): String {
         return listOf(
