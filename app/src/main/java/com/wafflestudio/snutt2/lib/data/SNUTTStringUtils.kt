@@ -174,5 +174,5 @@ object SNUTTStringUtils {
         }
     }.toString()
 
-    fun String.isValidPassword(): Boolean = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,20}$").matches(this)
+    fun String.isValidPassword(): Boolean = Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this)
 }
