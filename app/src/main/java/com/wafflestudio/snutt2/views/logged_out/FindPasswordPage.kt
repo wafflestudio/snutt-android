@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -260,6 +261,7 @@ fun FindPasswordPage() {
                                 )
                             },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            visualTransformation = PasswordVisualTransformation(),
                             singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -280,6 +282,7 @@ fun FindPasswordPage() {
                                 )
                             },),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            visualTransformation = PasswordVisualTransformation(),
                             singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth()
