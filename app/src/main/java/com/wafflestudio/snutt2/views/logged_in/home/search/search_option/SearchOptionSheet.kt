@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -17,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snutt2.components.compose.ExitIcon
-import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
@@ -139,12 +136,10 @@ fun SearchOptionSheet(
         }.first().measure(constraints)
 
         val closeBottomSheetPlaceable = subcompose(slotId = 5) {
-            Row(
-                modifier = Modifier.clicks { hideBottomSheet() },
-            ) {
-                ExitIcon()
+            if (optionSheetMode != OptionSheetMode.TimeSelect) {
+                SearchOptionCancelButton(hideBottomSheet)
             }
-        }.first().measure(constraints)
+        }.firstOrNull()?.measure(constraints)
 
         // 한번만 계산, 할당
         if (normalSheetHeightPx == 0 && maxSheetHeightPx == 0) {
@@ -171,7 +166,7 @@ fun SearchOptionSheet(
                 tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
                     .roundToInt(),
             )
-            closeBottomSheetPlaceable.placeRelative(
+            closeBottomSheetPlaceable?.placeRelative(
                 tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
                 (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
             )
