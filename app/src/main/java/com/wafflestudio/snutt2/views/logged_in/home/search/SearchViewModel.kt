@@ -116,6 +116,15 @@ class SearchViewModel @Inject constructor(
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
+    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagList
+        .map { tags ->
+            TagType.entries.filter { tagType ->
+                (tags + etcTags + timeTags).any { it.type == tagType }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     val selectableRecentSearchedDepartments: StateFlow<List<Selectable<TagDto>>> = combine(
         tagsByTagType, recentSearchedDepartments, _selectedTags,
     ) { tagsByTagType, recentDepartments, selectedTags ->
@@ -299,6 +308,8 @@ class SearchViewModel @Inject constructor(
                 currentTable.year, currentTable.semester,
             ),
         )
+        // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
+        tagTypesNotEmpty.value.firstOrNull()?.takeIf { it != selectedTagType.value }?.let { setTagType(it) }
     }
 
     fun togglePageMode() {

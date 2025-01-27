@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TagTypeColumn(
+    tagTypesNotEmpty: List<TagType>,
     selectedTagType: TagType,
     baseAnimatedFloat: State<Float>,
     onSelectTagType: (TagType) -> Unit,
@@ -38,6 +39,7 @@ fun TagTypeColumn(
             context.getString(R.string.search_option_tag_type_credit) to TagType.CREDIT,
             context.getString(R.string.search_option_tag_type_time) to TagType.TIME,
             context.getString(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
+            context.getString(R.string.search_option_tag_type_general_category_pre2025) to TagType.CATEGORY_PRE2025,
             context.getString(R.string.search_option_tag_type_etc) to TagType.ETC,
         )
     }
@@ -53,7 +55,7 @@ fun TagTypeColumn(
             .offset(x = offsetXAnimatedDp)
             .padding(start = 20.dp, bottom = 10.dp),
     ) {
-        tagTypeList.forEach { (name, type) ->
+        tagTypeList.filter { tagTypesNotEmpty.contains(it.second) }.forEach { (name, type) ->
             Text(
                 text = name,
                 style = SNUTTTypography.h2.copy(
