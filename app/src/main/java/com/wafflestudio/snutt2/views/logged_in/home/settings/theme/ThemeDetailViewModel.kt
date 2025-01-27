@@ -37,8 +37,9 @@ class ThemeDetailViewModel @Inject constructor(
     val themeDetailUiState = combine(
         currentTableRepository.currentTable,
         userRepository.tableTrimParam,
+        userRepository.tableLectureCustomOption,
         editingTheme,
-    ) { table, trimParam, editingTheme ->
+    ) { table, trimParam, lectureCustomOption, editingTheme ->
         if (editingTheme == null) {
             return@combine ThemeDetailUiState.Loading
         }
@@ -49,6 +50,7 @@ class ThemeDetailViewModel @Inject constructor(
         val tableState = TableState(
             table,
             trimParam,
+            lectureCustomOption,
             editingTheme.toTableTheme(),
         )
         ThemeDetailUiState.Success(
