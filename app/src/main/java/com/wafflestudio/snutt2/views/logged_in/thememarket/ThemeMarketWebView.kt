@@ -45,8 +45,14 @@ fun ThemeMarketWebView(
             },
             modifier = modifier,
         )
-        is LoadState.Loading -> ThemeMarketWebViewLoading(loadState.progress / 100f)
-        LoadState.Success -> ThemeMarketWebViewSuccess(themeMarketWebViewContainer.webView)
+        is LoadState.Loading -> ThemeMarketWebViewLoading(
+            progress = loadState.progress / 100f,
+            modifier = modifier,
+        )
+        LoadState.Success -> ThemeMarketWebViewSuccess(
+            webView = themeMarketWebViewContainer.webView,
+            modifier = modifier,
+        )
     }
 }
 
