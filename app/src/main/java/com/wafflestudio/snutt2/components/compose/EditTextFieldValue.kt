@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +35,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun EditText(
+fun EditTextFieldValue(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable (() -> Unit) = {},
     trailingIcon: @Composable (() -> Unit) = {},
@@ -44,8 +44,8 @@ fun EditText(
     singleLine: Boolean = false,
     enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     hint: String? = null,
     hintTextColor: Color = SNUTTColors.EditTextHint,
     hintTextStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
@@ -89,7 +89,7 @@ fun EditText(
                             modifier = Modifier.weight(1f),
                         ) {
                             it()
-                            if (value.isEmpty()) {
+                            if (value.text.isEmpty()) {
                                 hint?.let {
                                     Text(
                                         text = it,
@@ -114,11 +114,4 @@ fun EditText(
             },
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditTextPreview() {
-    var text by remember { mutableStateOf("hello") }
-    EditText(value = text, onValueChange = { text = it })
 }

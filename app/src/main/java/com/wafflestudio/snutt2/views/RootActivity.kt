@@ -68,7 +68,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -79,6 +78,7 @@ import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
+import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -348,7 +348,7 @@ class RootActivity : AppCompatActivity() {
             }
 
             composable2(NavigationDestination.FindPassword) {
-                FindPasswordPage()
+                ResetPasswordPage()
             }
 
             composable2(NavigationDestination.EmailVerification) {
@@ -438,12 +438,7 @@ class RootActivity : AppCompatActivity() {
             )
         }
         composable2(NavigationDestination.ThemeConfig) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
             ThemeConfigRoute(
-                themeConfigViewModel = themeConfigViewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {

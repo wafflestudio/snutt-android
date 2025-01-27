@@ -4,6 +4,7 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
+import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -88,6 +89,16 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val tableLectureCustom = PrefValue<TableLectureCustom>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_CURRENT_VERSION,
+            key = "table_lecture_custom",
+            type = TableLectureCustom::class.java,
+            defaultValue = TableLectureCustom.Default,
+        ),
+    )
+
     val themeMode = PrefValue<ThemeMode>(
         prefContext,
         PrefValueMetaData(
@@ -155,6 +166,16 @@ class SNUTTStorage @Inject constructor(
             key = "first_vacancy_visit",
             type = Boolean::class.java,
             defaultValue = true,
+        ),
+    )
+
+    val recentSearchedDepartments = PrefValue<List<TagDto>>(
+        prefContext,
+        PrefListValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "recent_searched_departments",
+            type = TagDto::class.java,
+            defaultValue = listOf(),
         ),
     )
 

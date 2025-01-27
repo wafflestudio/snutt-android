@@ -4,6 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class DeleteUserFacebookResults(
+data class DeleteSocialLinkResults(
     @Json(name = "token") val token: String,
 )

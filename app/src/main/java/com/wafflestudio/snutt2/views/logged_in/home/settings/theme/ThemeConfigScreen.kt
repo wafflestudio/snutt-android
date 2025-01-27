@@ -78,7 +78,6 @@ fun ThemeConfigRoute(
 ) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
-
     val myCustomThemes by themeConfigViewModel.myCustomThemes.collectAsState()
     val marketCustomThemes by themeConfigViewModel.marketCustomThemes.collectAsState()
     val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()

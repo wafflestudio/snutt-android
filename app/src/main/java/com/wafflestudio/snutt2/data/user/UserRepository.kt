@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.data.user
 
-import com.wafflestudio.snutt2.lib.network.dto.GetUserFacebookResults
+import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
+import com.wafflestudio.snutt2.model.TableLectureCustom
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +12,8 @@ interface UserRepository {
     val user: StateFlow<UserDto?>
 
     val tableTrimParam: StateFlow<TableTrimParam>
+
+    val tableLectureCustomOption: StateFlow<TableLectureCustom>
 
     val accessToken: StateFlow<String>
 
@@ -22,13 +26,6 @@ interface UserRepository {
     // login with local id
     suspend fun postSignIn(id: String, password: String)
 
-    // login with facebook id
-    suspend fun postLoginFacebook(facebookToken: String)
-
-    suspend fun postLoginGoogle(googleAccessToken: String)
-
-    suspend fun postLoginKakao(kakaoAccessToken: String)
-
     suspend fun postSignUp(id: String, password: String, email: String)
 
     suspend fun fetchUserInfo()
@@ -39,18 +36,8 @@ interface UserRepository {
 
     suspend fun putUserPassword(oldPassword: String, newPassword: String)
 
-    suspend fun getUserFacebook(): GetUserFacebookResults
-
     // 새로운 local_id 추가
     suspend fun postUserPassword(id: String, password: String)
-
-    suspend fun deleteUserFacebook()
-
-    // facebook 계정 연동
-    suspend fun postUserFacebook(
-        facebookId: String,
-        facebookToken: String,
-    )
 
     suspend fun postFeedback(email: String, detail: String)
 
@@ -88,13 +75,15 @@ interface UserRepository {
 
     suspend fun verifyPwResetCode(id: String, code: String)
 
-    suspend fun resetPassword(id: String, password: String)
+    suspend fun resetPassword(id: String, password: String, code: String)
 
     suspend fun sendCodeToEmail(email: String)
 
     suspend fun verifyEmailCode(code: String)
 
     suspend fun setCompactMode(compact: Boolean)
+
+    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean)
 
     suspend fun setFirstBookmarkAlertShown()
 
@@ -103,4 +92,33 @@ interface UserRepository {
         clientId: String,
         clientSecret: String,
     ): String?
+
+    /**
+     * 소셜 로그인 관련.
+     *
+     * postLogin: 로그인
+     *
+     * postUser: 연동
+     *
+     * deleteUser: 연동 해제
+     */
+    suspend fun getSocialProviders(): GetSocialProvidersResults
+
+    suspend fun postLoginFacebook(facebookToken: String)
+
+    suspend fun postUserFacebook(facebookToken: String)
+
+    suspend fun deleteUserFacebook()
+
+    suspend fun postLoginGoogle(googleAccessToken: String)
+
+    suspend fun postUserGoogle(googleAccessToken: String)
+
+    suspend fun deleteUserGoogle()
+
+    suspend fun postLoginKakao(kakaoAccessToken: String)
+
+    suspend fun postUserKakao(kakaoAccessToken: String)
+
+    suspend fun deleteUserKakao()
 }

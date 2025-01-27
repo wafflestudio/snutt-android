@@ -4,12 +4,9 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,22 +17,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthError
+import com.kakao.sdk.common.model.AuthErrorCause
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BorderButton
 import com.wafflestudio.snutt2.components.compose.DividerWithText
 import com.wafflestudio.snutt2.components.compose.SocialLoginButton
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.state.SocialLoginState
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -50,10 +54,6 @@ fun TutorialPage() {
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
-
-    val kakaoLoginState by socialLinkViewModel.kakaolLoginState.collectAsStateWithLifecycle()
-    val googleLoginState by socialLinkViewModel.googleLoginState.collectAsStateWithLifecycle()
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
@@ -75,7 +75,7 @@ fun TutorialPage() {
         }
     }
 
-    val loginWithGoogleAuthCode: (String) -> Unit = { authCode: String ->
+    val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
         coroutineScope.launch {
             launchSuspendApi(
                 apiOnProgress = apiOnProgress,
@@ -101,7 +101,28 @@ fun TutorialPage() {
     val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        socialLinkViewModel.handleGoogleLoginActivityResult(result)
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    val authCode = account?.serverAuthCode
+                    if (authCode == null) {
+                        context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                        return@rememberLauncherForActivityResult
+                    }
+                    handleGoogleSignInCallback(authCode)
+                } catch (e: ApiException) {
+                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                }
+            }
+            Activity.RESULT_CANCELED -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+            }
+            else -> {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+            }
+        }
     }
 
     val googleSignInClient: GoogleSignInClient = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -112,9 +133,8 @@ fun TutorialPage() {
         }
 
     // 구글 계정 선택 창 띄움
-    val startGoogleSignIn = {
+    val handleGoogleSignIn = {
         val signInIntent = googleSignInClient.signInIntent
-        socialLinkViewModel.updateGoogleLoginState(SocialLoginState.InProgress)
         googleLoginActivityResultLauncher.launch(signInIntent)
     }
 
@@ -129,84 +149,80 @@ fun TutorialPage() {
                     userViewModel.loginKakao(kakaoAccessToken)
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
-                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
                 } else {
-                    socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Failed)
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         }
     }
 
-    LaunchedEffect(kakaoLoginState) {
-        when (kakaoLoginState) {
-            is SocialLoginState.Initial -> {}
-            is SocialLoginState.InProgress -> {}
-            is SocialLoginState.Cancelled -> {
+    val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Failed -> {
+            } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
+                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+            } else {
                 context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                socialLinkViewModel.updateKakaoLoginState(SocialLoginState.Initial)
             }
-            is SocialLoginState.Success -> {
-                loginWithKaKaoAccessToken((kakaoLoginState as SocialLoginState.Success).token)
-            }
+        } else if (token != null) {
+            loginWithKaKaoAccessToken(token.accessToken)
+        } else {
+            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
 
-    LaunchedEffect(googleLoginState) {
-        when (googleLoginState) {
-            is SocialLoginState.Initial -> {}
-            is SocialLoginState.InProgress -> {}
-            is SocialLoginState.Cancelled -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
+    val handleKakaoSignin: () -> Unit = {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+            UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
+                if (loginError != null) {
+                    if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
+                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                    } else {
+                        // 카카오계정으로 로그인
+                        UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
+                    }
+                } else if (token != null) {
+                    loginWithKaKaoAccessToken(token.accessToken)
+                } else {
+                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                }
             }
-            is SocialLoginState.Failed -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                socialLinkViewModel.updateGoogleLoginState(SocialLoginState.Initial)
-            }
-            is SocialLoginState.Success -> {
-                loginWithGoogleAuthCode((googleLoginState as SocialLoginState.Success).token)
-            }
+        } else {
+            // 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-            .background(SNUTTColors.White900),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.weight(25f))
-
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(R.string.sign_in_logo_title),
-                modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-            )
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.3f))
 
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h1,
-            )
-        }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = stringResource(R.string.sign_in_logo_title),
+                )
+                Text(
+                    text = stringResource(R.string.sign_in_logo_title),
+                    style = SNUTTTypography.h1,
+                )
+            }
 
-        Spacer(modifier = Modifier.weight(13f))
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.16f))
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-        ) {
             BorderButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 32.dp),
                 bgColor = colorResource(R.color.theme_snutt_5),
                 color = colorResource(R.color.theme_snutt_5),
                 cornerRadius = 6.dp,
@@ -215,48 +231,46 @@ fun TutorialPage() {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
                     style = SNUTTTypography.button,
-                    color = SNUTTColors.White900,
+                    color = SNUTTColors.AllWhite,
                 )
             }
 
-            BorderButton(
+            Text(
+                text = stringResource(R.string.tutorial_sign_up_button),
+                style = SNUTTTypography.button,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                color = SNUTTColors.White900,
-                cornerRadius = 10.dp,
-                onClick = { navController.navigate(NavigationDestination.SignUp) },
-            ) {
-                Text(
-                    text = stringResource(R.string.tutorial_sign_up_button),
-                    style = SNUTTTypography.button,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            DividerWithText(
-                color = SNUTTColors.Gray200,
-                textStyle = SNUTTTypography.subtitle2,
-                text = stringResource(R.string.continue_with_sns_account),
+                    .padding(top = 14.dp)
+                    .clicks {
+                        navController.navigate(NavigationDestination.SignUp)
+                    },
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.weight(1f))
+
+            DividerWithText(
+                color = SNUTTColors.VacancyGray,
+                textStyle = SNUTTTypography.subtitle2,
+                text = stringResource(R.string.continue_with_sns_account),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.kakao_login),
-                    onClick = { socialLinkViewModel.triggerKakaoSignin(context) },
+                    onClick = { handleKakaoSignin() },
                 )
 
                 SocialLoginButton(
                     painter = painterResource(id = R.drawable.google_login),
                     onClick = {
                         googleSignInClient.signOut().addOnCompleteListener {
-                            startGoogleSignIn()
+                            handleGoogleSignIn()
                         }
                     },
                 )
@@ -266,9 +280,20 @@ fun TutorialPage() {
                     onClick = { handleFacebookSignIn() },
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.weight(11f))
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.06f))
+
+            Text(
+                color = SNUTTColors.Gray200,
+                style = SNUTTTypography.subtitle2,
+                text = stringResource(R.string.tutorial_help_button),
+                modifier = Modifier.clicks {
+                    navController.navigate(NavigationDestination.AppReport)
+                },
+            )
+
+            Spacer(modifier = Modifier.height(this@BoxWithConstraints.maxHeight * 0.05f))
+        }
     }
 }
 

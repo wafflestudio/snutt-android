@@ -30,16 +30,40 @@ object SNUTTStringUtils {
         return "$yearString-$semesterString"
     }
 
-    // 간소화된 강의 시간
-    fun getSimplifiedClassTime(lectureDto: LectureDto): String {
-        val texts = StringBuilder()
-        lectureDto.class_time_json.forEachIndexed { index, classTimeDto ->
-            texts.append(getClassTimeText(classTimeDto))
-            texts.append(")")
-            if (index != lectureDto.class_time_json.size - 1) texts.append(", ")
+    /**
+     * 강의의 모든 classTime을 text로 변환
+     * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
+     */
+    fun getSimplifiedClassTimeForLecture(lectureDto: LectureDto): String {
+        if (lectureDto.class_time_json.isEmpty()) {
+            return "(없음)"
         }
-        if (texts.isEmpty()) texts.append("(없음)")
-        return texts.toString()
+
+        return lectureDto.class_time_json.joinToString(", ", transform = ::getClassTimeTextForLecture)
+    }
+
+    /**
+     * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
+     * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
+     */
+    private fun getClassTimeTextForLecture(classTime: ClassTimeDto): String = buildString {
+        append(SNUTTUtils.numberToWday(classTime.day))
+        append("(")
+        append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+        append("~")
+        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+        append(")")
+    }
+
+    /**
+     * 하나의 classTime을 텍스트로 변환, 하나의 classTime에 대해 필요할 때
+     * ex) 월 09:30 ~ 10:45 이면 -> "월 09:30~10:45"
+     */
+    fun getSingleClassTimeText(classTime: ClassTimeDto): String = buildString {
+        append(SNUTTUtils.numberToWday(classTime.day))
+        append(" %02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
+        append("~")
+        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
     }
 
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
@@ -104,16 +128,6 @@ object SNUTTStringUtils {
         return lecture.instructor + " / " + lecture.credit + "학점"
     }
 
-    fun getClassTimeText(classTime: ClassTimeDto): String {
-        return StringBuilder()
-            .append(SNUTTUtils.numberToWday(classTime.day))
-            .append("(")
-            .append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-            .append("~")
-            .append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-            .toString()
-    }
-
     // 570 -> 오전 09:30
     fun Int.toFormattedTimeString(): String {
         val amPm = if (this < SearchTimeDto.MIDDAY) "오전" else "오후"
@@ -159,4 +173,6 @@ object SNUTTStringUtils {
             append("(${quota - freshmanQuota})")
         }
     }.toString()
+
+    fun String.isValidPassword(): Boolean = Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this)
 }
