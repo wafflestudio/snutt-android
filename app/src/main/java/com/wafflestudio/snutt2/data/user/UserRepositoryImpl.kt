@@ -10,6 +10,8 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
+import com.wafflestudio.snutt2.model.TableLectureCustom
+import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
@@ -36,6 +38,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
 
+    override val tableLectureCustomOption: StateFlow<TableLectureCustom> =
+        storage.tableLectureCustom.asStateFlow()
+
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()
@@ -46,24 +51,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginFacebook(facebookToken: String) {
-        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginGoogle(googleAccessToken: String) {
-        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginKakao(kakaoAccessToken: String) {
-        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
         storage.prefKeyUserId.update(response.userId.toOptional())
         storage.accessToken.update(response.token)
     }
@@ -102,33 +89,11 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun getUserFacebook(): GetUserFacebookResults {
-        return api._getUserFacebook()
-    }
-
     override suspend fun postUserPassword(id: String, password: String) {
         val response = api._postUserPassword(
             PostUserPasswordParams(
                 id = id,
                 password = password,
-            ),
-        )
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook()
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postUserFacebook(
-        facebookId: String,
-        facebookToken: String,
-    ) {
-        val response = api._postUserFacebook(
-            PostUserFacebookParams(
-                facebookId = facebookId,
-                facebookToken = facebookToken,
             ),
         )
         storage.accessToken.update(response.token)
@@ -253,9 +218,9 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun resetPassword(id: String, password: String) {
+    override suspend fun resetPassword(id: String, password: String, code: String) {
         api._postResetPassword(
-            PostResetPasswordParams(id, password),
+            PostResetPasswordParams(id, password, code),
         )
     }
 
@@ -275,6 +240,17 @@ class UserRepositoryImpl @Inject constructor(
         storage.compactMode.update(compact)
     }
 
+    override suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
+        storage.tableLectureCustom.update(
+            when (key) {
+                TableLectureCustomOptions.TITLE -> storage.tableLectureCustom.get().copy(title = value)
+                TableLectureCustomOptions.PLACE -> storage.tableLectureCustom.get().copy(place = value)
+                TableLectureCustomOptions.LECTURENUMBER -> storage.tableLectureCustom.get().copy(lectureNumber = value)
+                TableLectureCustomOptions.INSTRUCTOR -> storage.tableLectureCustom.get().copy(instructor = value)
+            },
+        )
+    }
+
     override suspend fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
     }
@@ -287,6 +263,73 @@ class UserRepositoryImpl @Inject constructor(
                 clientSecret = clientSecret,
             ),
         ).accessToken
+    }
+
+    /**
+     * 소셜 로그인 관련.
+     *
+     * postLogin: 로그인
+     *
+     * postUser: 연동
+     *
+     * deleteUser: 연동 해제
+     */
+    override suspend fun getSocialProviders(): GetSocialProvidersResults {
+        return api._getSocialProviders()
+    }
+
+    override suspend fun postLoginFacebook(facebookToken: String) {
+        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postUserFacebook(
+        facebookToken: String,
+    ) {
+        val response = api._postUserFacebook(PostSocialLoginParams(facebookToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserFacebook() {
+        val response = api._deleteUserFacebook()
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginGoogle(googleAccessToken: String) {
+        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postUserGoogle(
+        googleAccessToken: String,
+    ) {
+        val response = api._postUserGoogle(PostSocialLoginParams(googleAccessToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserGoogle() {
+        val response = api._deleteUserGoogle()
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postLoginKakao(kakaoAccessToken: String) {
+        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
+        storage.prefKeyUserId.update(response.userId.toOptional())
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun postUserKakao(
+        kakaoAccessToken: String,
+    ) {
+        val response = api._postUserKakao(PostSocialLoginParams(kakaoAccessToken))
+        storage.accessToken.update(response.token)
+    }
+
+    override suspend fun deleteUserKakao() {
+        val response = api._deleteUserKakao()
+        storage.accessToken.update(response.token)
     }
 
     private suspend fun getFirebaseToken(): String {

@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -18,12 +19,12 @@ import com.wafflestudio.snutt2.lib.rx.sp
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTrimParam
+import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import io.reactivex.rxjava3.core.Observable
 import kotlin.math.max
 import kotlin.math.min
 
 class TimetableView : View {
-
     private val hourLabelWidth = 24.5f.dp(context)
     private val dayLabelHeight = 28.5f.dp(context)
     private val cellPadding = 4.dp(context)
@@ -132,7 +133,29 @@ class TimetableView : View {
     }
 
     private fun init() {
-        setBackgroundColor(Color.rgb(255, 255, 255))
+        val sharedPreferences = context.getSharedPreferences(SNUTTStorage.DOMAIN_SCOPE_CURRENT_VERSION, Context.MODE_PRIVATE)
+        val themeMode = sharedPreferences.getString("theme_mode", null) ?: ""
+        val isDarkMode = when (themeMode) {
+            "\"DARK\"" -> true
+            "\"LIGHT\"" -> false
+            else -> isSystemDarkMode(context)
+        }
+
+        setBackgroundColor(
+            if (isDarkMode) Color.rgb(43, 43, 43) else Color.rgb(255, 255, 255),
+        )
+        linePaint.apply {
+            color = if (isDarkMode) Color.rgb(60, 60, 60) else Color.rgb(235, 235, 235)
+        }
+        subLinePaint.apply {
+            color = if (isDarkMode) Color.rgb(60, 60, 60) else Color.rgb(243, 243, 243)
+        }
+        hourLabelTextPaint.apply {
+            color = if (isDarkMode) Color.rgb(119, 119, 119) else Color.rgb(0, 0, 0)
+        }
+        dayLabelTextPaint.apply {
+            color = if (isDarkMode) Color.rgb(119, 119, 119) else Color.rgb(0, 0, 0)
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
