@@ -138,6 +138,7 @@ class LectureDetailViewModel @Inject constructor(
             credit = _editingLectureDetail.value.credit,
             classification = _editingLectureDetail.value.classification,
             category = _editingLectureDetail.value.category,
+            categoryPre2025 = _editingLectureDetail.value.categoryPre2025,
             remark = _editingLectureDetail.value.remark,
             class_time_json = _editingLectureDetail.value.class_time_json,
         )

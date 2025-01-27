@@ -425,6 +425,12 @@ fun LectureDetailPage(
                             enabled = modeType is ModeType.Editing,
                         )
                         LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_categoryPre2025),
+                            value = editingLectureDetail.categoryPre2025 ?: "",
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(categoryPre2025 = it)) },
+                            enabled = modeType is ModeType.Editing,
+                        )
+                        LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_course_number),
                             value = editingLectureDetail.course_number ?: "",
                             textStyle = SNUTTTypography.body1.copy(
