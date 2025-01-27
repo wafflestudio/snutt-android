@@ -115,6 +115,8 @@ fun LectureDetailPage(
                 ModeType.Normal -> {
                     if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
                         navController.popBackStack()
+                    } else if (navController.currentDestination?.route?.contains(NavigationDestination.TimetableLecture) == true) {
+                        onCloseViewMode(scope) // 알림함에서 진입하는 경우 다시 알림함으로 돌아가야 함
                     }
                 }
                 is ModeType.Editing -> {
