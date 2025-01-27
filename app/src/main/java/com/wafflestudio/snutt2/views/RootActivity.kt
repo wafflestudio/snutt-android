@@ -68,7 +68,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -432,12 +431,7 @@ class RootActivity : AppCompatActivity() {
             VacancyPage(vacancyViewModel)
         }
         composable2(NavigationDestination.ThemeConfig) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val themeConfigViewModel = hiltViewModel<ThemeConfigViewModel>(parentEntry)
             ThemeConfigRoute(
-                themeConfigViewModel = themeConfigViewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {
