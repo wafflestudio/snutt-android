@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
 
@@ -51,10 +52,11 @@ fun LectureColorSelectorPage(
     val theme by lectureDetailViewModel.currentTableTheme.collectAsState()
     var customFgColor by remember { mutableStateOf(Color(lectureState.color.fgColor?.toLong() ?: 0xffffffff)) }
     var customBgColor by remember { mutableStateOf(Color(lectureState.color.bgColor?.toLong() ?: 0xffffffff)) }
+    val isDarkMode = isDarkMode()
 
     var selectedIndex by remember { // -1: 커스텀 색상.  0,1,2...: 선택된 색상의 0-based 인덱스
         if (theme is CustomTheme) {
-            mutableIntStateOf((theme as CustomTheme).colors.indexOf(lectureState.color))
+            mutableIntStateOf(theme.getColors(isDarkMode).indexOf(lectureState.color))
         } else {
             mutableIntStateOf(lectureState.colorIndex.toInt() - 1)
         }
@@ -68,7 +70,7 @@ fun LectureColorSelectorPage(
                     color = if (selectedIndex == -1) {
                         ColorDto(customFgColor.toArgb(), customBgColor.toArgb())
                     } else {
-                        (theme as CustomTheme).colors[selectedIndex]
+                        theme.getColors(isDarkMode)[selectedIndex]
                     },
                 )
             } else {
@@ -101,7 +103,7 @@ fun LectureColorSelectorPage(
         }
         Spacer(modifier = Modifier.height(10.dp))
         if (theme is CustomTheme) {
-            (theme as CustomTheme).colors.forEachIndexed { idx, color ->
+            theme.getColors(isDarkMode).forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
                     title = stringResource(R.string.lecture_color_selector_page_color_item, idx + 1),
@@ -115,7 +117,7 @@ fun LectureColorSelectorPage(
             for (colorIndex in 1L..9L) ColorItem(
                 color = ColorDto(
                     fgColor = 0xffffff,
-                    bgColor = (theme as BuiltInTheme).getColorByIndex(context, colorIndex),
+                    bgColor = (theme as BuiltInTheme).getColorByIndex(colorIndex),
                 ),
                 title = stringResource(R.string.lecture_color_selector_page_color_item, colorIndex),
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,

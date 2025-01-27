@@ -47,7 +47,7 @@ import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 
 @Composable
@@ -55,13 +55,13 @@ fun ChangeThemeBottomSheet(
     onPreview: (TableTheme) -> Unit,
     onApply: () -> Unit,
     onDispose: () -> Unit,
-    themeListViewModel: ThemeListViewModel = hiltViewModel(),
+    themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val bottomSheet = LocalBottomSheetState.current
-    val customThemes by themeListViewModel.customThemes.collectAsState()
-    val builtInThemes by themeListViewModel.builtInThemes.collectAsState()
+    val customThemes by themeConfigViewModel.customThemes.collectAsState()
+    val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     var previousCustomThemes = remember { customThemes }
     val selectedTheme by remember {

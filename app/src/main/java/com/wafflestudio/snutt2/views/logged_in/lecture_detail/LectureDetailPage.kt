@@ -319,7 +319,6 @@ fun LectureDetailPage(
                                             ColorDto(
                                                 fgColor = 0xffffff,
                                                 bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
-                                                    context,
                                                     editingLectureDetail.colorIndex,
                                                 ),
                                             )
