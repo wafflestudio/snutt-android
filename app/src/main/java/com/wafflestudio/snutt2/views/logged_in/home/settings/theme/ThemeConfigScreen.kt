@@ -169,7 +169,7 @@ fun ThemeConfigScreen(
                     onClickMore = { theme ->
                         scope.launch {
                             bottomSheet.setSheetContent {
-                                CustomThemeMoreActionBottomSheet(
+                                MyCustomThemeMoreActionBottomSheet(
                                     onClickDetail = {
                                         scope.launch {
                                             onNavigateToDetail(theme)
@@ -209,6 +209,31 @@ fun ThemeConfigScreen(
                         title = stringResource(R.string.theme_config_market_custom_theme),
                         themes = marketCustomThemes,
                         onClickItem = onNavigateToDetail,
+                        onClickMore = { theme ->
+                            scope.launch {
+                                bottomSheet.setSheetContent {
+                                    MarketCustomThemeMoreActionBottomSheet(
+                                        onClickDetail = {
+                                            scope.launch {
+                                                onNavigateToDetail(theme)
+                                                bottomSheet.hide()
+                                            }
+                                        },
+                                        onClickDelete = {
+                                            showDeleteThemeDialog(
+                                                composableStates = composableStates,
+                                                onConfirm = {
+                                                    onDeleteTheme(theme)
+                                                    modalState.hide()
+                                                    bottomSheet.hide()
+                                                },
+                                            )
+                                        },
+                                    )
+                                }
+                                bottomSheet.show()
+                            }
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
