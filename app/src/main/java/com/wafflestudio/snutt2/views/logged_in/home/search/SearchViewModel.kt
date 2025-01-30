@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -63,7 +62,7 @@ class SearchViewModel @Inject constructor(
     private val _selectedTags = MutableStateFlow(listOf<TagDto>())
     val selectedTags = _selectedTags.asStateFlow()
 
-    private val _searchTagList = MutableStateFlow(listOf<TagDto>())
+    private val _searchTagListFlow = MutableStateFlow(listOf<TagDto>())
 
     private val currentTable = currentTableRepository.currentTable
 
@@ -110,14 +109,14 @@ class SearchViewModel @Inject constructor(
     private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
-        _searchTagList, _selectedTagType, _selectedTags,
+        _searchTagListFlow, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
-    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagList
+    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagListFlow
         .map { tags ->
             TagType.entries.filter { tagType ->
                 (tags + etcTags + timeTags).any { it.type == tagType }
@@ -292,7 +291,7 @@ class SearchViewModel @Inject constructor(
     private suspend fun clear() {
         _searchTitle.emit("")
         _selectedLecture.emit(null)
-        _searchTagList.emit(emptyList())
+        _searchTagListFlow.emit(emptyList())
         _selectedTags.emit(emptyList())
         lazyListState = LazyListState(0, 0)
         /* TODO
@@ -303,7 +302,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun fetchSearchTagList() {
         val currentTable = currentTable.filterNotNull().first()
-        _searchTagList.emit(
+        _searchTagListFlow.emit(
             lectureSearchRepository.getSearchTags(
                 currentTable.year, currentTable.semester,
             ),
