@@ -118,9 +118,7 @@ class SearchViewModel @Inject constructor(
     // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
     val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagListFlow
         .map { tags ->
-            TagType.entries.filter { tagType ->
-                (tags + etcTags + timeTags).any { it.type == tagType }
-            }
+            (tags + etcTags + timeTags).map { it.type }.toSet().toList()
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
