@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -306,7 +307,7 @@ class SearchViewModel @Inject constructor(
             ),
         )
         // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
-        tagTypesNotEmpty.value.firstOrNull { it != selectedTagType.value }?.let { setTagType(TagType.SORT_CRITERIA) }
+        if (!tagTypesNotEmpty.value.contains(selectedTagType.value)) setTagType(TagType.SORT_CRITERIA)
     }
 
     fun togglePageMode() {
