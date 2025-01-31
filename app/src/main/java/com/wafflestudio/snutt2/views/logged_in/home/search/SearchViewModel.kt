@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -307,7 +307,11 @@ class SearchViewModel @Inject constructor(
             ),
         )
         // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
-        if (!tagTypesNotEmpty.value.contains(selectedTagType.value)) setTagType(TagType.SORT_CRITERIA)
+        combine(tagTypesNotEmpty, _selectedTagType) { tagTypes, selectedTagType ->
+            !tagTypes.contains(selectedTagType)
+        }.distinctUntilChanged().filter { it }.collectLatest {
+            setTagType(TagType.SORT_CRITERIA)
+        }
     }
 
     fun togglePageMode() {
