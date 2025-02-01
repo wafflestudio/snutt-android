@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,10 +24,12 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMo
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -91,6 +94,16 @@ class SearchViewModel @Inject constructor(
 
     val recentSearchedDepartments: StateFlow<List<TagDto>> = lectureSearchRepository.recentSearchedDepartments
 
+    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
+    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
+
+    // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
+    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagListFlow
+        .map { tags ->
+            (tags + etcTags + timeTags).map { it.type }.toSet().toList()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -104,10 +117,15 @@ class SearchViewModel @Inject constructor(
                 }
             }
         }
+        viewModelScope.launch {
+            // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
+            combine(tagTypesNotEmpty, _selectedTagType) { tagTypes, selectedTagType ->
+                !tagTypes.contains(selectedTagType)
+            }.distinctUntilChanged().filter { it }.collectLatest {
+                setTagType(TagType.SORT_CRITERIA)
+            }
+        }
     }
-
-    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
-    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
         _searchTagListFlow, _selectedTagType, _selectedTags,
@@ -115,13 +133,6 @@ class SearchViewModel @Inject constructor(
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-
-    // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
-    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagListFlow
-        .map { tags ->
-            (tags + etcTags + timeTags).map { it.type }.toSet().toList()
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val selectableRecentSearchedDepartments: StateFlow<List<Selectable<TagDto>>> = combine(
         tagsByTagType, recentSearchedDepartments, _selectedTags,
@@ -306,12 +317,6 @@ class SearchViewModel @Inject constructor(
                 currentTable.year, currentTable.semester,
             ),
         )
-        // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
-        combine(tagTypesNotEmpty, _selectedTagType) { tagTypes, selectedTagType ->
-            !tagTypes.contains(selectedTagType)
-        }.distinctUntilChanged().filter { it }.collectLatest {
-            setTagType(TagType.SORT_CRITERIA)
-        }
     }
 
     fun togglePageMode() {
