@@ -4,13 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
-import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,12 +33,13 @@ sealed class ModeType {
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
-    private val themeRepository: ThemeRepository,
     private val apiOnError: ApiOnError,
+    getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
-    val currentTableTheme: StateFlow<TableTheme> = themeRepository.currentTableTheme
+    val currentTableTheme: StateFlow<TableTheme> = getCurrentTableThemeUseCase()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT)
 
     private val _modeType = MutableStateFlow<ModeType>(ModeType.Normal)
     val modeType = _modeType.asStateFlow()

@@ -170,11 +170,13 @@ fun SearchOptionSheet(
                 tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
                     .roundToInt(),
             )
-            closeBottomSheetPlaceable.placeRelative(
-                tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
-                (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
-            )
-            if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
+            if (optionSheetMode != OptionSheetMode.TimeSelect) { // 시간 선택 시트에서는 X 버튼 숨김
+                closeBottomSheetPlaceable.placeRelative(
+                    tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
+                    (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
+                )
+            }
+            if (optionSheetMode == OptionSheetMode.TimeSelect) dragSheetPlaceable.placeRelative(0, 0)
         }
     }
 }

@@ -65,3 +65,4 @@ Please request these files from the maintainer if needed.
 ## Maintainers
 - [@JuTaK97](https://github.com/JuTak97)
 - [@eastshine2741](https://github.com/eastshine2741)
+- [@plgafhd](https://github.com/plgafhd)

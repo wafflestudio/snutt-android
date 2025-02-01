@@ -25,6 +25,7 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.isDarkMode
 import kotlin.random.Random
 
 @Composable
@@ -36,8 +37,8 @@ fun ThemeIcon(
         Row(
             modifier = modifier,
         ) {
-            val colors = theme.colors.map { Color(it.bgColor!!) }
-            when (theme.colors.size) {
+            val colors = theme.getColors(isDarkMode()).map { Color(it.bgColor!!) }
+            when (colors.size) {
                 1 -> {
                     Box(
                         modifier = Modifier
@@ -311,6 +312,7 @@ fun ThemeIconPreview() {
                             bgColor = Random.nextInt(0x0, 0xffffff),
                         )
                     },
+                    isFromMarket = false,
                 ),
                 modifier = Modifier.size(80.dp),
             )

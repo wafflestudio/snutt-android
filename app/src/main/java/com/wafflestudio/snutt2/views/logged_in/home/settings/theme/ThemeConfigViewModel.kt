@@ -6,19 +6,20 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ThemeListViewModel @Inject constructor(
+class ThemeConfigViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
-    val customThemes: StateFlow<List<CustomTheme>> get() = themeRepository.customThemes
-    val builtInThemes: StateFlow<List<BuiltInTheme>> get() = themeRepository.builtInThemes
+    val customThemes: StateFlow<List<CustomTheme>> = themeRepository.customThemes
+    val builtInThemes: StateFlow<List<BuiltInTheme>> = themeRepository.builtInThemes
 
     val currentTable = currentTableRepository.currentTable
 
@@ -26,16 +27,18 @@ class ThemeListViewModel @Inject constructor(
         themeRepository.fetchThemes()
     }
 
-    suspend fun deleteThemeAndRefreshTableIfNeeded(themeId: String) { // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-        themeRepository.deleteTheme(themeId)
-        currentTable.value?.let {
-            if (it.themeId != null && it.themeId == themeId) {
-                tableRepository.fetchTableById(it.id)
-            }
+    suspend fun deleteThemeAndRefreshTableIfNeeded(theme: TableTheme) { // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
+        if (theme !is CustomTheme) return
+        themeRepository.deleteTheme(theme.id)
+
+        val currentTable = currentTable.value ?: return
+        if (theme.isAppliedToTable(currentTable)) {
+            tableRepository.fetchTableById(currentTable.id)
         }
     }
 
-    suspend fun copyTheme(themeId: String) {
-        themeRepository.copyTheme(themeId)
+    suspend fun copyTheme(theme: TableTheme) {
+        if (theme !is CustomTheme) return
+        themeRepository.copyTheme(theme.id)
     }
 }
