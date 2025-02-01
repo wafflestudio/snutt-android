@@ -67,7 +67,7 @@ class SearchViewModel @Inject constructor(
 
     private val currentTable = currentTableRepository.currentTable
 
-    private val semesterChange =
+    val semesterChange =
         currentTable
             .filterNotNull()
             .map { it.year * 10 + it.semester } // .distinctUntilChanged()
