@@ -23,6 +23,7 @@ data class PostCustomLectureParams(
     @Json(name = "enrollment") var enrollment: Long? = null,
     @Json(name = "remark") var remark: String? = null,
     @Json(name = "category") var category: String? = null,
+    @Json(name = "categoryPre2025") var categoryPre2025: String? = null,
     @Json(name = "colorIndex") var colorIndex: Long? = null, // 색상
     @Json(name = "color") var color: ColorDto? = null,
     @Json(name = "is_forced") var isForced: Boolean? = false,
