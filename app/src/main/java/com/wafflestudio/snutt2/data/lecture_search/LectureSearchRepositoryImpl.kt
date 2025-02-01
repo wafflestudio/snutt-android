@@ -60,6 +60,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
             addAll(response.academicYear.map { TagDto(TagType.ACADEMIC_YEAR, it) })
             addAll(response.credit.map { TagDto(TagType.CREDIT, it) })
             addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
+            addAll(response.categoryPre2025.map { TagDto(TagType.CATEGORY_PRE2025, it) })
             addAll(response.sortCriteria.map { TagDto(TagType.SORT_CRITERIA, it) })
         }
         return list

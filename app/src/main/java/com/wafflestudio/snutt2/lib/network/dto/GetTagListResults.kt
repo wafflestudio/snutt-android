@@ -11,5 +11,6 @@ data class GetTagListResults(
     @Json(name = "credit") val credit: List<String>,
     @Json(name = "instructor") val instructor: List<String>,
     @Json(name = "category") val category: List<String>,
+    @Json(name = "categoryPre2025") val categoryPre2025: List<String>,
     @Json(name = "sortCriteria") val sortCriteria: List<String>,
 )
