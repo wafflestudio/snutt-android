@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +23,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMo
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
