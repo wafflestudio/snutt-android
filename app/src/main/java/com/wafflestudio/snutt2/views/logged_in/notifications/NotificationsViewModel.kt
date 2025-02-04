@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.domainmodel.Notification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,14 +16,13 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
-
     private val _notificationList =
-        MutableStateFlow<PagingData<NotificationDto>>(PagingData.empty())
-    val notificationList: StateFlow<PagingData<NotificationDto>> = _notificationList
+        MutableStateFlow<PagingData<Notification>>(PagingData.empty())
+    val notificationList: StateFlow<PagingData<Notification>> = _notificationList
 
     init {
         viewModelScope.launch {
-            notificationRepository.getNotificationResultStream()
+            notificationRepository.getNotificationListStream()
                 .cachedIn(viewModelScope)
                 .collect {
                     _notificationList.emit(it)

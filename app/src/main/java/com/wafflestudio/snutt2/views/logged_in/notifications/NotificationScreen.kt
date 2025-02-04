@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
@@ -42,46 +42,63 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domainmodel.NotificationType
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTimeFromDate
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
+import kotlinx.coroutines.flow.flowOf
+import java.util.Date
 
 @Composable
-fun NotificationPage() {
+fun NotificationRoute(
+    modifier: Modifier = Modifier,
+    viewModel: NotificationsViewModel = hiltViewModel(),
+) {
     val navController = LocalNavController.current
-    val vm = hiltViewModel<NotificationsViewModel>()
+    val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
+    val notificationUiState = notificationList.notificationUiState()
 
-    val notificationList = vm.notificationList.collectAsLazyPagingItems()
-    val refreshState = notificationList.loadState.refresh
-    val appendState = notificationList.loadState.append
+    NotificationPage(
+        onBackClick = {
+            if (navController.currentDestination?.route == NavigationDestination.Notification) {
+                navController.popBackStack()
+            }
+        },
+        uiState = notificationUiState,
+        modifier = modifier,
+    )
+}
 
+@Composable
+fun NotificationPage(
+    modifier: Modifier = Modifier,
+    uiState: NotificationUiState,
+    onBackClick: () -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(SNUTTColors.White900)
             .fillMaxSize(),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.notifications_app_bar_title),
-            onClickNavigateBack = {
-                if (navController.currentDestination?.route == NavigationDestination.Notification) {
-                    navController.popBackStack()
-                }
-            },
+            onClickNavigateBack = onBackClick,
         )
 
-        when {
-            refreshState is LoadState.NotLoading && appendState.endOfPaginationReached && notificationList.itemCount < 1 -> NotificationPlaceholder()
-            refreshState is LoadState.Error -> NotificationError()
-            else -> LazyColumn {
-                items(notificationList) {
-                    it?.let {
-                        NotificationItem(it, onClick = {
+        when (uiState) {
+            NotificationUiState.Empty -> NotificationPlaceholder()
+            NotificationUiState.Error -> NotificationError()
+            NotificationUiState.Loading -> {}
+            is NotificationUiState.Success -> LazyColumn {
+                items(uiState.notificationList) { notification ->
+                    notification?.let {
+                        NotificationItem(notification) {
                             DeeplinkExecutor.execute(it.deeplink)
-                        },)
+                        }
                     }
                 }
             }
@@ -90,7 +107,7 @@ fun NotificationPage() {
 }
 
 @Composable
-fun NotificationItem(info: NotificationDto, onClick: () -> Unit) {
+fun NotificationItem(notification: Notification, onClick: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -103,51 +120,16 @@ fun NotificationItem(info: NotificationDto, onClick: () -> Unit) {
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
         ) {
-            when (info.type) {
-                0 -> WarningIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                1 -> CalendarIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                2 -> RefreshTimeIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                3 -> NotificationTrashIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                4 -> NotificationVacancyIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                5 -> NotificationFriendIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-
-                else -> MegaphoneIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
-                )
-            }
+            NotificationIcon(notification.type)
             Spacer(modifier = Modifier.width(10.dp))
             Column(
                 modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = info.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
+                    Text(text = notification.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = getNotificationTime(context, info),
+                        text = getNotificationTimeFromDate(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -155,12 +137,52 @@ fun NotificationItem(info: NotificationDto, onClick: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = info.message,
+                    text = notification.message,
                     style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
                 )
             }
         }
         Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)
+    }
+}
+
+@Composable
+fun NotificationIcon(type: NotificationType) {
+    when (type) {
+        NotificationType.Warning -> WarningIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Calendar -> CalendarIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.RefreshTime -> RefreshTimeIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Trash -> NotificationTrashIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Vacancy -> NotificationVacancyIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Friend -> NotificationFriendIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
+
+        NotificationType.Megaphone -> MegaphoneIcon(
+            modifier = Modifier.size(30.dp),
+            colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
+        )
     }
 }
 
@@ -211,12 +233,10 @@ fun NotificationPlaceholder() {
 
 @Preview(showBackground = true)
 @Composable
-fun NotificationItemPreview() {
-    NotificationItem(NotificationDto("asdf", "title", "message", "2024-01-17T12:04:59.998Z", 0, null, deeplink = ""), onClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
 fun NotificationPagePreview() {
-    NotificationPage()
+    val data =
+        PagingData.from(listOf(Notification("테스트 알림", "테스트 문구", Date(), NotificationType.Trash, "")))
+    val flow = flowOf(data)
+    val a = flow.collectAsLazyPagingItems()
+    NotificationPage(uiState = NotificationUiState.Success(a), onBackClick = {})
 }
