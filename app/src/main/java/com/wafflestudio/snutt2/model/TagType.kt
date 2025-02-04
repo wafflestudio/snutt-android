@@ -11,5 +11,6 @@ enum class TagType(val isExclusive: Boolean) {
     CREDIT(false),
     TIME(false),
     CATEGORY(false),
+    CATEGORY_PRE2025(false),
     ETC(false),
 }

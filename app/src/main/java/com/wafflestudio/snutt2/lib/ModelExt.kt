@@ -46,6 +46,7 @@ fun TagType.color(): androidx.compose.ui.graphics.Color {
         TagType.CREDIT -> SNUTTColors.Sky
         TagType.TIME -> SNUTTColors.Blue
         TagType.CATEGORY -> SNUTTColors.NavyBlue
+        TagType.CATEGORY_PRE2025 -> SNUTTColors.NavyBlue
         TagType.ETC -> SNUTTColors.Violet
     }
 }

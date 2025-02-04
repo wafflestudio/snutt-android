@@ -66,10 +66,11 @@ fun TimeTable(
         LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
             previewTheme?.let { theme ->
                 if (previewTheme is CustomTheme) {
+                    val colors = theme.getColors(isDarkMode())
                     it.mapIndexed { idx, lecture ->
                         lecture.copy(
                             colorIndex = 0,
-                            color = (theme as CustomTheme).colors[idx % previewTheme.colors.size],
+                            color = colors[idx % colors.size],
                         )
                     }
                 } else {
