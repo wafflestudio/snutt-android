@@ -308,14 +308,6 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_invalid_nickname),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        ErrorCode.EMAIL_ALREADY_USING -> Toast.makeText(
-                            context,
-                            context.getString(
-                                R.string.social_link_account_already_using,
-                                detailToString(error.errorDTO.detail?.socialProvider ?: ""),
-                            ),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.INVALID_TIME -> Toast.makeText(
                             context,
                             context.getString(
