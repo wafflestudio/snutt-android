@@ -30,8 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.network.ErrorCode
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -61,7 +59,6 @@ fun SignUpPage() {
             idField.isNotEmpty() && passwordField.isNotEmpty() && passwordConfirmField.isNotEmpty() && emailField.isNotEmpty()
         }
     }
-    var errorDialogState by remember { mutableStateOf("") }
 
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
@@ -69,16 +66,14 @@ fun SignUpPage() {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {
             coroutineScope.launch {
-                try {
+                launchSuspendApi(
+                    apiOnProgress = apiOnProgress,
+                    apiOnError = apiOnError,
+                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button),
+                ) {
                     userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
                     navController.navigate(NavigationDestination.EmailVerification)
-                } catch (e: Exception) {
-                    if (e is ErrorParsedHttpException && e.errorDTO?.code == ErrorCode.EMAIL_ALREADY_USING) {
-                        errorDialogState = e.errorDTO.displayMessage ?: ""
-                    } else {
-                        apiOnError(e)
-                    }
                 }
             }
         }
@@ -250,17 +245,6 @@ fun SignUpPage() {
                     )
                 }
             }
-        }
-    }
-
-    if (errorDialogState.isNotEmpty()) {
-        CustomDialog(
-            onDismiss = {},
-            onConfirm = { errorDialogState = "" },
-            title = stringResource(R.string.bad_request),
-            negativeButtonText = null,
-        ) {
-            Text(errorDialogState, style = SNUTTTypography.body2)
         }
     }
 }
