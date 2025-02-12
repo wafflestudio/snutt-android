@@ -49,7 +49,7 @@ fun SearchResultList(
     val keyBoardController = LocalSoftwareKeyboardController.current
 
     Column {
-        AnimatedLazyRow(itemList = selectedTags, itemKey = { it.name }) {
+        AnimatedLazyRow(itemList = selectedTags, itemKey = { it.type.toString() + it.name }) {
             TagCell(
                 tagDto = it,
                 onClick = {
