@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -41,7 +43,6 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.android.webview.SyllabusWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
@@ -94,6 +95,7 @@ fun LectureDetailPage(
     val disableMapFeature by LocalRemoteConfig.current.disableMapFeature.collectAsState(true) // NOTE: config를 받아오기 전까지는 지도를 숨긴다.
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
     val editingLectureReview by vm.editingLectureReview.collectAsState()
+    val semesterChange by searchViewModel.semesterChange.collectAsState(0)
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
      * 이때 다른 정보들은 editingLectureDetail 따라서 바뀌니까 모드가 바뀌어도 따로 할 게 없는데, 얘는 편집모드->일반모드로 바뀔 때 따로 변경해 줘야 한다. 그것이 아래의 코드.
@@ -151,10 +153,6 @@ fun LectureDetailPage(
             ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
                 this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
             }
-        }
-    val syllabusBottomSheetWebViewContainer =
-        remember {
-            SyllabusWebViewContainer(context)
         }
 
     ModalBottomSheetLayout(
@@ -322,7 +320,6 @@ fun LectureDetailPage(
                                             ColorDto(
                                                 fgColor = 0xffffff,
                                                 bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
-                                                    context,
                                                     editingLectureDetail.colorIndex,
                                                 ),
                                             )
@@ -427,6 +424,14 @@ fun LectureDetailPage(
                             onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(category = it)) },
                             enabled = modeType is ModeType.Editing,
                         )
+                        if (semesterChange > 20250L) {
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_categoryPre2025),
+                                value = editingLectureDetail.categoryPre2025 ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(categoryPre2025 = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                        }
                         LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_course_number),
                             value = editingLectureDetail.course_number ?: "",
@@ -606,11 +611,10 @@ fun LectureDetailPage(
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
                                     scope.launch {
                                         launchSuspendApi(apiOnProgress, apiOnError) {
-                                            openSyllabusBottomSheet(
-                                                vm.getCourseBookUrl(),
-                                                syllabusBottomSheetWebViewContainer,
-                                                bottomSheet,
-                                            )
+                                            vm.getCourseBookUrl().let { url ->
+                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                context.startActivity(intent)
+                                            }
                                         }
                                     }
                                 }

@@ -39,6 +39,7 @@ fun SearchOptionSheet(
     val tagsByTagType by viewModel.tagsByTagType.collectAsState()
     val selectedTagType by viewModel.selectedTagType.collectAsState()
     val recentSearchedDepartments by viewModel.selectableRecentSearchedDepartments.collectAsState()
+    val tagTypesNotEmpty by viewModel.tagTypesNotEmpty.collectAsState()
     val scope = rememberCoroutineScope()
 
     var optionSheetMode by remember {
@@ -55,8 +56,8 @@ fun SearchOptionSheet(
         label = "baseAnimatedFloat",
     )
 
-    var normalSheetHeightPx = remember { 0 } // 태그 선택 sheet의 높이
-    var maxSheetHeightPx = remember { 0 } // 시간대 선택 sheet의 높이
+    var normalSheetHeightPx by remember { mutableStateOf(0) } // 태그 선택 sheet의 높이
+    var maxSheetHeightPx by remember { mutableStateOf(0) } // 시간대 선택 sheet의 높이
     val sheetHeightAnimatedPx = remember {
         derivedStateOf {
             // 태그 선택 sheet의 높이 ~ 시간대 선택 sheet의 높이까지 baseAnimatedFloat에 따라 변하는 값
@@ -69,6 +70,7 @@ fun SearchOptionSheet(
     ) { constraints ->
         val tagTypePlaceable = subcompose(slotId = 1) {
             TagTypeColumn(
+                tagTypesNotEmpty = tagTypesNotEmpty,
                 selectedTagType = selectedTagType,
                 baseAnimatedFloat = baseAnimatedFloat,
             ) {
@@ -146,13 +148,10 @@ fun SearchOptionSheet(
             }
         }.first().measure(constraints)
 
-        // 한번만 계산, 할당
-        if (normalSheetHeightPx == 0 && maxSheetHeightPx == 0) {
-            normalSheetHeightPx =
-                tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
-                .roundToInt() + confirmButtonPlaceable.height
-            maxSheetHeightPx = dragSheetPlaceable.height
-        }
+        normalSheetHeightPx =
+            tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
+            .roundToInt() + confirmButtonPlaceable.height
+        maxSheetHeightPx = dragSheetPlaceable.height
 
         layout(
             width = tagTypePlaceable.width + tagListPlaceable.width,
@@ -171,11 +170,13 @@ fun SearchOptionSheet(
                 tagTypePlaceable.height + SearchOptionSheetConstants.TopMargin.toPx()
                     .roundToInt(),
             )
-            closeBottomSheetPlaceable.placeRelative(
-                tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
-                (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
-            )
-            if (baseAnimatedFloat.value != 0f) dragSheetPlaceable.placeRelative(0, 0)
+            if (optionSheetMode != OptionSheetMode.TimeSelect) { // 시간 선택 시트에서는 X 버튼 숨김
+                closeBottomSheetPlaceable.placeRelative(
+                    tagTypePlaceable.width + tagListPlaceable.width - 52.dp.toPx().roundToInt(),
+                    (SearchOptionSheetConstants.TopMargin.toPx().roundToInt() - 32.dp.toPx().roundToInt()) / 2,
+                )
+            }
+            if (optionSheetMode == OptionSheetMode.TimeSelect) dragSheetPlaceable.placeRelative(0, 0)
         }
     }
 }

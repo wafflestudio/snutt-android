@@ -52,6 +52,8 @@ import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLay
 import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -64,15 +66,13 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
+import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
+import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
@@ -258,7 +258,7 @@ class RootActivity : AppCompatActivity() {
 
                     composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
-                    composable2(NavigationDestination.Notification) { NotificationPage() }
+                    composable2(NavigationDestination.Notification) { NotificationRoute() }
 
                     composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
@@ -315,11 +315,9 @@ class RootActivity : AppCompatActivity() {
                                 defaultValue = -1
                             },
                         ),
-                    ) { backStackEntry ->
-                        val themeDetailViewModel =
-                            hiltViewModel<ThemeDetailViewModel>(backStackEntry)
-                        ThemeDetailPage(
-                            themeDetailViewModel = themeDetailViewModel,
+                    ) {
+                        ThemeDetailRoute(
+                            onNavigateBack = { navController.popBackStack() },
                         )
                     }
 
@@ -434,12 +432,17 @@ class RootActivity : AppCompatActivity() {
             VacancyPage(vacancyViewModel)
         }
         composable2(NavigationDestination.ThemeConfig) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val themeListViewModel = hiltViewModel<ThemeListViewModel>(parentEntry)
-            ThemeConfigPage(
-                themeListViewModel = themeListViewModel,
+            ThemeConfigRoute(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToDetail = { theme ->
+                    when (theme) {
+                        is CustomTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
+                        is BuiltInTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                    }
+                },
+                onClickAddTheme = {
+                    navController.navigate(NavigationDestination.ThemeDetail)
+                },
             )
         }
         if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
