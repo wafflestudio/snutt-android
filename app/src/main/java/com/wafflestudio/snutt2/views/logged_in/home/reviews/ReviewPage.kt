@@ -76,11 +76,6 @@ fun ReviewWebView(height: Float = 1.0f) {
                 onRetry = { scope.launch { webViewContainer.reload() } },
             )
 
-            is LoadState.InitialLoading -> WebViewLoading(
-                modifier = Modifier.fillMaxSize(),
-                progress = loadState.progress / 100.0f,
-            )
-
             is LoadState.Loading -> WebViewLoading(
                 modifier = Modifier.fillMaxSize(),
                 progress = loadState.progress / 100.0f,

@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 
 @Composable
-fun CustomThemeMoreActionBottomSheet(
+fun MyCustomThemeMoreActionBottomSheet(
     onClickDetail: () -> Unit,
     onClickDuplicate: () -> Unit,
     onClickDelete: () -> Unit,
@@ -49,6 +49,41 @@ fun CustomThemeMoreActionBottomSheet(
             },
             text = stringResource(R.string.custom_theme_action_duplicate),
             onClick = { onClickDuplicate() },
+        )
+        MoreActionItem(
+            icon = {
+                TrashIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_delete),
+            onClick = { onClickDelete() },
+        )
+    }
+}
+
+@Composable
+fun MarketCustomThemeMoreActionBottomSheet(
+    onClickDetail: () -> Unit,
+    onClickDelete: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colors.surface)
+            .padding(vertical = 12.dp)
+            .fillMaxWidth(),
+    ) {
+        MoreActionItem(
+            icon = {
+                PaletteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_detail_view),
+            onClick = { onClickDetail() },
         )
         MoreActionItem(
             icon = {

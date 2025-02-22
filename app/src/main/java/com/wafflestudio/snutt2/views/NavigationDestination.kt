@@ -27,6 +27,7 @@ object NavigationDestination {
     const val Bookmark = "bookmarks"
     const val NetworkLog = "network_log"
     const val VacancyNotification = "vacancy"
+    const val ThemeMarket = "theme_market"
     const val Friends = "friends"
     const val ThemeConfig = "theme_config"
     const val ThemeDetail = "theme_detail"
