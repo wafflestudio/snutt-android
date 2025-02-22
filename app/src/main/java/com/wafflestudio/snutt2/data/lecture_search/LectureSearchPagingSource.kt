@@ -29,6 +29,7 @@ class LectureSearchPagingSource(
         academic_year = tags.extractTagString(TagType.ACADEMIC_YEAR),
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
+        categoryPre2025 = tags.extractTagString(TagType.CATEGORY_PRE2025),
         times = times,
         timesToExclude = timesToExclude,
         etc = tags.mapNotNull {

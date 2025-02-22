@@ -15,6 +15,7 @@ data class PostSearchQueryParams(
     @Json(name = "academic_year") val academic_year: List<String>? = null,
     @Json(name = "department") val department: List<String>? = null,
     @Json(name = "category") val category: List<String>? = null,
+    @Json(name = "categoryPre2025") val categoryPre2025: List<String>? = null,
     @Json(name = "etc") val etc: List<String>? = null,
     @Json(name = "times") val times: List<SearchTimeDto>?,
     @Json(name = "timesToExclude") val timesToExclude: List<SearchTimeDto>?,

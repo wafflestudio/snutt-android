@@ -20,6 +20,7 @@ data class LectureDto(
     @Json(name = "freshmanQuota") val freshmanQuota: Long?,
     @Json(name = "remark") val remark: String,
     @Json(name = "category") val category: String?,
+    @Json(name = "categoryPre2025") val categoryPre2025: String?,
     @Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
     @Json(name = "color") val color: ColorDto = ColorDto(),
     @Json(name = "registrationCount") val registrationCount: Long = 0,
@@ -41,6 +42,7 @@ data class LectureDto(
             academic_year = null,
             credit = 0,
             category = null,
+            categoryPre2025 = null,
             classification = null,
             course_number = null,
             lecture_number = null,
