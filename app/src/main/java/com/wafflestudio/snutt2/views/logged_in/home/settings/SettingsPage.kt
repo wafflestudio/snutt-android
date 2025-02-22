@@ -135,6 +135,15 @@ fun SettingsPage(
                         )
                     },
                 )
+                SettingItem(
+                    title = stringResource(R.string.settings_item_theme_market),
+                    hasNextPage = true,
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.ThemeMarket,
+                        )
+                    },
+                )
             }
             Margin(height = 10.dp)
             SettingColumn {

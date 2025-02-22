@@ -12,6 +12,7 @@ data class ThemeDto(
     val name: String?,
     val colors: List<ColorDto>?,
     val isCustom: Boolean?,
+    val status: String?,
 ) {
 
     fun toTableTheme(): TableTheme {
@@ -20,7 +21,7 @@ data class ThemeDto(
                 id = id!!,
                 name = name ?: "",
                 colors = colors ?: emptyList(),
-                isFromMarket = false, // FIXME: 서버 응답에 맞게 수정
+                isFromMarket = status == "DOWNLOADED",
             )
         } else {
             BuiltInTheme.fromCode(theme ?: 0)

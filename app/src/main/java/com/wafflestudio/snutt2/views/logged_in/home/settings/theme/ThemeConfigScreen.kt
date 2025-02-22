@@ -78,12 +78,13 @@ fun ThemeConfigRoute(
 ) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
-
-    val customThemes by themeConfigViewModel.customThemes.collectAsState()
+    val myCustomThemes by themeConfigViewModel.myCustomThemes.collectAsState()
+    val marketCustomThemes by themeConfigViewModel.marketCustomThemes.collectAsState()
     val builtInThemes by themeConfigViewModel.builtInThemes.collectAsState()
 
     ThemeConfigScreen(
-        customThemes = customThemes,
+        myCustomThemes = myCustomThemes,
+        marketCustomThemes = marketCustomThemes,
         builtInThemes = builtInThemes,
         onNavigateBack = onNavigateBack,
         onFetchThemes = {
@@ -109,7 +110,8 @@ fun ThemeConfigRoute(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThemeConfigScreen(
-    customThemes: List<CustomTheme>,
+    myCustomThemes: List<CustomTheme>,
+    marketCustomThemes: List<CustomTheme>,
     builtInThemes: List<BuiltInTheme>,
     onNavigateBack: () -> Unit,
     onFetchThemes: suspend () -> Unit,
@@ -162,12 +164,12 @@ fun ThemeConfigScreen(
             ) {
                 ThemesRow(
                     title = stringResource(R.string.theme_config_custom_theme),
-                    themes = customThemes,
+                    themes = myCustomThemes,
                     onClickItem = onNavigateToDetail,
                     onClickMore = { theme ->
                         scope.launch {
                             bottomSheet.setSheetContent {
-                                CustomThemeMoreActionBottomSheet(
+                                MyCustomThemeMoreActionBottomSheet(
                                     onClickDetail = {
                                         scope.launch {
                                             onNavigateToDetail(theme)
@@ -201,6 +203,39 @@ fun ThemeConfigScreen(
                         )
                     },
                 )
+                if (marketCustomThemes.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    ThemesRow(
+                        title = stringResource(R.string.theme_config_market_custom_theme),
+                        themes = marketCustomThemes,
+                        onClickItem = onNavigateToDetail,
+                        onClickMore = { theme ->
+                            scope.launch {
+                                bottomSheet.setSheetContent {
+                                    MarketCustomThemeMoreActionBottomSheet(
+                                        onClickDetail = {
+                                            scope.launch {
+                                                onNavigateToDetail(theme)
+                                                bottomSheet.hide()
+                                            }
+                                        },
+                                        onClickDelete = {
+                                            showDeleteThemeDialog(
+                                                composableStates = composableStates,
+                                                onConfirm = {
+                                                    onDeleteTheme(theme)
+                                                    modalState.hide()
+                                                    bottomSheet.hide()
+                                                },
+                                            )
+                                        },
+                                    )
+                                }
+                                bottomSheet.show()
+                            }
+                        },
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 ThemesRow(
                     title = stringResource(R.string.theme_config_builtin_theme),
