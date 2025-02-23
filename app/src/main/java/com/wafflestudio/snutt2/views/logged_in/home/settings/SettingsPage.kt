@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
@@ -135,15 +136,17 @@ fun SettingsPage(
                         )
                     },
                 )
-                SettingItem(
-                    title = stringResource(R.string.settings_item_theme_market),
-                    hasNextPage = true,
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ThemeMarket,
-                        )
-                    },
-                )
+                if (FeatureFlag.THEME_MARKET.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_theme_market),
+                        hasNextPage = true,
+                        onClick = {
+                            navController.navigate(
+                                NavigationDestination.ThemeMarket,
+                            )
+                        },
+                    )
+                }
             }
             Margin(height = 10.dp)
             SettingColumn {
