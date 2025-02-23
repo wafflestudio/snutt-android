@@ -54,6 +54,7 @@ import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
@@ -203,7 +204,7 @@ fun ThemeConfigScreen(
                         )
                     },
                 )
-                if (marketCustomThemes.isNotEmpty()) {
+                if (FeatureFlag.THEME_MARKET.isEnabled && marketCustomThemes.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     ThemesRow(
                         title = stringResource(R.string.theme_config_market_custom_theme),
