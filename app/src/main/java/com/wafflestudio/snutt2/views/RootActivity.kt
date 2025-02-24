@@ -72,8 +72,9 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelect
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationPage
+import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
+import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
@@ -258,7 +259,7 @@ class RootActivity : AppCompatActivity() {
 
                     composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
-                    composable2(NavigationDestination.Notification) { NotificationPage() }
+                    composable2(NavigationDestination.Notification) { NotificationRoute() }
 
                     composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 
@@ -430,6 +431,11 @@ class RootActivity : AppCompatActivity() {
             }
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
+        }
+        composable2(NavigationDestination.ThemeMarket) {
+            ThemeMarketRoute(
+                onBackClick = { navController.popBackStack() },
+            )
         }
         composable2(NavigationDestination.ThemeConfig) {
             ThemeConfigRoute(

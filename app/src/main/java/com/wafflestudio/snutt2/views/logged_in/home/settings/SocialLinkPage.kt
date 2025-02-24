@@ -68,7 +68,12 @@ fun SocialLinkPage() {
     var disconnectSocialDialogState by remember { mutableStateOf(SocialLoginType.NONE) }
 
     LaunchedEffect(Unit) {
-        socialLinkViewModel.fetchSocialProviders()
+        launchSuspendApi(
+            apiOnProgress = apiOnProgress,
+            apiOnError = apiOnError,
+        ) {
+            socialLinkViewModel.fetchSocialProviders()
+        }
     }
 
     val handleFacebookConnect = {

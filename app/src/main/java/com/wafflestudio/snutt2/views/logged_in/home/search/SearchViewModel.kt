@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -63,11 +64,11 @@ class SearchViewModel @Inject constructor(
     private val _selectedTags = MutableStateFlow(listOf<TagDto>())
     val selectedTags = _selectedTags.asStateFlow()
 
-    private val _searchTagList = MutableStateFlow(listOf<TagDto>())
+    private val _searchTagListFlow = MutableStateFlow(listOf<TagDto>())
 
     private val currentTable = currentTableRepository.currentTable
 
-    private val semesterChange =
+    val semesterChange =
         currentTable
             .filterNotNull()
             .map { it.year * 10 + it.semester } // .distinctUntilChanged()
@@ -91,6 +92,16 @@ class SearchViewModel @Inject constructor(
 
     val recentSearchedDepartments: StateFlow<List<TagDto>> = lectureSearchRepository.recentSearchedDepartments
 
+    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
+    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
+
+    // 2025년 이전 학기에는 "구) 교양분류" 타입의 태그가 내려오지 않는다.
+    val tagTypesNotEmpty: StateFlow<List<TagType>> = _searchTagListFlow
+        .map { tags ->
+            (tags + etcTags + timeTags).map { it.type }.toSet().toList()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
@@ -104,13 +115,18 @@ class SearchViewModel @Inject constructor(
                 }
             }
         }
+        viewModelScope.launch {
+            // 25년 이후에서 구) 교양분류를 선택한 상태로 25년 이전으로 이동하면, 태그 선택지가 사라져서, 빈 sheet가 뜨게 된다. 이를 방지.
+            combine(tagTypesNotEmpty, _selectedTagType) { tagTypes, selectedTagType ->
+                !tagTypes.contains(selectedTagType)
+            }.distinctUntilChanged().filter { it }.collectLatest {
+                setTagType(TagType.SORT_CRITERIA)
+            }
+        }
     }
 
-    private val timeTags = listOf(TagDto.TIME_EMPTY, TagDto.TIME_SELECT)
-    private val etcTags = listOf(TagDto.ETC_ENG, TagDto.ETC_MILITARY)
-
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
-        _searchTagList, _selectedTagType, _selectedTags,
+        _searchTagListFlow, _selectedTagType, _selectedTags,
     ) { tags, selectedTagType, selectedTags ->
         (tags + etcTags + timeTags).filter { it.type == selectedTagType }
             .map { it.toDataWithState(selectedTags.contains(it)) }
@@ -283,7 +299,7 @@ class SearchViewModel @Inject constructor(
     private suspend fun clear() {
         _searchTitle.emit("")
         _selectedLecture.emit(null)
-        _searchTagList.emit(emptyList())
+        _searchTagListFlow.emit(emptyList())
         _selectedTags.emit(emptyList())
         lazyListState = LazyListState(0, 0)
         /* TODO
@@ -294,7 +310,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun fetchSearchTagList() {
         val currentTable = currentTable.filterNotNull().first()
-        _searchTagList.emit(
+        _searchTagListFlow.emit(
             lectureSearchRepository.getSearchTags(
                 currentTable.year, currentTable.semester,
             ),

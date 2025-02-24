@@ -382,7 +382,9 @@
     <string name="search_option_tag_type_credit">학점</string>
     <string name="search_option_tag_type_time">시간</string>
     <string name="search_option_tag_type_department">학과</string>
-    <string name="search_option_tag_type_general_category">교양분류</string>
+    <string name="search_option_tag_type_general_category">교양영역</string>
+    <string name="search_option_tag_type_general_category_pre2025">구) 교양영역</string>
+    <string name="search_option_tag_type_general_pre2025">구)</string>
     <string name="search_option_tag_type_sort_criteria">정렬 기준</string>
     <string name="search_option_tag_type_etc">기타</string>
     <string name="search_option_apply_button">필터 적용</string>
@@ -423,6 +425,7 @@
     <string name="settings_app_report_description">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
+    <string name="settings_item_theme_market">테마 마켓</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
@@ -486,7 +489,8 @@
     <string name="lecture_detail_academic_year">학년</string>
     <string name="lecture_detail_credit">학점</string>
     <string name="lecture_detail_classification">분류</string>
-    <string name="lecture_detail_category">구분</string>
+    <string name="lecture_detail_category">교양영역</string>
+    <string name="lecture_detail_categoryPre2025">구) 교양영역</string>
     <string name="lecture_detail_course_number">강좌번호</string>
     <string name="lecture_detail_lecture_number">분반번호</string>
     <string name="lecture_detail_quota">정원</string>
@@ -548,6 +552,7 @@
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
     <string name="theme_config_app_bar_title">시간표 테마</string>
     <string name="theme_config_custom_theme">커스텀 테마</string>
+    <string name="theme_config_market_custom_theme">담은 테마</string>
     <string name="theme_config_builtin_theme">제공 테마</string>
     <string name="theme_config_guide_title">테마는 어떻게 적용하나요?</string>
     <string name="theme_config_guide_0">시간표 목록 > 더보기 버튼 > 테마 설정</string>
@@ -597,4 +602,7 @@
     <string name="kakao_friend_share_error">카카오톡 초대 기능을 사용할 수 없습니다.</string>
     <string name="kakao_friend_share_unknown_error">알 수 없는 오류가 발생했습니다.</string>
     <string name="kakao_friend_share_unsupported_browser">카카오톡이 설치되어 있는지 확인해보세요.</string>
+    <string name="theme_market_app_bar_title">테마 마켓</string>
+    <string name="theme_market_webview_error">네트워크 연결을 확인해주세요</string>
+    <string name="theme_market_webview_error_retry">다시 불러오기</string>
 </resources>

@@ -5,5 +5,5 @@ import android.webkit.WebView
 interface WebViewContainer {
     val webView: WebView
 
-    suspend fun openPage(url: String?)
+    suspend fun openPage(url: String? = null)
 }
