@@ -106,7 +106,7 @@ fun LectureColorSelectorPage(
             theme.getColors(isDarkMode).forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
-                    title = stringResource(R.string.lecture_color_selector_page_color_item, theme.name, idx + 1),
+                    title = "${theme.name} ${idx + 1}",
                     isSelected = idx == selectedIndex,
                     onClick = {
                         selectedIndex = idx
@@ -119,7 +119,7 @@ fun LectureColorSelectorPage(
                     fgColor = 0xffffff,
                     bgColor = (theme as BuiltInTheme).getColorByIndex(colorIndex),
                 ),
-                title = stringResource(R.string.lecture_color_selector_page_color_item, theme.name, colorIndex),
+                title = "${theme.name} $colorIndex",
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,
             ) {
                 selectedIndex = colorIndex.toInt() - 1
