@@ -79,7 +79,7 @@ fun InstallInAppDeeplinkExecutor() {
 
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
             lectureToShow,
-            ModeType.Normal,
+            ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {
             navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
