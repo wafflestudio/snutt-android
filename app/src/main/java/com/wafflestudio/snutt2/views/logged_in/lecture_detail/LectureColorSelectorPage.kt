@@ -212,7 +212,7 @@ fun ColorItem(
         modifier = Modifier
             .background(MaterialTheme.colors.surface)
             .clicks { onClick() }
-            .padding(horizontal = 20.dp, vertical = 5.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ColorBox(color)
