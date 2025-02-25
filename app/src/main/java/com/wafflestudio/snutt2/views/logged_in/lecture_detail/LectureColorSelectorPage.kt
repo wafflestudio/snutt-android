@@ -211,19 +211,22 @@ fun ColorItem(
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.surface)
-            .height(40.dp)
             .clicks { onClick() }
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        ColorBox(color)
+        Spacer(modifier = Modifier.width(15.dp))
         Text(
             text = title,
-            modifier = Modifier.width(72.dp),
+            modifier = Modifier.weight(1f),
             style = SNUTTTypography.body1,
         )
-        ColorBox(color)
-        Spacer(modifier = Modifier.weight(1f))
-        if (isSelected) CheckedIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black500))
+        if (isSelected) {
+            CheckedIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black500))
+        } else {
+            Spacer(modifier = Modifier.width(20.dp))
+        }
     }
 }
 
