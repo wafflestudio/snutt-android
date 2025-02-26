@@ -106,7 +106,7 @@ fun LectureColorSelectorPage(
             theme.getColors(isDarkMode).forEachIndexed { idx, color ->
                 ColorItem(
                     color = color,
-                    title = stringResource(R.string.lecture_color_selector_page_color_item, idx + 1),
+                    title = "${theme.name} ${idx + 1}",
                     isSelected = idx == selectedIndex,
                     onClick = {
                         selectedIndex = idx
@@ -119,80 +119,81 @@ fun LectureColorSelectorPage(
                     fgColor = 0xffffff,
                     bgColor = (theme as BuiltInTheme).getColorByIndex(colorIndex),
                 ),
-                title = stringResource(R.string.lecture_color_selector_page_color_item, colorIndex),
+                title = "${theme.name} $colorIndex",
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,
             ) {
                 selectedIndex = colorIndex.toInt() - 1
             }
-        }
-        Column {
-            ColorItem(
-                color = ColorDto(customFgColor.toArgb(), customBgColor.toArgb()),
-                title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                isSelected = selectedIndex == -1,
-                onClick = {
-                    selectedIndex = -1
-                },
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.surface),
-            ) {
-                Spacer(modifier = Modifier.width(92.dp))
-                Column(
-                    modifier = Modifier.padding(top = 5.dp, bottom = 12.dp),
+
+            Column {
+                ColorItem(
+                    color = ColorDto(customFgColor.toArgb(), customBgColor.toArgb()),
+                    title = stringResource(R.string.lecture_color_selector_page_custom_color),
+                    isSelected = selectedIndex == -1,
+                    onClick = {
+                        selectedIndex = -1
+                    },
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colors.surface),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Spacer(modifier = Modifier.width(92.dp))
+                    Column(
+                        modifier = Modifier.padding(top = 5.dp, bottom = 12.dp),
                     ) {
-                        Text(
-                            text = stringResource(R.string.theme_detail_color_fg),
-                            color = MaterialTheme.colors.onSurfaceVariant,
-                            style = SNUTTTypography.body2,
-                        )
-                        Spacer(modifier = Modifier.width(11.dp))
-                        ColorCircle(
-                            color = customFgColor,
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clicks {
-                                    showColorPickerDialog(
-                                        context = context,
-                                        modalState = modalState,
-                                        initialColor = customFgColor,
-                                        onColorPicked = { color ->
-                                            customFgColor = color
-                                            selectedIndex = -1 // 커스텀 색상을 변경하면 자동으로 커스텀을 선택
-                                        },
-                                    )
-                                },
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row {
-                        Text(
-                            text = stringResource(R.string.theme_detail_color_bg),
-                            color = MaterialTheme.colors.onSurfaceVariant,
-                            style = SNUTTTypography.body2,
-                        )
-                        Spacer(modifier = Modifier.width(11.dp))
-                        ColorCircle(
-                            color = customBgColor,
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clicks {
-                                    showColorPickerDialog(
-                                        context = context,
-                                        modalState = modalState,
-                                        initialColor = customBgColor,
-                                        onColorPicked = { color ->
-                                            customBgColor = color
-                                            selectedIndex = -1
-                                        },
-                                    )
-                                },
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = stringResource(R.string.theme_detail_color_fg),
+                                color = MaterialTheme.colors.onSurfaceVariant,
+                                style = SNUTTTypography.body2,
+                            )
+                            Spacer(modifier = Modifier.width(11.dp))
+                            ColorCircle(
+                                color = customFgColor,
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clicks {
+                                        showColorPickerDialog(
+                                            context = context,
+                                            modalState = modalState,
+                                            initialColor = customFgColor,
+                                            onColorPicked = { color ->
+                                                customFgColor = color
+                                                selectedIndex = -1 // 커스텀 색상을 변경하면 자동으로 커스텀을 선택
+                                            },
+                                        )
+                                    },
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row {
+                            Text(
+                                text = stringResource(R.string.theme_detail_color_bg),
+                                color = MaterialTheme.colors.onSurfaceVariant,
+                                style = SNUTTTypography.body2,
+                            )
+                            Spacer(modifier = Modifier.width(11.dp))
+                            ColorCircle(
+                                color = customBgColor,
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clicks {
+                                        showColorPickerDialog(
+                                            context = context,
+                                            modalState = modalState,
+                                            initialColor = customBgColor,
+                                            onColorPicked = { color ->
+                                                customBgColor = color
+                                                selectedIndex = -1
+                                            },
+                                        )
+                                    },
+                            )
+                        }
                     }
                 }
             }
@@ -210,19 +211,22 @@ fun ColorItem(
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.surface)
-            .height(40.dp)
             .clicks { onClick() }
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        ColorBox(color)
+        Spacer(modifier = Modifier.width(15.dp))
         Text(
             text = title,
-            modifier = Modifier.width(72.dp),
+            modifier = Modifier.weight(1f),
             style = SNUTTTypography.body1,
         )
-        ColorBox(color)
-        Spacer(modifier = Modifier.weight(1f))
-        if (isSelected) CheckedIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black500))
+        if (isSelected) {
+            CheckedIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black500))
+        } else {
+            Spacer(modifier = Modifier.width(20.dp))
+        }
     }
 }
 
