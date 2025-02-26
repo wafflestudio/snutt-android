@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
@@ -77,8 +78,19 @@ fun InstallInAppDeeplinkExecutor() {
             }
         }
 
+        val lectureReview = run {
+            try {
+                homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
+            } catch (e: Exception) {
+                if (e is ErrorParsedHttpException) {
+                    apiOnError(e)
+                }
+                return
+            }
+        }
+
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
-            lectureToShow,
+            lectureToShow.copy(review = lectureReview),
             ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {

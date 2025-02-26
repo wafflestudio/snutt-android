@@ -53,7 +53,7 @@ class LectureDetailViewModel @Inject constructor(
          * 로컬 저장소에는 리뷰 정보를 저장하지 않으므로, 시간표탭에서 강의상세로 진입하면 editingLectureDetail.value.review가 null이다
          * 따라서 getLectureReview()로 리뷰 정보만을 따로 불러온다
          */
-        lecture.review?.rating?.let { lecture.review }
+        lecture.review?.reviewCount?.let { lecture.review }
             ?: runCatching {
                 getLectureReview()
             }.onFailure(apiOnError).getOrNull()
@@ -116,13 +116,13 @@ class LectureDetailViewModel @Inject constructor(
         return currentTableRepository.getLectureSyllabusUrl(courseNumber, lectureNumber)
     }
 
-    private suspend fun getLectureReview(): LectureReviewDto? {
-        val originalLectureId =
-            if (modeType.value == ModeType.Viewing) {
-                editingLectureDetail.value.id
-            } else {
-                editingLectureDetail.value.lecture_id
-            }
+    suspend fun getLectureReview(id: String? = null): LectureReviewDto? {
+        val originalLectureId = id
+            ?: if (modeType.value == ModeType.Viewing) {
+            editingLectureDetail.value.id
+        } else {
+            editingLectureDetail.value.lecture_id
+        }
         return originalLectureId?.let { lectureId ->
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
