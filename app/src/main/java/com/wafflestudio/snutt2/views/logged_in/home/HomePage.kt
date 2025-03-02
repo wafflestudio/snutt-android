@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -61,7 +63,7 @@ fun HomePage() {
     val tableState = TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var shouldShowPopup by remember { mutableStateOf(false) }
-    var popupUri by remember { mutableStateOf("") }
+    var popupImageUri by remember { mutableStateOf("") }
     val isDarkMode = isDarkMode()
     val reviewPageReviewWebViewContainer = remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
@@ -100,7 +102,7 @@ fun HomePage() {
                 userViewModel.fetchPopup()
                 popupState.fetched = true
                 shouldShowPopup = (popupState.popup.isNotEmpty())
-                popupUri = popupState.popup.firstOrNull()?.uri ?: ""
+                popupImageUri = popupState.popup.firstOrNull()?.imageUri ?: ""
             }
         }
     }
@@ -159,19 +161,24 @@ fun HomePage() {
 
     if (shouldShowPopup) {
         Popup(
-            uri = popupUri,
+            uri = popupImageUri,
             onClickFewDays = {
                 scope.launch {
                     userViewModel.closePopupWithHiddenDays()
                     shouldShowPopup = popupState.popup.isNotEmpty()
-                    popupUri = popupState.popup.firstOrNull()?.uri ?: ""
+                    popupImageUri = popupState.popup.firstOrNull()?.imageUri ?: ""
                 }
             },
             onClickClose = {
                 scope.launch {
                     userViewModel.closePopup()
                     shouldShowPopup = popupState.popup.isNotEmpty()
-                    popupUri = popupState.popup.firstOrNull()?.uri ?: ""
+                    popupImageUri = popupState.popup.firstOrNull()?.imageUri ?: ""
+                }
+            },
+            onClickImage = {
+                popupState.popup.firstOrNull()?.linkUrl?.let { url ->
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                 }
             },
         )
