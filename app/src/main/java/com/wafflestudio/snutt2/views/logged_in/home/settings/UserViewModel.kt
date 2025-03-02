@@ -7,7 +7,6 @@ import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -15,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val popupState: PopupState,
 ) : ViewModel() {
 
     val trimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
