@@ -22,7 +22,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun Popup(
-    uri: String,
+    imageUri: String,
     onClickFewDays: () -> Unit,
     onClickClose: () -> Unit,
     onClickImage: () -> Unit,
@@ -47,7 +47,7 @@ fun Popup(
                     .clicks {
                         onClickImage()
                     },
-                model = uri,
+                model = imageUri,
                 contentDescription = "",
                 error = painterResource(id = R.drawable.img_reviews_coming_soon),
             )
@@ -93,5 +93,5 @@ fun Popup(
 @Preview(showBackground = true)
 @Composable
 fun PopupPreview() {
-    Popup(uri = "", {}, {}, {})
+    Popup(imageUri = "", {}, {}, {})
 }

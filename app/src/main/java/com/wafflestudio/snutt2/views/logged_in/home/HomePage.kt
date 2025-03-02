@@ -161,7 +161,7 @@ fun HomePage() {
 
     if (shouldShowPopup) {
         Popup(
-            uri = popupImageUri,
+            imageUri = popupImageUri,
             onClickFewDays = {
                 scope.launch {
                     userViewModel.closePopupWithHiddenDays()
