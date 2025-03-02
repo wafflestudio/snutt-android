@@ -177,8 +177,12 @@ fun HomePage() {
                 }
             },
             onClickImage = {
-                popupState.popup.firstOrNull()?.linkUrl?.let { url ->
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                popupState.popup.firstOrNull()?.linkUrl?.let { linkUrl ->
+                    runCatching {
+                        val uri = Uri.parse(linkUrl)
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        context.startActivity(intent)
+                    }
                 }
             },
         )
