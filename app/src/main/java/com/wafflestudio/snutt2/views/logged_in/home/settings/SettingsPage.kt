@@ -232,6 +232,7 @@ fun SettingsPage(
             onConfirm = {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
+                        viewModel.forceLogout()
                         viewModel.performLogout()
                         logoutDialogState = false
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
