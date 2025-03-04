@@ -142,21 +142,21 @@ class ApiOnError @Inject constructor(
                                 context.getString(R.string.error_wrong_user_token),
                                 Toast.LENGTH_SHORT,
                             ).show()
-                            CoroutineScope(Dispatchers.IO).launch {
-                                try {
-                                    userRepository.postForceLogout()
-                                    userRepository.performLogout()
-                                } catch (e: Exception) {
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(
-                                            context,
-                                            "로그아웃에 실패하였습니다.",
-                                            Toast.LENGTH_SHORT,
-                                        )
-                                            .show()
-                                    }
-                                }
-                            }
+//                            CoroutineScope(Dispatchers.IO).launch {
+//                                try {
+//                                    userRepository.postForceLogout()
+//                                    userRepository.performLogout()
+//                                } catch (e: Exception) {
+//                                    withContext(Dispatchers.Main) {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "로그아웃에 실패하였습니다.",
+//                                            Toast.LENGTH_SHORT,
+//                                        )
+//                                            .show()
+//                                    }
+//                                }
+//                            }
                         }
                         ErrorCode.NO_ADMIN_PRIVILEGE -> Toast.makeText(
                             context,
