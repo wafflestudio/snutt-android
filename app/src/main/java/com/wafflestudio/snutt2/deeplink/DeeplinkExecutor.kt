@@ -11,7 +11,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
@@ -59,15 +58,8 @@ fun InstallInAppDeeplinkExecutor() {
         val timetableId = deeplinkUri.getQueryParameter("timetableId") ?: return
         val lectureId = deeplinkUri.getQueryParameter("lectureId") ?: return
 
-        val lectureToShow = run {
-            val table = try {
-                homePageTableListViewModel.searchTableById(timetableId)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
-                }
-                return
-            }
+        val lectureToShow = runCatching {
+            val table = homePageTableListViewModel.searchTableById(timetableId)
             table.lectureList.find {
                 it.lecture_id == lectureId
             } ?: run {
@@ -76,18 +68,16 @@ fun InstallInAppDeeplinkExecutor() {
                 }
                 return
             }
-        }
+        }.onFailure {
+            context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
+        }.getOrElse { return }
 
-        val lectureReview = run {
-            try {
-                homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
-            } catch (e: Exception) {
-                if (e is ErrorParsedHttpException) {
-                    apiOnError(e)
-                }
-                return
-            }
-        }
+        val lectureReview = runCatching {
+            homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
+        }.onFailure { e ->
+            apiOnError(e)
+            return
+        }.getOrElse { return }
 
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
             lectureToShow.copy(review = lectureReview),
