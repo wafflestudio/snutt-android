@@ -74,6 +74,7 @@ fun InstallInAppDeeplinkExecutor() {
         }
 
         val lectureReview = runCatching {
+            // 강의평 조회 실패 방지를 위해 lectureReview를 미리 채운다.
             homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
         }.getOrElse { e ->
             apiOnError(e)
