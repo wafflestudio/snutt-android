@@ -117,7 +117,10 @@ class LectureDetailViewModel @Inject constructor(
     }
 
     suspend fun getLectureReview(id: String? = null): LectureReviewDto? {
-        // 알림함에서 강의 상세로 진입할 때 호출하는 경우에만 id가 null이 아니다.
+        /**
+         * 알림함에서 강의 상세로 진입할 때 호출하는 경우에만 id가 null이 아니다.
+         * 이때는 ModeType.Viewing임에도 lecture_id를 ev 서버에 보내야 하기 때문에, DeeplinkExecutor에서 id를 제공한다.
+         */
         val originalLectureId = id
             ?: if (modeType.value == ModeType.Viewing) {
                 editingLectureDetail.value.id
