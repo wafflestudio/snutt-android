@@ -68,16 +68,17 @@ fun InstallInAppDeeplinkExecutor() {
                 }
                 return
             }
-        }.onFailure {
+        }.getOrElse {
             context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
-        }.getOrElse { return }
+            return
+        }
 
         val lectureReview = runCatching {
             homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
-        }.onFailure { e ->
+        }.getOrElse { e ->
             apiOnError(e)
             return
-        }.getOrElse { return }
+        }
 
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
             lectureToShow.copy(review = lectureReview),
