@@ -58,15 +58,8 @@ fun InstallInAppDeeplinkExecutor() {
         val timetableId = deeplinkUri.getQueryParameter("timetableId") ?: return
         val lectureId = deeplinkUri.getQueryParameter("lectureId") ?: return
 
-        val lectureToShow = run {
-            val table = try {
-                homePageTableListViewModel.searchTableById(timetableId)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
-                }
-                return
-            }
+        val lectureToShow = runCatching {
+            val table = homePageTableListViewModel.searchTableById(timetableId)
             table.lectureList.find {
                 it.lecture_id == lectureId
             } ?: run {
@@ -75,10 +68,21 @@ fun InstallInAppDeeplinkExecutor() {
                 }
                 return
             }
+        }.getOrElse {
+            context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
+            return
+        }
+
+        val lectureReview = runCatching {
+            // 강의평 조회 실패 방지를 위해 lectureReview를 미리 채운다.
+            homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
+        }.getOrElse { e ->
+            apiOnError(e)
+            return
         }
 
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
-            lectureToShow,
+            lectureToShow.copy(review = lectureReview),
             ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {
