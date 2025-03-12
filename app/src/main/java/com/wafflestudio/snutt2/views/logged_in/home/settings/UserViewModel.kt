@@ -94,6 +94,10 @@ class UserViewModel @Inject constructor(
         userRepository.performLogout()
     }
 
+    suspend fun forceLogout() {
+        userRepository.postForceLogout()
+    }
+
     suspend fun registerPushToken() {
         userRepository.registerToken()
     }
