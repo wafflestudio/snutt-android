@@ -21,7 +21,12 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
-fun Popup(uri: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
+fun Popup(
+    imageUri: String,
+    onClickFewDays: () -> Unit,
+    onClickClose: () -> Unit,
+    onClickImage: () -> Unit,
+) {
     val imageWidth = min((LocalConfiguration.current.screenWidthDp * 0.8).dp, 400.dp)
     Box(
         modifier = Modifier
@@ -37,8 +42,12 @@ fun Popup(uri: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
             modifier = Modifier.width(imageWidth),
         ) {
             AsyncImage(
-                modifier = Modifier.fillMaxWidth(),
-                model = uri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clicks {
+                        onClickImage()
+                    },
+                model = imageUri,
                 contentDescription = "",
                 error = painterResource(id = R.drawable.img_reviews_coming_soon),
             )
@@ -84,5 +93,5 @@ fun Popup(uri: String, onClickFewDays: () -> Unit, onClickClose: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PopupPreview() {
-    Popup(uri = "", {}, {})
+    Popup(imageUri = "", {}, {}, {})
 }

@@ -49,7 +49,7 @@ class CustomTheme(
     companion object {
         val Default = CustomTheme(
             id = "",
-            name = "새 커스텀 테마",
+            name = "새 테마",
             isFromMarket = false,
             colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
         )
