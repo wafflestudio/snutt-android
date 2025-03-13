@@ -103,6 +103,7 @@ fun InstallInAppDeeplinkExecutor() {
             return
         }
 
+        // 여길건드리면?
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
             lectureToShow,
             ModeType.Viewing,
