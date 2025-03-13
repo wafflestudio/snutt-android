@@ -83,7 +83,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// 뭔가수정사항넣기
+// 뭔가수정사항넣기2
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
