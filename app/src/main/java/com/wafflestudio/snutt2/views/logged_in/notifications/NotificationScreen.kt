@@ -119,21 +119,26 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
+                .padding(top = 8.dp, bottom = 8.dp),
         ) {
             NotificationIcon(notification.type)
             Spacer(modifier = Modifier.width(10.dp))
             Column(
                 modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
             ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = notification.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
-                    Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = notification.title,
+                        style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+                        overflow = TextOverflow.Ellipsis,
+                    )
                     Text(
                         text = getNotificationTimeFromDate(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
