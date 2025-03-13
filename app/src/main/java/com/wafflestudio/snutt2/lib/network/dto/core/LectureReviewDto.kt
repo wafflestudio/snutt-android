@@ -11,6 +11,7 @@ data class LectureReviewDto(
     @Json(name = "avgRating") val rating: Double? = null,
     @Json(name = "evaluationCount") val reviewCount: Int? = null,
 ) {
+    // 진짜 생뚱맞은데 수정
     val ratingDisplayText get() = rating?.times(10)?.toInt()?.div(10.0)?.toString() ?: "--"
     val displayText get() = "$ratingDisplayText (${reviewCount ?: 0})"
 
