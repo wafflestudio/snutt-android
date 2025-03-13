@@ -374,7 +374,9 @@ class RootActivity : AppCompatActivity() {
             deepLinks = deepLinks,
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
+                    initialOffsetX = {
+                        fullWidth -> fullWidth
+                    },
                     animationSpec = spring(
                         stiffness = Spring.StiffnessMedium,
                         visibilityThreshold = IntOffset.VisibilityThreshold,
