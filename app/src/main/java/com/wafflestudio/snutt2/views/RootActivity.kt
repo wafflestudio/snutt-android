@@ -385,7 +385,9 @@ class RootActivity : AppCompatActivity() {
             },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) },
-            popEnterTransition = { fadeIn(initialAlpha = 0.0f) },
+            popEnterTransition = {
+                fadeIn(initialAlpha = 0.0f)
+            },
             content = content,
         )
     }
