@@ -65,4 +65,4 @@ Please request these files from the maintainer if needed.
 ## Maintainers
 - [@JuTaK97](https://github.com/JuTak97)
 - [@eastshine2741](https://github.com/eastshine2741)
-- 재시도
+- 설마 Variable에 들어가야하나
