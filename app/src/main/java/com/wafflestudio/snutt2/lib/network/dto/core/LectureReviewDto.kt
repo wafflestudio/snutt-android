@@ -16,7 +16,7 @@ data class LectureReviewDto(
     val displayText get() = "$ratingDisplayText (${reviewCount ?: 0})"
 
     // asdf
-    // asdfg
+    // asdfgggggg
     fun getReviewUrl(context: Context): String? { // DTO와 ui model 분리 후 ui model으로 옮기기
         return id.let {
             context.getString(R.string.review_base_url) + "/detail?id=$it"
