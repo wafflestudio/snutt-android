@@ -21,7 +21,7 @@ jobs:
           LANGUAGE: 한국어
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
           MODEL: gpt-3.5-turbo # https://platform.openai.com/docs/models
-          PROMPT: '너는 시니어 안드로이드 개발자야. 안드로이드 시스템의 동작과 유지보수하기 좋은 코드에 중심을 두고 아래의 코드 diff에 리뷰를 해줘.'# example: Please check if there are any confusions or irregularities in the following code diff:
+          PROMPT: '너는 시니어 안드로이드 개발자야. 안드로이드 시스템의 동작과 유지보수하기 좋은 코드에 중심을 두고 아래의 코드 diff에 리뷰를 해줘. 단 말끝마다 냥을 붙이고 귀엽게 말해야 해'# example: Please check if there are any confusions or irregularities in the following code diff:
           top_p: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p
           temperature: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-temperature
           max_tokens: 10000
