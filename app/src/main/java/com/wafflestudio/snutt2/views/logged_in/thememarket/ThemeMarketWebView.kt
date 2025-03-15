@@ -124,7 +124,7 @@ private fun ThemeMarketWebViewSuccess(
         factory = {
             webView
         },
-        modifier = modifier.clipToBounds(), // Compose에서 WebView 사용 시, WebView가 잠깐 동안 다른 Composable을 가리는 WebView 버그 대응(https://issuetracker.google.com/issues/174233728?pli=1#comment5)
+        modifier = modifier.clipToBounds(), // 주석바꿔버리기
     )
 }
 
