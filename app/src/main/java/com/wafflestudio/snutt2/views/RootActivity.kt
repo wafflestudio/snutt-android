@@ -235,9 +235,19 @@ class RootActivity : AppCompatActivity() {
             LocalNavBottomSheetState provides navBottomSheetState,
         ) {
             LaunchedEffect(Unit) {
-                remoteConfig.noticeConfig.collect {
-                    if (it.visible) {
-                        navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
+                lifecycleScope.launch {
+                    remoteConfig.noticeConfig.collect {
+                        if (it.visible) {
+                            navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
+                        }
+                    }
+                }
+
+                lifecycleScope.launch {
+                    userViewModel.accessToken.collect { token ->
+                        if (token.isEmpty()) {
+                            navController.navigateAsOrigin(NavigationDestination.Onboard)
+                        }
                     }
                 }
             }
