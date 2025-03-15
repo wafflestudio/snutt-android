@@ -33,6 +33,7 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AlarmOnIcon
 import com.wafflestudio.snutt2.components.compose.CalendarIcon
+import com.wafflestudio.snutt2.components.compose.ChevronIcon
 import com.wafflestudio.snutt2.components.compose.MegaphoneIcon
 import com.wafflestudio.snutt2.components.compose.NotificationFriendIcon
 import com.wafflestudio.snutt2.components.compose.NotificationTrashIcon
@@ -118,28 +119,43 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp, end = 2.dp),
+                .padding(top = 8.dp, bottom = 8.dp),
         ) {
             NotificationIcon(notification.type)
             Spacer(modifier = Modifier.width(10.dp))
             Column(
                 modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
             ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = notification.title, style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold))
-                    Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = notification.title,
+                        style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+                        overflow = TextOverflow.Ellipsis,
+                    )
                     Text(
                         text = getNotificationTimeFromDate(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = notification.message,
-                    style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = notification.message,
+                        style = SNUTTTypography.body1.copy(fontSize = 13.sp, lineHeight = 18.2.sp),
+                    )
+                    if (!notification.deeplink.isNullOrEmpty()) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        ChevronIcon(modifier = Modifier.size(20.dp))
+                    }
+                }
             }
         }
         Divider(color = SNUTTColors.Black250, thickness = 0.5.dp)

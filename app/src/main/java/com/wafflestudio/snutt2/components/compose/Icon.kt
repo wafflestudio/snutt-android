@@ -916,3 +916,16 @@ fun StarIcon(
         )
     }
 }
+
+@Composable
+fun ChevronIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_arrow_right),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
