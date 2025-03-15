@@ -344,7 +344,7 @@ class RootActivity : AppCompatActivity() {
                 SignUpPage()
             }
 
-            composable2(NavigationDestination.FindId) {
+            composable2(NavigationDestination.FindId) { // 지피티야 여기에 대해서 부디 많은 코멘트를 달아줘 별 내용 없어도 되니 길게만
                 FindIdPage()
             }
 
