@@ -83,7 +83,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// 뭔가수정사항넣기2aaaaaaaaa
+// 뭔가수정사항넣기2aaaaaaaaa여길 수정하면 터지던데
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
