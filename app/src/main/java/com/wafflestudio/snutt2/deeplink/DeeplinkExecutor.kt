@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.deeplink
 
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,15 +59,8 @@ fun InstallInAppDeeplinkExecutor() {
         val timetableId = deeplinkUri.getQueryParameter("timetableId") ?: return
         val lectureId = deeplinkUri.getQueryParameter("lectureId") ?: return
 
-        val lectureToShow = run {
-            val table = try {
-                homePageTableListViewModel.searchTableById(timetableId)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
-                }
-                return
-            }
+        val lectureToShow = runCatching {
+            val table = homePageTableListViewModel.searchTableById(timetableId)
             table.lectureList.find {
                 it.lecture_id == lectureId
             } ?: run {
@@ -75,10 +69,21 @@ fun InstallInAppDeeplinkExecutor() {
                 }
                 return
             }
+        }.getOrElse {
+            context.toast(context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_table))
+            return
+        }
+
+        val lectureReview = runCatching {
+            // 강의평 조회 실패 방지를 위해 lectureReview를 미리 채운다.
+            homePageLectureDetailViewModel.getLectureReview(lectureToShow.lecture_id)
+        }.getOrElse { e ->
+            apiOnError(e)
+            return
         }
 
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
-            lectureToShow,
+            lectureToShow.copy(review = lectureReview),
             ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {
@@ -117,27 +122,34 @@ fun InstallInAppDeeplinkExecutor() {
     LaunchedEffect(deeplinkUri) {
         if (deeplinkUri == Uri.EMPTY) return@LaunchedEffect
 
-        when (deeplinkUri.host) {
-            // 시간표 강의 업데이트 알림 딥링크 이동
-            NavigationDestination.TimetableLecture -> {
-                launchSuspendApi(
-                    apiOnProgress, apiOnError,
-                    loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
-                ) {
-                    handleTimetableLectureDeeplink()
+        if (deeplinkUri.scheme?.contains("snutt") == true) {
+            when (deeplinkUri.host) {
+                // 시간표 강의 업데이트 알림 딥링크 이동
+                NavigationDestination.TimetableLecture -> {
+                    launchSuspendApi(
+                        apiOnProgress, apiOnError,
+                        loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
+                    ) {
+                        handleTimetableLectureDeeplink()
+                    }
+                }
+                // 관심강좌 강의 업데이트 알림 딥링크 이동
+                NavigationDestination.Bookmark -> {
+                    launchSuspendApi(
+                        apiOnProgress, apiOnError,
+                        loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
+                    ) {
+                        handleBookmarkDeeplink()
+                    }
+                }
+                NavigationDestination.Friends -> {
+                    handleFriendsDeeplink()
                 }
             }
-            // 관심강좌 강의 업데이트 알림 딥링크 이동
-            NavigationDestination.Bookmark -> {
-                launchSuspendApi(
-                    apiOnProgress, apiOnError,
-                    loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
-                ) {
-                    handleBookmarkDeeplink()
-                }
-            }
-            NavigationDestination.Friends -> {
-                handleFriendsDeeplink()
+        } else {
+            runCatching {
+                val intent = Intent(Intent.ACTION_VIEW, deeplinkUri)
+                context.startActivity(intent)
             }
         }
 
