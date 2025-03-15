@@ -63,7 +63,7 @@ class ThemeMarketWebViewContainer(
 
     override suspend fun openPage(url: String?) {
         val accessToken = accessToken.filterNotNull().first()
-        val themeMarketUrl = url ?: THEME_MARKET_URL
+        val themeMarketUrl = url ?: context.getString(R.string.theme_market_base_url)
         val urlHost = URL(themeMarketUrl).host
 
         setCookies(urlHost, accessToken)
@@ -107,9 +107,5 @@ class ThemeMarketWebViewContainer(
                 }",
             )
         }.flush()
-    }
-
-    companion object {
-        private val THEME_MARKET_URL = "https://snutt-theme-market-dev.wafflestudio.com/download"
     }
 }
