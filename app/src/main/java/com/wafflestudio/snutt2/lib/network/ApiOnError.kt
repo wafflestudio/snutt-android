@@ -144,7 +144,6 @@ class ApiOnError @Inject constructor(
                             ).show()
                             CoroutineScope(Dispatchers.IO).launch {
                                 try {
-                                    userRepository.postForceLogout()
                                     userRepository.performLogout()
                                 } catch (e: Exception) {
                                     withContext(Dispatchers.Main) {
