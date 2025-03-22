@@ -269,7 +269,9 @@ class RootActivity : AppCompatActivity() {
 
                     composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
-                    composable2(NavigationDestination.Notification) { NotificationRoute() }
+                    composable2(NavigationDestination.Notification) {
+                        // TODO
+                    }
 
                     composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
 

@@ -16,21 +16,11 @@ import javax.inject.Singleton
 class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
     NotificationRepository {
     override fun getNotificationListStream(): Flow<PagingData<Notification>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = { NotificationPagingSource(api) },
-        ).flow.map { pagingData ->
-            pagingData.map { notification ->
-                notification.domainModel()
-            }
-        }
+        TODO("구현하기 - LectureSearchRepository 참고")
     }
 
     override suspend fun getNotificationCount(): Long {
-        return api._getNotificationCount().count
+        TODO("구현하기 - LectureSearchRepository 참고")
     }
 
     companion object {

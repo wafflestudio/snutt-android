@@ -16,17 +16,5 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
-    private val _notificationList =
-        MutableStateFlow<PagingData<Notification>>(PagingData.empty())
-    val notificationList: StateFlow<PagingData<Notification>> = _notificationList
-
-    init {
-        viewModelScope.launch {
-            notificationRepository.getNotificationListStream()
-                .cachedIn(viewModelScope)
-                .collect {
-                    _notificationList.emit(it)
-                }
-        }
-    }
+    // TODO
 }
