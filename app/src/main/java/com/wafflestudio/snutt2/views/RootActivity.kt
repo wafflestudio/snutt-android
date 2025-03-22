@@ -72,7 +72,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelect
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
