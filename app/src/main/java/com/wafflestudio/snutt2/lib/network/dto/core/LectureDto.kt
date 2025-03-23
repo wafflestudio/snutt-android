@@ -1,7 +1,21 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.toColorInt
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.domainmodel.BuiltInColor
+import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.CustomLecture
+import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
+import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 @JsonClass(generateAdapter = true)
 data class LectureDto(
@@ -51,5 +65,116 @@ data class LectureDto(
             remark = "",
             class_time_json = emptyList(),
         )
+    }
+
+    fun toLocalLecture(): LocalLecture {
+        if (lecture_id != null) {
+            return SyllabusLecture(
+                id = id,
+                courseTitle = course_title,
+                lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
+                    LectureSession(
+                        id = id,
+                        day = DayOfWeek.of(day + 1),
+                        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+                        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+                        place = place,
+                    )
+                },
+                instructor = instructor,
+                credit = credit,
+                remark = remark,
+                classification = classification ?: "",
+                department = department ?: "",
+                academicYear = academic_year ?: "",
+                courseNumber = course_number ?: "",
+                lectureNumber = lecture_number ?: "",
+                category = category ?: "",
+                categoryPre2025 = categoryPre2025 ?: "",
+                quota = quota,
+                freshmanQuota = freshmanQuota ?: 0, // TODO,
+                originalLectureId = lecture_id,
+                color = if (colorIndex == 0L) {
+                    CustomColor(
+                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
+                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                    )
+                } else {
+                    BuiltInColor(
+                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
+                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                        colorIndex = colorIndex.toInt(),
+                    )
+                },
+            )
+        } else {
+            return CustomLecture(
+                id = id,
+                courseTitle = course_title,
+                lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
+                    LectureSession(
+                        id = id,
+                        day = DayOfWeek.of(day + 1),
+                        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+                        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+                        place = place,
+                    )
+                },
+                instructor = instructor,
+                credit = credit,
+                remark = remark,
+                color = if (colorIndex == 0L) {
+                    CustomColor(
+                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
+                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                    )
+                } else {
+                    BuiltInColor(
+                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
+                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                        colorIndex = colorIndex.toInt(),
+                    )
+                },
+            )
+        }
+    }
+
+    fun toDomainModel(): Lecture {
+        if (this.review != null) {
+            return SearchedLecture(
+                id = id,
+                courseTitle = course_title,
+                lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
+                    LectureSession(
+                        id = id,
+                        day = DayOfWeek.of(day + 1),
+                        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+                        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+                        place = place,
+                    )
+                },
+                instructor = instructor,
+                credit = credit,
+                remark = remark,
+                classification = classification ?: "",
+                department = department ?: "",
+                academicYear = academic_year ?: "",
+                courseNumber = course_number ?: "",
+                lectureNumber = lecture_number ?: "",
+                category = category ?: "",
+                categoryPre2025 = categoryPre2025 ?: "",
+                quota = quota,
+                freshmanQuota = freshmanQuota ?: 0, // TODO
+                registrationCount = registrationCount,
+                wasFull = wasFull,
+                reviewInfo = LectureReviewInfo(
+                    id = review.id,
+                    rating = review.rating ?: 0.0,
+                    reviewCount = review.reviewCount ?: 0,
+                ),
+            )
+        } else {
+            return this.toLocalLecture()
+        }
     }
 }
