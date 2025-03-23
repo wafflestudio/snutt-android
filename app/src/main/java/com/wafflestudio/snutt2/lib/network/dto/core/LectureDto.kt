@@ -78,7 +78,7 @@ data class LectureDto(
             credit = localLecture.credit,
             class_time_json = localLecture.lectureSessions.map {
                 ClassTimeDto(
-                    day = it.day.value,
+                    day = it.day.value - 1,
                     place = it.place,
                     id = it.id,
                     startMinute = it.startTime.hour * 60 + it.startTime.minute,
