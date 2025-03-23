@@ -1,16 +1,22 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -18,17 +24,76 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ClockIcon
 import com.wafflestudio.snutt2.components.compose.LocationIcon
 import com.wafflestudio.snutt2.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.TagIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import kotlinx.coroutines.flow.map
 
+@Composable
+fun TableLecturesRoute(
+    viewModel: TimetableViewModel = hiltViewModel(),
+) {
+    val navController = LocalNavController.current
+    val lectures by viewModel.currentTable.map { table ->
+        table?.lectureList ?: emptyList()
+    }.collectAsStateWithLifecycle(emptyList())
+
+    TableLecturesPage(
+        uiState = TableLecturesUIState(lectures),
+        onClickLecture = {},
+        onClickAddCustom = {},
+        onBack = {
+            navController.popBackStack()
+        },
+    )
+}
+
+@Composable
+private fun TableLecturesPage(
+    uiState: TableLecturesUIState,
+    onClickLecture: (LocalLecture) -> Unit,
+    onClickAddCustom: () -> Unit,
+    onBack: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .fillMaxSize(),
+    ) {
+        SimpleTopBar(
+            title = stringResource(R.string.timetable_app_bar_title),
+            onClickNavigateBack = onBack,
+        )
+        LazyColumn {
+            items(uiState.lectures) { lecture ->
+                TableLectureItemNew(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp), lecture, onClickLecture,
+                )
+                Row(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
+                    Divider(thickness = 1.dp, color = SNUTTColors.Black050)
+                }
+            }
+            item {
+                TableLectureAddNew(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp), onClickAddCustom,
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun TableLectureItemNew(
