@@ -17,6 +17,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,10 +37,14 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import kotlinx.coroutines.flow.map
 
 @Composable
@@ -48,13 +53,34 @@ fun TableLecturesRoute(
 ) {
     val navController = LocalNavController.current
     val lectures by viewModel.currentTable.map { table ->
-        table?.lectureList ?: emptyList()
+        // FIXME: Table 도메인 모델 생성 후 수정
+        table?.lectureList?.map {
+            // FIXME: ViewModel 단에서 LectureDTO 걷어 내고 제거
+            it.toLocalLecture()
+        } ?: emptyList()
     }.collectAsStateWithLifecycle(emptyList())
+
+    // FIXME: 임시 코드
+    // share viewModel
+    val backStackEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry(NavigationDestination.Home)
+    }
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     TableLecturesPage(
         uiState = TableLecturesUIState(lectures),
-        onClickLecture = {},
-        onClickAddCustom = {},
+        onClickLecture = { lecture ->
+            // FIXME: 임시 코드
+            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal)
+            navController.navigate(NavigationDestination.LectureDetail) {
+                launchSingleTop = true
+            }
+        },
+        onClickAddCustom = {
+            // FIXME: 임시 코드
+            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default, ModeType.Editing(true))
+            navController.navigate(NavigationDestination.LectureDetail)
+        },
         onBack = {
             navController.popBackStack()
         },

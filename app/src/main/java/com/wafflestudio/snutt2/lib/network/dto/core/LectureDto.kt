@@ -65,6 +65,38 @@ data class LectureDto(
             remark = "",
             class_time_json = emptyList(),
         )
+
+        fun fromLocalLecture(localLecture: LocalLecture): LectureDto = LectureDto(
+            id = localLecture.id,
+            lecture_id = if (localLecture is SyllabusLecture) localLecture.originalLectureId else null,
+            classification = if (localLecture is SyllabusLecture) localLecture.classification else null,
+            department = if (localLecture is SyllabusLecture) localLecture.department else null,
+            academic_year = if (localLecture is SyllabusLecture) localLecture.academicYear else null,
+            course_number = if (localLecture is SyllabusLecture) localLecture.courseNumber else null,
+            lecture_number = if (localLecture is SyllabusLecture) localLecture.lectureNumber else null,
+            course_title = localLecture.courseTitle,
+            credit = localLecture.credit,
+            class_time_json = localLecture.lectureSessions.map {
+                ClassTimeDto(
+                    day = it.day.value,
+                    place = it.place,
+                    id = it.id,
+                    startMinute = it.startTime.hour * 60 + it.startTime.minute,
+                    endMinute = it.endTime.hour * 60 + it.endTime.minute,
+                )
+            },
+            instructor = localLecture.instructor,
+            quota = if (localLecture is SyllabusLecture) localLecture.quota else 0,
+            freshmanQuota = if (localLecture is SyllabusLecture) localLecture.freshmanQuota else null,
+            remark = localLecture.remark,
+            category = if (localLecture is SyllabusLecture) localLecture.category else null,
+            categoryPre2025 = if (localLecture is SyllabusLecture) localLecture.categoryPre2025 else null,
+            colorIndex = (localLecture.color as? BuiltInColor)?.colorIndex?.toLong() ?: 0L,
+            color = ColorDto(fgColor = localLecture.color.foreground.toArgb(), localLecture.color.background.toArgb()),
+            registrationCount = 0L,
+            wasFull = false,
+            review = null,
+        )
     }
 
     fun toLocalLecture(): LocalLecture {
