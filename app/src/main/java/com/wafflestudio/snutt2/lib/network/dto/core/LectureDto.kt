@@ -78,6 +78,7 @@ data class LectureDto(
             credit = localLecture.credit,
             class_time_json = localLecture.lectureSessions.map {
                 ClassTimeDto(
+                    // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
                     day = it.day.value - 1,
                     place = it.place,
                     id = it.id,
@@ -107,6 +108,7 @@ data class LectureDto(
                 lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
                     LectureSession(
                         id = id,
+                        // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
                         day = DayOfWeek.of(day + 1),
                         startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
                         endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
@@ -146,6 +148,7 @@ data class LectureDto(
                 lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
                     LectureSession(
                         id = id,
+                        // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
                         day = DayOfWeek.of(day + 1),
                         startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
                         endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
@@ -179,6 +182,7 @@ data class LectureDto(
                 lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
                     LectureSession(
                         id = id,
+                        // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
                         day = DayOfWeek.of(day + 1),
                         startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
                         endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
