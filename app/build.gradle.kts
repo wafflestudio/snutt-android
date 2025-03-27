@@ -44,6 +44,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     signingConfigs {
@@ -205,4 +206,7 @@ dependencies {
     // Kakao SDK
     implementation("com.kakao.sdk:v2-share:${Deps.Version.KakaoSDK}")
     implementation("com.kakao.sdk:v2-user:${Deps.Version.KakaoSDK}")
+
+    // minSdk 안 올리고 java.time 쓰기
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 }
