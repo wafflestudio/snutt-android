@@ -70,16 +70,10 @@ fun CreateTableBottomSheet(
                 },
             )
             Spacer(modifier = Modifier.weight(1f))
-            if (newTitle.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.common_complete), style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.common_complete), style = SNUTTTypography.body1.copy(),
-                    modifier = Modifier.clicks { handleDoneClick() },
-                )
-            }
+            Text(
+                text = stringResource(R.string.common_complete), style = if (newTitle.isNotEmpty()) SNUTTTypography.body1 else SNUTTTypography.body1.copy(color = SNUTTColors.Gray200),
+                modifier = Modifier.clicks(enabled = newTitle.isNotEmpty()) { handleDoneClick() },
+            )
         }
         Spacer(modifier = Modifier.height(25.dp))
         Text(
