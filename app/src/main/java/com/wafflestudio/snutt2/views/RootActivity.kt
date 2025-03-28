@@ -302,7 +302,7 @@ class RootActivity : AppCompatActivity() {
                         LectureColorSelectorPage(lectureDetailViewModel)
                     }
 
-                    bottomSheet<NavigationDestination.ThemeDetail> { // TODO: 인자 기본값 챙기기
+                    bottomSheet<NavigationDestination.ThemeDetail> {
                         ThemeDetailRoute(
                             onNavigateBack = { navController.popBackStack() },
                         )
