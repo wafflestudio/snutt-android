@@ -11,6 +11,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.firebase.appdistribution")
     id("com.google.firebase.crashlytics")
+    id("kotlinx-serialization")
 }
 
 ktlint {
@@ -205,4 +206,7 @@ dependencies {
     // Kakao SDK
     implementation("com.kakao.sdk:v2-share:${Deps.Version.KakaoSDK}")
     implementation("com.kakao.sdk:v2-user:${Deps.Version.KakaoSDK}")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 }
