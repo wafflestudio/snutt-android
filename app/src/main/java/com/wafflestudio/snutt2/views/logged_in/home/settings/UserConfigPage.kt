@@ -28,6 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -153,7 +155,11 @@ fun UserConfigPage() {
         var passwordConfirm by remember { mutableStateOf("") }
 
         val onConfirm: () -> Unit = {
-            if (password != passwordConfirm) {
+            if (id.isIdInvalid()) {
+                context.toast(context.getString(R.string.invalid_id))
+            } else if (password.isPasswordInvalid()) {
+                context.toast(context.getString(R.string.invalid_password))
+            } else if (password != passwordConfirm) {
                 context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
             } else {
                 scope.launch {
@@ -210,7 +216,9 @@ fun UserConfigPage() {
     }
 
     val checkAndPostPasswordChange: (String, String, String) -> Unit = { currentPassword, newPassword, newPasswordConfirm ->
-        if (newPassword != newPasswordConfirm) {
+        if (newPassword.isPasswordInvalid()) {
+            context.toast(context.getString(R.string.invalid_password))
+        } else if (newPassword != newPasswordConfirm) {
             context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
         } else {
             scope.launch {
