@@ -46,7 +46,7 @@ import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.NotificationType
 import com.wafflestudio.snutt2.domainmodel.PreviewData
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTimeFromDate
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -136,7 +136,7 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = getNotificationTimeFromDate(context, notification.createdAt),
+                        text = getNotificationTime(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
                     )
