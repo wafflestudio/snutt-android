@@ -9,7 +9,7 @@ object Deps {
         const val RxJava = "3.1.0"
         const val RxKotlin = "3.0.1"
         const val Hilt = "2.47"
-        const val Navigation = "2.7.0"
+        const val Navigation = "2.8.9"
         const val Paging = "3.1.0"
         const val Compose = "1.5.4"
         const val ComposeFoundation = "1.5.4"
