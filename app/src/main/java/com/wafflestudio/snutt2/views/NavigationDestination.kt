@@ -1,36 +1,67 @@
-package com.wafflestudio.snutt2.views
+import kotlinx.serialization.Serializable
 
-object NavigationDestination {
-    const val Onboard = "onboard"
-    const val Tutorial = "tutorial"
-    const val Home = "home"
-    const val SignIn = "signIn"
-    const val SignUp = "signUp"
-    const val FindId = "find_id"
-    const val FindPassword = "find_password"
-    const val EmailVerification = "email_verification"
-    const val LecturesOfTable = "lectures_of_table"
-    const val LectureDetail = "lecture_detail"
-    const val TimetableLecture = "timetable-lecture"
-    const val LectureColorSelector = "lecture_color_selector"
-    const val Notification = "notifications"
-    const val AppReport = "app_report"
-    const val OpenLicenses = "open_licenses"
-    const val LicenseDetail = "license_detail"
-    const val ServiceInfo = "service_info"
-    const val TeamInfo = "team_info"
-    const val TimeTableConfig = "timetable_config"
-    const val UserConfig = "user_config"
-    const val ChangeNickname = "change_nickname"
-    const val PersonalInformationPolicy = "personal_information_policy"
-    const val ThemeModeSelect = "theme_mode_select"
-    const val Bookmark = "bookmarks"
-    const val NetworkLog = "network_log"
-    const val VacancyNotification = "vacancy"
-    const val ThemeMarket = "theme_market"
-    const val Friends = "friends"
-    const val ThemeConfig = "theme_config"
-    const val ThemeDetail = "theme_detail"
-    const val SocialLink = "social_link"
-    const val ImportantNotice = "important_notice"
+sealed interface NavigationDestination {
+    @Serializable data object Onboard : NavigationDestination
+
+    @Serializable data object Tutorial : NavigationDestination
+
+    @Serializable data object Home : NavigationDestination
+
+    @Serializable data object SignIn : NavigationDestination
+
+    @Serializable data object SignUp : NavigationDestination
+
+    @Serializable data object FindId : NavigationDestination
+
+    @Serializable data object FindPassword : NavigationDestination
+
+    @Serializable data object EmailVerification : NavigationDestination
+
+    @Serializable data object LecturesOfTable : NavigationDestination
+
+    @Serializable data object LectureDetail : NavigationDestination
+
+    @Serializable data class TimetableLecture(val tableId: String? = null) : NavigationDestination
+
+    @Serializable data object LectureColorSelector : NavigationDestination
+
+    @Serializable data object Notification : NavigationDestination
+
+    @Serializable data object AppReport : NavigationDestination
+
+    @Serializable data object OpenLicenses : NavigationDestination
+
+    @Serializable data class LicenseDetail(val licenseName: String) : NavigationDestination
+
+    @Serializable data object ServiceInfo : NavigationDestination
+
+    @Serializable data object TeamInfo : NavigationDestination
+
+    @Serializable data object TimeTableConfig : NavigationDestination
+
+    @Serializable data object UserConfig : NavigationDestination
+
+    @Serializable data object ChangeNickname : NavigationDestination
+
+    @Serializable data object PersonalInformationPolicy : NavigationDestination
+
+    @Serializable data object ThemeModeSelect : NavigationDestination
+
+    @Serializable data object Bookmark : NavigationDestination
+
+    @Serializable data object NetworkLog : NavigationDestination
+
+    @Serializable data object VacancyNotification : NavigationDestination
+
+    @Serializable data object ThemeMarket : NavigationDestination
+
+    @Serializable data object Friends : NavigationDestination
+
+    @Serializable data object ThemeConfig : NavigationDestination
+
+    @Serializable data class ThemeDetail(val themeId: String = "", val theme: Int = -1) : NavigationDestination
+
+    @Serializable data object SocialLink : NavigationDestination
+
+    @Serializable data object ImportantNotice : NavigationDestination
 }

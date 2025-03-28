@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
@@ -114,7 +115,7 @@ fun LectureDetailPage(
         } else {
             when (modeType) {
                 ModeType.Normal -> {
-                    if (navController.currentDestination?.route == NavigationDestination.LectureDetail) {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDetail::class) == true) {
                         navController.popBackStack()
                     }
                 }

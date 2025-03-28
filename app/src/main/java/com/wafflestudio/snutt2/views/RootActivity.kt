@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views
 
+import NavigationDestination
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.net.Uri
@@ -31,18 +32,14 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -133,7 +130,7 @@ class RootActivity : AppCompatActivity() {
         startUpdatingPushToken()
     }
 
-    private fun setUpContents(startDestination: String) {
+    private fun setUpContents(startDestination: NavigationDestination) {
         composeRoot.setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
@@ -175,7 +172,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun setUpUI(startDestination: String) {
+    fun setUpUI(startDestination: NavigationDestination) {
         val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,
@@ -263,15 +260,15 @@ class RootActivity : AppCompatActivity() {
                 ) {
                     onboardGraph()
 
-                    composableRoot(NavigationDestination.Home) { HomePage() }
+                    composableRoot<NavigationDestination.Home> { HomePage() }
 
-                    composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
+                    composableAnimated<NavigationDestination.ImportantNotice> { ImportantNoticePage() }
 
-                    composable2(NavigationDestination.Notification) { NotificationRoute() }
+                    composableAnimated<NavigationDestination.Notification> { NotificationRoute() }
 
-                    composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }
+                    composableAnimated<NavigationDestination.LecturesOfTable> { LecturesOfTablePage() }
 
-                    composable2(NavigationDestination.LectureDetail) {
+                    composableAnimated<NavigationDestination.LectureDetail> {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
@@ -286,24 +283,17 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable2(
-                        route = "${NavigationDestination.TimetableLecture}?tableId={tableId}",
-                        arguments = listOf(
-                            navArgument("tableId") {
-                                type = NavType.StringType
-                                nullable = true
-                            },
-                        ),
-                    ) { backStackEntry ->
+                    composableAnimated<NavigationDestination.TimetableLecture> { backStackEntry ->
                         val homeBackStackEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
+                        val tableId = backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
                         val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
                         val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        TimetableLectureDetailPage(lectureDetailViewModel, tableListViewModel)
+                        TimetableLectureDetailPage(tableId, lectureDetailViewModel, tableListViewModel)
                     }
 
-                    composable2(NavigationDestination.LectureColorSelector) {
+                    composableAnimated<NavigationDestination.LectureColorSelector> {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
@@ -312,73 +302,50 @@ class RootActivity : AppCompatActivity() {
                         LectureColorSelectorPage(lectureDetailViewModel)
                     }
 
-                    bottomSheet(
-                        "${NavigationDestination.ThemeDetail}?themeId={themeId}&theme={theme}",
-                        arguments = listOf(
-                            navArgument("themeId") {
-                                type = NavType.StringType
-                                defaultValue = ""
-                            },
-                            navArgument("theme") {
-                                type = NavType.IntType
-                                defaultValue = -1
-                            },
-                        ),
-                    ) {
+                    bottomSheet<NavigationDestination.ThemeDetail> { // TODO: 인자 기본값 챙기기
                         ThemeDetailRoute(
                             onNavigateBack = { navController.popBackStack() },
                         )
                     }
 
-                    settingcomposable2(navController)
+                    settingComposables(navController)
                 }
             }
         }
     }
 
     private fun NavGraphBuilder.onboardGraph() {
-        navigation(
+        navigation<NavigationDestination.Onboard>(
             startDestination = NavigationDestination.Tutorial,
-            route = NavigationDestination.Onboard,
         ) {
-            composableRoot(NavigationDestination.Tutorial) {
+            composableRoot<NavigationDestination.Tutorial> {
                 TutorialPage()
             }
-            composable2(NavigationDestination.SignIn) {
+            composableAnimated<NavigationDestination.SignIn> {
                 SignInPage()
             }
-            composable2(NavigationDestination.SignUp) {
+            composableAnimated<NavigationDestination.SignUp> {
                 SignUpPage()
             }
 
-            composable2(NavigationDestination.FindId) {
+            composableAnimated<NavigationDestination.FindId> {
                 FindIdPage()
             }
 
-            composable2(NavigationDestination.FindPassword) {
+            composableAnimated<NavigationDestination.FindPassword> {
                 ResetPasswordPage()
             }
 
-            composable2(NavigationDestination.EmailVerification) {
+            composableAnimated<NavigationDestination.EmailVerification> {
                 EmailVerificationPage()
             }
         }
     }
 
-    private fun NavGraphBuilder.composable2(
-        route: String,
-        arguments: List<NamedNavArgument> = emptyList(),
-        deepLinks: List<NavDeepLink> = listOf(
-            navDeepLink {
-                uriPattern = "${applicationContext.getString(R.string.scheme)}$route"
-            },
-        ),
-        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+    private inline fun <reified T : NavigationDestination> NavGraphBuilder.composableAnimated(
+        noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
-        composable(
-            route,
-            arguments = arguments,
-            deepLinks = deepLinks,
+        composable<T>(
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> fullWidth },
@@ -395,12 +362,10 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.composableRoot(
-        route: String,
-        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+    private inline fun <reified T : NavigationDestination> NavGraphBuilder.composableRoot(
+        noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
-        composable(
-            route,
+        composable<T>(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut(targetAlpha = 0.0f) },
             popExitTransition = { fadeOut() },
@@ -409,57 +374,50 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingcomposable2(navController: NavController) {
-        composable2(NavigationDestination.AppReport) { AppReportPage() }
-        composable2(NavigationDestination.OpenLicenses) { OpenSourceLicensePage() }
+    private fun NavGraphBuilder.settingComposables(navController: NavController) {
+        composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
+        composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
-        composable2(
-            route = "${NavigationDestination.LicenseDetail}?licenseName={licenseName}",
-            arguments = listOf(
-                navArgument("licenseName") {
-                    type = NavType.StringType
-                    nullable = true
-                },
-            ),
-        ) { _ ->
-            LicenseDetailPage()
+        composableAnimated<NavigationDestination.LicenseDetail> { backStackEntry ->
+            val licenseName = backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
+            LicenseDetailPage(licenseName)
         }
 
-        composable2(NavigationDestination.ServiceInfo) { ServiceInfoPage() }
-        composable2(NavigationDestination.TeamInfo) { TeamInfoPage() }
-        composable2(NavigationDestination.TimeTableConfig) { TimetableConfigPage() }
-        composable2(NavigationDestination.UserConfig) { UserConfigPage() }
-        composable2(NavigationDestination.ChangeNickname) { ChangeNicknamePage() }
-        composable2(NavigationDestination.SocialLink) { SocialLinkPage() }
-        composable2(NavigationDestination.PersonalInformationPolicy) { PersonalInformationPolicyPage() }
-        composable2(NavigationDestination.ThemeModeSelect) { ColorModeSelectPage() }
-        composable2(NavigationDestination.VacancyNotification) {
+        composableAnimated<NavigationDestination.ServiceInfo> { ServiceInfoPage() }
+        composableAnimated<NavigationDestination.TeamInfo> { TeamInfoPage() }
+        composableAnimated<NavigationDestination.TimeTableConfig> { TimetableConfigPage() }
+        composableAnimated<NavigationDestination.UserConfig> { UserConfigPage() }
+        composableAnimated<NavigationDestination.ChangeNickname> { ChangeNicknamePage() }
+        composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
+        composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
+        composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
+        composableAnimated<NavigationDestination.VacancyNotification> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
         }
-        composable2(NavigationDestination.ThemeMarket) {
+        composableAnimated<NavigationDestination.ThemeMarket> {
             ThemeMarketRoute(
                 onBackClick = { navController.popBackStack() },
             )
         }
-        composable2(NavigationDestination.ThemeConfig) {
+        composableAnimated<NavigationDestination.ThemeConfig> {
             ThemeConfigRoute(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {
-                        is CustomTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?themeId=${theme.id}")
-                        is BuiltInTheme -> navController.navigate("${NavigationDestination.ThemeDetail}?theme=${theme.code}")
+                        is CustomTheme -> navController.navigate(NavigationDestination.ThemeDetail(themeId = theme.id))
+                        is BuiltInTheme -> navController.navigate(NavigationDestination.ThemeDetail(theme = theme.code))
                     }
                 },
                 onClickAddTheme = {
-                    navController.navigate(NavigationDestination.ThemeDetail)
+                    navController.navigate(NavigationDestination.ThemeDetail())
                 },
             )
         }
-        if (BuildConfig.DEBUG) composable2(NavigationDestination.NetworkLog) { NetworkLogPage() }
+        if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog> { NetworkLogPage() }
     }
 
     // 안드 13 대응
@@ -496,7 +454,7 @@ class RootActivity : AppCompatActivity() {
         // 예시: snutt://friends
         val regex = Regex("^${applicationContext.getString(R.string.scheme)}(.+)$")
         when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
-            NavigationDestination.Friends -> return HomeItem.Friends
+            "friends" -> return HomeItem.Friends
         }
 
         // 예시: kakao12345://kakaolink?type=add-friend-kakao
@@ -538,7 +496,7 @@ class RootActivity : AppCompatActivity() {
     }
 }
 
-fun NavController.navigateAsOrigin(route: String) {
+fun <T : NavigationDestination> NavController.navigateAsOrigin(route: T) {
     navigate(route) {
         while (popBackStack()) {
             /* pop back until end */

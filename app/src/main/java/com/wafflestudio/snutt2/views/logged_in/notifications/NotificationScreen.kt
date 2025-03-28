@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
+import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -50,7 +52,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.flow.flowOf
 import java.util.Date
 
@@ -65,7 +66,7 @@ fun NotificationRoute(
 
     NotificationPage(
         onBackClick = {
-            if (navController.currentDestination?.route == NavigationDestination.Notification) {
+            if (navController.currentDestination?.hasRoute(NavigationDestination.Notification::class) == true) {
                 navController.popBackStack()
             }
         },

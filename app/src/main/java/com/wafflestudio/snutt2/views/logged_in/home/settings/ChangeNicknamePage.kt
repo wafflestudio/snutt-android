@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.toDp
@@ -49,7 +51,7 @@ fun ChangeNicknamePage() {
     )
 
     val onBackPressed = {
-        if (navController.currentDestination?.route == NavigationDestination.ChangeNickname) {
+        if (navController.currentDestination?.hasRoute(NavigationDestination.ChangeNickname::class) == true) {
             navController.popBackStack()
         }
     }
