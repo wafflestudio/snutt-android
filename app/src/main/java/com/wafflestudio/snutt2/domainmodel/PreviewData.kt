@@ -10,7 +10,6 @@ object PreviewData {
             message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
             type = 0,
             deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            detail = null,
             createdAt = "2025-03-11T09:56:47.729Z",
         ),
         NotificationDto(
@@ -19,7 +18,6 @@ object PreviewData {
             message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
             type = 1,
             deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            detail = null,
             createdAt = "2025-03-11T09:56:47.72Z",
         ),
         NotificationDto(
@@ -28,7 +26,6 @@ object PreviewData {
             message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
             type = 2,
             deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            detail = null,
             createdAt = "2025-03-11T09:56:47.7Z",
         ),
         NotificationDto(
@@ -37,7 +34,6 @@ object PreviewData {
             message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
             type = 3,
             deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            detail = null,
             createdAt = "2025-03-11T09:56:47Z",
         ),
     )
