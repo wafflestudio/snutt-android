@@ -45,6 +45,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.NotificationType
+import com.wafflestudio.snutt2.domainmodel.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTimeFromDate
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -52,7 +53,6 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.flow.flowOf
-import java.util.Date
 
 @Composable
 fun NotificationRoute(
@@ -251,7 +251,7 @@ fun NotificationPlaceholder() {
 @Composable
 fun NotificationPagePreview() {
     val data =
-        PagingData.from(listOf(Notification("테스트 알림", "테스트 문구", Date(), NotificationType.Trash, "")))
+        PagingData.from(PreviewData.sampleNotifications)
     val flow = flowOf(data)
     val a = flow.collectAsLazyPagingItems()
     NotificationPage(uiState = NotificationUiState.Success(a), onBackClick = {})
