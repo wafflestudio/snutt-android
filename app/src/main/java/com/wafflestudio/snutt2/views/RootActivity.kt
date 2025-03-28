@@ -16,8 +16,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.navigation.BottomSheetNavigator
+import androidx.compose.material.navigation.ModalBottomSheetLayout
+import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
@@ -41,15 +43,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
-import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.ModalBottomSheetLayout
-import com.wafflestudio.snutt2.layouts.bottomsheetnavigation.bottomSheet
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.model.BuiltInTheme
@@ -175,7 +174,6 @@ class RootActivity : AppCompatActivity() {
         return isInitialRefreshFinished
     }
 
-    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
     @Composable
     fun setUpUI(startDestination: String) {
         val navBottomSheetState = rememberModalBottomSheetState(
@@ -183,7 +181,7 @@ class RootActivity : AppCompatActivity() {
             skipHalfExpanded = true,
         )
         val bottomSheetNavigator = remember {
-            com.wafflestudio.snutt2.layouts.bottomsheetnavigation.BottomSheetNavigator(
+            BottomSheetNavigator(
                 navBottomSheetState,
             )
         }

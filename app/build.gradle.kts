@@ -34,7 +34,7 @@ val versionProps = Properties().apply {
 
 android {
     namespace = "com.wafflestudio.snutt2"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
@@ -161,13 +161,18 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:${Deps.Version.Paging}")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:${Deps.Version.Compose}")
-    implementation("androidx.compose.ui:ui:${Deps.Version.Compose}")
-    implementation("androidx.compose.ui:ui-tooling:${Deps.Version.Compose}")
-    implementation("androidx.compose.material:material:${Deps.Version.Compose}")
-    implementation("androidx.compose.foundation:foundation:${Deps.Version.ComposeFoundation}")
-    implementation("androidx.compose.foundation:foundation-layout:${Deps.Version.ComposeFoundation}")
-    implementation("androidx.compose.runtime:runtime-livedata:${Deps.Version.Compose}")
+    // https://developer.android.com/develop/ui/compose/bom/bom-mapping
+    val composeBom = platform("androidx.compose:compose-bom:${Deps.Version.ComposeBom}")
+    implementation(composeBom)
+    implementation("androidx.compose.runtime:runtime")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material:material-navigation:${Deps.Version.ComposeMaterialNavigation}")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.foundation:foundation-layout")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${Deps.Version.Lifecycle}")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:${Deps.Version.Lifecycle}")
@@ -182,7 +187,6 @@ dependencies {
     implementation("com.github.skydoves:colorpickerview:2.2.3")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("com.google.accompanist:accompanist-navigation-material:0.32.0")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.1.0")
