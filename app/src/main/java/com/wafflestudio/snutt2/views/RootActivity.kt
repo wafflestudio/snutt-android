@@ -72,6 +72,8 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelect
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
+import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationScreen
+import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationsViewModel
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
@@ -269,7 +271,7 @@ class RootActivity : AppCompatActivity() {
                     composable2(NavigationDestination.ImportantNotice) { ImportantNoticePage() }
 
                     composable2(NavigationDestination.Notification) {
-                        // TODO
+                        NotificationScreen(hiltViewModel<NotificationsViewModel>(), { navController.popBackStack() })
                     }
 
                     composable2(NavigationDestination.LecturesOfTable) { LecturesOfTablePage() }

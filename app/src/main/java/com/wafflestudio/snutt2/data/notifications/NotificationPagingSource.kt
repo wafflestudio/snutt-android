@@ -1,8 +1,10 @@
 package com.wafflestudio.snutt2.data.notifications
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchPagingSource.Companion.LECTURE_SEARCH_STARTING_PAGE_INDEX
+import com.wafflestudio.snutt2.data.notifications.PreviewData.sampleNotifications
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import javax.inject.Inject
@@ -15,11 +17,12 @@ class NotificationPagingSource @Inject constructor(
         val offset = params.key ?: NOTIFICATION_OFFSET
         val limit = params.loadSize
         return try {
-            val response = api._getNotification(
+            var response = api._getNotification(
                 limit = limit,
                 offset = offset,
-                explicit = 0 //TODO: (0이 아니면 읽음 상태를 업데이트)
+                explicit = 1
             )
+            if(offset == 0 ) response = response + sampleNotifications
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == NOTIFICATION_OFFSET) null else offset - params.loadSize,
