@@ -41,6 +41,8 @@ import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -70,7 +72,11 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     var topBarHeight by remember { mutableStateOf(0) }
     var bannerHeight by remember { mutableStateOf(0) }
 
-    Column(Modifier.background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .analyticsScreen(AnalyticsScreen.TimetableHome)
+    ) {
         TopBar(
             // top bar 높이 측정
             modifier = Modifier.onGloballyPositioned {

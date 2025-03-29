@@ -20,12 +20,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,6 +47,8 @@ fun HomeDrawer() {
     val tableListOfEachCourseBook by tableListViewModel.tableListOfEachCourseBook.collectAsState(
         initial = mapOf(),
     )
+
+    HomeDrawerLogger()
 
     Column(
         modifier = Modifier
@@ -168,6 +173,22 @@ private fun CreateTableItem(
             text = stringResource(R.string.home_drawer_timetable_add_button),
             style = SNUTTTypography.body1,
         )
+    }
+}
+
+@Composable
+private fun HomeDrawerLogger() {
+    val logger = LocalAnalyticsLogger.current
+    val drawerState = LocalDrawerState.current
+    LaunchedEffect(drawerState) {
+        snapshotFlow { drawerState.isOpen }
+            .distinctUntilChanged()
+            .collect { isOpen ->
+                if (isOpen) {
+                    // 실제로 drawerContent가 화면에 보이기 시작한 시점
+                    logger.logScreen(AnalyticsScreen.TimetableMenu)
+                }
+            }
     }
 }
 
