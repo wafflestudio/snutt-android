@@ -13,6 +13,7 @@ buildscript {
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Deps.Version.Hilt}")
         classpath("com.google.firebase:firebase-appdistribution-gradle:4.0.0")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:${Deps.Version.Kotlin}")
     }
 }
 

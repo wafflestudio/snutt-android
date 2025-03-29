@@ -20,10 +20,10 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
-fun LicenseDetailPage() {
+fun LicenseDetailPage(
+    licenseName: String?,
+) {
     val navController = LocalNavController.current
-
-    val licenseName = navController.currentBackStackEntry?.arguments?.getString("licenseName")
 
     val title: String
     val name: String

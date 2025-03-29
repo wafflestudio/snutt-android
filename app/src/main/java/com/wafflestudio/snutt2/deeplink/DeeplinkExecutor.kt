@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.deeplink
 
+import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
@@ -12,11 +13,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
@@ -87,7 +88,7 @@ fun InstallInAppDeeplinkExecutor() {
             ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {
-            navController.navigate("${NavigationDestination.TimetableLecture}?tableId=$timetableId")
+            navController.navigate(NavigationDestination.TimetableLecture(timetableId))
         }
     }
 
@@ -108,7 +109,7 @@ fun InstallInAppDeeplinkExecutor() {
             ModeType.Viewing,
         )
         withContext(Dispatchers.Main) {
-            navController.navigate(NavigationDestination.TimetableLecture)
+            navController.navigate(NavigationDestination.TimetableLecture())
         }
     }
 
@@ -125,7 +126,7 @@ fun InstallInAppDeeplinkExecutor() {
         if (deeplinkUri.scheme?.contains("snutt") == true) {
             when (deeplinkUri.host) {
                 // 시간표 강의 업데이트 알림 딥링크 이동
-                NavigationDestination.TimetableLecture -> {
+                getDeepLinkPath<NavigationDestination.TimetableLecture>() -> {
                     launchSuspendApi(
                         apiOnProgress, apiOnError,
                         loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
@@ -134,7 +135,7 @@ fun InstallInAppDeeplinkExecutor() {
                     }
                 }
                 // 관심강좌 강의 업데이트 알림 딥링크 이동
-                NavigationDestination.Bookmark -> {
+                getDeepLinkPath<NavigationDestination.Bookmark>() -> {
                     launchSuspendApi(
                         apiOnProgress, apiOnError,
                         loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
@@ -142,7 +143,7 @@ fun InstallInAppDeeplinkExecutor() {
                         handleBookmarkDeeplink()
                     }
                 }
-                NavigationDestination.Friends -> {
+                getDeepLinkPath<NavigationDestination.Friends>() -> {
                     handleFriendsDeeplink()
                 }
             }
