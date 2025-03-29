@@ -47,13 +47,13 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.NotificationType
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTimeFromDate
+import com.wafflestudio.snutt2.domainmodel.PreviewData
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
 import kotlinx.coroutines.flow.flowOf
-import java.util.Date
 
 @Composable
 fun NotificationRoute(
@@ -64,7 +64,7 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-    NotificationPage(
+    NotificationScreen(
         onBackClick = {
             if (navController.currentDestination?.hasRoute(NavigationDestination.Notification::class) == true) {
                 navController.popBackStack()
@@ -76,7 +76,7 @@ fun NotificationRoute(
 }
 
 @Composable
-fun NotificationPage(
+fun NotificationScreen(
     modifier: Modifier = Modifier,
     uiState: NotificationUiState,
     onBackClick: () -> Unit,
@@ -137,7 +137,7 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        text = getNotificationTimeFromDate(context, notification.createdAt),
+                        text = getNotificationTime(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
                         maxLines = 1,
                     )
@@ -252,8 +252,8 @@ fun NotificationPlaceholder() {
 @Composable
 fun NotificationPagePreview() {
     val data =
-        PagingData.from(listOf(Notification("테스트 알림", "테스트 문구", Date(), NotificationType.Trash, "")))
+        PagingData.from(PreviewData.sampleNotifications)
     val flow = flowOf(data)
     val a = flow.collectAsLazyPagingItems()
-    NotificationPage(uiState = NotificationUiState.Success(a), onBackClick = {})
+    NotificationScreen(uiState = NotificationUiState.Success(a), onBackClick = {})
 }
