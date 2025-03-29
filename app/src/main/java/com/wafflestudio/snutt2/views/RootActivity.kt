@@ -79,7 +79,6 @@ import com.wafflestudio.snutt2.views.logged_out.*
 import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
