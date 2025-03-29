@@ -11,8 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -64,8 +62,7 @@ fun SocialLinkPage() {
 
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
     val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
-
-    var disconnectSocialDialogState by remember { mutableStateOf(SocialLoginType.NONE) }
+    val disconnectSocialDialogState by socialLinkViewModel.disconnectSocialDialogState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         launchSuspendApi(
@@ -239,7 +236,7 @@ fun SocialLinkPage() {
                     title = stringResource(R.string.social_unlink_kakao),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { disconnectSocialDialogState = SocialLoginType.KAKAO },
+                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.KAKAO) },
                 )
             } else {
                 SettingItem(
@@ -256,7 +253,7 @@ fun SocialLinkPage() {
                     title = stringResource(R.string.social_unlink_google),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { disconnectSocialDialogState = SocialLoginType.GOOGLE },
+                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.GOOGLE) },
                 )
             } else {
                 SettingItem(
@@ -277,7 +274,7 @@ fun SocialLinkPage() {
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { disconnectSocialDialogState = SocialLoginType.FACEBOOK },
+                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.FACEBOOK) },
                 )
             } else {
                 SettingItem(
@@ -291,7 +288,7 @@ fun SocialLinkPage() {
 
     if (disconnectSocialDialogState != SocialLoginType.NONE) {
         CustomDialog(
-            onDismiss = { disconnectSocialDialogState = SocialLoginType.NONE },
+            onDismiss = { socialLinkViewModel.changeDialogState(SocialLoginType.NONE) },
             onConfirm = {
                 coroutineScope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
@@ -299,7 +296,7 @@ fun SocialLinkPage() {
                         socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
                         socialLinkViewModel.fetchUserInfo()
                         socialLinkViewModel.fetchSocialProviders()
-                        disconnectSocialDialogState = SocialLoginType.NONE
+                        socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
                     }
                 }
             },
