@@ -67,7 +67,7 @@ fun TableLecturesRoute(
     }
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
-    TableLecturesPage(
+    TableLecturesScreen(
         uiState = TableLecturesUIState(lectures),
         onClickLecture = { lecture ->
             // FIXME: 임시 코드
@@ -88,7 +88,7 @@ fun TableLecturesRoute(
 }
 
 @Composable
-private fun TableLecturesPage(
+private fun TableLecturesScreen(
     uiState: TableLecturesUIState,
     onClickLecture: (LocalLecture) -> Unit,
     onClickAddCustom: () -> Unit,
