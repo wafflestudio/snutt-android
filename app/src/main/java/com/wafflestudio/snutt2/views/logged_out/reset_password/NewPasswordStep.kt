@@ -36,7 +36,7 @@ import com.wafflestudio.snutt2.components.compose.Timer
 import com.wafflestudio.snutt2.components.compose.TimerValue
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.rememberTimerState
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isValidPassword
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -87,8 +87,8 @@ fun NewPasswordStep(
             if (newPasswordField != newPasswordConfirmField) {
                 errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
                 showErrorDialog = true
-            } else if (newPasswordField.isValidPassword().not()) {
-                errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_validation_fail_alert)
+            } else if (newPasswordField.isPasswordInvalid()) {
+                errorDialogTitle = context.getString(R.string.invalid_password)
                 showErrorDialog = true
             } else {
                 onSubmit(newPasswordField)
