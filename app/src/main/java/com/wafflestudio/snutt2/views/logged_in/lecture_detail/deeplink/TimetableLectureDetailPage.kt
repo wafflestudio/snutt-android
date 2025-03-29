@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowLeftBold
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -41,7 +42,8 @@ fun TimetableLectureDetailPage(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LectureDetailPage(
-            lectureDetailViewModel,
+            referrer = DetailScreenReferrer.Notification,
+            vm = lectureDetailViewModel,
             onCloseViewMode = {
                 navController.popBackStack()
             },

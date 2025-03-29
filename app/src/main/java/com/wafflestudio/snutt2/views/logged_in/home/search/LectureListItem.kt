@@ -30,6 +30,7 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -222,8 +223,10 @@ fun LazyItemScope.LectureListItem(
                         lectureDetailViewModel.initializeEditingLectureDetail(
                             lectureDataWithState.item, ModeType.Viewing,
                         )
+                        val referrer = if (isBookmarkPage) DetailScreenReferrer.Bookmark else DetailScreenReferrer.Search(searchViewModel.searchTitle.value)
                         bottomSheet.setSheetContent {
                             LectureDetailPage(
+                                referrer = referrer,
                                 searchViewModel = searchViewModel,
                                 vacancyViewModel = vacancyViewModel,
                                 onCloseViewMode = { scope ->

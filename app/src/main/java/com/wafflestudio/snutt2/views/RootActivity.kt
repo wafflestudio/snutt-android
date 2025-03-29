@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,6 +48,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.model.BuiltInTheme
@@ -99,6 +102,9 @@ class RootActivity : AppCompatActivity() {
 
     @Inject
     lateinit var friendBundleManager: ReactNativeBundleManager
+
+    @Inject
+    lateinit var analyticsLogger: AnalyticsLogger
 
     private var isInitialRefreshFinished = false
 
@@ -230,6 +236,7 @@ class RootActivity : AppCompatActivity() {
             LocalBottomSheetState provides bottomSheet,
             LocalRemoteConfig provides remoteConfig,
             LocalNavBottomSheetState provides navBottomSheetState,
+            LocalAnalyticsLogger provides analyticsLogger,
         ) {
             LaunchedEffect(Unit) {
                 lifecycleScope.launch {
@@ -274,11 +281,17 @@ class RootActivity : AppCompatActivity() {
                         val parentEntry = remember(it) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
+                        val referrer = when {
+                            navController.previousBackStackEntry?.destination?.hasRoute(NavigationDestination.LecturesOfTable::class) == true -> DetailScreenReferrer.LectureList
+                            homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
+                            else -> null
+                        }
                         val lectureDetailViewModel =
                             hiltViewModel<LectureDetailViewModel>(parentEntry)
                         val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
                         val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
                         LectureDetailPage(
+                            referrer = referrer,
                             vm = lectureDetailViewModel,
                             searchViewModel = searchViewModel,
                             vacancyViewModel = vacancyViewModel,

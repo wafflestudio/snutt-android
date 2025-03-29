@@ -48,6 +48,10 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -68,6 +72,7 @@ import kotlinx.coroutines.*
 )
 @Composable
 fun LectureDetailPage(
+    referrer: DetailScreenReferrer?, // FIXME: compose navigation으로만 접근하도록 수정하고, composableAnimated에서 바로 로깅하기
     vm: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
@@ -170,7 +175,15 @@ fun LectureDetailPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SNUTTColors.Gray100),
+                .background(SNUTTColors.Gray100)
+                .analyticsScreen(
+                    AnalyticsScreen.LectureDetail(
+                        LectureDetailParameter(
+                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                            referrer = referrer
+                        )
+                    )
+                ),
 //                    .clicks { focusManager.clearFocus() }
         ) {
             TopBar(
