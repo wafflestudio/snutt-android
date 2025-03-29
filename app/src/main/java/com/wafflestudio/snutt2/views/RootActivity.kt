@@ -38,6 +38,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.google.firebase.FirebaseApp
@@ -50,6 +51,7 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
+import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -77,6 +79,7 @@ import com.wafflestudio.snutt2.views.logged_out.*
 import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -346,6 +349,14 @@ class RootActivity : AppCompatActivity() {
         noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
     ) {
         composable<T>(
+            deepLinks = listOfNotNull(
+                getDeepLinkPath<T>()?.let { deepLinkPath ->
+                    // uri pattern 생성 규칙: https://developer.android.com/reference/kotlin/androidx/navigation/NavDeepLink.Builder?_gl=1*uaoct7*_up*MQ..*_ga*MjExMzE2MzgxOS4xNzQzMjQ2NzMw*_ga_6HH9YJMN9M*MTc0MzI0NjczMC4xLjAuMTc0MzI0NjczMC4wLjAuMzkxMTIxMTgx#setUriPattern(kotlin.String,kotlin.collections.Map)
+                    // NavigationDestination에 선언된 argument들을 조합해서 위 규칙에 따라 uri pattern 을 생성함.
+                    // 푸시 알림의 url_scheme을 uri pattern에 맞게 쏘면 해당 화면으로 잘 랜딩됨.
+                    navDeepLink<T>(basePath = "${applicationContext.getString(R.string.scheme)}$deepLinkPath")
+                },
+            ),
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> fullWidth },
@@ -444,6 +455,7 @@ class RootActivity : AppCompatActivity() {
     // NOTE(@JuTaK): 푸시 알림에 담긴 딥링크 정보는 intent.extra 에 url_scheme 이라는 key 의 value 로 들어 있다.
     // 이를 Jetpack Navigation 이 딥링크로 인식하고 navigate 할 수 있도록 intent.data 로 넣어준다.
     private fun parseDeeplinkExtra() {
+        Timber.tag("asdf").d("parseDeeplinkExtra(): url_scheme=${intent.extras?.getString(URL_SCHEME)}")
         intent.extras?.getString(URL_SCHEME)?.let {
             intent.data = Uri.parse(it)
         }
@@ -454,7 +466,7 @@ class RootActivity : AppCompatActivity() {
         // 예시: snutt://friends
         val regex = Regex("^${applicationContext.getString(R.string.scheme)}(.+)$")
         when (regex.find(intent.data.toString())?.groupValues?.get(1)) {
-            "friends" -> return HomeItem.Friends
+            getDeepLinkPath<NavigationDestination.Friends>() -> return HomeItem.Friends
         }
 
         // 예시: kakao12345://kakaolink?type=add-friend-kakao

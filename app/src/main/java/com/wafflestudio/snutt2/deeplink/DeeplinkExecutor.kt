@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
@@ -125,7 +126,7 @@ fun InstallInAppDeeplinkExecutor() {
         if (deeplinkUri.scheme?.contains("snutt") == true) {
             when (deeplinkUri.host) {
                 // 시간표 강의 업데이트 알림 딥링크 이동
-                "timetable-lecture" -> {
+                getDeepLinkPath<NavigationDestination.TimetableLecture>() -> {
                     launchSuspendApi(
                         apiOnProgress, apiOnError,
                         loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
@@ -134,7 +135,7 @@ fun InstallInAppDeeplinkExecutor() {
                     }
                 }
                 // 관심강좌 강의 업데이트 알림 딥링크 이동
-                "bookmarks" -> {
+                getDeepLinkPath<NavigationDestination.Bookmark>() -> {
                     launchSuspendApi(
                         apiOnProgress, apiOnError,
                         loadingIndicatorTitle = context.getString(R.string.deeplink_page_timetable_lecture_page_loading_text),
@@ -142,7 +143,7 @@ fun InstallInAppDeeplinkExecutor() {
                         handleBookmarkDeeplink()
                     }
                 }
-                "friends" -> {
+                getDeepLinkPath<NavigationDestination.Friends>() -> {
                     handleFriendsDeeplink()
                 }
             }
