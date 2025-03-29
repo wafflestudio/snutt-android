@@ -13,6 +13,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 suspend fun facebookLogin(
     context: Context,
+    showToast: (String) -> Unit = context::toast,
 ): LoginResult {
     val callbackManager = CallbackManager.Factory.create()
     val loginManager = LoginManager.getInstance()
@@ -26,12 +27,12 @@ suspend fun facebookLogin(
             }
 
             override fun onCancel() {
-                context.toast(context.getString(R.string.sign_in_facebook_failed_cancelled))
+                showToast(context.getString(R.string.sign_in_facebook_failed_cancelled))
                 continuation.cancel()
             }
 
             override fun onError(error: FacebookException) {
-                context.toast(context.getString(R.string.sign_in_facebook_failed_unknown))
+                showToast(context.getString(R.string.sign_in_facebook_failed_unknown))
                 continuation.cancel(error)
             }
         }

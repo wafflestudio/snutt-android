@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.model.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,9 @@ class SocialLinkViewModel @Inject constructor(
 
     private val _disconnectSocialDialogState: MutableStateFlow<SocialLoginType> = MutableStateFlow(SocialLoginType.NONE)
     val disconnectSocialDialogState = _disconnectSocialDialogState.asStateFlow()
+
+    private val _toastState: MutableSharedFlow<String> = MutableSharedFlow()
+    val toastState = _toastState
 
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
@@ -69,6 +73,12 @@ class SocialLinkViewModel @Inject constructor(
     fun changeDialogState(type: SocialLoginType) {
         viewModelScope.launch {
             _disconnectSocialDialogState.emit(type)
+        }
+    }
+
+    fun showToast(message: String) {
+        viewModelScope.launch {
+            _toastState.emit(message)
         }
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -73,6 +72,14 @@ fun SocialLinkPage() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        socialLinkViewModel.toastState.collect { message ->
+            if (message.isNotEmpty()) {
+                context.toast(message)
+            }
+        }
+    }
+
     val handleFacebookConnect = {
         coroutineScope.launch {
             launchSuspendApi(
@@ -80,7 +87,7 @@ fun SocialLinkPage() {
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
-                val loginResult = facebookLogin(context)
+                val loginResult = facebookLogin(context, socialLinkViewModel::showToast)
                 socialLinkViewModel.connectFacebook(
                     loginResult.accessToken.token,
                 )
@@ -104,7 +111,7 @@ fun SocialLinkPage() {
                     socialLinkViewModel.fetchUserInfo()
                     socialLinkViewModel.fetchSocialProviders()
                 } else {
-                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         }
@@ -113,16 +120,16 @@ fun SocialLinkPage() {
     val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else if (error is AuthError && error.reason == AuthErrorCause.AccessDenied) {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_cancelled))
             } else {
-                context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         } else if (token != null) {
             connectWithKaKaoAccessToken(token.accessToken)
         } else {
-            context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+            socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
     }
 
@@ -131,9 +138,9 @@ fun SocialLinkPage() {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
                 if (loginError != null) {
                     if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled) {
-                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                        socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                     } else if (loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied) {
-                        context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
+                        socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                     } else {
                         // 카카오계정으로 로그인
                         UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
@@ -141,7 +148,7 @@ fun SocialLinkPage() {
                 } else if (token != null) {
                     connectWithKaKaoAccessToken(token.accessToken)
                 } else {
-                    context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
+                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
             }
         } else {
@@ -169,7 +176,7 @@ fun SocialLinkPage() {
                     socialLinkViewModel.fetchUserInfo()
                     socialLinkViewModel.fetchSocialProviders()
                 } else {
-                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             }
         }
@@ -185,19 +192,19 @@ fun SocialLinkPage() {
                     val account = task.getResult(ApiException::class.java)
                     val authCode = account?.serverAuthCode
                     if (authCode == null) {
-                        context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                        socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                         return@rememberLauncherForActivityResult
                     }
                     handleGoogleSignInCallback(authCode)
                 } catch (e: ApiException) {
-                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             }
             Activity.RESULT_CANCELED -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_cancelled))
             }
             else -> {
-                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
         }
     }
