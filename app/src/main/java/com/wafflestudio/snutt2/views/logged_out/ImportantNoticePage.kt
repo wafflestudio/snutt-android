@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_out
 
+import NavigationDestination
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +33,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
-import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
 fun ImportantNoticePage() {

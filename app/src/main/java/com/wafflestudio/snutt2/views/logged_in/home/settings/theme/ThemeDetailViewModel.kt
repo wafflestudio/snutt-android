@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -62,11 +63,9 @@ class ThemeDetailViewModel @Inject constructor(
     val currentTable = currentTableRepository.currentTable
 
     fun initEditingTheme(isDarkMode: Boolean) {
-        val themeId = savedStateHandle.get<String>("themeId")
-        val theme = savedStateHandle.get<Int>("theme")
+        val themeId = savedStateHandle.toRoute<NavigationDestination.ThemeDetail>().themeId
+        val theme = savedStateHandle.toRoute<NavigationDestination.ThemeDetail>().theme
         this.isDarkMode = isDarkMode
-
-        if (theme == null || themeId == null) return
 
         if (theme != -1) { // 기본 제공 테마
             initBuiltInTheme(theme, isDarkMode)
