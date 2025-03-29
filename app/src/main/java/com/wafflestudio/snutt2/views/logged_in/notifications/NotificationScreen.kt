@@ -64,7 +64,7 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-    NotificationPage(
+    NotificationScreen(
         onBackClick = {
             if (navController.currentDestination?.hasRoute(NavigationDestination.Notification::class) == true) {
                 navController.popBackStack()
@@ -76,7 +76,7 @@ fun NotificationRoute(
 }
 
 @Composable
-fun NotificationPage(
+fun NotificationScreen(
     modifier: Modifier = Modifier,
     uiState: NotificationUiState,
     onBackClick: () -> Unit,
@@ -255,5 +255,5 @@ fun NotificationPagePreview() {
         PagingData.from(PreviewData.sampleNotifications)
     val flow = flowOf(data)
     val a = flow.collectAsLazyPagingItems()
-    NotificationPage(uiState = NotificationUiState.Success(a), onBackClick = {})
+    NotificationScreen(uiState = NotificationUiState.Success(a), onBackClick = {})
 }

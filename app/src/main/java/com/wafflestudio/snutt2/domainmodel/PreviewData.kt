@@ -5,7 +5,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import androidx.compose.ui.graphics.Color
 import java.time.DayOfWeek
 import java.time.LocalTime
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 
 object PreviewData {
     val sampleSessions = listOf(
