@@ -2,12 +2,12 @@ package com.wafflestudio.snutt2.domainmodel
 
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
-import java.util.Date
+import java.time.LocalDateTime
 
 data class Notification(
     val title: String,
     val message: String,
-    val createdAt: Date,
+    val createdAt: LocalDateTime,
     val type: NotificationType,
     val deeplink: String?,
 )
@@ -25,7 +25,7 @@ enum class NotificationType {
 fun NotificationDto.domainModel() = Notification(
     title = title,
     message = message,
-    createdAt = SNUTTStringUtils.getDateFromString(createdAt),
+    createdAt = SNUTTStringUtils.getLocalDateTimeFromString(createdAt),
     type = when (type) {
         0 -> NotificationType.Warning
         1 -> NotificationType.Calendar
