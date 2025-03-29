@@ -71,7 +71,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
-import com.wafflestudio.snutt2.views.logged_in.table_lectures.LecturesOfTablePage
+import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
@@ -268,7 +268,7 @@ class RootActivity : AppCompatActivity() {
 
                     composableAnimated<NavigationDestination.Notification> { NotificationRoute() }
 
-                    composableAnimated<NavigationDestination.LecturesOfTable> { LecturesOfTablePage() }
+                    composableAnimated<NavigationDestination.LecturesOfTable> { TableLecturesRoute() }
 
                     composableAnimated<NavigationDestination.LectureDetail> {
                         val parentEntry = remember(it) {

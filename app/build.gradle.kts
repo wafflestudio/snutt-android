@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -45,6 +45,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     signingConfigs {
@@ -213,4 +214,7 @@ dependencies {
 
     // Kotlin Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // minSdk 안 올리고 java.time 쓰기
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 }
