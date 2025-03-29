@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink
 
+import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -32,12 +32,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TimetableLectureDetailPage(
+    tableId: String?,
     lectureDetailViewModel: LectureDetailViewModel,
     tableListViewModel: TableListViewModel,
 ) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
-    val tableId = navController.currentBackStackEntry?.arguments?.getString("tableId")
 
     Box(modifier = Modifier.fillMaxSize()) {
         LectureDetailPage(

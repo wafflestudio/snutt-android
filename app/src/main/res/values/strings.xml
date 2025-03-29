@@ -69,7 +69,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">회원가입</string>
     <string name="sign_up_id_title">아이디</string>
-    <string name="sign_up_id_hint">영문, 숫자 포함 4~32자 이내</string>
+    <string name="sign_up_id_hint">영문, 숫자로 구성된 4~32자 이내</string>
     <string name="sign_up_password_title">비밀번호</string>
     <string name="sign_up_password_hint">영문, 숫자 모두 포함 6~20자 이내</string>
     <string name="sign_up_password_confirm_title">비밀번호 확인</string>
@@ -307,11 +307,15 @@
     <string name="find_password_enter_verification_code_success_alert">인증에 성공하였습니다.</string>
     <string name="find_password_enter_verification_code_why_not_coming">전송에 시간이 소요될 수 있습니다.\n스팸함을 확인하거나,\n3분 초과 시 재요청을 해주세요.</string>
     <string name="find_password_enter_password_body">새로운 비밀번호를 입력해주세요.</string>
-    <string name="find_password_enter_password_hint">영문, 숫자 모두 포함 6–20자 이내</string>
+    <string name="find_password_enter_password_hint">영문, 숫자 모두 포함 6~20자 이내</string>
     <string name="find_password_enter_password_confirm_hint">비밀번호를 한번 더 입력하세요</string>
     <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
     <string name="find_password_enter_password_confirm_fail_alert">비밀번호가 일치하지 않습니다.\n다시 시도해주세요.</string>
-    <string name="find_password_enter_password_confirm_validation_fail_alert">조건에 맞지 않는 비밀번호입니다.\n영문, 숫자 포함 6-20자 이내로\n입력해주세요.</string>
+
+    <string name="invalid_id">아이디는 영문 혹은 숫자로 구성된 4~32자여야 합니다</string>
+    <string name="invalid_password">비밀번호는 영문과 숫자 모두를 포함하는 6~20자여야 합니다</string>
+    <string name="invalid_email">이메일 형식이 올바르지 않습니다.</string>
+
     <string name="find_password_enter_password_confirm_expired_alert">시간이 초과되어\n인증코드 재입력이 필요합니다.</string>
     <string name="find_password_enter_password_confirm_expired">만료</string>
     <string name="find_password_enter_password_success_alert">비밀번호가 변경되었습니다.</string>

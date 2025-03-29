@@ -30,6 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
+import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -62,7 +64,11 @@ fun SignUpPage() {
 
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
-        if (isPasswordConfirmPassed.not()) {
+        if (idField.isIdInvalid()) {
+            context.toast(context.getString(R.string.invalid_id))
+        } else if (passwordField.isPasswordInvalid()) {
+            context.toast(context.getString(R.string.invalid_password))
+        } else if (isPasswordConfirmPassed.not()) {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {
             coroutineScope.launch {
