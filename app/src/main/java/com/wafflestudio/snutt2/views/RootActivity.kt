@@ -455,7 +455,6 @@ class RootActivity : AppCompatActivity() {
     // NOTE(@JuTaK): 푸시 알림에 담긴 딥링크 정보는 intent.extra 에 url_scheme 이라는 key 의 value 로 들어 있다.
     // 이를 Jetpack Navigation 이 딥링크로 인식하고 navigate 할 수 있도록 intent.data 로 넣어준다.
     private fun parseDeeplinkExtra() {
-        Timber.tag("asdf").d("parseDeeplinkExtra(): url_scheme=${intent.extras?.getString(URL_SCHEME)}")
         intent.extras?.getString(URL_SCHEME)?.let {
             intent.data = Uri.parse(it)
         }
