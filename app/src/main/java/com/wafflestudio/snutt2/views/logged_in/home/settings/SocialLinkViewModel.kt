@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.model.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SocialLinkViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val apiOnError: ApiOnError,
 ) : ViewModel() {
     private val _socialProviders: MutableStateFlow<GetSocialProvidersResults> = MutableStateFlow(GetSocialProvidersResults(false, false, false, false, false))
     val socialProviders = _socialProviders.asStateFlow()
@@ -34,9 +35,7 @@ class SocialLinkViewModel @Inject constructor(
             runCatching {
                 fetchSocialProvidersNew()
             }.onFailure { e ->
-                if (e is ErrorParsedHttpException) {
-                    _toastState.emit(e.errorDTO?.displayMessage ?: "")
-                }
+                apiOnError(e)
                 _socialLinkUiState.emit(SocialLinkUiState.Default)
             }
         }
@@ -45,11 +44,7 @@ class SocialLinkViewModel @Inject constructor(
     suspend fun fetchSocialProvidersNew() {
         runCatching {
             _socialLinkUiState.emit(userRepository.getSocialProviders().socialLinkUiState())
-        }.onFailure { e ->
-            if (e is ErrorParsedHttpException) {
-                _toastState.emit(e.errorDTO?.displayMessage ?: "")
-            }
-        }
+        }.onFailure(apiOnError)
     }
 
     suspend fun fetchUserInfo() {
@@ -60,8 +55,14 @@ class SocialLinkViewModel @Inject constructor(
         _socialProviders.emit(userRepository.getSocialProviders())
     } // TODO: 삭제
 
-    suspend fun connectFacebook(token: String) {
-        userRepository.postUserFacebook(token)
+    fun connectFacebook(token: String) {
+        viewModelScope.launch {
+            runCatching {
+                userRepository.postUserFacebook(token)
+                fetchUserInfo()
+                fetchSocialProvidersNew()
+            }.onFailure(apiOnError)
+        }
     }
 
     suspend fun connectKakao(token: String) {

@@ -79,18 +79,8 @@ fun SocialLinkPage() {
 
     val handleFacebookConnect = {
         coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                val loginResult = facebookLogin(context, socialLinkViewModel::showToast)
-                socialLinkViewModel.connectFacebook(
-                    loginResult.accessToken.token,
-                )
-                socialLinkViewModel.fetchUserInfo()
-                socialLinkViewModel.fetchSocialProviders()
-            }
+            val loginResult = facebookLogin(context, socialLinkViewModel::showToast)
+            socialLinkViewModel.connectFacebook(loginResult.accessToken.token)
         }
     }
 
@@ -273,7 +263,7 @@ fun SocialLinkPage() {
 
             Margin(height = 10.dp)
 
-            if (socialProviders.facebook) {
+            if (socialLinkUiState.facebook == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
