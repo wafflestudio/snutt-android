@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -285,4 +286,31 @@ fun SocialButtonItem(
             onClick = onConnectClick,
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SocialLinkScreenPreview() {
+    SocialLinkScreen(
+        modifier = Modifier,
+        onBackClick = {},
+        uiState = SocialLinkUiState.Default,
+        dialogState = SocialLoginType.NONE,
+        changeDialogState = {},
+        handleFacebookConnect = {},
+        handleKakaoConnect = {},
+        handleGoogleConnect = {},
+        handleSocialDisconnect = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SocialButtonItemPreview() {
+    SocialButtonItem(
+        type = SocialLoginType.KAKAO,
+        linkState = SocialLinkUiState.SocialProviders.UNLINKED,
+        onConnectClick = {},
+        onDisconnectClick = {},
+    )
 }
