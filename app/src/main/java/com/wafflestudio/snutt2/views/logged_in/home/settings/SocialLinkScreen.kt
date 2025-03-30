@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.model.SocialLoginType
 import com.wafflestudio.snutt2.model.getString
+import com.wafflestudio.snutt2.model.showDialog
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
@@ -225,7 +226,7 @@ fun SocialLinkScreen(
         ) {
             Margin(height = 10.dp)
 
-            if (uiState.kakao == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.kakao.isLinked()) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_kakao),
                     titleColor = colorResource(R.color.theme_snutt_0),
@@ -242,7 +243,7 @@ fun SocialLinkScreen(
 
             Margin(height = 10.dp)
 
-            if (uiState.google == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.google.isLinked()) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_google),
                     titleColor = colorResource(R.color.theme_snutt_0),
@@ -259,7 +260,7 @@ fun SocialLinkScreen(
 
             Margin(height = 10.dp)
 
-            if (uiState.facebook == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.facebook.isLinked()) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
@@ -276,7 +277,7 @@ fun SocialLinkScreen(
         }
     }
 
-    if (dialogState != SocialLoginType.NONE) {
+    if (dialogState.showDialog()) {
         CustomDialog(
             onDismiss = { changeDialogState(SocialLoginType.NONE) },
             onConfirm = handleSocialDisconnect,

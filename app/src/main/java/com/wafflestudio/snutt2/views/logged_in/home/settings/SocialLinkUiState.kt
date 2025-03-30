@@ -25,3 +25,5 @@ fun GetSocialProvidersResults.socialLinkUiState(): SocialLinkUiState = SocialLin
     kakao = if (kakao) SocialLinkUiState.SocialProviders.LINKED else SocialLinkUiState.SocialProviders.UNLINKED,
     google = if (google) SocialLinkUiState.SocialProviders.LINKED else SocialLinkUiState.SocialProviders.UNLINKED,
 )
+
+fun SocialLinkUiState.SocialProviders.isLinked() = (this == SocialLinkUiState.SocialProviders.LINKED)

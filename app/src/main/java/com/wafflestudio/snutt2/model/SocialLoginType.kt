@@ -15,3 +15,5 @@ fun SocialLoginType.getString(): String {
         SocialLoginType.KAKAO -> "카카오"
     }
 }
+
+fun SocialLoginType.showDialog() = (this != SocialLoginType.NONE)
