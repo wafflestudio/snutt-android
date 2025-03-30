@@ -44,7 +44,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
@@ -259,13 +258,9 @@ fun SocialLinkPage() {
             onDismiss = { socialLinkViewModel.changeDialogState(SocialLoginType.NONE) },
             onConfirm = {
                 coroutineScope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        LoginManager.getInstance().logOut()
-                        socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
-                        socialLinkViewModel.fetchUserInfo()
-                        socialLinkViewModel.fetchSocialProviders()
-                        socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
-                    }
+                    LoginManager.getInstance().logOut()
+                    socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
+                    socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
                 }
             },
             title = context.getString(R.string.settings_user_config_social_disconnect_message, disconnectSocialDialogState.getString()),

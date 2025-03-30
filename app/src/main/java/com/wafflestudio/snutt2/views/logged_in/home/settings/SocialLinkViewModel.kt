@@ -33,7 +33,7 @@ class SocialLinkViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             runCatching {
-                fetchSocialProvidersNew()
+                fetchSocialProviders()
             }.onFailure { e ->
                 apiOnError(e)
                 _socialLinkUiState.emit(SocialLinkUiState.Default)
@@ -41,26 +41,22 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
-    suspend fun fetchSocialProvidersNew() {
+    private suspend fun fetchSocialProviders() {
         runCatching {
             _socialLinkUiState.emit(userRepository.getSocialProviders().socialLinkUiState())
         }.onFailure(apiOnError)
     }
 
-    suspend fun fetchUserInfo() {
+    private suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
-
-    suspend fun fetchSocialProviders() {
-        _socialProviders.emit(userRepository.getSocialProviders())
-    } // TODO: 삭제
 
     fun connectFacebook(token: String) {
         viewModelScope.launch {
             runCatching {
                 userRepository.postUserFacebook(token)
                 fetchUserInfo()
-                fetchSocialProvidersNew()
+                fetchSocialProviders()
             }.onFailure(apiOnError)
         }
     }
@@ -70,7 +66,7 @@ class SocialLinkViewModel @Inject constructor(
             runCatching {
                 userRepository.postUserKakao(token)
                 fetchUserInfo()
-                fetchSocialProvidersNew()
+                fetchSocialProviders()
             }.onFailure(apiOnError)
         }
     }
@@ -80,7 +76,7 @@ class SocialLinkViewModel @Inject constructor(
             runCatching {
                 userRepository.postUserGoogle(token)
                 fetchUserInfo()
-                fetchSocialProvidersNew()
+                fetchSocialProviders()
             }.onFailure(apiOnError)
         }
     }
@@ -88,15 +84,21 @@ class SocialLinkViewModel @Inject constructor(
     suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
         return runCatching {
             userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
-        }.getOrNull()
+        }.onFailure(apiOnError).getOrNull()
     }
 
-    suspend fun disconnectSocialLogin(type: SocialLoginType) {
-        when (type) {
-            SocialLoginType.FACEBOOK -> disconnectFacebook()
-            SocialLoginType.KAKAO -> disconnectKakao()
-            SocialLoginType.GOOGLE -> disconnectGoogle()
-            else -> {}
+    fun disconnectSocialLogin(type: SocialLoginType) {
+        viewModelScope.launch {
+            runCatching {
+                when (type) {
+                    SocialLoginType.FACEBOOK -> disconnectFacebook()
+                    SocialLoginType.KAKAO -> disconnectKakao()
+                    SocialLoginType.GOOGLE -> disconnectGoogle()
+                    else -> {}
+                }
+                fetchUserInfo()
+                fetchSocialProviders()
+            }.onFailure(apiOnError)
         }
     }
 
