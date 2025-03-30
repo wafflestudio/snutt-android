@@ -398,7 +398,7 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.TimeTableConfig> { TimetableConfigPage() }
         composableAnimated<NavigationDestination.UserConfig> { UserConfigPage() }
         composableAnimated<NavigationDestination.ChangeNickname> { ChangeNicknamePage() }
-        composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
+        composableAnimated<NavigationDestination.SocialLink> { SocialLinkRoute() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         composableAnimated<NavigationDestination.VacancyNotification> {

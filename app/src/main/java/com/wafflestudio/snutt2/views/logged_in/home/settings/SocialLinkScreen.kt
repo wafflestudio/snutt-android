@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -41,14 +40,15 @@ import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.model.SocialLoginType
 import com.wafflestudio.snutt2.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
-fun SocialLinkPage() {
+fun SocialLinkRoute(
+    modifier: Modifier = Modifier,
+    viewModel: SocialLinkViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
     val navController = LocalNavController.current
     val coroutineScope = rememberCoroutineScope()
@@ -61,19 +61,12 @@ fun SocialLinkPage() {
     val disconnectSocialDialogState by socialLinkViewModel.disconnectSocialDialogState.collectAsStateWithLifecycle()
     val socialLinkUiState by socialLinkViewModel.socialLinkUiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        socialLinkViewModel.toastState.collect { message ->
-            if (message.isNotEmpty()) {
-                context.toast(message)
-            }
-        }
-    }
-
     val handleFacebookConnect = {
         coroutineScope.launch {
             val loginResult = facebookLogin(context, socialLinkViewModel::showToast)
             socialLinkViewModel.connectFacebook(loginResult.accessToken.token)
         }
+        Unit
     }
 
     val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -167,18 +160,63 @@ fun SocialLinkPage() {
 
     // 구글 계정 선택 창 띄움
     val handleGoogleConnect = {
-        val signInIntent = googleSignInClient.signInIntent
-        googleLoginActivityResultLauncher.launch(signInIntent)
+        googleSignInClient.signOut().addOnCompleteListener {
+            val signInIntent = googleSignInClient.signInIntent
+            googleLoginActivityResultLauncher.launch(signInIntent)
+        }
+        Unit
     }
 
+    val handleSocialDisconnect = {
+        coroutineScope.launch {
+            LoginManager.getInstance().logOut()
+            socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
+            socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
+        }
+        Unit
+    }
+
+    LaunchedEffect(Unit) {
+        socialLinkViewModel.toastState.collect { message ->
+            if (message.isNotEmpty()) {
+                context.toast(message)
+            }
+        }
+    }
+
+    SocialLinkScreen(
+        modifier = modifier,
+        onBackClick = { navController.popBackStack() },
+        uiState = socialLinkUiState,
+        dialogState = disconnectSocialDialogState,
+        changeDialogState = viewModel::changeDialogState,
+        handleFacebookConnect = handleFacebookConnect,
+        handleKakaoConnect = handleKakaoConnect,
+        handleGoogleConnect = handleGoogleConnect,
+        handleSocialDisconnect = handleSocialDisconnect,
+    )
+}
+
+@Composable
+fun SocialLinkScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    uiState: SocialLinkUiState,
+    dialogState: SocialLoginType,
+    changeDialogState: (SocialLoginType) -> Unit,
+    handleFacebookConnect: () -> Unit,
+    handleKakaoConnect: () -> Unit,
+    handleGoogleConnect: () -> Unit,
+    handleSocialDisconnect: () -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(SNUTTColors.SettingBackground),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.social_link_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onBackClick,
         )
 
         Column(
@@ -187,72 +225,62 @@ fun SocialLinkPage() {
         ) {
             Margin(height = 10.dp)
 
-            if (socialLinkUiState.kakao == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.kakao == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_kakao),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.KAKAO) },
+                    onClick = { changeDialogState(SocialLoginType.KAKAO) },
                 )
             } else {
                 SettingItem(
                     title = stringResource(R.string.social_link_kakao),
                     hasNextPage = false,
-                    onClick = { handleKakaoConnect() },
+                    onClick = handleKakaoConnect,
                 )
             }
 
             Margin(height = 10.dp)
 
-            if (socialLinkUiState.google == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.google == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_google),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.GOOGLE) },
+                    onClick = { changeDialogState(SocialLoginType.GOOGLE) },
                 )
             } else {
                 SettingItem(
                     title = stringResource(R.string.social_link_google),
                     hasNextPage = false,
-                    onClick = {
-                        googleSignInClient.signOut().addOnCompleteListener {
-                            handleGoogleConnect()
-                        }
-                    },
+                    onClick = handleGoogleConnect,
                 )
             }
 
             Margin(height = 10.dp)
 
-            if (socialLinkUiState.facebook == SocialLinkUiState.SocialProviders.LINKED) {
+            if (uiState.facebook == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_facebook),
                     titleColor = colorResource(R.color.theme_snutt_0),
                     hasNextPage = false,
-                    onClick = { socialLinkViewModel.changeDialogState(SocialLoginType.FACEBOOK) },
+                    onClick = { changeDialogState(SocialLoginType.FACEBOOK) },
                 )
             } else {
                 SettingItem(
                     title = stringResource(R.string.social_link_facebook),
                     hasNextPage = false,
-                    onClick = { handleFacebookConnect() },
+                    onClick = handleFacebookConnect,
                 )
             }
         }
     }
 
-    if (disconnectSocialDialogState != SocialLoginType.NONE) {
+    if (dialogState != SocialLoginType.NONE) {
         CustomDialog(
-            onDismiss = { socialLinkViewModel.changeDialogState(SocialLoginType.NONE) },
-            onConfirm = {
-                coroutineScope.launch {
-                    LoginManager.getInstance().logOut()
-                    socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
-                    socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
-                }
-            },
-            title = context.getString(R.string.settings_user_config_social_disconnect_message, disconnectSocialDialogState.getString()),
+            onDismiss = { changeDialogState(SocialLoginType.NONE) },
+            onConfirm = handleSocialDisconnect,
+            title = stringResource(R.string.settings_user_config_social_disconnect_message, dialogState.getString()),
             content = {},
             positiveButtonText = stringResource(R.string.social_disconnect),
         )
