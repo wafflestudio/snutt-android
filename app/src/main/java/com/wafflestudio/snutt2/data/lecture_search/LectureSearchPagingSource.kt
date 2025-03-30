@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi

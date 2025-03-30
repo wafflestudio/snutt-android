@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.notifications
 
 import androidx.paging.PagingData
-import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import kotlinx.coroutines.flow.Flow
 

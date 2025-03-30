@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data.notifications
 
-import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 
 object PreviewData {
@@ -48,7 +47,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -57,7 +56,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -66,7 +65,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -75,7 +74,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -84,7 +83,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -93,7 +92,7 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
+            createdAt = "2025-03-29T018:56:47.72Z",
         ),
         NotificationDto(
             id = "67d008df6fb110276f3ed659",
@@ -102,8 +101,8 @@ object PreviewData {
             type = 4,
             deeplink = "deeplink=snutt-dev://friends?openDrawer=true",
             detail = null,
-            createdAt = "2025-03-29T018:56:47.72Z"
-        )
+            createdAt = "2025-03-29T018:56:47.72Z",
+        ),
     )
 
     val sampleNotifications: List<NotificationDto> = sampleNotificationDtos
