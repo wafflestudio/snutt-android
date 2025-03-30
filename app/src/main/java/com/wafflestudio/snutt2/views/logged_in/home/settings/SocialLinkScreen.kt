@@ -168,10 +168,10 @@ fun SocialLinkRoute(
         Unit
     }
 
-    val handleSocialDisconnect = {
+    val handleSocialDisconnect = { type: SocialLoginType ->
         coroutineScope.launch {
             LoginManager.getInstance().logOut()
-            socialLinkViewModel.disconnectSocialLogin(disconnectSocialDialogState)
+            socialLinkViewModel.disconnectSocialLogin(type)
             socialLinkViewModel.changeDialogState(SocialLoginType.NONE)
         }
         Unit
@@ -208,7 +208,7 @@ fun SocialLinkScreen(
     handleFacebookConnect: () -> Unit,
     handleKakaoConnect: () -> Unit,
     handleGoogleConnect: () -> Unit,
-    handleSocialDisconnect: () -> Unit,
+    handleSocialDisconnect: (SocialLoginType) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -226,64 +226,63 @@ fun SocialLinkScreen(
         ) {
             Margin(height = 10.dp)
 
-            if (uiState.kakao.isLinked()) {
-                SettingItem(
-                    title = stringResource(R.string.social_unlink_kakao),
-                    titleColor = colorResource(R.color.theme_snutt_0),
-                    hasNextPage = false,
-                    onClick = { changeDialogState(SocialLoginType.KAKAO) },
-                )
-            } else {
-                SettingItem(
-                    title = stringResource(R.string.social_link_kakao),
-                    hasNextPage = false,
-                    onClick = handleKakaoConnect,
-                )
-            }
+            SocialButtonItem(
+                type = SocialLoginType.KAKAO,
+                linkState = uiState.kakao,
+                onConnectClick = handleKakaoConnect,
+                onDisconnectClick = changeDialogState,
+            )
 
             Margin(height = 10.dp)
 
-            if (uiState.google.isLinked()) {
-                SettingItem(
-                    title = stringResource(R.string.social_unlink_google),
-                    titleColor = colorResource(R.color.theme_snutt_0),
-                    hasNextPage = false,
-                    onClick = { changeDialogState(SocialLoginType.GOOGLE) },
-                )
-            } else {
-                SettingItem(
-                    title = stringResource(R.string.social_link_google),
-                    hasNextPage = false,
-                    onClick = handleGoogleConnect,
-                )
-            }
+            SocialButtonItem(
+                type = SocialLoginType.GOOGLE,
+                linkState = uiState.google,
+                onConnectClick = handleGoogleConnect,
+                onDisconnectClick = changeDialogState,
+            )
 
             Margin(height = 10.dp)
 
-            if (uiState.facebook.isLinked()) {
-                SettingItem(
-                    title = stringResource(R.string.social_unlink_facebook),
-                    titleColor = colorResource(R.color.theme_snutt_0),
-                    hasNextPage = false,
-                    onClick = { changeDialogState(SocialLoginType.FACEBOOK) },
-                )
-            } else {
-                SettingItem(
-                    title = stringResource(R.string.social_link_facebook),
-                    hasNextPage = false,
-                    onClick = handleFacebookConnect,
-                )
-            }
+            SocialButtonItem(
+                type = SocialLoginType.FACEBOOK,
+                linkState = uiState.facebook,
+                onConnectClick = handleFacebookConnect,
+                onDisconnectClick = changeDialogState,
+            )
         }
     }
 
     if (dialogState.showDialog()) {
         CustomDialog(
             onDismiss = { changeDialogState(SocialLoginType.NONE) },
-            onConfirm = handleSocialDisconnect,
+            onConfirm = { handleSocialDisconnect(dialogState) },
             title = stringResource(R.string.settings_user_config_social_disconnect_message, dialogState.getString()),
             content = {},
             positiveButtonText = stringResource(R.string.social_disconnect),
+        )
+    }
+}
+
+@Composable
+fun SocialButtonItem(
+    type: SocialLoginType,
+    linkState: SocialLinkUiState.SocialProviders,
+    onConnectClick: () -> Unit,
+    onDisconnectClick: (SocialLoginType) -> Unit,
+) {
+    if (linkState.isLinked()) {
+        SettingItem(
+            title = stringResource(R.string.social_unlink, type.getString()),
+            titleColor = colorResource(R.color.theme_snutt_0),
+            hasNextPage = false,
+            onClick = { onDisconnectClick(type) },
+        )
+    } else {
+        SettingItem(
+            title = stringResource(R.string.social_link, type.getString()),
+            hasNextPage = false,
+            onClick = onConnectClick,
         )
     }
 }
