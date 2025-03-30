@@ -65,8 +65,14 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
-    suspend fun connectKakao(token: String) {
-        userRepository.postUserKakao(token)
+    fun connectKakao(token: String) {
+        viewModelScope.launch {
+            runCatching {
+                userRepository.postUserKakao(token)
+                fetchUserInfo()
+                fetchSocialProvidersNew()
+            }.onFailure(apiOnError)
+        }
     }
 
     suspend fun connectGoogle(token: String) {

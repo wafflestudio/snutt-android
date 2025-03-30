@@ -84,26 +84,6 @@ fun SocialLinkPage() {
         }
     }
 
-    val connectWithKaKaoAccessToken: (String) -> Unit = { kakaoAccessToken ->
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                if (kakaoAccessToken.isNotEmpty()) {
-                    socialLinkViewModel.connectKakao(
-                        kakaoAccessToken,
-                    )
-                    socialLinkViewModel.fetchUserInfo()
-                    socialLinkViewModel.fetchSocialProviders()
-                } else {
-                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
-                }
-            }
-        }
-    }
-
     val loginWithKakaoAccountCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
@@ -114,7 +94,9 @@ fun SocialLinkPage() {
                 socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         } else if (token != null) {
-            connectWithKaKaoAccessToken(token.accessToken)
+            coroutineScope.launch {
+                socialLinkViewModel.connectKakao(token.accessToken)
+            }
         } else {
             socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
@@ -133,7 +115,9 @@ fun SocialLinkPage() {
                         UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token != null) {
-                    connectWithKaKaoAccessToken(token.accessToken)
+                    coroutineScope.launch {
+                        socialLinkViewModel.connectKakao(token.accessToken)
+                    }
                 } else {
                     socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
@@ -225,7 +209,7 @@ fun SocialLinkPage() {
         ) {
             Margin(height = 10.dp)
 
-            if (socialProviders.kakao) {
+            if (socialLinkUiState.kakao == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_kakao),
                     titleColor = colorResource(R.color.theme_snutt_0),
