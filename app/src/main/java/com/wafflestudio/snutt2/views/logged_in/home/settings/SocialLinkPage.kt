@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -62,15 +63,7 @@ fun SocialLinkPage() {
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
     val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
     val disconnectSocialDialogState by socialLinkViewModel.disconnectSocialDialogState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        launchSuspendApi(
-            apiOnProgress = apiOnProgress,
-            apiOnError = apiOnError,
-        ) {
-            socialLinkViewModel.fetchSocialProviders()
-        }
-    }
+    val socialLinkUiState by socialLinkViewModel.socialLinkUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         socialLinkViewModel.toastState.collect { message ->
@@ -78,6 +71,10 @@ fun SocialLinkPage() {
                 context.toast(message)
             }
         }
+    }
+
+    LaunchedEffect(socialLinkUiState) {
+        Log.d("plgafhdtest", socialLinkUiState.toString())
     }
 
     val handleFacebookConnect = {

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.model.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,13 +26,39 @@ class SocialLinkViewModel @Inject constructor(
     private val _toastState: MutableSharedFlow<String> = MutableSharedFlow()
     val toastState = _toastState
 
+    private val _socialLinkUiState: MutableStateFlow<SocialLinkUiState> = MutableStateFlow(SocialLinkUiState.Default)
+    val socialLinkUiState = _socialLinkUiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            runCatching {
+                fetchSocialProvidersNew()
+            }.onFailure { e ->
+                if (e is ErrorParsedHttpException) {
+                    _toastState.emit(e.errorDTO?.displayMessage ?: "")
+                }
+                _socialLinkUiState.emit(SocialLinkUiState.Default)
+            }
+        }
+    }
+
+    suspend fun fetchSocialProvidersNew() {
+        runCatching {
+            _socialLinkUiState.emit(userRepository.getSocialProviders().socialLinkUiState())
+        }.onFailure { e ->
+            if (e is ErrorParsedHttpException) {
+                _toastState.emit(e.errorDTO?.displayMessage ?: "")
+            }
+        }
+    }
+
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
 
     suspend fun fetchSocialProviders() {
         _socialProviders.emit(userRepository.getSocialProviders())
-    }
+    } // TODO: 삭제
 
     suspend fun connectFacebook(token: String) {
         userRepository.postUserFacebook(token)
