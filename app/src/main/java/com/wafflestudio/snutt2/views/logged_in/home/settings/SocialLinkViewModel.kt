@@ -75,12 +75,20 @@ class SocialLinkViewModel @Inject constructor(
         }
     }
 
-    suspend fun connectGoogle(token: String) {
-        userRepository.postUserGoogle(token)
+    fun connectGoogle(token: String) {
+        viewModelScope.launch {
+            runCatching {
+                userRepository.postUserGoogle(token)
+                fetchUserInfo()
+                fetchSocialProvidersNew()
+            }.onFailure(apiOnError)
+        }
     }
 
     suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
-        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
+        return runCatching {
+            userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
+        }.getOrNull()
     }
 
     suspend fun disconnectSocialLogin(type: SocialLoginType) {

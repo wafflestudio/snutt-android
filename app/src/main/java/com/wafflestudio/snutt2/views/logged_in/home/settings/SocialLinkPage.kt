@@ -130,25 +130,15 @@ fun SocialLinkPage() {
 
     val handleGoogleSignInCallback: (String) -> Unit = { authCode: String ->
         coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                val googleAccessToken = socialLinkViewModel.getAccessTokenByAuthCode(
-                    authCode = authCode,
-                    clientId = clientId,
-                    clientSecret = clientSecret,
-                )
-                if (googleAccessToken != null) {
-                    socialLinkViewModel.connectGoogle(
-                        googleAccessToken,
-                    )
-                    socialLinkViewModel.fetchUserInfo()
-                    socialLinkViewModel.fetchSocialProviders()
-                } else {
-                    socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                }
+            val googleAccessToken = socialLinkViewModel.getAccessTokenByAuthCode(
+                authCode = authCode,
+                clientId = clientId,
+                clientSecret = clientSecret,
+            )
+            if (googleAccessToken != null) {
+                socialLinkViewModel.connectGoogle(googleAccessToken)
+            } else {
+                socialLinkViewModel.showToast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
         }
     }
@@ -226,7 +216,7 @@ fun SocialLinkPage() {
 
             Margin(height = 10.dp)
 
-            if (socialProviders.google) {
+            if (socialLinkUiState.google == SocialLinkUiState.SocialProviders.LINKED) {
                 SettingItem(
                     title = stringResource(R.string.social_unlink_google),
                     titleColor = colorResource(R.color.theme_snutt_0),
