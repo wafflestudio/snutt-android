@@ -52,15 +52,12 @@ fun SocialLinkPage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
     val coroutineScope = rememberCoroutineScope()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
     val activityContext = LocalContext.current as Activity
 
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
 
     val socialLinkViewModel = hiltViewModel<SocialLinkViewModel>()
-    val socialProviders by socialLinkViewModel.socialProviders.collectAsStateWithLifecycle()
     val disconnectSocialDialogState by socialLinkViewModel.disconnectSocialDialogState.collectAsStateWithLifecycle()
     val socialLinkUiState by socialLinkViewModel.socialLinkUiState.collectAsStateWithLifecycle()
 
@@ -70,10 +67,6 @@ fun SocialLinkPage() {
                 context.toast(message)
             }
         }
-    }
-
-    LaunchedEffect(socialLinkUiState) {
-        Log.d("plgafhdtest", socialLinkUiState.toString())
     }
 
     val handleFacebookConnect = {
@@ -93,9 +86,7 @@ fun SocialLinkPage() {
                 socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
             }
         } else if (token != null) {
-            coroutineScope.launch {
-                socialLinkViewModel.connectKakao(token.accessToken)
-            }
+            socialLinkViewModel.connectKakao(token.accessToken)
         } else {
             socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
         }
@@ -114,9 +105,7 @@ fun SocialLinkPage() {
                         UserApiClient.instance.loginWithKakaoAccount(context = context, callback = loginWithKakaoAccountCallback)
                     }
                 } else if (token != null) {
-                    coroutineScope.launch {
-                        socialLinkViewModel.connectKakao(token.accessToken)
-                    }
+                    socialLinkViewModel.connectKakao(token.accessToken)
                 } else {
                     socialLinkViewModel.showToast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
