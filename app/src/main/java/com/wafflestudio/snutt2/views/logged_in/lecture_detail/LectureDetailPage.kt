@@ -177,12 +177,16 @@ fun LectureDetailPage(
                 .fillMaxSize()
                 .background(SNUTTColors.Gray100)
                 .analyticsScreen(
-                    AnalyticsScreen.LectureDetail(
-                        LectureDetailParameter(
-                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                            referrer = referrer
+                    if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
+                        AnalyticsScreen.LectureCreate
+                    } else {
+                        AnalyticsScreen.LectureDetail(
+                            LectureDetailParameter(
+                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                referrer = referrer,
+                            ),
                         )
-                    )
+                    },
                 ),
 //                    .clicks { focusManager.clearFocus() }
         ) {
