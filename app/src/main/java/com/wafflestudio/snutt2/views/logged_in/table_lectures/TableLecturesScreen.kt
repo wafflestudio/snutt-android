@@ -37,6 +37,8 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -96,7 +98,8 @@ private fun TableLecturesScreen(
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .analyticsScreen(AnalyticsScreen.LectureList),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_app_bar_title),
