@@ -101,8 +101,6 @@ fun SearchPage(
         searchViewModel.togglePageMode()
     }
 
-    SearchOptionSheetLoggingEffect(bottomSheet)
-
     Column {
         TopBar(
             title = {
