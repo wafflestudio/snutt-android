@@ -3,12 +3,27 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
+import androidx.compose.material.DrawerState
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -19,14 +34,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
+import com.wafflestudio.snutt2.components.compose.ExitIcon
+import com.wafflestudio.snutt2.components.compose.LogoIcon
+import com.wafflestudio.snutt2.components.compose.RedDot
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.compose.HomeDrawerLogEffect
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -48,7 +70,7 @@ fun HomeDrawer() {
         initial = mapOf(),
     )
 
-    HomeDrawerLogger()
+    HomeDrawerLogEffect(drawerState)
 
     Column(
         modifier = Modifier
@@ -173,27 +195,6 @@ private fun CreateTableItem(
             text = stringResource(R.string.home_drawer_timetable_add_button),
             style = SNUTTTypography.body1,
         )
-    }
-}
-
-/**
- * 드로어가 실제로 화면에 보이는 시점에 logScreen하기 위해
- * HomeDrawer의 modifier에 analyticsScreen을 바로 붙이지 않고
- * 별도 컴포저블으로 분리함.
- */
-@Composable
-private fun HomeDrawerLogger() {
-    val logger = LocalAnalyticsLogger.current
-    val drawerState = LocalDrawerState.current
-    LaunchedEffect(drawerState) {
-        snapshotFlow { drawerState.isOpen }
-            .distinctUntilChanged()
-            .collect { isOpen ->
-                if (isOpen) {
-                    // 실제로 drawerContent가 화면에 보이기 시작한 시점
-                    logger.logScreen(AnalyticsScreen.TimetableMenu)
-                }
-            }
     }
 }
 
