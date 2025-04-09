@@ -35,7 +35,7 @@ fun FriendsPage() {
     val reactRootView = (LocalContext.current as RootActivity).friendBundleManager.reactRootView
 
     Box(
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.Friends)
+        modifier = Modifier.analyticsScreen(AnalyticsScreen.Friends),
     ) {
         reactRootView.value?.let { view ->
             AndroidView(

@@ -45,7 +45,7 @@ fun TeamInfoPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .analyticsScreen(AnalyticsScreen.SettingsDevelopers)
+            .analyticsScreen(AnalyticsScreen.SettingsDevelopers),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_team_info),
