@@ -176,6 +176,11 @@ private fun CreateTableItem(
     }
 }
 
+/**
+ * 드로어가 실제로 화면에 보이는 시점에 logScreen하기 위해
+ * HomeDrawer의 modifier에 analyticsScreen을 바로 붙이지 않고
+ * 별도 컴포저블으로 분리함.
+ */
 @Composable
 private fun HomeDrawerLogger() {
     val logger = LocalAnalyticsLogger.current
