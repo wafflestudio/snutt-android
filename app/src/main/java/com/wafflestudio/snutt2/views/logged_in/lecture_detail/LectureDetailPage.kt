@@ -640,9 +640,11 @@ fun LectureDetailPage(
                                     scope.launch {
                                         val url = editingLectureReview?.getReviewUrl(context)
                                         openReviewBottomSheet(
-                                            url,
-                                            reviewBottomSheetReviewWebViewContainer,
-                                            bottomSheet,
+                                            url = url,
+                                            reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+                                            bottomSheet = bottomSheet,
+                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                            referrer = DetailScreenReferrer.LectureDetail,
                                         )
                                     }
                                 }

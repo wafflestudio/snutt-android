@@ -45,7 +45,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.logging.compose.SearchOptionSheetLoggingEffect
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography

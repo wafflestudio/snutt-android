@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.logging.compose.SearchOptionSheetLoggingEffect
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
@@ -68,7 +69,10 @@ fun SearchOptionSheet(
         }
     }
 
-    SearchOptionSheetLoggingEffect(bottomSheet)
+    BottomSheetLoggingEffect(
+        bottomSheetState = bottomSheet,
+        analyticsScreen = AnalyticsScreen.SearchFilter,
+    )
 
     SubcomposeLayout(
         modifier = Modifier.background(SNUTTColors.White900),

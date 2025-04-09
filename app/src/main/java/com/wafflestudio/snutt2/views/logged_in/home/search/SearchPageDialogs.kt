@@ -6,6 +6,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStates
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.lib.network.ErrorCode
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -18,11 +22,24 @@ suspend fun openReviewBottomSheet(
     url: String?,
     reviewWebViewContainer: ReviewWebViewContainer,
     bottomSheet: BottomSheet,
+    lectureId: String,
+    referrer: DetailScreenReferrer,
 ) {
     reviewWebViewContainer.openPage("$url&on_back=close")
     bottomSheet.setSheetContent {
+        BottomSheetLoggingEffect(
+            bottomSheetState = bottomSheet,
+            analyticsScreen = AnalyticsScreen.ReviewDetail(
+                ReviewDetailParameter(
+                    lectureID = lectureId,
+                    referrer = referrer,
+                ),
+            ),
+        )
         CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-            ReviewWebView(0.95f)
+            ReviewWebView(
+                height = 0.95f,
+            )
         }
     }
     bottomSheet.show()
