@@ -51,6 +51,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
+import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
@@ -87,6 +88,7 @@ fun LectureDetailPage(
     val focusManager = LocalFocusManager.current
     val pageController = LocalHomePageController.current
     val composableStates = ComposableStatesWithScope(scope)
+    val logger = LocalAnalyticsLogger.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
@@ -634,6 +636,13 @@ fun LectureDetailPage(
                                                 context.startActivity(intent)
                                             }
                                         }
+                                        logger.logScreen(
+                                            AnalyticsScreen.LectureSyllabus( // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
+                                                LectureSyllabusParameter(
+                                                    lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                ),
+                                            ),
+                                        )
                                     }
                                 }
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {

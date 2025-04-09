@@ -9,7 +9,7 @@ sealed class AnalyticsScreen {
     data object LectureCreate : AnalyticsScreen()
     data class LectureDetail(val parameter: LectureDetailParameter) : AnalyticsScreen()
     data object LectureList : AnalyticsScreen()
-//    data class LectureSyllabus(val parameter: LectureSyllabusParameter) : AnalyticsScreen() << iOS에만 있음
+    data class LectureSyllabus(val parameter: LectureSyllabusParameter) : AnalyticsScreen()
 
     data object SearchHome : AnalyticsScreen()
     data object SearchEmpty : AnalyticsScreen()
@@ -46,7 +46,7 @@ sealed class AnalyticsScreen {
         return when (this) {
             is LectureDetail -> parameter.toBundle()
             is ReviewDetail -> parameter.toBundle()
-//            is LectureSyllabus -> parameter.toBundle()
+            is LectureSyllabus -> parameter.toBundle()
             else -> Bundle()
         }
     }
@@ -76,15 +76,15 @@ data class ReviewDetailParameter(
     }
 }
 
-// data class LectureSyllabusParameter(
-//    val lectureID: String
-// ) {
-//    fun toBundle(): Bundle {
-//        return Bundle().apply {
-//            putString("lecture_id", lectureID)
-//        }
-//    }
-// }
+data class LectureSyllabusParameter(
+    val lectureID: String,
+) {
+    fun toBundle(): Bundle {
+        return Bundle().apply {
+            putString("lecture_id", lectureID)
+        }
+    }
+}
 
 sealed class DetailScreenReferrer {
     data class Search(val query: String) : DetailScreenReferrer()
