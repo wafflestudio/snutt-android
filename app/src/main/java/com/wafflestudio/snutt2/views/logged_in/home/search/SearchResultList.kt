@@ -15,6 +15,8 @@ import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
@@ -71,16 +73,22 @@ fun SearchResultList(
                         searchViewModel.query()
                     }
                 },
+                modifier = Modifier.analyticsScreen(AnalyticsScreen.SearchHome),
             )
         } else {
             when {
                 loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
-                    SearchEmptyPlaceholder()
+                    SearchEmptyPlaceholder(
+                        modifier = Modifier.analyticsScreen(AnalyticsScreen.SearchEmpty),
+                    )
                 }
 
                 else -> {
                     LazyColumn(
-                        state = lazyListState, modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .analyticsScreen(AnalyticsScreen.SearchList),
                     ) {
                         items(searchResultPagingItems) { lectureDataWithState ->
                             lectureDataWithState?.let {
