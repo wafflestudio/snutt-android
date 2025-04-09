@@ -42,12 +42,12 @@ sealed class AnalyticsScreen {
     data object Login : AnalyticsScreen()
     data object Onboard : AnalyticsScreen()
 
-    fun getExtraParameters(): Bundle {
+    fun getExtraParameters(): Bundle? {
         return when (this) {
             is LectureDetail -> parameter.toBundle()
             is ReviewDetail -> parameter.toBundle()
             is LectureSyllabus -> parameter.toBundle()
-            else -> Bundle()
+            else -> null
         }
     }
 }
