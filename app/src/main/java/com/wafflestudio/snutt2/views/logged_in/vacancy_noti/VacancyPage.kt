@@ -75,6 +75,8 @@ import com.wafflestudio.snutt2.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -153,7 +155,9 @@ fun VacancyPage(
         }
     }
 
-    Box {
+    Box(
+        modifier = Modifier.analyticsScreen(AnalyticsScreen.Vacancy),
+    ) {
         Column(
             modifier = Modifier.background(SNUTTColors.White900),
         ) {
