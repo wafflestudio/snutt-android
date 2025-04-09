@@ -639,7 +639,7 @@ fun LectureDetailPage(
                                         logger.logScreen(
                                             AnalyticsScreen.LectureSyllabus( // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
                                                 LectureSyllabusParameter(
-                                                    lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                    lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
                                                 ),
                                             ),
                                         )

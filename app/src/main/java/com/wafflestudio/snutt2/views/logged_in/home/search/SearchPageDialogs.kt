@@ -31,7 +31,7 @@ suspend fun openReviewBottomSheet(
             bottomSheetState = bottomSheet,
             analyticsScreen = AnalyticsScreen.ReviewDetail(
                 ReviewDetailParameter(
-                    lectureID = lectureId,
+                    lectureId = lectureId,
                     referrer = referrer,
                 ),
             ),

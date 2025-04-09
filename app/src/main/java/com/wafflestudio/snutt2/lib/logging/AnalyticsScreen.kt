@@ -65,34 +65,34 @@ data class LectureDetailParameter(
 }
 
 data class ReviewDetailParameter(
-    val lectureID: String,
+    val lectureId: String,
     val referrer: DetailScreenReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
-            putString("lecture_id", lectureID)
+            putString("lecture_id", lectureId)
             putString("referrer", referrer.encode())
         }
     }
 }
 
 data class LectureSyllabusParameter(
-    val lectureID: String,
+    val lectureId: String,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
-            putString("lecture_id", lectureID)
+            putString("lecture_id", lectureId)
         }
     }
 }
 
 sealed class DetailScreenReferrer {
     data class Search(val query: String) : DetailScreenReferrer()
-    object Notification : DetailScreenReferrer()
-    object Bookmark : DetailScreenReferrer()
-    object Timetable : DetailScreenReferrer()
-    object LectureList : DetailScreenReferrer()
-    object LectureDetail : DetailScreenReferrer()
+    data object Notification : DetailScreenReferrer()
+    data object Bookmark : DetailScreenReferrer()
+    data object Timetable : DetailScreenReferrer()
+    data object LectureList : DetailScreenReferrer()
+    data object LectureDetail : DetailScreenReferrer()
 
     fun encode(): String {
         return when (this) {
