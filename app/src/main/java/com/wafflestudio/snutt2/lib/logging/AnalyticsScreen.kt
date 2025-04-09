@@ -5,8 +5,7 @@ import android.os.Bundle
 sealed class AnalyticsScreen {
     data object TimetableHome : AnalyticsScreen()
     data object TimetableMenu : AnalyticsScreen()
-
-//    data object TimetableShare : AnalyticsScreen() << iOS에만 있음
+    data object TimetableShare : AnalyticsScreen()
     data object LectureCreate : AnalyticsScreen()
     data class LectureDetail(val parameter: LectureDetailParameter) : AnalyticsScreen()
     data object LectureList : AnalyticsScreen()

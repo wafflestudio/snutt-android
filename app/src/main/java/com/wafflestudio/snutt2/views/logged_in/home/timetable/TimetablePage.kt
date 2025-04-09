@@ -46,6 +46,7 @@ import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
@@ -67,6 +68,7 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
+    val logger = LocalAnalyticsLogger.current
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
@@ -136,6 +138,7 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                                 if (vacancyNotificationBannerEnabled) bannerHeight else 0,
                                 timetableHeight,
                             )
+                            logger.logScreen(AnalyticsScreen.TimetableShare) // 안드로이드에는 TimetableShare 화면이 따로 없지만, iOS와의 통일성을 위해 공유 버튼 클릭 시 로깅한다.
                         },
                 )
                 IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
