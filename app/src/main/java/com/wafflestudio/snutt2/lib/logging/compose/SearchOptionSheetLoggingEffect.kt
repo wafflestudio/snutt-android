@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
  * 별도 컴포저블으로 분리함.
  */
 @Composable
-fun SearchOptionSheetLogEffect(bottomSheetState: BottomSheet) {
+fun SearchOptionSheetLoggingEffect(bottomSheetState: BottomSheet) {
     val logger = LocalAnalyticsLogger.current
     LaunchedEffect(bottomSheetState) {
         snapshotFlow { bottomSheetState.isVisible }

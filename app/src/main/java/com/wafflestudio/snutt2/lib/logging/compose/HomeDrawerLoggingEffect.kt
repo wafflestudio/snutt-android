@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
  * 별도 컴포저블으로 분리함.
  */
 @Composable
-fun HomeDrawerLogEffect(drawerState: DrawerState) {
+fun HomeDrawerLoggingEffect(drawerState: DrawerState) {
     val logger = LocalAnalyticsLogger.current
     LaunchedEffect(drawerState) {
         snapshotFlow { drawerState.isOpen }
