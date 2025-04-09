@@ -24,6 +24,8 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
@@ -48,7 +50,8 @@ fun SettingsPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.SettingBackground),
+            .background(SNUTTColors.SettingBackground)
+            .analyticsScreen(AnalyticsScreen.SettingsHome),
     ) {
         TopBar(
             // FIXME: 설정 글자가 중간에서 살짝 아래에 위치

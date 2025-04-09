@@ -30,6 +30,8 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -56,7 +58,8 @@ fun UserConfigPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SNUTTColors.SettingBackground),
+            .background(SNUTTColors.SettingBackground)
+            .analyticsScreen(AnalyticsScreen.SettingsAccount),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.user_settings_app_bar_title),
