@@ -32,6 +32,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalHomePageController
@@ -56,16 +58,21 @@ fun ReviewPage() {
         onBackPressed()
     }
 
-    ReviewWebView()
+    ReviewWebView(
+        modifier = Modifier.analyticsScreen(AnalyticsScreen.ReviewHome)
+    )
 }
 
 @Composable
-fun ReviewWebView(height: Float = 1.0f) {
+fun ReviewWebView(
+    height: Float = 1.0f,
+    modifier: Modifier = Modifier,
+) {
     val webViewContainer = LocalReviewWebView.current
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(height)
             .background(SNUTTColors.White900),
