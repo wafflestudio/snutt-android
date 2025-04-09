@@ -24,7 +24,7 @@ sealed class AnalyticsEvent {
 }
 
 data class LoginParameter(
-    val provider: Provider
+    val provider: Provider,
 ) {
     enum class Provider {
         LOCAL, GOOGLE, APPLE, FACEBOOK, KAKAO
@@ -40,7 +40,7 @@ data class LoginParameter(
 data class SearchLectureParameter(
     val query: String,
     val quarter: String,
-    val page: Int
+    val page: Int,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
@@ -53,7 +53,7 @@ data class SearchLectureParameter(
 
 data class AddToBookmarkParameter(
     val lectureID: String,
-    val referrer: LectureActionReferrer
+    val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
@@ -66,7 +66,7 @@ data class AddToBookmarkParameter(
 data class AddToTimetableParameter(
     val lectureID: String,
     val timetableID: String?,
-    val referrer: LectureActionReferrer
+    val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
@@ -79,7 +79,7 @@ data class AddToTimetableParameter(
 
 data class AddToVacancyParameter(
     val lectureID: String,
-    val referrer: LectureActionReferrer
+    val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {

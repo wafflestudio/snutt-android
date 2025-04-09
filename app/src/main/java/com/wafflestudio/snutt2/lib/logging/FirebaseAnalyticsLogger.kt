@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class FirebaseAnalyticsLogger @Inject constructor(
-    context: Context
+    context: Context,
 ) : AnalyticsLogger {
     private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 

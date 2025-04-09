@@ -16,7 +16,7 @@ object AnalyticsModule {
     @Provides
     @Singleton
     fun provideAnalyticsLogger(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): AnalyticsLogger {
         return FirebaseAnalyticsLogger(context)
     }

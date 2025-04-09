@@ -5,8 +5,9 @@ import android.os.Bundle
 sealed class AnalyticsScreen {
     data object TimetableHome : AnalyticsScreen()
     data object TimetableMenu : AnalyticsScreen()
+
 //    data object TimetableShare : AnalyticsScreen() << iOS에만 있음
-data object LectureCreate : AnalyticsScreen()
+    data object LectureCreate : AnalyticsScreen()
     data class LectureDetail(val parameter: LectureDetailParameter) : AnalyticsScreen()
     data object LectureList : AnalyticsScreen()
 //    data class LectureSyllabus(val parameter: LectureSyllabusParameter) : AnalyticsScreen() << iOS에만 있음
@@ -54,7 +55,7 @@ data object LectureCreate : AnalyticsScreen()
 
 data class LectureDetailParameter(
     val lectureId: String,
-    val referrer: DetailScreenReferrer?
+    val referrer: DetailScreenReferrer?,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
@@ -66,7 +67,7 @@ data class LectureDetailParameter(
 
 data class ReviewDetailParameter(
     val lectureID: String,
-    val referrer: DetailScreenReferrer
+    val referrer: DetailScreenReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
@@ -76,15 +77,15 @@ data class ReviewDetailParameter(
     }
 }
 
-//data class LectureSyllabusParameter(
+// data class LectureSyllabusParameter(
 //    val lectureID: String
-//) {
+// ) {
 //    fun toBundle(): Bundle {
 //        return Bundle().apply {
 //            putString("lecture_id", lectureID)
 //        }
 //    }
-//}
+// }
 
 sealed class DetailScreenReferrer {
     data class Search(val query: String) : DetailScreenReferrer()

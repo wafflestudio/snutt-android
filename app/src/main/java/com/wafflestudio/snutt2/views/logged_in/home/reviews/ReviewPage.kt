@@ -59,7 +59,7 @@ fun ReviewPage() {
     }
 
     ReviewWebView(
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.ReviewHome)
+        modifier = Modifier.analyticsScreen(AnalyticsScreen.ReviewHome),
     )
 }
 

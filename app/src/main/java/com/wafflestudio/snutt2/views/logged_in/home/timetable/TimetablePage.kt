@@ -75,7 +75,7 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
-            .analyticsScreen(AnalyticsScreen.TimetableHome)
+            .analyticsScreen(AnalyticsScreen.TimetableHome),
     ) {
         TopBar(
             // top bar 높이 측정
