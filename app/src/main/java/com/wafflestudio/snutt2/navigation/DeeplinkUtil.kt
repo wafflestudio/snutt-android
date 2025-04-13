@@ -1,10 +1,8 @@
 package com.wafflestudio.snutt2.navigation
 
 import NavigationDestination
-import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.findAnnotation
 
 inline fun <reified T : NavigationDestination> getDeepLinkPath(): String? {
-    return T::class.objectInstance?.deepLinkPath // data object 인 경우 바로 가져온다
-        ?: T::class.createInstance().deepLinkPath // data class 인 경우 인스턴스를 생성하고 가져온다. 인자 전달이 필요없는 생성자가 있어야 함.
-    // TODO: default value가 없는 argument를 가지는 NavigationDestination 지원하기. 현재는 createInstance()에서 IllegalArgumentException 발생한다.
+    return T::class.findAnnotation<DeepLinkPath>()?.path
 }

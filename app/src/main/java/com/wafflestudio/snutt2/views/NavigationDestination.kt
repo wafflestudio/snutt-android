@@ -1,71 +1,134 @@
+import com.wafflestudio.snutt2.navigation.DeepLinkPath
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
-sealed class NavigationDestination(
-    @Transient val deepLinkPath: String? = null,
-) {
-    @Serializable data object Onboard : NavigationDestination("onboard")
+sealed class NavigationDestination {
 
-    @Serializable data object Tutorial : NavigationDestination("tutorial")
+    @Serializable
+    @DeepLinkPath("onboard")
+    data object Onboard : NavigationDestination()
 
-    @Serializable data object Home : NavigationDestination("home")
+    @Serializable
+    @DeepLinkPath("tutorial")
+    data object Tutorial : NavigationDestination()
 
-    @Serializable data object SignIn : NavigationDestination("signIn")
+    @Serializable
+    @DeepLinkPath("home")
+    data object Home : NavigationDestination()
 
-    @Serializable data object SignUp : NavigationDestination("signUp")
+    @Serializable
+    @DeepLinkPath("signIn")
+    data object SignIn : NavigationDestination()
 
-    @Serializable data object FindId : NavigationDestination("find_id")
+    @Serializable
+    @DeepLinkPath("signUp")
+    data object SignUp : NavigationDestination()
 
-    @Serializable data object FindPassword : NavigationDestination("find_password")
+    @Serializable
+    @DeepLinkPath("find_id")
+    data object FindId : NavigationDestination()
 
-    @Serializable data object EmailVerification : NavigationDestination("email_verification")
+    @Serializable
+    @DeepLinkPath("find_password")
+    data object FindPassword : NavigationDestination()
 
-    @Serializable data object LecturesOfTable : NavigationDestination("lectures_of_table")
+    @Serializable
+    @DeepLinkPath("email_verification")
+    data object EmailVerification : NavigationDestination()
 
-    @Serializable data object LectureDetail : NavigationDestination("lecture_detail")
+    @Serializable
+    @DeepLinkPath("lectures_of_table")
+    data object LecturesOfTable : NavigationDestination()
 
-    @Serializable data class TimetableLecture(val tableId: String? = null) : NavigationDestination("timetable-lecture")
+    @Serializable
+    @DeepLinkPath("lecture_detail")
+    data object LectureDetail : NavigationDestination()
 
-    @Serializable data object LectureColorSelector : NavigationDestination("lecture_color_selector")
+    @Serializable
+    @DeepLinkPath("timetable-lecture")
+    data class TimetableLecture(val tableId: String? = null) : NavigationDestination()
 
-    @Serializable data object Notification : NavigationDestination("notifications")
+    @Serializable
+    @DeepLinkPath("lecture_color_selector")
+    data object LectureColorSelector : NavigationDestination()
 
-    @Serializable data object AppReport : NavigationDestination("app_report")
+    @Serializable
+    @DeepLinkPath("notifications")
+    data object Notification : NavigationDestination()
 
-    @Serializable data object OpenLicenses : NavigationDestination("open_licenses")
+    @Serializable
+    @DeepLinkPath("app_report")
+    data object AppReport : NavigationDestination()
 
-    @Serializable data class LicenseDetail(val licenseName: String? = null) : NavigationDestination("license_detail")
+    @Serializable
+    @DeepLinkPath("open_licenses")
+    data object OpenLicenses : NavigationDestination()
 
-    @Serializable data object ServiceInfo : NavigationDestination("service_info")
+    @Serializable
+    @DeepLinkPath("license_detail")
+    data class LicenseDetail(val licenseName: String? = null) : NavigationDestination()
 
-    @Serializable data object TeamInfo : NavigationDestination("team_info")
+    @Serializable
+    @DeepLinkPath("service_info")
+    data object ServiceInfo : NavigationDestination()
 
-    @Serializable data object TimeTableConfig : NavigationDestination("timetable_config")
+    @Serializable
+    @DeepLinkPath("team_info")
+    data object TeamInfo : NavigationDestination()
 
-    @Serializable data object UserConfig : NavigationDestination("user_config")
+    @Serializable
+    @DeepLinkPath("timetable_config")
+    data object TimeTableConfig : NavigationDestination()
 
-    @Serializable data object ChangeNickname : NavigationDestination("change_nickname")
+    @Serializable
+    @DeepLinkPath("user_config")
+    data object UserConfig : NavigationDestination()
 
-    @Serializable data object PersonalInformationPolicy : NavigationDestination("personal_information_policy")
+    @Serializable
+    @DeepLinkPath("change_nickname")
+    data object ChangeNickname : NavigationDestination()
 
-    @Serializable data object ThemeModeSelect : NavigationDestination("theme_mode_select")
+    @Serializable
+    @DeepLinkPath("personal_information_policy")
+    data object PersonalInformationPolicy : NavigationDestination()
 
-    @Serializable data object Bookmark : NavigationDestination("bookmarks")
+    @Serializable
+    @DeepLinkPath("theme_mode_select")
+    data object ThemeModeSelect : NavigationDestination()
 
-    @Serializable data object NetworkLog : NavigationDestination("network_log")
+    @Serializable
+    @DeepLinkPath("bookmarks")
+    data object Bookmark : NavigationDestination()
 
-    @Serializable data object VacancyNotification : NavigationDestination("vacancy")
+    @Serializable
+    @DeepLinkPath("network_log")
+    data object NetworkLog : NavigationDestination()
 
-    @Serializable data object ThemeMarket : NavigationDestination("theme_market")
+    @Serializable
+    @DeepLinkPath("vacancy")
+    data object VacancyNotification : NavigationDestination()
 
-    @Serializable data object Friends : NavigationDestination("friends")
+    @Serializable
+    @DeepLinkPath("theme_market")
+    data object ThemeMarket : NavigationDestination()
 
-    @Serializable data object ThemeConfig : NavigationDestination("theme_config")
+    @Serializable
+    @DeepLinkPath("friends")
+    data object Friends : NavigationDestination()
 
-    @Serializable data class ThemeDetail(val themeId: String = "", val theme: Int = -1) : NavigationDestination("theme_detail")
+    @Serializable
+    @DeepLinkPath("theme_config")
+    data object ThemeConfig : NavigationDestination()
 
-    @Serializable data object SocialLink : NavigationDestination("social_link")
+    @Serializable
+    @DeepLinkPath("theme_detail")
+    data class ThemeDetail(val themeId: String = "", val theme: Int = -1) : NavigationDestination()
 
-    @Serializable data object ImportantNotice : NavigationDestination("important_notice")
+    @Serializable
+    @DeepLinkPath("social_link")
+    data object SocialLink : NavigationDestination()
+
+    @Serializable
+    @DeepLinkPath("important_notice")
+    data object ImportantNotice : NavigationDestination()
 }
