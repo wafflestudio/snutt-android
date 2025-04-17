@@ -92,21 +92,6 @@ fun LazyItemScope.LectureListItem(
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
-    val logAddToTimetableEvent = {
-        analyticsLogger.logEvent(
-            AnalyticsEvent.AddToTimetable(
-                AddToTimetableParameter(
-                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
-                    timetableId = timetableViewModel.currentTable.value?.id,
-                    referrer = when (isBookmarkPage) {
-                        true -> LectureActionReferrer.Bookmark
-                        false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
-                    },
-                ),
-            ),
-        )
-    }
-
     Column(
         modifier = Modifier
             .animateItemPlacement(
@@ -376,7 +361,18 @@ fun LazyItemScope.LectureListItem(
                             checkLectureOverlap(
                                 composableStates,
                                 api = {
-                                    logAddToTimetableEvent()
+                                    analyticsLogger.logEvent(
+                                        AnalyticsEvent.AddToTimetable(
+                                            AddToTimetableParameter(
+                                                lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                timetableId = timetableViewModel.currentTable.value?.id,
+                                                referrer = when (isBookmarkPage) {
+                                                    true -> LectureActionReferrer.Bookmark
+                                                    false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
+                                                },
+                                            ),
+                                        ),
+                                    )
                                     timetableViewModel.addLecture(
                                         lecture = lectureDataWithState.item,
                                         is_force = false,
@@ -385,7 +381,6 @@ fun LazyItemScope.LectureListItem(
                                     tableListViewModel.fetchTableMap()
                                 },
                                 onLectureOverlap = { message ->
-                                    logAddToTimetableEvent()
                                     showLectureOverlapDialog(
                                         composableStates,
                                         message,
