@@ -30,7 +30,10 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -66,6 +69,7 @@ fun LazyItemScope.LectureListItem(
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     val composableStates = ComposableStatesWithScope(scope)
 
     val selected = lectureDataWithState.state.selected
@@ -282,6 +286,14 @@ fun LazyItemScope.LectureListItem(
                                     if (bookmarked) {
                                         searchViewModel.deleteBookmark(lectureDataWithState.item)
                                     } else {
+                                        analyticsLogger.logEvent(
+                                            AnalyticsEvent.AddToBookmark(
+                                                AddToBookmarkParameter(
+                                                    lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                    referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                                ),
+                                            ),
+                                        )
                                         searchViewModel.addBookmark(lectureDataWithState.item)
                                         if (userViewModel.firstBookmarkAlert.value) {
                                             userViewModel.setFirstBookmarkAlertShown()

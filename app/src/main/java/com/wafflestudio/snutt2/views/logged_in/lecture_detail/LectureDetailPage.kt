@@ -48,8 +48,11 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.analyticsScreen
@@ -247,6 +250,14 @@ fun LectureDetailPage(
                                                     editingLectureDetail,
                                                 )
                                             } else {
+                                                logger.logEvent(
+                                                    AnalyticsEvent.AddToBookmark(
+                                                        AddToBookmarkParameter(
+                                                            lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                                        ),
+                                                    ),
+                                                )
                                                 searchViewModel.addBookmark(editingLectureDetail)
                                             }
                                             searchViewModel.getBookmarkList()
