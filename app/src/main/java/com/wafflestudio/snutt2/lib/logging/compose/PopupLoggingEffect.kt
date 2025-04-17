@@ -14,8 +14,8 @@ import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 fun PopupLoggingEffect(
     imageUri: String,
 ) {
-    val logger = LocalAnalyticsLogger.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     LaunchedEffect(imageUri) {
-        logger.logScreen(AnalyticsScreen.Popup)
+        analyticsLogger.logScreen(AnalyticsScreen.Popup)
     }
 }

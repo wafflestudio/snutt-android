@@ -13,13 +13,13 @@ fun BottomSheetLoggingEffect(
     bottomSheetState: BottomSheet,
     analyticsScreen: AnalyticsScreen,
 ) {
-    val logger = LocalAnalyticsLogger.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     LaunchedEffect(bottomSheetState) {
         snapshotFlow { bottomSheetState.isVisible }
             .distinctUntilChanged()
             .collect { isOpen ->
                 if (isOpen) {
-                    logger.logScreen(analyticsScreen)
+                    analyticsLogger.logScreen(analyticsScreen)
                 }
             }
     }

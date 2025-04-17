@@ -15,14 +15,14 @@ import kotlinx.coroutines.flow.distinctUntilChanged
  */
 @Composable
 fun HomeDrawerLoggingEffect(drawerState: DrawerState) {
-    val logger = LocalAnalyticsLogger.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     LaunchedEffect(drawerState) {
         snapshotFlow { drawerState.isOpen }
             .distinctUntilChanged()
             .collect { isOpen ->
                 if (isOpen) {
                     // 실제로 drawerContent가 화면에 보이기 시작한 시점
-                    logger.logScreen(AnalyticsScreen.TimetableMenu)
+                    analyticsLogger.logScreen(AnalyticsScreen.TimetableMenu)
                 }
             }
     }

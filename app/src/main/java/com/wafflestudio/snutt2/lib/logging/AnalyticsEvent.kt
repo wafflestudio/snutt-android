@@ -52,38 +52,38 @@ data class SearchLectureParameter(
 }
 
 data class AddToBookmarkParameter(
-    val lectureID: String,
+    val lectureId: String,
     val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
-            putString("lecture_id", lectureID)
+            putString("lecture_id", lectureId)
             putString("referrer", referrer.encode())
         }
     }
 }
 
 data class AddToTimetableParameter(
-    val lectureID: String,
-    val timetableID: String?,
+    val lectureId: String,
+    val timetableId: String?,
     val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
-            putString("lecture_id", lectureID)
-            timetableID?.let { putString("timetable_id", it) }
+            putString("lecture_id", lectureId)
+            timetableId?.let { putString("timetable_id", it) }
             putString("referrer", referrer.encode())
         }
     }
 }
 
 data class AddToVacancyParameter(
-    val lectureID: String,
+    val lectureId: String,
     val referrer: LectureActionReferrer,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
-            putString("lecture_id", lectureID)
+            putString("lecture_id", lectureId)
             putString("referrer", referrer.encode())
         }
     }

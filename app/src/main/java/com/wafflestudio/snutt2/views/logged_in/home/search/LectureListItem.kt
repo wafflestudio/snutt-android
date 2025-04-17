@@ -96,8 +96,8 @@ fun LazyItemScope.LectureListItem(
         analyticsLogger.logEvent(
             AnalyticsEvent.AddToTimetable(
                 AddToTimetableParameter(
-                    lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
-                    timetableID = timetableViewModel.currentTable.value?.id,
+                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                    timetableId = timetableViewModel.currentTable.value?.id,
                     referrer = when (isBookmarkPage) {
                         true -> LectureActionReferrer.Bookmark
                         false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
@@ -306,7 +306,7 @@ fun LazyItemScope.LectureListItem(
                                         analyticsLogger.logEvent(
                                             AnalyticsEvent.AddToBookmark(
                                                 AddToBookmarkParameter(
-                                                    lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
                                                     referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
                                                 ),
                                             ),
@@ -342,7 +342,7 @@ fun LazyItemScope.LectureListItem(
                                     analyticsLogger.logEvent(
                                         AnalyticsEvent.AddToVacancy(
                                             AddToVacancyParameter(
-                                                lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
                                                 referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
                                             ),
                                         ),

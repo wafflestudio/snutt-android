@@ -92,7 +92,7 @@ fun LectureDetailPage(
     val focusManager = LocalFocusManager.current
     val pageController = LocalHomePageController.current
     val composableStates = ComposableStatesWithScope(scope)
-    val logger = LocalAnalyticsLogger.current
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
@@ -229,10 +229,10 @@ fun LectureDetailPage(
                                                         ?: editingLectureDetail.id,
                                                 )
                                             } else {
-                                                logger.logEvent(
+                                                analyticsLogger.logEvent(
                                                     AnalyticsEvent.AddToVacancy(
                                                         AddToVacancyParameter(
-                                                            lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
                                                             referrer = LectureActionReferrer.LectureDetail,
                                                         ),
                                                     ),
@@ -259,10 +259,10 @@ fun LectureDetailPage(
                                                     editingLectureDetail,
                                                 )
                                             } else {
-                                                logger.logEvent(
+                                                analyticsLogger.logEvent(
                                                     AnalyticsEvent.AddToBookmark(
                                                         AddToBookmarkParameter(
-                                                            lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
                                                             referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
                                                         ),
                                                     ),
@@ -656,7 +656,7 @@ fun LectureDetailPage(
                                                 context.startActivity(intent)
                                             }
                                         }
-                                        logger.logScreen(
+                                        analyticsLogger.logScreen(
                                             AnalyticsScreen.LectureSyllabus( // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
                                                 LectureSyllabusParameter(
                                                     lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
