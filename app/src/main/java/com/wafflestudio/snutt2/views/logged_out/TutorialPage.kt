@@ -55,6 +55,7 @@ fun TutorialPage() {
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
     val activityContext = LocalContext.current as Activity
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
