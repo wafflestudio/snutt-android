@@ -24,6 +24,7 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -42,6 +43,7 @@ fun SettingsPage(
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     val viewModel = hiltViewModel<UserViewModel>()
     var logoutDialogState by remember { mutableStateOf(false) }
     val themeMode by viewModel.themeMode.collectAsState()
@@ -235,6 +237,7 @@ fun SettingsPage(
             onConfirm = {
                 scope.launch {
                     launchSuspendApi(apiOnProgress, apiOnError) {
+                        analyticsLogger.logEvent(AnalyticsEvent.Logout)
                         viewModel.forceLogout()
                         viewModel.performLogout()
                         logoutDialogState = false

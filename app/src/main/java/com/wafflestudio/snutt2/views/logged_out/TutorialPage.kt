@@ -36,7 +36,9 @@ import com.wafflestudio.snutt2.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.LoginParameter
 import com.wafflestudio.snutt2.lib.logging.analyticsScreen
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -67,6 +69,7 @@ fun TutorialPage() {
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
+                analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.FACEBOOK)))
                 val loginResult = facebookLogin(context)
                 userViewModel.loginFacebook(
                     loginResult.accessToken.token,
@@ -90,6 +93,7 @@ fun TutorialPage() {
                     clientSecret = clientSecret,
                 )
                 if (googleAccessToken != null) {
+                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                     userViewModel.loginGoogle(googleAccessToken)
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
@@ -148,6 +152,7 @@ fun TutorialPage() {
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
                 if (kakaoAccessToken.isNotEmpty()) {
+                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
                     userViewModel.loginKakao(kakaoAccessToken)
                     homeViewModel.refreshData()
                     navController.navigateAsOrigin(NavigationDestination.Home)
