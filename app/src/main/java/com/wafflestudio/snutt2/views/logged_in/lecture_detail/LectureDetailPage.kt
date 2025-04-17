@@ -49,6 +49,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
@@ -228,6 +229,14 @@ fun LectureDetailPage(
                                                         ?: editingLectureDetail.id,
                                                 )
                                             } else {
+                                                logger.logEvent(
+                                                    AnalyticsEvent.AddToVacancy(
+                                                        AddToVacancyParameter(
+                                                            lectureID = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            referrer = LectureActionReferrer.LectureDetail,
+                                                        ),
+                                                    ),
+                                                )
                                                 vacancyViewModel.addVacancyLecture(
                                                     editingLectureDetail.lecture_id
                                                         ?: editingLectureDetail.id,

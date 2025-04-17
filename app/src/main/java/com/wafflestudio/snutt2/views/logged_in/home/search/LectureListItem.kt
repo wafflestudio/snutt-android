@@ -31,6 +31,8 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
@@ -89,6 +91,21 @@ fun LazyItemScope.LectureListItem(
     val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithState.item)
     val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
+
+    val logAddToTimetableEvent = {
+        analyticsLogger.logEvent(
+            AnalyticsEvent.AddToTimetable(
+                AddToTimetableParameter(
+                    lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                    timetableID = timetableViewModel.currentTable.value?.id,
+                    referrer = when (isBookmarkPage) {
+                        true -> LectureActionReferrer.Bookmark
+                        false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
+                    },
+                ),
+            ),
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -322,6 +339,14 @@ fun LazyItemScope.LectureListItem(
                                 if (vacancyRegistered) {
                                     vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
                                 } else {
+                                    analyticsLogger.logEvent(
+                                        AnalyticsEvent.AddToVacancy(
+                                            AddToVacancyParameter(
+                                                lectureID = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                            ),
+                                        ),
+                                    )
                                     vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
                                 }
                             }
@@ -351,6 +376,7 @@ fun LazyItemScope.LectureListItem(
                             checkLectureOverlap(
                                 composableStates,
                                 api = {
+                                    logAddToTimetableEvent()
                                     timetableViewModel.addLecture(
                                         lecture = lectureDataWithState.item,
                                         is_force = false,
@@ -359,14 +385,11 @@ fun LazyItemScope.LectureListItem(
                                     tableListViewModel.fetchTableMap()
                                 },
                                 onLectureOverlap = { message ->
+                                    logAddToTimetableEvent()
                                     showLectureOverlapDialog(
                                         composableStates,
                                         message,
                                         forceAddApi = {
-                                            timetableViewModel.addLecture(
-                                                lecture = lectureDataWithState.item,
-                                                is_force = true,
-                                            )
                                             searchViewModel.toggleLectureSelection(
                                                 lectureDataWithState.item,
                                             )
