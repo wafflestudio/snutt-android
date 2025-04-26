@@ -59,6 +59,8 @@ sealed class NavigationDestination(
 
     @Serializable data object ThemeMarket : NavigationDestination("theme_market")
 
+    @Serializable data object LectureDiary : NavigationDestination("lecture_diary")
+
     @Serializable data object Friends : NavigationDestination("friends")
 
     @Serializable data object ThemeConfig : NavigationDestination("theme_config")
