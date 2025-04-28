@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun LectureDiaryPage() {
     val semesters = listOf("24-1", "23-겨울", "23-2", "23-1", "23-겨울")
+    val diaries = listOf("1", "2", "3")
     Box {
         Column(
             modifier = Modifier.background(SNUTTColors.White900),
@@ -48,10 +50,13 @@ fun LectureDiaryPage() {
                     ) {
                         Text(semester, color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy( fontWeight = FontWeight.SemiBold))
                     }
-
                 }
             }
-
+            LazyColumn(){
+                items(diaries){ diary ->
+                    DiaryListItem()
+                }
+            }
         }
     }
 }
