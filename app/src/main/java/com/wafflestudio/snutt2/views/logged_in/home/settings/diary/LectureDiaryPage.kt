@@ -53,8 +53,8 @@ fun LectureDiaryPage() {
                 }
             }
             LazyColumn(){
-                items(diaries){ diary ->
-                    DiaryListItem()
+                items(diaries){
+                    DiaryListItem(true)
                 }
             }
         }
