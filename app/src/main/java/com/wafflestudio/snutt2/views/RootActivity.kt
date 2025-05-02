@@ -93,6 +93,7 @@ class RootActivity : AppCompatActivity() {
 
     private val rootActivityViewModel: RootActivityViewModel by viewModels()
 
+    // 반드시 RootActivity의 멤버 변수로 두어야 하는데, 그렇지 않으면 Garbage Collector가 수거해버려서 나중에 null이 register 된다.
     private val onGlobalNetworkEvent: (GlobalNetworkEvent) -> Unit = { event ->
         rootActivityViewModel.onGlobalNetworkEvent(event)
     }
