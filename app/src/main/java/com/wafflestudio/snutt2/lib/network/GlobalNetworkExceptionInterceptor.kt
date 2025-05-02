@@ -32,29 +32,29 @@ class GlobalNetworkExceptionInterceptor @Inject constructor(
                 if (!it.contains("errcode")) return@intercept response
             }
 
-            val errorParsedHttpException = runCatching {
+            val errorDTO = runCatching {
                 serializer.deserialize<ErrorDTO>(
                     responseBody,
                     ErrorDTO::class.java,
                 )
             }.getOrElse { return@intercept response }
 
-            when (errorParsedHttpException.code) {
-                ErrorCode.SERVER_FAULT -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.SERVER_FAULT)
-                ErrorCode.WRONG_API_KEY -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.WRONG_API_KEY)
-                ErrorCode.NO_USER_TOKEN -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.NO_USER_TOKEN)
-                ErrorCode.WRONG_USER_TOKEN -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.WRONG_USER_TOKEN)
-                ErrorCode.NO_ADMIN_PRIVILEGE -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.NO_ADMIN_PRIVILEGE)
-                ErrorCode.UNKNOWN_APP -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.UNKNOWN_APP)
+            when (errorDTO.code) {
+                ErrorCode.SERVER_FAULT -> globalNetworkEventHandler.handle(GlobalNetworkEvent.SERVER_FAULT)
+                ErrorCode.WRONG_API_KEY -> globalNetworkEventHandler.handle(GlobalNetworkEvent.WRONG_API_KEY)
+                ErrorCode.NO_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NO_USER_TOKEN)
+                ErrorCode.WRONG_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.WRONG_USER_TOKEN)
+                ErrorCode.NO_ADMIN_PRIVILEGE -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NO_ADMIN_PRIVILEGE)
+                ErrorCode.UNKNOWN_APP -> globalNetworkEventHandler.handle(GlobalNetworkEvent.UNKNOWN_APP)
                 else -> {}
             }
 
             return response
         } catch (e: Throwable) {
             when (e) {
-                is IOException -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.NETWORK_ERROR)
+                is IOException -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NETWORK_ERROR)
                 is kotlinx.coroutines.CancellationException -> {} // do nothing
-                else -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.UNKNOWN_ERROR)
+                else -> globalNetworkEventHandler.handle(GlobalNetworkEvent.UNKNOWN_ERROR)
             }
             throw e
         }

@@ -11,7 +11,7 @@ class GlobalNetworkEventHandler {
         mainHandlerRef = WeakReference(handler)
     }
 
-    fun dispatch(event: GlobalNetworkEvent) {
+    fun handle(event: GlobalNetworkEvent) {
         // Main thread에서 발생하도록 강제
         if (Looper.myLooper() == Looper.getMainLooper()) {
             mainHandlerRef?.get()?.invoke(event)

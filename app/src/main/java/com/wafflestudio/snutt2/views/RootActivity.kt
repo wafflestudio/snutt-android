@@ -93,7 +93,7 @@ class RootActivity : AppCompatActivity() {
 
     private val rootActivityViewModel: RootActivityViewModel by viewModels()
 
-    private val eventHandler: (GlobalNetworkEvent) -> Unit = { event ->
+    private val onGlobalNetworkEvent: (GlobalNetworkEvent) -> Unit = { event ->
         rootActivityViewModel.onGlobalNetworkEvent(event)
     }
 
@@ -132,7 +132,7 @@ class RootActivity : AppCompatActivity() {
             isInitialRefreshFinished = true
         }
 
-        globalNetworkEventHandler.register(eventHandler)
+        globalNetworkEventHandler.register(onGlobalNetworkEvent)
 
         setUpContents(
             if (token.isEmpty()) {
