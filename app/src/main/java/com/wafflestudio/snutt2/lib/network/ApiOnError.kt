@@ -35,13 +35,6 @@ class ApiOnError @Inject constructor(
             Timber.e(error)
 
             when (error) {
-                is IOException -> { // TODO: global network error
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.error_no_network),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
                 is MessagingError -> {
                     Toast.makeText(
                         context,
@@ -321,14 +314,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                     }
                 }
-                is kotlinx.coroutines.CancellationException -> {} // do nothing
-                else -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.error_unknown),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
+                else -> {}
             }
         }
     }

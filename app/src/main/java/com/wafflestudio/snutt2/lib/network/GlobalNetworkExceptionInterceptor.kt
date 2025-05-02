@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import okhttp3.Interceptor
 import okhttp3.Response
+import okio.IOException
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,6 +51,11 @@ class GlobalNetworkExceptionInterceptor @Inject constructor(
 
             return response
         } catch (e: Throwable) {
+            when (e) {
+                is IOException -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.NETWORK_ERROR)
+                is kotlinx.coroutines.CancellationException -> {} // do nothing
+                else -> globalNetworkEventHandler.dispatch(GlobalNetworkEvent.UNKNOWN_ERROR)
+            }
             throw e
         }
     }

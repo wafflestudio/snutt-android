@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.lib.network
 
+import android.os.Handler
+import android.os.Looper
 import java.lang.ref.WeakReference
 
 class GlobalNetworkEventHandler {
@@ -10,7 +12,14 @@ class GlobalNetworkEventHandler {
     }
 
     fun dispatch(event: GlobalNetworkEvent) {
-        mainHandlerRef?.get()?.invoke(event)
+        // Main thread에서 발생하도록 강제
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mainHandlerRef?.get()?.invoke(event)
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                mainHandlerRef?.get()?.invoke(event)
+            }
+        }
     }
 }
 
