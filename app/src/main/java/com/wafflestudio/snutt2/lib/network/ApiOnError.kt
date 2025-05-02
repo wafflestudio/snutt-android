@@ -35,7 +35,7 @@ class ApiOnError @Inject constructor(
             Timber.e(error)
 
             when (error) {
-                is IOException -> { // network error
+                is IOException -> { // TODO: global network error
                     Toast.makeText(
                         context,
                         context.getString(R.string.error_no_network),
@@ -335,7 +335,7 @@ class ApiOnError @Inject constructor(
 }
 
 object ErrorCode {
-    const val SERVER_FAULT = 0x0000
+    const val SERVER_FAULT = 0x0000 // TODO: global
 
     /* 400 - Bad request */
     const val INVALID_EMAIL = 0x300F
@@ -360,14 +360,14 @@ object ErrorCode {
     const val WRONG_PASSWORD_RESET_CODE = 0x2011
 
     /* 403 - Authorization-related */
-    const val WRONG_API_KEY = 0x2000
-    const val NO_USER_TOKEN = 0x2001
-    const val WRONG_USER_TOKEN = 0x2002
-    const val NO_ADMIN_PRIVILEGE = 0x2003
+    const val WRONG_API_KEY = 0x2000 // TODO: global
+    const val NO_USER_TOKEN = 0x2001 // TODO: global
+    const val WRONG_USER_TOKEN = 0x2002 // TODO: global
+    const val NO_ADMIN_PRIVILEGE = 0x2003 // TODO: global
     const val WRONG_ID = 0x2004
     const val WRONG_PASSWORD = 0x2005
     const val WRONG_FB_TOKEN = 0x2006
-    const val UNKNOWN_APP = 0x2007
+    const val UNKNOWN_APP = 0x2007 // TODO: global
 
     /* 403 - Restrictions */
     const val INVALID_ID = 0x3000
