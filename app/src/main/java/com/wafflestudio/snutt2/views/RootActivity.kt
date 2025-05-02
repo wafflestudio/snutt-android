@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -49,6 +50,8 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
+import com.wafflestudio.snutt2.lib.network.GlobalNetworkEvent
+import com.wafflestudio.snutt2.lib.network.GlobalNetworkEventHandler
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
@@ -88,6 +91,12 @@ class RootActivity : AppCompatActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
+    private val rootActivityViewModel: RootActivityViewModel by viewModels()
+
+    private val eventHandler: (GlobalNetworkEvent) -> Unit = { event ->
+        rootActivityViewModel.onGlobalNetworkEvent(event)
+    }
+
     @Inject
     lateinit var popupState: PopupState
 
@@ -99,6 +108,9 @@ class RootActivity : AppCompatActivity() {
 
     @Inject
     lateinit var friendBundleManager: ReactNativeBundleManager
+
+    @Inject
+    lateinit var globalNetworkEventHandler: GlobalNetworkEventHandler
 
     private var isInitialRefreshFinished = false
 
@@ -119,6 +131,9 @@ class RootActivity : AppCompatActivity() {
             }
             isInitialRefreshFinished = true
         }
+
+        globalNetworkEventHandler.register(eventHandler)
+
         setUpContents(
             if (token.isEmpty()) {
                 NavigationDestination.Onboard
@@ -245,6 +260,12 @@ class RootActivity : AppCompatActivity() {
                         if (token.isEmpty()) {
                             navController.navigateAsOrigin(NavigationDestination.Onboard)
                         }
+                    }
+                }
+
+                lifecycleScope.launch {
+                    rootActivityViewModel.globalNetworkUiState.collect { state ->
+                        Log.d("plgafhdtest2", state.toString())
                     }
                 }
             }
