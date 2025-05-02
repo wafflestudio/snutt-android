@@ -4,9 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
