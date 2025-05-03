@@ -46,7 +46,6 @@ class LectureSearchPagingSource(
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {
         val offset = params.key ?: LECTURE_SEARCH_STARTING_PAGE_INDEX
-
         return try {
             val response = api._postSearchQuery(
                 queryParam.copy(

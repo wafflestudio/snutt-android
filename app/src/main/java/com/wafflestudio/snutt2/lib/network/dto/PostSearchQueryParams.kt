@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.model.SearchTimeDto
 data class PostSearchQueryParams(
     @Json(name = "year") val year: Long,
     @Json(name = "semester") val semester: Long,
-    @Json(name = "title") val title: String? = null,
+    @Json(name = "title") val title: String,
     @Json(name = "classification") val classification: List<String>? = null,
     @Json(name = "credit") val credit: List<Long>? = null,
     @Json(name = "course_number") val courseNumber: List<Long>? = null,

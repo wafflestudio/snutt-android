@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -72,5 +73,9 @@ val LocalRemoteConfig = staticCompositionLocalOf<RemoteConfig> {
 
 @OptIn(ExperimentalMaterialApi::class)
 val LocalNavBottomSheetState = compositionLocalOf<ModalBottomSheetState> {
+    throw RuntimeException("")
+}
+
+val LocalAnalyticsLogger = compositionLocalOf<AnalyticsLogger> {
     throw RuntimeException("")
 }

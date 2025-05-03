@@ -9,12 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
@@ -43,10 +44,10 @@ fun SearchResultList(
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val selectedTags by searchViewModel.selectedTags.collectAsState()
-    val placeHolderState by searchViewModel.placeHolderState.collectAsState()
     val lazyListState = searchViewModel.lazyListState
-    val loadState = searchResultPagingItems.loadState
     val keyBoardController = LocalSoftwareKeyboardController.current
+
+    val searchResultListState = rememberSearchResultListState(searchResultPagingItems)
 
     Column {
         AnimatedLazyRow(itemList = selectedTags, itemKey = { it.toItemKey() }) {
@@ -62,40 +63,47 @@ fun SearchResultList(
                 },
             )
         }
-        // loadState만으로는 PlaceHolder과 EmptyPage를 띄울 상황을 구별할 수 없다.
-        if (placeHolderState) {
-            SearchPlaceHolder(
-                onClickSearchIcon = {
-                    scope.launch {
-                        keyBoardController?.hide()
-                        searchViewModel.query()
-                    }
-                },
-            )
-        } else {
-            when {
-                loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchResultPagingItems.itemCount < 1 || loadState.refresh is LoadState.Error -> {
-                    SearchEmptyPlaceholder()
-                }
 
-                else -> {
-                    LazyColumn(
-                        state = lazyListState, modifier = Modifier.fillMaxSize(),
-                    ) {
-                        items(searchResultPagingItems) { lectureDataWithState ->
-                            lectureDataWithState?.let {
-                                LectureListItem(
-                                    lectureDataWithState,
-                                    reviewBottomSheetReviewWebViewContainer,
-                                    false,
-                                    searchViewModel,
-                                    timetableViewModel,
-                                    tableListViewModel,
-                                    lectureDetailViewModel,
-                                    userViewModel,
-                                    vacancyViewModel,
-                                )
-                            }
+        when (searchResultListState) {
+            SearchResultListState.PLACEHOLDER -> {
+                SearchPlaceHolder(
+                    onClickSearchIcon = {
+                        scope.launch {
+                            keyBoardController?.hide()
+                            searchViewModel.query()
+                        }
+                    },
+                    modifier = Modifier.logImpression(AnalyticsScreen.SearchHome),
+                )
+            }
+
+            SearchResultListState.EMPTY -> {
+                SearchEmptyPlaceholder(
+                    modifier = Modifier
+                        .logImpression(AnalyticsScreen.SearchEmpty),
+                )
+            }
+
+            SearchResultListState.HAS_RESULTS -> {
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .logImpression(AnalyticsScreen.SearchList),
+                ) {
+                    items(searchResultPagingItems) { lectureDataWithState ->
+                        lectureDataWithState?.let {
+                            LectureListItem(
+                                lectureDataWithState,
+                                reviewBottomSheetReviewWebViewContainer,
+                                false,
+                                searchViewModel,
+                                timetableViewModel,
+                                tableListViewModel,
+                                lectureDetailViewModel,
+                                userViewModel,
+                                vacancyViewModel,
+                            )
                         }
                     }
                 }
