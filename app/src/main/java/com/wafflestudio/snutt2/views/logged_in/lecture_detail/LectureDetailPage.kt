@@ -56,7 +56,7 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -182,7 +182,7 @@ fun LectureDetailPage(
             modifier = Modifier
                 .fillMaxSize()
                 .background(SNUTTColors.Gray100)
-                .analyticsScreen(
+                .logImpression(
                     if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
                         AnalyticsScreen.LectureCreate
                     } else {

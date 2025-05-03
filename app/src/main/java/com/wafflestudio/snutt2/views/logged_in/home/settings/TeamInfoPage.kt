@@ -15,7 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalNavController
 
@@ -45,7 +45,7 @@ fun TeamInfoPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .analyticsScreen(AnalyticsScreen.SettingsDevelopers),
+            .logImpression(AnalyticsScreen.SettingsDevelopers),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_team_info),

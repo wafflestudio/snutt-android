@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
@@ -33,7 +33,7 @@ fun BookmarkList(
     reviewWebViewContainer: ReviewWebViewContainer,
 ) {
     Box(
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.Bookmark),
+        modifier = Modifier.logImpression(AnalyticsScreen.Bookmark),
     ) {
         val bookmarks by searchViewModel.bookmarkList.collectAsState()
         if (bookmarks.isEmpty()) {

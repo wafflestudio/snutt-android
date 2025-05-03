@@ -56,7 +56,7 @@ import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
@@ -149,7 +149,7 @@ fun ThemeConfigScreen(
         sheetContent = bottomSheet.content,
         sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.ThemeHome),
+        modifier = Modifier.logImpression(AnalyticsScreen.ThemeHome),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

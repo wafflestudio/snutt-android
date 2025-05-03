@@ -39,7 +39,7 @@ import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.LoginParameter
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -207,7 +207,7 @@ fun TutorialPage() {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .analyticsScreen(AnalyticsScreen.Onboard),
+            .logImpression(AnalyticsScreen.Onboard),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

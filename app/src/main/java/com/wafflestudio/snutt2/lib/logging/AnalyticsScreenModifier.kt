@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 
-fun Modifier.analyticsScreen(
+fun Modifier.logImpression(
     analyticsScreen: AnalyticsScreen,
 ): Modifier = composed {
     val analyticsLogger = LocalAnalyticsLogger.current

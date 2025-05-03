@@ -17,7 +17,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.LocalNavController
@@ -35,7 +35,7 @@ fun ColorModeSelectPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.SettingBackground)
-            .analyticsScreen(AnalyticsScreen.SettingsColorScheme),
+            .logImpression(AnalyticsScreen.SettingsColorScheme),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),

@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.RootActivity
@@ -35,7 +35,7 @@ fun FriendsPage() {
     val reactRootView = (LocalContext.current as RootActivity).friendBundleManager.reactRootView
 
     Box(
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.Friends),
+        modifier = Modifier.logImpression(AnalyticsScreen.Friends),
     ) {
         reactRootView.value?.let { view ->
             AndroidView(

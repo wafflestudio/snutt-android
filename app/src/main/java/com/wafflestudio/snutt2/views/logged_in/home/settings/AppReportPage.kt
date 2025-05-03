@@ -41,7 +41,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
@@ -96,7 +96,7 @@ fun AppReportPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .analyticsScreen(AnalyticsScreen.SettingsSupport),
+            .logImpression(AnalyticsScreen.SettingsSupport),
     ) {
         TopBar(
             title = {

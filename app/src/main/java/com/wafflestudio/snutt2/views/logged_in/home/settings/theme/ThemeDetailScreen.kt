@@ -58,7 +58,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -185,7 +185,7 @@ fun ThemeDetailScreen(
                 modifier = Modifier
                     .fillMaxHeight(0.95f)
                     .fillMaxWidth()
-                    .analyticsScreen(
+                    .logImpression(
                         when {
                             themeDetailUiState.editingTheme.isNew -> AnalyticsScreen.ThemeCustomNew
                             themeDetailUiState.editingTheme.isCustomTheme -> AnalyticsScreen.ThemeCustomEdit

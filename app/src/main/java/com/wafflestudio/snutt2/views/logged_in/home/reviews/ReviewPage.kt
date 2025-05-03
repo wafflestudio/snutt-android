@@ -33,7 +33,7 @@ import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalHomePageController
@@ -59,7 +59,7 @@ fun ReviewPage() {
     }
 
     ReviewWebView(
-        modifier = Modifier.analyticsScreen(AnalyticsScreen.ReviewHome),
+        modifier = Modifier.logImpression(AnalyticsScreen.ReviewHome),
     )
 }
 

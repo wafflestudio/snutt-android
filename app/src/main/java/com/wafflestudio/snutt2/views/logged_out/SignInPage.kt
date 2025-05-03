@@ -29,7 +29,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.LoginParameter
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -74,7 +74,7 @@ fun SignInPage() {
             .fillMaxSize()
             .background(SNUTTColors.White900)
             .clicks { focusManager.clearFocus() }
-            .analyticsScreen(AnalyticsScreen.Login),
+            .logImpression(AnalyticsScreen.Login),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_app_bar_title),

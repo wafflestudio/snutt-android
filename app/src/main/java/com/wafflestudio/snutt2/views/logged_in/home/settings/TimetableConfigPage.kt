@@ -34,7 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -70,7 +70,7 @@ fun TimetableConfigPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.SettingBackground)
-            .analyticsScreen(AnalyticsScreen.SettingsTimetable),
+            .logImpression(AnalyticsScreen.SettingsTimetable),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_settings_app_bar_title),

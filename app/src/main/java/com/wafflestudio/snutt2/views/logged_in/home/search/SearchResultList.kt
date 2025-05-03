@@ -15,7 +15,7 @@ import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.analyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
@@ -73,14 +73,14 @@ fun SearchResultList(
                             searchViewModel.query()
                         }
                     },
-                    modifier = Modifier.analyticsScreen(AnalyticsScreen.SearchHome),
+                    modifier = Modifier.logImpression(AnalyticsScreen.SearchHome),
                 )
             }
 
             SearchResultListState.EMPTY -> {
                 SearchEmptyPlaceholder(
                     modifier = Modifier
-                        .analyticsScreen(AnalyticsScreen.SearchEmpty),
+                        .logImpression(AnalyticsScreen.SearchEmpty),
                 )
             }
 
@@ -89,7 +89,7 @@ fun SearchResultList(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .analyticsScreen(AnalyticsScreen.SearchList),
+                        .logImpression(AnalyticsScreen.SearchList),
                 ) {
                     items(searchResultPagingItems) { lectureDataWithState ->
                         lectureDataWithState?.let {
