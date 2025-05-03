@@ -40,13 +40,11 @@ data class LoginParameter(
 data class SearchLectureParameter(
     val query: String,
     val quarter: String,
-    val page: Int,
 ) {
     fun toBundle(): Bundle {
         return Bundle().apply {
             putString("query", query)
             putString("quarter", quarter)
-            putInt("page", page)
         }
     }
 }

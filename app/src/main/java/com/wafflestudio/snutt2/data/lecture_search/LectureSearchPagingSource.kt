@@ -2,9 +2,6 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.logging.SearchLectureParameter
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -15,7 +12,6 @@ import com.wafflestudio.snutt2.model.TagType
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
-    private val analyticsLogger: AnalyticsLogger,
     year: Long,
     semester: Long,
     title: String,
@@ -50,17 +46,6 @@ class LectureSearchPagingSource(
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, LectureDto> {
         val offset = params.key ?: LECTURE_SEARCH_STARTING_PAGE_INDEX
-
-        analyticsLogger.logEvent(
-            AnalyticsEvent.SearchLecture(
-                SearchLectureParameter(
-                    query = queryParam.title,
-                    quarter = queryParam.semester.toString(),
-                    page = offset.toInt(),
-                ),
-            ),
-        )
-
         return try {
             val response = api._postSearchQuery(
                 queryParam.copy(

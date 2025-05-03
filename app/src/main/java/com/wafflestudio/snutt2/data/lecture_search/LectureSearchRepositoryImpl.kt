@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.SnuttUrls
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -21,7 +20,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val snuttUrls: SnuttUrls,
     private val storage: SNUTTStorage,
-    private val analyticsLogger: AnalyticsLogger,
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
@@ -42,7 +40,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 LectureSearchPagingSource(
                     api,
-                    analyticsLogger,
                     year = year,
                     semester = semester,
                     title = title,

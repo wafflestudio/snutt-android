@@ -12,6 +12,9 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.SearchLectureParameter
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -48,6 +51,7 @@ class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val apiOnError: ApiOnError,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     var lazyListState = LazyListState(0, 0)
@@ -244,6 +248,14 @@ class SearchViewModel @Inject constructor(
     suspend fun query() {
         _querySignal.emit(Unit)
         lazyListState = LazyListState(0, 0)
+        analyticsLogger.logEvent(
+            AnalyticsEvent.SearchLecture(
+                SearchLectureParameter(
+                    query = searchTitle.value,
+                    quarter = currentTable.value?.semester?.toString() ?: "",
+                ),
+            ),
+        )
     }
 
     suspend fun getBookmarkList() {
