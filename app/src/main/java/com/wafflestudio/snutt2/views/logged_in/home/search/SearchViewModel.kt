@@ -76,9 +76,6 @@ class SearchViewModel @Inject constructor(
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
     private val _getBookmarkListSignal = MutableSharedFlow<Unit>(replay = 0)
 
-    private val _placeHolderState = MutableStateFlow(true)
-    val placeHolderState = _placeHolderState.asStateFlow()
-
     private val _pageMode = MutableStateFlow(SearchPageMode.Search)
     val pageMode: StateFlow<SearchPageMode> get() = _pageMode
 
@@ -106,7 +103,6 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
                 clear()
-                _placeHolderState.emit(true)
                 try {
                     fetchSearchTagList()
                     getBookmarkList()
@@ -247,7 +243,6 @@ class SearchViewModel @Inject constructor(
 
     suspend fun query() {
         _querySignal.emit(Unit)
-        _placeHolderState.emit(false)
         lazyListState = LazyListState(0, 0)
     }
 
