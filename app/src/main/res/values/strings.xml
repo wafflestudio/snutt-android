@@ -556,6 +556,11 @@
     <string name="vacancy_empty_detail">자세히 보기</string>
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
     <string name="diary_app_bar_title">강의 일기장</string>
+    <string name="diary_day_bad">별로에요</string>
+    <string name="diary_day_neutral">그럭저럭</string>
+    <string name="diary_day_good">좋아요</string>
+    <string name="diary_wrote_text">에 대한 강의일기를 남겼어요.</string>
+    <string name="diary_list_edit_text">수정하기</string>
     <string name="theme_config_app_bar_title">시간표 테마</string>
     <string name="theme_config_custom_theme">커스텀 테마</string>
     <string name="theme_config_market_custom_theme">담은 테마</string>

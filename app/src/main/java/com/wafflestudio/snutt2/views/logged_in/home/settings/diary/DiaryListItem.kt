@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import android.view.RoundedCorner
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,13 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -31,41 +28,46 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.ArrowUpIcon
-import com.wafflestudio.snutt2.components.compose.RoundBorderButton
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import kotlin.math.round
 
 @Composable
-fun DiaryListItem (isSelected: Boolean) {
-    Box(modifier = Modifier.padding(horizontal = 20.dp)){
-        Box(modifier = Modifier.padding(vertical = 20.dp)){
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)){
+fun DiaryListItem(isSelected: Boolean) {
+    Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Box(modifier = Modifier.padding(vertical = 20.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)){
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text("2024.3.20", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                             Text("금", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                         }
-                        Box(modifier = Modifier.background(color = SNUTTColors.LectureDiaryRedBg, shape = RoundedCornerShape(4.dp)).padding(vertical = 4.dp, horizontal = 8.dp)){
-                            Text("별로에요", style = SNUTTTypography.body1.copy(fontSize = 11.sp, color = SNUTTColors.LectureDiaryRed))
+                        Box(modifier = Modifier.background(color = SNUTTColors.LectureDiaryRedBg, shape = RoundedCornerShape(4.dp)).padding(vertical = 4.dp, horizontal = 8.dp)) {
+                            Text(stringResource(R.string.diary_day_bad), style = SNUTTTypography.body1.copy(fontSize = 11.sp, color = SNUTTColors.LectureDiaryRed))
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically){
-                        Text(buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                append("시각디자인기초, 배구")
-                            }
-                            append("에 대한 강의일기를 남겼어요.")
-                        }, style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel)
-                        if(isSelected) ArrowUpIcon(modifier = Modifier.height(20.dp)) else ArrowDownIcon(modifier = Modifier.height(20.dp))
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("시각디자인기초, 배구")
+                                }
+                                append(stringResource(R.string.diary_wrote_text))
+                            },
+                            style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
+                        )
+                        if (isSelected) ArrowUpIcon(modifier = Modifier.height(20.dp)) else ArrowDownIcon(modifier = Modifier.height(20.dp))
                     }
                 }
                 AnimatedVisibility(visible = isSelected) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)){
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         DiaryContentListItem()
                         DiaryContentListItem()
                     }
@@ -80,36 +82,42 @@ fun DiaryListItem (isSelected: Boolean) {
 }
 
 @Composable
-fun DiaryContentListItem(){
-    Box(modifier = Modifier.background(color = SNUTTColors.LectureDiaryGray, shape = RoundedCornerShape(4.dp))){
-        Column(modifier = Modifier.padding(top = 12.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(),
+fun DiaryContentListItem() {
+    Box(modifier = Modifier.background(color = SNUTTColors.LectureDiaryGray, shape = RoundedCornerShape(4.dp))) {
+        Column(
+            modifier = Modifier.padding(top = 12.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically){
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text("시각디자인기초", style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel))
-                Box(modifier = Modifier.border(0.8.dp, color= SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
-                    .padding(vertical = 6.dp, horizontal = 16.dp)) {
+                Box(
+                    modifier = Modifier.border(0.8.dp, color = SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
+                        .padding(vertical = 6.dp, horizontal = 16.dp),
+                ) {
                     Text(
                         "수정하기", modifier = Modifier,
-                        style = SNUTTTypography.button.copy(fontSize = 13.sp)
+                        style = SNUTTTypography.button.copy(fontSize = 13.sp),
                     )
                 }
             }
-            Row(modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)){
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+            Row(modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("수강신청", style = SNUTTTypography.subtitle2)
                         Text("널널해요", style = SNUTTTypography.body1)
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("드랍여부", style = SNUTTTypography.subtitle2)
                         Text("모르겠어요", style = SNUTTTypography.body1)
                     }
                 }
                 Divider(modifier = Modifier.height(25.dp).width(1.4.dp).align(Alignment.CenterVertically))
-                Column(){
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+                Column() {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("수업 첫인상", style = SNUTTTypography.subtitle2)
                         Text("두려워요", style = SNUTTTypography.body1)
                     }
@@ -119,9 +127,8 @@ fun DiaryContentListItem(){
     }
 }
 
-
 @Composable
 @Preview
-fun DiaryListItemPreview(){
+fun DiaryListItemPreview() {
     DiaryListItem(true)
 }

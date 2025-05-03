@@ -168,13 +168,13 @@ fun LogoIcon(
     )
 }
 
-
 @Composable
 fun ArrowUpIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-){
-    Image(modifier = modifier,
+) {
+    Image(
+        modifier = modifier,
         painter = painterResource(R.drawable.ic_arrow_up),
         contentDescription = "",
         colorFilter = colorFilter,

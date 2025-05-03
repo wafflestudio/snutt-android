@@ -48,12 +48,12 @@ fun LectureDiaryPage() {
                             .height(34.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(semester, color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy( fontWeight = FontWeight.SemiBold))
+                        Text(semester, color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy(fontWeight = FontWeight.SemiBold))
                     }
                 }
             }
-            LazyColumn(){
-                items(diaries){
+            LazyColumn() {
+                items(diaries) {
                     DiaryListItem(true)
                 }
             }
