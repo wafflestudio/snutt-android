@@ -32,6 +32,7 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -45,6 +46,7 @@ fun SignUpPage() {
     val context = LocalContext.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
@@ -77,6 +79,7 @@ fun SignUpPage() {
                     apiOnError = apiOnError,
                     loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button),
                 ) {
+                    analyticsLogger.logEvent(AnalyticsEvent.SignUp)
                     userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
                     navController.navigate(NavigationDestination.EmailVerification)

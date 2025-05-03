@@ -19,8 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -41,6 +44,7 @@ fun SearchOptionSheet(
     val recentSearchedDepartments by viewModel.selectableRecentSearchedDepartments.collectAsState()
     val tagTypesNotEmpty by viewModel.tagTypesNotEmpty.collectAsState()
     val scope = rememberCoroutineScope()
+    val bottomSheet = LocalBottomSheetState.current
 
     var optionSheetMode by remember {
         mutableStateOf(OptionSheetMode.Normal)
@@ -64,6 +68,11 @@ fun SearchOptionSheet(
             (normalSheetHeightPx + baseAnimatedFloat.value * (maxSheetHeightPx - normalSheetHeightPx)).roundToInt()
         }
     }
+
+    BottomSheetLoggingEffect(
+        bottomSheetState = bottomSheet,
+        analyticsScreen = AnalyticsScreen.SearchFilter,
+    )
 
     SubcomposeLayout(
         modifier = Modifier.background(SNUTTColors.White900),

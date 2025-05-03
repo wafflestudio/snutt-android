@@ -38,6 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.model.TableTheme
@@ -73,6 +75,11 @@ fun ChangeThemeBottomSheet(
             }
         }
     }
+
+    BottomSheetLoggingEffect(
+        bottomSheetState = bottomSheet,
+        analyticsScreen = AnalyticsScreen.ThemePreview,
+    )
 
     if (bottomSheet.isVisible) {
         DisposableEffect(LocalLifecycleOwner.current) {
