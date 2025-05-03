@@ -263,7 +263,7 @@ fun LectureDetailPage(
                                                     AnalyticsEvent.AddToBookmark(
                                                         AddToBookmarkParameter(
                                                             lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                                                            referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                                            referrer = LectureActionReferrer.LectureDetail,
                                                         ),
                                                     ),
                                                 )
