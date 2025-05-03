@@ -8,9 +8,11 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import timber.log.Timber
-import java.text.ParseException
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object SNUTTStringUtils {
     fun getFullSemester(tableDto: TableDto): String {
@@ -75,36 +77,27 @@ object SNUTTStringUtils {
         return text.toString()
     }
 
-    fun getDateFromString(data: String): Date {
-        try {
-            return DateFormatter.parseFull(data)
-        } catch (e: ParseException) {
-            Timber.e("notification created time parse error!")
-            return Date()
-        }
+    fun getLocalDateTimeFromString(data: String): LocalDateTime {
+        val instant = Instant.parse(data)
+
+        // 서버에서 내려오는 createdAt이 GMT+0 기준이기 때문에 KST로 변환해준다.
+        return instant.atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()
     }
 
-    fun getNotificationTimeFromDate(context: Context, date: Date): String {
-        val now = Date()
+    fun getNotificationTime(context: Context, dateTime: LocalDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+        val now = LocalDateTime.now()
+        val duration = Duration.between(dateTime, now)
 
-        val diffInMillis = now.time - date.time
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
-        val hours = TimeUnit.MILLISECONDS.toHours(diffInMillis)
-        val days = TimeUnit.MILLISECONDS.toDays(diffInMillis)
+        val days = duration.toDays()
+        val hours = duration.toHours()
+        val minutes = duration.toMinutes()
 
         return when {
-            days > 0 -> {
-                DateFormatter.formatDate(date)
-            }
-            hours > 0 -> {
-                context.getString(R.string.time_hours_ago, hours)
-            }
-            minutes > 0 -> {
-                context.getString(R.string.time_minutes_ago, minutes)
-            }
-            else -> {
-                context.getString(R.string.time_now)
-            }
+            days > 0 -> dateTime.format(formatter)
+            hours > 0 -> context.getString(R.string.time_hours_ago, hours)
+            minutes > 0 -> context.getString(R.string.time_minutes_ago, minutes)
+            else -> context.getString(R.string.time_now)
         }
     }
 
