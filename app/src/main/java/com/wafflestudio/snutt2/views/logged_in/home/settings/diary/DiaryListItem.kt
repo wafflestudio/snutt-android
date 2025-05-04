@@ -39,8 +39,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun DiaryListItem() {
     var isSelected by remember { mutableStateOf(false) }
-    Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-        Box(modifier = Modifier.padding(vertical = 20.dp)) {
+        Box(modifier = Modifier.padding(20.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(
@@ -80,7 +79,7 @@ fun DiaryListItem() {
                 }
             }
         }
-    }
+
     Divider(
         modifier = Modifier.height(0.5f.dp),
         color = SNUTTColors.Black250,
@@ -134,7 +133,7 @@ fun DiaryContentListItem() {
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun DiaryListItemPreview() {
     DiaryListItem()
 }
