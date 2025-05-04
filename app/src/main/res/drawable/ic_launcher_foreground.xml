@@ -13,20 +13,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="52dp"
     android:height="52dp"
-    android:viewportWidth="180"
-    android:viewportHeight="180">
-    <group android:translateX="64" android:translateY="64">
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    <group android:translateX="54" android:translateY="54">
         <path
-            android:pathData="M0,0h23v33h-23z"
+            android:pathData="M0,0h23.75v33.75h-23.75z"
             android:fillColor="#E54459"/>
         <path
-            android:pathData="M28,19h23v33h-23z"
+            android:pathData="M27.25,18.25h23.75v33.75h-23.75z"
             android:fillColor="#1BD0C8"/>
         <path
-            android:pathData="M28,0h23v14h-23z"
+            android:pathData="M27.25,0h23.75v14.75h-23.75z"
             android:fillColor="#FAC42D"/>
         <path
-            android:pathData="M0,38h23v14h-23z"
+            android:pathData="M0,37.25h23v14.75h-23z"
             android:fillColor="#A6D930"/>
     </group>
 </vector>
