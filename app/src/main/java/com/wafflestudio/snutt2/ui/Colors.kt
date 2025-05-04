@@ -58,8 +58,6 @@ object SNUTTColors {
 
     val VacancyRed = Color(0xffed6c58)
 
-    val LectureDiaryRed = Color(0xffe54459)
-    val LectureDiaryRedBg = Color(0x0fe54459)
     val LectureDiaryGray = Color(0xfff7f7f7)
 
     val EditTextLabel = Color(0xff8a898e)
