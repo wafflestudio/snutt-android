@@ -254,59 +254,10 @@ class RootActivity : AppCompatActivity() {
             LocalNavBottomSheetState provides navBottomSheetState,
             LocalAnalyticsLogger provides analyticsLogger,
         ) {
-            LaunchedEffect(Unit) {
-                lifecycleScope.launch {
-                    remoteConfig.noticeConfig.collect {
-                        if (it.visible) {
-                            navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
-                        }
-                    }
-                }
-
-                lifecycleScope.launch {
-                    // 훗날 토스트 문구가 displayMessage로 통일되고 나면 개션의 여지 있음
-                    rootActivityViewModel.globalNetworkUiState.collect { state ->
-                        when (state) {
-                            GlobalNetworkUiState.NetworkError -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_no_network))
-                            }
-                            GlobalNetworkUiState.NoAdminPrivilege -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_no_admin_privilege))
-                            }
-                            GlobalNetworkUiState.NoUserToken -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_no_user_token))
-                                try {
-                                    userViewModel.performLogout()
-                                } catch (e: Exception) {
-                                    this@RootActivity.toast(this@RootActivity.getString(R.string.error_signout_failed))
-                                }
-                                navController.navigateAsOrigin(NavigationDestination.Onboard)
-                            }
-                            GlobalNetworkUiState.WrongUserToken -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_wrong_user_token))
-                                try {
-                                    userViewModel.performLogout()
-                                } catch (e: Exception) {
-                                    this@RootActivity.toast(this@RootActivity.getString(R.string.error_signout_failed))
-                                }
-                                navController.navigateAsOrigin(NavigationDestination.Onboard)
-                            }
-                            GlobalNetworkUiState.ServerFault -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_server_fault))
-                            }
-                            GlobalNetworkUiState.UnknownApp -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_unknown_app))
-                            }
-                            GlobalNetworkUiState.UnknownError -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_unknown))
-                            }
-                            GlobalNetworkUiState.WrongApiKey -> {
-                                this@RootActivity.toast(this@RootActivity.getString(R.string.error_wrong_api_key))
-                            }
-                        }
-                    }
-                }
-            }
+            ObserveGlobalEvents(
+                navigateToImportantNotice = { navController.navigate(NavigationDestination.ImportantNotice) },
+                navigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            )
 
             InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
@@ -376,6 +327,54 @@ class RootActivity : AppCompatActivity() {
                     }
 
                     settingComposables(navController)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ObserveGlobalEvents(
+        navigateToImportantNotice: () -> Unit,
+        navigateToOnboard: () -> Unit,
+    ) {
+        LaunchedEffect(Unit) {
+            lifecycleScope.launch {
+                remoteConfig.noticeConfig.collect {
+                    if (it.visible) {
+                        navigateToImportantNotice()
+                    }
+                }
+            }
+
+            lifecycleScope.launch {
+                // 훗날 토스트 문구가 displayMessage로 통일되고 나면 개션의 여지 있음
+                rootActivityViewModel.globalNetworkUiState.collect { state ->
+                    when (state) {
+                        GlobalNetworkUiState.NetworkError -> toast(this@RootActivity.getString(R.string.error_no_network))
+                        GlobalNetworkUiState.NoAdminPrivilege -> toast(this@RootActivity.getString(R.string.error_no_admin_privilege))
+                        GlobalNetworkUiState.NoUserToken -> {
+                            toast(this@RootActivity.getString(R.string.error_no_user_token))
+                            try {
+                                userViewModel.performLogout()
+                            } catch (e: Exception) {
+                                toast(this@RootActivity.getString(R.string.error_signout_failed))
+                            }
+                            navigateToOnboard()
+                        }
+                        GlobalNetworkUiState.WrongUserToken -> {
+                            toast(this@RootActivity.getString(R.string.error_wrong_user_token))
+                            try {
+                                userViewModel.performLogout()
+                            } catch (e: Exception) {
+                                toast(this@RootActivity.getString(R.string.error_signout_failed))
+                            }
+                            navigateToOnboard()
+                        }
+                        GlobalNetworkUiState.ServerFault -> toast(this@RootActivity.getString(R.string.error_server_fault))
+                        GlobalNetworkUiState.UnknownApp -> toast(this@RootActivity.getString(R.string.error_unknown_app))
+                        GlobalNetworkUiState.UnknownError -> toast(this@RootActivity.getString(R.string.error_unknown))
+                        GlobalNetworkUiState.WrongApiKey -> toast(this@RootActivity.getString(R.string.error_wrong_api_key))
+                    }
                 }
             }
         }
