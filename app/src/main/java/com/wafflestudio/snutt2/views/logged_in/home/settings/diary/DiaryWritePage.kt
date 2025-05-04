@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +18,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
+import com.wafflestudio.snutt2.components.compose.ArrowUpIcon
+import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -62,8 +74,21 @@ fun DiaryWritePage() {
         "드랍할 것 같아요" to false,
     )
 
-    Column(modifier = Modifier.fillMaxWidth().background(color = SNUTTColors.Gray)) {
-        Row(modifier = Modifier.fillMaxWidth().background(color = SNUTTColors.White).padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp), horizontalArrangement = Arrangement.End) {
+    var expanded by remember { mutableStateOf(true) }
+    var moreText by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = SNUTTColors.Gray),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = SNUTTColors.White)
+                .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
+            horizontalArrangement = Arrangement.End,
+        ) {
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = "오늘 수강한 '시각디자인기초' 에 대한 의견을 남겨보세요.",
@@ -74,29 +99,88 @@ fun DiaryWritePage() {
                     style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
                 )
             }
-            ExitIcon(modifier = Modifier.padding(start = 57.dp).width(24.dp))
+            ExitIcon(
+                modifier = Modifier
+                    .padding(start = 57.dp)
+                    .width(24.dp),
+            )
         }
         DiaryQuestionBox(listOf(DiaryContent("오늘 무엇을 했나요?", true, today_options)))
-        DiaryQuestionBox(
-            (
-                listOf(
-                    DiaryContent("수강신청은 어땠나요?", false, sugang_options),
-                    DiaryContent("교수님의 첫인상은 어땠나요?", false, first_impression_options),
-                    DiaryContent("수업 끝까지 들을 것 같나요?", false, til_end_options),
-                )
-                ),
-        )
-        Box(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp).background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp)).padding(vertical = 16.dp, horizontal = 20.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                    Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp))
+//        DiaryQuestionBox(
+//            (
+//                listOf(
+//                    DiaryContent("수강신청은 어땠나요?", false, sugang_options),
+//                    DiaryContent("교수님의 첫인상은 어땠나요?", false, first_impression_options),
+//                    DiaryContent("수업 끝까지 들을 것 같나요?", false, til_end_options),
+//                )
+//                ),
+//        )
+        Box(
+            modifier = Modifier
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
+                .padding(vertical = 16.dp, horizontal = 20.dp),
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { expanded = !expanded },
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
+                        Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
+                    }
+                    if (expanded) ArrowUpIcon(modifier = Modifier.height(24.dp)) else ArrowDownIcon(modifier = Modifier.height(24.dp))
                 }
-                ArrowDownIcon(modifier = Modifier.height(24.dp))
+                if (expanded) {
+                    Box(
+                        modifier = Modifier
+                            .drawBehind {
+                                drawLine(
+                                    color = SNUTTColors.Gray,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(size.width, 0f),
+                                    strokeWidth = 0.8.dp.toPx(),
+                                )
+                            },
+                    ) {
+                        Column {
+                            EditText(
+                                value = moreText,
+                                onValueChange = { moreText = it },
+                                hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
+                                underlineEnabled = false,
+                                modifier = Modifier.padding(vertical = 16.dp),
+                            )
+
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) {
+                                        append("${moreText.length}")
+                                    }
+                                    withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
+                                        append("/")
+                                        append("200")
+                                    }
+                                },
+                                modifier = Modifier.align(Alignment.End).padding(top = 4.dp),
+                                style = SNUTTTypography.button.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
+                            )
+                        }
+                    }
+                }
             }
         }
 
-        Box(modifier = Modifier.padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp).align(Alignment.End).background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp)).padding(vertical = 12.dp, horizontal = 48.dp)) {
+        Box(
+            modifier = Modifier
+                .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
+                .align(Alignment.End)
+                .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
+                .padding(vertical = 12.dp, horizontal = 48.dp),
+        ) {
             Text("다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp))
         }
     }
@@ -110,7 +194,12 @@ data class DiaryContent(
 
 @Composable
 fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
-    Box(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp).background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp)).padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)) {
+    Box(
+        modifier = Modifier
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
+            .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
+    ) {
         LazyColumn {
             item {
                 diaryContents.forEachIndexed { index, (question, allowDuplicates, options) ->
@@ -121,7 +210,13 @@ fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
                         Divider(modifier = Modifier.padding(vertical = 20.dp))
                     } else {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Text("완료", modifier = Modifier.align(Alignment.CenterEnd).padding(horizontal = 12.dp, vertical = 4.dp), style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue))
+                            Text(
+                                "완료",
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                                style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue),
+                            )
                         }
                     }
                 }
@@ -145,20 +240,24 @@ fun DiaryQuestionItem(question: String, allowDuplicates: Boolean, options: List<
                 options.forEach { (option, isSelected) ->
                     Text(
                         text = option, style = SNUTTTypography.button.copy(fontSize = 14.sp, color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
-                        modifier = Modifier.padding(8.dp).border(
-                            width = 0.6.dp,
-                            color = if (isSelected) SNUTTColors.MainBlue else SNUTTColors.Gray200,
-                            shape = RoundedCornerShape(17.dp),
-                        ).then(
-                            if (isSelected) {
-                                Modifier.background(
-                                    color = SNUTTColors.MainBlue.copy(alpha = 0.06f),
-                                    shape = RoundedCornerShape(17.dp),
-                                )
-                            } else {
-                                Modifier
-                            },
-                        ).padding(horizontal = 24.dp, vertical = 8.dp),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .border(
+                                width = 0.6.dp,
+                                color = if (isSelected) SNUTTColors.MainBlue else SNUTTColors.Gray200,
+                                shape = RoundedCornerShape(17.dp),
+                            )
+                            .then(
+                                if (isSelected) {
+                                    Modifier.background(
+                                        color = SNUTTColors.MainBlue.copy(alpha = 0.06f),
+                                        shape = RoundedCornerShape(17.dp),
+                                    )
+                                } else {
+                                    Modifier
+                                },
+                            )
+                            .padding(horizontal = 24.dp, vertical = 8.dp),
                     )
                 }
             }
