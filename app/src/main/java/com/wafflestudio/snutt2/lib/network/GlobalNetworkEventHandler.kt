@@ -5,19 +5,19 @@ import android.os.Looper
 import java.lang.ref.WeakReference
 
 class GlobalNetworkEventHandler {
-    private var mainHandlerRef: WeakReference<(GlobalNetworkEvent) -> Unit>? = null
+    private var networkEventCallbackRef: WeakReference<(GlobalNetworkEvent) -> Unit>? = null
 
     fun register(handler: (GlobalNetworkEvent) -> Unit) {
-        mainHandlerRef = WeakReference(handler)
+        networkEventCallbackRef = WeakReference(handler)
     }
 
     fun handle(event: GlobalNetworkEvent) {
         // Main thread에서 발생하도록 강제
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            mainHandlerRef?.get()?.invoke(event)
+            networkEventCallbackRef?.get()?.invoke(event)
         } else {
             Handler(Looper.getMainLooper()).post {
-                mainHandlerRef?.get()?.invoke(event)
+                networkEventCallbackRef?.get()?.invoke(event)
             }
         }
     }
