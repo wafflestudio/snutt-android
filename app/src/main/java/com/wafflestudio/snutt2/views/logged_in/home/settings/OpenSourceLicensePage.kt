@@ -5,11 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -17,8 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
@@ -26,13 +19,6 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 fun OpenSourceLicensePage() {
     val context = LocalContext.current
     val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-
-    var addIdPasswordDialogState by remember { mutableStateOf(false) }
-    var passwordChangeDialogState by remember { mutableStateOf(false) }
-    var leaveDialogState by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
