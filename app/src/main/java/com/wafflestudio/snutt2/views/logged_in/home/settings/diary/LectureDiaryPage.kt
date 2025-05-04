@@ -54,7 +54,7 @@ fun LectureDiaryPage() {
             }
             LazyColumn() {
                 items(diaries) {
-                    DiaryListItem(true)
+                    DiaryListItem()
                 }
             }
         }
