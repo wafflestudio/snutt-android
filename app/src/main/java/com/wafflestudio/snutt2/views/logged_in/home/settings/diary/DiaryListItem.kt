@@ -51,8 +51,8 @@ fun DiaryListItem() {
                             Text("2024.3.20", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                             Text("금", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                         }
-                        Box(modifier = Modifier.background(color = SNUTTColors.LectureDiaryRedBg, shape = RoundedCornerShape(4.dp)).padding(vertical = 4.dp, horizontal = 8.dp)) {
-                            Text(stringResource(R.string.diary_day_bad), style = SNUTTTypography.body1.copy(fontSize = 11.sp, color = SNUTTColors.LectureDiaryRed))
+                        Box(modifier = Modifier.background(color = SNUTTColors.Red.copy(alpha = 0.06F), shape = RoundedCornerShape(4.dp)).padding(vertical = 4.dp, horizontal = 8.dp)) {
+                            Text(stringResource(R.string.diary_day_bad), style = SNUTTTypography.body1.copy(fontSize = 11.sp, color = SNUTTColors.Red))
                         }
                     }
                     Row(
