@@ -107,15 +107,15 @@ fun DiaryWritePage() {
             )
         }
         DiaryQuestionBox(listOf(DiaryContent("오늘 무엇을 했나요?", true, today_options)))
-//        DiaryQuestionBox(
-//            (
-//                listOf(
-//                    DiaryContent("수강신청은 어땠나요?", false, sugang_options),
-//                    DiaryContent("교수님의 첫인상은 어땠나요?", false, first_impression_options),
-//                    DiaryContent("수업 끝까지 들을 것 같나요?", false, til_end_options),
-//                )
-//                ),
-//        )
+        DiaryQuestionBox(
+            (
+                listOf(
+                    DiaryContent("수강신청은 어땠나요?", false, sugang_options),
+                    DiaryContent("교수님의 첫인상은 어땠나요?", false, first_impression_options),
+                    DiaryContent("수업 끝까지 들을 것 같나요?", false, til_end_options),
+                )
+                ),
+        )
         Box(
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -269,28 +269,5 @@ fun DiaryQuestionItem(question: String, allowDuplicates: Boolean, options: List<
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    val today_options = listOf(
-        "개강" to true,
-        "수업" to false,
-        "실기" to true,
-        "시험" to false,
-        "발표" to true,
-        "휴강" to false,
-        "종강" to true,
-        "드랍" to false,
-    )
-
-    val sugang_options = listOf(
-        "널널했어요" to false,
-        "1픽 했어요" to true,
-        "2~3픽 했어요" to false,
-        "초안지 썼어요" to false,
-    )
-    val ExampleDiaryContents = listOf(
-        DiaryContent("오늘 무엇을 했나요?", true, today_options),
-        DiaryContent("수강신청은 어땠나요?", false, sugang_options),
-    )
     DiaryWritePage()
-//    DiaryQuestionItem("수강신청은 어땠나요?", false, sugang_options)
-//    DiaryQuestionBox(ExampleDiaryContents)
 }
