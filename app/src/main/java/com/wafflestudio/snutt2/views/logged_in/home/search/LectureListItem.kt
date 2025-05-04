@@ -30,6 +30,12 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -65,6 +71,7 @@ fun LazyItemScope.LectureListItem(
     val pageController = LocalHomePageController.current
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val analyticsLogger = LocalAnalyticsLogger.current
     val composableStates = ComposableStatesWithScope(scope)
 
     val selected = lectureDataWithState.state.selected
@@ -222,8 +229,10 @@ fun LazyItemScope.LectureListItem(
                         lectureDetailViewModel.initializeEditingLectureDetail(
                             lectureDataWithState.item, ModeType.Viewing,
                         )
+                        val referrer = if (isBookmarkPage) DetailScreenReferrer.Bookmark else DetailScreenReferrer.Search(searchViewModel.searchTitle.value)
                         bottomSheet.setSheetContent {
                             LectureDetailPage(
+                                referrer = referrer,
                                 searchViewModel = searchViewModel,
                                 vacancyViewModel = vacancyViewModel,
                                 onCloseViewMode = { scope ->
@@ -246,7 +255,13 @@ fun LazyItemScope.LectureListItem(
                     onClick = {
                         scope.launch {
                             val url = lectureDataWithState.item.review?.getReviewUrl(context)
-                            openReviewBottomSheet(url, reviewWebViewContainer, bottomSheet)
+                            openReviewBottomSheet(
+                                url = url,
+                                reviewWebViewContainer = reviewWebViewContainer,
+                                bottomSheet = bottomSheet,
+                                lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                referrer = DetailScreenReferrer.Search(searchViewModel.searchTitle.value),
+                            )
                         }
                     },
                 ) {
@@ -273,6 +288,14 @@ fun LazyItemScope.LectureListItem(
                                     if (bookmarked) {
                                         searchViewModel.deleteBookmark(lectureDataWithState.item)
                                     } else {
+                                        analyticsLogger.logEvent(
+                                            AnalyticsEvent.AddToBookmark(
+                                                AddToBookmarkParameter(
+                                                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                    referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                                ),
+                                            ),
+                                        )
                                         searchViewModel.addBookmark(lectureDataWithState.item)
                                         if (userViewModel.firstBookmarkAlert.value) {
                                             userViewModel.setFirstBookmarkAlertShown()
@@ -301,6 +324,14 @@ fun LazyItemScope.LectureListItem(
                                 if (vacancyRegistered) {
                                     vacancyViewModel.removeVacancyLecture(lectureDataWithState.item.id)
                                 } else {
+                                    analyticsLogger.logEvent(
+                                        AnalyticsEvent.AddToVacancy(
+                                            AddToVacancyParameter(
+                                                lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                            ),
+                                        ),
+                                    )
                                     vacancyViewModel.addVacancyLecture(lectureDataWithState.item.id)
                                 }
                             }
@@ -330,6 +361,18 @@ fun LazyItemScope.LectureListItem(
                             checkLectureOverlap(
                                 composableStates,
                                 api = {
+                                    analyticsLogger.logEvent(
+                                        AnalyticsEvent.AddToTimetable(
+                                            AddToTimetableParameter(
+                                                lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
+                                                timetableId = timetableViewModel.currentTable.value?.id,
+                                                referrer = when (isBookmarkPage) {
+                                                    true -> LectureActionReferrer.Bookmark
+                                                    false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
+                                                },
+                                            ),
+                                        ),
+                                    )
                                     timetableViewModel.addLecture(
                                         lecture = lectureDataWithState.item,
                                         is_force = false,
@@ -342,10 +385,6 @@ fun LazyItemScope.LectureListItem(
                                         composableStates,
                                         message,
                                         forceAddApi = {
-                                            timetableViewModel.addLecture(
-                                                lecture = lectureDataWithState.item,
-                                                is_force = true,
-                                            )
                                             searchViewModel.toggleLectureSelection(
                                                 lectureDataWithState.item,
                                             )

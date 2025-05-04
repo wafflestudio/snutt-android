@@ -23,6 +23,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.RootActivity
@@ -32,12 +34,16 @@ import com.wafflestudio.snutt2.views.RootActivity
 fun FriendsPage() {
     val reactRootView = (LocalContext.current as RootActivity).friendBundleManager.reactRootView
 
-    reactRootView.value?.let { view ->
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { view },
-        )
-    } ?: FriendsPagePlaceholder()
+    Box(
+        modifier = Modifier.logImpression(AnalyticsScreen.Friends),
+    ) {
+        reactRootView.value?.let { view ->
+            AndroidView(
+                modifier = Modifier.fillMaxSize(),
+                factory = { view },
+            )
+        } ?: FriendsPagePlaceholder()
+    }
 }
 
 @Composable

@@ -48,6 +48,15 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
+import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
@@ -68,6 +77,7 @@ import kotlinx.coroutines.*
 )
 @Composable
 fun LectureDetailPage(
+    referrer: DetailScreenReferrer?, // FIXME: compose navigation으로만 접근하도록 수정하고, composableAnimated에서 바로 로깅하기
     vm: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
@@ -82,6 +92,7 @@ fun LectureDetailPage(
     val focusManager = LocalFocusManager.current
     val pageController = LocalHomePageController.current
     val composableStates = ComposableStatesWithScope(scope)
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
@@ -170,7 +181,19 @@ fun LectureDetailPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SNUTTColors.Gray100),
+                .background(SNUTTColors.Gray100)
+                .logImpression(
+                    if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
+                        AnalyticsScreen.LectureCreate
+                    } else {
+                        AnalyticsScreen.LectureDetail(
+                            LectureDetailParameter(
+                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                referrer = referrer,
+                            ),
+                        )
+                    },
+                ),
 //                    .clicks { focusManager.clearFocus() }
         ) {
             TopBar(
@@ -206,6 +229,14 @@ fun LectureDetailPage(
                                                         ?: editingLectureDetail.id,
                                                 )
                                             } else {
+                                                analyticsLogger.logEvent(
+                                                    AnalyticsEvent.AddToVacancy(
+                                                        AddToVacancyParameter(
+                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            referrer = LectureActionReferrer.LectureDetail,
+                                                        ),
+                                                    ),
+                                                )
                                                 vacancyViewModel.addVacancyLecture(
                                                     editingLectureDetail.lecture_id
                                                         ?: editingLectureDetail.id,
@@ -228,6 +259,14 @@ fun LectureDetailPage(
                                                     editingLectureDetail,
                                                 )
                                             } else {
+                                                analyticsLogger.logEvent(
+                                                    AnalyticsEvent.AddToBookmark(
+                                                        AddToBookmarkParameter(
+                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                            referrer = LectureActionReferrer.LectureDetail,
+                                                        ),
+                                                    ),
+                                                )
                                                 searchViewModel.addBookmark(editingLectureDetail)
                                             }
                                             searchViewModel.getBookmarkList()
@@ -617,15 +656,24 @@ fun LectureDetailPage(
                                                 context.startActivity(intent)
                                             }
                                         }
+                                        analyticsLogger.logScreen(
+                                            AnalyticsScreen.LectureSyllabus( // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
+                                                LectureSyllabusParameter(
+                                                    lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                ),
+                                            ),
+                                        )
                                     }
                                 }
                                 LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
                                     scope.launch {
                                         val url = editingLectureReview?.getReviewUrl(context)
                                         openReviewBottomSheet(
-                                            url,
-                                            reviewBottomSheetReviewWebViewContainer,
-                                            bottomSheet,
+                                            url = url,
+                                            reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+                                            bottomSheet = bottomSheet,
+                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                            referrer = DetailScreenReferrer.LectureDetail,
                                         )
                                     }
                                 }
