@@ -103,6 +103,9 @@ obj/
 .idea/AndroidProjectSystem.xml
 .idea/git_toolbox_prj.xml
 .idea/deploymentTargetDropDown.xml
+.idea/deploymentTargetSelector.xml
+.idea/migrations.xml
+.idea/runConfigurations.xml
 
 # OS-specific files
 .DS_Store
