@@ -41,9 +41,12 @@ import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
@@ -65,12 +68,17 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     var timetableHeight by remember { mutableStateOf(0) }
     var topBarHeight by remember { mutableStateOf(0) }
     var bannerHeight by remember { mutableStateOf(0) }
 
-    Column(Modifier.background(SNUTTColors.White900)) {
+    Column(
+        modifier = Modifier
+            .background(SNUTTColors.White900)
+            .logImpression(AnalyticsScreen.TimetableHome),
+    ) {
         TopBar(
             // top bar 높이 측정
             modifier = Modifier.onGloballyPositioned {
@@ -130,6 +138,7 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                                 if (vacancyNotificationBannerEnabled) bannerHeight else 0,
                                 timetableHeight,
                             )
+                            analyticsLogger.logScreen(AnalyticsScreen.TimetableShare) // 안드로이드에는 TimetableShare 화면이 따로 없지만, iOS와의 통일성을 위해 공유 버튼 클릭 시 로깅한다.
                         },
                 )
                 IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->

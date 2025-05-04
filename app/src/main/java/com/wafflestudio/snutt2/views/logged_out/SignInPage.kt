@@ -26,6 +26,10 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.LoginParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.*
@@ -41,6 +45,7 @@ fun SignInPage() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val homeViewModel = hiltViewModel<HomeViewModel>()
@@ -56,6 +61,7 @@ fun SignInPage() {
                 apiOnError = apiOnError,
                 loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
             ) {
+                analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
                 navController.navigateAsOrigin(NavigationDestination.Home)
@@ -67,7 +73,8 @@ fun SignInPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() },
+            .clicks { focusManager.clearFocus() }
+            .logImpression(AnalyticsScreen.Login),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_app_bar_title),

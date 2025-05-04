@@ -18,6 +18,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
@@ -28,6 +29,9 @@ fun Popup(
     onClickImage: () -> Unit,
 ) {
     val imageWidth = min((LocalConfiguration.current.screenWidthDp * 0.8).dp, 400.dp)
+
+    PopupLoggingEffect(imageUri)
+
     Box(
         modifier = Modifier
             .zIndex(2f)

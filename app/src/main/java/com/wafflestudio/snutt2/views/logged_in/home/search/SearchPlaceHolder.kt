@@ -21,9 +21,12 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
+fun SearchPlaceHolder(
+    onClickSearchIcon: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,9 +80,11 @@ fun SearchPlaceHolder(onClickSearchIcon: () -> Unit) {
 }
 
 @Composable
-fun SearchEmptyPlaceholder() {
+fun SearchEmptyPlaceholder(
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
