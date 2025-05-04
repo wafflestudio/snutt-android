@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -74,7 +75,7 @@ fun DiaryWritePage() {
         "드랍할 것 같아요" to false,
     )
 
-    var expanded by remember { mutableStateOf(true) }
+    var isExpanded by remember { mutableStateOf(true) }
     var moreText by remember { mutableStateOf("") }
 
     Column(
@@ -125,16 +126,16 @@ fun DiaryWritePage() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { expanded = !expanded },
+                        .clickable { isExpanded = !isExpanded },
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
                         Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
                     }
-                    if (expanded) ArrowUpIcon(modifier = Modifier.height(24.dp)) else ArrowDownIcon(modifier = Modifier.height(24.dp))
+                    if (isExpanded) ArrowUpIcon(modifier = Modifier.height(24.dp)) else ArrowDownIcon(modifier = Modifier.height(24.dp))
                 }
-                if (expanded) {
+                AnimatedVisibility(isExpanded) {
                     Box(
                         modifier = Modifier
                             .drawBehind {
