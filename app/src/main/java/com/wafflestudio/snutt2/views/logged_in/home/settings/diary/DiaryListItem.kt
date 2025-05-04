@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun DiaryListItem() {
-    var isSelected by remember{ mutableStateOf(false)}
+    var isSelected by remember { mutableStateOf(false) }
     Box(modifier = Modifier.padding(horizontal = 20.dp)) {
         Box(modifier = Modifier.padding(vertical = 20.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -69,7 +69,7 @@ fun DiaryListItem() {
                             },
                             style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
                         )
-                        if (isSelected) ArrowUpIcon(modifier = Modifier.height(20.dp).clickable {isSelected = !isSelected}) else ArrowDownIcon(modifier = Modifier.height(20.dp).clickable {isSelected = !isSelected})
+                        if (isSelected) ArrowUpIcon(modifier = Modifier.height(20.dp).clickable { isSelected = !isSelected }) else ArrowDownIcon(modifier = Modifier.height(20.dp).clickable { isSelected = !isSelected })
                     }
                 }
                 AnimatedVisibility(visible = isSelected) {
