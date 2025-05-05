@@ -113,6 +113,10 @@ sealed interface NavigationDestination {
     data object ThemeMarket : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("lecture_diary")
+    data object LectureDiary : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("friends")
     data object Friends : NavigationDestination
 
