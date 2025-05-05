@@ -40,21 +40,21 @@ class GlobalNetworkExceptionInterceptor @Inject constructor(
             }.getOrElse { return@intercept response }
 
             when (errorDTO.code) {
-                ErrorCode.SERVER_FAULT -> globalNetworkEventHandler.handle(GlobalNetworkEvent.SERVER_FAULT)
-                ErrorCode.WRONG_API_KEY -> globalNetworkEventHandler.handle(GlobalNetworkEvent.WRONG_API_KEY)
-                ErrorCode.NO_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NO_USER_TOKEN)
-                ErrorCode.WRONG_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.WRONG_USER_TOKEN)
-                ErrorCode.NO_ADMIN_PRIVILEGE -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NO_ADMIN_PRIVILEGE)
-                ErrorCode.UNKNOWN_APP -> globalNetworkEventHandler.handle(GlobalNetworkEvent.UNKNOWN_APP)
+                ErrorCode.SERVER_FAULT -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_SERVER_FAULT)
+                ErrorCode.WRONG_API_KEY -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_WRONG_API_KEY)
+                ErrorCode.NO_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_NO_USER_TOKEN)
+                ErrorCode.WRONG_USER_TOKEN -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_WRONG_USER_TOKEN)
+                ErrorCode.NO_ADMIN_PRIVILEGE -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_NO_ADMIN_PRIVILEGE)
+                ErrorCode.UNKNOWN_APP -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_UNKNOWN_APP)
                 else -> {}
             }
 
             return response
         } catch (e: Throwable) {
             when (e) {
-                is IOException -> globalNetworkEventHandler.handle(GlobalNetworkEvent.NETWORK_ERROR)
+                is IOException -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_NETWORK)
                 is kotlinx.coroutines.CancellationException -> {} // do nothing
-                else -> globalNetworkEventHandler.handle(GlobalNetworkEvent.UNKNOWN_ERROR)
+                else -> globalNetworkEventHandler.handle(GlobalNetworkEvent.ERROR_UNKNOWN)
             }
             throw e
         }

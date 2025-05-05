@@ -10,20 +10,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RootActivityViewModel @Inject constructor() : ViewModel() {
-    private val _globalNetworkUiState: MutableSharedFlow<GlobalNetworkUiState> = MutableSharedFlow()
-    val globalNetworkUiState = _globalNetworkUiState
+    private val _globalNetworkUiEvent: MutableSharedFlow<GlobalNetworkUiEvent> = MutableSharedFlow()
+    val globalNetworkUiEvent = _globalNetworkUiEvent
 
     fun onGlobalNetworkEvent(event: GlobalNetworkEvent) {
         viewModelScope.launch {
             when (event) {
-                GlobalNetworkEvent.NETWORK_ERROR -> _globalNetworkUiState.emit(GlobalNetworkUiState.NetworkError)
-                GlobalNetworkEvent.SERVER_FAULT -> _globalNetworkUiState.emit(GlobalNetworkUiState.ServerFault)
-                GlobalNetworkEvent.WRONG_API_KEY -> _globalNetworkUiState.emit(GlobalNetworkUiState.WrongApiKey)
-                GlobalNetworkEvent.NO_USER_TOKEN -> _globalNetworkUiState.emit(GlobalNetworkUiState.NoUserToken)
-                GlobalNetworkEvent.WRONG_USER_TOKEN -> _globalNetworkUiState.emit(GlobalNetworkUiState.WrongUserToken)
-                GlobalNetworkEvent.NO_ADMIN_PRIVILEGE -> _globalNetworkUiState.emit(GlobalNetworkUiState.NoAdminPrivilege)
-                GlobalNetworkEvent.UNKNOWN_APP -> _globalNetworkUiState.emit(GlobalNetworkUiState.UnknownApp)
-                GlobalNetworkEvent.UNKNOWN_ERROR -> _globalNetworkUiState.emit(GlobalNetworkUiState.UnknownError)
+                GlobalNetworkEvent.ERROR_NETWORK -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.NetworkError)
+                GlobalNetworkEvent.ERROR_SERVER_FAULT -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.ServerFault)
+                GlobalNetworkEvent.ERROR_WRONG_API_KEY -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.WrongApiKey)
+                GlobalNetworkEvent.ERROR_NO_USER_TOKEN -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.NoUserToken)
+                GlobalNetworkEvent.ERROR_WRONG_USER_TOKEN -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.WrongUserToken)
+                GlobalNetworkEvent.ERROR_NO_ADMIN_PRIVILEGE -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.NoAdminPrivilege)
+                GlobalNetworkEvent.ERROR_UNKNOWN_APP -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.UnknownApp)
+                GlobalNetworkEvent.ERROR_UNKNOWN -> _globalNetworkUiEvent.emit(GlobalNetworkUiEvent.UnknownError)
             }
         }
     }
