@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -68,7 +69,7 @@ fun DiaryListItem() {
                         },
                         style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
                     )
-                    if (isSelected) ArrowUpIcon(modifier = Modifier.height(20.dp).clickable { isSelected = !isSelected }) else ArrowDownIcon(modifier = Modifier.height(20.dp).clickable { isSelected = !isSelected })
+                    ArrowDownIcon(modifier = Modifier.height(20.dp).clickable{isSelected = !isSelected}.rotate(if(isSelected) 180f else 0f))
                 }
             }
             AnimatedVisibility(visible = isSelected) {

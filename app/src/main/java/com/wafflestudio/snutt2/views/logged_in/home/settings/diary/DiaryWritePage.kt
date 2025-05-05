@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -133,7 +134,7 @@ fun DiaryWritePage() {
                         Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
                         Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
                     }
-                    if (isExpanded) ArrowUpIcon(modifier = Modifier.height(24.dp)) else ArrowDownIcon(modifier = Modifier.height(24.dp))
+                    ArrowDownIcon(modifier = Modifier.height(24.dp).rotate(if(isExpanded) 180f else 0f))
                 }
                 AnimatedVisibility(isExpanded) {
                     Box(
