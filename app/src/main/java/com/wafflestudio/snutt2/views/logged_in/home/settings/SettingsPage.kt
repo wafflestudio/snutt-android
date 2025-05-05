@@ -152,6 +152,17 @@ fun SettingsPage(
                         },
                     )
                 }
+                if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_lecture_diary),
+                        hasNextPage = true,
+                        onClick = {
+                            navController.navigate(
+                                NavigationDestination.LectureDiary,
+                            )
+                        },
+                    )
+                }
             }
             Margin(height = 10.dp)
             SettingColumn {
