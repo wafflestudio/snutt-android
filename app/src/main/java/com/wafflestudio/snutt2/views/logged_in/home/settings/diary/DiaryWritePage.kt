@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.components.compose.ArrowUpIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -134,7 +134,7 @@ fun DiaryWritePage() {
                         Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
                         Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
                     }
-                    ArrowDownIcon(modifier = Modifier.height(24.dp).rotate(if(isExpanded) 180f else 0f))
+                    ArrowDownIcon(modifier = Modifier.height(24.dp).rotate(if (isExpanded) 180f else 0f))
                 }
                 AnimatedVisibility(isExpanded) {
                     Box(
@@ -217,7 +217,7 @@ fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .padding(horizontal = 12.dp, vertical = 4.dp),
-                                style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue),
+                                style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
                             )
                         }
                     }
@@ -230,38 +230,37 @@ fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DiaryQuestionItem(question: String, allowDuplicates: Boolean, options: List<Pair<String, Boolean>>) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                if (allowDuplicates) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel)
-            }
-            FlowRow(
-                maxItemsInEachRow = 3,
-            ) {
-                options.forEach { (option, isSelected) ->
-                    Text(
-                        text = option, style = SNUTTTypography.button.copy(fontSize = 14.sp, color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .border(
-                                width = 0.6.dp,
-                                color = if (isSelected) SNUTTColors.MainBlue else SNUTTColors.Gray200,
-                                shape = RoundedCornerShape(17.dp),
-                            )
-                            .then(
-                                if (isSelected) {
-                                    Modifier.background(
-                                        color = SNUTTColors.MainBlue.copy(alpha = 0.06f),
-                                        shape = RoundedCornerShape(17.dp),
-                                    )
-                                } else {
-                                    Modifier
-                                },
-                            )
-                            .padding(horizontal = 24.dp, vertical = 8.dp),
-                    )
-                }
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.padding(6.dp))
+            if (allowDuplicates) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel)
+        }
+        FlowRow(
+            maxItemsInEachRow = 3,
+        ) {
+            options.forEach { (option, isSelected) ->
+                Text(
+                    text = option, style = SNUTTTypography.button.copy(fontSize = 14.sp, color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .border(
+                            width = 0.6.dp,
+                            color = if (isSelected) SNUTTColors.MainBlue else SNUTTColors.TableGrid,
+                            shape = RoundedCornerShape(17.dp),
+                        )
+                        .then(
+                            if (isSelected) {
+                                Modifier.background(
+                                    color = SNUTTColors.MainBlue.copy(alpha = 0.06f),
+                                    shape = RoundedCornerShape(17.dp),
+                                )
+                            } else {
+                                Modifier
+                            },
+                        )
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
+                )
             }
         }
     }
