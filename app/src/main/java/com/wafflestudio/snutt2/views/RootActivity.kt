@@ -350,30 +350,30 @@ class RootActivity : AppCompatActivity() {
                 // 훗날 토스트 문구가 displayMessage로 통일되고 나면 개션의 여지 있음
                 rootActivityViewModel.globalNetworkUiEvent.collect { state ->
                     when (state) {
-                        GlobalNetworkUiEvent.NetworkError -> toast(this@RootActivity.getString(R.string.error_no_network))
-                        GlobalNetworkUiEvent.NoAdminPrivilege -> toast(this@RootActivity.getString(R.string.error_no_admin_privilege))
+                        GlobalNetworkUiEvent.NetworkError -> toast(getString(R.string.error_no_network))
+                        GlobalNetworkUiEvent.NoAdminPrivilege -> toast(getString(R.string.error_no_admin_privilege))
                         GlobalNetworkUiEvent.NoUserToken -> {
-                            toast(this@RootActivity.getString(R.string.error_no_user_token))
+                            toast(getString(R.string.error_no_user_token))
                             try {
                                 userViewModel.performLogout()
                             } catch (e: Exception) {
-                                toast(this@RootActivity.getString(R.string.error_signout_failed))
+                                toast(getString(R.string.error_signout_failed))
                             }
                             navigateToOnboard()
                         }
                         GlobalNetworkUiEvent.WrongUserToken -> {
-                            toast(this@RootActivity.getString(R.string.error_wrong_user_token))
+                            toast(getString(R.string.error_wrong_user_token))
                             try {
                                 userViewModel.performLogout()
                             } catch (e: Exception) {
-                                toast(this@RootActivity.getString(R.string.error_signout_failed))
+                                toast(getString(R.string.error_signout_failed))
                             }
                             navigateToOnboard()
                         }
-                        GlobalNetworkUiEvent.ServerFault -> toast(this@RootActivity.getString(R.string.error_server_fault))
-                        GlobalNetworkUiEvent.UnknownApp -> toast(this@RootActivity.getString(R.string.error_unknown_app))
-                        GlobalNetworkUiEvent.UnknownError -> toast(this@RootActivity.getString(R.string.error_unknown))
-                        GlobalNetworkUiEvent.WrongApiKey -> toast(this@RootActivity.getString(R.string.error_wrong_api_key))
+                        GlobalNetworkUiEvent.ServerFault -> toast(getString(R.string.error_server_fault))
+                        GlobalNetworkUiEvent.UnknownApp -> toast(getString(R.string.error_unknown_app))
+                        GlobalNetworkUiEvent.UnknownError -> toast(getString(R.string.error_unknown))
+                        GlobalNetworkUiEvent.WrongApiKey -> toast(getString(R.string.error_wrong_api_key))
                     }
                 }
             }
