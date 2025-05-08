@@ -1,12 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
@@ -29,28 +28,41 @@ import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun PushPreferencesRoute(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: PushPreferencesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uiState by viewModel.pushPreferenceUiState.collectAsState()
 
+    // 다른 화면과 다르게 화면을 나갈 때 API를 호출해야 한다.
+    val onBack: () -> Unit = {
+        viewModel.postPushPreferences()
+        onNavigateBack()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.loadPushPreferences()
+    }
 
-        viewModel.pushPreferencesUiEvent.collectLatest { uiEvent ->
-            context.toast(uiEvent)
+    LaunchedEffect(Unit) {
+        viewModel.pushPreferencesUiEvent.collect { uiEvent ->
+            if (uiEvent.isNotEmpty()) {
+                context.toast(uiEvent)
+            }
         }
+    }
+
+    BackHandler {
+        onBack()
     }
 
     PushPreferencesScreen(
         modifier = modifier,
-        onBackClick = onBackClick,
+        onBackClick = onBack,
         uiState = uiState,
         toggleUiState = viewModel::togglePushPreferences,
     )

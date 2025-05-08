@@ -476,7 +476,7 @@ class RootActivity : AppCompatActivity() {
         }
         composableAnimated<NavigationDestination.PushPreferences> {
             PushPreferencesRoute(
-                onBackClick = { navController.popBackStack() },
+                onNavigateBack = { navController.popBackStack() },
             )
         }
         composableAnimated<NavigationDestination.ThemeMarket> {
