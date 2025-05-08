@@ -8,15 +8,11 @@ data class PushPreferences(
     val vacancyNotification: Boolean,
 )
 
-enum class PushPreferenceType {
-    LECTURE_UPDATE, VACANCY_NOTIFICATION
-}
-
 fun PushPreferences.toNetworkModel(): PushPreferenceDto {
     return PushPreferenceDto(
         pushPreferences = listOf(
-            PushPreferenceItemDto(type = "LECTURE_UPDATE", isEnabled = lectureUpdate),
-            PushPreferenceItemDto(type = "VACANCY_NOTIFICATION", isEnabled = vacancyNotification),
+            PushPreferenceItemDto(type = PushPreferenceType.LECTURE_UPDATE.getString(), isEnabled = lectureUpdate),
+            PushPreferenceItemDto(type = PushPreferenceType.VACANCY_NOTIFICATION.getString(), isEnabled = vacancyNotification),
         ),
     )
 }
