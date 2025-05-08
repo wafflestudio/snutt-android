@@ -5,13 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.lib.network.GlobalNetworkEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RootActivityViewModel @Inject constructor() : ViewModel() {
     private val _globalNetworkUiEvent: MutableSharedFlow<GlobalNetworkUiEvent> = MutableSharedFlow()
-    val globalNetworkUiEvent = _globalNetworkUiEvent
+    val globalNetworkUiEvent = _globalNetworkUiEvent.asSharedFlow()
 
     fun onGlobalNetworkEvent(event: GlobalNetworkEvent) {
         viewModelScope.launch {
