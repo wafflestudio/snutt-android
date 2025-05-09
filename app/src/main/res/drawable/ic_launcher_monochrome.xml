@@ -1,0 +1,35 @@
+<!--
+    - width/height (52dp)는 XML에 정의되어 있지만,
+      비율이 유지되면 실제 렌더링 크기에 영향 없음.
+      다만 이해를 돕기 위한 용도로 원본 이미지 크기 값을 남겨놓음.
+
+    - 실제 렌더링 크기 제어는 viewportWidth, viewportHeight를 통해 이루어진다.
+      먼저 viewportWidth, viewportHeight를 기준으로 렌더링하고, 최종적으로 아이콘 크기에 맞추어 앱 아이콘으로 표시한다.
+      따라서 이 두 값이 클수록 실제 이미지는 작게 보인다.
+
+     - translateX/Y는 뷰포트 내에서 실제 이미지가 중심에 위치하도록 조정하는 역할.
+
+     - ?android:attr/textColorPrimary로 지정했기 때문에 시스템 테마에 따라 알아서 색이 바뀜.
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="52dp"
+    android:height="52dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160"
+    android:tint="?android:attr/textColorPrimary">
+    <group android:translateX="54" android:translateY="54">
+        <path
+            android:pathData="M0,0h23.75v33.75h-23.75z"
+            android:fillColor="#FFFFFF"/>
+        <path
+            android:pathData="M27.25,18.25h23.75v33.75h-23.75z"
+            android:fillColor="#FFFFFF"/>
+        <path
+            android:pathData="M27.25,0h23.75v14.75h-23.75z"
+            android:fillColor="#FFFFFF"/>
+        <path
+            android:pathData="M0,37.25h23v14.75h-23z"
+            android:fillColor="#FFFFFF"/>
+    </group>
+</vector>
