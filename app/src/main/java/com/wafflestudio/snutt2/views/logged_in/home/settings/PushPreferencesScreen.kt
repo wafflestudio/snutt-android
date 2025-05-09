@@ -50,8 +50,13 @@ fun PushPreferencesRoute(
 
     LaunchedEffect(Unit) {
         viewModel.pushPreferencesUiEvent.collect { uiEvent ->
-            if (uiEvent.isNotEmpty()) {
-                context.toast(uiEvent)
+            when (uiEvent) {
+                is PushPreferencesUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
             }
         }
     }

@@ -21,7 +21,7 @@ class PushPreferencesViewModel @Inject constructor(
         MutableStateFlow<PushPreferencesUiState>(PushPreferencesUiState.Loading)
     val pushPreferenceUiState = _pushPreferencesUiState.asStateFlow()
 
-    private val _pushPreferencesUiEvent: MutableSharedFlow<String> = MutableSharedFlow(replay = 1)
+    private val _pushPreferencesUiEvent: MutableSharedFlow<PushPreferencesUiEvent> = MutableSharedFlow(replay = 1)
     val pushPreferencesUiEvent = _pushPreferencesUiEvent.asSharedFlow()
 
     fun loadPushPreferences() {
@@ -31,7 +31,7 @@ class PushPreferencesViewModel @Inject constructor(
             }.onFailure { e ->
                 if (e is ErrorParsedHttpException) {
                     _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
-                    _pushPreferencesUiEvent.emit(e.errorDTO?.displayMessage ?: "")
+                    _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(e.errorDTO?.displayMessage ?: ""))
                 }
             }
         }
@@ -65,7 +65,7 @@ class PushPreferencesViewModel @Inject constructor(
                 }.onFailure { e ->
                     if (e is ErrorParsedHttpException) {
                         _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
-                        _pushPreferencesUiEvent.emit(e.errorDTO?.displayMessage ?: "")
+                        _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(e.errorDTO?.displayMessage ?: ""))
                     }
                 }
             }
