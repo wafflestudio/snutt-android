@@ -41,10 +41,11 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.LocalNavController
 
-@OptIn(ExperimentalLayoutApi::class)
+
 @Composable
-fun DiaryWritePage() {
+fun DiaryWritePage(onComplete: () -> Unit) {
     val today_options = listOf(
         "개강" to true,
         "수업" to false,
@@ -107,8 +108,9 @@ fun DiaryWritePage() {
                     .width(24.dp),
             )
         }
-        DiaryQuestionBox(listOf(DiaryContent("오늘 무엇을 했나요?", true, today_options)))
+        DiaryQuestionBox(onComplete, listOf(DiaryContent("오늘 무엇을 했나요?", true, today_options)))
         DiaryQuestionBox(
+            onComplete,
             (
                 listOf(
                     DiaryContent("수강신청은 어땠나요?", false, sugang_options),
@@ -195,7 +197,7 @@ data class DiaryContent(
 )
 
 @Composable
-fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
+fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryContent>) {
     Box(
         modifier = Modifier
             .padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -206,10 +208,10 @@ fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
             item {
                 diaryContents.forEachIndexed { index, (question, allowDuplicates, options) ->
 
-                    DiaryQuestionItem(question, allowDuplicates, options)
+                    DiaryQuestionItem(onComplete, question, allowDuplicates, options)
 
                     if (index != diaryContents.lastIndex) {
-                        Divider(modifier = Modifier.padding(vertical = 20.dp))
+                        Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
                     } else {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Text(
@@ -229,7 +231,12 @@ fun DiaryQuestionBox(diaryContents: List<DiaryContent>) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DiaryQuestionItem(question: String, allowDuplicates: Boolean, options: List<Pair<String, Boolean>>) {
+fun DiaryQuestionItem(
+    onComplete: () -> Unit,
+    question: String,
+    allowDuplicates: Boolean,
+    options: List<Pair<String, Boolean>>
+) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
@@ -269,5 +276,5 @@ fun DiaryQuestionItem(question: String, allowDuplicates: Boolean, options: List<
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    DiaryWritePage()
+    DiaryWritePage{}
 }
