@@ -41,8 +41,6 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-
 
 @Composable
 fun DiaryWritePage(onComplete: () -> Unit) {
@@ -235,7 +233,7 @@ fun DiaryQuestionItem(
     onComplete: () -> Unit,
     question: String,
     allowDuplicates: Boolean,
-    options: List<Pair<String, Boolean>>
+    options: List<Pair<String, Boolean>>,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -276,5 +274,5 @@ fun DiaryQuestionItem(
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    DiaryWritePage{}
+    DiaryWritePage {}
 }

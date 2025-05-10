@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.wafflestudio.snutt2.domainmodel.Diary
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 
 sealed interface DiaryWriteUiState {
