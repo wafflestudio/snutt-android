@@ -1,5 +1,7 @@
-package com.wafflestudio.snutt2.domainmodel
+package com.wafflestudio.snutt2.domainmodel.preview
 
+import com.wafflestudio.snutt2.domainmodel.DiaryWrite
+import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 
 object DiaryPreviewData {

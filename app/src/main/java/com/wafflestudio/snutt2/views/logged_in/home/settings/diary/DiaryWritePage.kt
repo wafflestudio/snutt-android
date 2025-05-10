@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
-import com.wafflestudio.snutt2.domainmodel.DiaryPreviewData
+import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.SNUTTColors
