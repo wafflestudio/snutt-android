@@ -39,42 +39,17 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
+import com.wafflestudio.snutt2.domainmodel.DiaryPreviewData
+import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
+import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun DiaryWritePage(onComplete: () -> Unit) {
-    val today_options = listOf(
-        "개강" to true,
-        "수업" to false,
-        "실기" to true,
-        "시험" to false,
-        "발표" to true,
-        "휴강" to false,
-        "종강" to true,
-        "드랍" to false,
-    )
-
-    val sugang_options = listOf(
-        "널널했어요" to false,
-        "1픽했어요" to false,
-        "2~3픽했어요" to false,
-        "초안지 썼어요" to false,
-    )
-
-    val first_impression_options = listOf(
-        "두려워요" to false,
-        "두려워요" to false,
-        "유익했어요" to false,
-        "유익했어요" to false,
-    )
-
-    val til_end_options = listOf(
-        "끝까지 들을 거에요" to false,
-        "모르겠어요" to false,
-        "드랍할 것 같아요" to false,
-    )
-
+fun DiaryWritePage(
+    diaryWriteUiState: DiaryWriteUiState,
+    onComplete: () -> Unit,
+) {
     var isExpanded by remember { mutableStateOf(true) }
     var moreText by remember { mutableStateOf("") }
 
@@ -106,17 +81,24 @@ fun DiaryWritePage(onComplete: () -> Unit) {
                     .width(24.dp),
             )
         }
-        DiaryQuestionBox(onComplete, listOf(DiaryContent("오늘 무엇을 했나요?", true, today_options)))
-        DiaryQuestionBox(
-            onComplete,
-            (
-                listOf(
-                    DiaryContent("수강신청은 어땠나요?", false, sugang_options),
-                    DiaryContent("교수님의 첫인상은 어땠나요?", false, first_impression_options),
-                    DiaryContent("수업 끝까지 들을 것 같나요?", false, til_end_options),
+
+        when (diaryWriteUiState) {
+            is DiaryWriteUiState.Success -> {
+                val todayOptions = diaryWriteUiState.diaryList.todayOptions
+                val questions = diaryWriteUiState.diaryList.questions
+                DiaryQuestionBox(
+                    onComplete, listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
                 )
-                ),
-        )
+                DiaryQuestionBox(
+                    onComplete,
+                    questions,
+                )
+            }
+            else -> {
+                // TODO: Error, Loading, Empty 화면 구현
+            }
+        }
+
         Box(
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -188,14 +170,8 @@ fun DiaryWritePage(onComplete: () -> Unit) {
     }
 }
 
-data class DiaryContent(
-    val question: String,
-    val allowDuplicates: Boolean,
-    val options: List<Pair<String, Boolean>>,
-)
-
 @Composable
-fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryContent>) {
+fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryWriteQuestion>) {
     Box(
         modifier = Modifier
             .padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -204,9 +180,9 @@ fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryContent>) 
     ) {
         LazyColumn {
             item {
-                diaryContents.forEachIndexed { index, (question, allowDuplicates, options) ->
+                diaryContents.forEachIndexed { index, (question, options) ->
 
-                    DiaryQuestionItem(onComplete, question, allowDuplicates, options)
+                    DiaryQuestionItem(onComplete, question, options)
 
                     if (index != diaryContents.lastIndex) {
                         Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
@@ -232,14 +208,13 @@ fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryContent>) 
 fun DiaryQuestionItem(
     onComplete: () -> Unit,
     question: String,
-    allowDuplicates: Boolean,
-    options: List<Pair<String, Boolean>>,
+    options: List<Selectable<String>>,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.padding(6.dp))
-            if (allowDuplicates) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel)
+            Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel) // TODO: allowDuplicate 필드 추가하기
         }
         FlowRow(
             maxItemsInEachRow = 3,
@@ -274,5 +249,9 @@ fun DiaryQuestionItem(
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    DiaryWritePage {}
+    val previewData = DiaryPreviewData.diaryWritePreviewData
+    DiaryWritePage(
+        DiaryWriteUiState.Success(previewData),
+    ) {
+    }
 }
