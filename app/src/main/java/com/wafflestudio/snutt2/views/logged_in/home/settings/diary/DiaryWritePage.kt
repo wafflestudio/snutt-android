@@ -52,85 +52,86 @@ fun DiaryWritePage(
 ) {
     var isExpanded by remember { mutableStateOf(true) }
     var moreText by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = SNUTTColors.Gray),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = SNUTTColors.White)
-                .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
-            horizontalArrangement = Arrangement.End,
-        ) {
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = "오늘 수강한 '시각디자인기초' 에 대한 의견을 남겨보세요.",
-                    style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
-                )
-                Text(
-                    text = "더보기 > 강의일기장에서 확인할 수 있어요.",
-                    style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
-                )
-            }
-            ExitIcon(
+    when (diaryWriteUiState) {
+        DiaryWriteUiState.Error -> {}
+        DiaryWriteUiState.Loading -> {}
+        DiaryWriteUiState.Empty -> {}
+        is DiaryWriteUiState.Success -> {
+            Column(
                 modifier = Modifier
-                    .padding(start = 57.dp)
-                    .width(24.dp),
-            )
-        }
+                    .fillMaxWidth()
+                    .background(color = SNUTTColors.Gray),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = SNUTTColors.White)
+                        .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = "오늘 수강한 '시각디자인기초' 에 대한 의견을 남겨보세요.",
+                            style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
+                        )
 
-        when (diaryWriteUiState) {
-            is DiaryWriteUiState.Success -> {
+                        Text(
+                            text = "더보기 > 강의일기장에서 확인할 수 있어요.",
+                            style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
+                        )
+                    }
+
+                    ExitIcon(
+                        modifier = Modifier
+                            .padding(start = 57.dp)
+                            .width(24.dp),
+                    )
+                }
+
                 val todayOptions = diaryWriteUiState.diaryList.todayOptions
                 val questions = diaryWriteUiState.diaryList.questions
+
                 DiaryQuestionBox(
                     onComplete, listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
                 )
+
                 DiaryQuestionBox(
                     onComplete,
                     questions,
                 )
-            }
-            else -> {
-                // TODO: Error, Loading, Empty 화면 구현
-            }
-        }
 
-        Box(
-            modifier = Modifier
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-                .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
-                .padding(vertical = 16.dp, horizontal = 20.dp),
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { isExpanded = !isExpanded },
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
+                        .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                        .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
+                        .padding(vertical = 16.dp, horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                        Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
-                    }
-                    ArrowDownIcon(modifier = Modifier.height(24.dp).rotate(if (isExpanded) 180f else 0f))
-                }
-                AnimatedVisibility(isExpanded) {
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .drawBehind {
-                                drawLine(
-                                    color = SNUTTColors.Gray,
-                                    start = Offset(0f, 0f),
-                                    end = Offset(size.width, 0f),
-                                    strokeWidth = 0.8.dp.toPx(),
-                                )
-                            },
+                            .fillMaxWidth()
+                            .clickable { isExpanded = !isExpanded },
+                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Column {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
+                            Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
+                        }
+                        ArrowDownIcon(modifier = Modifier.height(24.dp).rotate(if (isExpanded) 180f else 0f))
+                    }
+
+                    AnimatedVisibility(isExpanded) {
+                        Column(
+                            modifier = Modifier
+                                .drawBehind {
+                                    drawLine(
+                                        color = SNUTTColors.Gray,
+                                        start = Offset(0f, 0f),
+                                        end = Offset(size.width, 0f),
+                                        strokeWidth = 0.8.dp.toPx(),
+                                    )
+                                },
+                        ) {
                             EditText(
                                 value = moreText,
                                 onValueChange = { moreText = it },
@@ -155,47 +156,45 @@ fun DiaryWritePage(
                         }
                     }
                 }
-            }
-        }
 
-        Box(
-            modifier = Modifier
-                .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
-                .align(Alignment.End)
-                .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
-                .padding(vertical = 12.dp, horizontal = 48.dp),
-        ) {
-            Text("다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp))
+                Text(
+                    modifier = Modifier
+                        .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
+                        .align(Alignment.End)
+                        .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
+                        .padding(vertical = 12.dp, horizontal = 48.dp),
+                    text = "다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
+                )
+            }
         }
     }
 }
 
 @Composable
 fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryWriteQuestion>) {
-    Box(
+    LazyColumn(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 8.dp, start = 16.dp, end = 16.dp)
             .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
             .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
     ) {
-        LazyColumn {
-            item {
-                diaryContents.forEachIndexed { index, (question, options) ->
+        item {
+            diaryContents.forEachIndexed { index, (question, options) ->
 
-                    DiaryQuestionItem(onComplete, question, options)
+                DiaryQuestionItem(onComplete, question, options)
 
-                    if (index != diaryContents.lastIndex) {
-                        Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
-                    } else {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                "완료",
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(horizontal = 12.dp, vertical = 4.dp),
-                                style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
-                            )
-                        }
+                if (index != diaryContents.lastIndex) {
+                    Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
+                } else { // TODO: 이거 "오늘 무엇을 했나요?"에만 있어야 됨
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            "완료",
+                            style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
                     }
                 }
             }
@@ -216,6 +215,7 @@ fun DiaryQuestionItem(
             Spacer(modifier = Modifier.padding(6.dp))
             Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel) // TODO: allowDuplicate 필드 추가하기
         }
+
         FlowRow(
             maxItemsInEachRow = 3,
         ) {
