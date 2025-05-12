@@ -255,3 +255,13 @@ fun DiaryWritePagePreview() {
     ) {
     }
 }
+
+
+@Composable
+@Preview
+fun DiaryQuestionBoxPreview() {
+    val previewData = DiaryPreviewData.diaryWritePreviewData
+    DiaryQuestionBox(
+        onComplete = {}, diaryContents = DiaryPreviewData.diaryWritePreviewData.questions
+    )
+}
