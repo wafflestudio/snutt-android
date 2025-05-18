@@ -71,7 +71,7 @@ fun DiaryWritePage(
                 ) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            text = "오늘 수강한 '시각디자인기초' 에 대한 의견을 남겨보세요.",
+                            text = "오늘 수강한 '${diaryWriteUiState.diaryList.lectureName}' 에 대한 의견을 남겨보세요.",
                             style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
                         )
 
@@ -171,7 +171,7 @@ fun DiaryWritePage(
 }
 
 @Composable
-fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryWriteQuestion>) {
+fun DiaryQuestionBox(onComplete: () -> Unit, questions: List<DiaryWriteQuestion>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,11 +180,11 @@ fun DiaryQuestionBox(onComplete: () -> Unit, diaryContents: List<DiaryWriteQuest
             .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
     ) {
         item {
-            diaryContents.forEachIndexed { index, (question, options) ->
+            questions.forEachIndexed { index, (question, options) ->
 
                 DiaryQuestionItem(onComplete, question, options)
 
-                if (index != diaryContents.lastIndex) {
+                if (index != questions.lastIndex) {
                     Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
                 } else { // TODO: 이거 "오늘 무엇을 했나요?"에만 있어야 됨
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -221,7 +221,11 @@ fun DiaryQuestionItem(
         ) {
             options.forEach { (option, isSelected) ->
                 Text(
-                    text = option, style = SNUTTTypography.button.copy(fontSize = 14.sp, color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
+                    text = option,
+                    style = SNUTTTypography.button.copy(
+                        fontSize = 14.sp,
+                        color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
                     modifier = Modifier
                         .padding(8.dp)
                         .border(
@@ -262,6 +266,6 @@ fun DiaryWritePagePreview() {
 fun DiaryQuestionBoxPreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
     DiaryQuestionBox(
-        onComplete = {}, diaryContents = DiaryPreviewData.diaryWritePreviewData.questions
+        onComplete = {}, questions = DiaryPreviewData.diaryWritePreviewData.questions
     )
 }
