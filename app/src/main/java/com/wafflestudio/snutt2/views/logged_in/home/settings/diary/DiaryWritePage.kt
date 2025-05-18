@@ -225,7 +225,8 @@ fun DiaryQuestionItem(
                     style = SNUTTTypography.button.copy(
                         fontSize = 14.sp,
                         color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal),
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    ),
                     modifier = Modifier
                         .padding(8.dp)
                         .border(
@@ -260,12 +261,11 @@ fun DiaryWritePagePreview() {
     }
 }
 
-
 @Composable
 @Preview
 fun DiaryQuestionBoxPreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
     DiaryQuestionBox(
-        onComplete = {}, questions = DiaryPreviewData.diaryWritePreviewData.questions
+        onComplete = {}, questions = DiaryPreviewData.diaryWritePreviewData.questions,
     )
 }
