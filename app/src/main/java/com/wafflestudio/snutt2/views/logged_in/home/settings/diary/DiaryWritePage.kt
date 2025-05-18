@@ -43,6 +43,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.selectIndex
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -97,14 +98,14 @@ fun DiaryWritePage(
                     onComplete,
                     onTodayComplete,
                     listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
-                    true
+                    true,
                 )
 
                 DiaryQuestionBox(
                     onComplete,
                     {},
                     questions,
-                    false
+                    false,
                 )
 
                 Column(
@@ -178,10 +179,12 @@ fun DiaryWritePage(
 }
 
 @Composable
-fun DiaryQuestionBox(onTodayComplete: () -> Unit,
-                     onComplete: () -> Unit,
-                     questions: List<DiaryWriteQuestion>,
-                     isTodayBox: Boolean) {
+fun DiaryQuestionBox(
+    onTodayComplete: () -> Unit,
+    onComplete: () -> Unit,
+    questions: List<DiaryWriteQuestion>,
+    isTodayBox: Boolean,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -191,12 +194,14 @@ fun DiaryQuestionBox(onTodayComplete: () -> Unit,
     ) {
         item {
             questions.forEachIndexed { index, (question, options) ->
-
-                DiaryQuestionItem(onComplete, isTodayBox, question, options)
+                var optionList = options
+                DiaryQuestionItem(onComplete, isTodayBox, question, optionList) { selectedIndex ->
+                    optionList = optionList.selectIndex(selectedIndex)
+                }
 
                 if (index != questions.lastIndex) {
                     Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
-                } else if(isTodayBox){
+                } else if (isTodayBox) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             "완료",
@@ -204,7 +209,7 @@ fun DiaryQuestionBox(onTodayComplete: () -> Unit,
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
                                 .padding(horizontal = 12.dp, vertical = 4.dp)
-                                .clicks {  },
+                                .clicks { },
                         )
                     }
                 }
@@ -220,18 +225,19 @@ fun DiaryQuestionItem(
     isDuplicate: Boolean,
     question: String,
     options: List<Selectable<String>>,
+    onSelectOption: (Int) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.padding(6.dp))
-            if(isDuplicate) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel) // TODO: allowDuplicate 필드 추가하기
+            if (isDuplicate) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel) // TODO: allowDuplicate 필드 추가하기
         }
 
         FlowRow(
             maxItemsInEachRow = 3,
         ) {
-            options.forEach { (option, isSelected) ->
+            options.forEachIndexed { index, (option, isSelected) ->
                 Text(
                     text = option,
                     style = SNUTTTypography.button.copy(
@@ -256,7 +262,8 @@ fun DiaryQuestionItem(
                                 Modifier
                             },
                         )
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
+                        .padding(horizontal = 24.dp, vertical = 8.dp)
+                        .clickable { if (!isDuplicate)onSelectOption(index) },
                 )
             }
         }
@@ -269,7 +276,7 @@ fun DiaryWritePagePreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
     DiaryWritePage(
         DiaryWriteUiState.Success(previewData),
-        {}
+        {},
     ) {
     }
 }
@@ -282,6 +289,6 @@ fun DiaryQuestionBoxPreview() {
         onComplete = {},
         onTodayComplete = {},
         questions = DiaryPreviewData.diaryWritePreviewData.questions,
-        isTodayBox = false
+        isTodayBox = false,
     )
 }
