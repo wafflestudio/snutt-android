@@ -91,31 +91,8 @@ fun PushPreferencesScreen(
         )
 
         when (uiState) {
-            is PushPreferencesUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.background),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            is PushPreferencesUiState.Error -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.background),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(R.string.error_unknown),
-                        color = MaterialTheme.colors.onBackground,
-                    )
-                }
-            }
+            is PushPreferencesUiState.Loading -> PushPreferencesLoading()
+            is PushPreferencesUiState.Error -> PushPreferencesError()
             is PushPreferencesUiState.Success -> {
                 Column {
                     Margin(height = 10.dp)
@@ -144,8 +121,57 @@ fun PushPreferencesScreen(
 }
 
 @Composable
+fun PushPreferencesLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun PushPreferencesError() {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.error_unknown),
+            color = MaterialTheme.colors.onBackground,
+        )
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
-fun PushPreferencesScreenPreview() {
+fun PushPreferencesLoadingPreview() {
+    PushPreferencesScreen(
+        onBackClick = {},
+        uiState = PushPreferencesUiState.Loading,
+        toggleUiState = {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun PushPreferencesErrorPreview() {
+    PushPreferencesScreen(
+        onBackClick = {},
+        uiState = PushPreferencesUiState.Error,
+        toggleUiState = {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun PushPreferencesSuccessPreview() {
     PushPreferencesScreen(
         onBackClick = {},
         uiState = PushPreferencesUiState.Success(
