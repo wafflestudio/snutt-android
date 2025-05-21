@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,12 +37,6 @@ fun PushPreferencesRoute(
     val context = LocalContext.current
     val uiState by viewModel.pushPreferenceUiState.collectAsState()
 
-    // 다른 화면과 다르게 화면을 나갈 때 API를 호출해야 한다.
-    val onBack: () -> Unit = {
-        viewModel.postPushPreferences()
-        onNavigateBack()
-    }
-
     LaunchedEffect(Unit) {
         viewModel.loadPushPreferences()
     }
@@ -61,13 +54,9 @@ fun PushPreferencesRoute(
         }
     }
 
-    BackHandler {
-        onBack()
-    }
-
     PushPreferencesScreen(
         modifier = modifier,
-        onBackClick = onBack,
+        onBackClick = onNavigateBack,
         uiState = uiState,
         toggleUiState = viewModel::togglePushPreferences,
     )

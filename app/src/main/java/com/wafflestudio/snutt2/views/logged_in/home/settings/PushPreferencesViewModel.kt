@@ -52,19 +52,11 @@ class PushPreferencesViewModel @Inject constructor(
                     )
                 }
                 _pushPreferencesUiState.emit(PushPreferencesUiState.Success(updatedPrefs))
-            }
-        }
-    }
-
-    fun postPushPreferences() {
-        viewModelScope.launch {
-            val currentState = _pushPreferencesUiState.value
-            if (currentState is PushPreferencesUiState.Success) {
                 runCatching {
-                    userRepository.postPushPreferences(currentState.pushPreferences)
+                    userRepository.postPushPreferences(updatedPrefs)
                 }.onFailure { e ->
+                    _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
                     if (e is ErrorParsedHttpException) {
-                        _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
                         _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(e.errorDTO?.displayMessage ?: ""))
                     }
                 }
