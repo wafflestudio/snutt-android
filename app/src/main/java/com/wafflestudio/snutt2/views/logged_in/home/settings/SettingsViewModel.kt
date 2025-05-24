@@ -4,23 +4,62 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
+
+    private val showLogoutDialog = MutableStateFlow(false)
+
+    private val _logoutFinishedUiEvent: MutableSharedFlow<Unit> = MutableSharedFlow(replay = 1)
+    val logoutFinishedUiEvent = _logoutFinishedUiEvent.asSharedFlow()
+
+    fun showLogoutDialog() {
+        viewModelScope.launch {
+            showLogoutDialog.emit(true)
+        }
+    }
+
+    fun hideLogoutDialog() {
+        viewModelScope.launch {
+            showLogoutDialog.emit(true)
+        }
+    }
+
+    fun performLogout() {
+        viewModelScope.launch {
+            runCatching {
+                analyticsLogger.logEvent(AnalyticsEvent.Logout)
+                userRepository.postForceLogout()
+                userRepository.performLogout()
+                showLogoutDialog.emit(false)
+                _logoutFinishedUiEvent.emit(Unit)
+            }.onFailure {
+                showLogoutDialog.emit(false)
+            }
+        }
+    }
 
     val settingsUiState = combine(
         userRepository.user,
         userRepository.themeMode,
-    ) { user, themeMode ->
+        showLogoutDialog,
+    ) { user, themeMode, showLogoutDialog ->
         if (user == null) {
             return@combine SettingsUiState.Error
         }
@@ -28,6 +67,7 @@ class SettingsViewModel @Inject constructor(
         SettingsUiState.Success(
             user.nickname?.nickname ?: "",
             themeMode,
+            showLogoutDialog,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.Loading)
 
@@ -38,6 +78,7 @@ sealed interface SettingsUiState {
     data class Success(
         val userName: String,
         val themeMode: ThemeMode,
+        val showLogoutDialog: Boolean,
     ) : SettingsUiState
 
     data object Loading : SettingsUiState

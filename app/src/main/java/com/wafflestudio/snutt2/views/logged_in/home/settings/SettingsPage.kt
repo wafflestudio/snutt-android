@@ -17,11 +17,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,6 +68,12 @@ fun SettingsRoute(
 ) {
     val uiState by viewModel.settingsUiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.logoutFinishedUiEvent.collect {
+            onNavigateOnboardAsOrigin()
+        }
+    }
+
     SettingsPage(
         uiState = uiState,
         onClickUserConfig = onNavigateUserConfig,
@@ -85,10 +89,9 @@ fun SettingsRoute(
         onClickServiceInfo = onNavigateServiceInfo,
         onClickPersonalInformationPolicy = onNavigatePersonalInformationPolicy,
         onClickNetworkLog = onNavigateNetworkLog,
-        onConfirmLogout = {
-            // TODO
-            onNavigateOnboardAsOrigin()
-        },
+        onClickLogout = viewModel::showLogoutDialog,
+        onConfirmLogout = viewModel::performLogout,
+        onDismissLogout = viewModel::hideLogoutDialog,
     )
 }
 
@@ -108,10 +111,10 @@ fun SettingsPage(
     onClickServiceInfo: () -> Unit,
     onClickPersonalInformationPolicy: () -> Unit,
     onClickNetworkLog: () -> Unit,
+    onClickLogout: () -> Unit,
     onConfirmLogout: () -> Unit,
+    onDismissLogout: () -> Unit,
 ) {
-    var logoutDialogState by remember { mutableStateOf(false) }
-
     when (uiState) {
         SettingsUiState.Loading -> {}
         SettingsUiState.Error -> {}
@@ -243,9 +246,7 @@ fun SettingsPage(
                     SettingItem(
                         title = stringResource(R.string.settings_logout_title),
                         titleColor = SNUTTColors.Red,
-                        onClick = {
-                            logoutDialogState = true
-                        },
+                        onClick = onClickLogout,
                     )
 
                     if (BuildConfig.DEBUG) {
@@ -258,17 +259,17 @@ fun SettingsPage(
                     Margin(height = 10.dp)
                 }
             }
-        }
-    }
 
-    if (logoutDialogState) {
-        CustomDialog(
-            onDismiss = { logoutDialogState = false },
-            onConfirm = onConfirmLogout,
-            title = stringResource(R.string.settings_logout_title),
-            positiveButtonText = stringResource(R.string.settings_logout_title),
-        ) {
-            Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
+            if (uiState.showLogoutDialog) {
+                CustomDialog(
+                    onDismiss = onDismissLogout,
+                    onConfirm = onConfirmLogout,
+                    title = stringResource(R.string.settings_logout_title),
+                    positiveButtonText = stringResource(R.string.settings_logout_title),
+                ) {
+                    Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
+                }
+            }
         }
     }
 }
