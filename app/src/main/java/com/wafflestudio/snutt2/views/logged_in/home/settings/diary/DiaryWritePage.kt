@@ -21,6 +21,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -242,12 +243,11 @@ fun DiaryQuestionItem(
     onComplete: () -> Unit,
     isDuplicate: Boolean,
     question: String,
-    options: List<Selectable<String>>,
+    options: List<String>,
 ) {
-    var selectables by remember {
-        mutableStateOf(
-            options,
-        )
+
+    var selectables = remember {
+        mutableStateListOf(*options.map { it to false }.toTypedArray())
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -271,12 +271,14 @@ fun DiaryQuestionItem(
                     modifier = Modifier
                         .padding(8.dp)
                         .clicks {
-                            selectables = if (!isDuplicate) {
-                                selectables.selectIndex(index)
-                            } else {
-                                selectables.mapIndexed { i, s ->
-                                    if (index == i) s.copy(state = !s.state) else s
+                            if (!isDuplicate) {
+                                for (i in selectables.indices) {
+                                    val (label, _) = selectables[i]
+                                    selectables[i] = label to (i == index)
                                 }
+                            } else {
+                                val (label, isSelected) = selectables[index]
+                                selectables[index] = label to !isSelected
                             }
                         }
                         .border(
