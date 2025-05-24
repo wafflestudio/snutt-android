@@ -115,176 +115,170 @@ fun SettingsScreen(
     onConfirmLogout: () -> Unit,
     onDismissLogout: () -> Unit,
 ) {
-    when (uiState) {
-        SettingsUiState.Loading -> {}
-        SettingsUiState.Error -> {}
-        is SettingsUiState.Success -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(SNUTTColors.SettingBackground)
-                    .logImpression(AnalyticsScreen.SettingsHome),
-            ) {
-                TopBar(
-                    // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
-                    title = {
-                        Text(
-                            text = stringResource(R.string.timetable_app_bar_setting),
-                            style = SNUTTTypography.h2,
-                        )
-                    },
-                    navigationIcon = {
-                        HorizontalMoreIcon(
-                            modifier = Modifier.size(30.dp),
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                        )
-                    },
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SNUTTColors.SettingBackground)
+            .logImpression(AnalyticsScreen.SettingsHome),
+    ) {
+        TopBar(
+            // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
+            title = {
+                Text(
+                    text = stringResource(R.string.timetable_app_bar_setting),
+                    style = SNUTTTypography.h2,
                 )
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState()),
+            },
+            navigationIcon = {
+                HorizontalMoreIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            },
+        )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.user_settings_app_bar_title),
+                modifier = Modifier.height(66.dp),
+                leadingIcon = {
+                    PersonIcon(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(end = 5.dp),
+                    )
+                },
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickUserConfig,
+            ) {
+                Text(
+                    text = uiState.userName,
+                    style = SNUTTTypography.body1.copy(
+                        color = SNUTTColors.Black500,
+                    ),
+                )
+            }
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_select_color_mode_title),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickThemeModeSelect,
                 ) {
-                    Margin(height = 10.dp)
-                    SettingItem(
-                        title = stringResource(R.string.user_settings_app_bar_title),
-                        modifier = Modifier.height(66.dp),
-                        leadingIcon = {
-                            PersonIcon(
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .padding(end = 5.dp),
-                            )
-                        },
-                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                        onClick = onClickUserConfig,
-                    ) {
-                        Text(
-                            text = uiState.userName,
-                            style = SNUTTTypography.body1.copy(
-                                color = SNUTTColors.Black500,
-                            ),
-                        )
-                    }
-                    Margin(height = 10.dp)
-                    SettingColumn {
-                        SettingItem(
-                            title = stringResource(R.string.settings_select_color_mode_title),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickThemeModeSelect,
-                        ) {
-                            Text(
-                                text = uiState.themeModeName,
-                                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
-                            )
-                        }
-                        SettingItem(
-                            title = stringResource(R.string.timetable_settings_app_bar_title),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickTimeTableConfig,
-                        )
-                        SettingItem(
-                            title = stringResource(R.string.settings_timetable_theme_config_title),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickThemeConfig,
-                        )
-                    }
-                    Margin(height = 10.dp)
-                    SettingColumn {
-                        SettingItem(
-                            title = stringResource(R.string.settings_item_vacancy),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            hasNextPage = true,
-                            onClick = onClickVacancyNotification,
-                        )
-                        if (FeatureFlag.THEME_MARKET.isEnabled) {
-                            SettingItem(
-                                title = stringResource(R.string.settings_item_theme_market),
-                                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                                hasNextPage = true,
-                                onClick = onClickThemeMarket,
-                            )
-                        }
-                        if (FeatureFlag.LECTURE_DIARY.isEnabled) {
-                            SettingItem(
-                                title = stringResource(R.string.settings_item_lecture_diary),
-                                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                                hasNextPage = true,
-                                onClick = onClickLectureDiary,
-                            )
-                        }
-                    }
-                    Margin(height = 10.dp)
-                    SettingColumn {
-                        SettingItem(
-                            title = stringResource(R.string.settings_version_info),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            hasNextPage = false,
-                        ) {
-                            Text(
-                                text = BuildConfig.VERSION_NAME,
-                                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
-                            )
-                        }
-                        SettingItem(
-                            title = stringResource(R.string.settings_team_info),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickTeamInfo,
-                        )
-                    }
-                    Margin(height = 10.dp)
-                    SettingItem(
-                        title = stringResource(R.string.settings_app_report_title),
-                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                        onClick = onClickAppReport,
+                    Text(
+                        text = uiState.themeModeName,
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                     )
-                    Margin(height = 10.dp)
-                    SettingColumn {
-                        SettingItem(
-                            title = stringResource(R.string.settings_licenses_title),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickOpenLicenses,
-                        )
-                        SettingItem(
-                            title = stringResource(R.string.settings_service_info),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickServiceInfo,
-                        )
-                        SettingItem(
-                            title = stringResource(R.string.settings_personal_information_policy),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickPersonalInformationPolicy,
-                        )
-                    }
-                    Margin(height = 10.dp)
+                }
+                SettingItem(
+                    title = stringResource(R.string.timetable_settings_app_bar_title),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickTimeTableConfig,
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_timetable_theme_config_title),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickThemeConfig,
+                )
+            }
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_item_vacancy),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    hasNextPage = true,
+                    onClick = onClickVacancyNotification,
+                )
+                if (FeatureFlag.THEME_MARKET.isEnabled) {
                     SettingItem(
-                        title = stringResource(R.string.settings_logout_title),
-                        titleColor = SNUTTColors.Red,
+                        title = stringResource(R.string.settings_item_theme_market),
                         settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                        onClick = onClickLogout,
+                        hasNextPage = true,
+                        onClick = onClickThemeMarket,
                     )
-
-                    if (BuildConfig.DEBUG) {
-                        Margin(height = 10.dp)
-                        SettingItem(
-                            title = "네트워크 로그",
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            onClick = onClickNetworkLog,
-                        )
-                    }
-                    Margin(height = 10.dp)
+                }
+                if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_lecture_diary),
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                        hasNextPage = true,
+                        onClick = onClickLectureDiary,
+                    )
                 }
             }
-
-            if (uiState.showLogoutDialog) {
-                CustomDialog(
-                    onDismiss = onDismissLogout,
-                    onConfirm = onConfirmLogout,
-                    title = stringResource(R.string.settings_logout_title),
-                    positiveButtonText = stringResource(R.string.settings_logout_title),
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_version_info),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    hasNextPage = false,
                 ) {
-                    Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
+                    Text(
+                        text = BuildConfig.VERSION_NAME,
+                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                    )
                 }
+                SettingItem(
+                    title = stringResource(R.string.settings_team_info),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickTeamInfo,
+                )
             }
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_app_report_title),
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickAppReport,
+            )
+            Margin(height = 10.dp)
+            SettingColumn {
+                SettingItem(
+                    title = stringResource(R.string.settings_licenses_title),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickOpenLicenses,
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_service_info),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickServiceInfo,
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_personal_information_policy),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickPersonalInformationPolicy,
+                )
+            }
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_logout_title),
+                titleColor = SNUTTColors.Red,
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickLogout,
+            )
+
+            if (BuildConfig.DEBUG) {
+                Margin(height = 10.dp)
+                SettingItem(
+                    title = "네트워크 로그",
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickNetworkLog,
+                )
+            }
+            Margin(height = 10.dp)
+        }
+    }
+
+    if (uiState.showLogoutDialog) {
+        CustomDialog(
+            onDismiss = onDismissLogout,
+            onConfirm = onConfirmLogout,
+            title = stringResource(R.string.settings_logout_title),
+            positiveButtonText = stringResource(R.string.settings_logout_title),
+        ) {
+            Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
         }
     }
 }
@@ -385,6 +379,6 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState.Success("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
     )
 }

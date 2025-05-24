@@ -64,26 +64,25 @@ class SettingsViewModel @Inject constructor(
         remoteConfig.settingPageNewBadgeTitles,
     ) { user, themeMode, showLogoutDialog, settingPageNewBadgeTitles ->
         if (user == null) {
-            return@combine SettingsUiState.Error
+            return@combine SettingsUiState.DEFAULT
         }
 
-        SettingsUiState.Success(
+        SettingsUiState(
             user.nickname?.nickname ?: "",
             themeMode.toString(),
             showLogoutDialog,
             settingPageNewBadgeTitles,
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.Loading)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.DEFAULT)
 }
 
-sealed interface SettingsUiState {
-    data class Success(
-        val userName: String,
-        val themeModeName: String,
-        val showLogoutDialog: Boolean,
-        val settingPageNewBadgeTitles: List<String>,
-    ) : SettingsUiState
-
-    data object Loading : SettingsUiState
-    data object Error : SettingsUiState
+data class SettingsUiState(
+    val userName: String,
+    val themeModeName: String,
+    val showLogoutDialog: Boolean,
+    val settingPageNewBadgeTitles: List<String>,
+) {
+    companion object {
+        val DEFAULT = SettingsUiState("", "", false, emptyList())
+    }
 }
