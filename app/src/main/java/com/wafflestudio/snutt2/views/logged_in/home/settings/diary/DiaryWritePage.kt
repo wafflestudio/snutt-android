@@ -134,7 +134,7 @@ fun DiaryWriteScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { isExpanded = !isExpanded },
+                                .clicks { isExpanded = !isExpanded },
                             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -271,10 +271,7 @@ fun DiaryQuestionItem(
                     ),
                     modifier = Modifier
                         .padding(8.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
+                        .clicks {
                             selectables = if (!isDuplicate) {
                                 selectables.selectIndex(index)
                             } else {
