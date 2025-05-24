@@ -29,13 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
+import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.copyToClipboard
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTColors.SettingBackground
@@ -43,11 +47,12 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
-fun NetworkLogPage() {
-    val vm: DebugViewModel = hiltViewModel()
+fun NetworkLogPage(
+    viewModel: DebugViewModel = hiltViewModel(),
+) {
     val navController = LocalNavController.current
 
-    val logList by vm.networkLog.collectAsState()
+    val logList by viewModel.networkLog.collectAsState()
 
     Column {
         TopBar(
@@ -64,7 +69,7 @@ fun NetworkLogPage() {
                 Text(
                     "지우기", style = SNUTTTypography.button,
                     modifier = Modifier.clicks {
-                        vm.clearNetworkLog()
+                        viewModel.clearNetworkLog()
                     },
                 )
             },
@@ -84,33 +89,50 @@ fun NetworkLogPage() {
 @Composable
 private fun NetworkLogItem(log: NetworkLog) {
     var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text = log.requestMethod, style = SNUTTTypography.h3)
-        Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = log.responseCode,
-            style = SNUTTTypography.body1,
-            color = when (log.responseCode.first()) {
-                '4' -> SNUTTColors.Red
-                '5' -> SNUTTColors.Orange
-                '2' -> SNUTTColors.Grass
-                else -> MaterialTheme.colors.SettingBackground
-            },
-        )
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = log.requestMethod, style = SNUTTTypography.h3)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = log.responseCode,
+                style = SNUTTTypography.body1,
+                color = when (log.responseCode.first()) {
+                    '4' -> SNUTTColors.Red
+                    '5' -> SNUTTColors.Orange
+                    '2' -> SNUTTColors.Grass
+                    else -> MaterialTheme.colors.SettingBackground
+                },
+            )
+        }
+        Row {
+            Text(
+                text = log.requestUrl,
+                style = SNUTTTypography.h4,
+                modifier = Modifier
+                    .weight(1f)
+                    .clicks { expanded = expanded.not() },
+                overflow = if (expanded.not()) TextOverflow.Ellipsis else TextOverflow.Visible,
+                maxLines = if (expanded.not()) 1 else Int.MAX_VALUE,
+            )
+            DuplicateIcon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .clicks {
+                        copyToClipboard(
+                            context = context,
+                            content = log.requestUrl,
+                        )
+                    },
+            )
+        }
+        SimpleTextToggle(title = "Request Header", content = log.requestHeader)
+        SimpleTextToggle(title = "Request Body", content = log.requestBody)
+        SimpleTextToggle(title = "Response Body", content = log.responseBody)
     }
-    Text(
-        text = log.requestUrl,
-        style = SNUTTTypography.h4,
-        modifier = Modifier.clicks { expanded = expanded.not() },
-        overflow = if (expanded.not()) TextOverflow.Ellipsis else TextOverflow.Visible,
-        maxLines = if (expanded.not()) 1 else Int.MAX_VALUE,
-    )
-    SimpleTextToggle(title = "Request Header", content = log.requestHeader)
-    SimpleTextToggle(title = "Request Body", content = log.requestBody)
-    SimpleTextToggle(title = "Response Body", content = log.responseBody)
 }
 
 @Composable
@@ -120,9 +142,11 @@ private fun SimpleTextToggle(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val rotation by animateFloatAsState(if (expanded) 0f else -90f)
+    val context = LocalContext.current
 
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 10.dp)
             .clicks { expanded = expanded.not() },
         verticalAlignment = Alignment.CenterVertically,
@@ -145,6 +169,32 @@ private fun SimpleTextToggle(
                 .padding(10.dp),
         ) {
             Text(text = content, style = SNUTTTypography.body1)
+            DuplicateIcon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .align(Alignment.TopEnd)
+                    .clicks {
+                        copyToClipboard(
+                            context = context,
+                            content = content,
+                        )
+                    },
+            )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NetworkLogItemPreview() {
+    NetworkLogItem(
+        NetworkLog(
+            requestMethod = "GET",
+            requestUrl = "https://example.com",
+            requestHeader = "header",
+            requestBody = "body",
+            responseCode = "200",
+            responseBody = "response",
+        ),
+    )
 }
