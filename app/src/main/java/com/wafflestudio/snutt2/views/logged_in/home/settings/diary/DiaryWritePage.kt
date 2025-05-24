@@ -66,13 +66,14 @@ fun DiaryWriteScreen(
     onTodayComplete: () -> Unit,
     onComplete: () -> Unit,
 ) {
-    var isExpanded by remember { mutableStateOf(true) }
-    var moreText by remember { mutableStateOf("") }
     when (diaryWriteUiState) {
         DiaryWriteUiState.Error -> {}
         DiaryWriteUiState.Loading -> {}
         DiaryWriteUiState.Empty -> {}
         is DiaryWriteUiState.Success -> {
+            var isExpanded by remember { mutableStateOf(false) }
+            var moreText by remember { mutableStateOf(diaryWriteUiState.diaryList.moreText) }
+
             Column {
                 Row(
                     modifier = Modifier
