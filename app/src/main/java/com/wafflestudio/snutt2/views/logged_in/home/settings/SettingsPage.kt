@@ -1,13 +1,27 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,14 +35,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.CustomDialog
+import com.wafflestudio.snutt2.components.compose.HorizontalMoreIcon
+import com.wafflestudio.snutt2.components.compose.PersonIcon
+import com.wafflestudio.snutt2.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.*
+import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
@@ -136,7 +155,7 @@ fun SettingsPage(
                         onClick = onClickUserConfig,
                     ) {
                         Text(
-                            text = user?.nickname.toString(),
+                            text = uiState.userName,
                             style = SNUTTTypography.body1.copy(
                                 color = SNUTTColors.Black500,
                             ),
@@ -149,7 +168,7 @@ fun SettingsPage(
                             onClick = onClickThemeModeSelect,
                         ) {
                             Text(
-                                text = themeMode.toString(),
+                                text = uiState.themeMode.name,
                                 style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                             )
                         }
