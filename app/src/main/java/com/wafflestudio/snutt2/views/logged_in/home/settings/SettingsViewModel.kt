@@ -48,10 +48,11 @@ class SettingsViewModel @Inject constructor(
                 analyticsLogger.logEvent(AnalyticsEvent.Logout)
                 userRepository.postForceLogout()
                 userRepository.performLogout()
-                showLogoutDialog.emit(false)
-                _logoutFinishedUiEvent.emit(Unit)
             }.onFailure {
                 showLogoutDialog.emit(false)
+            }.onSuccess {
+                showLogoutDialog.emit(false)
+                _logoutFinishedUiEvent.emit(Unit)
             }
         }
     }
