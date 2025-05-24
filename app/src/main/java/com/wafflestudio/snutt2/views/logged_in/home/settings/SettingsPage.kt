@@ -93,146 +93,152 @@ fun SettingsPage(
 ) {
     var logoutDialogState by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SNUTTColors.SettingBackground)
-            .logImpression(AnalyticsScreen.SettingsHome),
-    ) {
-        TopBar(
-            // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
-            title = {
-                Text(
-                    text = stringResource(R.string.timetable_app_bar_setting),
-                    style = SNUTTTypography.h2,
-                )
-            },
-            navigationIcon = {
-                HorizontalMoreIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                )
-            },
-        )
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
-        ) {
-            Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.user_settings_app_bar_title),
-                modifier = Modifier.height(66.dp),
-                leadingIcon = {
-                    PersonIcon(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .padding(end = 5.dp),
-                    )
-                },
-                onClick = onClickUserConfig,
+    when (uiState) {
+        SettingsUiState.Loading -> {}
+        SettingsUiState.Error -> {}
+        is SettingsUiState.Success -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(SNUTTColors.SettingBackground)
+                    .logImpression(AnalyticsScreen.SettingsHome),
             ) {
-                Text(
-                    text = user?.nickname.toString(),
-                    style = SNUTTTypography.body1.copy(
-                        color = SNUTTColors.Black500,
-                    ),
+                TopBar(
+                    // FIXME: 설정 글자가 중간에서 살짝 아래에 위치
+                    title = {
+                        Text(
+                            text = stringResource(R.string.timetable_app_bar_setting),
+                            style = SNUTTTypography.h2,
+                        )
+                    },
+                    navigationIcon = {
+                        HorizontalMoreIcon(
+                            modifier = Modifier.size(30.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                        )
+                    },
                 )
-            }
-            Margin(height = 10.dp)
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_select_color_mode_title),
-                    onClick = onClickThemeModeSelect,
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState()),
                 ) {
-                    Text(
-                        text = themeMode.toString(),
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
-                    )
-                }
-                SettingItem(
-                    title = stringResource(R.string.timetable_settings_app_bar_title),
-                    onClick = onClickTimeTableConfig,
-                )
-                SettingItem(
-                    title = stringResource(R.string.settings_timetable_theme_config_title),
-                    onClick = onClickThemeConfig,
-                )
-            }
-            Margin(height = 10.dp)
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_item_vacancy),
-                    hasNextPage = true,
-                    onClick = onClickVacancyNotification,
-                )
-                if (FeatureFlag.THEME_MARKET.isEnabled) {
+                    Margin(height = 10.dp)
                     SettingItem(
-                        title = stringResource(R.string.settings_item_theme_market),
-                        hasNextPage = true,
-                        onClick = onClickThemeMarket,
-                    )
-                }
-                if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                        title = stringResource(R.string.user_settings_app_bar_title),
+                        modifier = Modifier.height(66.dp),
+                        leadingIcon = {
+                            PersonIcon(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .padding(end = 5.dp),
+                            )
+                        },
+                        onClick = onClickUserConfig,
+                    ) {
+                        Text(
+                            text = user?.nickname.toString(),
+                            style = SNUTTTypography.body1.copy(
+                                color = SNUTTColors.Black500,
+                            ),
+                        )
+                    }
+                    Margin(height = 10.dp)
+                    SettingColumn {
+                        SettingItem(
+                            title = stringResource(R.string.settings_select_color_mode_title),
+                            onClick = onClickThemeModeSelect,
+                        ) {
+                            Text(
+                                text = themeMode.toString(),
+                                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                            )
+                        }
+                        SettingItem(
+                            title = stringResource(R.string.timetable_settings_app_bar_title),
+                            onClick = onClickTimeTableConfig,
+                        )
+                        SettingItem(
+                            title = stringResource(R.string.settings_timetable_theme_config_title),
+                            onClick = onClickThemeConfig,
+                        )
+                    }
+                    Margin(height = 10.dp)
+                    SettingColumn {
+                        SettingItem(
+                            title = stringResource(R.string.settings_item_vacancy),
+                            hasNextPage = true,
+                            onClick = onClickVacancyNotification,
+                        )
+                        if (FeatureFlag.THEME_MARKET.isEnabled) {
+                            SettingItem(
+                                title = stringResource(R.string.settings_item_theme_market),
+                                hasNextPage = true,
+                                onClick = onClickThemeMarket,
+                            )
+                        }
+                        if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                            SettingItem(
+                                title = stringResource(R.string.settings_item_lecture_diary),
+                                hasNextPage = true,
+                                onClick = onClickLectureDiary,
+                            )
+                        }
+                    }
+                    Margin(height = 10.dp)
+                    SettingColumn {
+                        SettingItem(
+                            title = stringResource(R.string.settings_version_info),
+                            hasNextPage = false,
+                        ) {
+                            Text(
+                                text = BuildConfig.VERSION_NAME,
+                                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                            )
+                        }
+                        SettingItem(
+                            title = stringResource(R.string.settings_team_info),
+                            onClick = onClickTeamInfo,
+                        )
+                    }
+                    Margin(height = 10.dp)
                     SettingItem(
-                        title = stringResource(R.string.settings_item_lecture_diary),
-                        hasNextPage = true,
-                        onClick = onClickLectureDiary,
+                        title = stringResource(R.string.settings_app_report_title),
+                        onClick = onClickAppReport,
                     )
-                }
-            }
-            Margin(height = 10.dp)
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_version_info),
-                    hasNextPage = false,
-                ) {
-                    Text(
-                        text = BuildConfig.VERSION_NAME,
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                    Margin(height = 10.dp)
+                    SettingColumn {
+                        SettingItem(
+                            title = stringResource(R.string.settings_licenses_title),
+                            onClick = onClickOpenLicenses,
+                        )
+                        SettingItem(
+                            title = stringResource(R.string.settings_service_info),
+                            onClick = onClickServiceInfo,
+                        )
+                        SettingItem(
+                            title = stringResource(R.string.settings_personal_information_policy),
+                            onClick = onClickPersonalInformationPolicy,
+                        )
+                    }
+                    Margin(height = 10.dp)
+                    SettingItem(
+                        title = stringResource(R.string.settings_logout_title),
+                        titleColor = SNUTTColors.Red,
+                        onClick = {
+                            logoutDialogState = true
+                        },
                     )
-                }
-                SettingItem(
-                    title = stringResource(R.string.settings_team_info),
-                    onClick = onClickTeamInfo,
-                )
-            }
-            Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.settings_app_report_title),
-                onClick = onClickAppReport,
-            )
-            Margin(height = 10.dp)
-            SettingColumn {
-                SettingItem(
-                    title = stringResource(R.string.settings_licenses_title),
-                    onClick = onClickOpenLicenses,
-                )
-                SettingItem(
-                    title = stringResource(R.string.settings_service_info),
-                    onClick = onClickServiceInfo,
-                )
-                SettingItem(
-                    title = stringResource(R.string.settings_personal_information_policy),
-                    onClick = onClickPersonalInformationPolicy,
-                )
-            }
-            Margin(height = 10.dp)
-            SettingItem(
-                title = stringResource(R.string.settings_logout_title),
-                titleColor = SNUTTColors.Red,
-                onClick = {
-                    logoutDialogState = true
-                },
-            )
 
-            if (BuildConfig.DEBUG) {
-                Margin(height = 10.dp)
-                SettingItem(
-                    title = "네트워크 로그",
-                    onClick = onClickNetworkLog,
-                )
+                    if (BuildConfig.DEBUG) {
+                        Margin(height = 10.dp)
+                        SettingItem(
+                            title = "네트워크 로그",
+                            onClick = onClickNetworkLog,
+                        )
+                    }
+                    Margin(height = 10.dp)
+                }
             }
-            Margin(height = 10.dp)
         }
     }
 
