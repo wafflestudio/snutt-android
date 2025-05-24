@@ -74,7 +74,7 @@ fun SettingsRoute(
         }
     }
 
-    SettingsPage(
+    SettingsScreen(
         uiState = uiState,
         onClickUserConfig = onNavigateUserConfig,
         onClickThemeModeSelect = onNavigateThemeModeSelect,
@@ -96,7 +96,7 @@ fun SettingsRoute(
 }
 
 @Composable
-fun SettingsPage(
+fun SettingsScreen(
     uiState: SettingsUiState,
     onClickUserConfig: () -> Unit,
     onClickThemeModeSelect: () -> Unit,
@@ -384,7 +384,7 @@ fun NewBadge(
 @Preview(showBackground = true)
 @Composable
 fun SettingsPagePreview() {
-    SettingsPage(
+    SettingsScreen(
         uiState = SettingsUiState.Success("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
     )
 }
