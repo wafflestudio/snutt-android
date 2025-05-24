@@ -51,18 +51,19 @@ import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun DiaryWriteRoute(modifier: Modifier = Modifier) {
-    val navController = LocalNavController.current
     val previewData = DiaryPreviewData.diaryWritePreviewData
 
     DiaryWriteScreen(
-        DiaryWriteUiState.Success(previewData),
-        {},
-    ) {
-    }
+        modifier = modifier,
+        diaryWriteUiState = DiaryWriteUiState.Success(previewData),
+        onTodayComplete = {},
+        onComplete = {}
+    )
 }
 
 @Composable
 fun DiaryWriteScreen(
+    modifier: Modifier = Modifier,
     diaryWriteUiState: DiaryWriteUiState,
     onTodayComplete: () -> Unit,
     onComplete: () -> Unit,
@@ -77,7 +78,7 @@ fun DiaryWriteScreen(
 
             Column {
                 Row(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .background(color = SNUTTColors.White)
                         .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
@@ -309,10 +310,10 @@ fun DiaryQuestionItem(
 fun DiaryWritePagePreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
     DiaryWriteScreen(
-        DiaryWriteUiState.Success(previewData),
-        {},
-    ) {
-    }
+        diaryWriteUiState = DiaryWriteUiState.Success(previewData),
+        onTodayComplete = {},
+        onComplete = {}
+    )
 }
 
 @Composable
