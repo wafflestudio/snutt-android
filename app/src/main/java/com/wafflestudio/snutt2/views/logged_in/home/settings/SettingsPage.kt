@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsRoute(
+    userViewModel: UserViewModel = hiltViewModel(),
     onNavigateUserConfig: () -> Unit,
     onNavigateThemeModeSelect: () -> Unit,
     onNavigateTimeTableConfig: () -> Unit,
@@ -50,6 +51,7 @@ fun SettingsRoute(
     onNavigateServiceInfo: () -> Unit,
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
+    onNavigateOnboardAsOrigin: () -> Unit,
 ) {
     SettingsPage(
         onClickUserConfig = onNavigateUserConfig,
@@ -65,12 +67,15 @@ fun SettingsRoute(
         onClickServiceInfo = onNavigateServiceInfo,
         onClickPersonalInformationPolicy = onNavigatePersonalInformationPolicy,
         onClickNetworkLog = onNavigateNetworkLog,
+        onConfirmLogout = {
+            // TODO
+            onNavigateOnboardAsOrigin()
+        },
     )
 }
 
 @Composable
 fun SettingsPage(
-    userViewModel: UserViewModel = hiltViewModel(),
     onClickUserConfig: () -> Unit,
     onClickThemeModeSelect: () -> Unit,
     onClickTimeTableConfig: () -> Unit,
@@ -84,6 +89,7 @@ fun SettingsPage(
     onClickServiceInfo: () -> Unit,
     onClickPersonalInformationPolicy: () -> Unit,
     onClickNetworkLog: () -> Unit,
+    onConfirmLogout: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -241,17 +247,7 @@ fun SettingsPage(
     if (logoutDialogState) {
         CustomDialog(
             onDismiss = { logoutDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        analyticsLogger.logEvent(AnalyticsEvent.Logout)
-                        viewModel.forceLogout()
-                        viewModel.performLogout()
-                        logoutDialogState = false
-                        navController.navigateAsOrigin(NavigationDestination.Onboard)
-                    }
-                }
-            },
+            onConfirm = onConfirmLogout,
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title),
         ) {
