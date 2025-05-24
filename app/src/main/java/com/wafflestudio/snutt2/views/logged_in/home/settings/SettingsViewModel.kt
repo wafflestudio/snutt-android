@@ -37,7 +37,7 @@ class SettingsViewModel @Inject constructor(
 
     fun hideLogoutDialog() {
         viewModelScope.launch {
-            showLogoutDialog.emit(true)
+            showLogoutDialog.emit(false)
         }
     }
 
