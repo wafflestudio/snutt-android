@@ -216,7 +216,7 @@ fun DiaryQuestionBox(
             .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
     ) {
         questions.forEachIndexed { index, (question, options) ->
-            var optionList = options
+            val optionList = options
             DiaryQuestionItem(onComplete, isTodayBox, question, optionList)
 
             if (index != questions.lastIndex) {
