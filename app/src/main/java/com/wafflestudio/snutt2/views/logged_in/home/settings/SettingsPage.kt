@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
-import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +23,6 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -33,11 +30,10 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsRoute(
-    userViewModel: UserViewModel = hiltViewModel(),
+    viewModel: SettingsViewModel = hiltViewModel(),
     onNavigateUserConfig: () -> Unit,
     onNavigateThemeModeSelect: () -> Unit,
     onNavigateTimeTableConfig: () -> Unit,
@@ -53,7 +49,10 @@ fun SettingsRoute(
     onNavigateNetworkLog: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
 ) {
+    val uiState by viewModel.settingsUiState.collectAsState()
+
     SettingsPage(
+        uiState = uiState,
         onClickUserConfig = onNavigateUserConfig,
         onClickThemeModeSelect = onNavigateThemeModeSelect,
         onClickTimeTableConfig = onNavigateTimeTableConfig,
@@ -76,6 +75,7 @@ fun SettingsRoute(
 
 @Composable
 fun SettingsPage(
+    uiState: SettingsUiState,
     onClickUserConfig: () -> Unit,
     onClickThemeModeSelect: () -> Unit,
     onClickTimeTableConfig: () -> Unit,
@@ -91,15 +91,7 @@ fun SettingsPage(
     onClickNetworkLog: () -> Unit,
     onConfirmLogout: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-    val analyticsLogger = LocalAnalyticsLogger.current
-    val viewModel = hiltViewModel<UserViewModel>()
     var logoutDialogState by remember { mutableStateOf(false) }
-    val themeMode by viewModel.themeMode.collectAsState()
-    val user by userViewModel.userInfo.collectAsState()
 
     Column(
         modifier = Modifier
