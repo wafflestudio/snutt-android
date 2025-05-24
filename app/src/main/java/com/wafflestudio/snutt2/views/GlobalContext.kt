@@ -79,7 +79,7 @@ val LocalNavBottomSheetState = compositionLocalOf<ModalBottomSheetState> {
 }
 
 val LocalAnalyticsLogger = compositionLocalOf<AnalyticsLogger> {
-    object: AnalyticsLogger {
+    object : AnalyticsLogger {
         override fun logEvent(event: AnalyticsEvent) {}
         override fun logScreen(screen: AnalyticsScreen) {}
     }

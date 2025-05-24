@@ -73,9 +73,7 @@ class SettingsViewModel @Inject constructor(
             settingPageNewBadgeTitles,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.Loading)
-
 }
-
 
 sealed interface SettingsUiState {
     data class Success(
