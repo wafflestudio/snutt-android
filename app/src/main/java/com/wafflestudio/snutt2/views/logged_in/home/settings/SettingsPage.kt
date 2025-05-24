@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -35,10 +36,55 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
+fun SettingsRoute(
+    onNavigateUserConfig: () -> Unit,
+    onNavigateThemeModeSelect: () -> Unit,
+    onNavigateTimeTableConfig: () -> Unit,
+    onNavigateThemeConfig: () -> Unit,
+    onNavigateVacancyNotification: () -> Unit,
+    onNavigateThemeMarket: () -> Unit,
+    onNavigateLectureDiary: () -> Unit,
+    onNavigateTeamInfo: () -> Unit,
+    onNavigateAppReport: () -> Unit,
+    onNavigateOpenLicenses: () -> Unit,
+    onNavigateServiceInfo: () -> Unit,
+    onNavigatePersonalInformationPolicy: () -> Unit,
+    onNavigateNetworkLog: () -> Unit,
+) {
+    SettingsPage(
+        onClickUserConfig = onNavigateUserConfig,
+        onClickThemeModeSelect = onNavigateThemeModeSelect,
+        onClickTimeTableConfig = onNavigateTimeTableConfig,
+        onClickThemeConfig = onNavigateThemeConfig,
+        onClickVacancyNotification = onNavigateVacancyNotification,
+        onClickThemeMarket = onNavigateThemeMarket,
+        onClickLectureDiary = onNavigateLectureDiary,
+        onClickTeamInfo = onNavigateTeamInfo,
+        onClickAppReport = onNavigateAppReport,
+        onClickOpenLicenses = onNavigateOpenLicenses,
+        onClickServiceInfo = onNavigateServiceInfo,
+        onClickPersonalInformationPolicy = onNavigatePersonalInformationPolicy,
+        onClickNetworkLog = onNavigateNetworkLog,
+    )
+}
+
+@Composable
 fun SettingsPage(
     userViewModel: UserViewModel = hiltViewModel(),
+    onClickUserConfig: () -> Unit,
+    onClickThemeModeSelect: () -> Unit,
+    onClickTimeTableConfig: () -> Unit,
+    onClickThemeConfig: () -> Unit,
+    onClickVacancyNotification: () -> Unit,
+    onClickThemeMarket: () -> Unit,
+    onClickLectureDiary: () -> Unit,
+    onClickTeamInfo: () -> Unit,
+    onClickAppReport: () -> Unit,
+    onClickOpenLicenses: () -> Unit,
+    onClickServiceInfo: () -> Unit,
+    onClickPersonalInformationPolicy: () -> Unit,
+    onClickNetworkLog: () -> Unit,
 ) {
-    val navController = LocalNavController.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
@@ -85,11 +131,7 @@ fun SettingsPage(
                             .padding(end = 5.dp),
                     )
                 },
-                onClick = {
-                    navController.navigate(
-                        NavigationDestination.UserConfig,
-                    )
-                },
+                onClick = onClickUserConfig,
             ) {
                 Text(
                     text = user?.nickname.toString(),
@@ -102,11 +144,7 @@ fun SettingsPage(
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ThemeModeSelect,
-                        )
-                    },
+                    onClick = onClickThemeModeSelect,
                 ) {
                     Text(
                         text = themeMode.toString(),
@@ -115,19 +153,11 @@ fun SettingsPage(
                 }
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.TimeTableConfig,
-                        )
-                    },
+                    onClick = onClickTimeTableConfig,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_theme_config_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ThemeConfig,
-                        )
-                    },
+                    onClick = onClickThemeConfig,
                 )
             }
             Margin(height = 10.dp)
@@ -135,32 +165,20 @@ fun SettingsPage(
                 SettingItem(
                     title = stringResource(R.string.settings_item_vacancy),
                     hasNextPage = true,
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.VacancyNotification,
-                        )
-                    },
+                    onClick = onClickVacancyNotification,
                 )
                 if (FeatureFlag.THEME_MARKET.isEnabled) {
                     SettingItem(
                         title = stringResource(R.string.settings_item_theme_market),
                         hasNextPage = true,
-                        onClick = {
-                            navController.navigate(
-                                NavigationDestination.ThemeMarket,
-                            )
-                        },
+                        onClick = onClickThemeMarket,
                     )
                 }
                 if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                     SettingItem(
                         title = stringResource(R.string.settings_item_lecture_diary),
                         hasNextPage = true,
-                        onClick = {
-                            navController.navigate(
-                                NavigationDestination.LectureDiary,
-                            )
-                        },
+                        onClick = onClickLectureDiary,
                     )
                 }
             }
@@ -177,47 +195,27 @@ fun SettingsPage(
                 }
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.TeamInfo,
-                        )
-                    },
+                    onClick = onClickTeamInfo,
                 )
             }
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_app_report_title),
-                onClick = {
-                    navController.navigate(
-                        NavigationDestination.AppReport,
-                    )
-                },
+                onClick = onClickAppReport,
             )
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.OpenLicenses,
-                        )
-                    },
+                    onClick = onClickOpenLicenses,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ServiceInfo,
-                        )
-                    },
+                    onClick = onClickServiceInfo,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.PersonalInformationPolicy,
-                        )
-                    },
+                    onClick = onClickPersonalInformationPolicy,
                 )
             }
             Margin(height = 10.dp)
@@ -233,9 +231,7 @@ fun SettingsPage(
                 Margin(height = 10.dp)
                 SettingItem(
                     title = "네트워크 로그",
-                    onClick = {
-                        navController.navigate(NavigationDestination.NetworkLog)
-                    },
+                    onClick = onClickNetworkLog,
                 )
             }
             Margin(height = 10.dp)
