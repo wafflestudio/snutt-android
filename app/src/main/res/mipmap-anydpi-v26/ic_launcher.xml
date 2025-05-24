@@ -1,0 +1,10 @@
+<!--
+    - 일반 모드에서는 background와 foreground를 조합해서 앱 아이콘 생성
+    - 테마 아이콘(Themed icons)을 활성화하거나 앱 아이콘에 팔레트를 적용을 활성화하면 monochrome만으로 앱 아이콘 생성
+-->
+
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+</adaptive-icon>

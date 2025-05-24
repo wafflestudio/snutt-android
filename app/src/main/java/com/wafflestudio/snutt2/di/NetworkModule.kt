@@ -11,6 +11,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.network.GlobalNetworkEventHandler
+import com.wafflestudio.snutt2.lib.network.GlobalNetworkExceptionInterceptor
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
@@ -40,6 +42,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
         snuttStorage: SNUTTStorage,
+        globalNetworkExceptionInterceptor: GlobalNetworkExceptionInterceptor,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
@@ -92,6 +95,7 @@ object NetworkModule {
                     .build()
                 chain.proceed(newRequest)
             }
+            .addInterceptor(globalNetworkExceptionInterceptor)
             .addInterceptor { chain ->
                 val response = chain.proceed(chain.request())
                 if (BuildConfig.DEBUG) snuttStorage.addNetworkLog(chain.createNewNetworkLog(context, response))
@@ -134,6 +138,12 @@ object NetworkModule {
     @Singleton
     fun provideSNUTTRestApi(@Named("Default") retrofit: Retrofit): SNUTTRestApi {
         return retrofit.create(SNUTTRestApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGlobalNetworkEventHandler(): GlobalNetworkEventHandler {
+        return GlobalNetworkEventHandler()
     }
 
     private const val SIZE_OF_CACHE = (

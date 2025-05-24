@@ -66,6 +66,7 @@
     <string name="error_vacancy_duplicate">이미 빈자리 알림을 받고 있는 강의입니다.</string>
     <string name="error_invalid_nickname">사용할 수 없는 닉네임입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
+    <string name="error_signout_failed">로그아웃에 실패하였습니다.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">회원가입</string>
     <string name="sign_up_id_title">아이디</string>

@@ -4,18 +4,11 @@ import android.content.Context
 import android.widget.Toast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.IOException
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,8 +19,6 @@ import javax.inject.Singleton
 @Singleton
 class ApiOnError @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val moshi: Moshi,
-    private val userRepository: UserRepository,
 ) : (Throwable) -> Unit {
 
     override fun invoke(error: Throwable) {
@@ -35,13 +26,6 @@ class ApiOnError @Inject constructor(
             Timber.e(error)
 
             when (error) {
-                is IOException -> { // network error
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.error_no_network),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
                 is MessagingError -> {
                     Toast.makeText(
                         context,
@@ -51,11 +35,14 @@ class ApiOnError @Inject constructor(
                 }
                 is ErrorParsedHttpException -> {
                     when (error.errorDTO?.code) {
-                        ErrorCode.SERVER_FAULT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_server_fault),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        // ApiOnError와 GlobalNetworkHandler 이중 동작 방지
+                        ErrorCode.SERVER_FAULT -> {}
+                        ErrorCode.WRONG_API_KEY -> {}
+                        ErrorCode.NO_USER_TOKEN -> {}
+                        ErrorCode.WRONG_USER_TOKEN -> {}
+                        ErrorCode.NO_ADMIN_PRIVILEGE -> {}
+                        ErrorCode.UNKNOWN_APP -> {}
+
                         ErrorCode.INVALID_EMAIL -> Toast.makeText(
                             context,
                             context.getString(R.string.error_invalid_email),
@@ -126,42 +113,6 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_wrong_verification_code),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        ErrorCode.WRONG_API_KEY -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_api_key),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_USER_TOKEN -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_user_token),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_USER_TOKEN -> {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.error_wrong_user_token),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                            CoroutineScope(Dispatchers.IO).launch {
-                                try {
-                                    userRepository.performLogout()
-                                } catch (e: Exception) {
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(
-                                            context,
-                                            "로그아웃에 실패하였습니다.",
-                                            Toast.LENGTH_SHORT,
-                                        )
-                                            .show()
-                                    }
-                                }
-                            }
-                        }
-                        ErrorCode.NO_ADMIN_PRIVILEGE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_admin_privilege),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.WRONG_ID -> Toast.makeText(
                             context,
                             context.getString(R.string.error_wrong_id),
@@ -175,11 +126,6 @@ class ApiOnError @Inject constructor(
                         ErrorCode.WRONG_FB_TOKEN -> Toast.makeText(
                             context,
                             context.getString(R.string.error_wrong_fb_token),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.UNKNOWN_APP -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_unknown_app),
                             Toast.LENGTH_SHORT,
                         ).show()
                         ErrorCode.INVALID_ID -> Toast.makeText(
@@ -321,14 +267,7 @@ class ApiOnError @Inject constructor(
                         ).show()
                     }
                 }
-                is kotlinx.coroutines.CancellationException -> {} // do nothing
-                else -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.error_unknown),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
+                else -> {}
             }
         }
     }
