@@ -171,7 +171,7 @@ fun SettingsPage(
                             onClick = onClickThemeModeSelect,
                         ) {
                             Text(
-                                text = uiState.themeMode.name,
+                                text = uiState.themeModeName,
                                 style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                             )
                         }

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +65,7 @@ class SettingsViewModel @Inject constructor(
 
         SettingsUiState.Success(
             user.nickname?.nickname ?: "",
-            themeMode,
+            themeMode.toString(),
             showLogoutDialog,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.Loading)
@@ -77,7 +76,7 @@ class SettingsViewModel @Inject constructor(
 sealed interface SettingsUiState {
     data class Success(
         val userName: String,
-        val themeMode: ThemeMode,
+        val themeModeName: String,
         val showLogoutDialog: Boolean,
     ) : SettingsUiState
 
