@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
@@ -21,6 +22,7 @@ class SettingsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
     private val analyticsLogger: AnalyticsLogger,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     private val showLogoutDialog = MutableStateFlow(false)
@@ -58,7 +60,8 @@ class SettingsViewModel @Inject constructor(
         userRepository.user,
         userRepository.themeMode,
         showLogoutDialog,
-    ) { user, themeMode, showLogoutDialog ->
+        remoteConfig.settingPageNewBadgeTitles,
+    ) { user, themeMode, showLogoutDialog, settingPageNewBadgeTitles ->
         if (user == null) {
             return@combine SettingsUiState.Error
         }
@@ -67,6 +70,7 @@ class SettingsViewModel @Inject constructor(
             user.nickname?.nickname ?: "",
             themeMode.toString(),
             showLogoutDialog,
+            settingPageNewBadgeTitles,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.Loading)
 
@@ -78,6 +82,7 @@ sealed interface SettingsUiState {
         val userName: String,
         val themeModeName: String,
         val showLogoutDialog: Boolean,
+        val settingPageNewBadgeTitles: List<String>,
     ) : SettingsUiState
 
     data object Loading : SettingsUiState

@@ -46,7 +46,6 @@ import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
@@ -156,6 +155,7 @@ fun SettingsPage(
                                     .padding(end = 5.dp),
                             )
                         },
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                         onClick = onClickUserConfig,
                     ) {
                         Text(
@@ -169,6 +169,7 @@ fun SettingsPage(
                     SettingColumn {
                         SettingItem(
                             title = stringResource(R.string.settings_select_color_mode_title),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickThemeModeSelect,
                         ) {
                             Text(
@@ -178,10 +179,12 @@ fun SettingsPage(
                         }
                         SettingItem(
                             title = stringResource(R.string.timetable_settings_app_bar_title),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickTimeTableConfig,
                         )
                         SettingItem(
                             title = stringResource(R.string.settings_timetable_theme_config_title),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickThemeConfig,
                         )
                     }
@@ -189,12 +192,14 @@ fun SettingsPage(
                     SettingColumn {
                         SettingItem(
                             title = stringResource(R.string.settings_item_vacancy),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = true,
                             onClick = onClickVacancyNotification,
                         )
                         if (FeatureFlag.THEME_MARKET.isEnabled) {
                             SettingItem(
                                 title = stringResource(R.string.settings_item_theme_market),
+                                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                                 hasNextPage = true,
                                 onClick = onClickThemeMarket,
                             )
@@ -202,6 +207,7 @@ fun SettingsPage(
                         if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                             SettingItem(
                                 title = stringResource(R.string.settings_item_lecture_diary),
+                                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                                 hasNextPage = true,
                                 onClick = onClickLectureDiary,
                             )
@@ -211,6 +217,7 @@ fun SettingsPage(
                     SettingColumn {
                         SettingItem(
                             title = stringResource(R.string.settings_version_info),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = false,
                         ) {
                             Text(
@@ -220,26 +227,31 @@ fun SettingsPage(
                         }
                         SettingItem(
                             title = stringResource(R.string.settings_team_info),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickTeamInfo,
                         )
                     }
                     Margin(height = 10.dp)
                     SettingItem(
                         title = stringResource(R.string.settings_app_report_title),
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                         onClick = onClickAppReport,
                     )
                     Margin(height = 10.dp)
                     SettingColumn {
                         SettingItem(
                             title = stringResource(R.string.settings_licenses_title),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickOpenLicenses,
                         )
                         SettingItem(
                             title = stringResource(R.string.settings_service_info),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickServiceInfo,
                         )
                         SettingItem(
                             title = stringResource(R.string.settings_personal_information_policy),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickPersonalInformationPolicy,
                         )
                     }
@@ -247,6 +259,7 @@ fun SettingsPage(
                     SettingItem(
                         title = stringResource(R.string.settings_logout_title),
                         titleColor = SNUTTColors.Red,
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                         onClick = onClickLogout,
                     )
 
@@ -254,6 +267,7 @@ fun SettingsPage(
                         Margin(height = 10.dp)
                         SettingItem(
                             title = "네트워크 로그",
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             onClick = onClickNetworkLog,
                         )
                     }
@@ -310,10 +324,10 @@ fun SettingItem(
     titleColor: Color = MaterialTheme.colors.onSurface,
     leadingIcon: @Composable () -> Unit = {},
     hasNextPage: Boolean = true,
+    settingPageNewBadgeTitles: List<String> = emptyList(),
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
 ) {
-    val newSettingItems by LocalRemoteConfig.current.settingPageNewBadgeTitles.collectAsState(emptyList())
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -330,7 +344,7 @@ fun SettingItem(
                 color = titleColor,
             ),
         )
-        if (newSettingItems.contains(title)) {
+        if (settingPageNewBadgeTitles.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -371,6 +385,6 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsPage(
-        uiState = SettingsUiState.Success("양주현", "다크", false), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState.Success("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
     )
 }
