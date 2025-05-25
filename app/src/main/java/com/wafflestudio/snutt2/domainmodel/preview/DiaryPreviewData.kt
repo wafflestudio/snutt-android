@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.domainmodel.preview
 
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
-import com.wafflestudio.snutt2.lib.Selectable
 
 object DiaryPreviewData {
 
@@ -20,7 +19,7 @@ object DiaryPreviewData {
                 ),
                 DiaryWriteQuestion(
                     question = "수업 끝까지 들을 것 같나요?",
-                    options = listOf("끝까지 들을 거에요", "모르겠어요", "드랍할 것 같아요")
+                    options = listOf("끝까지 들을 거에요", "모르겠어요", "드랍할 것 같아요"),
                 ),
             ),
         )

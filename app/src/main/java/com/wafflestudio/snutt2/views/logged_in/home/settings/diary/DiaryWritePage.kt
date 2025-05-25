@@ -43,11 +43,8 @@ import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
-import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.selectIndex
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun DiaryWriteRoute(modifier: Modifier = Modifier) {
@@ -57,7 +54,7 @@ fun DiaryWriteRoute(modifier: Modifier = Modifier) {
         modifier = modifier,
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onTodayComplete = {},
-        onComplete = {}
+        onComplete = {},
     )
 }
 
@@ -246,7 +243,6 @@ fun DiaryQuestionItem(
     question: String,
     options: List<String>,
 ) {
-
     var selectables = remember {
         mutableStateListOf(*options.map { it to false }.toTypedArray())
     }
@@ -278,7 +274,7 @@ fun DiaryQuestionItem(
                                     selectables[i] = label to (i == index)
                                 }
                             } else {
-                                val (label, isSelected) = selectables[index]
+                                val (label, _) = selectables[index]
                                 selectables[index] = label to !isSelected
                             }
                         }
@@ -312,7 +308,7 @@ fun DiaryWritePagePreview() {
     DiaryWriteScreen(
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onTodayComplete = {},
-        onComplete = {}
+        onComplete = {},
     )
 }
 

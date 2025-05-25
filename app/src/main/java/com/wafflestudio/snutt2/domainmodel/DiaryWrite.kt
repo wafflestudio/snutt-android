@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.domainmodel
 
-import com.wafflestudio.snutt2.lib.Selectable
-
 data class DiaryWriteQuestion(
     val question: String,
     val options: List<String>,
