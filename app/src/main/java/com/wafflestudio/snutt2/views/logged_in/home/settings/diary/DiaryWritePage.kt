@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -45,6 +47,7 @@ import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import kotlinx.coroutines.launch
 
 @Composable
 fun DiaryWriteRoute(modifier: Modifier = Modifier) {
@@ -65,6 +68,8 @@ fun DiaryWriteScreen(
     onTodayComplete: () -> Unit,
     onComplete: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
     when (diaryWriteUiState) {
         DiaryWriteUiState.Error -> {}
         DiaryWriteUiState.Loading -> {}
@@ -101,20 +106,26 @@ fun DiaryWriteScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(scrollState)
                         .background(color = SNUTTColors.Gray),
                 ) {
                     val todayOptions = diaryWriteUiState.diaryList.todayOptions
                     val questions = diaryWriteUiState.diaryList.questions
 
                     DiaryQuestionBox(
-                        { isTodayCompleted = true },
+                        {
+                            isTodayCompleted = true
+                            scope.launch {
+                                scrollState.animateScrollTo(500) // TOOD: 적절한 곳으로 스크롤되게 바꾸기
+                            };
+                        },
                         onComplete,
                         listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
                         true,
                     )
 
-                    if (isTodayCompleted) {
+                    if(isTodayCompleted)
+                    {
                         DiaryQuestionBox(
                             onComplete,
                             {},
@@ -123,7 +134,7 @@ fun DiaryWriteScreen(
                         )
 
                         MoreTextItem(
-                            moreTextInit = diaryWriteUiState.diaryList.moreText,
+                            moreTextInit = diaryWriteUiState.diaryList.moreText
                         )
 
                         Text(
@@ -245,8 +256,8 @@ fun DiaryQuestionItem(
 
 @Composable
 fun MoreTextItem(
-    moreTextInit: String,
-) {
+    moreTextInit: String
+){
     var isExpanded by remember { mutableStateOf(false) }
     var moreText by remember { mutableStateOf(moreTextInit) }
     Column(
