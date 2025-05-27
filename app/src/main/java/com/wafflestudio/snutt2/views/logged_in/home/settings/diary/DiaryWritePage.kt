@@ -70,7 +70,7 @@ fun DiaryWriteScreen(
         DiaryWriteUiState.Loading -> {}
         DiaryWriteUiState.Empty -> {}
         is DiaryWriteUiState.Success -> {
-
+            var isTodayCompleted by remember { mutableStateOf(false) }
 
             Column {
                 Row(
@@ -108,31 +108,33 @@ fun DiaryWriteScreen(
                     val questions = diaryWriteUiState.diaryList.questions
 
                     DiaryQuestionBox(
+                        { isTodayCompleted = true },
                         onComplete,
-                        onTodayComplete,
                         listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
                         true,
                     )
 
-                    DiaryQuestionBox(
-                        onComplete,
-                        {},
-                        questions,
-                        false,
-                    )
+                    if (isTodayCompleted) {
+                        DiaryQuestionBox(
+                            onComplete,
+                            {},
+                            questions,
+                            false,
+                        )
 
-                    MoreTextItem(
-                        moreTextInit = diaryWriteUiState.diaryList.moreText
-                    )
+                        MoreTextItem(
+                            moreTextInit = diaryWriteUiState.diaryList.moreText,
+                        )
 
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
-                            .align(Alignment.End)
-                            .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
-                            .padding(vertical = 12.dp, horizontal = 48.dp),
-                        text = "다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
-                    )
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
+                                .align(Alignment.End)
+                                .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
+                                .padding(vertical = 12.dp, horizontal = 48.dp),
+                            text = "다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
+                        )
+                    }
                 }
             }
         }
@@ -167,7 +169,7 @@ fun DiaryQuestionBox(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
                             .padding(horizontal = 12.dp, vertical = 4.dp)
-                            .clicks { }, // TODO: 완료 누르면 밑에 거 나오도록 + 자동 스크롤
+                            .clicks { onTodayComplete() },
                     )
                 }
             }
@@ -183,7 +185,7 @@ fun DiaryQuestionItem(
     question: String,
     options: List<String>,
 ) {
-    var selectables = remember {
+    val selectables = remember {
         mutableStateListOf(*options.map { it to false }.toTypedArray())
     }
 
@@ -243,8 +245,8 @@ fun DiaryQuestionItem(
 
 @Composable
 fun MoreTextItem(
-    moreTextInit: String
-){
+    moreTextInit: String,
+) {
     var isExpanded by remember { mutableStateOf(false) }
     var moreText by remember { mutableStateOf(moreTextInit) }
     Column(
