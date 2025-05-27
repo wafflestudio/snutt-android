@@ -70,8 +70,7 @@ fun DiaryWriteScreen(
         DiaryWriteUiState.Loading -> {}
         DiaryWriteUiState.Empty -> {}
         is DiaryWriteUiState.Success -> {
-            var isExpanded by remember { mutableStateOf(false) }
-            var moreText by remember { mutableStateOf(diaryWriteUiState.diaryList.moreText) }
+
 
             Column {
                 Row(
@@ -122,68 +121,9 @@ fun DiaryWriteScreen(
                         false,
                     )
 
-                    Column(
-                        modifier = Modifier
-                            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-                            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
-                            .padding(vertical = 16.dp, horizontal = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clicks { isExpanded = !isExpanded },
-                            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                                Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
-                            }
-                            ArrowDownIcon(
-                                modifier = Modifier
-                                    .height(24.dp)
-                                    .rotate(if (isExpanded) 180f else 0f),
-                            )
-                        }
-
-                        AnimatedVisibility(isExpanded) {
-                            Column(
-                                modifier = Modifier
-                                    .drawBehind {
-                                        drawLine(
-                                            color = SNUTTColors.Gray,
-                                            start = Offset(0f, 0f),
-                                            end = Offset(size.width, 0f),
-                                            strokeWidth = 0.8.dp.toPx(),
-                                        )
-                                    },
-                            ) {
-                                EditText(
-                                    value = moreText,
-                                    onValueChange = { moreText = it },
-                                    hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
-                                    underlineEnabled = false,
-                                    modifier = Modifier.padding(vertical = 16.dp),
-                                )
-
-                                Text(
-                                    buildAnnotatedString {
-                                        withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) { // TODO: 200자 넘으면 색깔 바꾸고, 더 못 입력하게
-                                            append("${moreText.length}")
-                                        }
-                                        withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
-                                            append("/")
-                                            append("200")
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .align(Alignment.End)
-                                        .padding(top = 4.dp),
-                                    style = SNUTTTypography.button.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
-                                )
-                            }
-                        }
-                    }
+                    MoreTextItem(
+                        moreTextInit = diaryWriteUiState.diaryList.moreText
+                    )
 
                     Text(
                         modifier = Modifier
@@ -302,6 +242,76 @@ fun DiaryQuestionItem(
 }
 
 @Composable
+fun MoreTextItem(
+    moreTextInit: String
+){
+    var isExpanded by remember { mutableStateOf(false) }
+    var moreText by remember { mutableStateOf(moreTextInit) }
+    Column(
+        modifier = Modifier
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
+            .padding(vertical = 16.dp, horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clicks { isExpanded = !isExpanded },
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
+                Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
+            }
+            ArrowDownIcon(
+                modifier = Modifier
+                    .height(24.dp)
+                    .rotate(if (isExpanded) 180f else 0f),
+            )
+        }
+
+        AnimatedVisibility(isExpanded) {
+            Column(
+                modifier = Modifier
+                    .drawBehind {
+                        drawLine(
+                            color = SNUTTColors.Gray,
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f),
+                            strokeWidth = 0.8.dp.toPx(),
+                        )
+                    },
+            ) {
+                EditText(
+                    value = moreText,
+                    onValueChange = { moreText = it },
+                    hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
+                    underlineEnabled = false,
+                    modifier = Modifier.padding(vertical = 16.dp),
+                )
+
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) { // TODO: 200자 넘으면 색깔 바꾸고, 더 못 입력하게
+                            append("${moreText.length}")
+                        }
+                        withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
+                            append("/")
+                            append("200")
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 4.dp),
+                    style = SNUTTTypography.button.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
+                )
+            }
+        }
+    }
+}
+
+@Composable
 @Preview
 fun DiaryWritePagePreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
@@ -321,5 +331,13 @@ fun DiaryQuestionBoxPreview() {
         onTodayComplete = {},
         questions = DiaryPreviewData.diaryWritePreviewData.questions,
         isTodayBox = false,
+    )
+}
+
+@Composable
+@Preview
+fun MoreTextPreview() {
+    MoreTextItem(
+        moreTextInit = DiaryPreviewData.diaryWritePreviewData.moreText,
     )
 }
