@@ -29,6 +29,11 @@
         <!--For SearchView home indicator -->
         <item name="homeAsUpIndicator">@drawable/ic_back</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
+
+        <!-- 최신 안드로이드 UI 트렌드는 앱 콘텐츠가 화면 전체를 사용하는 'Edge-to-Edge' 경험을 제공하는 것. -->
+        <!-- target SDK 35 대응하면서 추가. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">

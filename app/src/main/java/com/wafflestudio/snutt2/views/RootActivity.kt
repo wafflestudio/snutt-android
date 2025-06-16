@@ -27,8 +27,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -128,6 +128,11 @@ class RootActivity : AppCompatActivity() {
         installSplashScreen()
 
         super.onCreate(null)
+
+        // Edge-to-Edge 활성화
+        // decorFitsSystemWindows를 false로 설정하여 앱 콘텐츠를 시스템 바 뒤까지 확장
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
@@ -553,11 +558,8 @@ class RootActivity : AppCompatActivity() {
                  * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
                  */
                 val isDarkMode = isDarkMode(this@RootActivity, themeMode)
-                val primaryColor = ContextCompat.getColor(this@RootActivity, if (isDarkMode) R.color.black_dark else R.color.white)
                 window.apply {
                     setBackgroundDrawableResource(if (isDarkMode) R.color.black_dark else R.color.white)
-                    statusBarColor = primaryColor
-                    navigationBarColor = primaryColor
                 }
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     isAppearanceLightStatusBars = isDarkMode.not()
