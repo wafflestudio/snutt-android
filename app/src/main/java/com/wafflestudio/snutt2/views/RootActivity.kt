@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,13 +17,17 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
 import androidx.compose.material.navigation.BottomSheetNavigator
 import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -127,11 +132,12 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
-        super.onCreate(null)
-
         // Edge-to-Edge 활성화
         // decorFitsSystemWindows를 false로 설정하여 앱 콘텐츠를 시스템 바 뒤까지 확장
+        enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        super.onCreate(null)
 
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
@@ -164,8 +170,19 @@ class RootActivity : AppCompatActivity() {
         composeRoot.setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
+                // safeDrawingPadding()은 상태바, 내비게이션바, 노치 영역을 모두 포함하여
+                // 안전한 영역에만 콘텐츠를 그리도록 패딩을 적용합니다.
                 SNUTTTheme {
-                    setUpUI(startDestination)
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .safeDrawingPadding(), // 👈 핵심!
+                    ) {
+                        // 여기에 앱의 메인 화면 Composable을 배치합니다.
+                        setUpUI(startDestination)
+                    }
+
+//                    setUpUI(startDestination)
                 }
             }
         }

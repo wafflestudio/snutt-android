@@ -1,7 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,16 +12,6 @@
 
         <!-- RemoveLecture shadow below action bar Android < 5.0 -->
         <item name="android:windowContentOverlay">@null</item>
-
-        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-
-        <item name="actionMenuTextAppearance">@style/Text.ActionBarItemMenu</item>
-        <!--<item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
-        <!--<item name="android:actionBarTabTextStyle">@style/Text.ActionBarTitle</item>-->
-        <!--
-                <item name="colorControlHighlight">#40ffffff</item> // this is for click event
-        -->
 
         <!--For EditText-->
         <item name="editTextStyle">@style/EditTextStyle</item>
@@ -36,41 +29,10 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
-        <item name="elevation">0dp</item>
-        <item name="background">@drawable/actionbar_background</item>
-        <item name="titleTextStyle">@style/Text.ActionBarTitle</item>
-        <item name="android:titleTextStyle">@style/Text.ActionBarTitle</item>
-        <item name="homeAsUpIndicator">@drawable/ic_back</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
-    </style>
-
-    <style name="Text.ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textSize">18dp</item>
-        <!--        <item name="android:textStyle">bold</item>-->
-    </style>
-
-    <style name="Text.ActionBarItemMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textSize">14dp</item>
-        <!--<item name="android:textStyle">bold</item>-->
-    </style>
-
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="android:textColorHint">#34000000</item>
         <item name="android:textCursorDrawable">@drawable/text_cursor</item>
         <item name="android:background">@drawable/edittext_background</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
@@ -104,7 +66,7 @@
 
     <!--For report Fragment-->
 
-    <style name="popup_dialog" parent="Theme.AppCompat.Light">
+    <style name="popup_dialog" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowMinWidthMajor">100%</item>
         <item name="windowMinWidthMinor">100%</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -113,7 +75,7 @@
 
     <style name="Theme.Snutt.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">?android:attr/colorBackground</item>
-        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/snutt_splash_icon</item>
     </style>
 
