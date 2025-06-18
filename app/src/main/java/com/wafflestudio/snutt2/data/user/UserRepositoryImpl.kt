@@ -5,6 +5,8 @@ import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domainmodel.toNetworkModel
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
@@ -263,6 +265,14 @@ class UserRepositoryImpl @Inject constructor(
                 clientSecret = clientSecret,
             ),
         ).accessToken
+    }
+
+    override suspend fun getPushPreferences(): PushPreferences {
+        return api._getPushPreferences().toDomainModel()
+    }
+
+    override suspend fun postPushPreferences(pushPreferences: PushPreferences) {
+        api._postPushPreferences(pushPreferences.toNetworkModel())
     }
 
     /**
