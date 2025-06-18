@@ -188,6 +188,7 @@ fun ThemeDetailScreen(
                     .logImpression(
                         when {
                             themeDetailUiState.editingTheme.isNew -> AnalyticsScreen.ThemeCustomNew
+                            themeDetailUiState.editingTheme.isFromMarket -> AnalyticsScreen.ThemeDownloaded
                             themeDetailUiState.editingTheme.isCustomTheme -> AnalyticsScreen.ThemeCustomEdit
                             else -> AnalyticsScreen.ThemeBasicDetail
                         },
