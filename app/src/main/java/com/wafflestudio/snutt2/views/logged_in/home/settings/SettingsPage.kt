@@ -152,6 +152,15 @@ fun SettingsPage(
                         },
                     )
                 }
+                SettingItem(
+                    title = stringResource(R.string.settings_item_push_preferences),
+                    hasNextPage = true,
+                    onClick = {
+                        navController.navigate(
+                            NavigationDestination.PushPreferences,
+                        )
+                    },
+                )
                 if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                     SettingItem(
                         title = stringResource(R.string.settings_item_lecture_diary),
