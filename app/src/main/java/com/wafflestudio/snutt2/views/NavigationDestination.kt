@@ -117,6 +117,10 @@ sealed interface NavigationDestination {
     data object ThemeMarket : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("push_preferences")
+    data object PushPreferences : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("lecture_diary")
     data object LectureDiary : NavigationDestination
 
