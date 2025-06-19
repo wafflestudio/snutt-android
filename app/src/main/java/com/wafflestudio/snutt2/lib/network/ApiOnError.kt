@@ -341,6 +341,7 @@ object ErrorCode {
     const val INVALID_EMAIL = 0x300F
     const val VACANCY_PREV_SEMESTER = 0x9C45
     const val VACANCY_DUPLICATE = 0x9FC4
+    const val USED_EMAIL = 0x9FC5
     const val INVALID_NICKNAME = 0x9C48
 
     /* 401 - Request was invalid */
