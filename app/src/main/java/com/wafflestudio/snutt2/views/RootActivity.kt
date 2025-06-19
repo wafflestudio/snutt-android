@@ -56,6 +56,7 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
+import com.wafflestudio.snutt2.test.TestRoute
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -447,6 +448,15 @@ class RootActivity : AppCompatActivity() {
             )
         }
         if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog> { NetworkLogPage() }
+
+        if (BuildConfig.DEBUG) {
+            composableAnimated<NavigationDestination.Test> {
+                TestRoute(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateOnBoard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                )
+            }
+        }
     }
 
     // 안드 13 대응

@@ -238,6 +238,16 @@ fun SettingsPage(
                     },
                 )
             }
+
+            if (BuildConfig.DEBUG) {
+                Margin(height = 10.dp)
+                SettingItem(
+                    title = "리팩토링 테스트",
+                    onClick = {
+                        navController.navigate(NavigationDestination.Test)
+                    },
+                )
+            }
             Margin(height = 10.dp)
         }
     }
