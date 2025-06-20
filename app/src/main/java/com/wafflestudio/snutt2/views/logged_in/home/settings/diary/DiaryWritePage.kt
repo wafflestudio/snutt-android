@@ -127,13 +127,12 @@ fun DiaryWriteScreen(
                         true,
                     )
 
-                    if(isTodayCompleted)
-                    {
-                        Column (modifier = Modifier.onGloballyPositioned { coordinates ->
-                            toScrollOffset.value = coordinates.positionInParent().y.toInt()
-                        }){
-
-
+                    if (isTodayCompleted) {
+                        Column(
+                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                toScrollOffset.value = coordinates.positionInParent().y.toInt()
+                            },
+                        ) {
                             DiaryQuestionBox(
                                 onComplete,
                                 {},
@@ -142,7 +141,7 @@ fun DiaryWriteScreen(
                             )
 
                             MoreTextItem(
-                                moreTextInit = diaryWriteUiState.diaryList.moreText
+                                moreTextInit = diaryWriteUiState.diaryList.moreText,
                             )
 
                             Text(
@@ -264,8 +263,8 @@ fun DiaryQuestionItem(
 
 @Composable
 fun MoreTextItem(
-    moreTextInit: String
-){
+    moreTextInit: String,
+) {
     var isExpanded by remember { mutableStateOf(false) }
     var moreText by remember { mutableStateOf(moreTextInit) }
     Column(
