@@ -2,8 +2,10 @@ package com.wafflestudio.snutt2.test
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.lib.network.NetworkError
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.lib.network.SignupError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,16 +71,16 @@ class TestViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleTestError(error: NetworkError) {
+    private suspend fun handleTestError(error: DomainError) {
         when (error) {
             // AuthError는 특수한 경우
-            is NetworkError.AuthError -> {
+            is AuthError -> {
                 _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
                 testRepository.clearToken()
                 _testUiEvent.emit(TestUiEvent.NavigateToOnboard)
             }
             // Local Exception
-            is NetworkError.SignupError -> {
+            is SignupError -> {
                 _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
             }
             // 특수하지 않은 Global Exception
