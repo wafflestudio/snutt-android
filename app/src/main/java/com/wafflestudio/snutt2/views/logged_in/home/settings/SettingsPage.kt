@@ -65,6 +65,7 @@ fun SettingsRoute(
     onNavigateServiceInfo: () -> Unit,
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
+    onNavigateTest: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
 ) {
     val uiState by viewModel.settingsUiState.collectAsState()
@@ -91,6 +92,7 @@ fun SettingsRoute(
         onClickServiceInfo = onNavigateServiceInfo,
         onClickPersonalInformationPolicy = onNavigatePersonalInformationPolicy,
         onClickNetworkLog = onNavigateNetworkLog,
+        onClickTest = onNavigateTest,
         onClickLogout = viewModel::showLogoutDialog,
         onConfirmLogout = viewModel::performLogout,
         onDismissLogout = viewModel::hideLogoutDialog,
@@ -114,6 +116,7 @@ fun SettingsScreen(
     onClickServiceInfo: () -> Unit,
     onClickPersonalInformationPolicy: () -> Unit,
     onClickNetworkLog: () -> Unit,
+    onClickTest: () -> Unit,
     onClickLogout: () -> Unit,
     onConfirmLogout: () -> Unit,
     onDismissLogout: () -> Unit,
@@ -280,9 +283,7 @@ fun SettingsScreen(
                 Margin(height = 10.dp)
                 SettingItem(
                     title = "리팩토링 테스트",
-                    onClick = {
-                        navController.navigate(NavigationDestination.Test)
-                    },
+                    onClick = onClickTest,
                 )
             }
             Margin(height = 10.dp)
@@ -397,6 +398,6 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
     )
 }
