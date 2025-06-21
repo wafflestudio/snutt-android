@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.lib.network.createNewNetworkLog
@@ -147,5 +148,13 @@ object NetworkModule {
         @ApplicationContext context: Context,
     ): ConnectivityManager {
         return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDisplayMessageResolver(
+        @ApplicationContext context: Context,
+    ): DisplayMessageResolver {
+        return DisplayMessageResolver(context)
     }
 }

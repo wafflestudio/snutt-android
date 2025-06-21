@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.test
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.SignupError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TestViewModel @Inject constructor(
     private val testRepository: TestRepository,
+    private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _testUiState = MutableStateFlow<TestUiState>(TestUiState.Initial)
     val testUiState = _testUiState.asStateFlow()
@@ -71,21 +73,22 @@ class TestViewModel @Inject constructor(
     }
 
     private suspend fun handleTestError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error) ?: error.displayMessage
         when (error) {
             // Local Exception 중 특수한 경우가 있다면 여기에서 처리 (여기에서는 없음, 순서도 상관없음)
             // AuthError는 Global Exception 중 특수한 경우
             is AuthError -> {
-                _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
+                _testUiEvent.emit(TestUiEvent.ShowToast(displayMessage))
                 testRepository.clearToken()
                 _testUiEvent.emit(TestUiEvent.NavigateToOnboard)
             }
             // 특수하지 않은 Local Exception
             is SignupError -> {
-                _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
+                _testUiEvent.emit(TestUiEvent.ShowToast(displayMessage))
             }
             // 특수하지 않은 Global Exception
             else -> {
-                _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
+                _testUiEvent.emit(TestUiEvent.ShowToast(displayMessage))
             }
         }
     }
