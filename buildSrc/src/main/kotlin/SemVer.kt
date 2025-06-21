@@ -12,6 +12,6 @@ object SemVer {
         return listOf(major, minor, patch, rc)
             .fold(0L) { acc, next ->
                 acc * 100 + next
-            } + 2100000000L
+            } + 2010000000L
     }
 }
