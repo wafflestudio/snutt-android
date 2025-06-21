@@ -178,6 +178,9 @@ fun HomePage() {
                         onNavigateThemeMarket = {
                             navController.navigate(NavigationDestination.ThemeMarket)
                         },
+                        onNavigatePushPreference = {
+                            navController.navigate(NavigationDestination.PushPreferences)
+                        },
                         onNavigateLectureDiary = {
                             navController.navigate(NavigationDestination.LectureDiary)
                         },

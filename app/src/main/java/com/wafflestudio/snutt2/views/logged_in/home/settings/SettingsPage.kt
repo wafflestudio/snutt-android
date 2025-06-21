@@ -57,6 +57,7 @@ fun SettingsRoute(
     onNavigateThemeConfig: () -> Unit,
     onNavigateVacancyNotification: () -> Unit,
     onNavigateThemeMarket: () -> Unit,
+    onNavigatePushPreference: () -> Unit,
     onNavigateLectureDiary: () -> Unit,
     onNavigateTeamInfo: () -> Unit,
     onNavigateAppReport: () -> Unit,
@@ -82,6 +83,7 @@ fun SettingsRoute(
         onClickThemeConfig = onNavigateThemeConfig,
         onClickVacancyNotification = onNavigateVacancyNotification,
         onClickThemeMarket = onNavigateThemeMarket,
+        onClickPushPreference = onNavigatePushPreference,
         onClickLectureDiary = onNavigateLectureDiary,
         onClickTeamInfo = onNavigateTeamInfo,
         onClickAppReport = onNavigateAppReport,
@@ -104,6 +106,7 @@ fun SettingsScreen(
     onClickThemeConfig: () -> Unit,
     onClickVacancyNotification: () -> Unit,
     onClickThemeMarket: () -> Unit,
+    onClickPushPreference: () -> Unit,
     onClickLectureDiary: () -> Unit,
     onClickTeamInfo: () -> Unit,
     onClickAppReport: () -> Unit,
@@ -203,11 +206,7 @@ fun SettingsScreen(
                 SettingItem(
                     title = stringResource(R.string.settings_item_push_preferences),
                     hasNextPage = true,
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.PushPreferences,
-                        )
-                    },
+                    onClick = onClickPushPreference,
                 )
                 if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                     SettingItem(
