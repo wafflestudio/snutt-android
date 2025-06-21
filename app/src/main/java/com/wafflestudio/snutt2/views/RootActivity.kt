@@ -476,6 +476,15 @@ class RootActivity : AppCompatActivity() {
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
         }
+        composableAnimated<NavigationDestination.PushPreferences> {
+            PushPreferencesRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.PushPreferences::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+            )
+        }
         composableAnimated<NavigationDestination.ThemeMarket> {
             ThemeMarketRoute(
                 onBackClick = { navController.popBackStack() },

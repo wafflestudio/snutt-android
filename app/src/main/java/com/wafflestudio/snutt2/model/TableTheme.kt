@@ -256,6 +256,7 @@ data class EditingTheme(
     val isEditable get() = originalTheme.isEditable
     val isNew get() = originalTheme.isNew
     val isCustomTheme get() = originalTheme is CustomTheme
+    val isFromMarket get() = originalTheme is CustomTheme && originalTheme.isFromMarket
 
     fun hasChange(): Boolean {
         return if (originalTheme.isEditable) {
