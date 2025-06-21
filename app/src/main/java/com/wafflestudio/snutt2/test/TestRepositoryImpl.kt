@@ -29,7 +29,8 @@ class TestRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun clearToken() {
+    override suspend fun clearToken(): Result<Unit> {
         storage.accessToken.clear()
+        return Result.Success(Unit)
     }
 }

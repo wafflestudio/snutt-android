@@ -7,5 +7,5 @@ interface TestRepository {
 
     suspend fun getNotificationCount(): Result<Int>
 
-    suspend fun clearToken()
+    suspend fun clearToken(): Result<Unit>
 }
