@@ -11,7 +11,9 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -77,5 +79,8 @@ val LocalNavBottomSheetState = compositionLocalOf<ModalBottomSheetState> {
 }
 
 val LocalAnalyticsLogger = compositionLocalOf<AnalyticsLogger> {
-    throw RuntimeException("")
+    object : AnalyticsLogger {
+        override fun logEvent(event: AnalyticsEvent) {}
+        override fun logScreen(screen: AnalyticsScreen) {}
+    }
 }
