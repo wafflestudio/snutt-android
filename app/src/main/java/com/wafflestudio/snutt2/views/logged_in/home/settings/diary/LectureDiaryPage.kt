@@ -19,7 +19,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun LectureDiaryPage() {
+fun DiaryListPage() {
     val semesters = listOf("24-1", "23-겨울", "23-2", "23-1", "23-겨울")
     val diaries = listOf("1", "2", "3")
     Box {
@@ -63,6 +63,6 @@ fun LectureDiaryPage() {
 
 @Composable
 @Preview()
-fun LectureDiaryPagePreview() {
-    LectureDiaryPage()
+fun DiaryListPagePreview() {
+    DiaryListPage()
 }
