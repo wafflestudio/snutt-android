@@ -70,7 +70,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.LectureDiaryPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -466,13 +467,23 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
-        composableAnimated<NavigationDestination.LectureDiary> { LectureDiaryPage() }
+        composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
+        composableAnimated<NavigationDestination.LectureDiaryWrite> { DiaryWriteRoute() }
         composableAnimated<NavigationDestination.VacancyNotification> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
+        }
+        composableAnimated<NavigationDestination.PushPreferences> {
+            PushPreferencesRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.PushPreferences::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+            )
         }
         composableAnimated<NavigationDestination.ThemeMarket> {
             ThemeMarketRoute(

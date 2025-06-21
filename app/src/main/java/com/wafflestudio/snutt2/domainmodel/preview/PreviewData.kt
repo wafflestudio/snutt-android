@@ -1,8 +1,12 @@
-package com.wafflestudio.snutt2.domainmodel
+package com.wafflestudio.snutt2.domainmodel.preview
 
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 
 import androidx.compose.ui.graphics.Color
+import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
+import com.wafflestudio.snutt2.domainmodel.domainModel
 import java.time.DayOfWeek
 import java.time.LocalTime
 

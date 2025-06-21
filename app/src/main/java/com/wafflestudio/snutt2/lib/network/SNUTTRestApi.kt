@@ -277,6 +277,14 @@ interface SNUTTRestApi {
         @Path("lectureId") lectureId: String,
     ): GetLectureReviewSummaryResult
 
+    @GET("/v1/push/preferences")
+    suspend fun _getPushPreferences(): PushPreferenceDto
+
+    @POST("/v1/push/preferences")
+    suspend fun _postPushPreferences(
+        @Body pushPreferences: PushPreferenceDto,
+    )
+
     /**
      * 소셜 로그인 관련.
      *
