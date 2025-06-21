@@ -35,7 +35,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.TagIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
-import com.wafflestudio.snutt2.domainmodel.PreviewData
+import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
