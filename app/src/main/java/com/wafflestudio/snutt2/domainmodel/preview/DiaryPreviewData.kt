@@ -23,4 +23,9 @@ object DiaryPreviewData {
                 ),
             ),
         )
+    val diaryWriteQuestion =
+        DiaryWriteQuestion(
+            question = "수업 끝까지 들을 것 같나요?",
+            options = listOf("끝까지 들을 거에요", "모르겠어요", "드랍할 것 같아요"),
+        )
 }
