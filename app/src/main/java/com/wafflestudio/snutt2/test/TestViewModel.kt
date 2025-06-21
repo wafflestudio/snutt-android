@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SignupError
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,15 +28,14 @@ class TestViewModel @Inject constructor(
     fun registerLocal(id: String, password: String, email: String) {
         viewModelScope.launch {
             _testUiState.emit(TestUiState.Loading)
-            when (val result = testRepository.registerLocal(id, password, email)) {
-                is Result.Success -> {
+            testRepository.registerLocal(id, password, email)
+                .onSuccess {
                     _testUiState.emit(TestUiState.Success(-1))
                 }
-                is Result.Fail -> {
+                .onFailure { error ->
                     _testUiState.emit(TestUiState.Fail)
-                    handleTestError(result.error)
+                    handleTestError(error)
                 }
-            }
         }
     }
 
@@ -44,42 +44,42 @@ class TestViewModel @Inject constructor(
             _testUiState.emit(TestUiState.Loading)
             testRepository.clearToken()
 
-            when (val result = testRepository.getNotificationCount()) {
-                is Result.Success -> {
-                    _testUiState.emit(TestUiState.Success(result.data))
+            testRepository.getNotificationCount()
+                .onSuccess { data ->
+                    _testUiState.emit(TestUiState.Success(data))
                 }
-                is Result.Fail -> {
+                .onFailure { error ->
                     _testUiState.emit(TestUiState.Fail)
-                    handleTestError(result.error)
+                    handleTestError(error)
                 }
-            }
         }
     }
 
     fun getNotificationCount() {
         viewModelScope.launch {
             _testUiState.emit(TestUiState.Loading)
-            when (val result = testRepository.getNotificationCount()) {
-                is Result.Success -> {
-                    _testUiState.emit(TestUiState.Success(result.data))
+
+            testRepository.getNotificationCount()
+                .onSuccess { data ->
+                    _testUiState.emit(TestUiState.Success(data))
                 }
-                is Result.Fail -> {
+                .onFailure { error ->
                     _testUiState.emit(TestUiState.Fail)
-                    handleTestError(result.error)
+                    handleTestError(error)
                 }
-            }
         }
     }
 
     private suspend fun handleTestError(error: DomainError) {
         when (error) {
-            // AuthError는 특수한 경우
+            // Local Exception 중 특수한 경우가 있다면 여기에서 처리 (여기에서는 없음, 순서도 상관없음)
+            // AuthError는 Global Exception 중 특수한 경우
             is AuthError -> {
                 _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
                 testRepository.clearToken()
                 _testUiEvent.emit(TestUiEvent.NavigateToOnboard)
             }
-            // Local Exception
+            // 특수하지 않은 Local Exception
             is SignupError -> {
                 _testUiEvent.emit(TestUiEvent.ShowToast(error.displayMessage))
             }
