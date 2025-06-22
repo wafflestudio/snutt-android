@@ -170,19 +170,14 @@ class RootActivity : AppCompatActivity() {
         composeRoot.setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
-                // safeDrawingPadding()은 상태바, 내비게이션바, 노치 영역을 모두 포함하여
-                // 안전한 영역에만 콘텐츠를 그리도록 패딩을 적용합니다.
                 SNUTTTheme {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
-                            .safeDrawingPadding(), // 👈 핵심!
+                            .safeDrawingPadding(),
                     ) {
-                        // 여기에 앱의 메인 화면 Composable을 배치합니다.
                         setUpUI(startDestination)
                     }
-
-//                    setUpUI(startDestination)
                 }
             }
         }
