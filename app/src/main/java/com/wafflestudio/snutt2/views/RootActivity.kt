@@ -168,6 +168,8 @@ class RootActivity : AppCompatActivity() {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {
+                    // safeDrawingPadding(): targerSDK 35 대응
+                    // SDK 35에서 꽉 찬 화면이 default가 되면서, statusBar와 navigationBar에 맞게 padding을 줘야 한다.
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
