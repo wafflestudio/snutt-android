@@ -132,12 +132,12 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
+        super.onCreate(null)
+
         // Edge-to-Edge 활성화
         // decorFitsSystemWindows를 false로 설정하여 앱 콘텐츠를 시스템 바 뒤까지 확장
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        super.onCreate(null)
 
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
