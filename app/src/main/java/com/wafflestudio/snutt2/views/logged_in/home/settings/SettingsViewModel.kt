@@ -68,7 +68,7 @@ class SettingsViewModel @Inject constructor(
         }
 
         SettingsUiState(
-            user.nickname?.nickname ?: "",
+            user.nickname.toString(),
             themeMode.toString(),
             showLogoutDialog,
             settingPageNewBadgeTitles,
