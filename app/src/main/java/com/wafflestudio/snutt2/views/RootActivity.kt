@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -135,9 +134,7 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(null)
 
         // Edge-to-Edge 활성화
-        // decorFitsSystemWindows를 false로 설정하여 앱 콘텐츠를 시스템 바 뒤까지 확장
         enableEdgeToEdge()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
