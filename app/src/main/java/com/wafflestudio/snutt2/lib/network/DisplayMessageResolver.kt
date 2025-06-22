@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.R
 class DisplayMessageResolver(
     private val context: Context,
 ) {
-    fun getDisplayMessage(error: DomainError): String? {
+    fun getDisplayMessage(error: DomainError): String {
         return when (error) {
             is NetworkDisconnect -> context.getString(R.string.error_no_network)
             is ServerFault -> context.getString(R.string.error_server_fault)
@@ -16,7 +16,7 @@ class DisplayMessageResolver(
             is AuthError.NoUserToken -> context.getString(R.string.error_no_user_token)
             is AuthError.WrongUserToken -> context.getString(R.string.error_wrong_user_token)
             is Unknown -> context.getString(R.string.error_unknown)
-            else -> null
+            else -> error.displayMessage
         }
     }
 }

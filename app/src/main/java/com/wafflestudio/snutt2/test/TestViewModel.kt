@@ -73,7 +73,7 @@ class TestViewModel @Inject constructor(
     }
 
     private suspend fun handleTestError(error: DomainError) {
-        val displayMessage = displayMessageResolver.getDisplayMessage(error) ?: error.displayMessage
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             // Local Exception 중 특수한 경우가 있다면 여기에서 처리 (여기에서는 없음, 순서도 상관없음)
             // AuthError는 Global Exception 중 특수한 경우
