@@ -437,6 +437,7 @@ class RootActivity : AppCompatActivity() {
                         navController.popBackStack()
                     }
                 },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
             )
         }
         composableAnimated<NavigationDestination.ThemeMarket> {
