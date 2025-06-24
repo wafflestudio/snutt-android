@@ -105,6 +105,10 @@ sealed interface NavigationDestination {
     data object NetworkLog : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("test")
+    data object Test : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("vacancy")
     data object VacancyNotification : NavigationDestination
 
