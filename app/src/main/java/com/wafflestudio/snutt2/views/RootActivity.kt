@@ -464,8 +464,12 @@ class RootActivity : AppCompatActivity() {
         if (BuildConfig.DEBUG) {
             composableAnimated<NavigationDestination.Test> {
                 TestRoute(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateOnBoard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.Test::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
                 )
             }
         }
