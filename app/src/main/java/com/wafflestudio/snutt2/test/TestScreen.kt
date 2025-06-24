@@ -111,6 +111,7 @@ fun TestScreen(
 
             Margin(height = 10.dp)
 
+            // 누르면 WrongUserToken에 해당하는 Toast가 뜬 후 Onboard 화면으로 이동해야 한다.
             SettingItemForTest(
                 title = "Global Exception - WrongUserToken Test",
                 hasNextPage = false,
@@ -127,6 +128,7 @@ fun TestScreen(
 
             Margin(height = 10.dp)
 
+            // 누르면 DuplicateLocalId에 해당하는 Toast가 떠야 한다.
             SettingItemForTest(
                 title = "Local Exception - DuplicateLocalId Test",
                 hasNextPage = false,
@@ -135,11 +137,14 @@ fun TestScreen(
 
             Margin(height = 10.dp)
 
+            // 누르면 현재 상태에, 알림 개수가 반영되어야 한다.
             SettingItemForTest(
                 title = "성공하는 경우 Test",
                 hasNextPage = false,
                 onClick = onFourthTestCase,
             )
+
+            // 리팩토링 과정에서 필요한 테스트가 있다면 지속적으로 추가
         }
     }
 }
