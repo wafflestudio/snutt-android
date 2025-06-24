@@ -202,6 +202,9 @@ fun HomePage() {
                         onNavigateNetworkLog = {
                             navController.navigate(NavigationDestination.NetworkLog)
                         },
+                        onNavigateTest = {
+                            navController.navigate(NavigationDestination.Test)
+                        },
                         onNavigateOnboardAsOrigin = {
                             navController.navigateAsOrigin(NavigationDestination.Onboard)
                         },
