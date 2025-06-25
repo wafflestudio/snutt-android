@@ -40,6 +40,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
@@ -50,11 +51,13 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 
 @Composable
-fun DiaryWriteRoute(modifier: Modifier = Modifier) {
-    val previewData = DiaryPreviewData.diaryWriteInit
+fun DiaryWriteRoute(
+    modifier: Modifier = Modifier,
+    diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
+) {
+    val previewData = DiaryPreviewData.diaryWriteNewInit
 
     DiaryWriteScreen(
         modifier = modifier,
@@ -76,20 +79,32 @@ fun DiaryWriteScreen(
         DiaryWriteUiState.Loading -> {}
         DiaryWriteUiState.Empty -> {}
         is DiaryWriteUiState.Success -> {
-            var isTodayCompleted by remember { mutableStateOf(when(diaryWriteUiState.diaryWriteInit.todayState){
-                null -> false
-                else -> true
-            }) }
+            var isTodayCompleted by remember {
+                mutableStateOf(
+                    when (diaryWriteUiState.diaryWriteInit.todayState) {
+                        null -> false
+                        else -> true
+                    },
+                )
+            }
             val toScrollOffset = remember { mutableIntStateOf(0) }
 
-            val todaySelected = remember { mutableStateOf( when(diaryWriteUiState.diaryWriteInit.todayState) {
-                null -> List(diaryWriteTodayOptions.size){ false }
-                else -> diaryWriteUiState.diaryWriteInit.todayState
-            }) }
-            val questionSelected = remember { mutableStateOf<List<List<Boolean>>>(when(diaryWriteUiState.diaryWriteInit.questionsState){
-                null -> listOf()
-                else -> diaryWriteUiState.diaryWriteInit.questionsState
-            }) }
+            val todaySelected = remember {
+                mutableStateOf(
+                    when (diaryWriteUiState.diaryWriteInit.todayState) {
+                        null -> List(diaryWriteTodayOptions.size) { false }
+                        else -> diaryWriteUiState.diaryWriteInit.todayState
+                    },
+                )
+            }
+            val questionSelected = remember {
+                mutableStateOf<List<List<Boolean>>>(
+                    when (diaryWriteUiState.diaryWriteInit.questionsState) {
+                        null -> listOf()
+                        else -> diaryWriteUiState.diaryWriteInit.questionsState
+                    },
+                )
+            }
             Column {
                 Row(
                     modifier = modifier
@@ -122,7 +137,6 @@ fun DiaryWriteScreen(
                         .verticalScroll(scrollState)
                         .background(color = SNUTTColors.Gray),
                 ) {
-
                     TodayQuestionBox(
                         { todaySelection ->
                             isTodayCompleted = true
@@ -131,8 +145,8 @@ fun DiaryWriteScreen(
                                 scrollState.animateScrollTo(toScrollOffset.value)
                             }
                             todaySelected.value = todaySelection
-                            val questions = diaryWriteQuestionList( diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter {it.second}.map{it.first})
-                            questionSelected.value = List(questions.size){ i -> List(questions[i].options.size) { false } }
+                            val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
+                            questionSelected.value = List(questions.size) { i -> List(questions[i].options.size) { false } }
                         },
                         listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", diaryWriteTodayOptions)),
                         todaySelected.value,
@@ -146,12 +160,12 @@ fun DiaryWriteScreen(
                             },
                         ) {
                             DiaryQuestionBox(
-                                diaryWriteQuestionList( diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter {it.second}.map{it.first} ),
+                                diaryWriteQuestionList(diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first }),
                                 questionSelected.value,
                                 onChange = { questionId, index ->
                                     questionSelected.value = List(questionSelected.value.size) { i ->
-                                        if(i == questionId){
-                                            List(questionSelected.value[i].size){ id ->
+                                        if (i == questionId) {
+                                            List(questionSelected.value[i].size) { id ->
                                                 id == index
                                             }
                                         } else {
@@ -206,7 +220,7 @@ fun TodayQuestionBox(
                         today[i]
                     }
                 }
-            })
+            },)
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -351,7 +365,7 @@ fun MoreTextItem(
                     },
             ) {
                 EditText(
-                    value = moreText?:"",
+                    value = moreText ?: "",
                     onValueChange = { moreText = it },
                     hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
                     underlineEnabled = false,
@@ -381,7 +395,7 @@ fun MoreTextItem(
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    val previewData = DiaryPreviewData.diaryWriteInit
+    val previewData = DiaryPreviewData.diaryWriteNewInit
     DiaryWriteScreen(
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onComplete = {},

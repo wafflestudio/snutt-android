@@ -1,14 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteInit
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 
-
 val diaryWriteTodayOptions = listOf("개강", "수업", "실기", "시험", "발표", "휴강", "종강", "드랍")
 
-fun diaryWriteQuestionList (lectureName: String, today: List<String>): List<DiaryWriteQuestion> {
-    return when{
+fun diaryWriteQuestionList(lectureName: String, today: List<String>): List<DiaryWriteQuestion> {
+    return when {
         today.contains("개강") -> listOf(
             DiaryWriteQuestion("수강신청은 쉬웠나요?", listOf("널널했어요", "2~3픽 했어요", "1픽 했어요", "초안지 썼어요")),
             DiaryWriteQuestion("교수님/수업 첫인상은 어땠나요?", listOf("즐거울 것 같아요", "별 생각 없어요", "큰일 난 것 같아요")),
@@ -33,7 +31,6 @@ fun diaryWriteQuestionList (lectureName: String, today: List<String>): List<Diar
             DiaryWriteQuestion("친구들도 $lectureName 수업을 드랍했나요?", listOf("아니요", "모르겠어요", "네")),
         )
 
-
         today.contains("휴강") -> listOf(
             DiaryWriteQuestion("왜 휴강했나요?", listOf("자체휴강", "모르겠어요", "휴일", "교수님 개인사정")),
             DiaryWriteQuestion("지금 과제가 많나요?", listOf("없어요", "할만 했어요", "쌓여 있어요")),
@@ -54,4 +51,3 @@ sealed interface DiaryWriteUiState {
     data object Loading : DiaryWriteUiState
     data object Empty : DiaryWriteUiState
 }
-
