@@ -218,7 +218,6 @@ fun SettingsScreen(
                         hasNextPage = true,
                         onClick = onClickLectureDiary,
                     )
-
                 }
             }
             Margin(height = 10.dp)
