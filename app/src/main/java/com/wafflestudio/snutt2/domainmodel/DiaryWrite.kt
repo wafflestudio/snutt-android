@@ -5,7 +5,7 @@ data class DiaryWriteQuestion(
     val options: List<String>,
 )
 
-data class DiaryWriteInit(
+data class DiaryWrite(
     val lectureName: String,
     val todayState: List<Boolean>?,
     val questionsState: List<List<Boolean>>?,

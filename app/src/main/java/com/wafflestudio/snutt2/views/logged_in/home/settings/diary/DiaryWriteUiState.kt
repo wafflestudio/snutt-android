@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import com.wafflestudio.snutt2.domainmodel.DiaryWriteInit
+import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 
 val diaryWriteTodayOptions = listOf("개강", "수업", "실기", "시험", "발표", "휴강", "종강", "드랍")
@@ -46,7 +46,7 @@ fun diaryWriteQuestionList(lectureName: String, today: List<String>): List<Diary
 }
 
 sealed interface DiaryWriteUiState {
-    data class Success(val diaryWriteInit: DiaryWriteInit) : DiaryWriteUiState
+    data class Success(val diaryWrite: DiaryWrite) : DiaryWriteUiState
     data object Error : DiaryWriteUiState
     data object Loading : DiaryWriteUiState
     data object Empty : DiaryWriteUiState

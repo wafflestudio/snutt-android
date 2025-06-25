@@ -83,7 +83,7 @@ fun DiaryWriteScreen(
         is DiaryWriteUiState.Success -> {
             var isTodayCompleted by remember {
                 mutableStateOf(
-                    when (diaryWriteUiState.diaryWriteInit.todayState) {
+                    when (diaryWriteUiState.diaryWrite.todayState) {
                         null -> false
                         else -> true
                     },
@@ -93,17 +93,17 @@ fun DiaryWriteScreen(
 
             val todaySelected = remember {
                 mutableStateOf(
-                    when (diaryWriteUiState.diaryWriteInit.todayState) {
+                    when (diaryWriteUiState.diaryWrite.todayState) {
                         null -> List(diaryWriteTodayOptions.size) { false }
-                        else -> diaryWriteUiState.diaryWriteInit.todayState
+                        else -> diaryWriteUiState.diaryWrite.todayState
                     },
                 )
             }
             val questionSelected = remember {
                 mutableStateOf(
-                    when (diaryWriteUiState.diaryWriteInit.questionsState) {
+                    when (diaryWriteUiState.diaryWrite.questionsState) {
                         null -> listOf()
-                        else -> diaryWriteUiState.diaryWriteInit.questionsState
+                        else -> diaryWriteUiState.diaryWrite.questionsState
                     },
                 )
             }
@@ -117,7 +117,7 @@ fun DiaryWriteScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            text = "오늘 수강한 '${diaryWriteUiState.diaryWriteInit.lectureName}' 에 대한 의견을 남겨보세요.",
+                            text = "오늘 수강한 '${diaryWriteUiState.diaryWrite.lectureName}' 에 대한 의견을 남겨보세요.",
                             style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
                         )
 
@@ -147,7 +147,7 @@ fun DiaryWriteScreen(
                                 scrollState.animateScrollTo(toScrollOffset.value)
                             }
                             todaySelected.value = todaySelection
-                            val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
+                            val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
                             questionSelected.value = List(questions.size) { i -> List(questions[i].options.size) { false } }
                         },
                         listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", diaryWriteTodayOptions)),
@@ -162,7 +162,7 @@ fun DiaryWriteScreen(
                             },
                         ) {
                             DiaryQuestionBox(
-                                diaryWriteQuestionList(diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first }),
+                                diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first }),
                                 questionSelected.value,
                                 onChange = { questionId, index ->
                                     questionSelected.value = List(questionSelected.value.size) { i ->
@@ -178,7 +178,7 @@ fun DiaryWriteScreen(
                             )
 
                             MoreTextItem(
-                                moreTextInit = diaryWriteUiState.diaryWriteInit.moreText,
+                                moreTextInit = diaryWriteUiState.diaryWrite.moreText,
                             )
 
                             Text(
