@@ -171,6 +171,15 @@ fun SettingsPage(
                             )
                         },
                     )
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_write_lecture_diary),
+                        hasNextPage = true,
+                        onClick = {
+                            navController.navigate(
+                                NavigationDestination.LectureDiaryWrite,
+                            )
+                        },
+                    )
                 }
             }
             Margin(height = 10.dp)

@@ -436,6 +436,7 @@
     <string name="settings_item_theme_market">테마 마켓</string>
     <string name="settings_item_push_preferences">푸시알림 설정</string>
     <string name="settings_item_lecture_diary">강의 일기장</string>
+    <string name="settings_item_write_lecture_diary">강의 일기장 쓰기</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
