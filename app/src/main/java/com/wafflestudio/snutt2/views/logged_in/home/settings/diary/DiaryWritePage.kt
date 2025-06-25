@@ -421,9 +421,10 @@ fun DiaryQuestionPreview() {
 @Composable
 @Preview
 fun DiaryQuestionBoxPreview() {
-    val previewData = DiaryPreviewData.diaryWritePreviewData
+    val previewData = DiaryPreviewData.diaryWriteInit
+    val todaySelected = previewData.todayState
     DiaryQuestionBox(
-        questions = previewData.questions,
+        questions = diaryWriteQuestionList(previewData.lectureName, diaryWriteTodayOptions.zip(todaySelected ?: List(8) { true }).filter { it.second }.map { it.first }),
         selectedState = listOf(listOf(true, false, false), listOf(false, false, true), listOf(true, false, false)),
         onChange = { a, b -> },
     )
@@ -433,6 +434,6 @@ fun DiaryQuestionBoxPreview() {
 @Preview
 fun MoreTextPreview() {
     MoreTextItem(
-        moreTextInit = DiaryPreviewData.diaryWritePreviewData.moreText,
+        moreTextInit = DiaryPreviewData.diaryWriteInit.moreText,
     )
 }
