@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
@@ -58,11 +59,11 @@ fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
-    val previewData = DiaryPreviewData.diaryWriteNewInit
+    val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
 
     DiaryWriteScreen(
         modifier = modifier,
-        diaryWriteUiState = DiaryWriteUiState.Success(previewData),
+        diaryWriteUiState = diaryWrite,
         onComplete = {},
     )
 }
