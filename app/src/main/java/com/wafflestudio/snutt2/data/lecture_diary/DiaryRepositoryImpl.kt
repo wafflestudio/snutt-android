@@ -1,0 +1,23 @@
+package com.wafflestudio.snutt2.data.lecture_diary
+
+import com.wafflestudio.snutt2.domainmodel.DiaryWriteInit
+import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWritePagePreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class DiaryRepositoryImpl @Inject constructor(private val api: SNUTTRestApi):
+    DiaryRepository {
+    override fun getDiaryWriteInit(): Flow<DiaryWriteInit>{
+        return flowOf(DiaryPreviewData.diaryWriteInit)
+    }
+
+    override fun saveDiaryWrite(){
+
+    }
+
+}
