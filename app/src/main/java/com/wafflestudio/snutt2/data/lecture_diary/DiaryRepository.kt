@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface DiaryRepository {
     fun getDiaryWriteInit(): Flow<DiaryWrite>
 
-    fun saveDiaryWrite()
+    suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite)
 }

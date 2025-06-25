@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,6 +48,7 @@ import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -60,11 +62,21 @@ fun DiaryWriteRoute(
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
+    val navigationFlag by diaryWriteViewModel.navigationFlag.collectAsState()
+
+    LaunchedEffect(navigationFlag) {
+        if (navigationFlag) {
+            // TODO: 다음 화면으로 전환
+            diaryWriteViewModel.clearNavigationFlag()
+        }
+    }
 
     DiaryWriteScreen(
         modifier = modifier,
         diaryWriteUiState = diaryWrite,
-        onComplete = {},
+        onComplete = { diaryWriteData ->
+            diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
+        },
     )
 }
 
@@ -72,7 +84,7 @@ fun DiaryWriteRoute(
 fun DiaryWriteScreen(
     modifier: Modifier = Modifier,
     diaryWriteUiState: DiaryWriteUiState,
-    onComplete: () -> Unit,
+    onComplete: (DiaryWrite) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -107,6 +119,12 @@ fun DiaryWriteScreen(
                     },
                 )
             }
+            val moreTextState = remember {
+                mutableStateOf(
+                    diaryWriteUiState.diaryWrite.moreText,
+                )
+            }
+
             Column {
                 Row(
                     modifier = modifier
@@ -178,7 +196,8 @@ fun DiaryWriteScreen(
                             )
 
                             MoreTextItem(
-                                moreTextInit = diaryWriteUiState.diaryWrite.moreText,
+                                moreText = diaryWriteUiState.diaryWrite.moreText,
+                                onChange = { text -> moreTextState.value = text },
                             )
 
                             Text(
@@ -186,7 +205,17 @@ fun DiaryWriteScreen(
                                     .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
                                     .align(Alignment.End)
                                     .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
-                                    .padding(vertical = 12.dp, horizontal = 48.dp),
+                                    .padding(vertical = 12.dp, horizontal = 48.dp)
+                                    .clicks {
+                                        onComplete(
+                                            DiaryWrite(
+                                                diaryWriteUiState.diaryWrite.lectureName,
+                                                todaySelected.value,
+                                                questionSelected.value,
+                                                moreTextState.value,
+                                            ),
+                                        )
+                                    },
                                 text = "다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
                             )
                         }
@@ -326,10 +355,10 @@ fun DiaryQuestionItem(
 
 @Composable
 fun MoreTextItem(
-    moreTextInit: String?,
+    moreText: String?,
+    onChange: (String) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var moreText by remember { mutableStateOf(moreTextInit) }
     Column(
         modifier = Modifier
             .padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -368,7 +397,7 @@ fun MoreTextItem(
             ) {
                 EditText(
                     value = moreText ?: "",
-                    onValueChange = { moreText = it },
+                    onValueChange = { moretext -> onChange(moretext) },
                     hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
                     underlineEnabled = false,
                     modifier = Modifier.padding(vertical = 16.dp),
@@ -434,6 +463,7 @@ fun DiaryQuestionBoxPreview() {
 @Preview
 fun MoreTextPreview() {
     MoreTextItem(
-        moreTextInit = DiaryPreviewData.diaryWriteInit.moreText,
+        moreText = DiaryPreviewData.diaryWriteInit.moreText,
+        onChange = {},
     )
 }

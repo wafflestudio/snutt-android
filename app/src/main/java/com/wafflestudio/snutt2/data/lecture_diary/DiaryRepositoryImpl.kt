@@ -15,6 +15,6 @@ class DiaryRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
         return flowOf(DiaryPreviewData.diaryWriteInit)
     }
 
-    override fun saveDiaryWrite() {
+    override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite) {
     }
 }
