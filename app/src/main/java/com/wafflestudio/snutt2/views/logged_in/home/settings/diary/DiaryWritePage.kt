@@ -50,10 +50,11 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 
 @Composable
 fun DiaryWriteRoute(modifier: Modifier = Modifier) {
-    val previewData = DiaryPreviewData.diaryWritePreviewData
+    val previewData = DiaryPreviewData.diaryWriteInit
 
     DiaryWriteScreen(
         modifier = modifier,
@@ -75,11 +76,20 @@ fun DiaryWriteScreen(
         DiaryWriteUiState.Loading -> {}
         DiaryWriteUiState.Empty -> {}
         is DiaryWriteUiState.Success -> {
-            var isTodayCompleted by remember { mutableStateOf(false) }
+            var isTodayCompleted by remember { mutableStateOf(when(diaryWriteUiState.diaryWriteInit.todayState){
+                null -> false
+                else -> true
+            }) }
             val toScrollOffset = remember { mutableIntStateOf(0) }
 
-            val todaySelected = remember { mutableStateOf(List(diaryWriteUiState.diaryList.todayOptions.size) { false }) }
-            val eachSelectedIndex = remember { mutableStateOf<List<Int>>(listOf()) }
+            val todaySelected = remember { mutableStateOf( when(diaryWriteUiState.diaryWriteInit.todayState) {
+                null -> List(diaryWriteTodayOptions.size){ false }
+                else -> diaryWriteUiState.diaryWriteInit.todayState
+            }) }
+            val questionSelected = remember { mutableStateOf<List<List<Boolean>>>(when(diaryWriteUiState.diaryWriteInit.questionsState){
+                null -> listOf()
+                else -> diaryWriteUiState.diaryWriteInit.questionsState
+            }) }
             Column {
                 Row(
                     modifier = modifier
@@ -90,7 +100,7 @@ fun DiaryWriteScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            text = "오늘 수강한 '${diaryWriteUiState.diaryList.lectureName}' 에 대한 의견을 남겨보세요.",
+                            text = "오늘 수강한 '${diaryWriteUiState.diaryWriteInit.lectureName}' 에 대한 의견을 남겨보세요.",
                             style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
                         )
 
@@ -112,30 +122,21 @@ fun DiaryWriteScreen(
                         .verticalScroll(scrollState)
                         .background(color = SNUTTColors.Gray),
                 ) {
-                    val todayOptions = diaryWriteUiState.diaryList.todayOptions
-                    val questions = diaryWriteUiState.diaryList.questions
 
                     TodayQuestionBox(
-                        {
+                        { todaySelection ->
                             isTodayCompleted = true
                             scope.launch {
                                 delay(100)
                                 scrollState.animateScrollTo(toScrollOffset.value)
                             }
-                            eachSelectedIndex.value = List(questions.size) { -1 }
+                            todaySelected.value = todaySelection
+                            val questions = diaryWriteQuestionList( diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter {it.second}.map{it.first})
+                            questionSelected.value = List(questions.size){ i -> List(questions[i].options.size) { false } }
                         },
-                        listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", todayOptions)),
+                        listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", diaryWriteTodayOptions)),
                         todaySelected.value,
-                        onChange = { index ->
-                            val today = todaySelected.value
-                            todaySelected.value = List(today.size) { i ->
-                                if (i == index) {
-                                    !today[i]
-                                } else {
-                                    today[i]
-                                }
-                            }
-                        },
+                        {},
                     )
 
                     if (isTodayCompleted) {
@@ -145,21 +146,23 @@ fun DiaryWriteScreen(
                             },
                         ) {
                             DiaryQuestionBox(
-                                questions,
-                                eachSelectedIndex.value,
+                                diaryWriteQuestionList( diaryWriteUiState.diaryWriteInit.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter {it.second}.map{it.first} ),
+                                questionSelected.value,
                                 onChange = { questionId, index ->
-                                    eachSelectedIndex.value = List(questions.size) { i ->
-                                        if (i == questionId) {
-                                            index
+                                    questionSelected.value = List(questionSelected.value.size) { i ->
+                                        if(i == questionId){
+                                            List(questionSelected.value[i].size){ id ->
+                                                id == index
+                                            }
                                         } else {
-                                            eachSelectedIndex.value[i]
+                                            questionSelected.value[i]
                                         }
                                     }
                                 },
                             )
 
                             MoreTextItem(
-                                moreTextInit = diaryWriteUiState.diaryList.moreText,
+                                moreTextInit = diaryWriteUiState.diaryWriteInit.moreText,
                             )
 
                             Text(
@@ -180,11 +183,12 @@ fun DiaryWriteScreen(
 
 @Composable
 fun TodayQuestionBox(
-    onTodayComplete: () -> Unit,
+    onTodayComplete: (List<Boolean>) -> Unit,
     questions: List<DiaryWriteQuestion>,
     selectedState: List<Boolean>,
     onChange: (Int) -> Unit,
 ) {
+    var localTodaySelectedState by remember { mutableStateOf(selectedState) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -193,7 +197,16 @@ fun TodayQuestionBox(
             .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
     ) {
         questions.forEach { (question, options) ->
-            DiaryQuestionItem(true, question, options, selectedState, onChange)
+            DiaryQuestionItem(true, question, options, localTodaySelectedState, onChange = { index ->
+                val today = localTodaySelectedState
+                localTodaySelectedState = List(today.size) { i ->
+                    if (i == index) {
+                        !today[i]
+                    } else {
+                        today[i]
+                    }
+                }
+            })
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -202,7 +215,11 @@ fun TodayQuestionBox(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(horizontal = 12.dp, vertical = 4.dp)
-                        .clicks { onTodayComplete() },
+                        .clicks {
+                            if (localTodaySelectedState != selectedState) {
+                                onTodayComplete(localTodaySelectedState)
+                            }
+                        },
                 )
             }
         }
@@ -212,7 +229,7 @@ fun TodayQuestionBox(
 @Composable
 fun DiaryQuestionBox(
     questions: List<DiaryWriteQuestion>,
-    selectedIndices: List<Int>,
+    selectedState: List<List<Boolean>>,
     onChange: (Int, Int) -> Unit,
 ) {
     Column(
@@ -223,9 +240,8 @@ fun DiaryQuestionBox(
             .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
     ) {
         questions.forEachIndexed { questionIndex, (question, options) ->
-            val selectedState = List(options.size) { i -> i == selectedIndices[questionIndex] }
 
-            DiaryQuestionItem(false, question, options, selectedState) { index ->
+            DiaryQuestionItem(false, question, options, selectedState[questionIndex]) { index ->
                 onChange(questionIndex, index)
             }
 
@@ -294,7 +310,7 @@ fun DiaryQuestionItem(
 
 @Composable
 fun MoreTextItem(
-    moreTextInit: String,
+    moreTextInit: String?,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var moreText by remember { mutableStateOf(moreTextInit) }
@@ -335,7 +351,7 @@ fun MoreTextItem(
                     },
             ) {
                 EditText(
-                    value = moreText,
+                    value = moreText?:"",
                     onValueChange = { moreText = it },
                     hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
                     underlineEnabled = false,
@@ -345,7 +361,7 @@ fun MoreTextItem(
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) { // TODO: 200자 넘으면 색깔 바꾸고, 더 못 입력하게
-                            append("${moreText.length}")
+                            append("${moreText?.length}")
                         }
                         withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
                             append("/")
@@ -365,7 +381,7 @@ fun MoreTextItem(
 @Composable
 @Preview
 fun DiaryWritePagePreview() {
-    val previewData = DiaryPreviewData.diaryWritePreviewData
+    val previewData = DiaryPreviewData.diaryWriteInit
     DiaryWriteScreen(
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onComplete = {},
@@ -392,7 +408,7 @@ fun DiaryQuestionBoxPreview() {
     val previewData = DiaryPreviewData.diaryWritePreviewData
     DiaryQuestionBox(
         questions = previewData.questions,
-        selectedIndices = listOf(1, 0, 2),
+        selectedState = listOf(listOf(true, false, false), listOf(false, false, true), listOf(true, false, false)),
         onChange = { a, b -> },
     )
 }

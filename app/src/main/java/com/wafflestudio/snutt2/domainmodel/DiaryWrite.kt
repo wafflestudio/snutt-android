@@ -12,3 +12,10 @@ data class DiaryWrite(
     val questions: List<DiaryWriteQuestion>,
     val moreText: String = "",
 )
+
+data class DiaryWriteInit(
+    val lectureName: String,
+    val todayState: List<Boolean>?,
+    val questionsState: List<List<Boolean>>?,
+    val moreText: String?
+)
