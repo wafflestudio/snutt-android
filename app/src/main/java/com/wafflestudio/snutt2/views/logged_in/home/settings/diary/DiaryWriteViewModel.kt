@@ -3,9 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
-import com.wafflestudio.snutt2.domainmodel.DiaryWrite
-import com.wafflestudio.snutt2.domainmodel.DiaryWriteInit
-import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +26,7 @@ class DiaryWriteViewModel @Inject constructor(
             _diaryWriteInit.value = DiaryWriteUiState.Loading
             diaryRepository.getDiaryWriteInit().catch {
                 _diaryWriteInit.value = DiaryWriteUiState.Error
-            }.collect{ data ->
+            }.collect { data ->
                 _diaryWriteInit.value = DiaryWriteUiState.Success(data)
             }
         }
