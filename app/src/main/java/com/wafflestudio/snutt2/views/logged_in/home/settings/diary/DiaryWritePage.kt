@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -98,7 +99,7 @@ fun DiaryWriteScreen(
                 )
             }
             val questionSelected = remember {
-                mutableStateOf<List<List<Boolean>>>(
+                mutableStateOf(
                     when (diaryWriteUiState.diaryWriteInit.questionsState) {
                         null -> listOf()
                         else -> diaryWriteUiState.diaryWriteInit.questionsState
@@ -133,7 +134,7 @@ fun DiaryWriteScreen(
                 }
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .verticalScroll(scrollState)
                         .background(color = SNUTTColors.Gray),
                 ) {
@@ -260,7 +261,7 @@ fun DiaryQuestionBox(
             }
 
             if (questionIndex != questions.lastIndex) {
-                Divider(modifier = Modifier.padding(vertical = 20.dp)) // TODO: 색깔 연하게 바꾸기
+                Divider(color = SNUTTColors.Gray, modifier = Modifier.padding(vertical = 20.dp))
             }
         }
     }
@@ -375,7 +376,7 @@ fun MoreTextItem(
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) { // TODO: 200자 넘으면 색깔 바꾸고, 더 못 입력하게
-                            append("${moreText?.length}")
+                            append("${moreText?.length ?: 0}")
                         }
                         withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
                             append("/")
